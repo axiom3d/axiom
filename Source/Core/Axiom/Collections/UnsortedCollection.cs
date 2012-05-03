@@ -53,7 +53,9 @@ namespace Axiom.Collections
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.List`1"/> class that is empty and has the default initial capacity.
 		/// </summary>
-		public UnsortedCollection() {}
+		public UnsortedCollection()
+		{
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.List`1"/> class that is empty and has the specified initial capacity.
@@ -63,7 +65,9 @@ namespace Axiom.Collections
 		/// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is less than 0. 
 		/// </exception>
 		public UnsortedCollection( int capacity )
-			: base( capacity ) {}
+			: base( capacity )
+		{
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.List`1"/> class that contains elements copied from the specified collection and has sufficient capacity to accommodate the number of elements copied.
@@ -73,7 +77,9 @@ namespace Axiom.Collections
 		/// <exception cref="T:System.ArgumentNullException"><paramref name="collection"/> is null.
 		/// </exception>
 		public UnsortedCollection( IEnumerable<T> collection )
-			: base( collection ) {}
+			: base( collection )
+		{
+		}
 
 		#endregion
 	}

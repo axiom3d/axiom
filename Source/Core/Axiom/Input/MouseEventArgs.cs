@@ -98,7 +98,9 @@ namespace Axiom.Input
 		/// <param name="y">Mouse Y position.</param>
 		/// <param name="z">Mouse Z position.</param>
 		public MouseEventArgs( MouseButtons button, ModifierKeys modifiers, float x, float y, float z )
-			: this( button, modifiers, x, y, z, 0, 0, 0 ) {}
+			: this( button, modifiers, x, y, z, 0, 0, 0 )
+		{
+		}
 
 		/// <summary>
 		///		Constructor.
@@ -111,16 +113,17 @@ namespace Axiom.Input
 		/// <param name="relX">Relative mouse X position.</param>
 		/// <param name="relY">Relative mouse Y position.</param>
 		/// <param name="relZ">Relative mouse Z position.</param>
-		public MouseEventArgs( MouseButtons button, ModifierKeys modifiers, float x, float y, float z, float relX, float relY, float relZ )
+		public MouseEventArgs( MouseButtons button, ModifierKeys modifiers, float x, float y, float z, float relX, float relY,
+		                       float relZ )
 			: base( modifiers )
 		{
 			this.button = button;
 			this.x = x;
 			this.y = y;
 			this.z = z;
-			this.relativeX = relX;
-			this.relativeY = relY;
-			this.relativeZ = relZ;
+			relativeX = relX;
+			relativeY = relY;
+			relativeZ = relZ;
 		}
 
 		#endregion Constructors

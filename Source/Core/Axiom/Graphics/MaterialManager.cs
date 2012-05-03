@@ -43,14 +43,11 @@ using System.Collections;
 using System.IO;
 using System.Reflection;
 using System.Linq;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Core.Collections;
 using Axiom.Serialization;
-
 using ResourceHandle = System.UInt64;
-
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -100,7 +97,8 @@ namespace Axiom.Graphics
 
 			public IRenderable Renderable { get; private set; }
 
-			public SchemeNotFoundEventArgs( ushort schemeIndex, string schemeName, Material originalMaterial, int lodIndex, IRenderable renderable )
+			public SchemeNotFoundEventArgs( ushort schemeIndex, string schemeName, Material originalMaterial, int lodIndex,
+			                                IRenderable renderable )
 			{
 				SchemeIndex = schemeIndex;
 				Renderable = renderable;
@@ -134,33 +132,18 @@ namespace Axiom.Graphics
 		#region DefaultAnisotropy Property
 
 		/// <summary>
-		///     Default Texture anisotropy.
-		/// </summary>
-		private int _defaultMaxAniso;
-
-		/// <summary>
 		///    Sets the default anisotropy level to be used for loaded textures, for when textures are
 		///    loaded automatically (e.g. by Material class) or when 'Load' is called with the default
 		///    parameters by the application.
 		/// </summary>
-		public int DefaultAnisotropy
-		{
-			get
-			{
-				return _defaultMaxAniso;
-			}
-			set
-			{
-				_defaultMaxAniso = value;
-			}
-		}
+		public int DefaultAnisotropy { get; set; }
 
 		#endregion DefaultAnisotropy Property
 
 		/// <summary>
 		///		Used for parsing material scripts.
 		/// </summary>
-		private MaterialSerializer _serializer = new MaterialSerializer();
+		private readonly MaterialSerializer _serializer = new MaterialSerializer();
 
 		private TextureFiltering _filtering;
 
@@ -179,11 +162,11 @@ namespace Axiom.Graphics
 				instance = this;
 			}
 
-			this.SetDefaultTextureFiltering( TextureFiltering.Bilinear );
-			_defaultMaxAniso = 1;
+			SetDefaultTextureFiltering( TextureFiltering.Bilinear );
+			DefaultAnisotropy = 1;
 
 			// Loading order
-			this.LoadingOrder = 100.0f;
+			LoadingOrder = 100.0f;
 
 #if !AXIOM_USENEWCOMPILERS
 			// Scripting is supported by this manager
@@ -241,7 +224,7 @@ namespace Axiom.Graphics
 		/// <param name="filtering"></param>
 		public virtual void SetDefaultTextureFiltering( TextureFiltering filtering )
 		{
-			this._filtering = filtering;
+			_filtering = filtering;
 			switch ( filtering )
 			{
 				case TextureFiltering.None:
@@ -282,7 +265,8 @@ namespace Axiom.Graphics
 		/// <param name="minFilter">Minification filter.</param>
 		/// <param name="magFilter">Magnification filter.</param>
 		/// <param name="mipFilter">Map filter.</param>
-		public virtual void SetDefaultTextureFiltering( FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter )
+		public virtual void SetDefaultTextureFiltering( FilterOptions minFilter, FilterOptions magFilter,
+		                                                FilterOptions mipFilter )
 		{
 			_defaultMinFilter = minFilter;
 			_defaultMagFilter = magFilter;
@@ -474,7 +458,8 @@ namespace Axiom.Graphics
 
 		#region ResourceManager Implementation
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			return new Material( this, name, handle, group, isManual, loader );
 		}
@@ -530,7 +515,7 @@ namespace Axiom.Graphics
 		/// <ogre name="~MaterialManager" />
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

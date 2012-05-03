@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics.Collections;
@@ -119,7 +118,7 @@ namespace Axiom.Graphics
 			unsafe
 #endif
 			{
-				Debug.Assert( positionBuffer.VertexSize == sizeof ( float ) * 3, "Position buffer should contain only positions!" );
+				Debug.Assert( positionBuffer.VertexSize == sizeof ( float )*3, "Position buffer should contain only positions!" );
 
 				// Lock buffer for reading
 				var posPtr = positionBuffer.Lock( BufferLocking.ReadOnly );
@@ -133,13 +132,13 @@ namespace Axiom.Graphics
 					// Only update tris which are using this vertex set
 					if ( t.vertexSet == vertexSet )
 					{
-						var offset = t.vertIndex[ 0 ] * 3;
+						var offset = t.vertIndex[ 0 ]*3;
 						var v1 = new Vector3( pVert[ offset ], pVert[ offset + 1 ], pVert[ offset + 2 ] );
 
-						offset = t.vertIndex[ 1 ] * 3;
+						offset = t.vertIndex[ 1 ]*3;
 						var v2 = new Vector3( pVert[ offset ], pVert[ offset + 1 ], pVert[ offset + 2 ] );
 
-						offset = t.vertIndex[ 2 ] * 3;
+						offset = t.vertIndex[ 2 ]*3;
 						var v3 = new Vector3( pVert[ offset ], pVert[ offset + 1 ], pVert[ offset + 2 ] );
 
 						t.normal = Utility.CalculateFaceNormal( v1, v2, v3 );
@@ -161,7 +160,8 @@ namespace Axiom.Graphics
 			{
 				var t = (Triangle)triangles[ i ];
 
-				log.Write( "Triangle {0} = [indexSet={1}, vertexSet={2}, v0={3}, v1={4}, v2={5}]", i, t.indexSet, t.vertexSet, t.vertIndex[ 0 ], t.vertIndex[ 1 ], t.vertIndex[ 2 ] );
+				log.Write( "Triangle {0} = [indexSet={1}, vertexSet={2}, v0={3}, v1={4}, v2={5}]", i, t.indexSet, t.vertexSet,
+				           t.vertIndex[ 0 ], t.vertIndex[ 1 ], t.vertIndex[ 2 ] );
 			}
 
 			for ( var i = 0; i < edgeGroups.Count; i++ )
@@ -174,7 +174,8 @@ namespace Axiom.Graphics
 				{
 					var e = (Edge)group.edges[ j ];
 
-					log.Write( "Edge {0} = [\ntri0={1}, \ntri1={2}, \nv0={3}, \nv1={4}, \n degenerate={5}\n]", j, e.triIndex[ 0 ], e.triIndex[ 1 ], e.vertIndex[ 0 ], e.vertIndex[ 1 ], e.isDegenerate );
+					log.Write( "Edge {0} = [\ntri0={1}, \ntri1={2}, \nv0={3}, \nv1={4}, \n degenerate={5}\n]", j, e.triIndex[ 0 ],
+					           e.triIndex[ 1 ], e.vertIndex[ 0 ], e.vertIndex[ 1 ], e.isDegenerate );
 				}
 			}
 		}
@@ -231,13 +232,17 @@ namespace Axiom.Graphics
 			/// </summary>
 			public Triangle()
 			{
-				vertIndex = new int[ 3 ];
-				sharedVertIndex = new int[ 3 ];
+				vertIndex = new int[3];
+				sharedVertIndex = new int[3];
 			}
 
 			public override string ToString()
 			{
-				return string.Format( "IndexSet {0} VertexSet {1} VertIndices({2},{3},{4}) SharedVerts({5},{6},{7}) Normal({8},{9},{10},{11}) LightFacing {12})", indexSet, vertexSet, vertIndex[ 0 ], vertIndex[ 1 ], vertIndex[ 2 ], sharedVertIndex[ 0 ], sharedVertIndex[ 1 ], sharedVertIndex[ 2 ], normal.x, normal.y, normal.z, normal.w, lightFacing );
+				return
+					string.Format(
+						"IndexSet {0} VertexSet {1} VertIndices({2},{3},{4}) SharedVerts({5},{6},{7}) Normal({8},{9},{10},{11}) LightFacing {12})",
+						indexSet, vertexSet, vertIndex[ 0 ], vertIndex[ 1 ], vertIndex[ 2 ], sharedVertIndex[ 0 ], sharedVertIndex[ 1 ],
+						sharedVertIndex[ 2 ], normal.x, normal.y, normal.z, normal.w, lightFacing );
 			}
 
 			#endregion Fields
@@ -280,14 +285,16 @@ namespace Axiom.Graphics
 			/// </summary>
 			public Edge()
 			{
-				triIndex = new int[ 2 ];
-				vertIndex = new int[ 2 ];
-				sharedVertIndex = new int[ 2 ];
+				triIndex = new int[2];
+				vertIndex = new int[2];
+				sharedVertIndex = new int[2];
 			}
 
 			public override string ToString()
 			{
-				return string.Format( "TriIndex({0},{1}) VertIndex({2},{3}) SharedVertIndex({4},{5}) IsDegenerate = {6}", triIndex[ 0 ], triIndex[ 1 ], vertIndex[ 0 ], vertIndex[ 1 ], sharedVertIndex[ 0 ], sharedVertIndex[ 1 ], isDegenerate );
+				return string.Format( "TriIndex({0},{1}) VertIndex({2},{3}) SharedVertIndex({4},{5}) IsDegenerate = {6}",
+				                      triIndex[ 0 ], triIndex[ 1 ], vertIndex[ 0 ], vertIndex[ 1 ], sharedVertIndex[ 0 ],
+				                      sharedVertIndex[ 1 ], isDegenerate );
 			}
 		}
 

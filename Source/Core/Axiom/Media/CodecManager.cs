@@ -80,8 +80,8 @@ namespace Axiom.Media
 		{
 			get
 			{
-				var res = new string[ this._mapCodecs.Count ];
-				this._mapCodecs.Keys.CopyTo( res, 0 );
+				var res = new string[_mapCodecs.Count];
+				_mapCodecs.Keys.CopyTo( res, 0 );
 				return res;
 			}
 		}
@@ -119,12 +119,12 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public void RegisterCodec( Codec codec )
 		{
-			if ( this._mapCodecs.ContainsKey( codec.Type ) )
+			if ( _mapCodecs.ContainsKey( codec.Type ) )
 			{
 				throw new AxiomException( "{0} already has a registered codec.", codec.Type );
 			}
 
-			this._mapCodecs[ codec.Type ] = codec;
+			_mapCodecs[ codec.Type ] = codec;
 		}
 
 		/// <summary>
@@ -133,7 +133,7 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public bool IsCodecRegistered( string codecType )
 		{
-			return this._mapCodecs.ContainsKey( codecType );
+			return _mapCodecs.ContainsKey( codecType );
 		}
 
 		/// <summary>
@@ -142,7 +142,7 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public void UnregisterCodec( Codec codec )
 		{
-			this._mapCodecs.TryRemove( codec.Type );
+			_mapCodecs.TryRemove( codec.Type );
 		}
 
 		/// <summary>
@@ -152,10 +152,10 @@ namespace Axiom.Media
 		public Codec GetCodec( string extension )
 		{
 			var lwrcase = extension.ToLower();
-			if ( !this._mapCodecs.ContainsKey( lwrcase ) )
+			if ( !_mapCodecs.ContainsKey( lwrcase ) )
 			{
 				var formatStr = string.Empty;
-				if ( this._mapCodecs.Count == 0 )
+				if ( _mapCodecs.Count == 0 )
 				{
 					formatStr = "There are no formats supported (no codecs registered).";
 				}
@@ -167,7 +167,7 @@ namespace Axiom.Media
 				throw new AxiomException( "Can not find codec for '{0}' image format.\n{1}", extension, formatStr );
 			}
 
-			return this._mapCodecs[ lwrcase ];
+			return _mapCodecs[ lwrcase ];
 		}
 
 		/// <summary>
@@ -179,7 +179,7 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public Codec GetCodec( byte[] magicNumberBuf, int maxBytes )
 		{
-			foreach ( var i in this._mapCodecs )
+			foreach ( var i in _mapCodecs )
 			{
 				var ext = i.MagicNumberToFileExt( magicNumberBuf, maxBytes );
 				if ( !string.IsNullOrEmpty( ext ) )

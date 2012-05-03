@@ -72,7 +72,8 @@ namespace Axiom.Core
 
 			objectList.Add( new ObjectEntry
 			                {
-			                	Instance = new WeakReference( instance ), ConstructionStack = stackTrace
+			                	Instance = new WeakReference( instance ),
+			                	ConstructionStack = stackTrace
 			                } );
 		}
 
@@ -149,7 +150,8 @@ namespace Axiom.Core
 #else
 						report.Write( string.Empty ); // new line
 						report.Write( "Cannot get stacktrace informations about undisposed objects." );
-						report.Write( "Maybe AXIOM_ENABLE_LOG_STACKTRACE directive is not defined or your current platfrom doesn't allow to retrieve them." );
+						report.Write(
+							"Maybe AXIOM_ENABLE_LOG_STACKTRACE directive is not defined or your current platfrom doesn't allow to retrieve them." );
 #endif
 					}
 					else

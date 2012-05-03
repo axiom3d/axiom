@@ -34,7 +34,6 @@
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Graphics;
 using Axiom.Scripting.Compiler.AST;
 
@@ -48,7 +47,7 @@ namespace Axiom.Scripting.Compiler
 		{
 			#region Translator Implementation
 
-            public override bool CheckFor(Keywords nodeId, Keywords parentId)
+			public override bool CheckFor( Keywords nodeId, Keywords parentId )
 			{
 				return nodeId == Keywords.ID_SHARED_PARAMS;
 			}
@@ -68,7 +67,8 @@ namespace Axiom.Scripting.Compiler
 
 				object paramsObj;
 				GpuProgramParameters.GpuSharedParameters sharedParams;
-				ScriptCompilerEvent evt = new CreateGpuSharedParametersScriptCompilerEvent( obj.File, obj.Name, compiler.ResourceGroup );
+				ScriptCompilerEvent evt = new CreateGpuSharedParametersScriptCompilerEvent( obj.File, obj.Name,
+				                                                                            compiler.ResourceGroup );
 				bool processed = compiler._fireEvent( ref evt, out paramsObj );
 
 				if ( !processed )
@@ -103,7 +103,8 @@ namespace Axiom.Scripting.Compiler
 						{
 							if ( prop.Values.Count < 2 )
 							{
-								compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "shared_param_named - expected 2 or more arguments" );
+								compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+								                   "shared_param_named - expected 2 or more arguments" );
 								continue;
 							}
 
@@ -166,7 +167,8 @@ namespace Axiom.Scripting.Compiler
 
 									if ( !parseRes )
 									{
-										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, atom.Value + " invalid - extra parameters to shared_param_named must be numbers" );
+										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
+										                   atom.Value + " invalid - extra parameters to shared_param_named must be numbers" );
 										continue;
 									}
 									if ( isFloat )
@@ -192,13 +194,14 @@ namespace Axiom.Scripting.Compiler
 							}
 
 							// initial values
-							var elemsExpected = GpuProgramParameters.GpuConstantDefinition.GetElementSize( constType, false ) * arraySz;
+							var elemsExpected = GpuProgramParameters.GpuConstantDefinition.GetElementSize( constType, false )*arraySz;
 							var elemsFound = isFloat ? mFloats.Count : mInts.Count;
 							if ( elemsFound > 0 )
 							{
 								if ( elemsExpected != elemsFound )
 								{
-									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "Wrong number of values supplied for parameter type" );
+									compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+									                   "Wrong number of values supplied for parameter type" );
 									continue;
 								}
 

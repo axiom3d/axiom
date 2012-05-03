@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using Axiom.Graphics;
 using Axiom.Collections;
 using Axiom.Core.Collections;
@@ -54,7 +53,9 @@ namespace Axiom.Core
 	/// </summary>
 	public class SceneManagerDefaultFactory : SceneManagerFactory
 	{
-		public SceneManagerDefaultFactory() {}
+		public SceneManagerDefaultFactory()
+		{
+		}
 
 		protected override void InitMetaData()
 		{
@@ -81,7 +82,9 @@ namespace Axiom.Core
 	public class DefaultSceneManager : SceneManager
 	{
 		public DefaultSceneManager( string name )
-			: base( name ) {}
+			: base( name )
+		{
+		}
 
 		public override string TypeName
 		{
@@ -124,10 +127,10 @@ namespace Axiom.Core
 
 		#region Fields
 
-		private SceneManagerCollection _instances = new SceneManagerCollection();
-		private List<SceneManagerFactory> _factories = new List<SceneManagerFactory>();
-		private List<SceneManagerMetaData> _metaDataList = new List<SceneManagerMetaData>();
-		private SceneManagerDefaultFactory _defaultFactory;
+		private readonly SceneManagerCollection _instances = new SceneManagerCollection();
+		private readonly List<SceneManagerFactory> _factories = new List<SceneManagerFactory>();
+		private readonly List<SceneManagerMetaData> _metaDataList = new List<SceneManagerMetaData>();
+		private readonly SceneManagerDefaultFactory _defaultFactory;
 		private RenderSystem _currentRenderSystem;
 
 		private ulong _instanceCreateCount;

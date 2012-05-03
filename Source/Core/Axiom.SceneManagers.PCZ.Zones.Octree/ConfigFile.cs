@@ -49,7 +49,7 @@ namespace OctreeZone
 {
 	public class ConfigFile
 	{
-		private string baseSchema;
+		private readonly string baseSchema;
 
 		public ConfigFile( string baseSchemaName )
 		{
@@ -84,7 +84,7 @@ namespace OctreeZone
             }
 		}
 #else
-		private XmlDocument _doc = new XmlDocument();
+		private readonly XmlDocument _doc = new XmlDocument();
 
 		public bool Load( Stream stream )
 		{

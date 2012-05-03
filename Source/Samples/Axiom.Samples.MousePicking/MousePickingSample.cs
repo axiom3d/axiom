@@ -91,7 +91,8 @@ namespace Axiom.Samples.MousePicking
 			if ( initialized )
 			{
 				_MouseSelector.MouseMoved( evt );
-				MouseLocationLabel.Caption = "(x:y) " + ( evt.State.X.Absolute / (float)Camera.Viewport.ActualWidth ).ToString() + ":" + ( evt.State.Y.Absolute / (float)Camera.Viewport.ActualHeight ).ToString();
+				MouseLocationLabel.Caption = "(x:y) " + ( evt.State.X.Absolute/(float)Camera.Viewport.ActualWidth ).ToString() + ":" +
+				                             ( evt.State.Y.Absolute/(float)Camera.Viewport.ActualHeight ).ToString();
 			}
 			return base.MouseMoved( evt );
 		}
@@ -160,12 +161,13 @@ namespace Axiom.Samples.MousePicking
 			light.Position = new Vector3( 20, 80, 50 );
 
 			// create a plane for the plane mesh
-			Plane plane = new Plane();
+			var plane = new Plane();
 			plane.Normal = Vector3.UnitY;
 			plane.D = 200;
 
 			// create a plane mesh
-			MeshManager.Instance.CreatePlane( "FloorPlane", ResourceGroupManager.DefaultResourceGroupName, plane, 200000, 200000, 20, 20, true, 1, 50, 50, Vector3.UnitZ );
+			MeshManager.Instance.CreatePlane( "FloorPlane", ResourceGroupManager.DefaultResourceGroupName, plane, 200000, 200000,
+			                                  20, 20, true, 1, 50, 50, Vector3.UnitZ );
 
 			// create an entity to reference this mesh
 			Entity planeEntity = SceneManager.CreateEntity( "Floor", "FloorPlane" );
@@ -183,12 +185,14 @@ namespace Axiom.Samples.MousePicking
 
 			SceneNode ogreHead2Node;
 			Entity ogreHead2 = SceneManager.CreateEntity( "OgreHead2", "ogrehead.mesh" );
-			ogreHead2Node = SceneManager.RootSceneNode.CreateChildSceneNode( "OgreHead2Node", new Vector3( -100, 0, 0 ), Quaternion.Identity );
+			ogreHead2Node = SceneManager.RootSceneNode.CreateChildSceneNode( "OgreHead2Node", new Vector3( -100, 0, 0 ),
+			                                                                 Quaternion.Identity );
 			ogreHead2Node.AttachObject( ogreHead2 );
 
 			SceneNode ogreHead3Node;
 			Entity ogreHead3 = SceneManager.CreateEntity( "OgreHead3", "ogrehead.mesh" );
-			ogreHead3Node = SceneManager.RootSceneNode.CreateChildSceneNode( "OgreHead3Node", new Vector3( +100, 0, 0 ), Quaternion.Identity );
+			ogreHead3Node = SceneManager.RootSceneNode.CreateChildSceneNode( "OgreHead3Node", new Vector3( +100, 0, 0 ),
+			                                                                 Quaternion.Identity );
 			ogreHead3Node.AttachObject( ogreHead3 );
 
 			// make sure the camera tracks this node
@@ -217,7 +221,8 @@ namespace Axiom.Samples.MousePicking
 		/// </summary>
 		protected void SetupGUI()
 		{
-			selectionModeMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopRight, "SelectionModeMenu", "Selection Mode", 300, 150, 3 );
+			selectionModeMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopRight, "SelectionModeMenu", "Selection Mode",
+			                                                      300, 150, 3 );
 			selectionModeMenu.AddItem( "None" );
 			selectionModeMenu.AddItem( "Mouse Select" );
 			selectionModeMenu.AddItem( "Selection Box" );

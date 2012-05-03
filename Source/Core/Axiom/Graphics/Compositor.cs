@@ -47,11 +47,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-
 using Axiom.Core;
 using Axiom.Configuration;
 using Axiom.Media;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -70,7 +68,7 @@ namespace Axiom.Graphics
 		#region Fields and Properties
 
 		protected List<CompositionTechnique> techniques;
-		private ReadOnlyCollection<CompositionTechnique> readOnlyTechniques;
+		private readonly ReadOnlyCollection<CompositionTechnique> readOnlyTechniques;
 
 		/// <summary>
 		/// List of all techniques
@@ -84,7 +82,7 @@ namespace Axiom.Graphics
 		}
 
 		protected List<CompositionTechnique> supportedTechniques;
-		private ReadOnlyCollection<CompositionTechnique> readOnlySupportedTechniques;
+		private readonly ReadOnlyCollection<CompositionTechnique> readOnlySupportedTechniques;
 
 		/// <summary>
 		/// List of supported techniques
@@ -127,7 +125,8 @@ namespace Axiom.Graphics
 
 		#region Constructors
 
-		public Compositor( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		public Compositor( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                   IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			techniques = new List<CompositionTechnique>();
@@ -136,7 +135,7 @@ namespace Axiom.Graphics
 			readOnlySupportedTechniques = new ReadOnlyCollection<CompositionTechnique>( supportedTechniques );
 			globalTextures = new Dictionary<string, Texture>();
 			globalMRTs = new Dictionary<string, MultiRenderTarget>();
-			this.compilationRequired = true;
+			compilationRequired = true;
 		}
 
 		#endregion Constructors
@@ -184,7 +183,7 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					this.RemoveAllTechniques();
+					RemoveAllTechniques();
 
 					foreach ( var item in globalMRTs )
 					{
@@ -456,7 +455,11 @@ namespace Axiom.Graphics
 						foreach ( var p in def.PixelFormats )
 						{
 							var texName = string.Format( "{0}/{1}", MRTBaseName, atch.ToString() );
-							var tex = TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, def.Width, def.Height, 0, 0, p, TextureUsage.RenderTarget, null, def.HwGammaWrite && !PixelUtil.IsFloatingPoint( p ), def.Fsaa ? 1 : 0 );
+							var tex = TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName,
+							                                                TextureType.TwoD, def.Width, def.Height, 0, 0, p,
+							                                                TextureUsage.RenderTarget, null,
+							                                                def.HwGammaWrite && !PixelUtil.IsFloatingPoint( p ),
+							                                                def.Fsaa ? 1 : 0 );
 
 							var rt = tex.GetBuffer().GetRenderTarget();
 							rt.IsAutoUpdated = false;
@@ -473,7 +476,12 @@ namespace Axiom.Graphics
 						// space in the name mixup the cegui in the compositor demo
 						// this is an auto generated name - so no spaces can't hart us.
 						texName = texName.Replace( " ", "_" );
-						var tex = TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, def.Width, def.Height, 0, def.PixelFormats[ 0 ], TextureUsage.RenderTarget, null, def.HwGammaWrite && !PixelUtil.IsFloatingPoint( def.PixelFormats[ 0 ] ), def.Fsaa ? 1 : 0 );
+						var tex = TextureManager.Instance.CreateManual( texName, ResourceGroupManager.InternalResourceGroupName,
+						                                                TextureType.TwoD, def.Width, def.Height, 0, def.PixelFormats[ 0 ],
+						                                                TextureUsage.RenderTarget, null,
+						                                                def.HwGammaWrite &&
+						                                                !PixelUtil.IsFloatingPoint( def.PixelFormats[ 0 ] ),
+						                                                def.Fsaa ? 1 : 0 );
 
 						renderTarget = tex.GetBuffer().GetRenderTarget();
 						globalTextures.Add( def.Name, tex );

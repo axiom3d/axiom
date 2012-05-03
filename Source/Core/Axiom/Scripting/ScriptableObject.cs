@@ -39,11 +39,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Collections;
-
 using System.Reflection;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -52,7 +49,7 @@ namespace Axiom.Scripting
 {
 	public sealed class ScriptableProperties
 	{
-		private IScriptableObject _owner;
+		private readonly IScriptableObject _owner;
 
 		public ScriptableProperties( IScriptableObject owner )
 		{
@@ -119,7 +116,7 @@ namespace Axiom.Scripting
 
 	public abstract class ScriptableObject : DisposableObject, IScriptableObject
 	{
-		private Dictionary<String, IPropertyCommand> _classParameters;
+		private readonly Dictionary<String, IPropertyCommand> _classParameters;
 
 		/// <summary>
 		///
@@ -138,13 +135,14 @@ namespace Axiom.Scripting
 		protected ScriptableObject()
 			: base()
 		{
-			_classParameters = _getTypePropertyMap( this.GetType() );
+			_classParameters = _getTypePropertyMap( GetType() );
 			_properties = new ScriptableProperties( this );
 		}
 
 		#region Static Implementation
 
-		private static Dictionary<Type, Dictionary<String, IPropertyCommand>> _propertyMaps = new Dictionary<Type, Dictionary<string, IPropertyCommand>>();
+		private static readonly Dictionary<Type, Dictionary<String, IPropertyCommand>> _propertyMaps =
+			new Dictionary<Type, Dictionary<string, IPropertyCommand>>();
 
 		private static Dictionary<String, IPropertyCommand> _getTypePropertyMap( Type type )
 		{
@@ -175,7 +173,9 @@ namespace Axiom.Scripting
 			foreach ( var nestType in type.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public ) )
 			{
 #if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360)
-				if ( nestType.FindInterfaces( ( typeObj, criteriaObj ) => typeObj.Name == criteriaObj.ToString(), typeof ( IPropertyCommand ).Name ).Length > 0 )
+				if (
+					nestType.FindInterfaces( ( typeObj, criteriaObj ) => typeObj.Name == criteriaObj.ToString(),
+					                         typeof ( IPropertyCommand ).Name ).Length > 0 )
 #else
                 foreach ( Type iface in nestType.GetInterfaces() )
 					if ( iface.Name == typeof ( IPropertyCommand ).Name )
@@ -195,7 +195,7 @@ namespace Axiom.Scripting
 
 		#region Implementation of IScriptableObject
 
-		private ScriptableProperties _properties;
+		private readonly ScriptableProperties _properties;
 
 		/// <summary>
 		/// a list of properties accessible through though a string interface
@@ -216,7 +216,7 @@ namespace Axiom.Scripting
 		{
 			foreach ( var item in parameters )
 			{
-				this.Properties[ item.Key ] = item.Value;
+				Properties[ item.Key ] = item.Value;
 			}
 		}
 
@@ -234,7 +234,7 @@ namespace Axiom.Scripting
 				}
 				else
 				{
-					LogManager.Instance.Write( "{0}: Unrecognized parameter '{1}'", this.GetType().Name, property );
+					LogManager.Instance.Write( "{0}: Unrecognized parameter '{1}'", GetType().Name, property );
 				}
 				return null;
 			}
@@ -248,7 +248,7 @@ namespace Axiom.Scripting
 				}
 				else
 				{
-					LogManager.Instance.Write( "{0}: Unrecognized parameter '{1}'", this.GetType().Name, property );
+					LogManager.Instance.Write( "{0}: Unrecognized parameter '{1}'", GetType().Name, property );
 				}
 			}
 		}

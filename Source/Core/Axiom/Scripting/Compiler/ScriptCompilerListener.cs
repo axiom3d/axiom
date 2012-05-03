@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Scripting.Compiler.AST;
 
 #endregion Namespace Declarations
@@ -70,7 +69,9 @@ namespace Axiom.Scripting.Compiler
 		/// </summary>
 		/// <param name="compiler">A reference to the compiler</param>
 		/// <param name="nodes"></param>
-		public virtual void PreConversion( ScriptCompiler compiler, IList<ConcreteNode> nodes ) {}
+		public virtual void PreConversion( ScriptCompiler compiler, IList<ConcreteNode> nodes )
+		{
+		}
 
 		/// <summary>
 		/// Allows vetoing of continued compilation after the entire AST conversion process finishes
@@ -93,7 +94,9 @@ namespace Axiom.Scripting.Compiler
 		/// </summary>
 		/// <param name="compiler">A reference to the compiler</param>
 		/// <param name="err"></param>
-		public virtual void HandleError( ScriptCompiler compiler, ScriptCompiler.CompileError err ) {}
+		public virtual void HandleError( ScriptCompiler compiler, ScriptCompiler.CompileError err )
+		{
+		}
 
 		/// <summary>
 		/// Called when an event occurs during translation, return true if handled

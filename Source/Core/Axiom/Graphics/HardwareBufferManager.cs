@@ -92,7 +92,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -113,7 +113,8 @@ namespace Axiom.Graphics
 #if NET_40
 		public override HardwareVertexBuffer CreateVertexBuffer(  VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer = false )
 #else
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts,
+		                                                         BufferUsage usage, bool useShadowBuffer )
 #endif
 		{
 			return _baseInstance.CreateVertexBuffer( vertexDeclaration, numVerts, usage, useShadowBuffer );
@@ -124,7 +125,8 @@ namespace Axiom.Graphics
 #if NET_40
         public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer = false )
 #else
-		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
+		                                                       bool useShadowBuffer )
 #endif
 		{
 			return _baseInstance.CreateIndexBuffer( type, numIndices, usage, useShadowBuffer );
@@ -173,7 +175,8 @@ namespace Axiom.Graphics
 
 		/// <see cref="HardwareBufferManagerBase.AllocateVertexBufferCopy"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer, BufferLicenseRelease licenseType,
+		public override HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer,
+		                                                               BufferLicenseRelease licenseType,
 #if NET_40
             IHardwareBufferLicensee licensee, bool copyData = false )
 #else

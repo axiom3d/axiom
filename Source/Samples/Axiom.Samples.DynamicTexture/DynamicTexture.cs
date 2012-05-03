@@ -25,7 +25,6 @@
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -42,7 +41,7 @@ namespace Axiom.Samples.DynamicTexture
 		#region Protected Fields
 
 		private const int TEXTURE_SIZE = 128;
-		private const int SQR_BRUSH_RADIUS = 12 * 12;
+		private const int SQR_BRUSH_RADIUS = 12*12;
 		private HardwarePixelBuffer mTexBuf;
 		private Real mPlaneSize;
 		private RaySceneQuery mCursorQuery;
@@ -60,7 +59,8 @@ namespace Axiom.Samples.DynamicTexture
 			Metadata[ "Description" ] = "Demonstrates how to create and use dynamically changing textures.";
 			Metadata[ "Thumbnail" ] = "thumb_dyntex.png";
 			Metadata[ "Category" ] = "Unsorted";
-			Metadata[ "Help" ] = "Use the left mouse button to wipe away the frost. It's cold though, so the frost will return after a while.";
+			Metadata[ "Help" ] =
+				"Use the left mouse button to wipe away the frost. It's cold though, so the frost will return after a while.";
 		}
 
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
@@ -74,7 +74,7 @@ namespace Axiom.Samples.DynamicTexture
 			{
 				// using the point of intersection, find the corresponding texel on our texture
 				var pt = ray.GetPoint( result[ result.Count - 1 ].Distance );
-				mBrushPos = ( ( new Vector2( pt.x, -pt.y ) ) * ( 1.0f / mPlaneSize ) + ( new Vector2( 0.5, 0.5 ) ) ) * TEXTURE_SIZE;
+				mBrushPos = ( ( new Vector2( pt.x, -pt.y ) )*( 1.0f/mPlaneSize ) + ( new Vector2( 0.5, 0.5 ) ) )*TEXTURE_SIZE;
 			}
 
 			byte freezeAmount = 0;
@@ -130,7 +130,9 @@ namespace Axiom.Samples.DynamicTexture
 			TrayManager.ShowCursor();
 
 			// create our dynamic texture with 8-bit luminance texels
-			var tex = TextureManager.Instance.CreateManual( "thaw", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, TEXTURE_SIZE, TEXTURE_SIZE, 0, PixelFormat.L8, TextureUsage.DynamicWriteOnly );
+			var tex = TextureManager.Instance.CreateManual( "thaw", ResourceGroupManager.DefaultResourceGroupName,
+			                                                TextureType.TwoD, TEXTURE_SIZE, TEXTURE_SIZE, 0, PixelFormat.L8,
+			                                                TextureUsage.DynamicWriteOnly );
 
 			mTexBuf = tex.GetBuffer(); // save off the texture buffer
 
@@ -208,7 +210,7 @@ namespace Axiom.Samples.DynamicTexture
 								sqrDistToBrush = Math.Utility.Sqr( x - mBrushPos.x ) + Math.Utility.Sqr( y - mBrushPos.y );
 								if ( sqrDistToBrush <= SQR_BRUSH_RADIUS )
 								{
-									data[ dataIdx ] = (byte)Math.Utility.Min( sqrDistToBrush / SQR_BRUSH_RADIUS * 0xff, data[ dataIdx ] );
+									data[ dataIdx ] = (byte)Math.Utility.Min( sqrDistToBrush/SQR_BRUSH_RADIUS*0xff, data[ dataIdx ] );
 								}
 							}
 

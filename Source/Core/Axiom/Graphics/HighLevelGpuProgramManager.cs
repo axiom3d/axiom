@@ -39,10 +39,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Linq;
-
 using Axiom.Collections;
 using Axiom.Core;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -157,7 +155,8 @@ namespace Axiom.Graphics
 
 			if ( factory == null )
 			{
-				throw new AxiomException( "Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'", language );
+				throw new AxiomException( "Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'",
+				                          language );
 			}
 
 			// create the high level program using the factory
@@ -207,7 +206,8 @@ namespace Axiom.Graphics
 
 		#region ResourceManager Implementation
 
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			if ( createParams == null || !createParams.ContainsKey( "language" ) )
 			{
@@ -250,7 +250,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

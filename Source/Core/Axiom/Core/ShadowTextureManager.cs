@@ -41,17 +41,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using IO = System.IO;
-
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.FileSystem;
 using Axiom.Math;
 using Axiom.Scripting;
-
 using System.Text;
-
 using Axiom.Media;
 using Axiom.Graphics;
 
@@ -127,7 +123,9 @@ namespace Axiom.Core
 
 		#region Constructor
 
-		public ShadowTextureManager() {}
+		public ShadowTextureManager()
+		{
+		}
 
 		#endregion Constructor
 
@@ -171,7 +169,8 @@ namespace Axiom.Core
 					// Create a new texture
 					var baseName = "Axiom/ShadowTexture";
 					var targName = baseName + count++;
-					var shadowTex = TextureManager.Instance.CreateManual( targName, "", TextureType.TwoD, config.width, config.height, 1, 0, TextureUsage.RenderTarget );
+					var shadowTex = TextureManager.Instance.CreateManual( targName, "", TextureType.TwoD, config.width, config.height,
+					                                                      1, 0, TextureUsage.RenderTarget );
 					// Ensure texture loaded
 					shadowTex.Load();
 					listToPopulate.Add( shadowTex );
@@ -203,7 +202,8 @@ namespace Axiom.Core
 			// A 1x1 texture of the correct format, not a render target
 			var baseName = "Axiom/ShadowTextureNull";
 			var targName = baseName + count++;
-			var shadowTex = TextureManager.Instance.CreateManual( targName, "", TextureType.TwoD, 1, 1, 1, 0, TextureUsage.Default );
+			var shadowTex = TextureManager.Instance.CreateManual( targName, "", TextureType.TwoD, 1, 1, 1, 0,
+			                                                      TextureUsage.Default );
 			nullTextureList.Add( new WeakReference( shadowTex ) );
 
 			// Populate the texture based on format

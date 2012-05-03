@@ -39,11 +39,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.ComponentModel.Composition;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Utilities;
-
 using System.Reflection;
 
 #endregion Namespace Declarations
@@ -68,7 +66,8 @@ namespace Axiom.RenderSystems.OpenGL
 #if OPENGL_OTK
 			Contract.Requires( PlatformManager.Instance.GetType().Name == "OpenTKPlatformManager", "PlatformManager", "OpenGL OpenTK Renderer requires OpenTK Platform Manager." );
 #endif
-			Contract.Requires( Root.Instance.RenderSystems.ContainsKey( "OpenGL" ) == false, "OpenGL", "An instance of the OpenGL renderer is already loaded." );
+			Contract.Requires( Root.Instance.RenderSystems.ContainsKey( "OpenGL" ) == false, "OpenGL",
+			                   "An instance of the OpenGL renderer is already loaded." );
 
 			_renderSystem = new GLRenderSystem();
 			// add an instance of this plugin to the list of available RenderSystems

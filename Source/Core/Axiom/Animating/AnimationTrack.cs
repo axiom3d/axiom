@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Math;
 using Axiom.Core;
 using Axiom.Collections;
@@ -277,7 +276,7 @@ namespace Axiom.Animating
 			}
 			else
 			{
-				return ( time - t1 ) / ( t2 - t1 );
+				return ( time - t1 )/( t2 - t1 );
 			}
 		}
 
@@ -370,7 +369,7 @@ namespace Axiom.Animating
 		{
 			// we also need to rebuild the maxKeyFrameTime
 			maxKeyFrameTime = -1;
-			foreach ( var keyFrame in this.KeyFrames )
+			foreach ( var keyFrame in KeyFrames )
 			{
 				if ( keyFrame.Time > maxKeyFrameTime )
 				{
@@ -392,7 +391,9 @@ namespace Axiom.Animating
 		/// <summary>
 		///		Optimise the current track by removing any duplicate keyframes.
 		/// </summary>
-		public virtual void Optimise() {}
+		public virtual void Optimise()
+		{
+		}
 
 		#endregion Public methods
 	}
@@ -404,10 +405,14 @@ namespace Axiom.Animating
 		#region Constructor
 
 		public NumericAnimationTrack( Animation parent )
-			: base( parent ) {}
+			: base( parent )
+		{
+		}
 
 		public NumericAnimationTrack( Animation parent, ushort handle )
-			: base( parent, handle ) {}
+			: base( parent, handle )
+		{
+		}
 
 		public NumericAnimationTrack( Animation parent, AnimableValue targetAnimable )
 			: base( parent )
@@ -493,7 +498,7 @@ namespace Axiom.Animating
 			GetInterpolatedKeyFrame( time, kf );
 			// add to existing. Weights are not relative, but treated as
 			// absolute multipliers for the animation
-			var v = weight * scale;
+			var v = weight*scale;
 			var val = AnimableValue.MultiplyFloat( anim.Type, v, kf.NumericValue );
 
 			anim.ApplyDeltaValue( val );
@@ -561,12 +566,14 @@ namespace Axiom.Animating
 		}
 
 		public NodeAnimationTrack( Animation parent, ushort handle )
-			: base( parent, handle ) {}
+			: base( parent, handle )
+		{
+		}
 
 		public NodeAnimationTrack( Animation parent )
 			: base( parent )
 		{
-			this.target = null;
+			target = null;
 		}
 
 		#endregion Constructors
@@ -651,8 +658,8 @@ namespace Axiom.Animating
 						{
 							result.Rotation = Quaternion.Slerp( t, k1.Rotation, k2.Rotation, useShortestPath );
 						}
-						result.Translate = k1.Translate + ( ( k2.Translate - k1.Translate ) * t );
-						result.Scale = k1.Scale + ( ( k2.Scale - k1.Scale ) * t );
+						result.Translate = k1.Translate + ( ( k2.Translate - k1.Translate )*t );
+						result.Scale = k1.Scale + ( ( k2.Scale - k1.Scale )*t );
 					}
 						break;
 					case InterpolationMode.Spline:
@@ -693,19 +700,19 @@ namespace Axiom.Animating
 			ApplyToNode( target, time, weight, accumulate, scale );
 		}
 
-		private TransformKeyFrame kf = new TransformKeyFrame( null, 0.0f );
+		private readonly TransformKeyFrame kf = new TransformKeyFrame( null, 0.0f );
 
 		/// <summary>
 		///		Same as the Apply method, but applies to a specified Node instead of it's associated node.
 		/// </summary>
 		public void ApplyToNode( Node node, float time, float weight, bool accumulate, float scale )
 		{
-			this.GetInterpolatedKeyFrame( time, kf );
+			GetInterpolatedKeyFrame( time, kf );
 
 			if ( accumulate )
 			{
 				// add to existing. Weights are not relative, but treated as absolute multipliers for the animation
-				var translate = kf.Translate * weight * scale;
+				var translate = kf.Translate*weight*scale;
 				node.Translate( translate );
 
 				// interpolate between not rotation and full rotation, to point weight, so 0 = no rotate, and 1 = full rotation
@@ -718,7 +725,7 @@ namespace Axiom.Animating
 				//scaleVector = ((Vector3::UNIT_SCALE - kf.getScale()) * weight) + Vector3::UNIT_SCALE;
 				if ( scale != 1.0f && scaleVector != Vector3.UnitScale )
 				{
-					scaleVector = Vector3.UnitScale + ( scaleVector - Vector3.UnitScale ) * scale;
+					scaleVector = Vector3.UnitScale + ( scaleVector - Vector3.UnitScale )*scale;
 				}
 				node.ScaleBy( scaleVector );
 			}
@@ -793,7 +800,8 @@ namespace Axiom.Animating
 				Real angle = 0f;
 				kf.Rotation.ToAngleAxis( ref angle, ref axis );
 				var tolerance = 1e-3f;
-				if ( trans.Length > tolerance || ( scale - Vector3.UnitScale ).Length > tolerance || !Utility.RealEqual( Utility.DegreesToRadians( angle ), 0.0f, tolerance ) )
+				if ( trans.Length > tolerance || ( scale - Vector3.UnitScale ).Length > tolerance ||
+				     !Utility.RealEqual( Utility.DegreesToRadians( angle ), 0.0f, tolerance ) )
 				{
 					return true;
 				}
@@ -826,7 +834,8 @@ namespace Axiom.Animating
 				var neworientation = kf.Rotation;
 				// Ignore first keyframe; now include the last keyframe as we eliminate
 				// only k-2 in a group of 5 to ensure we only eliminate middle keys
-				if ( i != 0 && newtrans.DifferenceLessThan( lasttrans, tolerance ) && newscale.DifferenceLessThan( lastscale, tolerance ) && neworientation.Equals( lastorientation, quatTolerance ) )
+				if ( i != 0 && newtrans.DifferenceLessThan( lasttrans, tolerance ) &&
+				     newscale.DifferenceLessThan( lastscale, tolerance ) && neworientation.Equals( lastorientation, quatTolerance ) )
 				{
 					++dupKfCount;
 
@@ -909,7 +918,9 @@ namespace Axiom.Animating
 		}
 
 		public VertexAnimationTrack( Animation parent, ushort handle )
-			: base( parent, handle ) {}
+			: base( parent, handle )
+		{
+		}
 
 		public VertexAnimationTrack( Animation parent, ushort handle, VertexAnimationType animationType )
 			: base( parent, handle )
@@ -918,7 +929,8 @@ namespace Axiom.Animating
 		}
 
 		/// Constructor, associates with target VertexData and temp buffer (for software)
-		public VertexAnimationTrack( Animation parent, VertexAnimationType animationType, VertexData targetVertexData, VertexAnimationTargetMode targetMode )
+		public VertexAnimationTrack( Animation parent, VertexAnimationType animationType, VertexData targetVertexData,
+		                             VertexAnimationTargetMode targetMode )
 			: base( parent )
 		{
 			this.animationType = animationType;
@@ -990,7 +1002,8 @@ namespace Axiom.Animating
 		{
 			if ( animationType != VertexAnimationType.Morph )
 			{
-				throw new Exception( "Morph keyframes can only be created on vertex tracks of type morph; in VertexAnimationTrack::createVertexMorphKeyFrame" );
+				throw new Exception(
+					"Morph keyframes can only be created on vertex tracks of type morph; in VertexAnimationTrack::createVertexMorphKeyFrame" );
 			}
 			return (VertexMorphKeyFrame)CreateKeyFrame( time );
 		}
@@ -1071,9 +1084,9 @@ namespace Axiom.Animating
 						}
 					}
 					// Interpolate influence
-					var influence = startInfluence + t * ( endInfluence - startInfluence );
+					var influence = startInfluence + t*( endInfluence - startInfluence );
 					// Scale by animation weight
-					influence = weight * influence;
+					influence = weight*influence;
 					// Get pose
 					Debug.Assert( p1.PoseIndex <= poseList.Count );
 					var pose = poseList[ p1.PoseIndex ];
@@ -1095,9 +1108,9 @@ namespace Axiom.Animating
 					if ( !found )
 					{
 						// Need to apply this pose too, scaled from 0 start
-						var influence = t * p2.Influence;
+						var influence = t*p2.Influence;
 						// Scale by animation weight
-						influence = weight * influence;
+						influence = weight*influence;
 						// Get pose
 						Debug.Assert( p2.PoseIndex <= poseList.Count );
 						var pose = poseList[ p2.PoseIndex ];
@@ -1113,7 +1126,8 @@ namespace Axiom.Animating
 		{
 			if ( animationType != VertexAnimationType.Pose )
 			{
-				throw new Exception( "Pose keyframes can only be created on vertex tracks of type pose; in VertexAnimationTrack::createVertexPoseKeyFrame" );
+				throw new Exception(
+					"Pose keyframes can only be created on vertex tracks of type pose; in VertexAnimationTrack::createVertexPoseKeyFrame" );
 			}
 			return (VertexPoseKeyFrame)CreateKeyFrame( time );
 		}
@@ -1143,7 +1157,8 @@ namespace Axiom.Animating
 				if ( hwIndex < data.HWAnimationDataList.Count )
 				{
 					var animData = data.HWAnimationDataList[ hwIndex ];
-					data.vertexBufferBinding.SetBinding( animData.TargetVertexElement.Source, pose.GetHardwareVertexBuffer( data.vertexCount ) );
+					data.vertexBufferBinding.SetBinding( animData.TargetVertexElement.Source,
+					                                     pose.GetHardwareVertexBuffer( data.vertexCount ) );
 					// save final influence in parametric
 					animData.Parametric = influence;
 				}
@@ -1160,7 +1175,8 @@ namespace Axiom.Animating
 		{
 			if ( animationType != VertexAnimationType.Morph )
 			{
-				throw new Exception( "Morph keyframes can only be created on vertex tracks of type morph, in VertexAnimationTrack::getVertexMorphKeyFrame" );
+				throw new Exception(
+					"Morph keyframes can only be created on vertex tracks of type morph, in VertexAnimationTrack::getVertexMorphKeyFrame" );
 			}
 			return (VertexMorphKeyFrame)keyFrameList[ index ];
 		}
@@ -1170,7 +1186,8 @@ namespace Axiom.Animating
 		{
 			if ( animationType != VertexAnimationType.Pose )
 			{
-				throw new Exception( "Pose keyframes can only be created on vertex tracks of type pose, in VertexAnimationTrack::getVertexPoseKeyFrame" );
+				throw new Exception(
+					"Pose keyframes can only be created on vertex tracks of type pose, in VertexAnimationTrack::getVertexPoseKeyFrame" );
 			}
 			return (VertexPoseKeyFrame)keyFrameList[ index ];
 		}

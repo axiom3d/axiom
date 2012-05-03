@@ -41,7 +41,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Scripting;
@@ -85,7 +84,7 @@ namespace Axiom.Overlays.Elements
 		protected float topBorderSize;
 		protected float bottomBorderSize;
 
-		protected CellUV[] borderUV = new CellUV[ 8 ];
+		protected CellUV[] borderUV = new CellUV[8];
 
 		protected short pixelLeftBorderSize;
 		protected short pixelRightBorderSize;
@@ -105,10 +104,10 @@ namespace Axiom.Overlays.Elements
 		private const int TEXCOORDS = 1;
 
 		// temp array for use during position updates, prevents constant memory allocation
-		private float[] lefts = new float[ 8 ];
-		private float[] rights = new float[ 8 ];
-		private float[] tops = new float[ 8 ];
-		private float[] bottoms = new float[ 8 ];
+		private readonly float[] lefts = new float[8];
+		private readonly float[] rights = new float[8];
+		private readonly float[] tops = new float[8];
+		private readonly float[] bottoms = new float[8];
 
 		#endregion Member variables
 
@@ -137,18 +136,18 @@ namespace Axiom.Overlays.Elements
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.renderOp2 != null )
+					if ( renderOp2 != null )
 					{
-						if ( !this.renderOp2.IsDisposed )
+						if ( !renderOp2.IsDisposed )
 						{
-							this.renderOp2.Dispose();
+							renderOp2.Dispose();
 						}
 
-						this.renderOp2 = null;
+						renderOp2 = null;
 					}
 				}
 			}
@@ -364,14 +363,18 @@ namespace Axiom.Overlays.Elements
 				decl.AddElement( TEXCOORDS, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
 				// position buffer
-				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ),
+				                                                                renderOp2.vertexData.vertexCount,
+				                                                                BufferUsage.StaticWriteOnly );
 
 				// bind position
 				var binding = renderOp2.vertexData.vertexBufferBinding;
 				binding.SetBinding( POSITION, buffer );
 
 				// texcoord buffer
-				buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORDS ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly, true );
+				buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORDS ),
+				                                                            renderOp2.vertexData.vertexCount,
+				                                                            BufferUsage.StaticWriteOnly, true );
 
 				// bind texcoords
 				binding = renderOp2.vertexData.vertexBufferBinding;
@@ -395,7 +398,9 @@ namespace Axiom.Overlays.Elements
 				*/
 
 				// create a new index buffer
-				renderOp2.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, renderOp2.indexData.indexCount, BufferUsage.StaticWriteOnly );
+				renderOp2.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16,
+				                                                                                    renderOp2.indexData.indexCount,
+				                                                                                    BufferUsage.StaticWriteOnly );
 
 				// lock this bad boy
 				var data = renderOp2.indexData.indexBuffer.Lock( BufferLocking.Discard );
@@ -408,7 +413,7 @@ namespace Axiom.Overlays.Elements
 
 					for ( short cell = 0; cell < 8; cell++ )
 					{
-						var val = (short)( cell * 4 );
+						var val = (short)( cell*4 );
 						idxPtr[ index++ ] = val;
 						idxPtr[ index++ ] = (short)( val + 1 );
 						idxPtr[ index++ ] = (short)( val + 2 );
@@ -542,7 +547,8 @@ namespace Axiom.Overlays.Elements
 			var buffer = renderOp2.vertexData.vertexBufferBinding.GetBuffer( TEXCOORDS );
 
 			// can't use discard, or it will discard the whole buffer, wiping out the positions too
-			var data = buffer.Lock( cellIndex * 8 * Memory.SizeOf( typeof ( float ) ), Memory.SizeOf( typeof ( float ) ) * 8, BufferLocking.Normal );
+			var data = buffer.Lock( cellIndex*8*Memory.SizeOf( typeof ( float ) ), Memory.SizeOf( typeof ( float ) )*8,
+			                        BufferLocking.Normal );
 
 			var index = 0;
 
@@ -570,12 +576,13 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		public override void Update()
 		{
-			if ( metricsMode != MetricsMode.Relative && ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
+			if ( metricsMode != MetricsMode.Relative &&
+			     ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
 			{
-				leftBorderSize = pixelLeftBorderSize * pixelScaleX;
-				rightBorderSize = pixelRightBorderSize * pixelScaleX;
-				topBorderSize = pixelTopBorderSize * pixelScaleY;
-				bottomBorderSize = pixelBottomBorderSize * pixelScaleY;
+				leftBorderSize = pixelLeftBorderSize*pixelScaleX;
+				rightBorderSize = pixelRightBorderSize*pixelScaleX;
+				topBorderSize = pixelTopBorderSize*pixelScaleY;
+				bottomBorderSize = pixelBottomBorderSize*pixelScaleY;
 				isGeomPositionsOutOfDate = true;
 			}
 			base.Update();
@@ -603,15 +610,15 @@ namespace Axiom.Overlays.Elements
 			// Top / bottom also need inverting since y is upside down
 
 			// Horizontal
-			lefts[ 0 ] = lefts[ 3 ] = lefts[ 5 ] = this.DerivedLeft * 2 - 1;
-			lefts[ 1 ] = lefts[ 6 ] = rights[ 0 ] = rights[ 3 ] = rights[ 5 ] = lefts[ 0 ] + ( leftBorderSize * 2 );
-			rights[ 2 ] = rights[ 4 ] = rights[ 7 ] = lefts[ 0 ] + ( width * 2 );
-			lefts[ 2 ] = lefts[ 4 ] = lefts[ 7 ] = rights[ 1 ] = rights[ 6 ] = rights[ 2 ] - ( rightBorderSize * 2 );
+			lefts[ 0 ] = lefts[ 3 ] = lefts[ 5 ] = DerivedLeft*2 - 1;
+			lefts[ 1 ] = lefts[ 6 ] = rights[ 0 ] = rights[ 3 ] = rights[ 5 ] = lefts[ 0 ] + ( leftBorderSize*2 );
+			rights[ 2 ] = rights[ 4 ] = rights[ 7 ] = lefts[ 0 ] + ( width*2 );
+			lefts[ 2 ] = lefts[ 4 ] = lefts[ 7 ] = rights[ 1 ] = rights[ 6 ] = rights[ 2 ] - ( rightBorderSize*2 );
 			// Vertical
-			tops[ 0 ] = tops[ 1 ] = tops[ 2 ] = -( ( this.DerivedTop * 2 ) - 1 );
-			tops[ 3 ] = tops[ 4 ] = bottoms[ 0 ] = bottoms[ 1 ] = bottoms[ 2 ] = tops[ 0 ] - ( topBorderSize * 2 );
-			bottoms[ 5 ] = bottoms[ 6 ] = bottoms[ 7 ] = tops[ 0 ] - ( height * 2 );
-			tops[ 5 ] = tops[ 6 ] = tops[ 7 ] = bottoms[ 3 ] = bottoms[ 4 ] = bottoms[ 5 ] + ( bottomBorderSize * 2 );
+			tops[ 0 ] = tops[ 1 ] = tops[ 2 ] = -( ( DerivedTop*2 ) - 1 );
+			tops[ 3 ] = tops[ 4 ] = bottoms[ 0 ] = bottoms[ 1 ] = bottoms[ 2 ] = tops[ 0 ] - ( topBorderSize*2 );
+			bottoms[ 5 ] = bottoms[ 6 ] = bottoms[ 7 ] = tops[ 0 ] - ( height*2 );
+			tops[ 5 ] = tops[ 6 ] = tops[ 7 ] = bottoms[ 3 ] = bottoms[ 4 ] = bottoms[ 5 ] + ( bottomBorderSize*2 );
 
 			// get a reference to the buffer
 			var buffer = renderOp2.vertexData.vertexBufferBinding.GetBuffer( POSITION );
@@ -846,7 +853,8 @@ namespace Axiom.Overlays.Elements
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
-					return String.Format( "{0} {1} {2} {3}", element.LeftBorderSize, element.RightBorderSize, element.TopBorderSize, element.BottomBorderSize );
+					return String.Format( "{0} {1} {2} {3}", element.LeftBorderSize, element.RightBorderSize, element.TopBorderSize,
+					                      element.BottomBorderSize );
 				}
 				else
 				{
@@ -865,7 +873,10 @@ namespace Axiom.Overlays.Elements
 				var parms = val.Split( ' ' );
 				if ( element != null )
 				{
-					Real left = StringConverter.ParseFloat( parms[ 0 ] ), right = StringConverter.ParseFloat( parms[ 1 ] ), top = StringConverter.ParseFloat( parms[ 2 ] ), bottom = StringConverter.ParseFloat( parms[ 3 ] );
+					Real left = StringConverter.ParseFloat( parms[ 0 ] ),
+					     right = StringConverter.ParseFloat( parms[ 1 ] ),
+					     top = StringConverter.ParseFloat( parms[ 2 ] ),
+					     bottom = StringConverter.ParseFloat( parms[ 3 ] );
 					element.SetBorderSize( left, right, top, bottom );
 				}
 			}
@@ -949,7 +960,10 @@ namespace Axiom.Overlays.Elements
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetTopLeftBorderUV( u1, v1, u2, v2 );
 				}
@@ -994,7 +1008,10 @@ namespace Axiom.Overlays.Elements
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetTopRightBorderUV( u1, v1, u2, v2 );
 				}
@@ -1039,7 +1056,10 @@ namespace Axiom.Overlays.Elements
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetBottomLeftBorderUV( u1, v1, u2, v2 );
 				}
@@ -1084,7 +1104,10 @@ namespace Axiom.Overlays.Elements
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetBottomRightBorderUV( u1, v1, u2, v2 );
 				}
@@ -1129,7 +1152,10 @@ namespace Axiom.Overlays.Elements
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetLeftBorderUV( u1, v1, u2, v2 );
 				}
@@ -1174,7 +1200,10 @@ namespace Axiom.Overlays.Elements
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetTopBorderUV( u1, v1, u2, v2 );
 				}
@@ -1219,7 +1248,10 @@ namespace Axiom.Overlays.Elements
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetRightBorderUV( u1, v1, u2, v2 );
 				}
@@ -1264,7 +1296,10 @@ namespace Axiom.Overlays.Elements
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetBottomBorderUV( u1, v1, u2, v2 );
 				}
@@ -1293,7 +1328,7 @@ namespace Axiom.Overlays.Elements
 
 			protected BorderPanel parent;
 
-			private LightList emptyLightList = new LightList();
+			private readonly LightList emptyLightList = new LightList();
 
 			protected List<Vector4> customParams = new List<Vector4>();
 
@@ -1355,7 +1390,7 @@ namespace Axiom.Overlays.Elements
 			{
 				get
 				{
-					return this.parent.renderOp2;
+					return parent.renderOp2;
 				}
 			}
 
@@ -1384,7 +1419,7 @@ namespace Axiom.Overlays.Elements
 			{
 				get
 				{
-					return this.Material.GetBestTechnique();
+					return Material.GetBestTechnique();
 				}
 			}
 
@@ -1455,22 +1490,10 @@ namespace Axiom.Overlays.Elements
 
 			#region isDisposed Property
 
-			private bool _disposed = false;
-
 			/// <summary>
 			/// Determines if this instance has been disposed of already.
 			/// </summary>
-			protected bool isDisposed
-			{
-				get
-				{
-					return _disposed;
-				}
-				set
-				{
-					_disposed = value;
-				}
-			}
+			protected bool isDisposed { get; set; }
 
 			#endregion isDisposed Property
 

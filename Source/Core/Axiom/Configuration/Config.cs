@@ -83,6 +83,8 @@ namespace Axiom.Configuration
         public static readonly int AxiomThreadLevel = 2;
 #endif
 
-		public Config() {}
+		public Config()
+		{
+		}
 	}
 }

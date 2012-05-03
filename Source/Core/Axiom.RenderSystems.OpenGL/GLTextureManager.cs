@@ -38,13 +38,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-
 using Tao.OpenGl;
-
 using System.Runtime.InteropServices;
 
 #endregion Namespace Declarations
@@ -56,7 +53,7 @@ namespace Axiom.RenderSystems.OpenGL
 	/// </summary>
 	public class GLTextureManager : TextureManager
 	{
-		private BaseGLSupport _glSupport;
+		private readonly BaseGLSupport _glSupport;
 		private int _warningTextureId;
 
 		public int WarningTextureId
@@ -77,7 +74,8 @@ namespace Axiom.RenderSystems.OpenGL
 			_createWarningTexture();
 		}
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
 		{
 			return new GLTexture( this, name, handle, group, isManual, loader, _glSupport );
 		}
@@ -87,13 +85,13 @@ namespace Axiom.RenderSystems.OpenGL
 			// Generate warning texture
 			int width = 8;
 			int height = 8;
-			uint[] data = new uint[ width * height ]; // 0xXXRRGGBB
+			var data = new uint[width*height]; // 0xXXRRGGBB
 			// Yellow/black stripes
 			for ( int y = 0; y < height; ++y )
 			{
 				for ( int x = 0; x < width; ++x )
 				{
-					data[ y * width + x ] = ( ( ( x + y ) % 8 ) < 4 ) ? (uint)0x000000 : (uint)0xFFFF00;
+					data[ y*width + x ] = ( ( ( x + y )%8 ) < 4 ) ? (uint)0x000000 : (uint)0xFFFF00;
 				}
 			}
 
@@ -137,7 +135,8 @@ namespace Axiom.RenderSystems.OpenGL
 #if NET_40
         public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly = false )
 #else
-		public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly )
+		public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage,
+		                                                   bool preciseFormatOnly )
 #endif
 		{
 			if ( format == PixelFormat.Unknown )
@@ -166,8 +165,10 @@ namespace Axiom.RenderSystems.OpenGL
 			String[] sFloat16SupportedCards = {
 			                                  	// GeForce 8 Series
 			                                  	"*GeForce*8800*", // GeForce 7 Series
-			                                  	"*GeForce*7950*", "*GeForce*7900*", "*GeForce*7800*", "*GeForce*7600*", "*GeForce*7500*", "*GeForce*7300*", // GeForce 6 Series
-			                                  	"*GeForce*6800*", "*GeForce*6700*", "*GeForce*6600*", "*GeForce*6500*", "*GeForce*6200*", "" // Empty string means end of list
+			                                  	"*GeForce*7950*", "*GeForce*7900*", "*GeForce*7800*", "*GeForce*7600*",
+			                                  	"*GeForce*7500*", "*GeForce*7300*", // GeForce 6 Series
+			                                  	"*GeForce*6800*", "*GeForce*6700*", "*GeForce*6600*", "*GeForce*6500*",
+			                                  	"*GeForce*6200*", "" // Empty string means end of list
 			                                  };
 
 			// TODO: Add cards that 32 bits floating point flitering supported by

@@ -35,7 +35,6 @@
 
 using System;
 using System.Runtime.InteropServices;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -133,12 +132,13 @@ namespace Axiom.Graphics
 		/// <param name="useSystemMemory">Create in system memory?</param>
 		/// <param name="useShadowBuffer">Use a shadow buffer for reading/writing?</param>
 		[OgreVersion( 1, 7, 2 )]
-		public HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+		public HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage,
+		                            bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
 			this.type = type;
 			this.numIndices = numIndices;
-			this.Manager = manager;
+			Manager = manager;
 			// calc the index buffer size
 			sizeInBytes = numIndices;
 
@@ -163,13 +163,13 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2, "~HardwareIndexBuffer" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.Manager != null )
+					if ( Manager != null )
 					{
-						this.Manager.NotifyIndexBufferDestroyed( this );
+						Manager.NotifyIndexBufferDestroyed( this );
 					}
 
 					shadowBuffer.SafeDispose();

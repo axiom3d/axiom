@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Reflection;
-
 using Axiom.Collections;
 using Axiom.Math;
 using Axiom.Scripting;
@@ -196,7 +195,8 @@ namespace Axiom.ParticleSystems
 					var type = types[ i ];
 
 					// get as many command attributes as there are on this type
-					var commandAtts = (ScriptablePropertyAttribute[])type.GetCustomAttributes( typeof ( ScriptablePropertyAttribute ), true );
+					var commandAtts =
+						(ScriptablePropertyAttribute[])type.GetCustomAttributes( typeof ( ScriptablePropertyAttribute ), true );
 
 					// loop through each one we found and register its command
 					for ( var j = 0; j < commandAtts.Length; j++ )

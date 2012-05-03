@@ -49,7 +49,9 @@ namespace Axiom.Scripting.Compiler.AST
 		public string Name;
 
 		public VariableSetAbstractNode( AbstractNode parent )
-			: base( parent ) {}
+			: base( parent )
+		{
+		}
 
 		#region AbstractNode Implementation
 

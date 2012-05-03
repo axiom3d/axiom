@@ -39,14 +39,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
 using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;
-
 using System.Collections.Generic;
-
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -119,10 +116,10 @@ namespace Axiom.Core
 		{
 			this.creator = creator;
 
-			this.queryMask = 0xFFFFFFFF;
+			queryMask = 0xFFFFFFFF;
 
 			// default type mask to everything except lights & fx (previous behaviour)
-			this.queryTypeMask = ( 0xFFFFFFFF & (uint)~SceneQueryTypeMask.Fx ) & (uint)~SceneQueryTypeMask.Light;
+			queryTypeMask = ( 0xFFFFFFFF & (uint)~SceneQueryTypeMask.Fx ) & (uint)~SceneQueryTypeMask.Light;
 
 			// default to no world fragments queried
 			AddWorldFragmentType( WorldFragmentType.None );
@@ -258,7 +255,9 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="creator">SceneManager who created this query.</param>
 		internal RegionSceneQuery( SceneManager creator )
-			: base( creator ) {}
+			: base( creator )
+		{
+		}
 
 		#endregion Constructor
 
@@ -420,7 +419,9 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="creator">Scene manager who created this query.</param>
 		internal RaySceneQuery( SceneManager creator )
-			: base( creator ) {}
+			: base( creator )
+		{
+		}
 
 		#endregion Constructor
 
@@ -675,7 +676,9 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="creator">SceneManager who created this query.</param>
 		internal AxisAlignedBoxRegionSceneQuery( SceneManager creator )
-			: base( creator ) {}
+			: base( creator )
+		{
+		}
 
 		#endregion Constructor
 
@@ -724,7 +727,9 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="creator">SceneManager who created this query.</param>
 		internal SphereRegionSceneQuery( SceneManager creator )
-			: base( creator ) {}
+			: base( creator )
+		{
+		}
 
 		#endregion Constructor
 
@@ -773,7 +778,9 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="creator">SceneManager who created this query.</param>
 		internal PlaneBoundedVolumeListSceneQuery( SceneManager creator )
-			: base( creator ) {}
+			: base( creator )
+		{
+		}
 
 		#endregion Constructor
 
@@ -829,7 +836,9 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="creator">Scene manager who created this query.</param>
 		internal IntersectionSceneQuery( SceneManager creator )
-			: base( creator ) {}
+			: base( creator )
+		{
+		}
 
 		#endregion Constructor
 
@@ -931,7 +940,9 @@ namespace Axiom.Core
 	public class IntersectionSceneQueryResult
 	{
 		protected SceneQueryMovableObjectIntersectionList objects2Objects = new SceneQueryMovableObjectIntersectionList();
-		protected SceneQueryMovableObjectWorldFragmentIntersectionList objects2World = new SceneQueryMovableObjectWorldFragmentIntersectionList();
+
+		protected SceneQueryMovableObjectWorldFragmentIntersectionList objects2World =
+			new SceneQueryMovableObjectWorldFragmentIntersectionList();
 
 		public SceneQueryMovableObjectIntersectionList Objects2Objects
 		{

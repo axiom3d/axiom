@@ -38,9 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System.Diagnostics;
-
 using Axiom.Core;
-
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
@@ -159,9 +157,9 @@ namespace Axiom.Graphics
 			this.usage = usage;
 			this.useSystemMemory = useSystemMemory;
 			this.useShadowBuffer = useShadowBuffer;
-			this.shadowBuffer = null;
-			this.shadowUpdated = false;
-			this.suppressHardwareUpdate = false;
+			shadowBuffer = null;
+			shadowUpdated = false;
+			suppressHardwareUpdate = false;
 			ID = nextID++;
 
 			// If use shadow buffer, upgrade to WRITE_ONLY on hardware side
@@ -179,16 +177,16 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.shadowBuffer != null )
+					if ( shadowBuffer != null )
 					{
-						this.useShadowBuffer = false;
+						useShadowBuffer = false;
 
-						this.shadowBuffer.SafeDispose();
-						this.shadowBuffer = null;
+						shadowBuffer.SafeDispose();
+						shadowBuffer = null;
 					}
 				}
 			}
@@ -225,7 +223,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual BufferBase Lock( int offset, int length, BufferLocking locking )
 		{
-			Debug.Assert( !this.IsLocked, "Cannot lock this buffer because it is already locked." );
+			Debug.Assert( !IsLocked, "Cannot lock this buffer because it is already locked." );
 			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "The data area to be locked exceeds the buffer." );
 
 			BufferBase ret; // = IntPtr.Zero;
@@ -244,7 +242,7 @@ namespace Axiom.Graphics
 			else
 			{
 				// lock the real deal and flag it as locked
-				ret = this.LockImpl( offset, length, locking );
+				ret = LockImpl( offset, length, locking );
 				isLocked = true;
 			}
 
@@ -270,7 +268,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void Unlock()
 		{
-			Contract.Requires( this.IsLocked, "HardwareBuffer.Unlock", "Cannot unlock this buffer, it is not locked!" );
+			Contract.Requires( IsLocked, "HardwareBuffer.Unlock", "Cannot unlock this buffer, it is not locked!" );
 
 			// If we used the shadow buffer this time...
 			if ( useShadowBuffer && shadowBuffer.IsLocked )
@@ -283,7 +281,7 @@ namespace Axiom.Graphics
 			else
 			{
 				// unlock the real deal
-				this.UnlockImpl();
+				UnlockImpl();
 				isLocked = false;
 			}
 		}
@@ -383,14 +381,15 @@ namespace Axiom.Graphics
 #if NET_40
 		public virtual void CopyTo( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length, bool discardWholeBuffer = false )
 #else
-		public virtual void CopyTo( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length, bool discardWholeBuffer )
+		public virtual void CopyTo( HardwareBuffer srcBuffer, int srcOffset, int destOffset, int length,
+		                            bool discardWholeBuffer )
 #endif
 		{
 			// lock the source buffer
 			var srcData = srcBuffer.Lock( srcOffset, length, BufferLocking.ReadOnly );
 
 			// write the data to this buffer
-			this.WriteData( destOffset, length, srcData, discardWholeBuffer );
+			WriteData( destOffset, length, srcData, discardWholeBuffer );
 
 			// unlock the source buffer
 			srcBuffer.Unlock();
@@ -415,7 +414,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2, "Original name was CopyData" )]
 		public void CopyTo( HardwareBuffer srcBuffer )
 		{
-			int sz = System.Math.Min( this.sizeInBytes, srcBuffer.sizeInBytes );
+			int sz = System.Math.Min( sizeInBytes, srcBuffer.sizeInBytes );
 			CopyTo( srcBuffer, 0, 0, sz, true );
 		}
 
@@ -433,13 +432,13 @@ namespace Axiom.Graphics
 				// Lock with discard if the whole buffer was locked, otherwise normal
 				var locking = ( lockStart == 0 && lockSize == sizeInBytes ) ? BufferLocking.Discard : BufferLocking.Normal;
 
-				using ( var dest = this.LockImpl( lockStart, lockSize, locking ) )
+				using ( var dest = LockImpl( lockStart, lockSize, locking ) )
 				{
 					// copy the data in directly
 					Memory.Copy( src, dest, lockSize );
 
 					// unlock both buffers to commit the write
-					this.UnlockImpl();
+					UnlockImpl();
 					shadowBuffer.UnlockImpl();
 				}
 

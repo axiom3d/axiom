@@ -41,15 +41,12 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Runtime.InteropServices;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Controllers;
 using Axiom.SceneManagers.Bsp.Collections;
-
 using System.Collections.Generic;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -73,19 +70,7 @@ namespace Axiom.SceneManagers.Bsp
 
 		#region Flags Property
 
-		private uint _flags;
-
-		public uint Flags
-		{
-			get
-			{
-				return _flags;
-			}
-			set
-			{
-				_flags = value;
-			}
-		}
+		public uint Flags { get; set; }
 
 		#endregion Flags Property
 
@@ -99,7 +84,7 @@ namespace Axiom.SceneManagers.Bsp
 
 		#region Pass Property
 
-		private List<ShaderPass> _pass;
+		private readonly List<ShaderPass> _pass;
 
 		public ICollection<ShaderPass> Pass
 		{
@@ -113,95 +98,23 @@ namespace Axiom.SceneManagers.Bsp
 
 		#region Farbox Property
 
-		private bool _farBox; // Skybox
-
-		public bool Farbox
-		{
-			get
-			{
-				return _farBox;
-			}
-			set
-			{
-				_farBox = value;
-			}
-		}
+		public bool Farbox { get; set; }
 
 		#endregion Farbox Property
 
 		#region FarboxName Property
 
-		private string _farBoxName;
-
-		public string FarboxName
-		{
-			get
-			{
-				return _farBoxName;
-			}
-			set
-			{
-				_farBoxName = value;
-			}
-		}
+		public string FarboxName { get; set; }
 
 		#endregion FarboxName Property
 
-		private bool _skyDome;
+		public bool SkyDome { get; set; }
 
-		public bool SkyDome
-		{
-			get
-			{
-				return _skyDome;
-			}
-			set
-			{
-				_skyDome = value;
-			}
-		}
+		public float CloudHeight { get; set; }
 
-		private float _cloudHeight; // Skydome
+		public ShaderDeformFunc DeformFunc { get; set; }
 
-		public float CloudHeight
-		{
-			get
-			{
-				return _cloudHeight;
-			}
-			set
-			{
-				_cloudHeight = value;
-			}
-		}
-
-		private ShaderDeformFunc _deformFunc;
-
-		public ShaderDeformFunc DeformFunc
-		{
-			get
-			{
-				return _deformFunc;
-			}
-			set
-			{
-				_deformFunc = value;
-			}
-		}
-
-		private float[] _deformParams;
-
-		public float[] DeformParams
-		{
-			get
-			{
-				return _deformParams;
-			}
-			set
-			{
-				_deformParams = value;
-			}
-		}
+		public float[] DeformParams { get; set; }
 
 		private ManualCullingMode _cullingMode;
 
@@ -217,47 +130,11 @@ namespace Axiom.SceneManagers.Bsp
 			}
 		}
 
-		private bool _fog;
+		public bool Fog { get; set; }
 
-		public bool Fog
-		{
-			get
-			{
-				return _fog;
-			}
-			set
-			{
-				_fog = value;
-			}
-		}
+		public ColorEx FogColor { get; set; }
 
-		private ColorEx _fogColor;
-
-		public ColorEx FogColor
-		{
-			get
-			{
-				return _fogColor;
-			}
-			set
-			{
-				_fogColor = value;
-			}
-		}
-
-		private float _fogDistance;
-
-		public float FogDistance
-		{
-			get
-			{
-				return _fogDistance;
-			}
-			set
-			{
-				_fogDistance = value;
-			}
-		}
+		public float FogDistance { get; set; }
 
 		#endregion Fields and Properties
 
@@ -270,8 +147,8 @@ namespace Axiom.SceneManagers.Bsp
 		public Quake3Shader( ResourceManager parent, string name, ResourceHandle handle, string group )
 			: base( parent, name, handle, group )
 		{
-			_deformFunc = ShaderDeformFunc.None;
-			_deformParams = new float[ 5 ];
+			DeformFunc = ShaderDeformFunc.None;
+			DeformParams = new float[5];
 			_cullingMode = ManualCullingMode.Back;
 			_pass = new List<ShaderPass>();
 		}
@@ -314,7 +191,7 @@ namespace Axiom.SceneManagers.Bsp
 			string materialName = String.Format( "{0}#{1}", Name, lightmapNumber );
 			string groupName = ResourceGroupManager.Instance.WorldResourceGroupName;
 
-			Material material = (Material)MaterialManager.Instance.Create( materialName, groupName );
+			var material = (Material)MaterialManager.Instance.Create( materialName, groupName );
 			Pass pass = material.GetTechnique( 0 ).GetPass( 0 );
 
 			LogManager.Instance.Write( "Using Q3 shader {0}", Name );
@@ -333,7 +210,7 @@ namespace Axiom.SceneManagers.Bsp
 					// Animated texture support
 				else if ( _pass[ p ].animNumFrames > 0 )
 				{
-					float sequenceTime = _pass[ p ].animNumFrames / _pass[ p ].animFps;
+					float sequenceTime = _pass[ p ].animNumFrames/_pass[ p ].animFps;
 
 					/* Pre-load textures
 					We need to know if each one was loaded OK since extensions may change for each
@@ -461,11 +338,13 @@ namespace Axiom.SceneManagers.Bsp
 							// Turbulent scroll
 							if ( _pass[ p ].tcModScroll[ 0 ] != 0.0f )
 							{
-								t.SetTransformAnimation( TextureTransform.TranslateU, WaveformType.Sine, _pass[ p ].tcModTurb[ 0 ], _pass[ p ].tcModTurb[ 3 ], _pass[ p ].tcModTurb[ 2 ], _pass[ p ].tcModTurb[ 1 ] );
+								t.SetTransformAnimation( TextureTransform.TranslateU, WaveformType.Sine, _pass[ p ].tcModTurb[ 0 ],
+								                         _pass[ p ].tcModTurb[ 3 ], _pass[ p ].tcModTurb[ 2 ], _pass[ p ].tcModTurb[ 1 ] );
 							}
 							if ( _pass[ p ].tcModScroll[ 1 ] != 0.0f )
 							{
-								t.SetTransformAnimation( TextureTransform.TranslateV, WaveformType.Sine, _pass[ p ].tcModTurb[ 0 ], _pass[ p ].tcModTurb[ 3 ], _pass[ p ].tcModTurb[ 2 ], _pass[ p ].tcModTurb[ 1 ] );
+								t.SetTransformAnimation( TextureTransform.TranslateV, WaveformType.Sine, _pass[ p ].tcModTurb[ 0 ],
+								                         _pass[ p ].tcModTurb[ 3 ], _pass[ p ].tcModTurb[ 2 ], _pass[ p ].tcModTurb[ 1 ] );
 							}
 						}
 						else
@@ -498,8 +377,12 @@ namespace Axiom.SceneManagers.Bsp
 						}
 
 						// Create wave-based stretcher
-						t.SetTransformAnimation( TextureTransform.ScaleU, wft, _pass[ p ].tcModStretchParams[ 3 ], _pass[ p ].tcModStretchParams[ 0 ], _pass[ p ].tcModStretchParams[ 2 ], _pass[ p ].tcModStretchParams[ 1 ] );
-						t.SetTransformAnimation( TextureTransform.ScaleV, wft, _pass[ p ].tcModStretchParams[ 3 ], _pass[ p ].tcModStretchParams[ 0 ], _pass[ p ].tcModStretchParams[ 2 ], _pass[ p ].tcModStretchParams[ 1 ] );
+						t.SetTransformAnimation( TextureTransform.ScaleU, wft, _pass[ p ].tcModStretchParams[ 3 ],
+						                         _pass[ p ].tcModStretchParams[ 0 ], _pass[ p ].tcModStretchParams[ 2 ],
+						                         _pass[ p ].tcModStretchParams[ 1 ] );
+						t.SetTransformAnimation( TextureTransform.ScaleV, wft, _pass[ p ].tcModStretchParams[ 3 ],
+						                         _pass[ p ].tcModStretchParams[ 0 ], _pass[ p ].tcModStretchParams[ 2 ],
+						                         _pass[ p ].tcModStretchParams[ 1 ] );
 					}
 				}
 				// Address mode
@@ -570,21 +453,21 @@ namespace Axiom.SceneManagers.Bsp
 		// TODO - alphaFunc
 		public ShaderGen rgbGenFunc;
 		public ShaderWaveType rgbGenWave;
-		public float[] rgbGenParams = new float[ 4 ]; // base, amplitude, phase, frequency
-		public float[] tcModScale = new float[ 2 ];
+		public float[] rgbGenParams = new float[4]; // base, amplitude, phase, frequency
+		public float[] tcModScale = new float[2];
 		public float tcModRotate;
-		public float[] tcModScroll = new float[ 2 ];
-		public float[] tcModTransform = new float[ 6 ];
+		public float[] tcModScroll = new float[2];
+		public float[] tcModTransform = new float[6];
 		public bool tcModTurbOn;
-		public float[] tcModTurb = new float[ 4 ];
+		public float[] tcModTurb = new float[4];
 		public ShaderWaveType tcModStretchWave;
-		public float[] tcModStretchParams = new float[ 4 ]; // base, amplitude, phase, frequency
+		public float[] tcModStretchParams = new float[4]; // base, amplitude, phase, frequency
 		public CompareFunction alphaFunc;
 		public byte alphaVal;
 
 		public float animFps;
 		public int animNumFrames;
-		public string[] frames = new string[ 32 ];
+		public string[] frames = new string[32];
 	};
 
 	[Flags]

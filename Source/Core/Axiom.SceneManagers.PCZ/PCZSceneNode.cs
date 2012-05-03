@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -54,14 +53,10 @@ namespace Axiom.SceneManagers.PortalConnected
 		private Vector3 newPosition;
 		private PCZone homeZone;
 		private bool anchored;
-		private bool allowedToVisit;
 		private readonly Dictionary<string, PCZone> visitingZones = new Dictionary<string, PCZone>();
 		private Vector3 prevPosition;
-		private ulong lastVisibleFrame;
-		private PCZCamera lastVisibleFromCamera;
-		private Dictionary<string, ZoneData> zoneData = new Dictionary<string, ZoneData>();
-		private bool enabled;
-		private Dictionary<string, MovableObject> objectsByName = new Dictionary<string, MovableObject>();
+		private readonly Dictionary<string, ZoneData> zoneData = new Dictionary<string, ZoneData>();
+		private readonly Dictionary<string, MovableObject> objectsByName = new Dictionary<string, MovableObject>();
 
 
 		public PCZSceneNode( SceneManager creator )
@@ -69,10 +64,10 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			homeZone = null;
 			anchored = false;
-			allowedToVisit = true;
-			lastVisibleFrame = 0;
-			lastVisibleFromCamera = null;
-			enabled = true;
+			AllowToVisit = true;
+			LastVisibleFrame = 0;
+			LastVisibleFromCamera = null;
+			Enabled = true;
 		}
 
 		public PCZSceneNode( SceneManager creator, string name )
@@ -80,10 +75,10 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			homeZone = null;
 			anchored = false;
-			allowedToVisit = true;
-			lastVisibleFrame = 0;
-			lastVisibleFromCamera = null;
-			enabled = true;
+			AllowToVisit = true;
+			LastVisibleFrame = 0;
+			LastVisibleFromCamera = null;
+			Enabled = true;
 		}
 
 		~PCZSceneNode()
@@ -120,54 +115,13 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 		}
 
-		public bool AllowToVisit
-		{
-			get
-			{
-				return allowedToVisit;
-			}
-			set
-			{
-				allowedToVisit = value;
-			}
-		}
+		public bool AllowToVisit { get; set; }
 
-		public ulong LastVisibleFrame
-		{
-			get
-			{
-				return lastVisibleFrame;
-			}
-			set
-			{
-				lastVisibleFrame = value;
-			}
-		}
+		public ulong LastVisibleFrame { get; set; }
 
-		public PCZCamera LastVisibleFromCamera
-		{
-			get
-			{
-				return lastVisibleFromCamera;
-			}
-			set
-			{
-				lastVisibleFromCamera = value;
-			}
-		}
+		public PCZCamera LastVisibleFromCamera { get; set; }
 
-		public bool Enabled
-		{
-			get
-			{
-				return enabled;
-			}
-
-			set
-			{
-				enabled = value;
-			}
-		}
+		public bool Enabled { get; set; }
 
 		#endregion Propertys
 
@@ -178,13 +132,14 @@ namespace Axiom.SceneManagers.PortalConnected
 			base.Update( updateChildren, parentHasChanged );
 
 			prevPosition = newPosition;
-			newPosition = DerivedPosition; // do this way since _update is called through SceneManager::_updateSceneGraph which comes before PCZSceneManager::_updatePCZSceneNodes
+			newPosition = DerivedPosition;
+				// do this way since _update is called through SceneManager::_updateSceneGraph which comes before PCZSceneManager::_updatePCZSceneNodes
 		}
 
 		//-----------------------------------------------------------------------
 		public override SceneNode CreateChildSceneNode( Vector3 translate, Quaternion rotate )
 		{
-			PCZSceneNode childSceneNode = (PCZSceneNode)( this.CreateChild( translate, rotate ) );
+			var childSceneNode = (PCZSceneNode)( CreateChild( translate, rotate ) );
 			if ( anchored )
 			{
 				childSceneNode.AnchorToHomeZone( homeZone );
@@ -196,7 +151,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		//-----------------------------------------------------------------------
 		public override SceneNode CreateChildSceneNode( string name, Vector3 translate, Quaternion rotate )
 		{
-			PCZSceneNode childSceneNode = (PCZSceneNode)( this.CreateChild( name, translate, rotate ) );
+			var childSceneNode = (PCZSceneNode)( CreateChild( name, translate, rotate ) );
 			if ( anchored )
 			{
 				childSceneNode.AnchorToHomeZone( homeZone );
@@ -313,9 +268,10 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		/** Adds the attached objects of this PCZSceneNode into the queue. */
 
-		public void AddToRenderQueue( Camera cam, RenderQueue queue, bool onlyShadowCasters, VisibleObjectsBoundsInfo visibleBounds )
+		public void AddToRenderQueue( Camera cam, RenderQueue queue, bool onlyShadowCasters,
+		                              VisibleObjectsBoundsInfo visibleBounds )
 		{
-			foreach ( KeyValuePair<string, MovableObject> pair in objectsByName )
+			foreach ( var pair in objectsByName )
 			{
 				pair.Value.NotifyCurrentCamera( cam );
 
@@ -344,7 +300,8 @@ namespace Axiom.SceneManagers.PortalConnected
 			// first make sure that the data doesn't already exist
 			if ( this.zoneData.ContainsKey( zone.Name ) )
 			{
-				throw new AxiomException( "A ZoneData associated with zone " + zone.Name + " already exists. PCZSceneNode::setZoneData" );
+				throw new AxiomException( "A ZoneData associated with zone " + zone.Name +
+				                          " already exists. PCZSceneNode::setZoneData" );
 			}
 
 			//mZoneData[zone->getName()] = zoneData;
@@ -374,7 +331,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 
 			// update zone data for any zones visited
-			foreach ( KeyValuePair<string, PCZone> pair in visitingZones )
+			foreach ( var pair in visitingZones )
 			{
 				zone = pair.Value;
 

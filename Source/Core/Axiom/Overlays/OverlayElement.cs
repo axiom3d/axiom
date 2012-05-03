@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -120,7 +119,7 @@ namespace Axiom.Overlays
 		protected int zOrder;
 
 		// world transforms
-		protected Matrix4[] xform = new Matrix4[ 1 ]
+		protected Matrix4[] xform = new Matrix4[1]
 		                            {
 		                            	Matrix4.Identity
 		                            };
@@ -200,7 +199,7 @@ namespace Axiom.Overlays
 
 		public virtual OverlayElement Clone( string instanceName )
 		{
-			var newElement = OverlayElementManager.Instance.CreateElement( this.GetType().Name, instanceName + "/" + name );
+			var newElement = OverlayElementManager.Instance.CreateElement( GetType().Name, instanceName + "/" + name );
 			CopyParametersTo( newElement );
 
 			return newElement;
@@ -229,7 +228,7 @@ namespace Axiom.Overlays
 			this.parent = parent;
 			this.overlay = overlay;
 
-			if ( overlay != null && overlay.IsInitialized && !this.isInitialized )
+			if ( overlay != null && overlay.IsInitialized && !isInitialized )
 			{
 				Initialize();
 			}
@@ -286,8 +285,8 @@ namespace Axiom.Overlays
 					vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 					vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-					pixelScaleX = 1.0f / vpWidth;
-					pixelScaleY = 1.0f / vpHeight;
+					pixelScaleX = 1.0f/vpWidth;
+					pixelScaleY = 1.0f/vpHeight;
 				}
 					break;
 
@@ -301,8 +300,8 @@ namespace Axiom.Overlays
 					vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 					vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-					pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
-					pixelScaleY = 1.0f / 10000.0f;
+					pixelScaleX = 1.0f/( 10000.0f*( vpWidth/vpHeight ) );
+					pixelScaleY = 1.0f/10000.0f;
 				}
 					break;
 
@@ -316,10 +315,10 @@ namespace Axiom.Overlays
 					break;
 			}
 
-			left = pixelLeft * pixelScaleX;
-			top = pixelTop * pixelScaleY;
-			width = pixelWidth * pixelScaleX;
-			height = pixelHeight * pixelScaleY;
+			left = pixelLeft*pixelScaleX;
+			top = pixelTop*pixelScaleY;
+			width = pixelWidth*pixelScaleX;
+			height = pixelHeight*pixelScaleY;
 
 			isGeomPositionsOutOfDate = true;
 		}
@@ -362,7 +361,7 @@ namespace Axiom.Overlays
 		/// <param name="val"></param>
 		public bool SetParam( string param, string val )
 		{
-			this.Properties[ param ] = val;
+			Properties[ param ] = val;
 			return true;
 		}
 
@@ -402,7 +401,7 @@ namespace Axiom.Overlays
 		public virtual void Update()
 		{
 			// Check size if pixel-based
-			switch ( this.metricsMode )
+			switch ( metricsMode )
 			{
 				case MetricsMode.Pixels:
 					if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
@@ -415,13 +414,13 @@ namespace Axiom.Overlays
 						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f / vpWidth;
-						pixelScaleY = 1.0f / vpHeight;
+						pixelScaleX = 1.0f/vpWidth;
+						pixelScaleY = 1.0f/vpHeight;
 
-						left = pixelLeft * pixelScaleX;
-						top = pixelTop * pixelScaleY;
-						width = pixelWidth * pixelScaleX;
-						height = pixelHeight * pixelScaleY;
+						left = pixelLeft*pixelScaleX;
+						top = pixelTop*pixelScaleY;
+						width = pixelWidth*pixelScaleX;
+						height = pixelHeight*pixelScaleY;
 					}
 					break;
 
@@ -436,13 +435,13 @@ namespace Axiom.Overlays
 						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
-						pixelScaleY = 1.0f / 10000.0f;
+						pixelScaleX = 1.0f/( 10000.0f*( vpWidth/vpHeight ) );
+						pixelScaleY = 1.0f/10000.0f;
 
-						left = pixelLeft * pixelScaleX;
-						top = pixelTop * pixelScaleY;
-						width = pixelWidth * pixelScaleX;
-						height = pixelHeight * pixelScaleY;
+						left = pixelLeft*pixelScaleX;
+						top = pixelTop*pixelScaleY;
+						width = pixelWidth*pixelScaleX;
+						height = pixelHeight*pixelScaleY;
 					}
 					break;
 				default:
@@ -453,13 +452,13 @@ namespace Axiom.Overlays
 			UpdateFromParent();
 
 			// update our own position geometry
-			if ( isGeomPositionsOutOfDate && this.isInitialized )
+			if ( isGeomPositionsOutOfDate && isInitialized )
 			{
 				UpdatePositionGeometry();
 				isGeomPositionsOutOfDate = false;
 			}
 			// Tell self to update own texture geometry
-			if ( isGeomUVsOutOfDate && this.isInitialized )
+			if ( isGeomUVsOutOfDate && isInitialized )
 			{
 				UpdateTextureGeometry();
 				isGeomUVsOutOfDate = false;
@@ -529,8 +528,8 @@ namespace Axiom.Overlays
 
 				// Calculate offsets required for mapping texel origins to pixel origins in the
 				// current rendersystem
-				float hOffset = rSys.HorizontalTexelOffset / oMgr.ViewportWidth;
-				float vOffset = rSys.VerticalTexelOffset / oMgr.ViewportHeight;
+				float hOffset = rSys.HorizontalTexelOffset/oMgr.ViewportWidth;
+				float vOffset = rSys.VerticalTexelOffset/oMgr.ViewportHeight;
 
 				parentLeft = 0.0f + hOffset;
 				parentTop = 0.0f + vOffset;
@@ -545,7 +544,7 @@ namespace Axiom.Overlays
 			switch ( horzAlign )
 			{
 				case HorizontalAlignment.Center:
-					derivedLeft = ( ( parentLeft + parentRight ) * 0.5f ) + left;
+					derivedLeft = ( ( parentLeft + parentRight )*0.5f ) + left;
 					break;
 
 				case HorizontalAlignment.Left:
@@ -560,7 +559,7 @@ namespace Axiom.Overlays
 			switch ( vertAlign )
 			{
 				case VerticalAlignment.Center:
-					derivedTop = ( ( parentTop + parentBottom ) * 0.5f ) + top;
+					derivedTop = ( ( parentTop + parentBottom )*0.5f ) + top;
 					break;
 
 				case VerticalAlignment.Top:
@@ -579,13 +578,15 @@ namespace Axiom.Overlays
 
 				parentRect = parent.ClippingRegion;
 
-				var childRect = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)( derivedLeft + width ), (long)( derivedTop + height ) );
+				var childRect = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)( derivedLeft + width ),
+				                               (long)( derivedTop + height ) );
 
-				this.clippingRegion = Rectangle.Intersect( parentRect, childRect );
+				clippingRegion = Rectangle.Intersect( parentRect, childRect );
 			}
 			else
 			{
-				clippingRegion = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)( derivedLeft + width ), (long)( derivedTop + height ) );
+				clippingRegion = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)( derivedLeft + width ),
+				                                (long)( derivedTop + height ) );
 			}
 		}
 
@@ -597,7 +598,7 @@ namespace Axiom.Overlays
 		public void ScreenLeft( float left )
 		{
 			this.left = left;
-			pixelLeft = left / pixelScaleX;
+			pixelLeft = left/pixelScaleX;
 
 			isDerivedOutOfDate = true;
 			PositionsOutOfDate();
@@ -611,7 +612,7 @@ namespace Axiom.Overlays
 		public void ScreenTop( float top )
 		{
 			this.top = top;
-			pixelTop = top / pixelScaleY;
+			pixelTop = top/pixelScaleY;
 
 			isDerivedOutOfDate = true;
 			PositionsOutOfDate();
@@ -625,7 +626,7 @@ namespace Axiom.Overlays
 		public void ScreenWidth( float width )
 		{
 			this.width = width;
-			pixelWidth = width / pixelScaleX;
+			pixelWidth = width/pixelScaleX;
 
 			isDerivedOutOfDate = true;
 			PositionsOutOfDate();
@@ -639,7 +640,7 @@ namespace Axiom.Overlays
 		public void ScreenHeight( float height )
 		{
 			this.height = height;
-			pixelHeight = height / pixelScaleY;
+			pixelHeight = height/pixelScaleY;
 
 			isDerivedOutOfDate = true;
 			PositionsOutOfDate();
@@ -655,8 +656,8 @@ namespace Axiom.Overlays
 		{
 			this.left = left;
 			this.top = top;
-			pixelLeft = left / pixelScaleX;
-			pixelTop = top / pixelScaleY;
+			pixelLeft = left/pixelScaleX;
+			pixelTop = top/pixelScaleY;
 
 			isDerivedOutOfDate = true;
 			PositionsOutOfDate();
@@ -672,8 +673,8 @@ namespace Axiom.Overlays
 		{
 			this.width = width;
 			this.height = height;
-			pixelWidth = width / pixelScaleX;
-			pixelHeight = height / pixelScaleY;
+			pixelWidth = width/pixelScaleX;
+			pixelHeight = height/pixelScaleY;
 
 			isDerivedOutOfDate = true;
 			PositionsOutOfDate();
@@ -721,7 +722,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return this.sourceTemplate;
+				return sourceTemplate;
 			}
 		}
 
@@ -814,7 +815,7 @@ namespace Axiom.Overlays
 				{
 					height = value;
 				}
-				this.isDerivedOutOfDate = true;
+				isDerivedOutOfDate = true;
 				PositionsOutOfDate();
 			}
 		}
@@ -987,8 +988,8 @@ namespace Axiom.Overlays
 						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f / vpWidth;
-						pixelScaleY = 1.0f / vpHeight;
+						pixelScaleX = 1.0f/vpWidth;
+						pixelScaleY = 1.0f/vpHeight;
 
 						if ( metricsMode == MetricsMode.Relative )
 						{
@@ -1011,8 +1012,8 @@ namespace Axiom.Overlays
 						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f / ( 10000.0f * ( vpWidth / vpHeight ) );
-						pixelScaleY = 1.0f / 10000.0f;
+						pixelScaleX = 1.0f/( 10000.0f*( vpWidth/vpHeight ) );
+						pixelScaleY = 1.0f/10000.0f;
 
 						if ( metricsMode == MetricsMode.Relative )
 						{
@@ -1034,10 +1035,10 @@ namespace Axiom.Overlays
 						break;
 				}
 
-				left = pixelLeft * pixelScaleX;
-				top = pixelTop * pixelScaleY;
-				width = pixelWidth * pixelScaleX;
-				height = pixelHeight * pixelScaleY;
+				left = pixelLeft*pixelScaleX;
+				top = pixelTop*pixelScaleY;
+				width = pixelWidth*pixelScaleX;
+				height = pixelHeight*pixelScaleY;
 
 				metricsMode = value;
 				isDerivedOutOfDate = true;
@@ -1194,7 +1195,7 @@ namespace Axiom.Overlays
 				{
 					width = value;
 				}
-				this.isDerivedOutOfDate = true;
+				isDerivedOutOfDate = true;
 				PositionsOutOfDate();
 			}
 		}
@@ -1331,7 +1332,7 @@ namespace Axiom.Overlays
 		/// <returns></returns>
 		public Real GetSquaredViewDepth( Camera camera )
 		{
-			return 10000 - this.ZOrder;
+			return 10000 - ZOrder;
 		}
 
 		/// <summary>
@@ -1450,7 +1451,9 @@ namespace Axiom.Overlays
 
 		#region ScriptableObject Interface Command Classes
 
-		[ScriptableProperty( "metrics_mode", "The type of metrics to use, either 'relative' to the screen, 'pixels' or 'relative_aspect_adjusted'.", typeof ( OverlayElement ) )]
+		[ScriptableProperty( "metrics_mode",
+			"The type of metrics to use, either 'relative' to the screen, 'pixels' or 'relative_aspect_adjusted'.",
+			typeof ( OverlayElement ) )]
 		public class MetricsModeAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -1490,7 +1493,8 @@ namespace Axiom.Overlays
 			#endregion Implementation of IPropertyCommand<object,string>
 		}
 
-		[ScriptableProperty( "horz_align", "The horizontal alignment, 'left', 'right' or 'center'.", typeof ( OverlayElement ) )]
+		[ScriptableProperty( "horz_align", "The horizontal alignment, 'left', 'right' or 'center'.", typeof ( OverlayElement )
+			)]
 		public class HorizontalAlignmentAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -1523,14 +1527,16 @@ namespace Axiom.Overlays
 				var element = target as OverlayElement;
 				if ( element != null )
 				{
-					element.HorizontalAlignment = (HorizontalAlignment)ScriptEnumAttribute.Lookup( val, typeof ( HorizontalAlignment ) );
+					element.HorizontalAlignment =
+						(HorizontalAlignment)ScriptEnumAttribute.Lookup( val, typeof ( HorizontalAlignment ) );
 				}
 			}
 
 			#endregion Implementation of IPropertyCommand<object,string>
 		}
 
-		[ScriptableProperty( "vert_align", "The vertical alignment, 'top', 'bottom' or 'center'.", typeof ( OverlayElement ) )]
+		[ScriptableProperty( "vert_align", "The vertical alignment, 'top', 'bottom' or 'center'.", typeof ( OverlayElement ) )
+		]
 		public class VerticalAlignmentAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
@@ -1730,7 +1736,8 @@ namespace Axiom.Overlays
 			#endregion Implementation of IPropertyCommand<object,string>
 		}
 
-		[ScriptableProperty( "visible", "Initial visibility of element, either 'true' or 'false' (default true).", typeof ( OverlayElement ) )]
+		[ScriptableProperty( "visible", "Initial visibility of element, either 'true' or 'false' (default true).",
+			typeof ( OverlayElement ) )]
 		public class VisibleAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>

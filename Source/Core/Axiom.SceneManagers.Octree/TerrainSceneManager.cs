@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 	//using System.Data;
 using System.Xml.Serialization;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -61,7 +60,7 @@ namespace Axiom.SceneManagers.Octree
 	{
 		#region Fields
 
-		protected TerrainRenderable[ , ] tiles;
+		protected TerrainRenderable[,] tiles;
 		protected int tileSize;
 		protected int numTiles;
 		protected Vector3 scale;
@@ -81,7 +80,9 @@ namespace Axiom.SceneManagers.Octree
 		#endregion Fields
 
 		public TerrainSceneManager( string name )
-			: base( name ) {}
+			: base( name )
+		{
+		}
 
 		#region SceneManager members
 
@@ -104,16 +105,17 @@ namespace Axiom.SceneManagers.Octree
 
 		public override void LoadWorldGeometry( string fileName )
 		{
-			XmlSerializer serializer = new XmlSerializer( typeof ( TerrainOptions ) );
+			var serializer = new XmlSerializer( typeof ( TerrainOptions ) );
 			options = (TerrainOptions)serializer.Deserialize( ResourceGroupManager.Instance.OpenResource( fileName ) );
 
 			scale = new Vector3( options.scalex, options.scaley, options.scalez );
 			tileSize = options.size;
 			// load the heightmap
 			{
-				Image image = Image.FromStream( ResourceGroupManager.Instance.OpenResource( options.Terrain ), options.Terrain.Split( '.' )[ 1 ] );
+				Image image = Image.FromStream( ResourceGroupManager.Instance.OpenResource( options.Terrain ),
+				                                options.Terrain.Split( '.' )[ 1 ] );
 				worldSize = options.worldSize = image.Width;
-				Real[] dest = new Real[ (int)worldSize * (int)worldSize ];
+				var dest = new Real[(int)worldSize*(int)worldSize];
 				byte[] src = image.Data;
 				Real invScale;
 
@@ -126,8 +128,8 @@ namespace Axiom.SceneManagers.Octree
 				ulong rowSize;
 				if ( is16bit )
 				{
-					invScale = 1.0f / 65535.0f;
-					rowSize = (ulong)worldSize * 2;
+					invScale = 1.0f/65535.0f;
+					rowSize = (ulong)worldSize*2;
 				}
 				else
 				{
@@ -150,7 +152,7 @@ namespace Axiom.SceneManagers.Octree
 							ushort val = src[ srcIndex++ ];
 							val += (ushort)( src[ srcIndex++ ] << 8 );
 #endif
-							dest[ dstIndex++ ] = new Real( val ) * invScale;
+							dest[ dstIndex++ ] = new Real( val )*invScale;
 						}
 						else
 						{
@@ -166,13 +168,17 @@ namespace Axiom.SceneManagers.Octree
 				options.data = dest;
 			}
 
-			float maxx = options.scalex * options.worldSize;
-			float maxy = 255 * options.scaley;
-			float maxz = options.scalez * options.worldSize;
+			float maxx = options.scalex*options.worldSize;
+			float maxy = 255*options.scaley;
+			float maxz = options.scalez*options.worldSize;
 
 			Resize( new AxisAlignedBox( Vector3.Zero, new Vector3( maxx, maxy, maxz ) ) );
 
-			terrainMaterial = (Material)( MaterialManager.Instance.CreateOrRetrieve( !String.IsNullOrEmpty( options.MaterialName ) ? options.MaterialName : "Terrain", ResourceGroupManager.Instance.WorldResourceGroupName ).First );
+			terrainMaterial =
+				(Material)
+				( MaterialManager.Instance.CreateOrRetrieve(
+					!String.IsNullOrEmpty( options.MaterialName ) ? options.MaterialName : "Terrain",
+					ResourceGroupManager.Instance.WorldResourceGroupName ).First );
 
 			if ( options.WorldTexture != "" )
 			{
@@ -189,9 +195,9 @@ namespace Axiom.SceneManagers.Octree
 
 			terrainRoot = (SceneNode)RootSceneNode.CreateChild( "TerrainRoot" );
 
-			numTiles = ( options.worldSize - 1 ) / ( options.size - 1 );
+			numTiles = ( options.worldSize - 1 )/( options.size - 1 );
 
-			tiles = new TerrainRenderable[ numTiles,numTiles ];
+			tiles = new TerrainRenderable[numTiles,numTiles];
 
 			int p = 0, q = 0;
 
@@ -206,11 +212,11 @@ namespace Axiom.SceneManagers.Octree
 
 					string name = string.Format( "Tile[{0},{1}]", p, q );
 
-					SceneNode node = (SceneNode)terrainRoot.CreateChild( name );
-					TerrainRenderable tile = new TerrainRenderable();
+					var node = (SceneNode)terrainRoot.CreateChild( name );
+					var tile = new TerrainRenderable();
 					tile.Name = name;
 
-					tile.RenderQueueGroup = this.WorldGeometryRenderQueueId;
+					tile.RenderQueueGroup = WorldGeometryRenderQueueId;
 
 					tile.SetMaterial( terrainMaterial );
 					tile.Init( options );
@@ -302,7 +308,7 @@ namespace Axiom.SceneManagers.Octree
 		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
 		public virtual RaySceneQuery CreateRayQuery()
 		{
-			return this.CreateRayQuery( new Ray(), 0xffffffff );
+			return CreateRayQuery( new Ray(), 0xffffffff );
 		}
 
 		/// <summary>
@@ -312,7 +318,7 @@ namespace Axiom.SceneManagers.Octree
 		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
 		public virtual RaySceneQuery CreateRayQuery( Ray ray )
 		{
-			return this.CreateRayQuery( ray, 0xffffffff );
+			return CreateRayQuery( ray, 0xffffffff );
 		}
 
 		/// <summary>
@@ -322,7 +328,7 @@ namespace Axiom.SceneManagers.Octree
 		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
 		public override RaySceneQuery CreateRayQuery( Ray ray, uint mask )
 		{
-			TerrainRaySceneQuery query = new TerrainRaySceneQuery( this );
+			var query = new TerrainRaySceneQuery( this );
 			query.Ray = ray;
 			query.QueryMask = mask;
 			return query;
@@ -369,11 +375,11 @@ namespace Axiom.SceneManagers.Octree
 			int xdim = tiles.GetLength( 0 );
 			int zdim = tiles.GetLength( 1 );
 
-			float maxx = scalex * worldsize;
-			int xCoordIndex = (int)( ( point.x * ( xdim / maxx ) ) );
+			float maxx = scalex*worldsize;
+			var xCoordIndex = (int)( ( point.x*( xdim/maxx ) ) );
 
-			float maxz = scalez * worldsize;
-			int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
+			float maxz = scalez*worldsize;
+			var zCoordIndex = (int)( ( point.z*zdim/maxx ) );
 
 			if ( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
 			{
@@ -401,11 +407,11 @@ namespace Axiom.SceneManagers.Octree
 			int xdim = tiles.GetLength( 0 );
 			int zdim = tiles.GetLength( 1 );
 
-			float maxx = scalex * worldsize;
-			int xCoordIndex = (int)( ( point.x * ( xdim / maxx ) ) );
+			float maxx = scalex*worldsize;
+			var xCoordIndex = (int)( ( point.x*( xdim/maxx ) ) );
 
-			float maxz = scalez * worldsize;
-			int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
+			float maxz = scalez*worldsize;
+			var zCoordIndex = (int)( ( point.z*zdim/maxx ) );
 
 			if ( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
 			{
@@ -425,7 +431,9 @@ namespace Axiom.SceneManagers.Octree
 	/// </summary>
 	internal class TerrainSceneManagerFactory : SceneManagerFactory
 	{
-		public TerrainSceneManagerFactory() {}
+		public TerrainSceneManagerFactory()
+		{
+		}
 
 		#region Methods
 
@@ -434,7 +442,8 @@ namespace Axiom.SceneManagers.Octree
 			metaData.sceneTypeMask = SceneType.ExteriorClose;
 			metaData.typeName = "TerrainSceneManager";
 			metaData.worldGeometrySupported = true;
-			metaData.description = "Scene manager which generally organises the scene on " + "the basis of an octree, but also supports terrain world geometry. ";
+			metaData.description = "Scene manager which generally organises the scene on " +
+			                       "the basis of an octree, but also supports terrain world geometry. ";
 		}
 
 		public override SceneManager CreateInstance( string name )

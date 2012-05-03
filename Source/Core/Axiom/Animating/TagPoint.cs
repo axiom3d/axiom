@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Math;
 using Axiom.Core;
 using Axiom.Collections;
@@ -222,7 +221,7 @@ namespace Axiom.Animating
 					var parentQ = entityParentNode.DerivedOrientation;
 					if ( InheritParentEntityOrientation )
 					{
-						derivedOrientation = parentQ * derivedOrientation;
+						derivedOrientation = parentQ*derivedOrientation;
 					}
 
 					// Incorporate parent entity scale
@@ -233,7 +232,7 @@ namespace Axiom.Animating
 					}
 
 					// Change position vector based on parent's orientation
-					derivedPosition = parentQ * ( parentScale * derivedPosition );
+					derivedPosition = parentQ*( parentScale*derivedPosition );
 
 					// Add altered position vector to parents
 					derivedPosition += entityParentNode.DerivedPosition;

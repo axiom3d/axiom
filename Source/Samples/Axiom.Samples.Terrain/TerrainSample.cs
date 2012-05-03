@@ -34,7 +34,6 @@
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Components.Paging;
 using Axiom.Components.Terrain;
 using Axiom.Core;
@@ -137,18 +136,21 @@ namespace Axiom.Samples.Terrain
 			Metadata[ "Description" ] = "Demonstrates use of the terrain rendering plugin.";
 			Metadata[ "Thumbnail" ] = "thumb_terrain.png";
 			Metadata[ "Category" ] = "Environment";
-			Metadata[ "Help" ] = "Left click and drag anywhere in the scene to look around. Let go again to show " + "cursor and access widgets. Use WASD keys to move. Use +/- keys when in edit mode to change content.";
+			Metadata[ "Help" ] = "Left click and drag anywhere in the scene to look around. Let go again to show " +
+			                     "cursor and access widgets. Use WASD keys to move. Use +/- keys when in edit mode to change content.";
 
 			// Update terrain at max 20fps
-			heightUpdateRate = 1.0f / 2.0f;
+			heightUpdateRate = 1.0f/2.0f;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public override void TestCapabilities( RenderSystemCapabilities capabilities )
 		{
-			if ( !capabilities.HasCapability( Capabilities.VertexPrograms ) || !capabilities.HasCapability( Capabilities.FragmentPrograms ) )
+			if ( !capabilities.HasCapability( Capabilities.VertexPrograms ) ||
+			     !capabilities.HasCapability( Capabilities.FragmentPrograms ) )
 			{
-				throw new AxiomException( "Your graphics card does not support vertex or fragment shaders, so you cannot run this sample. Sorry!" );
+				throw new AxiomException(
+					"Your graphics card does not support vertex or fragment shaders, so you cannot run this sample. Sorry!" );
 			}
 		}
 
@@ -158,7 +160,8 @@ namespace Axiom.Samples.Terrain
 			terrain.GetTerrainPosition( centrepos, ref tsPos );
 
 #if !( WINDOWS_PHONE || XBOX || XBOX360 || ANDROID || IOS )
-			if ( Keyboard.IsKeyDown( SIS.KeyCode.Key_EQUALS ) || Keyboard.IsKeyDown( SIS.KeyCode.Key_ADD ) || Keyboard.IsKeyDown( SIS.KeyCode.Key_MINUS ) || Keyboard.IsKeyDown( SIS.KeyCode.Key_SUBTRACT ) )
+			if ( Keyboard.IsKeyDown( SIS.KeyCode.Key_EQUALS ) || Keyboard.IsKeyDown( SIS.KeyCode.Key_ADD ) ||
+			     Keyboard.IsKeyDown( SIS.KeyCode.Key_MINUS ) || Keyboard.IsKeyDown( SIS.KeyCode.Key_SUBTRACT ) )
 			{
 				switch ( mode )
 				{
@@ -166,10 +169,10 @@ namespace Axiom.Samples.Terrain
 					{
 						// we need point coords
 						Real terrainSize = ( terrain.Size - 1 );
-						var startx = (long)( ( tsPos.x - brushSizeTerrainSpace ) * terrainSize );
-						var starty = (long)( ( tsPos.y - brushSizeTerrainSpace ) * terrainSize );
-						var endx = (long)( ( tsPos.x + brushSizeTerrainSpace ) * terrainSize );
-						var endy = (long)( ( tsPos.y + brushSizeTerrainSpace ) * terrainSize );
+						var startx = (long)( ( tsPos.x - brushSizeTerrainSpace )*terrainSize );
+						var starty = (long)( ( tsPos.y - brushSizeTerrainSpace )*terrainSize );
+						var endx = (long)( ( tsPos.x + brushSizeTerrainSpace )*terrainSize );
+						var endy = (long)( ( tsPos.y + brushSizeTerrainSpace )*terrainSize );
 						startx = Utility.Max( startx, 0L );
 						starty = Utility.Max( starty, 0L );
 						endx = Utility.Min( endx, (long)terrainSize );
@@ -178,13 +181,14 @@ namespace Axiom.Samples.Terrain
 						{
 							for ( long x = startx; x <= endx; ++x )
 							{
-								Real tsXdist = ( x / terrainSize ) - tsPos.x;
-								Real tsYdist = ( y / terrainSize ) - tsPos.y;
+								Real tsXdist = ( x/terrainSize ) - tsPos.x;
+								Real tsYdist = ( y/terrainSize ) - tsPos.y;
 
-								Real weight = Utility.Min( (Real)1.0, Utility.Sqrt( tsYdist * tsYdist + tsXdist * tsXdist ) / (Real)( 0.5 * brushSizeTerrainSpace ) );
-								weight = 1.0 - ( weight * weight );
+								Real weight = Utility.Min( (Real)1.0,
+								                           Utility.Sqrt( tsYdist*tsYdist + tsXdist*tsXdist )/(Real)( 0.5*brushSizeTerrainSpace ) );
+								weight = 1.0 - ( weight*weight );
 
-								var addedHeight = weight * 250.0 * timeElapsed;
+								var addedHeight = weight*250.0*timeElapsed;
 								float newheight;
 								if ( Keyboard.IsKeyDown( SIS.KeyCode.Key_EQUALS ) || Keyboard.IsKeyDown( SIS.KeyCode.Key_ADD ) )
 								{
@@ -209,10 +213,10 @@ namespace Axiom.Samples.Terrain
 						var layer = terrain.GetLayerBlendMap( layerEdit );
 						// we need image coords
 						Real imgSize = terrain.LayerBlendMapSize;
-						var startx = (long)( ( tsPos.x - brushSizeTerrainSpace ) * imgSize );
-						var starty = (long)( ( tsPos.y - brushSizeTerrainSpace ) * imgSize );
-						var endx = (long)( ( tsPos.x + brushSizeTerrainSpace ) * imgSize );
-						var endy = (long)( ( tsPos.y + brushSizeTerrainSpace ) * imgSize );
+						var startx = (long)( ( tsPos.x - brushSizeTerrainSpace )*imgSize );
+						var starty = (long)( ( tsPos.y - brushSizeTerrainSpace )*imgSize );
+						var endx = (long)( ( tsPos.x + brushSizeTerrainSpace )*imgSize );
+						var endy = (long)( ( tsPos.y + brushSizeTerrainSpace )*imgSize );
 						startx = Utility.Max( startx, 0L );
 						starty = Utility.Max( starty, 0L );
 						endx = Utility.Min( endx, (long)imgSize );
@@ -221,13 +225,14 @@ namespace Axiom.Samples.Terrain
 						{
 							for ( var x = (int)startx; x <= endx; ++x )
 							{
-								Real tsXdist = ( x / imgSize ) - tsPos.x;
-								Real tsYdist = ( y / imgSize ) - tsPos.y;
+								Real tsXdist = ( x/imgSize ) - tsPos.x;
+								Real tsYdist = ( y/imgSize ) - tsPos.y;
 
-								Real weight = Utility.Min( (Real)1.0, Utility.Sqrt( tsYdist * tsYdist + tsXdist * tsXdist ) / (Real)( 0.5 * brushSizeTerrainSpace ) );
-								weight = 1.0 - ( weight * weight );
+								Real weight = Utility.Min( (Real)1.0,
+								                           Utility.Sqrt( tsYdist*tsYdist + tsXdist*tsXdist )/(Real)( 0.5*brushSizeTerrainSpace ) );
+								weight = 1.0 - ( weight*weight );
 
-								float paint = weight * timeElapsed;
+								float paint = weight*timeElapsed;
 								var imgY = (int)( imgSize - y );
 								float val;
 								if ( Keyboard.IsKeyDown( SIS.KeyCode.Key_EQUALS ) || Keyboard.IsKeyDown( SIS.KeyCode.Key_ADD ) )
@@ -274,7 +279,7 @@ namespace Axiom.Samples.Terrain
 
 					// figure out which terrains this affects
 					List<Axiom.Components.Terrain.Terrain> terrainList;
-					var brushSizeWorldSpace = TerrainWorldSize * brushSizeTerrainSpace;
+					var brushSizeWorldSpace = TerrainWorldSize*brushSizeTerrainSpace;
 					var sphere = new Sphere( rayResult.Position, brushSizeWorldSpace );
 					terrainGroup.SphereIntersects( sphere, out terrainList );
 
@@ -293,7 +298,7 @@ namespace Axiom.Samples.Terrain
 			{
 				// clamp to terrain
 				var camPos = Camera.Position;
-				Ray ray = new Ray( new Vector3( camPos.x, terrainPos.y + 10000, camPos.z ), Vector3.NegativeUnitY );
+				var ray = new Ray( new Vector3( camPos.x, terrainPos.y + 10000, camPos.z ), Vector3.NegativeUnitY );
 
 				TerrainGroup.RayResult rayResult = terrainGroup.RayIntersects( ray );
 				Real distanceAboveTerrain = 50;
@@ -303,9 +308,9 @@ namespace Axiom.Samples.Terrain
 				{
 					if ( camPos.y > rayResult.Position.y + distanceAboveTerrain )
 					{
-						fallVelocity += evt.TimeSinceLastFrame * 20;
+						fallVelocity += evt.TimeSinceLastFrame*20;
 						fallVelocity = Utility.Min( fallVelocity, fallSpeed );
-						newy = camPos.y - fallVelocity * evt.TimeSinceLastFrame;
+						newy = camPos.y - fallVelocity*evt.TimeSinceLastFrame;
 					}
 					newy = Utility.Max( rayResult.Position.y + distanceAboveTerrain, newy );
 					Camera.Position = new Vector3( camPos.x, newy, camPos.z );
@@ -446,7 +451,7 @@ namespace Axiom.Samples.Terrain
 				}
 				else
 				{
-					var img = _getTerrainImage( x % 2 != 0, y % 2 != 0 );
+					var img = _getTerrainImage( x%2 != 0, y%2 != 0 );
 					terrainGroup.DefineTerrain( x, y, img );
 					terrainsImported = true;
 				}
@@ -498,10 +503,10 @@ namespace Axiom.Samples.Terrain
 					Real ty = 0;
 					blendMap0.ConvertImageToTerrainSpace( x, y, ref tx, ref ty );
 					Real height = terrain.GetHeightAtTerrainPosition( tx, ty );
-					Real val = ( height - minHeight0 ) / fadeDist0;
+					Real val = ( height - minHeight0 )/fadeDist0;
 					val = Utility.Clamp( val, 0, 1 );
 
-					val = ( height - minHeight1 ) / fadeDist1;
+					val = ( height - minHeight1 )/fadeDist1;
 					val = Utility.Clamp( val, 0, 1 );
 					pBlend1[ blendIdx++ ] = val;
 				}
@@ -534,7 +539,7 @@ namespace Axiom.Samples.Terrain
 
 			// textures
 			defaultImp.LayerList = new List<LayerInstance>();
-			LayerInstance inst = new LayerInstance();
+			var inst = new LayerInstance();
 			inst.WorldSize = 100;
 			inst.TextureNames = new List<string>();
 			inst.TextureNames.Add( "dirt_grayrocky_diffusespecular.dds" );

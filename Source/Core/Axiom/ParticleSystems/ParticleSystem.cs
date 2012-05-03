@@ -41,15 +41,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Controllers;
 using Axiom.Graphics;
-
 using System.Reflection;
-
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -235,7 +232,7 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///     List of available attibute parsers for script attributes.
 		/// </summary>
-		private Dictionary<int, MethodInfo> attribParsers = new Dictionary<int, MethodInfo>();
+		private readonly Dictionary<int, MethodInfo> attribParsers = new Dictionary<int, MethodInfo>();
 
 		#endregion
 
@@ -249,7 +246,9 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		/// <param name="name"></param>
 		internal ParticleSystem( string name )
-			: this( name, ResourceGroupManager.DefaultResourceGroupName ) {}
+			: this( name, ResourceGroupManager.DefaultResourceGroupName )
+		{
+		}
 
 		/// <summary>
 		///		Creates a particle system with no emitters or affectors.
@@ -504,10 +503,10 @@ namespace Axiom.ParticleSystems
 			if ( totalRequested > emissionAllowed )
 			{
 				// Apportion down requested values to allotted values
-				ratio = (float)emissionAllowed / (float)totalRequested;
+				ratio = (float)emissionAllowed/(float)totalRequested;
 				foreach ( var emitter in emitterList )
 				{
-					requested[ emitter ] = (int)( requested[ emitter ] * ratio );
+					requested[ emitter ] = (int)( requested[ emitter ]*ratio );
 				}
 			}
 
@@ -531,14 +530,15 @@ namespace Axiom.ParticleSystems
 			for ( index = 0; index < activeEmittedEmitters.Count; index++ )
 			{
 				var activeEmitter = activeEmittedEmitters[ index ];
-				executeTriggerEmitters( activeEmitter, (int)( (float)activeEmitter.GetEmissionCount( timeElapsed ) * ratio ), timeElapsed );
+				executeTriggerEmitters( activeEmitter, (int)( (float)activeEmitter.GetEmissionCount( timeElapsed )*ratio ),
+				                        timeElapsed );
 			}
 		}
 
 		private void executeTriggerEmitters( ParticleEmitter emitter, int requested, float timeElapsed )
 		{
 			var timePoint = 0.0f;
-			var timeInc = timeElapsed / requested;
+			var timeInc = timeElapsed/requested;
 
 			for ( var j = 0; j < requested; ++j )
 			{
@@ -563,12 +563,12 @@ namespace Axiom.ParticleSystems
 
 				if ( !localSpace )
 				{
-					p.Position = ( parentNode.DerivedOrientation * ( parentNode.DerivedScale * p.Position ) ) + parentNode.DerivedPosition;
-					p.Direction = ( parentNode.DerivedOrientation * p.Direction );
+					p.Position = ( parentNode.DerivedOrientation*( parentNode.DerivedScale*p.Position ) ) + parentNode.DerivedPosition;
+					p.Direction = ( parentNode.DerivedOrientation*p.Direction );
 				}
 
 				// apply partial frame motion to this particle
-				p.Position += ( p.Direction * timePoint );
+				p.Position += ( p.Direction*timePoint );
 
 				// apply particle initialization by the affectors
 				foreach ( var affector in affectorList )
@@ -602,7 +602,7 @@ namespace Axiom.ParticleSystems
 		{
 			foreach ( var p in activeParticles )
 			{
-				p.Position += p.Direction * timeElapsed;
+				p.Position += p.Direction*timeElapsed;
 
 				if ( p.ParticleType == ParticleType.Emitter )
 				{
@@ -741,13 +741,13 @@ namespace Axiom.ParticleSystems
 					min.x = min.y = min.z = float.PositiveInfinity;
 					max.x = max.y = max.z = float.NegativeInfinity;
 				}
-				var halfScale = Vector3.UnitScale * 0.5f;
-				var defaultPadding = halfScale * (float)Utility.Max( defaultHeight, defaultWidth );
+				var halfScale = Vector3.UnitScale*0.5f;
+				var defaultPadding = halfScale*(float)Utility.Max( defaultHeight, defaultWidth );
 				foreach ( var p in activeParticles )
 				{
 					if ( p.HasOwnDimensions )
 					{
-						var padding = halfScale * (float)Utility.Max( p.Width, p.Height );
+						var padding = halfScale*(float)Utility.Max( p.Width, p.Height );
 						min.Floor( p.Position - padding );
 						max.Ceil( p.Position + padding );
 					}
@@ -1009,7 +1009,7 @@ namespace Axiom.ParticleSystems
 			var id = attr.ToLower().GetHashCode();
 			if ( attribParsers.ContainsKey( id ) )
 			{
-				var args = new object[ 2 ];
+				var args = new object[2];
 				args[ 0 ] = val.Split( ' ' );
 				args[ 1 ] = this;
 				attribParsers[ id ].Invoke( null, args );
@@ -1036,7 +1036,7 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		private void RegisterParsers()
 		{
-			var methods = this.GetType().GetMethods();
+			var methods = GetType().GetMethods();
 
 			// loop through all methods and look for ones marked with attributes
 			for ( var i = 0; i < methods.Length; i++ )
@@ -1208,7 +1208,7 @@ namespace Axiom.ParticleSystems
 			}
 			set
 			{
-				this.localSpace = value;
+				localSpace = value;
 			}
 		}
 
@@ -1460,18 +1460,18 @@ namespace Axiom.ParticleSystems
 				var newAffector = system.AddAffector( affector.Type );
 				affector.CopyTo( newAffector );
 			}
-			system.ParticleQuota = this.ParticleQuota;
-			system.MaterialName = this.MaterialName;
-			system.SetDefaultDimensions( this.defaultWidth, this.defaultHeight );
-			system.cullIndividual = this.cullIndividual;
-			system.sorted = this.sorted;
-			system.localSpace = this.localSpace;
-			system.iterationInterval = this.iterationInterval;
-			system.iterationIntervalSet = this.iterationIntervalSet;
-			system.nonvisibleTimeout = this.nonvisibleTimeout;
-			system.nonvisibleTimeoutSet = this.nonvisibleTimeoutSet;
+			system.ParticleQuota = ParticleQuota;
+			system.MaterialName = MaterialName;
+			system.SetDefaultDimensions( defaultWidth, defaultHeight );
+			system.cullIndividual = cullIndividual;
+			system.sorted = sorted;
+			system.localSpace = localSpace;
+			system.iterationInterval = iterationInterval;
+			system.iterationIntervalSet = iterationIntervalSet;
+			system.nonvisibleTimeout = nonvisibleTimeout;
+			system.nonvisibleTimeoutSet = nonvisibleTimeoutSet;
 			// last frame visible and time since last visible should be left default
-			system.RendererName = this.RendererName;
+			system.RendererName = RendererName;
 			// FIXME
 			if ( system.renderer != null && renderer != null )
 			{
@@ -1616,7 +1616,8 @@ namespace Axiom.ParticleSystems
 				// Determine whether the emitter itself will be emitted and set the 'IsEmitted' attribute
 				foreach ( var emitterInner in emitterList )
 				{
-					if ( emitter != null && emitterInner != null && emitter.Name != string.Empty && emitter.Name == emitterInner.EmittedEmitter )
+					if ( emitter != null && emitterInner != null && emitter.Name != string.Empty &&
+					     emitter.Name == emitterInner.EmittedEmitter )
 					{
 						emitter.IsEmitted = true;
 						break;
@@ -1642,7 +1643,8 @@ namespace Axiom.ParticleSystems
 
 			ParticleEmitter clonedEmitter = null;
 			List<ParticleEmitter> e = null;
-			var maxNumberOfEmitters = size / emittedEmitterPool.Count; // equally distribute the number for each emitted emitter list
+			var maxNumberOfEmitters = size/emittedEmitterPool.Count;
+				// equally distribute the number for each emitted emitter list
 			var oldSize = 0;
 
 			// Run through mEmittedEmitterPool and search for every key (=name) its corresponding emitter in mEmitters
@@ -1664,7 +1666,9 @@ namespace Axiom.ParticleSystems
 							clonedEmitter.IsEmitted = emitter.IsEmitted; // is always 'true' by the way, but just in case
 
 							// Initially deactivate the emitted emitter if duration/repeat_delay are set
-							if ( clonedEmitter.Duration > 0.0f && ( clonedEmitter.RepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f ) )
+							if ( clonedEmitter.Duration > 0.0f &&
+							     ( clonedEmitter.RepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f ||
+							       clonedEmitter.MinRepeatDelay > 0.0f ) )
 							{
 								clonedEmitter.IsEnabled = false;
 							}

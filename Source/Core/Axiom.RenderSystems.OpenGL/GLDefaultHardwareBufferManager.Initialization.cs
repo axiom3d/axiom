@@ -5,6 +5,8 @@ namespace Axiom.RenderSystems.OpenGL
 	public class GLDefaultHardwareBufferManager : HardwareBufferManager
 	{
 		public GLDefaultHardwareBufferManager()
-			: base( null ) {}
+			: base( null )
+		{
+		}
 	}
 }

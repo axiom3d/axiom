@@ -40,9 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 using System.Text;
-
 using Axiom.Core;
-
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -232,7 +230,7 @@ namespace Axiom.Serialization
 
 		protected float ReadFloat( BinaryReader reader )
 		{
-			var inputdata = new byte[ 4 ];
+			var inputdata = new byte[4];
 			reader.Read( inputdata, 0, 4 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -250,7 +248,7 @@ namespace Axiom.Serialization
 
 		protected int ReadInt( BinaryReader reader )
 		{
-			var inputdata = new byte[ 4 ];
+			var inputdata = new byte[4];
 			reader.Read( inputdata, 0, 4 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -268,7 +266,7 @@ namespace Axiom.Serialization
 
 		protected uint ReadUInt( BinaryReader reader )
 		{
-			var inputdata = new byte[ 4 ];
+			var inputdata = new byte[4];
 			reader.Read( inputdata, 0, 4 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -287,7 +285,7 @@ namespace Axiom.Serialization
 
 		protected long ReadLong( BinaryReader reader )
 		{
-			var inputdata = new byte[ 8 ];
+			var inputdata = new byte[8];
 			reader.Read( inputdata, 0, 8 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -306,7 +304,7 @@ namespace Axiom.Serialization
 
 		protected ulong ReadULong( BinaryReader reader )
 		{
-			var inputdata = new byte[ 8 ];
+			var inputdata = new byte[8];
 			reader.Read( inputdata, 0, 8 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -325,7 +323,7 @@ namespace Axiom.Serialization
 
 		protected short ReadShort( BinaryReader reader )
 		{
-			var inputdata = new byte[ 2 ];
+			var inputdata = new byte[2];
 			reader.Read( inputdata, 0, 2 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -344,7 +342,7 @@ namespace Axiom.Serialization
 
 		protected ushort ReadUShort( BinaryReader reader )
 		{
-			var inputdata = new byte[ 2 ];
+			var inputdata = new byte[2];
 			reader.Read( inputdata, 0, 2 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -640,7 +638,8 @@ namespace Axiom.Serialization
 				// read the version string
 				if ( version != fileVersion )
 				{
-					throw new AxiomException( "Invalid file: version incompatible, file reports {0}, Serializer is version {1}", fileVersion, version );
+					throw new AxiomException( "Invalid file: version incompatible, file reports {0}, Serializer is version {1}",
+					                          fileVersion, version );
 				}
 			}
 			else

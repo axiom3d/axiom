@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Controllers.Canned;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -95,9 +94,9 @@ namespace Axiom.Controllers
 		/// <summary>
 		///		Local instance of a FrameTimeControllerValue to be used for time based controllers.
 		/// </summary>
-		private IControllerValue<Real> frameTimeController = new FrameTimeControllerValue();
+		private readonly IControllerValue<Real> frameTimeController = new FrameTimeControllerValue();
 
-		private IControllerFunction<Real> passthroughFunction = new PassthroughControllerFunction();
+		private readonly IControllerFunction<Real> passthroughFunction = new PassthroughControllerFunction();
 		private ulong lastFrameNumber = 0;
 
 		/// <summary>
@@ -143,7 +142,8 @@ namespace Axiom.Controllers
 		/// <param name="destination">Controller value to use as the destination.</param>
 		/// <param name="function">Controller funcion that will use the source value to set the destination.</param>
 		/// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-		public Controller<Real> CreateController( IControllerValue<Real> source, IControllerValue<Real> destination, IControllerFunction<Real> function )
+		public Controller<Real> CreateController( IControllerValue<Real> source, IControllerValue<Real> destination,
+		                                          IControllerFunction<Real> function )
 		{
 			// create a new controller object
 			var controller = new Controller<Real>( source, destination, function );
@@ -337,7 +337,9 @@ namespace Axiom.Controllers
 		/// <param name="phase">The offset of the start of the wave, e.g. 0.5 to start half-way through the wave.</param>
 		/// <param name="amplitude">Scales the output so that instead of lying within 0..1 it lies within 0..(1 * amplitude) for exaggerated effects</param>
 		/// <returns>A newly created controller object that will be updated during the main render loop.</returns>
-		public Controller<Real> CreateTextureWaveTransformer( TextureUnitState layer, TextureTransform type, WaveformType waveType, Real baseVal, Real frequency, Real phase, Real amplitude )
+		public Controller<Real> CreateTextureWaveTransformer( TextureUnitState layer, TextureTransform type,
+		                                                      WaveformType waveType, Real baseVal, Real frequency, Real phase,
+		                                                      Real amplitude )
 		{
 			IControllerValue<Real> val = null;
 			IControllerFunction<Real> function = null;
@@ -400,7 +402,7 @@ namespace Axiom.Controllers
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

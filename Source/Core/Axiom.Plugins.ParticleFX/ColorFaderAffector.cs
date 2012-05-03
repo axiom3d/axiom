@@ -59,7 +59,7 @@ namespace Axiom.ParticleFX
 		public ColorFaderAffector( ParticleSystem psys )
 			: base( psys )
 		{
-			this.type = "ColourFader";
+			type = "ColourFader";
 		}
 
 		public float AlphaAdjust
@@ -127,22 +127,24 @@ namespace Axiom.ParticleFX
 			return component;
 		}
 
-		public override void InitParticle( ref Particle particle ) {}
+		public override void InitParticle( ref Particle particle )
+		{
+		}
 
 		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
 			float da, dr, dg, db;
 
-			da = alphaAdjust * timeElapsed;
-			dr = redAdjust * timeElapsed;
-			dg = greenAdjust * timeElapsed;
-			db = blueAdjust * timeElapsed;
+			da = alphaAdjust*timeElapsed;
+			dr = redAdjust*timeElapsed;
+			dg = greenAdjust*timeElapsed;
+			db = blueAdjust*timeElapsed;
 
 			// loop through the particles
 
 			for ( int i = 0; i < system.Particles.Count; i++ )
 			{
-				Particle p = (Particle)system.Particles[ i ];
+				var p = (Particle)system.Particles[ i ];
 
 				// adjust the values with clamping ([0,1] in this case)
 				p.Color.a = AdjustWithClamp( p.Color.a, da );
@@ -161,13 +163,13 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorFaderAffector affector = target as ColorFaderAffector;
+				var affector = target as ColorFaderAffector;
 				return StringConverter.ToString( affector.RedAdjust );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorFaderAffector affector = target as ColorFaderAffector;
+				var affector = target as ColorFaderAffector;
 				affector.RedAdjust = StringConverter.ParseFloat( val );
 			}
 
@@ -181,13 +183,13 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorFaderAffector affector = target as ColorFaderAffector;
+				var affector = target as ColorFaderAffector;
 				return StringConverter.ToString( affector.GreenAdjust );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorFaderAffector affector = target as ColorFaderAffector;
+				var affector = target as ColorFaderAffector;
 				affector.GreenAdjust = StringConverter.ParseFloat( val );
 			}
 
@@ -201,13 +203,13 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorFaderAffector affector = target as ColorFaderAffector;
+				var affector = target as ColorFaderAffector;
 				return StringConverter.ToString( affector.BlueAdjust );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorFaderAffector affector = target as ColorFaderAffector;
+				var affector = target as ColorFaderAffector;
 				affector.BlueAdjust = StringConverter.ParseFloat( val );
 			}
 
@@ -221,13 +223,13 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorFaderAffector affector = target as ColorFaderAffector;
+				var affector = target as ColorFaderAffector;
 				return StringConverter.ToString( affector.AlphaAdjust );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorFaderAffector affector = target as ColorFaderAffector;
+				var affector = target as ColorFaderAffector;
 				affector.AlphaAdjust = StringConverter.ParseFloat( val );
 			}
 

@@ -63,7 +63,7 @@ namespace Axiom.Scripting.Compiler.AST
 			}
 		}
 
-		private List<string> _bases = new List<string>();
+		private readonly List<string> _bases = new List<string>();
 
 		public uint Id;
 
@@ -84,7 +84,7 @@ namespace Axiom.Scripting.Compiler.AST
 			}
 		}
 
-		private List<AbstractNode> _overrides = new List<AbstractNode>();
+		private readonly List<AbstractNode> _overrides = new List<AbstractNode>();
 
 		private Dictionary<String, String> _environment = new Dictionary<string, string>();
 
@@ -123,7 +123,7 @@ namespace Axiom.Scripting.Compiler.AST
 				return new KeyValuePair<bool, string>( true, _environment[ inName ] );
 			}
 
-			var parentNode = (ObjectAbstractNode)this.Parent;
+			var parentNode = (ObjectAbstractNode)Parent;
 			while ( parentNode != null )
 			{
 				if ( parentNode._environment.ContainsKey( inName ) )
@@ -147,17 +147,17 @@ namespace Axiom.Scripting.Compiler.AST
 			var node = new ObjectAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Name = this.Name;
-			node.Cls = this.Cls;
-			node.Id = this.Id;
-			node.IsAbstract = this.IsAbstract;
-			foreach ( var an in this.Children )
+			node.Name = Name;
+			node.Cls = Cls;
+			node.Id = Id;
+			node.IsAbstract = IsAbstract;
+			foreach ( var an in Children )
 			{
 				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
 				node.Children.Add( newNode );
 			}
-			foreach ( var an in this.Values )
+			foreach ( var an in Values )
 			{
 				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;

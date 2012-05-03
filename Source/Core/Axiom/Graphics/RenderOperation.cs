@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -109,28 +108,28 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.vertexData != null )
+					if ( vertexData != null )
 					{
-						if ( !this.vertexData.IsDisposed )
+						if ( !vertexData.IsDisposed )
 						{
-							this.vertexData.Dispose();
+							vertexData.Dispose();
 						}
 
-						this.vertexData = null;
+						vertexData = null;
 					}
 
-					if ( this.indexData != null )
+					if ( indexData != null )
 					{
-						if ( !this.indexData.IsDisposed )
+						if ( !indexData.IsDisposed )
 						{
-							this.indexData.Dispose();
+							indexData.Dispose();
 						}
 
-						this.indexData = null;
+						indexData = null;
 					}
 				}
 			}

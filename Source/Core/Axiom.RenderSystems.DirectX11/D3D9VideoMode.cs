@@ -34,7 +34,6 @@
 #region Namespace Declarations
 
 using Axiom.Core;
-
 using D3D = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -90,7 +89,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9VideoMode" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -106,7 +105,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "getDescription" )]
 		public override string ToString()
 		{
-			return string.Format( "{0} x {1} @ {2}-bit color", displayMode.Width, displayMode.Height, this.ColorDepth );
+			return string.Format( "{0} x {1} @ {2}-bit color", displayMode.Width, displayMode.Height, ColorDepth );
 		}
 
 		#region Properties
@@ -176,7 +175,8 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				var colorDepth = 16;
 
-				if ( displayMode.Format == D3D.Format.X8R8G8B8 || displayMode.Format == D3D.Format.A8R8G8B8 || displayMode.Format == D3D.Format.R8G8B8 )
+				if ( displayMode.Format == D3D.Format.X8R8G8B8 || displayMode.Format == D3D.Format.A8R8G8B8 ||
+				     displayMode.Format == D3D.Format.R8G8B8 )
 				{
 					colorDepth = 32;
 				}
@@ -205,7 +205,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return this.ToString();
+				return ToString();
 			}
 		}
 

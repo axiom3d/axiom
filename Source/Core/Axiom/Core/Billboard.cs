@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -94,7 +93,9 @@ namespace Axiom.Core
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
-		public Billboard() {}
+		public Billboard()
+		{
+		}
 
 		/// <summary>
 		///
@@ -103,9 +104,9 @@ namespace Axiom.Core
 		/// <param name="owner"></param>
 		public Billboard( Vector3 position, BillboardSet owner )
 		{
-			this.Position = position;
-			this.ParentSet = owner;
-			this.Color = ColorEx.White;
+			Position = position;
+			ParentSet = owner;
+			Color = ColorEx.White;
 		}
 
 		/// <summary>
@@ -116,9 +117,9 @@ namespace Axiom.Core
 		/// <param name="color"></param>
 		public Billboard( Vector3 position, BillboardSet owner, ColorEx color )
 		{
-			this.Color = color;
-			this.Position = position;
-			this.ParentSet = owner;
+			Color = color;
+			Position = position;
+			ParentSet = owner;
 		}
 
 		#endregion Constructor
@@ -215,11 +216,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return rotationInRadians * Utility.DEGREES_PER_RADIAN;
+				return rotationInRadians*Utility.DEGREES_PER_RADIAN;
 			}
 			set
 			{
-				rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
+				rotationInRadians = value*Utility.RADIANS_PER_DEGREE;
 				if ( rotationInRadians != 0 )
 				{
 					ParentSet.NotifyBillboardRotated();

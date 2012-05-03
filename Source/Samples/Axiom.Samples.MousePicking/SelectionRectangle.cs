@@ -1,7 +1,5 @@
 ﻿using System;
-
 using Axiom.Core;
-
 using Math = Axiom.Math;
 
 namespace Axiom.Samples.MousePicking
@@ -77,10 +75,10 @@ namespace Axiom.Samples.MousePicking
 			 * In our new coordinate system, the top of the screen is +1, the bottom is -1. Thankfully,
 			 * a few quick conversions will take care of this problem.
 			 */
-			left = left * 2 - 1;
-			right = right * 2 - 1;
-			top = 1 - top * 2;
-			bottom = 1 - bottom * 2;
+			left = left*2 - 1;
+			right = right*2 - 1;
+			top = 1 - top*2;
+			bottom = 1 - bottom*2;
 
 			/*
 			 * Now the positions are in the new coordinate system. 

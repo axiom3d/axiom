@@ -68,21 +68,25 @@ namespace Axiom.Core
 		public DefaultWorkQueue( string name = "" )
 #else
 		public DefaultWorkQueue()
-			: this( string.Empty ) {}
+			: this( string.Empty )
+		{
+		}
 
 
 		public DefaultWorkQueue( string name )
 #endif
-			: base( name ) {}
+			: base( name )
+		{
+		}
 
 		[OgreVersion( 1, 7, 2, "~DefaultWorkQueue" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					this.Shutdown();
+					Shutdown();
 				}
 			}
 

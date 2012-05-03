@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
@@ -51,8 +50,8 @@ namespace Axiom.SceneManagers.PortalConnected
 {
 	public class PCZCamera : Camera
 	{
-		private AxisAlignedBox box;
-		private PCZFrustum extraCullingFrustum;
+		private readonly AxisAlignedBox box;
+		private readonly PCZFrustum extraCullingFrustum;
 
 		public PCZCamera( string name, SceneManager sceneManager )
 			: base( name, sceneManager )
@@ -143,7 +142,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			// if portal is of type AABB or Sphere, then use simple bound check against planes
 			if ( portal.Type == PORTAL_TYPE.PORTAL_TYPE_AABB )
 			{
-				AxisAlignedBox aabb = new AxisAlignedBox( portal.getDerivedCorner( 0 ), portal.getDerivedCorner( 1 ) );
+				var aabb = new AxisAlignedBox( portal.getDerivedCorner( 0 ), portal.getDerivedCorner( 1 ) );
 				return base.IsObjectVisible( aabb, out culledBy );
 			}
 			else if ( portal.Type == PORTAL_TYPE.PORTAL_TYPE_SPHERE )

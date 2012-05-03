@@ -42,13 +42,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-
 using Axiom.Core;
-
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Media;
-
 using CodePoint = System.UInt32;
 using Image = Axiom.Media.Image;
 using ResourceHandle = System.UInt64;
@@ -156,24 +153,9 @@ namespace Axiom.Fonts
 		#region Source Property
 
 		/// <summary>
-		///    Source of the font (either an image name or a TrueType font).
-		/// </summary>
-		private string _source;
-
-		/// <summary>
 		///    Source of the font (either an image name or a truetype font)
 		/// </summary>
-		public string Source
-		{
-			get
-			{
-				return _source;
-			}
-			set
-			{
-				_source = value;
-			}
-		}
+		public string Source { get; set; }
 
 		#endregion Source Property
 
@@ -276,11 +258,6 @@ namespace Axiom.Fonts
 		#region AntiAliasColor Property
 
 		/// <summary>
-		///    For TrueType fonts only.
-		/// </summary>
-		private bool _antialiasColor;
-
-		/// <summary>
 		///    Sets whether or not the color of this font is antialiased as it is generated
 		///    from a TrueType font.
 		/// </summary>
@@ -293,23 +270,13 @@ namespace Axiom.Fonts
 		///    mode (add or modulate for example) then it's a good idea to set this to true, in
 		///    order to soften your font edges.
 		/// </remarks>
-		public bool AntialiasColor
-		{
-			get
-			{
-				return _antialiasColor;
-			}
-			set
-			{
-				_antialiasColor = value;
-			}
-		}
+		public bool AntialiasColor { get; set; }
 
 		#endregion AntiAliasColor Property
 
 		#region Glyphs Property
 
-		private Dictionary<CodePoint, GlyphInfo> codePoints = new Dictionary<CodePoint, GlyphInfo>();
+		private readonly Dictionary<CodePoint, GlyphInfo> codePoints = new Dictionary<CodePoint, GlyphInfo>();
 
 		public IDictionary<CodePoint, GlyphInfo> Glyphs
 		{
@@ -323,19 +290,7 @@ namespace Axiom.Fonts
 
 		#region showLines Property
 
-		private bool _showLines;
-
-		protected bool showLines
-		{
-			get
-			{
-				return _showLines;
-			}
-			set
-			{
-				_showLines = value;
-			}
-		}
+		protected bool showLines { get; set; }
 
 		#endregion showLines Property
 
@@ -349,10 +304,15 @@ namespace Axiom.Fonts
 		///		Constructor, should be called through FontManager.Create().
 		/// </summary>
 		public Font( ResourceManager parent, string name, ResourceHandle handle, string group )
-			: this( parent, name, handle, group, false, null ) {}
+			: this( parent, name, handle, group, false, null )
+		{
+		}
 
-		public Font( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader ) {}
+		public Font( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		             IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
+		{
+		}
 
 		#endregion Constructors and Destructor
 
@@ -390,12 +350,12 @@ namespace Axiom.Fonts
 
 				// Calculate view-space width and height of char
 				vsY = char_height;
-				vsX = GetGlyphAspectRatio( text[ i ] ) * char_height;
+				vsX = GetGlyphAspectRatio( text[ i ] )*char_height;
 
-				width += (int)( vsX * w );
-				if ( vsY * h > height || ( ( i == 0 ) && text[ i - 1 ] == '\n' ) )
+				width += (int)( vsX*w );
+				if ( vsY*h > height || ( ( i == 0 ) && text[ i - 1 ] == '\n' ) )
 				{
-					height += (int)( vsY * h );
+					height += (int)( vsY*h );
 				}
 			}
 
@@ -441,7 +401,7 @@ namespace Axiom.Fonts
 		[Obsolete( "Use Glyphs property" )]
 		public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2 )
 		{
-			SetGlyphTexCoords( c, u1, v1, u2, v2, ( u2 - u1 ) / ( v2 - v1 ) );
+			SetGlyphTexCoords( c, u1, v1, u2, v2, ( u2 - u1 )/( v2 - v1 ) );
 		}
 
 		/// <summary>
@@ -463,7 +423,7 @@ namespace Axiom.Fonts
 		[Obsolete( "Use Glyphs property" )]
 		public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2, Real aspect )
 		{
-			var glyph = new GlyphInfo( c, new UVRect( v1, u1, v2, u2 ), aspect * ( u2 - u1 ) / ( v2 - v1 ) );
+			var glyph = new GlyphInfo( c, new UVRect( v1, u1, v2, u2 ), aspect*( u2 - u1 )/( v2 - v1 ) );
 			if ( codePoints.ContainsKey( c ) )
 			{
 				codePoints[ c ] = glyph;
@@ -612,7 +572,7 @@ namespace Axiom.Fonts
 			// original DataStream in a MemoryDataStream
 			var fileStream = ResourceGroupManager.Instance.OpenResource( Source, Group, true, this );
 
-			var ttfchunk = new byte[ fileStream.Length ];
+			var ttfchunk = new byte[fileStream.Length];
 			fileStream.Read( ttfchunk, 0, ttfchunk.Length );
 
 			//Load font
@@ -622,7 +582,7 @@ namespace Axiom.Fonts
 			}
 
 			// Convert our point size to freetype 26.6 fixed point format
-			var ftSize = _ttfSize * ( 1 << 6 );
+			var ftSize = _ttfSize*( 1 << 6 );
 
 			if ( FT.FT_Set_Char_Size( face, ftSize, 0, (uint)_ttfResolution, (uint)_ttfResolution ) != 0 )
 			{
@@ -649,9 +609,9 @@ namespace Axiom.Fonts
 					var rec = face.PtrToStructure<FT_FaceRec>();
 					var glyp = rec.glyph.PtrToStructure<FT_GlyphSlotRec>();
 
-					if ( ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
+					if ( ( 2*( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY ) > max_height )
 					{
-						max_height = ( 2 * ( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY );
+						max_height = ( 2*( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY );
 					}
 					if ( glyp.metrics.horiBearingY > maxBearingY )
 					{
@@ -666,7 +626,7 @@ namespace Axiom.Fonts
 			}
 
 			// Now work out how big our texture needs to be
-			var rawSize = ( max_width + char_space ) * ( ( max_height >> 6 ) + char_space ) * glyphCount;
+			var rawSize = ( max_width + char_space )*( ( max_height >> 6 ) + char_space )*glyphCount;
 
 			var tex_side = (int)System.Math.Sqrt( (Real)rawSize );
 
@@ -677,9 +637,9 @@ namespace Axiom.Fonts
 			// Would we benefit from using a non-square texture (2X width)
 			int finalWidth = 0, finalHeight = 0;
 
-			if ( roundUpSize * roundUpSize * 0.5 >= rawSize )
+			if ( roundUpSize*roundUpSize*0.5 >= rawSize )
 			{
-				finalHeight = (int)( roundUpSize * 0.5 );
+				finalHeight = (int)( roundUpSize*0.5 );
 			}
 			else
 			{
@@ -688,14 +648,15 @@ namespace Axiom.Fonts
 
 			finalWidth = roundUpSize;
 
-			var textureAspec = (Real)finalWidth / (Real)finalHeight;
+			var textureAspec = (Real)finalWidth/(Real)finalHeight;
 			var pixelBytes = 2;
-			var dataWidth = finalWidth * pixelBytes;
-			var dataSize = finalWidth * finalHeight * pixelBytes;
+			var dataWidth = finalWidth*pixelBytes;
+			var dataSize = finalWidth*finalHeight*pixelBytes;
 
-			LogManager.Instance.Write( "Font {0} using texture size {1}x{2}", _name, finalWidth.ToString(), finalHeight.ToString() );
+			LogManager.Instance.Write( "Font {0} using texture size {1}x{2}", _name, finalWidth.ToString(),
+			                           finalHeight.ToString() );
 
-			var imageData = new byte[ dataSize ];
+			var imageData = new byte[dataSize];
 			// Reset content (White, transparent)
 			for ( var i = 0; i < dataSize; i += pixelBytes )
 			{
@@ -745,7 +706,7 @@ namespace Axiom.Fonts
 					unsafe
 #endif
 					{
-						var buffer = BufferBase.Wrap( glyp.bitmap.buffer, glyp.bitmap.rows * glyp.bitmap.pitch );
+						var buffer = BufferBase.Wrap( glyp.bitmap.buffer, glyp.bitmap.rows*glyp.bitmap.pitch );
 						var bufferPtr = buffer.ToBytePointer();
 						var idx = 0;
 						var imageDataBuffer = BufferBase.Wrap( imageData );
@@ -756,7 +717,7 @@ namespace Axiom.Fonts
 						for ( var j = 0; j < glyp.bitmap.rows; j++ )
 						{
 							var row = j + m + y_bearing;
-							var pDest = ( row * dataWidth ) + ( l + x_bearing ) * pixelBytes;
+							var pDest = ( row*dataWidth ) + ( l + x_bearing )*pixelBytes;
 							for ( var k = 0; k < glyp.bitmap.width; k++ )
 							{
 								if ( AntialiasColor )
@@ -778,11 +739,11 @@ namespace Axiom.Fonts
 						buffer.Dispose();
 						imageDataBuffer.Dispose();
 
-						this.SetGlyphTexCoords( (uint)cp, (Real)l / (Real)finalWidth, //u1
-						                        (Real)m / (Real)finalHeight, //v1
-						                        (Real)( l + ( glyp.advance.x >> 6 ) ) / (Real)finalWidth, //u2
-						                        ( m + ( max_height >> 6 ) ) / (Real)finalHeight, //v2
-						                        textureAspec );
+						SetGlyphTexCoords( (uint)cp, (Real)l/(Real)finalWidth, //u1
+						                   (Real)m/(Real)finalHeight, //v1
+						                   (Real)( l + ( glyp.advance.x >> 6 ) )/(Real)finalWidth, //u2
+						                   ( m + ( max_height >> 6 ) )/(Real)finalHeight, //v2
+						                   textureAspec );
 
 						// Advance a column
 						l += ( advance + char_space );
@@ -803,7 +764,7 @@ namespace Axiom.Fonts
 			var tex = (Texture)res;
 			// Call internal _loadImages, not loadImage since that's external and 
 			// will determine load status etc again, and this is a manual loader inside load()
-			var images = new Image[ 1 ];
+			var images = new Image[1];
 			images[ 0 ] = img;
 			tex.LoadImages( images );
 			FT.FT_Done_FreeType( ftLibrary );

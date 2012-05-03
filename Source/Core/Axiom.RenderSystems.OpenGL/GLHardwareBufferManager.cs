@@ -38,9 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Graphics;
-
 using Tao.OpenGl;
 
 #endregion Namespace Declarations
@@ -58,7 +56,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Constructors
 
-		public GLHardwareBufferManagerBase() {}
+		public GLHardwareBufferManagerBase()
+		{
+		}
 
 		#endregion
 
@@ -73,7 +73,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="useShadowBuffer"></param>
 		/// <returns></returns>
 		[OgreVersion( 1, 7, 2 )]
-		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
+		                                                       bool useShadowBuffer )
 		{
 			var buffer = new GLHardwareIndexBuffer( this, type, numIndices, usage, useShadowBuffer );
 			lock ( IndexBuffersMutex )
@@ -90,7 +91,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="useShadowBuffer"></param>
 		/// <returns></returns>
 		[OgreVersion( 1, 7, 2 )]
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts,
+		                                                         BufferUsage usage, bool useShadowBuffer )
 		{
 			var buffer = new GLHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, useShadowBuffer );
 			lock ( VertexBuffersMutex )
@@ -104,7 +106,9 @@ namespace Axiom.RenderSystems.OpenGL
 	public class GLHardwareBufferManager : HardwareBufferManager
 	{
 		public GLHardwareBufferManager()
-			: base( new GLHardwareBufferManagerBase() ) {}
+			: base( new GLHardwareBufferManagerBase() )
+		{
+		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
@@ -142,5 +146,7 @@ namespace Axiom.RenderSystems.OpenGL
 		}
 	}
 
-	public class GLSoftwareBufferManager : DefaultHardwareBufferManager {}
+	public class GLSoftwareBufferManager : DefaultHardwareBufferManager
+	{
+	}
 }

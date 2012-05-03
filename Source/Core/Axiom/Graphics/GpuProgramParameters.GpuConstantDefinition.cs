@@ -22,31 +22,13 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Data type.
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public GpuConstantType ConstantType;
+			[OgreVersion( 1, 7, 2790 )] public GpuConstantType ConstantType;
 
 			#endregion
 
 			#region PhysicalIndex
 
-			/// <summary>
-			/// Physical start index in buffer (either float or int buffer)
-			/// </summary>
-			//[OgreVersion(1, 7, 2790)]
-			//public int PhysicalIndex;
-			private int _physIndex;
-
-			public int PhysicalIndex
-			{
-				get
-				{
-					return _physIndex;
-				}
-				set
-				{
-					_physIndex = value;
-				}
-			}
+			public int PhysicalIndex { get; set; }
 
 			#endregion
 
@@ -55,8 +37,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Logical index - used to communicate this constant to the rendersystem
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int LogicalIndex;
+			[OgreVersion( 1, 7, 2790 )] public int LogicalIndex;
 
 			#endregion
 
@@ -66,8 +47,7 @@ namespace Axiom.Graphics
 			/// Number of raw buffer slots per element
 			/// (some programs pack each array element to float4, some do not)
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int ElementSize;
+			[OgreVersion( 1, 7, 2790 )] public int ElementSize;
 
 			#endregion
 
@@ -76,8 +56,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Length of array
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int ArraySize;
+			[OgreVersion( 1, 7, 2790 )] public int ArraySize;
 
 			#endregion
 
@@ -86,8 +65,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// How this parameter varies (bitwise combination of GpuParamVariability)
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public GpuParamVariability Variability;
+			[OgreVersion( 1, 7, 2790 )] public GpuParamVariability Variability;
 
 			#endregion
 

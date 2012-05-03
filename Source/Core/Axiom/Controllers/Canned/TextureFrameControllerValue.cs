@@ -66,7 +66,7 @@ namespace Axiom.Controllers.Canned
 		/// <param name="textureUnit">Reference to the texture unit state to target for the animation.</param>
 		public TextureFrameControllerValue( TextureUnitState textureUnit )
 		{
-			this.texUnit = textureUnit;
+			texUnit = textureUnit;
 		}
 
 		#endregion Constructor
@@ -83,11 +83,11 @@ namespace Axiom.Controllers.Canned
 		{
 			get
 			{
-				return texUnit.CurrentFrame / texUnit.NumFrames;
+				return texUnit.CurrentFrame/texUnit.NumFrames;
 			}
 			set
 			{
-				texUnit.CurrentFrame = (int)( value * texUnit.NumFrames );
+				texUnit.CurrentFrame = (int)( value*texUnit.NumFrames );
 			}
 		}
 

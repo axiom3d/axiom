@@ -54,29 +54,14 @@ namespace Axiom.Core
 		/// <summary>
 		/// Internal map of strategies.
 		/// </summary>
-		private Dictionary<string, LodStrategy> _strategies = new Dictionary<string, LodStrategy>();
+		private readonly Dictionary<string, LodStrategy> _strategies = new Dictionary<string, LodStrategy>();
 
 		#region DefaultStrategy
 
 		/// <summary>
-		/// Default strategy.
-		/// </summary>
-		private LodStrategy _defaultStrategy;
-
-		/// <summary>
 		/// Get's or set's the default strategy.
 		/// </summary>
-		public LodStrategy DefaultStrategy
-		{
-			set
-			{
-				this._defaultStrategy = value;
-			}
-			get
-			{
-				return this._defaultStrategy;
-			}
-		}
+		public LodStrategy DefaultStrategy { set; get; }
 
 		/// <summary>
 		/// Set the default strategy by name.
@@ -138,11 +123,12 @@ namespace Axiom.Core
 			if ( strategy.Name.ToLower() == "default" )
 			{
 				throw new AxiomException( "Lod strategy name must not be 'default'", new object[]
-				                                                                     {} );
+				                                                                     {
+				                                                                     } );
 			}
 
 			// Insert the strategy into the map with its name as the key
-			this._strategies.Add( strategy.Name, strategy );
+			_strategies.Add( strategy.Name, strategy );
 		}
 
 		/// <summary>
@@ -157,9 +143,9 @@ namespace Axiom.Core
 		public LodStrategy RemoveStrategy( string name )
 		{
 			LodStrategy ret = null;
-			if ( this._strategies.TryGetValue( name, out ret ) )
+			if ( _strategies.TryGetValue( name, out ret ) )
 			{
-				this._strategies.Remove( name );
+				_strategies.Remove( name );
 				return ret;
 			}
 			return ret;
@@ -174,7 +160,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public void RemoveAllStrategies()
 		{
-			this._strategies.Clear();
+			_strategies.Clear();
 		}
 
 		/// <summary>
@@ -191,7 +177,7 @@ namespace Axiom.Core
 			}
 
 			LodStrategy ret = null;
-			this._strategies.TryGetValue( name, out ret );
+			_strategies.TryGetValue( name, out ret );
 
 			return ret;
 		}

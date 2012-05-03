@@ -63,7 +63,8 @@ namespace Axiom.Graphics.Collections
 			}
 			else
 			{
-				LogManager.Instance.Write( "{0} rendering system has already been registered by {1}, skipping {2}.", key, this[ key ].Name, item.Name );
+				LogManager.Instance.Write( "{0} rendering system has already been registered by {1}, skipping {2}.", key,
+				                           this[ key ].Name, item.Name );
 			}
 		}
 

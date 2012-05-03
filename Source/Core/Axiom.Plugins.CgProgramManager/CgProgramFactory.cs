@@ -38,10 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using Tao.Cg;
 
 #endregion Namespace Declarations
@@ -58,7 +56,7 @@ namespace Axiom.CgPrograms
 		/// <summary>
 		///    ID of the active Cg context.
 		/// </summary>
-		private IntPtr cgContext;
+		private readonly IntPtr cgContext;
 
 		#endregion Fields
 
@@ -93,7 +91,8 @@ namespace Axiom.CgPrograms
 		/// <param name="name">Name of the program to create.</param>
 		/// <param name="type">Type of program to create, vertex or fragment.</param>
 		/// <returns>A new CgProgram instance within the current Cg Context.</returns>
-		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader )
+		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ulong handle, string group,
+		                                                    bool isManual, IManualResourceLoader loader )
 		{
 			return new CgProgram( parent, name, handle, group, isManual, loader, cgContext );
 		}

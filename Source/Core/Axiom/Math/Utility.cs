@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Math.Collections;
 	//
 	//using Radian = System.Single;
@@ -54,13 +53,13 @@ namespace Axiom.Math
 	public sealed class Utility
 	{
 		public static readonly Real PI = (Real)System.Math.PI;
-		public static readonly Real TWO_PI = PI * 2.0f;
-		public static readonly Real HALF_PI = PI * 0.5f;
+		public static readonly Real TWO_PI = PI*2.0f;
+		public static readonly Real HALF_PI = PI*0.5f;
 
-		public static readonly Real RADIANS_PER_DEGREE = PI / 180.0f;
-		public static readonly Real DEGREES_PER_RADIAN = 180.0f / PI;
+		public static readonly Real RADIANS_PER_DEGREE = PI/180.0f;
+		public static readonly Real DEGREES_PER_RADIAN = 180.0f/PI;
 
-		private static Random random = new Random();
+		private static readonly Random random = new Random();
 
 		/// <summary>
 		/// Empty static constructor
@@ -74,12 +73,16 @@ namespace Axiom.Math
 		/// (from "Static Constructors Demystified" by Satya Komatineni
 		///  http://www.ondotnet.com/pub/a/dotnet/2003/07/07/staticxtor.html)
 		/// </summary>
-		static Utility() {}
+		static Utility()
+		{
+		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		private Utility() {}
+		private Utility()
+		{
+		}
 
 		/// <summary>
 		/// 
@@ -116,7 +119,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real DegreesToRadians( Real degrees )
 		{
-			return degrees * RADIANS_PER_DEGREE;
+			return degrees*RADIANS_PER_DEGREE;
 		}
 
 		/// <summary>
@@ -126,7 +129,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real RadiansToDegrees( Real radians )
 		{
-			return radians * DEGREES_PER_RADIAN;
+			return radians*DEGREES_PER_RADIAN;
 		}
 
 		/// <summary>
@@ -266,7 +269,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real InvSqrt( Real number )
 		{
-			return 1 / Sqrt( number );
+			return 1/Sqrt( number );
 		}
 
 		/// <summary>
@@ -398,7 +401,7 @@ namespace Axiom.Math
 		/// <returns>A random value in the range [min,max].</returns>
 		public static Real RangeRandom( Real min, Real max )
 		{
-			return ( max - min ) * UnitRandom() + min;
+			return ( max - min )*UnitRandom() + min;
 		}
 
 		/// <summary>
@@ -407,7 +410,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real UnitRandom()
 		{
-			return (Real)random.Next( Int32.MaxValue ) / (Real)Int32.MaxValue;
+			return (Real)random.Next( Int32.MaxValue )/(Real)Int32.MaxValue;
 		}
 
 		/// <summary>
@@ -416,7 +419,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real SymmetricRandom()
 		{
-			return (Real)( 2.0f * UnitRandom() - 1.0f );
+			return (Real)( 2.0f*UnitRandom() - 1.0f );
 		}
 
 		/// <summary>
@@ -428,7 +431,10 @@ namespace Axiom.Math
 		{
 			var normal = plane.Normal;
 
-			return new Matrix4( -2.0f * normal.x * normal.x + 1.0f, -2.0f * normal.x * normal.y, -2.0f * normal.x * normal.z, -2.0f * normal.x * plane.D, -2.0f * normal.y * normal.x, -2.0f * normal.y * normal.y + 1.0f, -2.0f * normal.y * normal.z, -2.0f * normal.y * plane.D, -2.0f * normal.z * normal.x, -2.0f * normal.z * normal.y, -2.0f * normal.z * normal.z + 1.0f, -2.0f * normal.z * plane.D, 0.0f, 0.0f, 0.0f, 1.0f );
+			return new Matrix4( -2.0f*normal.x*normal.x + 1.0f, -2.0f*normal.x*normal.y, -2.0f*normal.x*normal.z,
+			                    -2.0f*normal.x*plane.D, -2.0f*normal.y*normal.x, -2.0f*normal.y*normal.y + 1.0f,
+			                    -2.0f*normal.y*normal.z, -2.0f*normal.y*plane.D, -2.0f*normal.z*normal.x, -2.0f*normal.z*normal.y,
+			                    -2.0f*normal.z*normal.z + 1.0f, -2.0f*normal.z*plane.D, 0.0f, 0.0f, 0.0f, 1.0f );
 		}
 
 		/// <summary>
@@ -492,7 +498,8 @@ namespace Axiom.Math
 		/// <param name="u3"></param>
 		/// <param name="v3"></param>
 		/// <returns></returns>
-		public static Vector3 CalculateTangentSpaceVector( Vector3 position1, Vector3 position2, Vector3 position3, Real u1, Real v1, Real u2, Real v2, Real u3, Real v3 )
+		public static Vector3 CalculateTangentSpaceVector( Vector3 position1, Vector3 position2, Vector3 position3, Real u1,
+		                                                   Real v1, Real u2, Real v2, Real u3, Real v3 )
 		{
 			// side0 is the vector along one side of the triangle of vertices passed in, 
 			// and side1 is the vector along another side. Taking the cross product of these returns the normal.
@@ -505,13 +512,13 @@ namespace Axiom.Math
 			// Now we use a formula to calculate the tangent. 
 			var deltaV0 = v1 - v2;
 			var deltaV1 = v3 - v1;
-			var tangent = deltaV1 * side0 - deltaV0 * side1;
+			var tangent = deltaV1*side0 - deltaV0*side1;
 			tangent.Normalize();
 
 			// Calculate binormal
 			var deltaU0 = u1 - u2;
 			var deltaU1 = u3 - u1;
-			var binormal = deltaU1 * side0 - deltaU0 * side1;
+			var binormal = deltaU1*side0 - deltaU0*side1;
 			binormal.Normalize();
 
 			// Now, we take the cross product of the tangents to get a vector which 
@@ -584,7 +591,7 @@ namespace Axiom.Math
 			v2x = px - bx;
 			v2y = py - by;
 
-			bClockwise = ( v1x * v2y - v1y * v2x >= 0.0 );
+			bClockwise = ( v1x*v2y - v1y*v2x >= 0.0 );
 
 			v1x = cx - bx;
 			v1y = cy - by;
@@ -592,7 +599,7 @@ namespace Axiom.Math
 			v2x = px - cx;
 			v2y = py - cy;
 
-			if ( ( v1x * v2y - v1y * v2x >= 0.0 ) != bClockwise )
+			if ( ( v1x*v2y - v1y*v2x >= 0.0 ) != bClockwise )
 			{
 				return false;
 			}
@@ -603,7 +610,7 @@ namespace Axiom.Math
 			v2x = px - ax;
 			v2y = py - ay;
 
-			if ( ( v1x * v2y - v1y * v2x >= 0.0 ) != bClockwise )
+			if ( ( v1x*v2y - v1y*v2x >= 0.0 ) != bClockwise )
 			{
 				return false;
 			}
@@ -631,7 +638,7 @@ namespace Axiom.Math
 			var elapsed = (double)( System.Diagnostics.Stopwatch.GetTimestamp() - start );
 			var freq = (double)System.Diagnostics.Stopwatch.Frequency;
 
-			return (Real)( elapsed / freq );
+			return (Real)( elapsed/freq );
 		}
 
 		#region Intersection Methods
@@ -675,14 +682,15 @@ namespace Axiom.Math
 			// Min X
 			if ( ray.origin.x <= min.x && ray.direction.x > 0 )
 			{
-				t = ( min.x - ray.origin.x ) / ray.direction.x;
+				t = ( min.x - ray.origin.x )/ray.direction.x;
 
 				if ( t >= 0 )
 				{
 					// substitue t back into ray and check bounds and distance
-					hitPoint = ray.origin + ray.direction * t;
+					hitPoint = ray.origin + ray.direction*t;
 
-					if ( hitPoint.y >= min.y && hitPoint.y <= max.y && hitPoint.z >= min.z && hitPoint.z <= max.z && ( !hit || t < lowt ) )
+					if ( hitPoint.y >= min.y && hitPoint.y <= max.y && hitPoint.z >= min.z && hitPoint.z <= max.z &&
+					     ( !hit || t < lowt ) )
 					{
 						hit = true;
 						lowt = t;
@@ -693,14 +701,15 @@ namespace Axiom.Math
 			// Max X
 			if ( ray.origin.x >= max.x && ray.direction.x < 0 )
 			{
-				t = ( max.x - ray.origin.x ) / ray.direction.x;
+				t = ( max.x - ray.origin.x )/ray.direction.x;
 
 				if ( t >= 0 )
 				{
 					// substitue t back into ray and check bounds and distance
-					hitPoint = ray.origin + ray.direction * t;
+					hitPoint = ray.origin + ray.direction*t;
 
-					if ( hitPoint.y >= min.y && hitPoint.y <= max.y && hitPoint.z >= min.z && hitPoint.z <= max.z && ( !hit || t < lowt ) )
+					if ( hitPoint.y >= min.y && hitPoint.y <= max.y && hitPoint.z >= min.z && hitPoint.z <= max.z &&
+					     ( !hit || t < lowt ) )
 					{
 						hit = true;
 						lowt = t;
@@ -711,14 +720,15 @@ namespace Axiom.Math
 			// Min Y
 			if ( ray.origin.y <= min.y && ray.direction.y > 0 )
 			{
-				t = ( min.y - ray.origin.y ) / ray.direction.y;
+				t = ( min.y - ray.origin.y )/ray.direction.y;
 
 				if ( t >= 0 )
 				{
 					// substitue t back into ray and check bounds and distance
-					hitPoint = ray.origin + ray.direction * t;
+					hitPoint = ray.origin + ray.direction*t;
 
-					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.z >= min.z && hitPoint.z <= max.z && ( !hit || t < lowt ) )
+					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.z >= min.z && hitPoint.z <= max.z &&
+					     ( !hit || t < lowt ) )
 					{
 						hit = true;
 						lowt = t;
@@ -729,14 +739,15 @@ namespace Axiom.Math
 			// Max Y
 			if ( ray.origin.y >= max.y && ray.direction.y < 0 )
 			{
-				t = ( max.y - ray.origin.y ) / ray.direction.y;
+				t = ( max.y - ray.origin.y )/ray.direction.y;
 
 				if ( t >= 0 )
 				{
 					// substitue t back into ray and check bounds and distance
-					hitPoint = ray.origin + ray.direction * t;
+					hitPoint = ray.origin + ray.direction*t;
 
-					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.z >= min.z && hitPoint.z <= max.z && ( !hit || t < lowt ) )
+					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.z >= min.z && hitPoint.z <= max.z &&
+					     ( !hit || t < lowt ) )
 					{
 						hit = true;
 						lowt = t;
@@ -747,14 +758,15 @@ namespace Axiom.Math
 			// Min Z
 			if ( ray.origin.z <= min.z && ray.direction.z > 0 )
 			{
-				t = ( min.z - ray.origin.z ) / ray.direction.z;
+				t = ( min.z - ray.origin.z )/ray.direction.z;
 
 				if ( t >= 0 )
 				{
 					// substitue t back into ray and check bounds and distance
-					hitPoint = ray.origin + ray.direction * t;
+					hitPoint = ray.origin + ray.direction*t;
 
-					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.y >= min.y && hitPoint.y <= max.y && ( !hit || t < lowt ) )
+					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.y >= min.y && hitPoint.y <= max.y &&
+					     ( !hit || t < lowt ) )
 					{
 						hit = true;
 						lowt = t;
@@ -765,14 +777,15 @@ namespace Axiom.Math
 			// Max Z
 			if ( ray.origin.z >= max.z && ray.direction.z < 0 )
 			{
-				t = ( max.z - ray.origin.z ) / ray.direction.z;
+				t = ( max.z - ray.origin.z )/ray.direction.z;
 
 				if ( t >= 0 )
 				{
 					// substitue t back into ray and check bounds and distance
-					hitPoint = ray.origin + ray.direction * t;
+					hitPoint = ray.origin + ray.direction*t;
 
-					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.y >= min.y && hitPoint.y <= max.y && ( !hit || t < lowt ) )
+					if ( hitPoint.x >= min.x && hitPoint.x <= max.x && hitPoint.y >= min.y && hitPoint.y <= max.y &&
+					     ( !hit || t < lowt ) )
 					{
 						hit = true;
 						lowt = t;
@@ -783,7 +796,8 @@ namespace Axiom.Math
 			return new IntersectResult( hit, lowt );
 		}
 
-		public static IntersectResult Intersects( Ray ray, Vector3 a, Vector3 b, Vector3 c, Vector3 normal, bool positiveSide, bool negativeSide )
+		public static IntersectResult Intersects( Ray ray, Vector3 a, Vector3 b, Vector3 c, Vector3 normal, bool positiveSide,
+		                                          bool negativeSide )
 		{
 			// Calculate intersection with plane.
 			Real t;
@@ -811,7 +825,7 @@ namespace Axiom.Math
 					return new IntersectResult( false, 0 );
 				}
 
-				t = normal.Dot( a - ray.Origin ) / denom;
+				t = normal.Dot( a - ray.Origin )/denom;
 				if ( t < 0 )
 				{
 					return new IntersectResult( false, 0 );
@@ -849,17 +863,17 @@ namespace Axiom.Math
 				var v1 = b[ i1 ] - a[ i1 ];
 				var u2 = c[ i0 ] - a[ i0 ];
 				var v2 = c[ i1 ] - a[ i1 ];
-				var u0 = t * ray.Direction[ i0 ] + ray.Origin[ i0 ] - a[ i0 ];
-				var v0 = t * ray.Direction[ i1 ] + ray.Origin[ i1 ] - a[ i1 ];
+				var u0 = t*ray.Direction[ i0 ] + ray.Origin[ i0 ] - a[ i0 ];
+				var v0 = t*ray.Direction[ i1 ] + ray.Origin[ i1 ] - a[ i1 ];
 
-				var alpha = u0 * v2 - u2 * v0;
-				var beta = u1 * v0 - u0 * v1;
-				var area = u1 * v2 - u2 * v1;
+				var alpha = u0*v2 - u2*v0;
+				var beta = u1*v0 - u0*v1;
+				var area = u1*v2 - u2*v1;
 
 				// epsilon to avoid Real precision error
 				Real EPSILON = 1e-3f;
 
-				var tolerance = -EPSILON * area;
+				var tolerance = -EPSILON*area;
 
 				if ( area > 0 )
 				{
@@ -880,7 +894,8 @@ namespace Axiom.Math
 			return new IntersectResult( true, t );
 		}
 
-		public static IntersectResult Intersects( Ray ray, Vector3 a, Vector3 b, Vector3 c, bool positiveSide, bool negativeSide )
+		public static IntersectResult Intersects( Ray ray, Vector3 a, Vector3 b, Vector3 c, bool positiveSide,
+		                                          bool negativeSide )
 		{
 			var normal = CalculateBasicFaceNormalWithoutNormalize( a, b, c );
 			return Intersects( ray, a, b, c, normal, positiveSide, negativeSide );
@@ -923,19 +938,22 @@ namespace Axiom.Math
 			var minB = boxB.Minimum;
 			var maxB = boxB.Maximum;
 
-			if ( ( minB.x < minA.x ) && ( maxB.x > maxA.x ) && ( minB.y < minA.y ) && ( maxB.y > maxA.y ) && ( minB.z < minA.z ) && ( maxB.z > maxA.z ) )
+			if ( ( minB.x < minA.x ) && ( maxB.x > maxA.x ) && ( minB.y < minA.y ) && ( maxB.y > maxA.y ) && ( minB.z < minA.z ) &&
+			     ( maxB.z > maxA.z ) )
 			{
 				// boxA is within boxB
 				return Intersection.Contained;
 			}
 
-			if ( ( minB.x > minA.x ) && ( maxB.x < maxA.x ) && ( minB.y > minA.y ) && ( maxB.y < maxA.y ) && ( minB.z > minA.z ) && ( maxB.z < maxA.z ) )
+			if ( ( minB.x > minA.x ) && ( maxB.x < maxA.x ) && ( minB.y > minA.y ) && ( maxB.y < maxA.y ) && ( minB.z > minA.z ) &&
+			     ( maxB.z < maxA.z ) )
 			{
 				// boxB is within boxA
 				return Intersection.Contains;
 			}
 
-			if ( ( minB.x > maxA.x ) || ( minB.y > maxA.y ) || ( minB.z > maxA.z ) || ( maxB.x < minA.x ) || ( maxB.y < minA.y ) || ( maxB.z < minA.z ) )
+			if ( ( minB.x > maxA.x ) || ( minB.y > maxA.y ) || ( minB.z > maxA.z ) || ( maxB.x < minA.x ) || ( maxB.y < minA.y ) ||
+			     ( maxB.z < minA.z ) )
 			{
 				// not interesting at all
 				return Intersection.None;
@@ -969,7 +987,7 @@ namespace Axiom.Math
 			var radius = sphere.Radius;
 
 			// check origin inside first
-			if ( ( rayOrig.LengthSquared <= radius * radius ) && discardInside )
+			if ( ( rayOrig.LengthSquared <= radius*radius ) && discardInside )
 			{
 				return new IntersectResult( true, 0 );
 			}
@@ -978,11 +996,11 @@ namespace Axiom.Math
 			// Build coeffs which can be used with std quadratic solver
 			// ie t = (-b +/- sqrt(b*b* + 4ac)) / 2a
 			var a = rayDir.Dot( rayDir );
-			var b = 2 * rayOrig.Dot( rayDir );
-			var c = rayOrig.Dot( rayOrig ) - ( radius * radius );
+			var b = 2*rayOrig.Dot( rayDir );
+			var c = rayOrig.Dot( rayOrig ) - ( radius*radius );
 
 			// calc determinant
-			var d = ( b * b ) - ( 4 * a * c );
+			var d = ( b*b ) - ( 4*a*c );
 
 			if ( d < 0 )
 			{
@@ -994,11 +1012,11 @@ namespace Axiom.Math
 				// BTW, if d=0 there is one intersection, if d > 0 there are 2
 				// But we only want the closest one, so that's ok, just use the 
 				// '-' version of the solver
-				var t = ( -b - Utility.Sqrt( d ) ) / ( 2 * a );
+				var t = ( -b - Utility.Sqrt( d ) )/( 2*a );
 
 				if ( t < 0 )
 				{
-					t = ( -b + Utility.Sqrt( d ) ) / ( 2 * a );
+					t = ( -b + Utility.Sqrt( d ) )/( 2*a );
 				}
 
 				return new IntersectResult( true, t );
@@ -1025,7 +1043,7 @@ namespace Axiom.Math
 			else
 			{
 				var nom = plane.Normal.Dot( ray.Origin ) + plane.D;
-				var t = -( nom / denom );
+				var t = -( nom/denom );
 				return new IntersectResult( t >= 0, t );
 			}
 		}
@@ -1184,7 +1202,8 @@ namespace Axiom.Math
 			if ( absDir[ imid ] < Real.Epsilon )
 			{
 				// Parallel with middle and minimise axis, check bounds only
-				if ( rayorig[ imid ] < min[ imid ] || rayorig[ imid ] > max[ imid ] || rayorig[ imin ] < min[ imin ] || rayorig[ imin ] > max[ imin ] )
+				if ( rayorig[ imid ] < min[ imid ] || rayorig[ imid ] > max[ imid ] || rayorig[ imin ] < min[ imin ] ||
+				     rayorig[ imin ] > max[ imin ] )
 				{
 					return new Tuple<bool, Real, Real>( false, Real.NaN, Real.NaN );
 				}
@@ -1215,11 +1234,12 @@ namespace Axiom.Math
 			return new Tuple<bool, Real, Real>( true, start, end );
 		}
 
-		private static bool CalcAxis( int i, Vector3 raydir, Vector3 rayorig, Vector3 min, Vector3 max, ref Real end, ref Real start )
+		private static bool CalcAxis( int i, Vector3 raydir, Vector3 rayorig, Vector3 min, Vector3 max, ref Real end,
+		                              ref Real start )
 		{
-			var denom = 1 / raydir[ i ];
-			var newstart = ( min[ i ] - rayorig[ i ] ) * denom;
-			var newend = ( max[ i ] - rayorig[ i ] ) * denom;
+			var denom = 1/raydir[ i ];
+			var newstart = ( min[ i ] - rayorig[ i ] )*denom;
+			var newend = ( max[ i ] - rayorig[ i ] )*denom;
 			if ( newstart > newend )
 			{
 				Swap<Real>( ref newstart, ref newend );
@@ -1275,7 +1295,7 @@ namespace Axiom.Math
 				}
 
 				nom = plane.Normal.Dot( ray.Origin ) + plane.D;
-				dist = -( nom / denom );
+				dist = -( nom/denom );
 
 				if ( volume.outside == PlaneSide.Negative )
 				{
@@ -1381,7 +1401,7 @@ namespace Axiom.Math
 
 		public static Real Sqr( Real number )
 		{
-			return number * number;
+			return number*number;
 		}
 
 		public static int Log2( int x )
@@ -1524,10 +1544,10 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static float GaussianDistribution( Real x, Real offset, Real scale )
 		{
-			Real nom = System.Math.Exp( -Utility.Sqr( x - offset ) / ( 2 * Utility.Sqr( scale ) ) );
-			var denom = scale * Utility.Sqrt( 2 * Utility.PI );
+			Real nom = System.Math.Exp( -Utility.Sqr( x - offset )/( 2*Utility.Sqr( scale ) ) );
+			var denom = scale*Utility.Sqrt( 2*Utility.PI );
 
-			return nom / denom;
+			return nom/denom;
 		}
 	}
 
@@ -1561,8 +1581,8 @@ namespace Axiom.Math
 		/// <param name="distance"></param>
 		public IntersectResult( bool hit, Real distance )
 		{
-			this.Hit = hit;
-			this.Distance = distance;
+			Hit = hit;
+			Distance = distance;
 		}
 	}
 

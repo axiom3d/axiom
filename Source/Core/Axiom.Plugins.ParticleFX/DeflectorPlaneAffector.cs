@@ -106,7 +106,7 @@ namespace Axiom.ParticleFX
 		public DeflectorPlaneAffector( ParticleSystem psys )
 			: base( psys )
 		{
-			this.type = "DeflectorPlane";
+			type = "DeflectorPlane";
 
 			// defaults
 			_planePoint = Vector3.Zero;
@@ -117,24 +117,24 @@ namespace Axiom.ParticleFX
 		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
 			// precalculate distance of plane from origin
-			float planeDistance = -_planeNormal.Dot( _planePoint ) / Utility.Sqrt( _planeNormal.Dot( _planeNormal ) );
+			float planeDistance = -_planeNormal.Dot( _planePoint )/Utility.Sqrt( _planeNormal.Dot( _planeNormal ) );
 			Vector3 directionPart;
 
 			foreach ( Particle pi in system.Particles )
 			{
-				Vector3 direction = pi.Direction * timeElapsed;
+				Vector3 direction = pi.Direction*timeElapsed;
 				if ( _planeNormal.Dot( pi.Position + direction ) + planeDistance <= 0.0f )
 				{
 					float a = _planeNormal.Dot( pi.Position ) + planeDistance;
 					if ( a > 0.0 )
 					{
 						// for intersection point
-						directionPart = direction * ( -a / direction.Dot( _planeNormal ) );
+						directionPart = direction*( -a/direction.Dot( _planeNormal ) );
 						// set new position
-						pi.Position = ( pi.Position + ( directionPart ) ) + ( ( ( directionPart ) - direction ) * _bounce );
+						pi.Position = ( pi.Position + ( directionPart ) ) + ( ( ( directionPart ) - direction )*_bounce );
 
 						// reflect direction vector
-						pi.Direction = ( pi.Direction - ( 2.0f * pi.Direction.Dot( _planeNormal ) * _planeNormal ) ) * _bounce;
+						pi.Direction = ( pi.Direction - ( 2.0f*pi.Direction.Dot( _planeNormal )*_planeNormal ) )*_bounce;
 					}
 				}
 			}
@@ -142,50 +142,56 @@ namespace Axiom.ParticleFX
 
 		#region Command definition classes
 
-		[ScriptableProperty( "plane_point", "A point on the deflector plane. Together with the normal vector it defines the plane.", typeof ( ParticleAffector ) )]
+		[ScriptableProperty( "plane_point",
+			"A point on the deflector plane. Together with the normal vector it defines the plane.", typeof ( ParticleAffector )
+			)]
 		public class PlanePointCommand : IPropertyCommand
 		{
 			public string Get( object target )
 			{
-				DeflectorPlaneAffector affector = target as DeflectorPlaneAffector;
+				var affector = target as DeflectorPlaneAffector;
 				return StringConverter.ToString( affector.PlanePoint );
 			}
 
 			public void Set( object target, string val )
 			{
-				DeflectorPlaneAffector affector = target as DeflectorPlaneAffector;
+				var affector = target as DeflectorPlaneAffector;
 				affector.PlanePoint = StringConverter.ParseVector3( val );
 			}
 		}
 
-		[ScriptableProperty( "plane_normal", "The normal vector of the deflector plane. Together with the point it defines the plane.", typeof ( ParticleAffector ) )]
+		[ScriptableProperty( "plane_normal",
+			"The normal vector of the deflector plane. Together with the point it defines the plane.",
+			typeof ( ParticleAffector ) )]
 		public class PlaneNormalCommand : IPropertyCommand
 		{
 			public string Get( object target )
 			{
-				DeflectorPlaneAffector affector = target as DeflectorPlaneAffector;
+				var affector = target as DeflectorPlaneAffector;
 				return StringConverter.ToString( affector.PlaneNormal );
 			}
 
 			public void Set( object target, string val )
 			{
-				DeflectorPlaneAffector affector = target as DeflectorPlaneAffector;
+				var affector = target as DeflectorPlaneAffector;
 				affector.PlaneNormal = StringConverter.ParseVector3( val );
 			}
 		}
 
-		[ScriptableProperty( "bounce", "The amount of bouncing when a particle is deflected. 0 means no deflection and 1 stands for 100 percent reflection.", typeof ( ParticleAffector ) )]
+		[ScriptableProperty( "bounce",
+			"The amount of bouncing when a particle is deflected. 0 means no deflection and 1 stands for 100 percent reflection."
+			, typeof ( ParticleAffector ) )]
 		public class BounceCommand : IPropertyCommand
 		{
 			public string Get( object target )
 			{
-				DeflectorPlaneAffector affector = target as DeflectorPlaneAffector;
+				var affector = target as DeflectorPlaneAffector;
 				return StringConverter.ToString( affector.Bounce );
 			}
 
 			public void Set( object target, string val )
 			{
-				DeflectorPlaneAffector affector = target as DeflectorPlaneAffector;
+				var affector = target as DeflectorPlaneAffector;
 				affector.Bounce = StringConverter.ParseFloat( val );
 			}
 		}

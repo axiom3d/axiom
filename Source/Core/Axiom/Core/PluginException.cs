@@ -49,6 +49,8 @@ namespace Axiom.Core
 	public class PluginException : AxiomException
 	{
 		public PluginException( string message, params object[] args )
-			: base( string.Format( message, args ) ) {}
+			: base( string.Format( message, args ) )
+		{
+		}
 	}
 }

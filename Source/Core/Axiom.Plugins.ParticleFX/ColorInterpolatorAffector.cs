@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
@@ -55,13 +54,13 @@ namespace Axiom.ParticleFX
 	{
 		protected const int MAX_STAGES = 6;
 
-		internal ColorEx[] colorAdj = new ColorEx[ MAX_STAGES ];
-		internal float[] timeAdj = new float[ MAX_STAGES ];
+		internal ColorEx[] colorAdj = new ColorEx[MAX_STAGES];
+		internal float[] timeAdj = new float[MAX_STAGES];
 
 		public ColorInterpolatorAffector( ParticleSystem psys )
 			: base( psys )
 		{
-			this.type = "ColourInterpolator";
+			type = "ColourInterpolator";
 			ColorEx init;
 			init.a = init.r = init.g = 0.5f;
 			init.b = 0.0f;
@@ -78,10 +77,10 @@ namespace Axiom.ParticleFX
 			// loop through the particles
 			for ( int i = 0; i < system.Particles.Count; i++ )
 			{
-				Particle p = (Particle)system.Particles[ i ];
+				var p = (Particle)system.Particles[ i ];
 
 				float lifeTime = p.totalTimeToLive;
-				float particleTime = 1.0f - ( p.timeToLive / lifeTime );
+				float particleTime = 1.0f - ( p.timeToLive/lifeTime );
 
 				if ( particleTime <= timeAdj[ 0 ] )
 				{
@@ -99,10 +98,10 @@ namespace Axiom.ParticleFX
 						{
 							particleTime -= timeAdj[ k ];
 							particleTime /= ( timeAdj[ k + 1 ] - timeAdj[ k ] );
-							p.Color.r = ( ( colorAdj[ k + 1 ].r * particleTime ) + ( colorAdj[ k ].r * ( 1.0f - particleTime ) ) );
-							p.Color.g = ( ( colorAdj[ k + 1 ].g * particleTime ) + ( colorAdj[ k ].g * ( 1.0f - particleTime ) ) );
-							p.Color.b = ( ( colorAdj[ k + 1 ].b * particleTime ) + ( colorAdj[ k ].b * ( 1.0f - particleTime ) ) );
-							p.Color.a = ( ( colorAdj[ k + 1 ].a * particleTime ) + ( colorAdj[ k ].a * ( 1.0f - particleTime ) ) );
+							p.Color.r = ( ( colorAdj[ k + 1 ].r*particleTime ) + ( colorAdj[ k ].r*( 1.0f - particleTime ) ) );
+							p.Color.g = ( ( colorAdj[ k + 1 ].g*particleTime ) + ( colorAdj[ k ].g*( 1.0f - particleTime ) ) );
+							p.Color.b = ( ( colorAdj[ k + 1 ].b*particleTime ) + ( colorAdj[ k ].b*( 1.0f - particleTime ) ) );
+							p.Color.a = ( ( colorAdj[ k + 1 ].a*particleTime ) + ( colorAdj[ k ].a*( 1.0f - particleTime ) ) );
 
 							break;
 						}
@@ -120,14 +119,14 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				return StringConverter.ToString( affector.colorAdj[ 0 ] );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				affector.colorAdj[ 0 ] = StringConverter.ParseColor( val );
 			}
@@ -142,7 +141,7 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				// TODO: Common way for writing color.
 				return StringConverter.ToString( affector.colorAdj[ 1 ] );
@@ -150,7 +149,7 @@ namespace Axiom.ParticleFX
 
 			public void Set( object target, string val )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				affector.colorAdj[ 1 ] = StringConverter.ParseColor( val );
 			}
@@ -165,7 +164,7 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				// TODO: Common way for writing color.
 				return StringConverter.ToString( affector.colorAdj[ 2 ] );
@@ -173,7 +172,7 @@ namespace Axiom.ParticleFX
 
 			public void Set( object target, string val )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				affector.colorAdj[ 2 ] = StringConverter.ParseColor( val );
 			}
@@ -188,14 +187,14 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				return StringConverter.ToString( affector.colorAdj[ 3 ] );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				affector.colorAdj[ 3 ] = StringConverter.ParseColor( val );
 			}
@@ -210,14 +209,14 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				return StringConverter.ToString( affector.colorAdj[ 4 ] );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				affector.colorAdj[ 4 ] = StringConverter.ParseColor( val );
 			}
@@ -232,14 +231,14 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				return StringConverter.ToString( affector.colorAdj[ 5 ] );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				affector.colorAdj[ 5 ] = StringConverter.ParseColor( val );
 			}
@@ -254,14 +253,14 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				return StringConverter.ToString( affector.timeAdj[ 0 ] );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				affector.timeAdj[ 0 ] = StringConverter.ParseFloat( val );
 			}
@@ -276,14 +275,14 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				return StringConverter.ToString( affector.timeAdj[ 1 ] );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				affector.timeAdj[ 1 ] = StringConverter.ParseFloat( val );
 			}
@@ -298,14 +297,14 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				return StringConverter.ToString( affector.timeAdj[ 2 ] );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				affector.timeAdj[ 2 ] = StringConverter.ParseFloat( val );
 			}
@@ -320,14 +319,14 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				return StringConverter.ToString( affector.timeAdj[ 3 ] );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				affector.timeAdj[ 3 ] = StringConverter.ParseFloat( val );
 			}
@@ -342,14 +341,14 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				return StringConverter.ToString( affector.timeAdj[ 4 ] );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				affector.timeAdj[ 4 ] = StringConverter.ParseFloat( val );
 			}
@@ -364,14 +363,14 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				return StringConverter.ToString( affector.timeAdj[ 5 ] );
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorInterpolatorAffector affector = target as ColorInterpolatorAffector;
+				var affector = target as ColorInterpolatorAffector;
 
 				affector.timeAdj[ 5 ] = StringConverter.ParseFloat( val );
 			}

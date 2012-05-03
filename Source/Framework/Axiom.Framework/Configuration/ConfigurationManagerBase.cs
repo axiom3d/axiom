@@ -48,7 +48,7 @@ namespace Axiom.Framework.Configuration
 		/// <param name="configurationFilename"></param>
 		protected ConfigurationManagerBase( string configurationFilename )
 		{
-			this.ConfigurationFile = configurationFilename;
+			ConfigurationFile = configurationFilename;
 		}
 
 		#endregion Construction and Destruction

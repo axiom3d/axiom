@@ -15,8 +15,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Physical buffer index
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int PhysicalIndex;
+			[OgreVersion( 1, 7, 2790 )] public int PhysicalIndex;
 
 			#endregion
 
@@ -25,8 +24,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Current physical size allocation
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int CurrentSize;
+			[OgreVersion( 1, 7, 2790 )] public int CurrentSize;
 
 			#endregion
 
@@ -35,8 +33,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// How the contents of this slot vary
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public GpuParamVariability Variability;
+			[OgreVersion( 1, 7, 2790 )] public GpuParamVariability Variability;
 
 			#endregion
 
@@ -72,6 +69,8 @@ namespace Axiom.Graphics
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
-		public class GpuLogicalIndexUseMap : Dictionary<int, GpuLogicalIndexUse> {}
+		public class GpuLogicalIndexUseMap : Dictionary<int, GpuLogicalIndexUse>
+		{
+		}
 	}
 }

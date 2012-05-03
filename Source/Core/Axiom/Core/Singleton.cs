@@ -65,7 +65,9 @@ namespace Axiom.Core
 		{
 			if ( SingletonFactory.instance != null && !IntPtr.ReferenceEquals( this, SingletonFactory.instance ) )
 			{
-				throw new Exception( String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.", this.GetType().Name ) );
+				throw new Exception(
+					String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.",
+					               GetType().Name ) );
 			}
 		}
 
@@ -105,7 +107,10 @@ namespace Axiom.Core
 		private class SingletonFactory
 		{
 			internal static object singletonLock = new object();
-			static SingletonFactory() {}
+
+			static SingletonFactory()
+			{
+			}
 
 			internal static T instance = new T();
 		}
@@ -115,28 +120,18 @@ namespace Axiom.Core
 			SingletonFactory.instance = null;
 		}
 
-		public static void Reinitialize() {}
+		public static void Reinitialize()
+		{
+		}
 
 		#region IDisposable Implementation
 
 		#region isDisposed Property
 
-		private bool _disposed = false;
-
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get; set; }
 
 		#endregion isDisposed Property
 

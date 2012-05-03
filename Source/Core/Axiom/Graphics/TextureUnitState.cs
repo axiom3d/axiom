@@ -41,7 +41,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Graphics.Collections;
@@ -179,7 +178,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2, "Original name _notifyParent" )]
 			set
 			{
-				this.parent = value;
+				parent = value;
 			}
 		}
 
@@ -195,11 +194,6 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Index of the texture coordinate set to use for texture mapping.
-		/// </summary>
-		private int texCoordSet;
-
-		/// <summary>
 		///		Gets/Sets the texture coordinate set to be used by this texture layer.
 		/// </summary>
 		/// <remarks>
@@ -208,17 +202,7 @@ namespace Axiom.Graphics
 		///		<p/>
 		///		Applies to both fixed-function and programmable pipeline.
 		/// </remarks>
-		public int TextureCoordSet
-		{
-			get
-			{
-				return texCoordSet;
-			}
-			set
-			{
-				texCoordSet = value;
-			}
-		}
+		public int TextureCoordSet { get; set; }
 
 		/// <summary>
 		///    Addressing mode to use for texture coordinates.
@@ -339,7 +323,7 @@ namespace Axiom.Graphics
 			}
 			set
 			{
-				this.SetColorOperation( value );
+				SetColorOperation( value );
 			}
 		}
 
@@ -424,7 +408,8 @@ namespace Axiom.Graphics
 			}
 			set
 			{
-				Debug.Assert( value < numFrames, "Cannot set the current frame of a texture layer to be greater than the number of frames in the layer." );
+				Debug.Assert( value < numFrames,
+				              "Cannot set the current frame of a texture layer to be greater than the number of frames in the layer." );
 				currentFrame = value;
 
 				// this will affect the passes hashcode because of the texture name change
@@ -435,7 +420,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Store names of textures for animation frames.
 		/// </summary>
-		private string[] frames = new string[ MaxAnimationFrames ];
+		private string[] frames = new string[MaxAnimationFrames];
 
 		/// <summary>
 		///     Optional name for the texture unit state
@@ -514,11 +499,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.transU;
+				return transU;
 			}
 			set
 			{
-				this.SetTextureScrollU( value );
+				SetTextureScrollU( value );
 			}
 		}
 
@@ -530,13 +515,13 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.GetTexture( currentFrame );
+				return GetTexture( currentFrame );
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				this.SetTexture( value, currentFrame );
+				SetTexture( value, currentFrame );
 			}
 		}
 
@@ -587,15 +572,15 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.transV;
+				return transV;
 			}
 			set
 			{
-				this.SetTextureScrollV( value );
+				SetTextureScrollV( value );
 			}
 		}
 
-		private float scrollU;
+		private readonly float scrollU;
 
 		/// <summary>
 		///    U coord of the texture scroll animation
@@ -604,15 +589,15 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.scrollU;
+				return scrollU;
 			}
 			set
 			{
-				this.SetScrollAnimation( value, this.scrollV );
+				SetScrollAnimation( value, scrollV );
 			}
 		}
 
-		private float scrollV;
+		private readonly float scrollV;
 
 		/// <summary>
 		///    V coord of the texture scroll animation
@@ -621,11 +606,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.scrollV;
+				return scrollV;
 			}
 			set
 			{
-				this.SetScrollAnimation( this.scrollU, value );
+				SetScrollAnimation( scrollU, value );
 			}
 		}
 
@@ -638,11 +623,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.scaleU;
+				return scaleU;
 			}
 			set
 			{
-				this.SetTextureScaleU( value );
+				SetTextureScaleU( value );
 			}
 		}
 
@@ -656,11 +641,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.scaleV;
+				return scaleV;
 			}
 			set
 			{
-				this.SetTextureScaleV( value );
+				SetTextureScaleV( value );
 			}
 		}
 
@@ -806,25 +791,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// 
-		/// </summary>
-		private bool hwGamma;
-
-		/// <summary>
 		/// Whether this texture will be set up so that on sampling it, 
 		/// hardware gamma correction is applied.
 		/// </summary>
-		public bool IsHardwareGammaEnabled
-		{
-			get
-			{
-				return hwGamma;
-			}
-			set
-			{
-				hwGamma = value;
-			}
-		}
+		public bool IsHardwareGammaEnabled { get; set; }
 
 		/// <summary>
 		///    Texture filtering - minification.
@@ -862,7 +832,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.envMapEnabled;
+				return envMapEnabled;
 			}
 		}
 
@@ -872,11 +842,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.rotationSpeed;
+				return rotationSpeed;
 			}
 			set
 			{
-				this.SetRotateAnimation( value );
+				SetRotateAnimation( value );
 			}
 		}
 
@@ -974,7 +944,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="parent">Parent Pass of this TextureUnitState.</param>
 		public TextureUnitState( Pass parent )
-			: this( parent, "", 0 ) {}
+			: this( parent, "", 0 )
+		{
+		}
 
 		/// <summary>
 		///		Name based constructor.
@@ -982,7 +954,9 @@ namespace Axiom.Graphics
 		/// <param name="parent">Parent Pass of this texture stage.</param>
 		/// <param name="textureName">Name of the texture for this texture stage.</param>
 		public TextureUnitState( Pass parent, string textureName )
-			: this( parent, textureName, 0 ) {}
+			: this( parent, textureName, 0 )
+		{
+		}
 
 		/// <summary>
 		///		Constructor.
@@ -994,7 +968,7 @@ namespace Axiom.Graphics
 
 			colorBlendMode.blendType = LayerBlendType.Color;
 			SetColorOperation( LayerBlendOperation.Modulate );
-			this.SetTextureAddressingMode( TextureAddressing.Wrap );
+			SetTextureAddressingMode( TextureAddressing.Wrap );
 
 			// set alpha blending options
 			alphaBlendMode.operation = LayerBlendOperationEx.Modulate;
@@ -1023,7 +997,7 @@ namespace Axiom.Graphics
 			textureSrcMipmaps = (int)TextureMipmap.Default;
 			// texture params
 			SetTextureName( textureName );
-			this.TextureCoordSet = texCoordSet;
+			TextureCoordSet = texCoordSet;
 
 			parent.DirtyHash();
 		}
@@ -1238,7 +1212,7 @@ namespace Axiom.Graphics
 				string[] postfixes = {
 				                     	"_fr", "_bk", "_lf", "_rt", "_up", "_dn"
 				                     };
-				var fullNames = new string[ 6 ];
+				var fullNames = new string[6];
 				string baseName;
 				string ext;
 
@@ -1433,7 +1407,8 @@ namespace Axiom.Graphics
 		///    Manually supplied 'blend' value - only required for operations
 		///    which require manual blend e.g. LayerBlendOperationEx.BlendManual
 		/// </param>
-		public void SetColorOperationEx( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2, ColorEx arg1, ColorEx arg2, float blendFactor )
+		public void SetColorOperationEx( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2,
+		                                 ColorEx arg1, ColorEx arg2, float blendFactor )
 		{
 			colorBlendMode.operation = operation;
 			colorBlendMode.source1 = source1;
@@ -1449,7 +1424,8 @@ namespace Axiom.Graphics
 		/// <param name="operation">The operation to be used, e.g. modulate (multiply), add, subtract.</param>
 		public void SetColorOperationEx( LayerBlendOperationEx operation )
 		{
-			SetColorOperationEx( operation, LayerBlendSource.Texture, LayerBlendSource.Current, ColorEx.White, ColorEx.White, 0.0f );
+			SetColorOperationEx( operation, LayerBlendSource.Texture, LayerBlendSource.Current, ColorEx.White, ColorEx.White,
+			                     0.0f );
 		}
 
 		/// <summary>
@@ -1470,7 +1446,8 @@ namespace Axiom.Graphics
 		/// <param name="source1">The source of the first color to the operation e.g. texture color.</param>
 		/// <param name="source2">The source of the second color to the operation e.g. current surface color.</param>
 		/// <param name="arg1">Manually supplied color value (only required if source1 = Manual).</param>		
-		public void SetColorOperationEx( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2, ColorEx arg1 )
+		public void SetColorOperationEx( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2,
+		                                 ColorEx arg1 )
 		{
 			SetColorOperationEx( operation, source1, source2, arg1, ColorEx.White, 0.0f );
 		}
@@ -1493,7 +1470,8 @@ namespace Axiom.Graphics
 		/// <param name="blendFactor">Manually supplied 'blend' value - only required for operations
 		///    which require manual blend e.g. LayerBlendOperationEx.BlendManual.
 		/// </param>
-		public void SetAlphaOperation( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2, Real arg1, Real arg2, Real blendFactor )
+		public void SetAlphaOperation( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2,
+		                               Real arg1, Real arg2, Real blendFactor )
 		{
 			alphaBlendMode.operation = operation;
 			alphaBlendMode.source1 = source1;
@@ -1514,7 +1492,7 @@ namespace Axiom.Graphics
 
 		public EnvironmentMap GetEnvironmentMap()
 		{
-			return this.environMap;
+			return environMap;
 		}
 
 		/// <summary>
@@ -1558,8 +1536,8 @@ namespace Axiom.Graphics
 		/// </param>
 		public void SetEnvironmentMap( bool enable, EnvironmentMap envMap )
 		{
-			this.environMap = envMap;
-			this.envMapEnabled = enable;
+			environMap = envMap;
+			envMapEnabled = enable;
 			if ( enable )
 			{
 				var effect = new TextureEffect();
@@ -1640,7 +1618,7 @@ namespace Axiom.Graphics
 			baseName = name.Substring( 0, pos );
 			ext = name.Substring( pos );
 
-			var names = new string[ numFrames ];
+			var names = new string[numFrames];
 
 			// loop through and create the real texture names from the base name
 			for ( var i = 0; i < numFrames; i++ )
@@ -1675,9 +1653,9 @@ namespace Axiom.Graphics
 			}
 
 			this.numFrames = numFrames;
-			this.animDuration = duration;
-			this.currentFrame = 0;
-			this.isCubic = false;
+			animDuration = duration;
+			currentFrame = 0;
+			isCubic = false;
 
 			// copy the texture names
 			Array.Copy( names, 0, frames, 0, numFrames );
@@ -1766,7 +1744,7 @@ namespace Axiom.Graphics
 				effect = new TextureEffect();
 				effect.type = TextureEffectType.UVScroll;
 				effect.arg1 = uSpeed;
-				this.AddEffect( effect );
+				AddEffect( effect );
 			}
 			else
 			{
@@ -1775,14 +1753,14 @@ namespace Axiom.Graphics
 					effect = new TextureEffect();
 					effect.type = TextureEffectType.UScroll;
 					effect.arg1 = uSpeed;
-					this.AddEffect( effect );
+					AddEffect( effect );
 				}
 				if ( vSpeed != 0 )
 				{
 					effect = new TextureEffect();
 					effect.type = TextureEffectType.VScroll;
 					effect.arg1 = vSpeed;
-					this.AddEffect( effect );
+					AddEffect( effect );
 				}
 			}
 		}
@@ -1821,7 +1799,8 @@ namespace Axiom.Graphics
 		/// <param name="frequency">The speed of the wave in cycles per second.</param>
 		/// <param name="phase">The offset of the start of the wave, e.g. 0.5 to start half-way through the wave.</param>
 		/// <param name="amplitude">Scales the output so that instead of lying within [0..1] it lies within [0..(1 * amplitude)] for exaggerated effects.</param>
-		public void SetTransformAnimation( TextureTransform transType, WaveformType waveType, float baseVal, float frequency, float phase, float amplitude )
+		public void SetTransformAnimation( TextureTransform transType, WaveformType waveType, float baseVal, float frequency,
+		                                   float phase, float amplitude )
 		{
 			var effect = new TextureEffect();
 			effect.type = TextureEffectType.Transform;
@@ -2004,7 +1983,7 @@ namespace Axiom.Graphics
 					return;
 				}
 
-				if ( this.IsLoaded )
+				if ( IsLoaded )
 				{
 					Load(); // reload
 				}
@@ -2064,12 +2043,12 @@ namespace Axiom.Graphics
 			if ( scaleU != 1 || scaleV != 1 )
 			{
 				// offset to the center of the texture
-				xform.m00 = 1 / scaleU;
-				xform.m11 = 1 / scaleV;
+				xform.m00 = 1/scaleU;
+				xform.m11 = 1/scaleV;
 
 				// skip matrix mult since first matrix update
-				xform.m03 = ( -0.5f * xform.m00 ) + 0.5f;
-				xform.m13 = ( -0.5f * xform.m11 ) + 0.5f;
+				xform.m03 = ( -0.5f*xform.m00 ) + 0.5f;
+				xform.m13 = ( -0.5f*xform.m11 ) + 0.5f;
 			}
 
 			// texture translation
@@ -2081,7 +2060,7 @@ namespace Axiom.Graphics
 				xlate.m13 = transV;
 
 				// multiplt the transform by the translation
-				xform = xlate * xform;
+				xform = xlate*xform;
 			}
 
 			if ( rotate != 0.0f )
@@ -2099,11 +2078,11 @@ namespace Axiom.Graphics
 				rotation.m11 = cosTheta;
 
 				// offset the center of rotation to the center of the texture
-				rotation.m03 = 0.5f + ( ( -0.5f * cosTheta ) - ( -0.5f * sinTheta ) );
-				rotation.m13 = 0.5f + ( ( -0.5f * sinTheta ) + ( -0.5f * cosTheta ) );
+				rotation.m03 = 0.5f + ( ( -0.5f*cosTheta ) - ( -0.5f*sinTheta ) );
+				rotation.m13 = 0.5f + ( ( -0.5f*sinTheta ) + ( -0.5f*cosTheta ) );
 
 				// multiply the rotation and transformation matrices
-				xform = rotation * xform;
+				xform = rotation*xform;
 			}
 
 			// store the transformation into the local texture matrix
@@ -2129,7 +2108,9 @@ namespace Axiom.Graphics
 			effect.controller = null;
 
 			// these effects must be unique, so remove any existing
-			if ( effect.type == TextureEffectType.EnvironmentMap || effect.type == TextureEffectType.UVScroll || effect.type == TextureEffectType.UScroll || effect.type == TextureEffectType.VScroll || effect.type == TextureEffectType.Rotate || effect.type == TextureEffectType.ProjectiveTexture )
+			if ( effect.type == TextureEffectType.EnvironmentMap || effect.type == TextureEffectType.UVScroll ||
+			     effect.type == TextureEffectType.UScroll || effect.type == TextureEffectType.VScroll ||
+			     effect.type == TextureEffectType.Rotate || effect.type == TextureEffectType.ProjectiveTexture )
 			{
 				for ( var i = 0; i < effectList.Count; i++ )
 				{
@@ -2205,7 +2186,9 @@ namespace Axiom.Graphics
 					break;
 
 				case TextureEffectType.Transform:
-					effect.controller = cMgr.CreateTextureWaveTransformer( this, (TextureTransform)effect.subtype, effect.waveType, effect.baseVal, effect.frequency, effect.phase, effect.amplitude );
+					effect.controller = cMgr.CreateTextureWaveTransformer( this, (TextureTransform)effect.subtype, effect.waveType,
+					                                                       effect.baseVal, effect.frequency, effect.phase,
+					                                                       effect.amplitude );
 
 					break;
 
@@ -2230,7 +2213,8 @@ namespace Axiom.Graphics
 					try
 					{
 						// ensure the texture is loaded
-						TextureManager.Instance.Load( frames[ i ], ResourceGroupManager.DefaultResourceGroupName, textureType, textureSrcMipmaps, 1.0f, this.isAlpha, desiredFormat /*, hwGamma */ );
+						TextureManager.Instance.Load( frames[ i ], ResourceGroupManager.DefaultResourceGroupName, textureType,
+						                              textureSrcMipmaps, 1.0f, isAlpha, desiredFormat /*, hwGamma */ );
 
 						isBlank = false;
 					}
@@ -2300,7 +2284,7 @@ namespace Axiom.Graphics
 						// currently assumes animated frames are sequentially numbered
 						// cubic, 1d, 2d, and 3d textures are determined from current TUS state
 
-						if ( this.isCubic )
+						if ( isCubic )
 						{
 							SetCubicTextureName( aliasList[ textureNameAlias ], textureType == TextureType.CubeMap );
 						}
@@ -2348,7 +2332,7 @@ namespace Axiom.Graphics
 			// restore correct parent
 			target.parent = tmpParent;
 
-			target.frames = new string[ MaxAnimationFrames ];
+			target.frames = new string[MaxAnimationFrames];
 
 			// copy over animation frame texture names
 			for ( var i = 0; i < MaxAnimationFrames; i++ )
@@ -2425,7 +2409,8 @@ namespace Axiom.Graphics
 				return false;
 			}
 
-			if ( left.colorArg1 != right.colorArg1 || left.colorArg2 != right.colorArg2 || left.blendFactor != right.blendFactor || left.source1 != right.source1 || left.source2 != right.source2 || left.operation != right.operation )
+			if ( left.colorArg1 != right.colorArg1 || left.colorArg2 != right.colorArg2 || left.blendFactor != right.blendFactor ||
+			     left.source1 != right.source1 || left.source2 != right.source2 || left.operation != right.operation )
 			{
 				return false;
 			}
@@ -2460,14 +2445,16 @@ namespace Axiom.Graphics
 
 			if ( left.blendType == LayerBlendType.Color )
 			{
-				if ( left.colorArg1 != right.colorArg1 || left.colorArg2 != right.colorArg2 || left.blendFactor != right.blendFactor || left.source1 != right.source1 || left.source2 != right.source2 || left.operation != right.operation )
+				if ( left.colorArg1 != right.colorArg1 || left.colorArg2 != right.colorArg2 || left.blendFactor != right.blendFactor ||
+				     left.source1 != right.source1 || left.source2 != right.source2 || left.operation != right.operation )
 				{
 					return true;
 				}
 			}
 			else
 			{
-				if ( left.alphaArg1 != right.alphaArg1 || left.alphaArg2 != right.alphaArg2 || left.blendFactor != right.blendFactor || left.source1 != right.source1 || left.source2 != right.source2 || left.operation != right.operation )
+				if ( left.alphaArg1 != right.alphaArg1 || left.alphaArg2 != right.alphaArg2 || left.blendFactor != right.blendFactor ||
+				     left.source1 != right.source1 || left.source2 != right.source2 || left.operation != right.operation )
 				{
 					return true;
 				}
@@ -2515,12 +2502,17 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return blendType.GetHashCode() ^ operation.GetHashCode() ^ source1.GetHashCode() ^ source2.GetHashCode() ^ colorArg1.GetHashCode() ^ colorArg2.GetHashCode() ^ alphaArg1.GetHashCode() ^ alphaArg2.GetHashCode() ^ blendFactor.GetHashCode();
+			return blendType.GetHashCode() ^ operation.GetHashCode() ^ source1.GetHashCode() ^ source2.GetHashCode() ^
+			       colorArg1.GetHashCode() ^ colorArg2.GetHashCode() ^ alphaArg1.GetHashCode() ^ alphaArg2.GetHashCode() ^
+			       blendFactor.GetHashCode();
 		}
 
 		public override string ToString()
 		{
-			return ( new System.Text.StringBuilder() ).AppendFormat( "blendType : {0}; opertaion : {1}; source1 : {2}; source2 : {3}; colorArg1 : {4}; colorArg2 : {5}; alphaArg1 : {6}; alphaArg2 : {7}; blendType : {8};", this.blendType, this.operation, this.source1, this.source2, this.colorArg1, this.colorArg2, this.alphaArg1, this.alphaArg2, this.blendFactor ).ToString();
+			return
+				( new System.Text.StringBuilder() ).AppendFormat(
+					"blendType : {0}; opertaion : {1}; source1 : {2}; source2 : {3}; colorArg1 : {4}; colorArg2 : {5}; alphaArg1 : {6}; alphaArg2 : {7}; blendType : {8};",
+					blendType, operation, source1, source2, colorArg1, colorArg2, alphaArg1, alphaArg2, blendFactor ).ToString();
 		}
 
 		#endregion Object overloads

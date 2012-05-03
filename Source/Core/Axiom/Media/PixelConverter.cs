@@ -39,9 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System.Diagnostics;
-
 using Axiom.Core;
-
 
 #endregion Namespace Declarations
 
@@ -82,7 +80,10 @@ namespace Axiom.Media
 
 			#region Constructor
 
-			public PixelFormatDescription( string name, PixelFormat format, byte elemBytes, PixelFormatFlags flags, PixelComponentType componentType, byte componentCount, byte rbits, byte gbits, byte bbits, byte abits, uint rmask, uint gmask, uint bmask, uint amask, byte rshift, byte gshift, byte bshift, byte ashift )
+			public PixelFormatDescription( string name, PixelFormat format, byte elemBytes, PixelFormatFlags flags,
+			                               PixelComponentType componentType, byte componentCount, byte rbits, byte gbits,
+			                               byte bbits, byte abits, uint rmask, uint gmask, uint bmask, uint amask, byte rshift,
+			                               byte gshift, byte bshift, byte ashift )
 			{
 				this.name = name;
 				this.format = format;
@@ -112,261 +113,678 @@ namespace Axiom.Media
 		///</summary>
 		protected static PixelFormatDescription[] UnindexedPixelFormats = new PixelFormatDescription[]
 		                                                                  {
-		                                                                  	new PixelFormatDescription( "PF_UNKNOWN", PixelFormat.Unknown, /* Bytes per element */ 
+		                                                                  	new PixelFormatDescription( "PF_UNKNOWN",
+		                                                                  	                            PixelFormat.Unknown,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            0, /* Flags */
-		                                                                  	                            PixelFormatFlags.None, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 0, /* rbits, gbits, bbits, abits */
-		                                                                  	                            0, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_L8", PixelFormat.L8, /* Bytes per element */ 
-		                                                                  	                            1, /* Flags */
-		                                                                  	                            PixelFormatFlags.Luminance | PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 1, /* rbits, gbits, bbits, abits */
-		                                                                  	                            8, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0xFF, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_L16", PixelFormat.L16, /* Bytes per element */ 
-		                                                                  	                            2, /* Flags */
-		                                                                  	                            PixelFormatFlags.Luminance | PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Short, 1, /* rbits, gbits, bbits, abits */
-		                                                                  	                            16, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0xFFFF, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_A8", PixelFormat.A8, /* Bytes per element */ 
-		                                                                  	                            1, /* Flags */
-		                                                                  	                            PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 1, /* rbits, gbits, bbits, abits */
-		                                                                  	                            0, 0, 0, 8, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0xFF, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_A4L4", PixelFormat.A4L4, /* Bytes per element */ 
-		                                                                  	                            1, /* Flags */
-		                                                                  	                            PixelFormatFlags.HasAlpha | PixelFormatFlags.Luminance | PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 2, /* rbits, gbits, bbits, abits */
-		                                                                  	                            4, 0, 0, 4, /* Masks and shifts */
-		                                                                  	                            0x0F, 0, 0, 0xF0, 0, 0, 0, 4 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_BYTE_LA", PixelFormat.A8L8, /* Bytes per element */ 
-		                                                                  	                            2, /* Flags */
-		                                                                  	                            PixelFormatFlags.HasAlpha | PixelFormatFlags.Luminance, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 2, /* rbits, gbits, bbits, abits */
-		                                                                  	                            8, 0, 0, 8, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_R5G6B5", PixelFormat.R5G6B5, /* Bytes per element */ 
-		                                                                  	                            2, /* Flags */
-		                                                                  	                            PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 3, /* rbits, gbits, bbits, abits */
-		                                                                  	                            5, 6, 5, 0, /* Masks and shifts */
-		                                                                  	                            0xF800, 0x07E0, 0x001F, 0, 11, 5, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_B5G6R5", PixelFormat.B5G6R5, /* Bytes per element */ 
-		                                                                  	                            2, /* Flags */
-		                                                                  	                            PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 3, /* rbits, gbits, bbits, abits */
-		                                                                  	                            5, 6, 5, 0, /* Masks and shifts */
-		                                                                  	                            0x001F, 0x07E0, 0xF800, 0, 0, 5, 11, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_A4R4G4B4", PixelFormat.A4R4G4B4, /* Bytes per element */ 
-		                                                                  	                            2, /* Flags */
-		                                                                  	                            PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            4, 4, 4, 4, /* Masks and shifts */
-		                                                                  	                            0x0F00, 0x00F0, 0x000F, 0xF000, 8, 4, 0, 12 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_A1R5G5B5", PixelFormat.A1R5G5B5, /* Bytes per element */ 
-		                                                                  	                            2, /* Flags */
-		                                                                  	                            PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            5, 5, 5, 1, /* Masks and shifts */
-		                                                                  	                            0x7C00, 0x03E0, 0x001F, 0x8000, 10, 5, 0, 15 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_R8G8B8", PixelFormat.R8G8B8, /* Bytes per element */ 
-		                                                                  	                            3, // 24 bit integer -- special
-		                                                                  	                            /* Flags */
-		                                                                  	                            PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 3, /* rbits, gbits, bbits, abits */
-		                                                                  	                            8, 8, 8, 0, /* Masks and shifts */
-		                                                                  	                            0xFF0000, 0x00FF00, 0x0000FF, 0, 16, 8, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_B8G8R8", PixelFormat.B8G8R8, /* Bytes per element */ 
-		                                                                  	                            3, // 24 bit integer -- special
-		                                                                  	                            /* Flags */
-		                                                                  	                            PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 3, /* rbits, gbits, bbits, abits */
-		                                                                  	                            8, 8, 8, 0, /* Masks and shifts */
-		                                                                  	                            0x0000FF, 0x00FF00, 0xFF0000, 0, 0, 8, 16, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_A8R8G8B8", PixelFormat.A8R8G8B8, /* Bytes per element */ 
-		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            8, 8, 8, 8, /* Masks and shifts */
-		                                                                  	                            0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000, 16, 8, 0, 24 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_A8B8G8R8", PixelFormat.A8B8G8R8, /* Bytes per element */ 
-		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            8, 8, 8, 8, /* Masks and shifts */
-		                                                                  	                            0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000, 0, 8, 16, 24 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_B8G8R8A8", PixelFormat.B8G8R8A8, /* Bytes per element */ 
-		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            8, 8, 8, 8, /* Masks and shifts */
-		                                                                  	                            0x0000FF00, 0x00FF0000, 0xFF000000, 0x000000FF, 8, 16, 24, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_A2R10G10B10", PixelFormat.A2R10G10B10, /* Bytes per element */ 
-		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            10, 10, 10, 2, /* Masks and shifts */
-		                                                                  	                            0x3FF00000, 0x000FFC00, 0x000003FF, 0xC0000000, 20, 10, 0, 30 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_A2B10G10R10", PixelFormat.A2B10G10R10, /* Bytes per element */ 
-		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            10, 10, 10, 2, /* Masks and shifts */
-		                                                                  	                            0x000003FF, 0x000FFC00, 0x3FF00000, 0xC0000000, 0, 10, 20, 30 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_DXT1", PixelFormat.DXT1, /* Bytes per element */ 
-		                                                                  	                            0, /* Flags */
-		                                                                  	                            PixelFormatFlags.Compressed | PixelFormatFlags.HasAlpha, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 3, // No alpha
+		                                                                  	                            PixelFormatFlags.None,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            0,
 		                                                                  	                            /* rbits, gbits, bbits, abits */
-		                                                                  	                            0, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_DXT2", PixelFormat.DXT2, /* Bytes per element */ 
+		                                                                  	                            0, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_L8", PixelFormat.L8,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            1, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Luminance |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            1,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            8, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0xFF, 0, 0, 0, 0, 0, 0,
+		                                                                  	                            0 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_L16",
+		                                                                  	                            PixelFormat.L16,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            2, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Luminance |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Short, 1,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            16, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0xFFFF, 0, 0, 0, 0, 0,
+		                                                                  	                            0, 0 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_A8", PixelFormat.A8,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            1, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            1,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            0, 0, 0, 8,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0xFF, 0, 0, 0,
+		                                                                  	                            0 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_A4L4",
+		                                                                  	                            PixelFormat.A4L4,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            1, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Luminance |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            2,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            4, 0, 0, 4,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x0F, 0, 0, 0xF0, 0, 0,
+		                                                                  	                            0, 4 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_BYTE_LA",
+		                                                                  	                            PixelFormat.A8L8,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            2, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Luminance,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            2,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            8, 0, 0, 8,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_R5G6B5",
+		                                                                  	                            PixelFormat.R5G6B5,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            2, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            3,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            5, 6, 5, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0xF800, 0x07E0, 0x001F,
+		                                                                  	                            0, 11, 5, 0, 0 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_B5G6R5",
+		                                                                  	                            PixelFormat.B5G6R5,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            2, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            3,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            5, 6, 5, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x001F, 0x07E0, 0xF800,
+		                                                                  	                            0, 0, 5, 11, 0 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_A4R4G4B4",
+		                                                                  	                            PixelFormat.A4R4G4B4,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            2, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            4, 4, 4, 4,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x0F00, 0x00F0, 0x000F,
+		                                                                  	                            0xF000, 8, 4, 0, 12 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_A1R5G5B5",
+		                                                                  	                            PixelFormat.A1R5G5B5,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            2, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            5, 5, 5, 1,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x7C00, 0x03E0, 0x001F,
+		                                                                  	                            0x8000, 10, 5, 0, 15 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_R8G8B8",
+		                                                                  	                            PixelFormat.R8G8B8,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            3,
+		                                                                  	                            // 24 bit integer -- special
+		                                                                  	                            /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            3,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            8, 8, 8, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0xFF0000, 0x00FF00,
+		                                                                  	                            0x0000FF, 0, 16, 8, 0,
+		                                                                  	                            0 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_B8G8R8",
+		                                                                  	                            PixelFormat.B8G8R8,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            3,
+		                                                                  	                            // 24 bit integer -- special
+		                                                                  	                            /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            3,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            8, 8, 8, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x0000FF, 0x00FF00,
+		                                                                  	                            0xFF0000, 0, 0, 8, 16,
+		                                                                  	                            0 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_A8R8G8B8",
+		                                                                  	                            PixelFormat.A8R8G8B8,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            4, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            8, 8, 8, 8,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x00FF0000, 0x0000FF00,
+		                                                                  	                            0x000000FF, 0xFF000000,
+		                                                                  	                            16, 8, 0, 24 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_A8B8G8R8",
+		                                                                  	                            PixelFormat.A8B8G8R8,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            4, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            8, 8, 8, 8,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x000000FF, 0x0000FF00,
+		                                                                  	                            0x00FF0000, 0xFF000000,
+		                                                                  	                            0, 8, 16, 24 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_B8G8R8A8",
+		                                                                  	                            PixelFormat.B8G8R8A8,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            4, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            8, 8, 8, 8,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x0000FF00, 0x00FF0000,
+		                                                                  	                            0xFF000000, 0x000000FF,
+		                                                                  	                            8, 16, 24, 0 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_A2R10G10B10",
+		                                                                  	                            PixelFormat.A2R10G10B10,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            4, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            10, 10, 10, 2,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x3FF00000, 0x000FFC00,
+		                                                                  	                            0x000003FF, 0xC0000000,
+		                                                                  	                            20, 10, 0, 30 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_A2B10G10R10",
+		                                                                  	                            PixelFormat.A2B10G10R10,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            4, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            10, 10, 10, 2,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x000003FF, 0x000FFC00,
+		                                                                  	                            0x3FF00000, 0xC0000000,
+		                                                                  	                            0, 10, 20, 30 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_DXT1",
+		                                                                  	                            PixelFormat.DXT1,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            0, /* Flags */
-		                                                                  	                            PixelFormatFlags.Compressed | PixelFormatFlags.HasAlpha, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            0, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_DXT3", PixelFormat.DXT3, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Compressed |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            3, // No alpha
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            0, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_DXT2",
+		                                                                  	                            PixelFormat.DXT2,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            0, /* Flags */
-		                                                                  	                            PixelFormatFlags.Compressed | PixelFormatFlags.HasAlpha, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            0, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_DXT4", PixelFormat.DXT4, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Compressed |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            0, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_DXT3",
+		                                                                  	                            PixelFormat.DXT3,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            0, /* Flags */
-		                                                                  	                            PixelFormatFlags.Compressed | PixelFormatFlags.HasAlpha, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            0, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_DXT5", PixelFormat.DXT5, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Compressed |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            0, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_DXT4",
+		                                                                  	                            PixelFormat.DXT4,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            0, /* Flags */
-		                                                                  	                            PixelFormatFlags.Compressed | PixelFormatFlags.HasAlpha, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            0, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_FLOAT16_RGB", PixelFormat.FLOAT16_RGB, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Compressed |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            0, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_DXT5",
+		                                                                  	                            PixelFormat.DXT5,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            0, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Compressed |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            0, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_FLOAT16_RGB",
+		                                                                  	                            PixelFormat.FLOAT16_RGB,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            6, /* Flags */
-		                                                                  	                            PixelFormatFlags.Float, /* Component type and count */
-		                                                                  	                            PixelComponentType.Float16, 3, /* rbits, gbits, bbits, abits */
-		                                                                  	                            16, 16, 16, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_FLOAT16_RGBA", PixelFormat.FLOAT16_RGBA, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.Float,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Float16, 3,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            16, 16, 16, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_FLOAT16_RGBA",
+		                                                                  	                            PixelFormat.
+		                                                                  	                            	FLOAT16_RGBA,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            8, /* Flags */
-		                                                                  	                            PixelFormatFlags.Float, /* Component type and count */
-		                                                                  	                            PixelComponentType.Float16, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            16, 16, 16, 16, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_FLOAT32_RGB", PixelFormat.FLOAT32_RGB, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.Float,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Float16, 4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            16, 16, 16, 16,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_FLOAT32_RGB",
+		                                                                  	                            PixelFormat.FLOAT32_RGB,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            12, /* Flags */
-		                                                                  	                            PixelFormatFlags.Float, /* Component type and count */
-		                                                                  	                            PixelComponentType.Float32, 3, /* rbits, gbits, bbits, abits */
-		                                                                  	                            32, 32, 32, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_FLOAT32_RGBA", PixelFormat.FLOAT32_RGBA, /* Bytes per element */ 
-		                                                                  	                            16, /* Flags */
-		                                                                  	                            PixelFormatFlags.Float, /* Component type and count */
-		                                                                  	                            PixelComponentType.Float32, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            32, 32, 32, 32, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_X8R8G8B8", PixelFormat.X8R8G8B8, /* Bytes per element */ 
-		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 3, /* rbits, gbits, bbits, abits */
-		                                                                  	                            8, 8, 8, 0, /* Masks and shifts */
-		                                                                  	                            0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000, 16, 8, 0, 24 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_X8B8G8R8", PixelFormat.X8B8G8R8, /* Bytes per element */ 
-		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 3, /* rbits, gbits, bbits, abits */
-		                                                                  	                            8, 8, 8, 0, /* Masks and shifts */
-		                                                                  	                            0x000000FF, 0x0000FF00, 0x00FF0000, 0xFF000000, 0, 8, 16, 24 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_R8G8B8A8", PixelFormat.R8G8B8A8, /* Bytes per element */ 
-		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.HasAlpha | PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            8, 8, 8, 8, /* Masks and shifts */
-		                                                                  	                            0xFF000000, 0x00FF0000, 0x0000FF00, 0x000000FF, 24, 16, 8, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_DEPTH", PixelFormat.DEPTH, /* Bytes per element */ 
-		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.Depth, /* Component type and count */
-		                                                                  	                            PixelComponentType.Float32, 1, // ?
+		                                                                  	                            PixelFormatFlags.Float,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Float32, 3,
 		                                                                  	                            /* rbits, gbits, bbits, abits */
-		                                                                  	                            0, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_SHORT_RGBA", PixelFormat.SHORT_RGBA, /* Bytes per element */ 
+		                                                                  	                            32, 32, 32, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_FLOAT32_RGBA",
+		                                                                  	                            PixelFormat.
+		                                                                  	                            	FLOAT32_RGBA,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            16, /* Flags */
+		                                                                  	                            PixelFormatFlags.Float,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Float32, 4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            32, 32, 32, 32,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_X8R8G8B8",
+		                                                                  	                            PixelFormat.X8R8G8B8,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            4, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            3,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            8, 8, 8, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x00FF0000, 0x0000FF00,
+		                                                                  	                            0x000000FF, 0xFF000000,
+		                                                                  	                            16, 8, 0, 24 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_X8B8G8R8",
+		                                                                  	                            PixelFormat.X8B8G8R8,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            4, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            3,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            8, 8, 8, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x000000FF, 0x0000FF00,
+		                                                                  	                            0x00FF0000, 0xFF000000,
+		                                                                  	                            0, 8, 16, 24 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_R8G8B8A8",
+		                                                                  	                            PixelFormat.R8G8B8A8,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            4, /* Flags */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            8, 8, 8, 8,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0xFF000000, 0x00FF0000,
+		                                                                  	                            0x0000FF00, 0x000000FF,
+		                                                                  	                            24, 16, 8, 0 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_DEPTH",
+		                                                                  	                            PixelFormat.DEPTH,
+		                                                                  	                            /* Bytes per element */ 
+		                                                                  	                            4, /* Flags */
+		                                                                  	                            PixelFormatFlags.Depth,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Float32, 1, // ?
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            0, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_SHORT_RGBA",
+		                                                                  	                            PixelFormat.SHORT_RGBA,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            8, /* Flags */
-		                                                                  	                            PixelFormatFlags.HasAlpha, /* Component type and count */
-		                                                                  	                            PixelComponentType.Short, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            16, 16, 16, 16, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_R3G3B2", PixelFormat.R3G3B2, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Short, 4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            16, 16, 16, 16,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_R3G3B2",
+		                                                                  	                            PixelFormat.R3G3B2,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            1, /* Flags */
-		                                                                  	                            PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 3, /* rbits, gbits, bbits, abits */
-		                                                                  	                            3, 3, 2, 0, /* Masks and shifts */
-		                                                                  	                            0xE0, 0x1C, 0x03, 0, 5, 2, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_FLOAT16_R", PixelFormat.FLOAT16_R, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            3,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            3, 3, 2, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0xE0, 0x1C, 0x03, 0, 5,
+		                                                                  	                            2, 0, 0 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_FLOAT16_R",
+		                                                                  	                            PixelFormat.FLOAT16_R,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            2, /* Flags */
-		                                                                  	                            PixelFormatFlags.Float, /* Component type and count */
-		                                                                  	                            PixelComponentType.Float16, 1, /* rbits, gbits, bbits, abits */
-		                                                                  	                            16, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_FLOAT32_R", PixelFormat.FLOAT32_R, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.Float,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Float16, 1,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            16, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_FLOAT32_R",
+		                                                                  	                            PixelFormat.FLOAT32_R,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.Float, /* Component type and count */
-		                                                                  	                            PixelComponentType.Float32, 1, /* rbits, gbits, bbits, abits */
-		                                                                  	                            32, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_SHORT_GR", PixelFormat.SHORT_GR, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.Float,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Float32, 1,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            32, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_SHORT_GR",
+		                                                                  	                            PixelFormat.SHORT_GR,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.NativeEndian, /* Component type and count */
-		                                                                  	                            PixelComponentType.Short, 2, /* rbits, gbits, bbits, abits */
-		                                                                  	                            16, 16, 0, 0, /* Masks and shifts */
-		                                                                  	                            0x0000FFFF, 0xFFFF0000, 0, 0, 0, 16, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_FLOAT16_GR", PixelFormat.FLOAT16_GR, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	NativeEndian,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Short, 2,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            16, 16, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0x0000FFFF, 0xFFFF0000,
+		                                                                  	                            0, 0, 0, 16, 0, 0 ),
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_FLOAT16_GR",
+		                                                                  	                            PixelFormat.FLOAT16_GR,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.Float, /* Component type and count */
-		                                                                  	                            PixelComponentType.Float16, 2, /* rbits, gbits, bbits, abits */
-		                                                                  	                            16, 16, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_FLOAT32_GR", PixelFormat.FLOAT32_GR, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.Float,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Float16, 2,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            16, 16, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_FLOAT32_GR",
+		                                                                  	                            PixelFormat.FLOAT32_GR,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            4, /* Flags */
-		                                                                  	                            PixelFormatFlags.Float, /* Component type and count */
-		                                                                  	                            PixelComponentType.Float32, 2, /* rbits, gbits, bbits, abits */
-		                                                                  	                            32, 32, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_SHORT_RGB", PixelFormat.SHORT_RGB, /* Bytes per element */ 
+		                                                                  	                            PixelFormatFlags.Float,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Float32, 2,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            32, 32, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_SHORT_RGB",
+		                                                                  	                            PixelFormat.SHORT_RGB,
+		                                                                  	                            /* Bytes per element */ 
 		                                                                  	                            6, /* Flags */
-		                                                                  	                            PixelFormatFlags.None, /* Component type and count */
-		                                                                  	                            PixelComponentType.Short, 3, /* rbits, gbits, bbits, abits */
-		                                                                  	                            16, 16, 16, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_PVRTC_RGB2", PixelFormat.PVRTC_RGB2, /* Bytes per element */
+		                                                                  	                            PixelFormatFlags.None,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.
+		                                                                  	                            	Short, 3,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            16, 16, 16, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_PVRTC_RGB2",
+		                                                                  	                            PixelFormat.PVRTC_RGB2,
+		                                                                  	                            /* Bytes per element */
 		                                                                  	                            0, /* Flags */
-		                                                                  	                            PixelFormatFlags.Compressed, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 3, /* rbits, gbits, bbits, abits */
-		                                                                  	                            0, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_PVRTC_RGBA2", PixelFormat.PVRTC_RGBA2, /* Bytes per element */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Compressed,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            3,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            0, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_PVRTC_RGBA2",
+		                                                                  	                            PixelFormat.PVRTC_RGBA2,
+		                                                                  	                            /* Bytes per element */
 		                                                                  	                            0, /* Flags */
-		                                                                  	                            PixelFormatFlags.Compressed | PixelFormatFlags.HasAlpha, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            0, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_PVRTC_RGB4", PixelFormat.PVRTC_RGB4, /* Bytes per element */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Compressed |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            0, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_PVRTC_RGB4",
+		                                                                  	                            PixelFormat.PVRTC_RGB4,
+		                                                                  	                            /* Bytes per element */
 		                                                                  	                            0, /* Flags */
-		                                                                  	                            PixelFormatFlags.Compressed, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 3, /* rbits, gbits, bbits, abits */
-		                                                                  	                            0, 0, 0, 0, /* Masks and shifts */
-		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 ), //-----------------------------------------------------------------------
-		                                                                  	new PixelFormatDescription( "PF_PVRTC_RGBA4", PixelFormat.PVRTC_RGBA4, /* Bytes per element */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Compressed,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            3,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            0, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
+		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
+		                                                                  	,
+		                                                                  	//-----------------------------------------------------------------------
+		                                                                  	new PixelFormatDescription( "PF_PVRTC_RGBA4",
+		                                                                  	                            PixelFormat.PVRTC_RGBA4,
+		                                                                  	                            /* Bytes per element */
 		                                                                  	                            0, /* Flags */
-		                                                                  	                            PixelFormatFlags.Compressed | PixelFormatFlags.HasAlpha, /* Component type and count */
-		                                                                  	                            PixelComponentType.Byte, 4, /* rbits, gbits, bbits, abits */
-		                                                                  	                            0, 0, 0, 0, /* Masks and shifts */
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	Compressed |
+		                                                                  	                            PixelFormatFlags.
+		                                                                  	                            	HasAlpha,
+		                                                                  	                            /* Component type and count */
+		                                                                  	                            PixelComponentType.Byte,
+		                                                                  	                            4,
+		                                                                  	                            /* rbits, gbits, bbits, abits */
+		                                                                  	                            0, 0, 0, 0,
+		                                                                  	                            /* Masks and shifts */
 		                                                                  	                            0, 0, 0, 0, 0, 0, 0, 0 )
 		                                                                  };
 
@@ -379,7 +797,7 @@ namespace Axiom.Media
 				return;
 			}
 
-			IndexedPixelFormats = new PixelFormatDescription[ (int)PixelFormat.Count ];
+			IndexedPixelFormats = new PixelFormatDescription[(int)PixelFormat.Count];
 			foreach ( var d in UnindexedPixelFormats )
 			{
 				IndexedPixelFormats[ (int)d.format ] = d;
@@ -430,14 +848,17 @@ namespace Axiom.Media
 			if ( ( des.flags & PixelFormatFlags.NativeEndian ) != 0 )
 			{
 				// Shortcut for integer formats packing
-				var value = ( ( ( Bitwise.FixedToFixed( r, 8, des.rbits ) << des.rshift ) & des.rmask ) | ( ( Bitwise.FixedToFixed( g, 8, des.gbits ) << des.gshift ) & des.gmask ) | ( ( Bitwise.FixedToFixed( b, 8, des.bbits ) << des.bshift ) & des.bmask ) | ( ( Bitwise.FixedToFixed( a, 8, des.abits ) << des.ashift ) & des.amask ) );
+				var value = ( ( ( Bitwise.FixedToFixed( r, 8, des.rbits ) << des.rshift ) & des.rmask ) |
+				              ( ( Bitwise.FixedToFixed( g, 8, des.gbits ) << des.gshift ) & des.gmask ) |
+				              ( ( Bitwise.FixedToFixed( b, 8, des.bbits ) << des.bshift ) & des.bmask ) |
+				              ( ( Bitwise.FixedToFixed( a, 8, des.abits ) << des.ashift ) & des.amask ) );
 				// And write to memory
 				Bitwise.IntWrite( dest, des.elemBytes, value );
 			}
 			else
 			{
 				// Convert to float
-				PackColor( r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f, format, dest );
+				PackColor( r/255.0f, g/255.0f, b/255.0f, a/255.0f, format, dest );
 			}
 		}
 
@@ -458,7 +879,10 @@ namespace Axiom.Media
 			if ( ( des.flags & PixelFormatFlags.NativeEndian ) != 0 )
 			{
 				// Do the packing
-				var value = ( ( Bitwise.FloatToFixed( r, des.rbits ) << des.rshift ) & des.rmask ) | ( ( Bitwise.FloatToFixed( g, des.gbits ) << des.gshift ) & des.gmask ) | ( ( Bitwise.FloatToFixed( b, des.bbits ) << des.bshift ) & des.bmask ) | ( ( Bitwise.FloatToFixed( a, des.abits ) << des.ashift ) & des.amask );
+				var value = ( ( Bitwise.FloatToFixed( r, des.rbits ) << des.rshift ) & des.rmask ) |
+				            ( ( Bitwise.FloatToFixed( g, des.gbits ) << des.gshift ) & des.gmask ) |
+				            ( ( Bitwise.FloatToFixed( b, des.bbits ) << des.bshift ) & des.bmask ) |
+				            ( ( Bitwise.FloatToFixed( a, des.abits ) << des.ashift ) & des.amask );
 				// And write to memory
 				Bitwise.IntWrite( dest, des.elemBytes, value );
 			}
@@ -750,7 +1174,8 @@ namespace Axiom.Media
 		///<param name="dstBytes"> Pointer to destination region </param>
 		///<param name="dstFormat"> Pixel format of destination region </param>
 		[OgreVersion( 1, 7, 2 )]
-		public static void BulkPixelConversion( BufferBase srcBytes, PixelFormat srcFormat, BufferBase dstBytes, PixelFormat dstFormat, int count )
+		public static void BulkPixelConversion( BufferBase srcBytes, PixelFormat srcFormat, BufferBase dstBytes,
+		                                        PixelFormat dstFormat, int count )
 		{
 			var src = new PixelBox( count, 1, 1, srcFormat, srcBytes );
 			var dst = new PixelBox( count, 1, 1, dstFormat, dstBytes );
@@ -770,7 +1195,8 @@ namespace Axiom.Media
 		{
 			Debug.Assert( src.Width == dst.Width && src.Height == dst.Height && src.Depth == dst.Depth );
 
-			LogManager.Instance.Write( "Converting image from {0} to {1}", PixelUtil.GetFormatName( src.Format ), PixelUtil.GetFormatName( dst.Format ) );
+			LogManager.Instance.Write( "Converting image from {0} to {1}", PixelUtil.GetFormatName( src.Format ),
+			                           PixelUtil.GetFormatName( dst.Format ) );
 
 			// Check for compressed formats, we don't support decompression, compression or recoding
 			if ( PixelBox.Compressed( src.Format ) || PixelBox.Compressed( dst.Format ) )
@@ -782,7 +1208,8 @@ namespace Axiom.Media
 				}
 				else
 				{
-					throw new AxiomException( "This method can not be used to compress or decompress images, in PixelBox.BulkPixelConversion" );
+					throw new AxiomException(
+						"This method can not be used to compress or decompress images, in PixelBox.BulkPixelConversion" );
 				}
 			}
 
@@ -799,18 +1226,18 @@ namespace Axiom.Media
 				var srcPixelSize = PixelUtil.GetNumElemBytes( src.Format );
 				var dstPixelSize = PixelUtil.GetNumElemBytes( dst.Format );
 
-				var srcptr = src.Data + ( src.Left + src.Top * src.RowPitch + src.Front * src.SlicePitch ) * srcPixelSize;
-				var dstptr = dst.Data + ( dst.Left + dst.Top * dst.RowPitch + dst.Front * dst.SlicePitch ) * dstPixelSize;
+				var srcptr = src.Data + ( src.Left + src.Top*src.RowPitch + src.Front*src.SlicePitch )*srcPixelSize;
+				var dstptr = dst.Data + ( dst.Left + dst.Top*dst.RowPitch + dst.Front*dst.SlicePitch )*dstPixelSize;
 
 				// Calculate pitches+skips in bytes
-				var srcRowPitchBytes = src.RowPitch * srcPixelSize;
-				var srcSliceSkipBytes = src.SliceSkip * srcPixelSize;
+				var srcRowPitchBytes = src.RowPitch*srcPixelSize;
+				var srcSliceSkipBytes = src.SliceSkip*srcPixelSize;
 
-				var dstRowPitchBytes = dst.RowPitch * dstPixelSize;
-				var dstSliceSkipBytes = dst.SliceSkip * dstPixelSize;
+				var dstRowPitchBytes = dst.RowPitch*dstPixelSize;
+				var dstSliceSkipBytes = dst.SliceSkip*dstPixelSize;
 
 				// Otherwise, copy per row
-				var rowSize = src.Width * srcPixelSize;
+				var rowSize = src.Width*srcPixelSize;
 				for ( var z = src.Front; z < src.Back; z++ )
 				{
 					for ( var y = src.Top; y < src.Bottom; y++ )
@@ -845,7 +1272,8 @@ namespace Axiom.Media
 
 			// Converting from X8R8G8B8 is exactly the same as converting from
 			// A8R8G8B8, given that the destination format does not have alpha.
-			if ( ( src.Format == PixelFormat.X8R8G8B8 || src.Format == PixelFormat.X8B8G8R8 ) && !PixelUtil.HasAlpha( dst.Format ) )
+			if ( ( src.Format == PixelFormat.X8R8G8B8 || src.Format == PixelFormat.X8B8G8R8 ) &&
+			     !PixelUtil.HasAlpha( dst.Format ) )
 			{
 				// Do the same conversion, with A8R8G8B8, which has a lot of 
 				// optimized conversions
@@ -865,14 +1293,14 @@ namespace Axiom.Media
 			{
 				var srcPixelSize = PixelUtil.GetNumElemBytes( src.Format );
 				var dstPixelSize = PixelUtil.GetNumElemBytes( dst.Format );
-				var srcptr = src.Data + ( src.Left + src.Top * src.RowPitch + src.Front * src.SlicePitch ) * srcPixelSize;
-				var dstptr = dst.Data + ( dst.Left + dst.Top * dst.RowPitch + dst.Front * dst.SlicePitch ) * dstPixelSize;
+				var srcptr = src.Data + ( src.Left + src.Top*src.RowPitch + src.Front*src.SlicePitch )*srcPixelSize;
+				var dstptr = dst.Data + ( dst.Left + dst.Top*dst.RowPitch + dst.Front*dst.SlicePitch )*dstPixelSize;
 
 				// Calculate pitches+skips in bytes
-				var srcRowSkipBytes = src.RowSkip * srcPixelSize;
-				var srcSliceSkipBytes = src.SliceSkip * srcPixelSize;
-				var dstRowSkipBytes = dst.RowSkip * dstPixelSize;
-				var dstSliceSkipBytes = dst.SliceSkip * dstPixelSize;
+				var srcRowSkipBytes = src.RowSkip*srcPixelSize;
+				var srcSliceSkipBytes = src.SliceSkip*srcPixelSize;
+				var dstRowSkipBytes = dst.RowSkip*dstPixelSize;
+				var dstSliceSkipBytes = dst.SliceSkip*dstPixelSize;
 
 				// The brute force fallback
 				float r, g, b, a;

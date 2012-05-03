@@ -55,7 +55,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public TokenRule( OperationType op )
 		{
-			this.operation = op;
+			operation = op;
 			tokenID = 0;
 			symbol = "";
 			errorID = 0;
@@ -63,7 +63,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public TokenRule( OperationType op, Symbol tokenID )
 		{
-			this.operation = op;
+			operation = op;
 			this.tokenID = tokenID;
 			symbol = "";
 			errorID = 0;
@@ -71,7 +71,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public TokenRule( OperationType op, Symbol tokenID, string symbol )
 		{
-			this.operation = op;
+			operation = op;
 			this.tokenID = tokenID;
 			this.symbol = symbol;
 			errorID = 0;
@@ -121,9 +121,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public SymbolDef( Symbol symbol, int glEnum, ContextKeyPattern ckp )
 		{
-			this.ID = symbol;
-			this.pass2Data = glEnum;
-			this.contextKey = (uint)ckp;
+			ID = symbol;
+			pass2Data = glEnum;
+			contextKey = (uint)ckp;
 			contextPatternSet = 0;
 			contextPatternClear = 0;
 			defTextID = 0;
@@ -132,10 +132,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public SymbolDef( Symbol symbol, int glEnum, ContextKeyPattern ckp, uint cps )
 		{
-			this.ID = symbol;
-			this.pass2Data = glEnum;
-			this.contextKey = (uint)ckp;
-			this.contextPatternSet = cps;
+			ID = symbol;
+			pass2Data = glEnum;
+			contextKey = (uint)ckp;
+			contextPatternSet = cps;
 			contextPatternClear = 0;
 			defTextID = 0;
 			ruleID = 0;
@@ -143,10 +143,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public SymbolDef( Symbol symbol, int glEnum, ContextKeyPattern ckp, ContextKeyPattern cps )
 		{
-			this.ID = symbol;
-			this.pass2Data = glEnum;
-			this.contextKey = (uint)ckp;
-			this.contextPatternSet = (uint)cps;
+			ID = symbol;
+			pass2Data = glEnum;
+			contextKey = (uint)ckp;
+			contextPatternSet = (uint)cps;
 			contextPatternClear = 0;
 			defTextID = 0;
 			ruleID = 0;
@@ -180,7 +180,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public TokenInstruction( Symbol symbol, Symbol ID )
 		{
-			this.NTTRuleID = symbol;
+			NTTRuleID = symbol;
 			this.ID = ID;
 			line = 0;
 			pos = 0;
@@ -218,9 +218,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public RegModOffset( int offset, Symbol regBase, int index )
 		{
-			this.MacroOffset = offset;
-			this.RegisterBase = (int)regBase;
-			this.OpParamsIndex = index;
+			MacroOffset = offset;
+			RegisterBase = (int)regBase;
+			OpParamsIndex = index;
 		}
 	}
 
@@ -233,10 +233,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public MacroRegModify( TokenInstruction[] tokens, RegModOffset[] offsets )
 		{
-			this.Macro = tokens;
-			this.MacroSize = tokens.Length;
-			this.RegMods = offsets;
-			this.RegModSize = offsets.Length;
+			Macro = tokens;
+			MacroSize = tokens.Length;
+			RegMods = offsets;
+			RegModSize = offsets.Length;
 		}
 	}
 }

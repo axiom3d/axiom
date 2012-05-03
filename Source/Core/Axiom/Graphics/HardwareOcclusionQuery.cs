@@ -49,8 +49,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// is query hasn't yet returned a result.
 		/// </summary>
-		[OgreVersion( 1, 7, 2 )]
-		protected bool isQueryResultStillOutstanding;
+		[OgreVersion( 1, 7, 2 )] protected bool isQueryResultStillOutstanding;
 
 		/// <summary>
 		/// Let's you get the last pixel count with out doing the hardware occlusion test
@@ -120,7 +119,7 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Math;
 using Axiom.Graphics;
 
@@ -102,12 +101,13 @@ namespace Axiom.Core
 			decl.AddElement( PositionBinding, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
 			// create a new hardware vertex buffer for the position data
-			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( PositionBinding ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( PositionBinding ), vertexData.vertexCount,
+			                                                                BufferUsage.StaticWriteOnly );
 
 			// bind the position buffer
 			binding.SetBinding( PositionBinding, buffer );
 
-			this.material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
+			material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
 		}
 
 		#endregion Constructors
@@ -118,14 +118,14 @@ namespace Axiom.Core
 		public void InitAABB( AxisAlignedBox box )
 		{
 			// store the bounding box locally
-			this.BoundingBox = box;
+			BoundingBox = box;
 		}
 
 		[Obsolete( "Use WireBoundingBox.BoundingBox property." )]
 		public void SetupBoundingBox( AxisAlignedBox aabb )
 		{
 			// store the bounding box locally
-			this.BoundingBox = box;
+			BoundingBox = box;
 		}
 
 		protected virtual void SetupBoundingBoxVertices( AxisAlignedBox aab )
@@ -262,7 +262,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public override Real GetSquaredViewDepth( Camera camera )
 		{
-			Vector3 min = box.Minimum, max = box.Maximum, mid = ( ( max - min ) * 0.5f ) + min, dist = camera.DerivedPosition - mid;
+			Vector3 min = box.Minimum, max = box.Maximum, mid = ( ( max - min )*0.5f ) + min, dist = camera.DerivedPosition - mid;
 
 			return dist.LengthSquared;
 		}
@@ -274,7 +274,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.Radius;
+				return Radius;
 			}
 		}
 

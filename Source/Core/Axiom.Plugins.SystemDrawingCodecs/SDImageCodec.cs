@@ -42,9 +42,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
-
 using Axiom.Media;
-
 using SDI = System.Drawing.Imaging;
 
 #endregion Namespace Declarations
@@ -123,9 +121,10 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 			var image = new Bitmap( data.width, data.height, pf );
 
 			//Create a BitmapData and Lock all pixels to be written
-			SDI.BitmapData imagedta = image.LockBits( new Rectangle( 0, 0, image.Width, image.Height ), SDI.ImageLockMode.WriteOnly, image.PixelFormat );
+			SDI.BitmapData imagedta = image.LockBits( new Rectangle( 0, 0, image.Width, image.Height ),
+			                                          SDI.ImageLockMode.WriteOnly, image.PixelFormat );
 
-			var buffer = new byte[ input.Length ];
+			var buffer = new byte[input.Length];
 			input.Read( buffer, 0, buffer.Length );
 
 			for ( var c = 0; c < buffer.Length - bpp; c += bpp )
@@ -175,7 +174,8 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 						throw new ArgumentException( "Unsupported Pixel Format " + CurrentBitmap.PixelFormat );
 				}
 
-				var Data = CurrentBitmap.LockBits( new System.Drawing.Rectangle( 0, 0, CurrentBitmap.Width, CurrentBitmap.Height ), SDI.ImageLockMode.ReadOnly, CurrentBitmap.PixelFormat );
+				var Data = CurrentBitmap.LockBits( new System.Drawing.Rectangle( 0, 0, CurrentBitmap.Width, CurrentBitmap.Height ),
+				                                   SDI.ImageLockMode.ReadOnly, CurrentBitmap.PixelFormat );
 
 				// populate the image data
 				data.width = Data.Width;
@@ -185,22 +185,22 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 				if ( gray )
 				{
 					data.format = Axiom.Media.PixelFormat.L8;
-					data.size = data.width * data.height;
+					data.size = data.width*data.height;
 				}
 				else
 				{
 					data.format = Axiom.Media.PixelFormat.A8B8G8R8;
-					data.size = data.width * data.height * 4;
+					data.size = data.width*data.height*4;
 				}
 
 				// get the decoded data
-				buffer = new byte[ data.size ];
+				buffer = new byte[data.size];
 
 				// copy the data into the byte array
 				unsafe
 				{
 					int qw = 0;
-					byte* imgPtr = (byte*)( Data.Scan0 );
+					var imgPtr = (byte*)( Data.Scan0 );
 
 					if ( gray == false )
 					{
@@ -222,7 +222,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 								}
 								imgPtr += bytesPerPixel;
 							}
-							imgPtr += Data.Stride - Data.Width * bytesPerPixel;
+							imgPtr += Data.Stride - Data.Width*bytesPerPixel;
 						}
 					}
 					else
@@ -234,7 +234,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 								buffer[ qw++ ] = *( imgPtr );
 								imgPtr += bytesPerPixel;
 							}
-							imgPtr += Data.Stride - Data.Width * bytesPerPixel;
+							imgPtr += Data.Stride - Data.Width*bytesPerPixel;
 						}
 					}
 				}

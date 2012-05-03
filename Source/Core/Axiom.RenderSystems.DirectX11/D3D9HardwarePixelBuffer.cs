@@ -37,11 +37,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
 
@@ -91,15 +89,15 @@ namespace Axiom.RenderSystems.DirectX9
 
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !this.IsDisposed )
+				if ( !IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
-						this.Surface.SafeDispose();
-						this.Surface = null;
+						Surface.SafeDispose();
+						Surface = null;
 
-						this.Volume.SafeDispose();
-						this.Volume = null;
+						Volume.SafeDispose();
+						Volume = null;
 					}
 				}
 
@@ -114,7 +112,8 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		/// Map between device to buffer resources.
 		/// </summary>
-		protected Dictionary<D3D9.Device, BufferResources> mapDeviceToBufferResources = new Dictionary<D3D9.Device, BufferResources>();
+		protected Dictionary<D3D9.Device, BufferResources> mapDeviceToBufferResources =
+			new Dictionary<D3D9.Device, BufferResources>();
 
 		/// <summary>
 		/// Doing Mipmapping?
@@ -157,7 +156,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9HardwarePixelBuffer" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -189,7 +188,8 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Call this to associate a D3D surface with this pixel buffer
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
-		public void Bind( D3D9.Device dev, D3D9.Surface surface, D3D9.Surface fsaaSurface, bool writeGamma, int fsaa, string srcName, D3D9.BaseTexture mipTex )
+		public void Bind( D3D9.Device dev, D3D9.Surface surface, D3D9.Surface fsaaSurface, bool writeGamma, int fsaa,
+		                  string srcName, D3D9.BaseTexture mipTex )
 		{
 			//Entering critical section
 			LockDeviceAccess();
@@ -215,7 +215,7 @@ namespace Axiom.RenderSystems.DirectX9
 			format = D3D9Helper.ConvertEnum( desc.Format );
 			// Default
 			rowPitch = Width;
-			slicePitch = Height * Width;
+			slicePitch = Height*Width;
 			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
 			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
@@ -227,12 +227,13 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				foreach ( var it in mapDeviceToBufferResources )
 				{
-					if ( it.Value != bufferResources && it.Value.Surface != null && it.Key.TestCooperativeLevel().Success && dev.TestCooperativeLevel().Success )
+					if ( it.Value != bufferResources && it.Value.Surface != null && it.Key.TestCooperativeLevel().Success &&
+					     dev.TestCooperativeLevel().Success )
 					{
 						var fullBufferBox = new BasicBox( 0, 0, 0, Width, Height, Depth );
 						var dstBox = new PixelBox( fullBufferBox, Format );
 
-						var data = new byte[ sizeInBytes ];
+						var data = new byte[sizeInBytes];
 						using ( var d = BufferBase.Wrap( data ) )
 						{
 							dstBox.Data = d;
@@ -278,19 +279,20 @@ namespace Axiom.RenderSystems.DirectX9
 			format = D3D9Helper.ConvertEnum( desc.Format );
 			// Default
 			rowPitch = Width;
-			slicePitch = Height * Width;
+			slicePitch = Height*Width;
 			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
 			if ( isNewBuffer && ownerTexture.IsManuallyLoaded )
 			{
 				foreach ( var it in mapDeviceToBufferResources )
 				{
-					if ( it.Value != bufferResources && it.Value.Volume != null && it.Key.TestCooperativeLevel().Success && dev.TestCooperativeLevel().Success )
+					if ( it.Value != bufferResources && it.Value.Volume != null && it.Key.TestCooperativeLevel().Success &&
+					     dev.TestCooperativeLevel().Success )
 					{
 						var fullBufferBox = new BasicBox( 0, 0, 0, Width, Height, Depth );
 						var dstBox = new PixelBox( fullBufferBox, Format );
 
-						var data = new byte[ sizeInBytes ];
+						var data = new byte[sizeInBytes];
 						using ( var d = BufferBase.Wrap( data ) )
 						{
 							dstBox.Data = d;
@@ -374,16 +376,16 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( bpp != 0 )
 			{
-				rval.RowPitch = lrect.Pitch / bpp;
-				rval.SlicePitch = rval.RowPitch * rval.Height;
-				Debug.Assert( ( lrect.Pitch % bpp ) == 0 );
-				size = lrect.Pitch * rval.Height;
+				rval.RowPitch = lrect.Pitch/bpp;
+				rval.SlicePitch = rval.RowPitch*rval.Height;
+				Debug.Assert( ( lrect.Pitch%bpp ) == 0 );
+				size = lrect.Pitch*rval.Height;
 			}
 			else if ( PixelUtil.IsCompressed( rval.Format ) )
 			{
 				rval.RowPitch = rval.Width;
-				rval.SlicePitch = rval.Width * rval.Height;
-				size = rval.Width * rval.Height;
+				rval.SlicePitch = rval.Width*rval.Height;
+				size = rval.Width*rval.Height;
 			}
 			else
 			{
@@ -404,17 +406,17 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( bpp != 0 )
 			{
-				rval.RowPitch = lbox.RowPitch / bpp;
-				rval.SlicePitch = lbox.SlicePitch / bpp;
-				Debug.Assert( ( lbox.RowPitch % bpp ) == 0 );
-				Debug.Assert( ( lbox.SlicePitch % bpp ) == 0 );
-				size = lbox.RowPitch * rval.Height;
+				rval.RowPitch = lbox.RowPitch/bpp;
+				rval.SlicePitch = lbox.SlicePitch/bpp;
+				Debug.Assert( ( lbox.RowPitch%bpp ) == 0 );
+				Debug.Assert( ( lbox.SlicePitch%bpp ) == 0 );
+				size = lbox.RowPitch*rval.Height;
 			}
 			else if ( PixelUtil.IsCompressed( rval.Format ) )
 			{
 				rval.RowPitch = rval.Width;
-				rval.SlicePitch = rval.Width * rval.Height;
-				size = rval.Width * rval.Height;
+				rval.SlicePitch = rval.Width*rval.Height;
+				size = rval.Width*rval.Height;
 			}
 			else
 			{
@@ -498,7 +500,8 @@ namespace Axiom.RenderSystems.DirectX9
 			// Check for misuse
 			if ( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 )
 			{
-				throw new AxiomException( "DirectX does not allow locking of or directly writing to RenderTargets. Use BlitFromMemory if you need the contents." );
+				throw new AxiomException(
+					"DirectX does not allow locking of or directly writing to RenderTargets. Use BlitFromMemory if you need the contents." );
 			}
 
 			// Set locking flags according to options
@@ -529,14 +532,14 @@ namespace Axiom.RenderSystems.DirectX9
 			// Set extents and format
 			// Note that we do not carry over the left/top/front here, since the returned
 			// PixelBox will be re-based from the locking point onwards
-			var rval = new PixelBox( lockBox.Width, lockBox.Height, lockBox.Depth, this.Format );
+			var rval = new PixelBox( lockBox.Width, lockBox.Height, lockBox.Depth, Format );
 
 			if ( bufferResources.Surface != null )
 			{
 				//Surface
 				DX.DataRectangle lrect; // Filled in by D3D
 
-				if ( lockBox.Left == 0 && lockBox.Top == 0 && lockBox.Right == this.Width && lockBox.Bottom == this.Height )
+				if ( lockBox.Left == 0 && lockBox.Top == 0 && lockBox.Right == Width && lockBox.Bottom == Height )
 				{
 					// Lock whole surface
 					lrect = bufferResources.Surface.LockRectangle( flags );
@@ -648,7 +651,8 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		[OgreVersion( 1, 7, 2 )]
-		protected void Blit( D3D9.Device d3d9Device, HardwarePixelBuffer rsrc, BasicBox srcBox, BasicBox dstBox, BufferResources srcBufferResources, BufferResources dstBufferResources )
+		protected void Blit( D3D9.Device d3d9Device, HardwarePixelBuffer rsrc, BasicBox srcBox, BasicBox dstBox,
+		                     BufferResources srcBufferResources, BufferResources dstBufferResources )
 		{
 			if ( dstBufferResources.Surface != null && srcBufferResources.Surface != null )
 			{
@@ -667,7 +671,8 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( ( srcDesc.Usage & D3D9.Usage.RenderTarget ) != 0 && srcDesc.MultiSampleType == D3D9.MultisampleType.None )
 				{
 					// Temp texture
-					var tmptex = new D3D9.Texture( d3d9Device, srcDesc.Width, srcDesc.Height, 1, // 1 mip level ie topmost, generate no mipmaps
+					var tmptex = new D3D9.Texture( d3d9Device, srcDesc.Width, srcDesc.Height, 1,
+					                               // 1 mip level ie topmost, generate no mipmaps
 					                               0, srcDesc.Format, D3D9.Pool.SystemMemory );
 
 					var tmpsurface = tmptex.GetSurfaceLevel( 0 );
@@ -676,7 +681,8 @@ namespace Axiom.RenderSystems.DirectX9
 					{
 						// Hey, it worked
 						// Copy from this surface instead
-						var res = D3D9.Surface.FromSurface( dstBufferResources.Surface, tmpsurface, D3D9.Filter.Default, 0, dsrcRect, ddestRect );
+						var res = D3D9.Surface.FromSurface( dstBufferResources.Surface, tmpsurface, D3D9.Filter.Default, 0, dsrcRect,
+						                                    ddestRect );
 						if ( res.Failure )
 						{
 							tmpsurface.SafeDispose();
@@ -690,7 +696,8 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				// Otherwise, try the normal method
-				var res2 = D3D9.Surface.FromSurface( dstBufferResources.Surface, srcBufferResources.Surface, D3D9.Filter.Default, 0, dsrcRect, ddestRect );
+				var res2 = D3D9.Surface.FromSurface( dstBufferResources.Surface, srcBufferResources.Surface, D3D9.Filter.Default, 0,
+				                                     dsrcRect, ddestRect );
 				if ( res2.Failure )
 				{
 					throw new AxiomException( "D3D9.Surface.FromSurface failed in D3D9HardwarePixelBuffer.Blit" );
@@ -702,7 +709,8 @@ namespace Axiom.RenderSystems.DirectX9
 				var dsrcBox = ToD3DBox( srcBox );
 				var ddestBox = ToD3DBox( dstBox );
 
-				var res = D3D9.Volume.FromVolume( dstBufferResources.Volume, srcBufferResources.Volume, D3D9.Filter.Default, 0, dsrcBox, ddestBox );
+				var res = D3D9.Volume.FromVolume( dstBufferResources.Volume, srcBufferResources.Volume, D3D9.Filter.Default, 0,
+				                                  dsrcBox, ddestBox );
 				if ( res.Failure )
 				{
 					throw new AxiomException( "D3D9.Volume.FromVolume failed in D3D9HardwarePixelBuffer.Blit" );
@@ -752,7 +760,7 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( D3D9Helper.ConvertEnum( src.Format ) == D3D9.Format.Unknown )
 			{
 				bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, Format );
-				var newBuffer = new byte[ bufSize ];
+				var newBuffer = new byte[bufSize];
 				using ( var data = BufferBase.Wrap( newBuffer ) )
 				{
 					converted = new PixelBox( src.Width, src.Height, src.Depth, Format, data );
@@ -763,7 +771,7 @@ namespace Axiom.RenderSystems.DirectX9
 			int rowWidth = 0;
 			if ( PixelUtil.IsCompressed( converted.Format ) )
 			{
-				rowWidth = converted.RowPitch / 4;
+				rowWidth = converted.RowPitch/4;
 				// D3D wants the width of one row of cells in bytes
 				if ( converted.Format == PixelFormat.DXT1 )
 				{
@@ -778,7 +786,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 			else
 			{
-				rowWidth = converted.RowPitch * PixelUtil.GetNumElemBytes( converted.Format );
+				rowWidth = converted.RowPitch*PixelUtil.GetNumElemBytes( converted.Format );
 			}
 
 			if ( dstBufferResources.Surface != null )
@@ -787,7 +795,7 @@ namespace Axiom.RenderSystems.DirectX9
 				var destRect = ToD3DRectangle( dstBox );
 
 				bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
-				var data = new byte[ bufSize ];
+				var data = new byte[bufSize];
 				using ( var dest = BufferBase.Wrap( data ) )
 				{
 					Memory.Copy( converted.Data, dest, bufSize );
@@ -795,7 +803,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 				try
 				{
-					D3D9.Surface.FromMemory( dstBufferResources.Surface, data, D3D9.Filter.Default, 0, D3D9Helper.ConvertEnum( converted.Format ), rowWidth, srcRect, destRect );
+					D3D9.Surface.FromMemory( dstBufferResources.Surface, data, D3D9.Filter.Default, 0,
+					                         D3D9Helper.ConvertEnum( converted.Format ), rowWidth, srcRect, destRect );
 				}
 				catch ( Exception e )
 				{
@@ -809,7 +818,7 @@ namespace Axiom.RenderSystems.DirectX9
 				var sliceWidth = 0;
 				if ( PixelUtil.IsCompressed( converted.Format ) )
 				{
-					sliceWidth = converted.SlicePitch / 16;
+					sliceWidth = converted.SlicePitch/16;
 					// D3D wants the width of one slice of cells in bytes
 					if ( converted.Format == PixelFormat.DXT1 )
 					{
@@ -824,11 +833,11 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 				else
 				{
-					sliceWidth = converted.SlicePitch * PixelUtil.GetNumElemBytes( converted.Format );
+					sliceWidth = converted.SlicePitch*PixelUtil.GetNumElemBytes( converted.Format );
 				}
 
 				bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
-				var data = new byte[ bufSize ];
+				var data = new byte[bufSize];
 				using ( var dest = BufferBase.Wrap( data ) )
 				{
 					Memory.Copy( converted.Data, dest, bufSize );
@@ -839,7 +848,8 @@ namespace Axiom.RenderSystems.DirectX9
 				try
 				{
 					//D3D9.D3DX9.LoadVolumeFromMemory() not accessible 'cause D3D9.D3DX9 static class is not public
-					D3D9.Volume.FromFileInMemory( dstBufferResources.Volume, data, D3D9.Filter.Default, 0, srcBox, destBox, null, out info );
+					D3D9.Volume.FromFileInMemory( dstBufferResources.Volume, data, D3D9.Filter.Default, 0, srcBox, destBox, null,
+					                              out info );
 				}
 				catch ( Exception e )
 				{
@@ -894,7 +904,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 				// if we're going to try to use GetRenderTargetData, need to use system mem pool
 				var tryGetRenderTargetData = false;
-				if ( ( ( srcDesc.Usage & D3D9.Usage.RenderTarget ) != 0 ) && ( srcBox.Width == dst.Width ) && ( srcBox.Height == dst.Height ) && ( srcBox.Width == this.Width ) && ( srcBox.Height == this.Height ) && ( this.Format == tmpFormat ) )
+				if ( ( ( srcDesc.Usage & D3D9.Usage.RenderTarget ) != 0 ) && ( srcBox.Width == dst.Width ) &&
+				     ( srcBox.Height == dst.Height ) && ( srcBox.Width == Width ) && ( srcBox.Height == Height ) &&
+				     ( Format == tmpFormat ) )
 				{
 					tryGetRenderTargetData = true;
 					temppool = D3D9.Pool.SystemMemory;
@@ -947,7 +959,8 @@ namespace Axiom.RenderSystems.DirectX9
 			else if ( srcBufferResources.Volume != null )
 			{
 				// Create temp texture
-				var tmp = new D3D9.VolumeTexture( d3d9Device, dst.Width, dst.Height, dst.Depth, 0, 0, D3D9Helper.ConvertEnum( tmpFormat ), D3D9.Pool.Scratch );
+				var tmp = new D3D9.VolumeTexture( d3d9Device, dst.Width, dst.Height, dst.Depth, 0, 0,
+				                                  D3D9Helper.ConvertEnum( tmpFormat ), D3D9.Pool.Scratch );
 
 				var surface = tmp.GetVolumeLevel( 0 );
 
@@ -1089,7 +1102,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				//romeoxbm: in Ogre, there was an (int)this instead of that this.ID
 				// Check if we should use that id or, alternatively, the hashcode
-				var name = string.Format( "rtt/{0}/{1}", this.ID, srcName );
+				var name = string.Format( "rtt/{0}/{1}", ID, srcName );
 				renderTexture = new D3D9RenderTexture( name, this, writeGamma, fsaa );
 				Root.Instance.RenderSystem.AttachRenderTarget( renderTexture );
 			}

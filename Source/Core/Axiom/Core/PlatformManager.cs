@@ -47,8 +47,6 @@ using System.Reflection;
 using System.Collections.Generic;
 using System.Windows;
 
-
-
 #endregion Namespace Declarations
 
 namespace Axiom.Core
@@ -194,7 +192,8 @@ namespace Axiom.Core
 			// All else fails, yell loudly
 			if ( instance == null )
 			{
-				throw new PluginException( "The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
+				throw new PluginException(
+					"The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
 			}
 		}
 

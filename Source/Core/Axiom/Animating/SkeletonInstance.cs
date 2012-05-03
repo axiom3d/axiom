@@ -39,11 +39,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
-
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -89,7 +87,7 @@ namespace Axiom.Animating
 		public SkeletonInstance( Skeleton masterCopy )
 			: base()
 		{
-			this.skeleton = masterCopy;
+			skeleton = masterCopy;
 		}
 
 		#endregion Constructor
@@ -244,7 +242,7 @@ namespace Axiom.Animating
 			nextAutoHandle = skeleton.nextAutoHandle;
 			nextTagPointAutoHandle = 0;
 
-			this.BlendMode = skeleton.BlendMode;
+			BlendMode = skeleton.BlendMode;
 
 			// copy bones starting at the roots
 			for ( var i = 0; i < skeleton.RootBoneCount; i++ )
@@ -260,8 +258,8 @@ namespace Axiom.Animating
 			for ( var i = 0; i < skeleton.AttachmentPoints.Count; i++ )
 			{
 				var ap = skeleton.AttachmentPoints[ i ];
-				var parentBone = this.GetBone( ap.ParentBone );
-				this.CreateAttachmentPoint( ap.Name, parentBone.Handle, ap.Orientation, ap.Position );
+				var parentBone = GetBone( ap.ParentBone );
+				CreateAttachmentPoint( ap.Name, parentBone.Handle, ap.Orientation, ap.Position );
 			}
 		}
 

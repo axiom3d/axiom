@@ -36,7 +36,6 @@
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
-
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
 
@@ -117,7 +116,8 @@ namespace Axiom.RenderSystems.DirectX9
 					return (int)D3D9.TextureCoordIndex.CameraSpaceReflectionVector;
 
 				case TexCoordCalcMethod.EnvironmentMapPlanar:
-					if ( ( caps.VertexProcessingCaps & D3D9.VertexProcessingCaps.TexGenSphereMap ) == D3D9.VertexProcessingCaps.TexGenSphereMap )
+					if ( ( caps.VertexProcessingCaps & D3D9.VertexProcessingCaps.TexGenSphereMap ) ==
+					     D3D9.VertexProcessingCaps.TexGenSphereMap )
 					{
 						// use sphere map if available
 						return (int)D3D9.TextureCoordIndex.SphereMap;
@@ -132,7 +132,8 @@ namespace Axiom.RenderSystems.DirectX9
 					return (int)D3D9.TextureCoordIndex.CameraSpaceNormal;
 
 				case TexCoordCalcMethod.EnvironmentMap:
-					if ( ( caps.VertexProcessingCaps & D3D9.VertexProcessingCaps.TexGenSphereMap ) == D3D9.VertexProcessingCaps.TexGenSphereMap )
+					if ( ( caps.VertexProcessingCaps & D3D9.VertexProcessingCaps.TexGenSphereMap ) ==
+					     D3D9.VertexProcessingCaps.TexGenSphereMap )
 					{
 						return (int)D3D9.TextureCoordIndex.SphereMap;
 					}
@@ -274,10 +275,14 @@ namespace Axiom.RenderSystems.DirectX9
 					return D3D9.TextureOperation.BlendFactorAlpha;
 
 				case LayerBlendOperationEx.DotProduct:
-					return ( devCaps.TextureOperationCaps & D3D9.TextureOperationCaps.DotProduct3 ) != 0 ? D3D9.TextureOperation.DotProduct3 : D3D9.TextureOperation.Modulate;
+					return ( devCaps.TextureOperationCaps & D3D9.TextureOperationCaps.DotProduct3 ) != 0
+					       	? D3D9.TextureOperation.DotProduct3
+					       	: D3D9.TextureOperation.Modulate;
 
 				case LayerBlendOperationEx.BlendDiffuseColor:
-					return ( devCaps.TextureOperationCaps & D3D9.TextureOperationCaps.Lerp ) != 0 ? D3D9.TextureOperation.Lerp : D3D9.TextureOperation.Modulate;
+					return ( devCaps.TextureOperationCaps & D3D9.TextureOperationCaps.Lerp ) != 0
+					       	? D3D9.TextureOperation.Lerp
+					       	: D3D9.TextureOperation.Modulate;
 			}
 
 			return 0;
@@ -532,7 +537,8 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Return a D3D9 filter option for Axiom FilterType & FilterOption value
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public static D3D9.TextureFilter ConvertEnum( FilterType type, FilterOptions options, D3D9.Capabilities devCaps, D3D9TextureType texType )
+		public static D3D9.TextureFilter ConvertEnum( FilterType type, FilterOptions options, D3D9.Capabilities devCaps,
+		                                              D3D9TextureType texType )
 		{
 			// Assume normal
 			D3D9.FilterCaps capsType = devCaps.TextureFilterCaps;
@@ -681,8 +687,8 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( ( usage & BufferUsage.Dynamic ) != 0 )
 			{
 #if AXIOM_D3D_MANAGE_BUFFERS
-				// Only add the dynamic flag for the default pool, and
-				// we use default pool when buffer is discardable
+	// Only add the dynamic flag for the default pool, and
+	// we use default pool when buffer is discardable
 				if ( ( usage & BufferUsage.Discardable ) != 0 )
 				{
 					ret |= D3D9.Usage.Dynamic;
@@ -709,15 +715,17 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( locking == BufferLocking.Discard )
 			{
 #if AXIOM_D3D_MANAGE_BUFFERS
-				// Only add the discard flag for dynamic usgae and default pool
+	// Only add the discard flag for dynamic usgae and default pool
 				if ( ( usage & BufferUsage.Dynamic ) != 0 && ( usage & BufferUsage.Discardable ) != 0 )
 				{
 					ret |= D3D9.LockFlags.Discard;
 				}
 #else
-	// D3D doesn't like discard or no_overwrite on non-dynamic buffers
-				if ((usage & BufferUsage.Dynamic) != 0)
+				// D3D doesn't like discard or no_overwrite on non-dynamic buffers
+				if ( ( usage & BufferUsage.Dynamic ) != 0 )
+				{
 					ret |= D3D9.LockFlags.Discard;
+				}
 #endif
 			}
 			if ( locking == BufferLocking.ReadOnly )
@@ -733,15 +741,17 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( locking == BufferLocking.NoOverwrite )
 			{
 #if AXIOM_D3D_MANAGE_BUFFERS
-				// Only add the nooverwrite flag for dynamic usgae and default pool
+	// Only add the nooverwrite flag for dynamic usgae and default pool
 				if ( ( usage & BufferUsage.Dynamic ) != 0 && ( usage & BufferUsage.Discardable ) != 0 )
 				{
 					ret |= D3D9.LockFlags.NoOverwrite;
 				}
 #else
-	// D3D doesn't like discard or no_overwrite on non-dynamic buffers
-				if ((usage & BufferUsage.Dynamic) != 0)
+				// D3D doesn't like discard or no_overwrite on non-dynamic buffers
+				if ( ( usage & BufferUsage.Dynamic ) != 0 )
+				{
 					ret |= D3D9.LockFlags.NoOverwrite;
+				}
 #endif
 			}
 
@@ -1112,7 +1122,8 @@ namespace Axiom.RenderSystems.DirectX9
 		[AxiomHelper( 0, 9 )]
 		public static System.Drawing.Color ToColor( ColorEx color )
 		{
-			return System.Drawing.Color.FromArgb( (int)( color.a < 1.0f ? color.a * 255.0f : color.a ), (int)( color.r * 255.0f ), (int)( color.g * 255.0f ), (int)( color.b * 255.0f ) );
+			return System.Drawing.Color.FromArgb( (int)( color.a < 1.0f ? color.a*255.0f : color.a ), (int)( color.r*255.0f ),
+			                                      (int)( color.g*255.0f ), (int)( color.b*255.0f ) );
 		}
 
 		/// <summary>
@@ -1125,7 +1136,10 @@ namespace Axiom.RenderSystems.DirectX9
 		[AxiomHelper( 0, 9 )]
 		public static bool IsIdentity( ref DX.Matrix matrix )
 		{
-			if ( matrix.M11 == 1.0f && matrix.M12 == 0.0f && matrix.M13 == 0.0f && matrix.M14 == 0.0f && matrix.M21 == 0.0f && matrix.M22 == 1.0f && matrix.M23 == 0.0f && matrix.M24 == 0.0f && matrix.M31 == 0.0f && matrix.M32 == 0.0f && matrix.M33 == 1.0f && matrix.M34 == 0.0f && matrix.M41 == 0.0f && matrix.M42 == 0.0f && matrix.M43 == 0.0f && matrix.M44 == 1.0f )
+			if ( matrix.M11 == 1.0f && matrix.M12 == 0.0f && matrix.M13 == 0.0f && matrix.M14 == 0.0f && matrix.M21 == 0.0f &&
+			     matrix.M22 == 1.0f && matrix.M23 == 0.0f && matrix.M24 == 0.0f && matrix.M31 == 0.0f && matrix.M32 == 0.0f &&
+			     matrix.M33 == 1.0f && matrix.M34 == 0.0f && matrix.M41 == 0.0f && matrix.M42 == 0.0f && matrix.M43 == 0.0f &&
+			     matrix.M44 == 1.0f )
 			{
 				return true;
 			}

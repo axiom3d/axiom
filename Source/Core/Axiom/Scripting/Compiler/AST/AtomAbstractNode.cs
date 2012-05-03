@@ -51,8 +51,10 @@ namespace Axiom.Scripting.Compiler.AST
 	{
 		#region Fields and Properties
 
-		private CultureInfo _culture = new CultureInfo( "en-US" );
-		private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite | NumberStyles.AllowDecimalPoint;
+		private readonly CultureInfo _culture = new CultureInfo( "en-US" );
+
+		private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite |
+		                                   NumberStyles.AllowTrailingWhite | NumberStyles.AllowDecimalPoint;
 
 
 		private bool _parsed = false;
@@ -91,7 +93,9 @@ namespace Axiom.Scripting.Compiler.AST
 		#endregion Fields and Properties
 
 		public AtomAbstractNode( AbstractNode parent )
-			: base( parent ) {}
+			: base( parent )
+		{
+		}
 
 		private void _parse()
 		{
@@ -107,7 +111,7 @@ namespace Axiom.Scripting.Compiler.AST
 			var node = new AtomAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Id = this.Id;
+			node.Id = Id;
 			node._value = Value;
 			return node;
 		}

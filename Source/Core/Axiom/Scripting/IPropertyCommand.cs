@@ -44,7 +44,9 @@ namespace Axiom.Scripting
 	/// <summary>
 	/// Specialization of the IPropertyCommand using object
 	/// </summary>
-	public interface IPropertyCommand : IPropertyCommand<object> {};
+	public interface IPropertyCommand : IPropertyCommand<object>
+	{
+	};
 
 	/// <summary>
 	/// Provides an interface for setting object properties via a Command Pattern.

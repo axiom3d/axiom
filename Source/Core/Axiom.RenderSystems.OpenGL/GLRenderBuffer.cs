@@ -39,9 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System.Diagnostics;
-
 using Axiom.Graphics;
-
 using Tao.OpenGl;
 
 #endregion Namespace Declarations
@@ -67,7 +65,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public GLRenderBuffer( int format, int width, int height, int fsaa )
 			: base( width, height, 1, GLPixelUtil.GetClosestPixelFormat( format ), BufferUsage.WriteOnly )
 		{
-			this.GLFormat = format;
+			GLFormat = format;
 			/// Generate renderbuffer
 			Gl.glGenRenderbuffersEXT( 1, out _renderBufferId );
 			/// Bind it to FBO

@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -69,10 +68,10 @@ namespace Axiom.SceneManagers.Bsp
 			}
 			set
 			{
-				this.light = value;
-				this.lightNode = light.ParentNode;
-				this.lightPosition = light.GetDerivedPosition();
-				this.lightOrientation = GetLightOrientation();
+				light = value;
+				lightNode = light.ParentNode;
+				lightPosition = light.GetDerivedPosition();
+				lightOrientation = GetLightOrientation();
 
 				base.FieldOfView = Utility.DegreesToRadians( light.SpotlightOuterAngle );
 				base.Near = 1;
@@ -126,7 +125,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			// make the translation relative to the new axis
 			Matrix3 rotationT = rotation.Transpose();
-			Vector3 translation = -rotationT * position;
+			Vector3 translation = -rotationT*position;
 
 			// initialize the upper 3x3 portion with the rotation
 			_viewMatrix = rotationT;
@@ -163,7 +162,7 @@ namespace Axiom.SceneManagers.Bsp
 				rotationQuat = zAxis.GetRotationTo( zAdjustVec );
 			}
 
-			return rotationQuat * orientation;
+			return rotationQuat*orientation;
 		}
 	}
 }

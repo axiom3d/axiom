@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
 using Axiom;
 using Axiom.Collections;
 using Axiom.Core;
@@ -83,7 +82,7 @@ namespace Axiom.SceneManagers.Octree
 		Children are dynamically created as needed when nodes are inserted in the Octree.
 		If, later, the all the nodes are removed from the child, it is still kept arround.
 		*/
-		public Octree[ ,, ] Children = new Octree[ 8,8,8 ];
+		public Octree[,,] Children = new Octree[8,8,8];
 
 		protected Octree parent = null;
 
@@ -139,11 +138,11 @@ namespace Axiom.SceneManagers.Octree
 
 		public Octree( Octree parent )
 		{
-			this.wireBoundingBox = null;
-			this.HalfSize = new Vector3();
+			wireBoundingBox = null;
+			HalfSize = new Vector3();
 
 			this.parent = parent;
-			this.NumNodes = 0;
+			NumNodes = 0;
 		}
 
 		public void AddNode( OctreeNode node )
@@ -172,7 +171,9 @@ namespace Axiom.SceneManagers.Octree
 			Vector3[] pts1 = this.box.Corners;
 			Vector3[] pts2 = box.Corners;
 
-			return ( ( pts2[ 4 ].x - pts2[ 0 ].x ) <= ( pts1[ 4 ].x - pts1[ 0 ].x ) / 2 ) && ( ( pts2[ 4 ].y - pts2[ 0 ].y ) <= ( pts1[ 4 ].y - pts1[ 0 ].y ) / 2 ) && ( ( pts2[ 4 ].z - pts2[ 0 ].z ) <= ( pts1[ 4 ].z - pts1[ 0 ].z ) / 2 );
+			return ( ( pts2[ 4 ].x - pts2[ 0 ].x ) <= ( pts1[ 4 ].x - pts1[ 0 ].x )/2 ) &&
+			       ( ( pts2[ 4 ].y - pts2[ 0 ].y ) <= ( pts1[ 4 ].y - pts1[ 0 ].y )/2 ) &&
+			       ( ( pts2[ 4 ].z - pts2[ 0 ].z ) <= ( pts1[ 4 ].z - pts1[ 0 ].z )/2 );
 		}
 
 		/// <summary>
@@ -184,10 +185,10 @@ namespace Axiom.SceneManagers.Octree
 		/// </summary>
 		public void GetChildIndexes( AxisAlignedBox aabox, out int x, out int y, out int z )
 		{
-			Vector3 max = this.box.Maximum;
+			Vector3 max = box.Maximum;
 			Vector3 min = aabox.Minimum;
 
-			Vector3 Center = this.box.Maximum.MidPoint( this.box.Minimum );
+			Vector3 Center = box.Maximum.MidPoint( box.Minimum );
 			Vector3 CheckCenter = aabox.Maximum.MidPoint( aabox.Minimum );
 
 			if ( CheckCenter.x > Center.x )
@@ -230,8 +231,8 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				Vector3[] Corners = this.box.Corners;
-				box.SetExtents( Corners[ 0 ] - this.HalfSize, Corners[ 4 ] + this.HalfSize );
+				Vector3[] Corners = box.Corners;
+				box.SetExtents( Corners[ 0 ] - HalfSize, Corners[ 4 ] + HalfSize );
 
 				return box;
 			}

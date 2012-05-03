@@ -1,5 +1,4 @@
-﻿
-using Axiom.Math;
+﻿using Axiom.Math;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Animating;
@@ -54,7 +53,7 @@ namespace Axiom.Samples.VolumeTexture
 		{
 			xtime += evt.TimeSinceLastFrame;
 			xtime = (float)System.Math.IEEERemainder( xtime, 10 );
-			( (ThingRendable)trend ).AddTime( evt.TimeSinceLastFrame * 0.05f );
+			( (ThingRendable)trend ).AddTime( evt.TimeSinceLastFrame*0.05f );
 			animState.AddTime( evt.TimeSinceLastFrame );
 			return base.FrameRenderingQueued( evt );
 		}
@@ -64,7 +63,9 @@ namespace Axiom.Samples.VolumeTexture
 		/// </summary>
 		protected override void SetupContent()
 		{
-			ptex = TextureManager.Instance.CreateManual( "DynaTex", ResourceGroupManager.DefaultResourceGroupName, TextureType.ThreeD, 64, 64, 64, 0, Media.PixelFormat.A8R8G8B8, TextureUsage.Default, null );
+			ptex = TextureManager.Instance.CreateManual( "DynaTex", ResourceGroupManager.DefaultResourceGroupName,
+			                                             TextureType.ThreeD, 64, 64, 64, 0, Media.PixelFormat.A8R8G8B8,
+			                                             TextureUsage.Default, null );
 
 			SceneManager.AmbientLight = new ColorEx( 0.6f, 0.6f, 0.6f );
 			SceneManager.SetSkyBox( true, "Examples/MorningSkyBox", 50 );
@@ -150,10 +151,10 @@ namespace Axiom.Samples.VolumeTexture
 
 		protected void Generate()
 		{
-			Julia julia = new Julia( globalReal, globalImag, globalTheta );
+			var julia = new Julia( globalReal, globalImag, globalTheta );
 			float scale = 2.5f;
 			float vcut = 29.0f;
-			float vscale = 1.0f / vcut;
+			float vscale = 1.0f/vcut;
 
 			HardwarePixelBuffer buffer = ptex.GetBuffer( 0, 0 );
 
@@ -171,28 +172,31 @@ namespace Axiom.Samples.VolumeTexture
 				{
 					for ( int y = pb.Top; y < pb.Bottom; y++ )
 					{
-						pbptr += pb.Left * sizeof ( uint );
+						pbptr += pb.Left*sizeof ( uint );
 						for ( int x = pb.Left; x < pb.Right; x++ )
 						{
-							if ( z == pb.Front || z == ( pb.Back - 1 ) || y == pb.Top || y == ( pb.Bottom - 1 ) || x == pb.Left || x == ( pb.Right - 1 ) )
+							if ( z == pb.Front || z == ( pb.Back - 1 ) || y == pb.Top || y == ( pb.Bottom - 1 ) || x == pb.Left ||
+							     x == ( pb.Right - 1 ) )
 							{
 								pbptr.ToUIntPointer()[ 0 ] = 0;
 							}
 							else
 							{
-								float val = julia.Eval( ( (float)x / pb.Width - 0.5f ) * scale, ( (float)y / pb.Height - 0.5f ) * scale, ( (float)z / pb.Depth - 0.5f ) * scale );
+								float val = julia.Eval( ( (float)x/pb.Width - 0.5f )*scale, ( (float)y/pb.Height - 0.5f )*scale,
+								                        ( (float)z/pb.Depth - 0.5f )*scale );
 								if ( val > vcut )
 								{
 									val = vcut;
 								}
 
-								PixelConverter.PackColor( (float)x / pb.Width, (float)y / pb.Height, (float)z / pb.Depth, ( 1.0f - ( val * vscale ) ) * 0.7f, PixelFormat.A8R8G8B8, pbptr );
+								PixelConverter.PackColor( (float)x/pb.Width, (float)y/pb.Height, (float)z/pb.Depth,
+								                          ( 1.0f - ( val*vscale ) )*0.7f, PixelFormat.A8R8G8B8, pbptr );
 							}
 							pbptr++;
 						}
-						pbptr += ( pb.RowPitch - pb.Right ) * sizeof ( uint );
+						pbptr += ( pb.RowPitch - pb.Right )*sizeof ( uint );
 					}
-					pbptr += pb.SliceSkip * sizeof ( uint );
+					pbptr += pb.SliceSkip*sizeof ( uint );
 				}
 				buffer.Unlock();
 			}

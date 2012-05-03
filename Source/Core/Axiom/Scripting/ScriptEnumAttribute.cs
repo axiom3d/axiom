@@ -73,7 +73,7 @@ namespace Axiom.Scripting
 	[AttributeUsage( AttributeTargets.Field, AllowMultiple = true )]
 	public sealed class ScriptEnumAttribute : Attribute
 	{
-		private string scriptValue;
+		private readonly string scriptValue;
 
 		/// <summary>
 		///
@@ -81,7 +81,7 @@ namespace Axiom.Scripting
 		/// <param name="val">The value as it will appear when used in script files (.material, .overlay, etc).</param>
 		public ScriptEnumAttribute( string val )
 		{
-			this.scriptValue = val;
+			scriptValue = val;
 		}
 
 		public string ScriptValue

@@ -41,14 +41,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-
 using Axiom.Collections;
 using Axiom.Math;
 using Axiom.Core;
 using Axiom.Serialization;
-
 using ResourceHandle = System.UInt64;
-
 using Axiom.Animating.Collections;
 
 #endregion Namespace Declarations
@@ -208,23 +205,10 @@ namespace Axiom.Animating
 
 		#region CurrentEntity Property
 
-		/// <summary>The entity that is currently updating this skeleton.</summary>
-		private Entity _currentEntity;
-
 		/// <summary>
 		///    Get/Set the entity that is currently updating this skeleton.
 		/// </summary>
-		public Entity CurrentEntity
-		{
-			get
-			{
-				return _currentEntity;
-			}
-			set
-			{
-				_currentEntity = value;
-			}
-		}
+		public Entity CurrentEntity { get; set; }
 
 		#endregion CurrentEntity Property
 
@@ -284,7 +268,9 @@ namespace Axiom.Animating
 
 		#region Construction and Destruction
 
-		internal Skeleton() {}
+		internal Skeleton()
+		{
+		}
 
 		/// <summary>
 		/// Constructor, don't call directly, use SkeletonManager.
@@ -294,7 +280,9 @@ namespace Axiom.Animating
 		/// them together appropriately.
 		/// </remarks>
 		public Skeleton( ResourceManager parent, String name, ResourceHandle handle, string group )
-			: this( parent, name, handle, group, false, null ) {}
+			: this( parent, name, handle, group, false, null )
+		{
+		}
 
 		/// <summary>
 		/// Constructor, don't call directly, use SkeletonManager.
@@ -303,8 +291,11 @@ namespace Axiom.Animating
 		/// On creation, a Skeleton has a no bones, you should create them and link
 		/// them together appropriately.
 		/// </remarks>
-		public Skeleton( ResourceManager parent, String name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader ) {}
+		public Skeleton( ResourceManager parent, String name, ResourceHandle handle, string group, bool isManual,
+		                 IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
+		{
+		}
 
 		#endregion Construction and Destruction
 
@@ -565,7 +556,7 @@ namespace Axiom.Animating
 		internal virtual void GetBoneMatrices( Matrix4[] matrices )
 		{
 			// update derived transforms
-			this.RootBone.Update( true, false );
+			RootBone.Update( true, false );
 
 			/*
 				Calculating the bone matrices
@@ -579,7 +570,7 @@ namespace Axiom.Animating
 			var i = 0;
 			foreach ( var bone in boneList.Values )
 			{
-				matrices[ i++ ] = bone.FullTransform * bone.BindDerivedInverseTransform;
+				matrices[ i++ ] = bone.FullTransform*bone.BindDerivedInverseTransform;
 			}
 		}
 
@@ -704,7 +695,8 @@ namespace Axiom.Animating
 		/// <param name="rotation"></param>
 		/// <param name="translation"></param>
 		/// <returns></returns>
-		public virtual AttachmentPoint CreateAttachmentPoint( string name, ushort parentHandle, Quaternion rotation, Vector3 translation )
+		public virtual AttachmentPoint CreateAttachmentPoint( string name, ushort parentHandle, Quaternion rotation,
+		                                                      Vector3 translation )
 		{
 			var parentBone = boneList[ parentHandle ];
 			var ap = new AttachmentPoint( name, parentBone.Name, rotation, translation );
@@ -722,7 +714,7 @@ namespace Axiom.Animating
 			var writer = new StreamWriter( fs );
 			writer.AutoFlush = true;
 
-			writer.WriteLine( "-= Debug output of skeleton  {0} =-", this.Name );
+			writer.WriteLine( "-= Debug output of skeleton  {0} =-", Name );
 			writer.WriteLine( "" );
 			writer.WriteLine( "== Bones ==" );
 			writer.WriteLine( "Number of bones: {0}", boneList.Count );

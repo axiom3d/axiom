@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.ObjectModel;
-
 using Axiom.Math.Collections;
 
 #endregion Namespace Declarations
@@ -111,7 +110,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// </summary>
 		public void Clear( object key )
 		{
-			ArrayList bucket = (ArrayList)buckets[ key ];
+			var bucket = (ArrayList)buckets[ key ];
 			if ( bucket != null )
 			{
 				count -= bucket.Count;

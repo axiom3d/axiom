@@ -45,7 +45,8 @@ namespace Axiom.Samples.Bsp
 			//string bspPath = "./Media/Archives/chiropteraDM.zip";
 			string bspPath = "../../Media/Archives/chiropteraDM.pk3";
 			ResourceGroupManager.Instance.CreateResourceGroup( "BSPSAMPLE" );
-			ResourceGroupManager.Instance.AddResourceLocation( bspPath, "ZipFile", ResourceGroupManager.Instance.WorldResourceGroupName, true, false );
+			ResourceGroupManager.Instance.AddResourceLocation( bspPath, "ZipFile",
+			                                                   ResourceGroupManager.Instance.WorldResourceGroupName, true, false );
 		}
 
 		protected override void CreateSceneManager()
@@ -71,7 +72,8 @@ namespace Axiom.Samples.Bsp
 		{
 			// unload the map so we don't interfere with subsequent samples
 			ResourceGroupManager.Instance.UnloadResourceGroup( "BSPSAMPLE" );
-			ResourceGroupManager.Instance.RemoveResourceLocation( "Media/Archives/chiropteraDM.zip", ResourceGroupManager.Instance.WorldResourceGroupName );
+			ResourceGroupManager.Instance.RemoveResourceLocation( "Media/Archives/chiropteraDM.zip",
+			                                                      ResourceGroupManager.Instance.WorldResourceGroupName );
 		}
 
 		protected override void SetupView()

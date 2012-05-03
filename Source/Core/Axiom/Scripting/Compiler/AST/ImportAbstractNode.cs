@@ -53,7 +53,9 @@ namespace Axiom.Scripting.Compiler.AST
 		public string Target;
 
 		public ImportAbstractNode()
-			: base( null ) {}
+			: base( null )
+		{
+		}
 
 		#region AbstractNode Implementation
 

@@ -40,9 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
-
 using Axiom.Core;
-
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -76,7 +74,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///     Temp array.
 		/// </summary>
-		protected ValueType[] tmp = new ValueType[ 1 ];
+		protected ValueType[] tmp = new ValueType[1];
 
 		#endregion Fields
 
@@ -119,7 +117,7 @@ namespace Axiom.Graphics
 			}
 			set
 			{
-				if ( value > this.Length )
+				if ( value > Length )
 				{
 					throw new ArgumentException( "Position of the buffer may not exceed the length." );
 				}
@@ -183,7 +181,7 @@ namespace Axiom.Graphics
 
 		public void Write( System.Array val, int offset )
 		{
-			var count = Memory.SizeOf( val.GetType().GetElementType() ) * val.Length;
+			var count = Memory.SizeOf( val.GetType().GetElementType() )*val.Length;
 
 			Write( val, offset, count );
 		}
@@ -205,7 +203,7 @@ namespace Axiom.Graphics
 			var newOffset = position + offset;
 
 			// ensure we won't go past the end of the stream
-			if ( newOffset + count > this.Length )
+			if ( newOffset + count > Length )
 			{
 				throw new AxiomException( "Unable to write data past the end of a BufferStream" );
 			}
@@ -258,7 +256,7 @@ namespace Axiom.Graphics
 
 					// offset is from the current stream position
 				case SeekOrigin.Current:
-					if ( position + offset > this.Length )
+					if ( position + offset > Length )
 					{
 						throw new ArgumentException( "Cannot seek past the end of the stream." );
 					}
@@ -268,12 +266,12 @@ namespace Axiom.Graphics
 
 					// seeks backwards from the end of the stream
 				case SeekOrigin.End:
-					if ( this.Length - offset < 0 )
+					if ( Length - offset < 0 )
 					{
 						throw new ArgumentException( "Cannot seek past the beginning of the stream." );
 					}
 
-					position = this.Length - offset;
+					position = Length - offset;
 					break;
 			}
 

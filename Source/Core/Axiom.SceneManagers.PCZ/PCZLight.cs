@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
@@ -63,7 +62,9 @@ namespace Axiom.SceneManagers.PortalConnected
 
 
 		public PCZLight()
-			: this( "" ) {}
+			: this( "" )
+		{
+		}
 
 		public PCZLight( string name )
 			: base( name )
@@ -108,7 +109,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			PCZone homeZone;
 			affectedZonesList.Clear();
 			affectsVisibleZone = false;
-			PCZSceneNode sn = (PCZSceneNode)( this.ParentSceneNode );
+			var sn = (PCZSceneNode)( ParentSceneNode );
 			if ( null != sn )
 			{
 				// start with the zone the light is in
@@ -148,7 +149,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			// now check visibility of each portal in the home zone.  If visible to
 			// the light then add the target zone of the portal to the list of
 			// affected zones and recurse into the target zone
-			PCZFrustum portalFrustum = new PCZFrustum();
+			var portalFrustum = new PCZFrustum();
 			Vector3 v = GetDerivedPosition();
 			portalFrustum.SetOrigin( v );
 			homeZone.CheckLightAgainstPortals( this, frameCount, portalFrustum, null );

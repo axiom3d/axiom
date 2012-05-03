@@ -149,7 +149,7 @@ namespace Axiom.Samples.CharacterSample
 		/// <summary>
 		/// // master animation list
 		/// </summary>
-		protected AnimationState[] anims = new AnimationState[ NumAnims ];
+		protected AnimationState[] anims = new AnimationState[NumAnims];
 
 		/// <summary>
 		/// current base (full- or lower-body) animation
@@ -164,12 +164,12 @@ namespace Axiom.Samples.CharacterSample
 		/// <summary>
 		/// which animations are fading in
 		/// </summary>
-		protected bool[] fadingIn = new bool[ NumAnims ];
+		protected bool[] fadingIn = new bool[NumAnims];
 
 		/// <summary>
 		/// which animations are fading out
 		/// </summary>
-		protected bool[] fadingOut = new bool[ NumAnims ];
+		protected bool[] fadingOut = new bool[NumAnims];
 
 		/// <summary>
 		/// 
@@ -215,7 +215,8 @@ namespace Axiom.Samples.CharacterSample
 		/// <param name="e"></param>
 		public void InjectKeyDown( SharpInputSystem.KeyEventArgs e )
 		{
-			if ( e.Key == SharpInputSystem.KeyCode.Key_Q && ( topAnimID == AnimationID.IdleTop || topAnimID == AnimationID.RunTop ) )
+			if ( e.Key == SharpInputSystem.KeyCode.Key_Q &&
+			     ( topAnimID == AnimationID.IdleTop || topAnimID == AnimationID.RunTop ) )
 			{
 				// take swords out (or put them back, since it's the same animation but reversed)
 				SetTopAnimation( AnimationID.DrawSword, true );
@@ -258,7 +259,8 @@ namespace Axiom.Samples.CharacterSample
 				keyDirection.x = 1;
 			}
 
-			else if ( e.Key == SharpInputSystem.KeyCode.Key_SPACE && ( topAnimID == AnimationID.IdleTop || topAnimID == AnimationID.RunTop ) )
+			else if ( e.Key == SharpInputSystem.KeyCode.Key_SPACE &&
+			          ( topAnimID == AnimationID.IdleTop || topAnimID == AnimationID.RunTop ) )
 			{
 				// jump if on ground
 				SetBaseAnimation( AnimationID.JumpStart, true );
@@ -319,7 +321,7 @@ namespace Axiom.Samples.CharacterSample
 		public void InjectMouseMove( SharpInputSystem.MouseEventArgs e )
 		{
 			// update camera goal based on mouse movement
-			UpdateCameraGoal( -0.05f * e.State.X.Relative, -0.05f * e.State.Y.Relative, -0.0005f * e.State.Z.Relative );
+			UpdateCameraGoal( -0.05f*e.State.X.Relative, -0.05f*e.State.Y.Relative, -0.0005f*e.State.Z.Relative );
 		}
 
 		/// <summary>
@@ -362,7 +364,7 @@ namespace Axiom.Samples.CharacterSample
 		private void SetupBody( SceneManager sceneMgr )
 		{
 			// create main model
-			bodyNode = sceneMgr.RootSceneNode.CreateChildSceneNode( Vector3.UnitY * CharHeight );
+			bodyNode = sceneMgr.RootSceneNode.CreateChildSceneNode( Vector3.UnitY*CharHeight );
 			bodyEnt = sceneMgr.CreateEntity( "SinbadBody", "Sinbad.mesh" );
 			bodyNode.AttachObject( bodyEnt );
 
@@ -373,7 +375,7 @@ namespace Axiom.Samples.CharacterSample
 			bodyEnt.AttachObjectToBone( "Sheath.R", sword2 );
 
 			// create a couple of ribbon trails for the swords, just for fun
-			NamedParameterList paras = new NamedParameterList();
+			var paras = new NamedParameterList();
 			paras[ "numberOfChains" ] = "2";
 			paras[ "maxElements" ] = "80";
 			swordTrail = (RibbonTrail)sceneMgr.CreateMovableObject( "SinbadRibbon", "RibbonTrail", paras );
@@ -402,10 +404,11 @@ namespace Axiom.Samples.CharacterSample
 			// this is very important due to the nature of the exported animations
 			bodyEnt.Skeleton.BlendMode = SkeletalAnimBlendMode.Cumulative;
 
-			string[] animNames = new string[]
-			                     {
-			                     	"IdleBase", "IdleTop", "RunBase", "RunTop", "HandsClosed", "HandsRelaxed", "DrawSwords", "SliceVertical", "SliceHorizontal", "Dance", "JumpStart", "JumpLoop", "JumpEnd"
-			                     };
+			var animNames = new string[]
+			                {
+			                	"IdleBase", "IdleTop", "RunBase", "RunTop", "HandsClosed", "HandsRelaxed", "DrawSwords",
+			                	"SliceVertical", "SliceHorizontal", "Dance", "JumpStart", "JumpLoop", "JumpEnd"
+			                };
 
 			for ( int i = 0; i < NumAnims; i++ )
 			{
@@ -462,8 +465,8 @@ namespace Axiom.Samples.CharacterSample
 			if ( keyDirection != Vector3.Zero && baseAnimID != AnimationID.Dance )
 			{
 				// calculate actually goal direction in world based on player's key directions
-				goalDirection += keyDirection.z * cameraNode.Orientation.ZAxis;
-				goalDirection += keyDirection.x * cameraNode.Orientation.XAxis;
+				goalDirection += keyDirection.z*cameraNode.Orientation.ZAxis;
+				goalDirection += keyDirection.x*cameraNode.Orientation.XAxis;
 				goalDirection.y = 0;
 				goalDirection.Normalize();
 
@@ -471,7 +474,7 @@ namespace Axiom.Samples.CharacterSample
 				// calculate how much the character has to turn to face goal direction
 				Real yawToGlobal = toGoal.Yaw;
 				// this is how much the character CAN turn this frame
-				Real yawAtSpeed = yawToGlobal / Utility.Abs( yawToGlobal ) * deltaTime * TurnSpeed;
+				Real yawAtSpeed = yawToGlobal/Utility.Abs( yawToGlobal )*deltaTime*TurnSpeed;
 				// reduce "turnability" if we're in midair
 				if ( baseAnimID == AnimationID.JumpLoop )
 				{
@@ -491,14 +494,14 @@ namespace Axiom.Samples.CharacterSample
 				bodyNode.Yaw( yawToGlobal );
 
 				// move in current body direction (not the goal direction)
-				bodyNode.Translate( new Vector3( 0, 0, deltaTime * RunSpeed * anims[ (int)baseAnimID ].Weight ), TransformSpace.Local );
+				bodyNode.Translate( new Vector3( 0, 0, deltaTime*RunSpeed*anims[ (int)baseAnimID ].Weight ), TransformSpace.Local );
 			}
 
 			if ( baseAnimID == AnimationID.JumpLoop )
 			{
 				// if we're jumping, add a vertical offset too, and apply gravity
-				bodyNode.Translate( new Vector3( 0, verticalVelocity * deltaTime, 0 ), TransformSpace.Local );
-				verticalVelocity -= Gravity * deltaTime;
+				bodyNode.Translate( new Vector3( 0, verticalVelocity*deltaTime, 0 ), TransformSpace.Local );
+				verticalVelocity -= Gravity*deltaTime;
 
 				Vector3 pos = bodyNode.Position;
 				if ( pos.y <= CharHeight )
@@ -529,7 +532,7 @@ namespace Axiom.Samples.CharacterSample
 				topAnimSpeed = swordsDrawn ? -1 : 1;
 
 				// half-way through the animation is when the hand grasps the handles...
-				if ( timer >= anims[ (int)topAnimID ].Length / 2 && timer - deltaTime < anims[ (int)topAnimID ].Length / 2 )
+				if ( timer >= anims[ (int)topAnimID ].Length/2 && timer - deltaTime < anims[ (int)topAnimID ].Length/2 )
 				{
 					// toggle sword trails
 					swordTrail.IsVisible = !swordsDrawn;
@@ -622,11 +625,11 @@ namespace Axiom.Samples.CharacterSample
 			// increment the current base and top animation times
 			if ( baseAnimID != AnimationID.None )
 			{
-				anims[ (int)baseAnimID ].AddTime( deltaTime * baseAnimSpeed );
+				anims[ (int)baseAnimID ].AddTime( deltaTime*baseAnimSpeed );
 			}
 			if ( topAnimID != AnimationID.None )
 			{
-				anims[ (int)topAnimID ].AddTime( deltaTime * topAnimSpeed );
+				anims[ (int)topAnimID ].AddTime( deltaTime*topAnimSpeed );
 			}
 
 			// apply smooth transitioning between our animations
@@ -644,7 +647,7 @@ namespace Axiom.Samples.CharacterSample
 				if ( fadingIn[ i ] )
 				{
 					// slowly fade this animation in until it has full weight
-					Real newWeight = anims[ i ].Weight + deltaTime * AnimFadeSpeed;
+					Real newWeight = anims[ i ].Weight + deltaTime*AnimFadeSpeed;
 					anims[ i ].Weight = Utility.Clamp<Real>( newWeight, 1, 0 );
 					if ( newWeight >= 1 )
 					{
@@ -654,7 +657,7 @@ namespace Axiom.Samples.CharacterSample
 				else if ( fadingOut[ i ] )
 				{
 					// slowly fade this animation out until it has no weight, and then disable it
-					Real newWeight = anims[ i ].Weight - deltaTime * AnimFadeSpeed;
+					Real newWeight = anims[ i ].Weight - deltaTime*AnimFadeSpeed;
 					anims[ i ].Weight = Utility.Clamp<Real>( newWeight, 1, 0 );
 					if ( newWeight <= 0 )
 					{
@@ -672,10 +675,10 @@ namespace Axiom.Samples.CharacterSample
 		private void UpdateCamera( Real deltaTime )
 		{
 			// place the camera pivot roughly at the character's shoulder
-			cameraPivot.Position = bodyNode.Position + Vector3.UnitY * CamHeight;
+			cameraPivot.Position = bodyNode.Position + Vector3.UnitY*CamHeight;
 			// move the camera smoothly to the goal
 			Vector3 goalOffset = cameraGoal.DerivedPosition - cameraNode.Position;
-			cameraNode.Translate( goalOffset * deltaTime * 9.0f );
+			cameraNode.Translate( goalOffset*deltaTime*9.0f );
 			// always look at the pivot
 			cameraNode.LookAt( cameraPivot.DerivedPosition, TransformSpace.World );
 		}
@@ -698,7 +701,7 @@ namespace Axiom.Samples.CharacterSample
 			}
 
 			Real dist = cameraGoal.DerivedPosition.Distance( cameraPivot.DerivedPosition );
-			Real distChange = deltaZoom * dist;
+			Real distChange = deltaZoom*dist;
 
 			// bound the zoom
 			if ( !( dist + distChange < 8 && distChange < 0 ) && !( dist + distChange > 25 && distChange > 0 ) )

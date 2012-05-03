@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
 using Axiom.Configuration;
 using Axiom.Controllers;
 using Axiom.Core;
@@ -112,7 +111,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Array of world matrices for the current renderable.
 		/// </summary>
-		protected Matrix4[] worldMatrix = new Matrix4[ 256 ];
+		protected Matrix4[] worldMatrix = new Matrix4[256];
 
 		/// <summary>
 		///		Current count of matrices in the world matrix array.
@@ -197,17 +196,17 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Current texture view projection matrix.
 		/// </summary>
-		protected Matrix4[] textureViewProjMatrix = new Matrix4[ Config.MaxSimultaneousLights ];
+		protected Matrix4[] textureViewProjMatrix = new Matrix4[Config.MaxSimultaneousLights];
 
-		protected Matrix4[] textureWorldViewProjMatrix = new Matrix4[ Config.MaxSimultaneousLights ];
-		protected Matrix4[] spotlightViewProjMatrix = new Matrix4[ Config.MaxSimultaneousLights ];
-		protected Matrix4[] spotlightWorldViewProjMatrix = new Matrix4[ Config.MaxSimultaneousLights ];
-		protected bool[] textureViewProjMatrixDirty = new bool[ Config.MaxSimultaneousLights ];
-		protected bool[] textureWorldViewProjMatrixDirty = new bool[ Config.MaxSimultaneousLights ];
-		protected bool[] spotlightViewProjMatrixDirty = new bool[ Config.MaxSimultaneousLights ];
-		protected bool[] spotlightWorldViewProjMatrixDirty = new bool[ Config.MaxSimultaneousLights ];
-		protected bool[] shadowCamDepthRangesDirty = new bool[ Config.MaxSimultaneousLights ];
-		protected Frustum[] currentTextureProjector = new Frustum[ Config.MaxSimultaneousLights ];
+		protected Matrix4[] textureWorldViewProjMatrix = new Matrix4[Config.MaxSimultaneousLights];
+		protected Matrix4[] spotlightViewProjMatrix = new Matrix4[Config.MaxSimultaneousLights];
+		protected Matrix4[] spotlightWorldViewProjMatrix = new Matrix4[Config.MaxSimultaneousLights];
+		protected bool[] textureViewProjMatrixDirty = new bool[Config.MaxSimultaneousLights];
+		protected bool[] textureWorldViewProjMatrixDirty = new bool[Config.MaxSimultaneousLights];
+		protected bool[] spotlightViewProjMatrixDirty = new bool[Config.MaxSimultaneousLights];
+		protected bool[] spotlightWorldViewProjMatrixDirty = new bool[Config.MaxSimultaneousLights];
+		protected bool[] shadowCamDepthRangesDirty = new bool[Config.MaxSimultaneousLights];
+		protected Frustum[] currentTextureProjector = new Frustum[Config.MaxSimultaneousLights];
 
 		protected Vector4 sceneDepthRange;
 		protected Vector4 lodCameraPosition;
@@ -218,8 +217,11 @@ namespace Axiom.Graphics
 		protected Vector3 cameraRelativePosition;
 		protected bool cameraRelativeRendering;
 
-		[OgreVersion( 1, 7, 2 )]
-		protected Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4( 0.5f, 0, 0, 0.5f, 0, -0.5f, 0, 0.5f, 0, 0, 1, 0, 0, 0, 0, 1 );
+		[OgreVersion( 1, 7, 2 )] protected Matrix4 ProjectionClipSpace2DToImageSpacePerspective = new Matrix4( 0.5f, 0, 0,
+		                                                                                                       0.5f, 0, -0.5f,
+		                                                                                                       0, 0.5f, 0, 0,
+		                                                                                                       1, 0, 0, 0, 0,
+		                                                                                                       1 );
 
 		protected int passNumber;
 		protected Pass currentPass;
@@ -255,18 +257,18 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.blankLight != null )
+					if ( blankLight != null )
 					{
-						if ( !this.blankLight.IsDisposed )
+						if ( !blankLight.IsDisposed )
 						{
-							this.blankLight.Dispose();
+							blankLight.Dispose();
 						}
 
-						this.blankLight = null;
+						blankLight = null;
 					}
 				}
 			}
@@ -338,13 +340,13 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual float GetLightNumber( int index )
 		{
-			return (float)this.GetLight( index ).IndexInFrame;
+			return (float)GetLight( index ).IndexInFrame;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual ColorEx GetLightDiffuseColorWithPower( int index )
 		{
-			var l = this.GetLight( index );
+			var l = GetLight( index );
 			var scaled = l.Diffuse;
 			Real power = l.PowerScale;
 			// scale, but not alpha
@@ -357,7 +359,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual ColorEx GetLightSpecularColorWithPower( int index )
 		{
-			var l = this.GetLight( index );
+			var l = GetLight( index );
 			var scaled = l.Specular;
 			Real power = l.PowerScale;
 			// scale, but not alpha
@@ -370,7 +372,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Vector3 GetLightPosition( int index )
 		{
-			return this.GetLight( index ).GetDerivedPosition( true );
+			return GetLight( index ).GetDerivedPosition( true );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -382,33 +384,33 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Vector3 GetLightDirection( int index )
 		{
-			return this.GetLight( index ).DerivedDirection;
+			return GetLight( index ).DerivedDirection;
 		}
 
 		/// <param name="index">Ordinal value signifying the light to retreive. <see cref="GetLight"/></param>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetLightPowerScale( int index )
 		{
-			return this.GetLight( index ).PowerScale;
+			return GetLight( index ).PowerScale;
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual ColorEx GetLightDiffuse( int index )
 		{
-			return this.GetLight( index ).Diffuse;
+			return GetLight( index ).Diffuse;
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual ColorEx GetLightSpecular( int index )
 		{
-			return this.GetLight( index ).Specular;
+			return GetLight( index ).Specular;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Vector4 GetLightAttenuation( int index )
 		{
 			// range, const, linear, quad
-			var l = this.GetLight( index );
+			var l = GetLight( index );
 			return new Vector4( l.AttenuationRange, l.AttenuationConstant, l.AttenuationLinear, l.AttenuationQuadratic );
 		}
 
@@ -416,10 +418,11 @@ namespace Axiom.Graphics
 		public virtual Vector4 GetSpotlightParams( int index )
 		{
 			// inner, outer, fallof, isSpot
-			var l = this.GetLight( index );
+			var l = GetLight( index );
 			if ( l.Type == LightType.Spotlight )
 			{
-				return new Vector4( Utility.Cos( l.SpotlightInnerAngle * 0.5 ), Utility.Cos( l.SpotlightOuterAngle * 0.5 ), l.SpotlightFalloff, 1.0 );
+				return new Vector4( Utility.Cos( l.SpotlightInnerAngle*0.5 ), Utility.Cos( l.SpotlightOuterAngle*0.5 ),
+				                    l.SpotlightFalloff, 1.0 );
 			}
 			else
 			{
@@ -452,7 +455,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual float GetLightCastsShadows( int index )
 		{
-			return this.GetLight( index ).CastShadows ? 1.0f : 0.0f;
+			return GetLight( index ).CastShadows ? 1.0f : 0.0f;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -477,15 +480,15 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Vector4 GetInverseTextureSize( int index )
 		{
-			Vector4 size = this.GetTextureSize( index );
-			return 1 / size;
+			Vector4 size = GetTextureSize( index );
+			return 1/size;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Vector4 GetPackedTextureSize( int index )
 		{
-			Vector4 size = this.GetTextureSize( index );
-			return new Vector4( size.x, size.y, 1 / size.x, 1 / size.y );
+			Vector4 size = GetTextureSize( index );
+			return new Vector4( size.x, size.y, 1/size.x, 1/size.y );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -496,12 +499,12 @@ namespace Axiom.Graphics
 			fogParams.x = expDensity;
 			fogParams.y = linearStart;
 			fogParams.z = linearEnd;
-			fogParams.w = linearEnd != linearStart ? 1 / ( linearEnd - linearStart ) : 0;
+			fogParams.w = linearEnd != linearStart ? 1/( linearEnd - linearStart ) : 0;
 		}
 
 		public void SetTextureProjector( Frustum frust )
 		{
-			this.SetTextureProjector( frust, 0 );
+			SetTextureProjector( frust, 0 );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -519,93 +522,93 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetTime_0_X( Real x )
 		{
-			return this.Time % x;
+			return Time%x;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetCosTime_0_X( Real x )
 		{
-			return Math.Utility.Cos( this.GetTime_0_X( x ) );
+			return Math.Utility.Cos( GetTime_0_X( x ) );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetSinTime_0_X( Real x )
 		{
-			return Math.Utility.Sin( this.GetTime_0_X( x ) );
+			return Math.Utility.Sin( GetTime_0_X( x ) );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetTanTime_0_X( Real x )
 		{
-			return Math.Utility.Tan( this.GetTime_0_X( x ) );
+			return Math.Utility.Tan( GetTime_0_X( x ) );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Vector4 GetTime_0_X_Packed( Real x )
 		{
-			Real t = this.GetTime_0_X( x );
+			Real t = GetTime_0_X( x );
 			return new Vector4( t, Math.Utility.Sin( t ), Math.Utility.Cos( t ), Math.Utility.Tan( t ) );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetTime_0_1( Real x )
 		{
-			return this.GetTime_0_X( x ) / x;
+			return GetTime_0_X( x )/x;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetCosTime_0_1( Real x )
 		{
-			return Math.Utility.Cos( this.GetTime_0_1( x ) );
+			return Math.Utility.Cos( GetTime_0_1( x ) );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetSinTime_0_1( Real x )
 		{
-			return Math.Utility.Sin( this.GetTime_0_1( x ) );
+			return Math.Utility.Sin( GetTime_0_1( x ) );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetTanTime_0_1( Real x )
 		{
-			return Math.Utility.Tan( this.GetTime_0_1( x ) );
+			return Math.Utility.Tan( GetTime_0_1( x ) );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Vector4 GetTime_0_1_Packed( Real x )
 		{
-			Real t = this.GetTime_0_1( x );
+			Real t = GetTime_0_1( x );
 			return new Vector4( t, Math.Utility.Sin( t ), Math.Utility.Cos( t ), Math.Utility.Tan( t ) );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetTime_0_2Pi( Real x )
 		{
-			return this.GetTime_0_X( x ) / x * Math.Utility.TWO_PI;
+			return GetTime_0_X( x )/x*Math.Utility.TWO_PI;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetCosTime_0_2Pi( Real x )
 		{
-			return Math.Utility.Cos( this.GetTime_0_2Pi( x ) );
+			return Math.Utility.Cos( GetTime_0_2Pi( x ) );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetSinTime_0_2Pi( Real x )
 		{
-			return Math.Utility.Sin( this.GetTime_0_2Pi( x ) );
+			return Math.Utility.Sin( GetTime_0_2Pi( x ) );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Real GetTanTime_0_2Pi( Real x )
 		{
-			return Math.Utility.Tan( this.GetTime_0_2Pi( x ) );
+			return Math.Utility.Tan( GetTime_0_2Pi( x ) );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Vector4 GetTime_0_2Pi_Packed( Real x )
 		{
-			Real t = this.GetTime_0_2Pi( x );
+			Real t = GetTime_0_2Pi( x );
 			return new Vector4( t, Math.Utility.Sin( t ), Math.Utility.Cos( t ), Math.Utility.Tan( t ) );
 		}
 
@@ -625,11 +628,14 @@ namespace Axiom.Graphics
 						// so we need to alter the projector view matrix to compensate
 						Matrix4 view;
 						currentTextureProjector[ index ].CalcViewMatrixRelative( currentCamera.DerivedPosition, out view );
-						textureViewProjMatrix[ index ] = ProjectionClipSpace2DToImageSpacePerspective * currentTextureProjector[ index ].ProjectionMatrixRSDepth * view;
+						textureViewProjMatrix[ index ] = ProjectionClipSpace2DToImageSpacePerspective*
+						                                 currentTextureProjector[ index ].ProjectionMatrixRSDepth*view;
 					}
 					else
 					{
-						textureViewProjMatrix[ index ] = ProjectionClipSpace2DToImageSpacePerspective * currentTextureProjector[ index ].ProjectionMatrixRSDepth * currentTextureProjector[ index ].ViewMatrix;
+						textureViewProjMatrix[ index ] = ProjectionClipSpace2DToImageSpacePerspective*
+						                                 currentTextureProjector[ index ].ProjectionMatrixRSDepth*
+						                                 currentTextureProjector[ index ].ViewMatrix;
 					}
 					textureViewProjMatrixDirty[ index ] = false;
 				}
@@ -649,7 +655,7 @@ namespace Axiom.Graphics
 			{
 				if ( textureWorldViewProjMatrixDirty[ index ] && currentTextureProjector[ index ] != null )
 				{
-					textureWorldViewProjMatrix[ index ] = this.GetTextureViewProjectionMatrix( index ) * this.WorldMatrix;
+					textureWorldViewProjMatrix[ index ] = GetTextureViewProjectionMatrix( index )*WorldMatrix;
 					textureWorldViewProjMatrixDirty[ index ] = false;
 				}
 
@@ -666,12 +672,12 @@ namespace Axiom.Graphics
 		{
 			if ( index < Config.MaxSimultaneousLights )
 			{
-				Light l = this.GetLight( index );
+				Light l = GetLight( index );
 
 				if ( l != blankLight && l.Type == LightType.Spotlight && spotlightViewProjMatrixDirty[ index ] )
 				{
-					Frustum frust = new Frustum();
-					SceneNode dummyNode = new SceneNode( null );
+					var frust = new Frustum();
+					var dummyNode = new SceneNode( null );
 					dummyNode.AttachObject( frust );
 
 					frust.ProjectionType = Projection.Perspective;
@@ -703,7 +709,8 @@ namespace Axiom.Graphics
 
 					// The view matrix here already includes camera-relative changes if necessary
 					// since they are built into the frustum position
-					spotlightViewProjMatrix[ index ] = ProjectionClipSpace2DToImageSpacePerspective * frust.ProjectionMatrixRSDepth * frust.ViewMatrix;
+					spotlightViewProjMatrix[ index ] = ProjectionClipSpace2DToImageSpacePerspective*frust.ProjectionMatrixRSDepth*
+					                                   frust.ViewMatrix;
 
 					spotlightViewProjMatrixDirty[ index ] = false;
 				}
@@ -720,11 +727,11 @@ namespace Axiom.Graphics
 		{
 			if ( index < Config.MaxSimultaneousLights )
 			{
-				Light l = this.GetLight( index );
+				Light l = GetLight( index );
 
 				if ( l != blankLight && l.Type == LightType.Spotlight && spotlightWorldViewProjMatrixDirty[ index ] )
 				{
-					spotlightWorldViewProjMatrix[ index ] = this.GetSpotlightViewProjMatrix( index ) * this.WorldMatrix;
+					spotlightWorldViewProjMatrix[ index ] = GetSpotlightViewProjMatrix( index )*WorldMatrix;
 					spotlightWorldViewProjMatrixDirty[ index ] = false;
 				}
 				return spotlightWorldViewProjMatrix[ index ];
@@ -790,13 +797,14 @@ namespace Axiom.Graphics
 		}
 
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void UpdateLightCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constantEntry, GpuProgramParameters parameters )
+		public virtual void UpdateLightCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constantEntry,
+		                                                   GpuProgramParameters parameters )
 		{
-			ushort lightIndex = (ushort)( constantEntry.Data & 0xFFFF );
-			ushort paramIndex = (ushort)( ( constantEntry.Data >> 16 ) & 0xFFFF );
+			var lightIndex = (ushort)( constantEntry.Data & 0xFFFF );
+			var paramIndex = (ushort)( ( constantEntry.Data >> 16 ) & 0xFFFF );
 			if ( currentLightList != null && lightIndex < currentLightList.Count )
 			{
-				Light light = this.GetLight( lightIndex );
+				Light light = GetLight( lightIndex );
 				light.UpdateCustomGpuParameter( paramIndex, constantEntry, parameters );
 			}
 		}
@@ -971,7 +979,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.AmbientLight * this.SurfaceAmbient;
+				return AmbientLight*SurfaceAmbient;
 			}
 		}
 
@@ -980,8 +988,8 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				ColorEx result = this.DerivedAmbient + this.SurfaceEmissive;
-				result.a = this.SurfaceDiffuse.a;
+				ColorEx result = DerivedAmbient + SurfaceEmissive;
+				result.a = SurfaceDiffuse.a;
 				return result;
 			}
 		}
@@ -1042,7 +1050,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// trigger derivation
-				Matrix4 m = this.WorldMatrix;
+				Matrix4 m = WorldMatrix;
 				return worldMatrixCount;
 			}
 		}
@@ -1056,7 +1064,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// trigger derivation
-				Matrix4 m = this.WorldMatrix;
+				Matrix4 m = WorldMatrix;
 				return worldMatrixArray;
 			}
 		}
@@ -1099,7 +1107,7 @@ namespace Axiom.Graphics
 			{
 				if ( viewProjMatrixDirty )
 				{
-					viewProjMatrix = this.ProjectionMatrix * this.ViewMatrix;
+					viewProjMatrix = ProjectionMatrix*ViewMatrix;
 					viewProjMatrixDirty = false;
 				}
 
@@ -1151,7 +1159,7 @@ namespace Axiom.Graphics
 			{
 				if ( worldViewMatrixDirty )
 				{
-					worldViewMatrix = this.ViewMatrix * this.WorldMatrix;
+					worldViewMatrix = ViewMatrix*WorldMatrix;
 					worldViewMatrixDirty = false;
 				}
 				return worldViewMatrix;
@@ -1168,7 +1176,7 @@ namespace Axiom.Graphics
 			{
 				if ( worldViewProjMatrixDirty )
 				{
-					worldViewProjMatrix = this.ProjectionMatrix * this.WorldViewMatrix;
+					worldViewProjMatrix = ProjectionMatrix*WorldViewMatrix;
 					worldViewProjMatrixDirty = false;
 				}
 				return worldViewProjMatrix;
@@ -1185,7 +1193,7 @@ namespace Axiom.Graphics
 			{
 				if ( inverseWorldMatrixDirty )
 				{
-					inverseWorldMatrix = this.WorldMatrix.InverseAffine();
+					inverseWorldMatrix = WorldMatrix.InverseAffine();
 					inverseWorldMatrixDirty = false;
 				}
 				return inverseWorldMatrix;
@@ -1202,7 +1210,7 @@ namespace Axiom.Graphics
 			{
 				if ( inverseWorldViewMatrixDirty )
 				{
-					inverseWorldViewMatrix = this.WorldViewMatrix.InverseAffine();
+					inverseWorldViewMatrix = WorldViewMatrix.InverseAffine();
 					inverseWorldViewMatrixDirty = false;
 				}
 				return inverseWorldViewMatrix;
@@ -1219,7 +1227,7 @@ namespace Axiom.Graphics
 			{
 				if ( inverseViewMatrixDirty )
 				{
-					inverseViewMatrix = this.ViewMatrix.InverseAffine();
+					inverseViewMatrix = ViewMatrix.InverseAffine();
 					inverseViewMatrixDirty = false;
 				}
 
@@ -1237,7 +1245,7 @@ namespace Axiom.Graphics
 			{
 				if ( inverseTransposeWorldViewMatrixDirty )
 				{
-					inverseTransposeWorldViewMatrix = this.InverseWorldViewMatrix.Transpose();
+					inverseTransposeWorldViewMatrix = InverseWorldViewMatrix.Transpose();
 					inverseTransposeWorldViewMatrixDirty = false;
 				}
 				return inverseTransposeWorldViewMatrix;
@@ -1249,7 +1257,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.ViewProjectionMatrix.Inverse();
+				return ViewProjectionMatrix.Inverse();
 			}
 		}
 
@@ -1258,7 +1266,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.InverseViewProjMatrix.Transpose();
+				return InverseViewProjMatrix.Transpose();
 			}
 		}
 
@@ -1267,7 +1275,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.ViewProjectionMatrix.Transpose();
+				return ViewProjectionMatrix.Transpose();
 			}
 		}
 
@@ -1276,7 +1284,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.ViewMatrix.Transpose();
+				return ViewMatrix.Transpose();
 			}
 		}
 
@@ -1285,7 +1293,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.InverseViewMatrix.Transpose();
+				return InverseViewMatrix.Transpose();
 			}
 		}
 
@@ -1294,7 +1302,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.ProjectionMatrix.Transpose();
+				return ProjectionMatrix.Transpose();
 			}
 		}
 
@@ -1303,7 +1311,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.ProjectionMatrix.Inverse();
+				return ProjectionMatrix.Inverse();
 			}
 		}
 
@@ -1312,7 +1320,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.InverseProjectionMatrix.Transpose();
+				return InverseProjectionMatrix.Transpose();
 			}
 		}
 
@@ -1321,7 +1329,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.WorldViewProjMatrix.Transpose();
+				return WorldViewProjMatrix.Transpose();
 			}
 		}
 
@@ -1330,7 +1338,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.WorldViewProjMatrix.Inverse();
+				return WorldViewProjMatrix.Inverse();
 			}
 		}
 
@@ -1339,7 +1347,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.InverseWorldViewProjMatrix.Transpose();
+				return InverseWorldViewProjMatrix.Transpose();
 			}
 		}
 
@@ -1348,7 +1356,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.WorldViewMatrix.Transpose();
+				return WorldViewMatrix.Transpose();
 			}
 		}
 
@@ -1357,7 +1365,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.WorldMatrix.Transpose();
+				return WorldMatrix.Transpose();
 			}
 		}
 
@@ -1411,7 +1419,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return 1.0f / currentViewport.ActualWidth;
+				return 1.0f/currentViewport.ActualWidth;
 			}
 		}
 
@@ -1420,7 +1428,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return 1.0f / currentViewport.ActualHeight;
+				return 1.0f/currentViewport.ActualHeight;
 			}
 		}
 
@@ -1466,11 +1474,11 @@ namespace Axiom.Graphics
 				{
 					if ( cameraRelativeRendering )
 					{
-						cameraPositionObjectSpace = this.InverseWorldMatrix.TransformAffine( Vector3.Zero );
+						cameraPositionObjectSpace = InverseWorldMatrix.TransformAffine( Vector3.Zero );
 					}
 					else
 					{
-						cameraPositionObjectSpace = this.InverseWorldMatrix.TransformAffine( currentCamera.DerivedPosition );
+						cameraPositionObjectSpace = InverseWorldMatrix.TransformAffine( currentCamera.DerivedPosition );
 					}
 
 					cameraPositionObjectSpaceDirty = false;
@@ -1514,7 +1522,7 @@ namespace Axiom.Graphics
 						trans -= cameraRelativePosition;
 					}
 
-					this.InverseWorldMatrix.TransformAffine( trans );
+					InverseWorldMatrix.TransformAffine( trans );
 					lodCameraPositionObjectSpaceDirty = false;
 				}
 
@@ -1629,7 +1637,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return this.CurrentSceneManager.ShadowColor;
+				return CurrentSceneManager.ShadowColor;
 			}
 		}
 
@@ -1655,7 +1663,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				var l = this.GetLight( 0 ); // only ever applies to one light at once
+				var l = GetLight( 0 ); // only ever applies to one light at once
 				if ( l.Type == LightType.Directional )
 				{
 					// use constant
@@ -1665,7 +1673,7 @@ namespace Axiom.Graphics
 				{
 					// Calculate based on object space light distance
 					// compared to light attenuation range
-					var objPos = this.InverseWorldMatrix.TransformAffine( l.GetDerivedPosition( true ) );
+					var objPos = InverseWorldMatrix.TransformAffine( l.GetDerivedPosition( true ) );
 					return l.AttenuationRange - objPos.Length;
 				}
 			}

@@ -42,7 +42,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
-
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -77,7 +76,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Culture info to use for parsing numeric data.
 		/// </summary>
-		private static CultureInfo englishCulture = new CultureInfo( "en-US" );
+		private static readonly CultureInfo englishCulture = new CultureInfo( "en-US" );
 
 		#endregion Fields
 
@@ -86,7 +85,9 @@ namespace Axiom.Core
 		/// <summary>
 		///     Private constructor so no instances can be created.
 		/// </summary>
-		private StringConverter() {}
+		private StringConverter()
+		{
+		}
 
 		#endregion Constructor
 

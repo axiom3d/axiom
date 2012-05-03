@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Controllers;
@@ -83,7 +82,7 @@ namespace Axiom.Animating
 
 		public AnimationStateSet()
 		{
-			this.dirtyFrameNumber = int.MaxValue;
+			dirtyFrameNumber = int.MaxValue;
 		}
 
 		#endregion Constructors
@@ -182,7 +181,8 @@ namespace Axiom.Animating
 		{
 			if ( stateSet.ContainsKey( name ) )
 			{
-				throw new Exception( "State for animation named '" + name + "' already exists, " + "in AnimationStateSet.CreateAnimationState" );
+				throw new Exception( "State for animation named '" + name + "' already exists, " +
+				                     "in AnimationStateSet.CreateAnimationState" );
 			}
 			var newState = new AnimationState( name, this, time, length, weight, enabled );
 			stateSet[ name ] = newState;
@@ -196,7 +196,8 @@ namespace Axiom.Animating
 		{
 			if ( !stateSet.ContainsKey( name ) )
 			{
-				throw new Exception( "No state found for animation named '" + name + "', " + "in AnimationStateSet.CreateAnimationState" );
+				throw new Exception( "No state found for animation named '" + name + "', " +
+				                     "in AnimationStateSet.CreateAnimationState" );
 			}
 			return stateSet[ name ];
 		}
@@ -240,7 +241,8 @@ namespace Axiom.Animating
 				AnimationState result;
 				if ( !stateSet.TryGetValue( pair.Key, out result ) )
 				{
-					throw new Exception( "No animation entry found named '" + pair.Key + "', in " + "AnimationStateSet.CopyMatchingState" );
+					throw new Exception( "No animation entry found named '" + pair.Key + "', in " +
+					                     "AnimationStateSet.CopyMatchingState" );
 				}
 				else
 				{

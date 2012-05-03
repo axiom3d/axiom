@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -112,7 +111,7 @@ namespace Axiom.ParticleFX
 		public DirectionRandomizerAffector( ParticleSystem psys )
 			: base( psys )
 		{
-			this.type = "DirectionRandomizer";
+			type = "DirectionRandomizer";
 
 			// defaults
 			_randomness = 1.0f;
@@ -145,11 +144,13 @@ namespace Axiom.ParticleFX
 							length = p.Direction.Length;
 						}
 
-						p.Direction += new Vector3( Utility.RangeRandom( -_randomness, _randomness ) * timeElapsed, Utility.RangeRandom( -_randomness, _randomness ) * timeElapsed, Utility.RangeRandom( -_randomness, _randomness ) * timeElapsed );
+						p.Direction += new Vector3( Utility.RangeRandom( -_randomness, _randomness )*timeElapsed,
+						                            Utility.RangeRandom( -_randomness, _randomness )*timeElapsed,
+						                            Utility.RangeRandom( -_randomness, _randomness )*timeElapsed );
 
 						if ( _keepVelocity )
 						{
-							p.Direction *= length / p.Direction.Length;
+							p.Direction *= length/p.Direction.Length;
 						}
 					}
 				}
@@ -158,18 +159,19 @@ namespace Axiom.ParticleFX
 
 		#region Command definition classes
 
-		[ScriptableProperty( "randomness", "The amount of randomness (chaos) to apply to the particle movement.", typeof ( ParticleAffector ) )]
+		[ScriptableProperty( "randomness", "The amount of randomness (chaos) to apply to the particle movement.",
+			typeof ( ParticleAffector ) )]
 		public class RandomnessCommand : IPropertyCommand
 		{
 			public string Get( object target )
 			{
-				DirectionRandomizerAffector affector = target as DirectionRandomizerAffector;
+				var affector = target as DirectionRandomizerAffector;
 				return StringConverter.ToString( affector.Randomness );
 			}
 
 			public void Set( object target, string val )
 			{
-				DirectionRandomizerAffector affector = target as DirectionRandomizerAffector;
+				var affector = target as DirectionRandomizerAffector;
 				affector.Randomness = StringConverter.ParseFloat( val );
 			}
 		}
@@ -179,29 +181,30 @@ namespace Axiom.ParticleFX
 		{
 			public string Get( object target )
 			{
-				DirectionRandomizerAffector affector = target as DirectionRandomizerAffector;
+				var affector = target as DirectionRandomizerAffector;
 				return StringConverter.ToString( affector.Scope );
 			}
 
 			public void Set( object target, string val )
 			{
-				DirectionRandomizerAffector affector = target as DirectionRandomizerAffector;
+				var affector = target as DirectionRandomizerAffector;
 				affector.Scope = StringConverter.ParseFloat( val );
 			}
 		}
 
-		[ScriptableProperty( "keep_velocity", "Detemines whether the velocity of the particles is changed.", typeof ( ParticleAffector ) )]
+		[ScriptableProperty( "keep_velocity", "Detemines whether the velocity of the particles is changed.",
+			typeof ( ParticleAffector ) )]
 		public class KeepVelocityCommand : IPropertyCommand
 		{
 			public string Get( object target )
 			{
-				DirectionRandomizerAffector affector = target as DirectionRandomizerAffector;
+				var affector = target as DirectionRandomizerAffector;
 				return affector.KeepVelocity.ToString();
 			}
 
 			public void Set( object target, string val )
 			{
-				DirectionRandomizerAffector affector = target as DirectionRandomizerAffector;
+				var affector = target as DirectionRandomizerAffector;
 				affector.KeepVelocity = StringConverter.ParseBool( val );
 			}
 		}

@@ -42,10 +42,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using Tao.OpenGl;
 
 #endregion Namespace Declarations
@@ -86,58 +84,83 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			              {
 			              	{
 			              		"float", Gl.GL_FLOAT
-			              		}, {
-			              		   	"vec2", Gl.GL_FLOAT_VEC2
-			              		   	}, {
-			              		   	   	"vec3", Gl.GL_FLOAT_VEC3
-			              		   	   	}, {
-			              		   	   	   	"vec4", Gl.GL_FLOAT_VEC4
-			              		   	   	   	}, {
-			              		   	   	   	   	"sampler1D", Gl.GL_SAMPLER_1D
-			              		   	   	   	   	}, {
-			              		   	   	   	   	   	"sampler2D", Gl.GL_SAMPLER_2D
-			              		   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	"sampler3D", Gl.GL_SAMPLER_3D
-			              		   	   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	   	"samplerCube", Gl.GL_SAMPLER_CUBE
-			              		   	   	   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	   	   	"sampler1DShadow", Gl.GL_SAMPLER_1D_SHADOW
-			              		   	   	   	   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	   	   	   	"sampler2DShadow", Gl.GL_SAMPLER_2D_SHADOW
-			              		   	   	   	   	   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	   	   	   	   	"int", Gl.GL_INT
-			              		   	   	   	   	   	   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	   	   	   	   	   	"ivec2", Gl.GL_INT_VEC2
-			              		   	   	   	   	   	   	   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	   	   	   	   	   	   	"ivec3", Gl.GL_INT_VEC3
-			              		   	   	   	   	   	   	   	   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	   	   	   	   	   	   	   	"ivec4", Gl.GL_INT_VEC4
-			              		   	   	   	   	   	   	   	   	   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	   	   	   	   	   	   	   	   	"mat2", Gl.GL_FLOAT_MAT2
-			              		   	   	   	   	   	   	   	   	   	   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	   	   	   	   	   	   	   	   	   	"mat3", Gl.GL_FLOAT_MAT3
-			              		   	   	   	   	   	   	   	   	   	   	   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	   	   	   	   	   	   	   	   	   	   	"mat4", Gl.GL_FLOAT_MAT4
-			              		   	   	   	   	   	   	   	   	   	   	   	   	   	   	   	   	}, // GL 2.1
+			              		},
+			              	{
+			              		"vec2", Gl.GL_FLOAT_VEC2
+			              		},
+			              	{
+			              		"vec3", Gl.GL_FLOAT_VEC3
+			              		},
+			              	{
+			              		"vec4", Gl.GL_FLOAT_VEC4
+			              		},
+			              	{
+			              		"sampler1D", Gl.GL_SAMPLER_1D
+			              		},
+			              	{
+			              		"sampler2D", Gl.GL_SAMPLER_2D
+			              		},
+			              	{
+			              		"sampler3D", Gl.GL_SAMPLER_3D
+			              		},
+			              	{
+			              		"samplerCube", Gl.GL_SAMPLER_CUBE
+			              		},
+			              	{
+			              		"sampler1DShadow", Gl.GL_SAMPLER_1D_SHADOW
+			              		},
+			              	{
+			              		"sampler2DShadow", Gl.GL_SAMPLER_2D_SHADOW
+			              		},
+			              	{
+			              		"int", Gl.GL_INT
+			              		},
+			              	{
+			              		"ivec2", Gl.GL_INT_VEC2
+			              		},
+			              	{
+			              		"ivec3", Gl.GL_INT_VEC3
+			              		},
+			              	{
+			              		"ivec4", Gl.GL_INT_VEC4
+			              		},
+			              	{
+			              		"mat2", Gl.GL_FLOAT_MAT2
+			              		},
+			              	{
+			              		"mat3", Gl.GL_FLOAT_MAT3
+			              		},
+			              	{
+			              		"mat4", Gl.GL_FLOAT_MAT4
+			              		},
+			              	// GL 2.1
 			              	{
 			              		"mat2x2", Gl.GL_FLOAT_MAT2
-			              		}, {
-			              		   	"mat3x3", Gl.GL_FLOAT_MAT3
-			              		   	}, {
-			              		   	   	"mat4x4", Gl.GL_FLOAT_MAT4
-			              		   	   	}, {
-			              		   	   	   	"mat2x3", Gl.GL_FLOAT_MAT2x3
-			              		   	   	   	}, {
-			              		   	   	   	   	"mat3x2", Gl.GL_FLOAT_MAT3x2
-			              		   	   	   	   	}, {
-			              		   	   	   	   	   	"mat3x4", Gl.GL_FLOAT_MAT3x4
-			              		   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	"mat4x3", Gl.GL_FLOAT_MAT4x3
-			              		   	   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	   	"mat2x4", Gl.GL_FLOAT_MAT2x4
-			              		   	   	   	   	   	   	   	}, {
-			              		   	   	   	   	   	   	   	   	"mat4x2", Gl.GL_FLOAT_MAT4x2
-			              		   	   	   	   	   	   	   	   	},
+			              		},
+			              	{
+			              		"mat3x3", Gl.GL_FLOAT_MAT3
+			              		},
+			              	{
+			              		"mat4x4", Gl.GL_FLOAT_MAT4
+			              		},
+			              	{
+			              		"mat2x3", Gl.GL_FLOAT_MAT2x3
+			              		},
+			              	{
+			              		"mat3x2", Gl.GL_FLOAT_MAT3x2
+			              		},
+			              	{
+			              		"mat3x4", Gl.GL_FLOAT_MAT3x4
+			              		},
+			              	{
+			              		"mat4x3", Gl.GL_FLOAT_MAT4x3
+			              		},
+			              	{
+			              		"mat2x4", Gl.GL_FLOAT_MAT2x4
+			              		},
+			              	{
+			              		"mat4x2", Gl.GL_FLOAT_MAT4x2
+			              		},
 			              };
 		}
 
@@ -181,7 +204,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		private GLSLLinkProgram activeLinkProgram;
 
-		private Dictionary<string, int> typeEnumMap;
+		private readonly Dictionary<string, int> typeEnumMap;
 
 		#endregion Fields
 
@@ -410,7 +433,10 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			defToUpdate.ElementSize = GpuProgramParameters.GpuConstantDefinition.GetElementSize( defToUpdate.ConstantType, false );
 		}
 
-		private bool CompleteParamSource( String paramName, GpuProgramParameters.GpuConstantDefinitionMap vertexConstantDefs, GpuProgramParameters.GpuConstantDefinitionMap geometryConstantDefs, GpuProgramParameters.GpuConstantDefinitionMap fragmentConstantDefs, GLSLLinkProgram.UniformReference refToUpdate )
+		private bool CompleteParamSource( String paramName, GpuProgramParameters.GpuConstantDefinitionMap vertexConstantDefs,
+		                                  GpuProgramParameters.GpuConstantDefinitionMap geometryConstantDefs,
+		                                  GpuProgramParameters.GpuConstantDefinitionMap fragmentConstantDefs,
+		                                  GLSLLinkProgram.UniformReference refToUpdate )
 		{
 			GpuProgramParameters.GpuConstantDefinition parami;
 			if ( vertexConstantDefs != null )
@@ -462,7 +488,10 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// uniforms. May be null if there is no fragment program.</param>
 		///<param name="list">The list to populate (will not be cleared before adding, clear
 		/// it yourself before calling this if that's what you want).</param>
-		public void ExtractUniforms( int programObject, GpuProgramParameters.GpuConstantDefinitionMap vertexConstantDefs, GpuProgramParameters.GpuConstantDefinitionMap geometryConstantDefs, GpuProgramParameters.GpuConstantDefinitionMap fragmentConstantDefs, GLSLLinkProgram.UniformReferenceList list )
+		public void ExtractUniforms( int programObject, GpuProgramParameters.GpuConstantDefinitionMap vertexConstantDefs,
+		                             GpuProgramParameters.GpuConstantDefinitionMap geometryConstantDefs,
+		                             GpuProgramParameters.GpuConstantDefinitionMap fragmentConstantDefs,
+		                             GLSLLinkProgram.UniformReferenceList list )
 		{
 			// scan through the active uniforms and add them to the reference list
 
@@ -511,7 +540,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					}
 
 					// find out which params object this comes from
-					var foundSource = CompleteParamSource( paramName, vertexConstantDefs, geometryConstantDefs, fragmentConstantDefs, newGLUniformReference );
+					var foundSource = CompleteParamSource( paramName, vertexConstantDefs, geometryConstantDefs, fragmentConstantDefs,
+					                                       newGLUniformReference );
 
 					// only add this parameter if we found the source
 					if ( foundSource )
@@ -651,12 +681,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 							if ( def.IsFloat )
 							{
 								def.PhysicalIndex = defs.FloatBufferSize;
-								defs.FloatBufferSize += def.ArraySize * def.ElementSize;
+								defs.FloatBufferSize += def.ArraySize*def.ElementSize;
 							}
 							else
 							{
 								def.PhysicalIndex = defs.IntBufferSize;
-								defs.IntBufferSize += def.ArraySize * def.ElementSize;
+								defs.IntBufferSize += def.ArraySize*def.ElementSize;
 							}
 
 							defs.Map.Add( paramName, def );

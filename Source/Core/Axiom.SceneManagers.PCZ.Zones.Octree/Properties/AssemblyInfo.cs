@@ -49,5 +49,5 @@ using System.Runtime.CompilerServices;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle("Axiom OctreeZone Plugin For PortalZone Connected SceneManager")]
-[assembly: AssemblyDescription("Plugin capable of partitioning Zones using an Octree.")]
+[assembly: AssemblyTitle( "Axiom OctreeZone Plugin For PortalZone Connected SceneManager" )]
+[assembly: AssemblyDescription( "Plugin capable of partitioning Zones using an Octree." )]

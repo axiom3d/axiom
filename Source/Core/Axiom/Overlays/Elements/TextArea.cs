@@ -39,14 +39,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Fonts;
 using Axiom.Scripting;
 using Axiom.Graphics;
-
 using Font = Axiom.Fonts.Font;
-
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -131,17 +128,21 @@ namespace Axiom.Overlays.Elements
 				var decl = renderOperation.vertexData.vertexDeclaration;
 				var binding = renderOperation.vertexData.vertexBufferBinding;
 
-				renderOperation.vertexData.vertexCount = numChars * 6;
+				renderOperation.vertexData.vertexCount = numChars*6;
 
 				// Create dynamic since text tends to change alot
 				// positions & texcoords
-				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION_TEXCOORD_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
+				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION_TEXCOORD_BINDING ),
+				                                                                renderOperation.vertexData.vertexCount,
+				                                                                BufferUsage.DynamicWriteOnly );
 
 				// bind the pos/tex buffer
 				binding.SetBinding( POSITION_TEXCOORD_BINDING, buffer );
 
 				// colors
-				buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
+				buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ),
+				                                                            renderOperation.vertexData.vertexCount,
+				                                                            BufferUsage.DynamicWriteOnly );
 
 				// bind the color buffer
 				binding.SetBinding( COLOR_BINDING, buffer );
@@ -195,19 +196,20 @@ namespace Axiom.Overlays.Elements
 		{
 			float vpWidth = OverlayManager.Instance.ViewportWidth;
 			float vpHeight = OverlayManager.Instance.ViewportHeight;
-			viewportAspectCoef = vpHeight / vpWidth;
+			viewportAspectCoef = vpHeight/vpWidth;
 
-			if ( metricsMode != MetricsMode.Relative && ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
+			if ( metricsMode != MetricsMode.Relative &&
+			     ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
 			{
-				charHeight = (float)pixelCharHeight / vpHeight;
-				spaceWidth = (float)pixelSpaceWidth / vpHeight;
+				charHeight = (float)pixelCharHeight/vpHeight;
+				spaceWidth = (float)pixelSpaceWidth/vpHeight;
 
 				isGeomPositionsOutOfDate = true;
 			}
 
 			base.Update();
 
-			if ( this.haveColorsChanged && isInitialized )
+			if ( haveColorsChanged && isInitialized )
 			{
 				UpdateColors();
 				haveColorsChanged = false;
@@ -256,7 +258,7 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		protected void UpdateGeometry()
 		{
-			if ( font == null || text == null || !this.isGeomPositionsOutOfDate )
+			if ( font == null || text == null || !isGeomPositionsOutOfDate )
 			{
 				// must not be initialized yet, probably due to order of creation in a template
 				return;
@@ -266,19 +268,19 @@ namespace Axiom.Overlays.Elements
 			// make sure the buffers are big enough
 			CheckMemoryAllocation( charLength );
 
-			renderOperation.vertexData.vertexCount = charLength * 6;
+			renderOperation.vertexData.vertexCount = charLength*6;
 
 			// get pos/tex buffer
 			var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION_TEXCOORD_BINDING );
 			var data = buffer.Lock( BufferLocking.Discard );
 			var largestWidth = 0.0f;
-			var left = this.DerivedLeft * 2.0f - 1.0f;
-			var top = -( ( this.DerivedTop * 2.0f ) - 1.0f );
+			var left = DerivedLeft*2.0f - 1.0f;
+			var top = -( ( DerivedTop*2.0f ) - 1.0f );
 
 			// derive space width from the size of a capital A
 			if ( spaceWidth == 0 )
 			{
-				spaceWidth = font.GetGlyphAspectRatio( 'A' ) * charHeight * 2.0f * viewportAspectCoef;
+				spaceWidth = font.GetGlyphAspectRatio( 'A' )*charHeight*2.0f*viewportAspectCoef;
 			}
 
 
@@ -303,17 +305,17 @@ namespace Axiom.Overlays.Elements
 						}
 						else
 						{
-							length += font.GetGlyphAspectRatio( text[ j ] ) * charHeight * 2f * viewportAspectCoef;
+							length += font.GetGlyphAspectRatio( text[ j ] )*charHeight*2f*viewportAspectCoef;
 						}
 					} // for j
 
-					if ( this.horzAlign == HorizontalAlignment.Right )
+					if ( horzAlign == HorizontalAlignment.Right )
 					{
 						left -= length;
 					}
-					else if ( this.horzAlign == HorizontalAlignment.Center )
+					else if ( horzAlign == HorizontalAlignment.Center )
 					{
-						left -= length * 0.5f;
+						left -= length*0.5f;
 					}
 
 					newLine = false;
@@ -321,8 +323,8 @@ namespace Axiom.Overlays.Elements
 
 				if ( c == '\n' )
 				{
-					left = this.DerivedLeft * 2.0f - 1.0f;
-					top -= charHeight * 2.0f;
+					left = DerivedLeft*2.0f - 1.0f;
+					top -= charHeight*2.0f;
 					newLine = true;
 					// reduce tri count
 					renderOperation.vertexData.vertexCount -= 6;
@@ -338,7 +340,7 @@ namespace Axiom.Overlays.Elements
 					continue;
 				}
 
-				var horizHeight = font.GetGlyphAspectRatio( c ) * viewportAspectCoef;
+				var horizHeight = font.GetGlyphAspectRatio( c )*viewportAspectCoef;
 				Real u1, u2, v1, v2;
 
 				// get the texcoords for the specified character
@@ -358,7 +360,7 @@ namespace Axiom.Overlays.Elements
 					vertPtr[ index++ ] = u1;
 					vertPtr[ index++ ] = v1;
 
-					top -= charHeight * 2.0f;
+					top -= charHeight*2.0f;
 
 					// bottom left
 					vertPtr[ index++ ] = left;
@@ -367,8 +369,8 @@ namespace Axiom.Overlays.Elements
 					vertPtr[ index++ ] = u1;
 					vertPtr[ index++ ] = v2;
 
-					top += charHeight * 2.0f;
-					left += horizHeight * charHeight * 2.0f;
+					top += charHeight*2.0f;
+					left += horizHeight*charHeight*2.0f;
 
 					// top right
 					vertPtr[ index++ ] = left;
@@ -386,8 +388,8 @@ namespace Axiom.Overlays.Elements
 					vertPtr[ index++ ] = u2;
 					vertPtr[ index++ ] = v1;
 
-					top -= charHeight * 2.0f;
-					left -= horizHeight * charHeight * 2.0f;
+					top -= charHeight*2.0f;
+					left -= horizHeight*charHeight*2.0f;
 
 					// bottom left (again)
 					vertPtr[ index++ ] = left;
@@ -396,7 +398,7 @@ namespace Axiom.Overlays.Elements
 					vertPtr[ index++ ] = u1;
 					vertPtr[ index++ ] = v2;
 
-					left += horizHeight * charHeight * 2.0f;
+					left += horizHeight*charHeight*2.0f;
 
 					// bottom right
 					vertPtr[ index++ ] = left;
@@ -407,9 +409,9 @@ namespace Axiom.Overlays.Elements
 				}
 
 				// go back up with top
-				top += charHeight * 2.0f;
+				top += charHeight*2.0f;
 
-				var currentWidth = ( left + 1 ) / 2 - this.DerivedLeft;
+				var currentWidth = ( left + 1 )/2 - DerivedLeft;
 
 				if ( currentWidth > largestWidth )
 				{
@@ -429,9 +431,9 @@ namespace Axiom.Overlays.Elements
 			}
 
 			// record the width as the longest width calculated for any of the lines
-			if ( this.Width < largestWidth )
+			if ( Width < largestWidth )
 			{
-				this.Width = largestWidth;
+				Width = largestWidth;
 			}
 		}
 
@@ -591,7 +593,7 @@ namespace Axiom.Overlays.Elements
 			{
 				float vpWidth = OverlayManager.Instance.ViewportWidth;
 				float vpHeight = OverlayManager.Instance.ViewportHeight;
-				viewportAspectCoef = vpHeight / vpWidth;
+				viewportAspectCoef = vpHeight/vpWidth;
 				base.MetricsMode = value;
 
 				// configure pixel variables based on current viewport
@@ -599,13 +601,13 @@ namespace Axiom.Overlays.Elements
 				{
 					case MetricsMode.Pixels:
 						// set pixel variables multiplied by the viewport multipliers
-						pixelCharHeight = (int)( charHeight * vpHeight );
-						pixelSpaceWidth = (int)( spaceWidth * vpHeight );
+						pixelCharHeight = (int)( charHeight*vpHeight );
+						pixelSpaceWidth = (int)( spaceWidth*vpHeight );
 						break;
 					case MetricsMode.Relative:
 						// set pixel variables multiplied by the height constant
-						pixelCharHeight = (int)( charHeight * 10000.0 );
-						pixelSpaceWidth = (int)( spaceWidth * 10000.0 );
+						pixelCharHeight = (int)( charHeight*10000.0 );
+						pixelSpaceWidth = (int)( spaceWidth*10000.0 );
 						break;
 				}
 			}

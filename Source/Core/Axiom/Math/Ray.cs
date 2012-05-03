@@ -44,7 +44,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Math.Collections;
 
 #endregion Namespace Declarations
@@ -96,7 +95,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Vector3 GetPoint( Real t )
 		{
-			return origin + ( direction * t );
+			return origin + ( direction*t );
 		}
 
 		/// <summary>
@@ -108,7 +107,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return origin + ( direction * t );
+				return origin + ( direction*t );
 			}
 		}
 
@@ -180,7 +179,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector3 operator *( Ray ray, Real t )
 		{
-			return ray.origin + ( ray.direction * t );
+			return ray.origin + ( ray.direction*t );
 		}
 
 		public static bool operator ==( Ray left, Ray right )

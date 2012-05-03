@@ -39,11 +39,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System.IO;
 using System.Text;
-
-
 using Axiom.Graphics;
 using Axiom.Media;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -157,23 +154,10 @@ namespace Axiom.Core
 
 		#region Bpp Property
 
-		/// <summary>Bits per pixel in this texture.</summary>
-		private int _finalBpp;
-
 		/// <summary>
 		///    Gets the bits per pixel found within this texture data.
 		/// </summary>
-		public int Bpp
-		{
-			get
-			{
-				return _finalBpp;
-			}
-			protected set
-			{
-				_finalBpp = value;
-			}
-		}
+		public int Bpp { get; protected set; }
 
 		#endregion Bpp Property
 
@@ -414,20 +398,7 @@ namespace Axiom.Core
 		#region SrcBpp Property
 
 		/// <summary>Original source bits per pixel if this texture had been modified.</summary>
-		private int _srcBpp;
-
-		/// <summary>Original source bits per pixel if this texture had been modified.</summary>
-		public int srcBpp
-		{
-			get
-			{
-				return _srcBpp;
-			}
-			protected set
-			{
-				_srcBpp = value;
-			}
-		}
+		public int srcBpp { get; protected set; }
 
 		#endregion SrcBpp Property
 
@@ -654,7 +625,8 @@ namespace Axiom.Core
 #if NET_40
 		public Texture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader = null )
 #else
-		public Texture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		public Texture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                IManualResourceLoader loader )
 #endif
 			: base( parent, name, handle, group, isManual, loader )
 		{
@@ -676,7 +648,9 @@ namespace Axiom.Core
 
 #if !NET_40
 		public Texture( ResourceManager parent, string name, ResourceHandle handle, string group )
-			: this( parent, name, handle, group, false, null ) {}
+			: this( parent, name, handle, group, false, null )
+		{
+		}
 #endif
 
 		#endregion Construction and Destruction
@@ -730,9 +704,9 @@ namespace Axiom.Core
 				lock ( _loadingStatusMutex )
 				{
 					LoadImages( new Image[]
-								{
-									image
-								} );
+					            {
+					            	image
+					            } );
 				}
 			}
 			catch
@@ -746,9 +720,9 @@ namespace Axiom.Core
 			_loadingState.Value = Core.LoadingState.Loaded;
 
 			// Notify manager
-			if ( this.Creator != null )
+			if ( Creator != null )
 			{
-				this.Creator.NotifyResourceLoaded( this );
+				Creator.NotifyResourceLoaded( this );
 			}
 
 			// No deferred loading events since this method is not called in background
@@ -781,7 +755,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		protected override int calculateSize()
 		{
-			return FaceCount * PixelUtil.GetMemorySize( Width, Height, Depth, Format );
+			return FaceCount*PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 		}
 
 		/// <summary>
@@ -857,16 +831,18 @@ namespace Axiom.Core
 
 			// Check wether number of faces in images exceeds number of faces
 			// in this texture. If so, clamp it.
-			if ( faces > this.FaceCount )
+			if ( faces > FaceCount )
 			{
-				faces = this.FaceCount;
+				faces = FaceCount;
 			}
 
 			// Say what we're doing
 			if ( TextureManager.Instance.Verbose )
 			{
 				var msg = new StringBuilder();
-				msg.AppendFormat( "Texture: {0}: Loading {1} faces( {2}, {3}x{4}x{5} ) with", _name, faces, PixelUtil.GetFormatName( images[ 0 ].Format ), images[ 0 ].Width, images[ 0 ].Height, images[ 0 ].Depth );
+				msg.AppendFormat( "Texture: {0}: Loading {1} faces( {2}, {3}x{4}x{5} ) with", _name, faces,
+				                  PixelUtil.GetFormatName( images[ 0 ].Format ), images[ 0 ].Width, images[ 0 ].Height,
+				                  images[ 0 ].Depth );
 				if ( !( mipmapsHardwareGenerated && mipmapCount == 0 ) )
 				{
 					msg.AppendFormat( " {0}", mipmapCount );
@@ -885,7 +861,8 @@ namespace Axiom.Core
 
 				// Print data about first destination surface
 				var buf = GetBuffer( 0, 0 );
-				msg.AppendFormat( " Internal format is {0} , {1}x{2}x{3}.", PixelUtil.GetFormatName( buf.Format ), buf.Width, buf.Height, buf.Depth );
+				msg.AppendFormat( " Internal format is {0} , {1}x{2}x{3}.", PixelUtil.GetFormatName( buf.Format ), buf.Width,
+				                  buf.Height, buf.Depth );
 
 				LogManager.Instance.Write( msg.ToString() );
 			}
@@ -916,7 +893,7 @@ namespace Axiom.Core
 						// Apply gamma correction
 						// Do not overwrite original image but do gamma correction in temporary buffer
 						var bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, src.Format );
-						var buff = new byte[ bufSize ];
+						var buff = new byte[bufSize];
 						var buffer = BufferBase.Wrap( buff );
 
 						var corrected = new PixelBox( src.Width, src.Height, src.Depth, src.Format, buffer );
@@ -938,7 +915,7 @@ namespace Axiom.Core
 			}
 
 			// Update size (the final size, not including temp space)
-			Size = this.FaceCount * PixelUtil.GetMemorySize( width, height, depth, format );
+			Size = FaceCount*PixelUtil.GetMemorySize( width, height, depth, format );
 		}
 
 		/// <summary>
@@ -1003,18 +980,19 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2, "Original name was CopyToTexture" )]
 		public virtual void CopyTo( Texture target )
 		{
-			if ( target.FaceCount != this.FaceCount )
+			if ( target.FaceCount != FaceCount )
 			{
 				throw new AxiomException( "Texture types must match!" );
 			}
 
-			var numMips = Axiom.Math.Utility.Min( this.MipmapCount, target.MipmapCount );
-			if ( ( usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap || ( target.Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap )
+			var numMips = Axiom.Math.Utility.Min( MipmapCount, target.MipmapCount );
+			if ( ( usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap ||
+			     ( target.Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap )
 			{
 				numMips = 0;
 			}
 
-			for ( var face = 0; face < this.FaceCount; face++ )
+			for ( var face = 0; face < FaceCount; face++ )
 			{
 				for ( var mip = 0; mip <= numMips; mip++ )
 				{
@@ -1048,7 +1026,9 @@ namespace Axiom.Core
 				{
 					dstream = ResourceGroupManager.Instance.OpenResource( _name, _group, true, null );
 				}
-				catch {}
+				catch
+				{
+				}
 				if ( dstream == null && TextureType == Graphics.TextureType.CubeMap )
 				{
 					// try again with one of the faces (non-dds)
@@ -1056,7 +1036,9 @@ namespace Axiom.Core
 					{
 						dstream = ResourceGroupManager.Instance.OpenResource( _name + "_rt", _group, true, null );
 					}
-					catch {}
+					catch
+					{
+					}
 				}
 
 				if ( dstream != null )
@@ -1080,21 +1062,21 @@ namespace Axiom.Core
 		public virtual void ConvertToImage( out Image destImage, bool includeMipMaps )
 #endif
 		{
-			var numMips = includeMipMaps ? this.MipmapCount + 1 : 1;
-			var dataSize = Image.CalculateSize( numMips, this.FaceCount, this.Width, this.Height, this.Depth, this.Format );
+			var numMips = includeMipMaps ? MipmapCount + 1 : 1;
+			var dataSize = Image.CalculateSize( numMips, FaceCount, Width, Height, Depth, Format );
 
-			var pixData = new byte[ dataSize ];
+			var pixData = new byte[dataSize];
 			// if there are multiple faces and mipmaps we must pack them into the data
 			// faces, then mips
 			var currentPixData = BufferBase.Wrap( pixData );
 
-			for ( var face = 0; face < this.FaceCount; ++face )
+			for ( var face = 0; face < FaceCount; ++face )
 			{
 				for ( var mip = 0; mip < numMips; ++mip )
 				{
-					var mipDataSize = PixelUtil.GetMemorySize( this.Width, this.Height, this.Depth, this.Format );
+					var mipDataSize = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
-					var pixBox = new PixelBox( this.Width, this.Height, this.Depth, this.Format, currentPixData );
+					var pixBox = new PixelBox( Width, Height, Depth, Format, currentPixData );
 					GetBuffer( face, mip ).BlitToMemory( pixBox );
 
 					currentPixData += mipDataSize;
@@ -1104,7 +1086,7 @@ namespace Axiom.Core
 			currentPixData.Dispose();
 
 			// load, and tell Image to delete the memory when it's done.
-			destImage = ( new Image() ).FromDynamicImage( pixData, this.Width, this.Height, this.Depth, this.Format, true, this.FaceCount, numMips - 1 );
+			destImage = ( new Image() ).FromDynamicImage( pixData, Width, Height, Depth, Format, true, FaceCount, numMips - 1 );
 		}
 
 #if !NET_40

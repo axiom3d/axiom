@@ -35,9 +35,7 @@
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Collections;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -84,7 +82,8 @@ namespace Axiom.Core
 	/// Note, no locks are required here anymore because all of the parallelisation
 	/// is now contained in WorkQueue - this class is entirely single-threaded
 	/// </remarks>
-	public class ResourceBackgroundQueue : DisposableObject, ISingleton<ResourceBackgroundQueue>, WorkQueue.IRequestHandler, WorkQueue.IResponseHandler
+	public class ResourceBackgroundQueue
+		: DisposableObject, ISingleton<ResourceBackgroundQueue>, WorkQueue.IRequestHandler, WorkQueue.IResponseHandler
 	{
 		/// <summary>
 		/// Enumerates the type of requests
@@ -140,8 +139,8 @@ namespace Axiom.Core
 
 			public ResourceResponse( Resource r, ResourceRequest req )
 			{
-				this.Resource = r;
-				this.Request = req;
+				Resource = r;
+				Request = req;
 			}
 		};
 
@@ -160,7 +159,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2, "~ResourceBackgroundQueue" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -222,7 +221,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.InitializeResourceGroup( string, OnOperationCompleted )"/>
 		public RequestID InitializeResourceGroup( string name )
 		{
-			return this.InitializeResourceGroup( name, null );
+			return InitializeResourceGroup( name, null );
 		}
 #endif
 
@@ -259,7 +258,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.InitializeAllResourceGroups( OnOperationCompleted )"/>
 		public RequestID InitializeAllResourceGroups()
 		{
-			return this.InitializeAllResourceGroups( null );
+			return InitializeAllResourceGroups( null );
 		}
 #endif
 
@@ -297,7 +296,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.PrepareResourceGroup( string, OnOperationCompleted )"/>
 		public RequestID PrepareResourceGroup( string name )
 		{
-			return this.PrepareResourceGroup( name, null );
+			return PrepareResourceGroup( name, null );
 		}
 #endif
 
@@ -335,7 +334,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.LoadResourceGroup( string, OnOperationCompleted )"/>
 		public RequestID LoadResourceGroup( string name )
 		{
-			return this.LoadResourceGroup( name, null );
+			return LoadResourceGroup( name, null );
 		}
 #endif
 
@@ -362,7 +361,9 @@ namespace Axiom.Core
 		public virtual RequestID Prepare( string resType, string name, string group, bool isManual = false, IManualResourceLoader loader = null,
 			NameValuePairList loadParams = null, OnOperationCompleted listener = null )
 #else
-		public virtual RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, OnOperationCompleted listener )
+		public virtual RequestID Prepare( string resType, string name, string group, bool isManual,
+		                                  IManualResourceLoader loader, NameValuePairList loadParams,
+		                                  OnOperationCompleted listener )
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
@@ -390,25 +391,26 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Prepare( string resType, string name, string group )
 		{
-			return this.Prepare( resType, name, group, false, null, null, null );
+			return Prepare( resType, name, group, false, null, null, null );
 		}
 
 		/// <see cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Prepare( string resType, string name, string group, bool isManual )
 		{
-			return this.Prepare( resType, name, group, isManual, null, null, null );
+			return Prepare( resType, name, group, isManual, null, null, null );
 		}
 
 		/// <see cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader )
 		{
-			return this.Prepare( resType, name, group, isManual, loader, null, null );
+			return Prepare( resType, name, group, isManual, loader, null, null );
 		}
 
 		/// <see cref="ResourceBackgroundQueue.Prepare( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
-		public RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
+		public RequestID Prepare( string resType, string name, string group, bool isManual, IManualResourceLoader loader,
+		                          NameValuePairList loadParams )
 		{
-			return this.Prepare( resType, name, group, isManual, loader, loadParams, null );
+			return Prepare( resType, name, group, isManual, loader, loadParams, null );
 		}
 #endif
 
@@ -435,7 +437,8 @@ namespace Axiom.Core
 		public virtual RequestID Load( string resType, string name, string group, bool isManual = false, IManualResourceLoader loader = null,
 			NameValuePairList loadParams = null, OnOperationCompleted listener = null )
 #else
-		public virtual RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, OnOperationCompleted listener )
+		public virtual RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader,
+		                               NameValuePairList loadParams, OnOperationCompleted listener )
 #endif
 		{
 #if AXIOM_THREAD_SUPPORT
@@ -463,25 +466,26 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Load( string resType, string name, string group )
 		{
-			return this.Load( resType, name, group, false, null, null, null );
+			return Load( resType, name, group, false, null, null, null );
 		}
 
 		/// <see cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Load( string resType, string name, string group, bool isManual )
 		{
-			return this.Load( resType, name, group, isManual, null, null, null );
+			return Load( resType, name, group, isManual, null, null, null );
 		}
 
 		/// <see cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
 		public RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader )
 		{
-			return this.Load( resType, name, group, isManual, loader, null, null );
+			return Load( resType, name, group, isManual, loader, null, null );
 		}
 
 		/// <see cref="ResourceBackgroundQueue.Load( string, string, string, bool, IManualResourceLoader, NameValuePairList, OnOperationCompleted )"/>
-		public RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
+		public RequestID Load( string resType, string name, string group, bool isManual, IManualResourceLoader loader,
+		                       NameValuePairList loadParams )
 		{
-			return this.Load( resType, name, group, isManual, loader, loadParams, null );
+			return Load( resType, name, group, isManual, loader, loadParams, null );
 		}
 #endif
 
@@ -521,7 +525,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.Unload( string, string, OnOperationCompleted )"/>
 		public RequestID Unload( string resType, string name )
 		{
-			return this.Unload( resType, name, null );
+			return Unload( resType, name, null );
 		}
 #endif
 
@@ -561,7 +565,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.Unload( string, ResourceHandle, OnOperationCompleted )"/>
 		public RequestID Unload( string resType, ResourceHandle handle )
 		{
-			return this.Unload( resType, handle, null );
+			return Unload( resType, handle, null );
 		}
 #endif
 
@@ -599,7 +603,7 @@ namespace Axiom.Core
 		/// <see cref="ResourceBackgroundQueue.UnloadResourceGroup( string, OnOperationCompleted )"/>
 		public RequestID UnloadResourceGroup( string name )
 		{
-			return this.UnloadResourceGroup( name, null );
+			return UnloadResourceGroup( name, null );
 		}
 #endif
 
@@ -694,7 +698,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public WorkQueue.Response HandleRequest( WorkQueue.Request req, WorkQueue srcQ )
 		{
-			ResourceRequest resreq = (ResourceRequest)req.Data;
+			var resreq = (ResourceRequest)req.Data;
 
 			if ( req.Aborted )
 			{
@@ -705,7 +709,7 @@ namespace Axiom.Core
 				}
 
 				resreq.Result.Error = false;
-				ResourceResponse resresp = new ResourceResponse( null, resreq );
+				var resresp = new ResourceResponse( null, resreq );
 				return new WorkQueue.Response( req, true, resresp );
 			}
 
@@ -742,7 +746,8 @@ namespace Axiom.Core
 
 					case RequestType.PrepareResource:
 						rm = ResourceGroupManager.Instance.ResourceManagers[ resreq.ResourceType ];
-						resource = rm.Prepare( resreq.ResourceName, resreq.GroupName, resreq.IsManual, resreq.Loader, resreq.LoadParams, true );
+						resource = rm.Prepare( resreq.ResourceName, resreq.GroupName, resreq.IsManual, resreq.Loader, resreq.LoadParams,
+						                       true );
 						break;
 
 					case RequestType.LoadResource:
@@ -779,7 +784,7 @@ namespace Axiom.Core
 				resreq.Result.Message = e.Message;
 
 				//return error response
-				ResourceResponse resresp = new ResourceResponse( resource, resreq );
+				var resresp = new ResourceResponse( resource, resreq );
 				return new WorkQueue.Response( req, false, resresp, e.Message );
 			}
 
@@ -791,7 +796,7 @@ namespace Axiom.Core
 			}
 
 			resreq.Result.Error = false;
-			ResourceResponse resp = new ResourceResponse( resource, resreq );
+			var resp = new ResourceResponse( resource, resreq );
 			return new WorkQueue.Response( req, true, resp );
 		}
 
@@ -818,7 +823,7 @@ namespace Axiom.Core
 
 			if ( res.Succeeded )
 			{
-				ResourceResponse resresp = (ResourceResponse)res.Data;
+				var resresp = (ResourceResponse)res.Data;
 				// Complete full loading in main thread if semithreading
 				ResourceRequest req = resresp.Request;
 

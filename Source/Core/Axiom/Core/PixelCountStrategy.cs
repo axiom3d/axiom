@@ -38,12 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Graphics;
 using Axiom.Math;
-
 using MathHelper = Axiom.Math.Utility;
-
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -59,7 +56,9 @@ namespace Axiom.Core
 		/// Default constructor.
 		/// </summary>
 		public PixelCountStrategy()
-			: base( "PixelCount" ) {}
+			: base( "PixelCount" )
+		{
+		}
 
 		#region LodStrategy Implementation
 
@@ -107,10 +106,10 @@ namespace Axiom.Core
 			var viewport = camera.Viewport;
 
 			// Get viewport area
-			float viewportArea = viewport.ActualWidth * viewport.ActualHeight;
+			float viewportArea = viewport.ActualWidth*viewport.ActualHeight;
 
 			// Get area of unprojected circle with object bounding radius
-			float boundingArea = MathHelper.PI * MathHelper.Sqr( movableObject.BoundingRadius );
+			float boundingArea = MathHelper.PI*MathHelper.Sqr( movableObject.BoundingRadius );
 
 			// Base computation on projection type
 			switch ( camera.ProjectionType )
@@ -130,13 +129,13 @@ namespace Axiom.Core
 					var projectionMatrix = camera.ProjectionMatrix;
 
 					//estimate pixel count
-					return ( boundingArea * viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ] ) / distanceSquared;
+					return ( boundingArea*viewportArea*projectionMatrix[ 0, 0 ]*projectionMatrix[ 1, 1 ] )/distanceSquared;
 				}
 					// break;
 				case Projection.Orthographic:
 				{
 					// Compute orthographic area
-					var orthoArea = camera.OrthoWindowHeight * camera.OrthoWindowWidth;
+					var orthoArea = camera.OrthoWindowHeight*camera.OrthoWindowWidth;
 
 					// Check for 0 orthographic area
 					if ( orthoArea <= float.Epsilon )
@@ -145,7 +144,7 @@ namespace Axiom.Core
 					}
 
 					// Estimate pixel count
-					return ( boundingArea * viewportArea ) / orthoArea;
+					return ( boundingArea*viewportArea )/orthoArea;
 				}
 					// break;
 				default:

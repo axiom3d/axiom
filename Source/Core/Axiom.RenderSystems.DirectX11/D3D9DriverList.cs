@@ -36,9 +36,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Axiom.Core;
-
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -65,7 +63,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		~D3D9DriverList()
 		{
-			this.Dispose();
+			Dispose();
 		}
 
 		[OgreVersion( 1, 7, 2, "~D3D9DriverList" )]
@@ -76,7 +74,7 @@ namespace Axiom.RenderSystems.DirectX9
 				it.SafeDispose();
 			}
 
-			this.Clear();
+			Clear();
 			GC.SuppressFinalize( this );
 		}
 
@@ -93,7 +91,7 @@ namespace Axiom.RenderSystems.DirectX9
 				var d3ddm = lpD3D9.GetAdapterDisplayMode( iAdapter );
 				var d3dcaps9 = lpD3D9.GetDeviceCaps( iAdapter, D3D9.DeviceType.Hardware );
 
-				this.Add( new D3D9Driver( iAdapter, d3dcaps9, adapterIdentifier, d3ddm ) );
+				Add( new D3D9Driver( iAdapter, d3dcaps9, adapterIdentifier, d3ddm ) );
 			}
 
 			LogManager.Instance.Write( "D3D9: Driver Detection Ends" );

@@ -40,13 +40,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.Collections;
-
 using Axiom.Collections;
 using Axiom.Math;
 using Axiom.Graphics;
-
 using System.Collections.Generic;
-
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -348,11 +345,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.visible;
+				return visible;
 			}
 			set
 			{
-				this.visible = value;
+				visible = value;
 			}
 		}
 
@@ -364,17 +361,17 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.isInSceneGraph;
+				return isInSceneGraph;
 			}
 			protected set
 			{
-				if ( value != this.isInSceneGraph )
+				if ( value != isInSceneGraph )
 				{
-					this.isInSceneGraph = value;
+					isInSceneGraph = value;
 					// notify children
 					foreach ( var child in childNodes.Values )
 					{
-						( (SceneNode)child ).IsInSceneGraph = this.isInSceneGraph;
+						( (SceneNode)child ).IsInSceneGraph = isInSceneGraph;
 					}
 				}
 			}
@@ -415,7 +412,7 @@ namespace Axiom.Core
 		protected override void OnRename( string oldName )
 		{
 			//ensure that it is keyed to the name name in the Scene Manager that manages it
-			this.creator.RekeySceneNode( oldName, this );
+			creator.RekeySceneNode( oldName, this );
 		}
 
 		/// <summary>
@@ -568,9 +565,9 @@ namespace Axiom.Core
 		/// <returns>MovableObject if found. Throws exception of not found.</returns>
 		public MovableObject GetObject( string name )
 		{
-			if ( this.objectList.ContainsKey( name ) )
+			if ( objectList.ContainsKey( name ) )
 			{
-				return this.objectList[ name ];
+				return objectList[ name ];
 			}
 
 			throw new IndexOutOfRangeException( "Invalid key specified." );
@@ -586,7 +583,7 @@ namespace Axiom.Core
 		public MovableObject GetObject( int index )
 		{
 			var i = 0;
-			foreach ( var mo in this.objectList.Values )
+			foreach ( var mo in objectList.Values )
 			{
 				if ( i == index )
 				{
@@ -613,7 +610,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void RemoveAndDestroyChild( String name )
 		{
-			var child = (SceneNode)this.GetChild( name );
+			var child = (SceneNode)GetChild( name );
 			RemoveAndDestroyChild( child );
 		}
 
@@ -635,7 +632,7 @@ namespace Axiom.Core
 		{
 			sceneNode.RemoveAndDestroyAllChildren();
 
-			this.RemoveChild( sceneNode );
+			RemoveChild( sceneNode );
 			sceneNode.Creator.DestroySceneNode( sceneNode );
 		}
 
@@ -654,7 +651,7 @@ namespace Axiom.Core
 				sn.RemoveAndDestroyAllChildren();
 
 				// destroy but prevent removing from internal list yet
-				this.RemoveChild( sn, false );
+				RemoveChild( sn, false );
 				sn.Creator.DestroySceneNode( sn, false );
 			}
 
@@ -691,7 +688,7 @@ namespace Axiom.Core
 			base.UpdateFromParent();
 
 			// Notify objects that it has been moved
-			foreach ( var currentObject in this.objectList.Values )
+			foreach ( var currentObject in objectList.Values )
 			{
 				currentObject.NotifyMoved();
 			}
@@ -729,7 +726,8 @@ namespace Axiom.Core
 		/// <param name="includeChildren">If true, cascades down to all children.</param>
 		/// <param name="displayNodes">Renders the local axes for the node.</param>
 		/// <param name="onlyShadowCasters"></param>
-		public virtual void FindVisibleObjects( Camera camera, RenderQueue queue, bool includeChildren, bool displayNodes, bool onlyShadowCasters )
+		public virtual void FindVisibleObjects( Camera camera, RenderQueue queue, bool includeChildren, bool displayNodes,
+		                                        bool onlyShadowCasters )
 		{
 			// if we aren't visible, then quit now
 			// TODO: Make sure sphere is calculated properly for all objects, then switch to cull using that
@@ -788,7 +786,7 @@ namespace Axiom.Core
 
 		public override Node.DebugRenderable GetDebugRenderable()
 		{
-			var hs = this.worldAABB.HalfSize;
+			var hs = worldAABB.HalfSize;
 			var sz = Utility.Min( hs.x, hs.y );
 			sz = Utility.Min( sz, hs.z );
 			sz = Utility.Max( sz, (Real)1.0 );
@@ -818,7 +816,7 @@ namespace Axiom.Core
 		{
 			// reset bounds
 			worldAABB.IsNull = true;
-			worldBoundingSphere.Center = this.DerivedPosition;
+			worldBoundingSphere.Center = DerivedPosition;
 			float radius = worldBoundingSphere.Radius = 0;
 
 			// update bounds from attached objects
@@ -887,7 +885,7 @@ namespace Axiom.Core
 			else
 			{
 				// Rotate around local Y axis
-				yAxis = orientation * Vector3.UnitY;
+				yAxis = orientation*Vector3.UnitY;
 			}
 
 			Rotate( yAxis, degrees );
@@ -904,7 +902,7 @@ namespace Axiom.Core
 		///	</param>
 		public void LookAt( Vector3 target, TransformSpace relativeTo, Vector3 localDirection )
 		{
-			SetDirection( target - this.DerivedPosition, relativeTo, localDirection );
+			SetDirection( target - DerivedPosition, relativeTo, localDirection );
 		}
 
 		public void LookAt( Vector3 target, TransformSpace relativeTo )
@@ -1038,7 +1036,7 @@ namespace Axiom.Core
 			else
 			{
 				var localToUnitZ = localDirection.GetRotationTo( Vector3.UnitZ );
-				zAdjustVec = localToUnitZ * vec;
+				zAdjustVec = localToUnitZ*vec;
 			}
 
 			zAdjustVec.Normalize();
@@ -1061,7 +1059,7 @@ namespace Axiom.Core
 
 				// Get axes from current quaternion
 				// get the vector components of the derived orientation vector
-				this.DerivedOrientation.ToAxes( out xAxis, out yAxis, out zAxis );
+				DerivedOrientation.ToAxes( out xAxis, out yAxis, out zAxis );
 
 				Quaternion rotationQuat;
 
@@ -1077,7 +1075,7 @@ namespace Axiom.Core
 					rotationQuat = zAxis.GetRotationTo( zAdjustVec );
 				}
 
-				targetOrientation = rotationQuat * orientation;
+				targetOrientation = rotationQuat*orientation;
 			}
 			//use Orientatin property to ensure call of NeedsUpdate
 			if ( relativeTo == TransformSpace.Local || parent != null )
@@ -1088,11 +1086,11 @@ namespace Axiom.Core
 			{
 				if ( relativeTo == TransformSpace.Parent )
 				{
-					Orientation = targetOrientation * parent.Orientation.Inverse();
+					Orientation = targetOrientation*parent.Orientation.Inverse();
 				}
 				else if ( relativeTo == TransformSpace.World )
 				{
-					Orientation = targetOrientation * parent.DerivedOrientation.Inverse();
+					Orientation = targetOrientation*parent.DerivedOrientation.Inverse();
 				}
 			}
 		}
@@ -1129,7 +1127,7 @@ namespace Axiom.Core
 			//if(lightListDirty) {
 			if ( creator != null )
 			{
-				creator.PopulateLightList( this.DerivedPosition, radius, lightList );
+				creator.PopulateLightList( DerivedPosition, radius, lightList );
 			}
 			else
 			{

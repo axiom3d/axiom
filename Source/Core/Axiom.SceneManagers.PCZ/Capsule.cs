@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -51,7 +50,7 @@ namespace Axiom.SceneManagers.PortalConnected
 	{
 		#region Fields
 
-		private Segment mSegment;
+		private readonly Segment mSegment;
 		private float mRadius;
 
 		#endregion Fields

@@ -41,13 +41,10 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting;
-
 using Tao.OpenGl;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -169,9 +166,11 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 		}
 
-		[ScriptableProperty( "input_operation_type", @"The input operation type for this geometry program.
+		[ScriptableProperty( "input_operation_type",
+			@"The input operation type for this geometry program.
 				Can be 'point_list', 'line_list', 'line_strip', 'triangle_list',
-				'triangle_strip' or 'triangle_fan'" )]
+				'triangle_strip' or 'triangle_fan'"
+			)]
 		public class CmdInputOperationType : IPropertyCommand
 		{
 			public string Get( object target )
@@ -185,7 +184,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 		}
 
-		[ScriptableProperty( "output_operation_type", @"The input operation type for this geometry program.
+		[ScriptableProperty( "output_operation_type",
+			@"The input operation type for this geometry program.
 				Can be 'point_list', 'line_strip' or 'triangle_strip'" )]
 		public class CmdOutputOperationType : IPropertyCommand
 		{
@@ -200,7 +200,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 		}
 
-		[ScriptableProperty( "max_output_vertices", "The maximum number of vertices a single run of this geometry program can output" )]
+		[ScriptableProperty( "max_output_vertices",
+			"The maximum number of vertices a single run of this geometry program can output" )]
 		public class CmdMaxOutputVertices : IPropertyCommand
 		{
 			public string Get( object target )
@@ -250,7 +251,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		private readonly List<GpuProgram> attachedGLSLPrograms = new List<GpuProgram>();
 
-		private static readonly Dictionary<string, IPropertyCommand> _commandTable = new Dictionary<string, IPropertyCommand>();
+		private static readonly Dictionary<string, IPropertyCommand> _commandTable =
+			new Dictionary<string, IPropertyCommand>();
 
 		#endregion Fields
 
@@ -259,7 +261,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///		Constructor.
 		/// </summary>
-		public GLSLProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		public GLSLProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                    IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			InputOperationType = OperationType.TriangleList;
@@ -359,7 +362,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 
 			Gl.glAttachObjectARB( programObject, GLHandle );
-			GLSLHelper.CheckForGLSLError( "GLSL : Error attaching " + this.Name + " shader object to GLSL Program Object.", programObject );
+			GLSLHelper.CheckForGLSLError( "GLSL : Error attaching " + Name + " shader object to GLSL Program Object.",
+			                              programObject );
 		}
 
 		///<summary>
@@ -477,7 +481,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			// force exception if not compiled
 			if ( checkErrors )
 			{
-				GLSLHelper.CheckForGLSLError( "GLSL : Cannot compile GLSL high-level shader: " + Name + ".", GLHandle, !isCompiled, !isCompiled );
+				GLSLHelper.CheckForGLSLError( "GLSL : Cannot compile GLSL high-level shader: " + Name + ".", GLHandle, !isCompiled,
+				                              !isCompiled );
 
 				if ( isCompiled )
 				{

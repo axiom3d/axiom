@@ -64,19 +64,19 @@ namespace Axiom.Samples.Primitives
 				return false;
 			}
 
-			_color.x += evt.TimeSinceLastFrame * .6f;
+			_color.x += evt.TimeSinceLastFrame*.6f;
 			if ( _color.x > 1 )
 			{
 				_color.x = 0;
 			}
 
-			_color.y += evt.TimeSinceLastFrame * .6f;
+			_color.y += evt.TimeSinceLastFrame*.6f;
 			if ( _color.y > 1 )
 			{
 				_color.y = 0;
 			}
 
-			_color.z += evt.TimeSinceLastFrame * .6f;
+			_color.z += evt.TimeSinceLastFrame*.6f;
 			if ( _color.z > 1 )
 			{
 				_color.z = 0;
@@ -89,7 +89,8 @@ namespace Axiom.Samples.Primitives
 			// create a 3d line
 			_line = new Line3d( new Vector3( 0, 0, 30 ), Vector3.UnitY, 50, ColorEx.Blue );
 
-			_tri = new Triangle( new Vector3( -25, 0, 0 ), new Vector3( 0, 50, 0 ), new Vector3( 25, 0, 0 ), ColorEx.Red, ColorEx.Blue, ColorEx.Green );
+			_tri = new Triangle( new Vector3( -25, 0, 0 ), new Vector3( 0, 50, 0 ), new Vector3( 25, 0, 0 ), ColorEx.Red,
+			                     ColorEx.Blue, ColorEx.Green );
 
 			// create a node for the line
 			var node = SceneManager.RootSceneNode.CreateChildSceneNode();
@@ -151,7 +152,7 @@ namespace Axiom.Samples.Primitives
 			direction.Normalize();
 
 			// calculate the actual endpoint
-			var endPoint = startPoint + ( direction * length );
+			var endPoint = startPoint + ( direction*length );
 
 			vertexData = new VertexData();
 			renderOperation.vertexData = vertexData;
@@ -169,7 +170,8 @@ namespace Axiom.Samples.Primitives
 			decl.AddElement( COLOR, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
 
 			// create a vertex buffer for the position
-			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount,
+			                                                                BufferUsage.StaticWriteOnly );
 			var pos = new Vector3[]
 			          {
 			          	startPoint, endPoint
@@ -182,7 +184,8 @@ namespace Axiom.Samples.Primitives
 			binding.SetBinding( POSITION, buffer );
 
 			// create a color buffer
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR ), vertexData.vertexCount,
+			                                                            BufferUsage.StaticWriteOnly );
 
 			var colorValue = Root.Instance.RenderSystem.ConvertColor( color );
 
@@ -206,19 +209,19 @@ namespace Axiom.Samples.Primitives
 			// set culling to none so the triangle is drawn 2 sided
 			material.CullingMode = CullingMode.None;
 
-			this.Material = material;
+			Material = material;
 
 			// set the bounding box of the line
-			this.box = new AxisAlignedBox( startPoint, endPoint );
+			box = new AxisAlignedBox( startPoint, endPoint );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					MaterialManager.Instance.Remove( this.Material );
+					MaterialManager.Instance.Remove( Material );
 				}
 			}
 
@@ -230,7 +233,7 @@ namespace Axiom.Samples.Primitives
 			Vector3 min, max, mid, dist;
 			min = box.Minimum;
 			max = box.Maximum;
-			mid = ( ( min - max ) * 0.5f ) + min;
+			mid = ( ( min - max )*0.5f ) + min;
 			dist = camera.DerivedPosition - mid;
 
 			return dist.LengthSquared;
@@ -273,7 +276,8 @@ namespace Axiom.Samples.Primitives
 
 			// POSITIONS
 			// create a vertex buffer for the position
-			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount,
+			                                                                BufferUsage.StaticWriteOnly );
 
 			var positions = new Vector3[]
 			                {
@@ -288,14 +292,16 @@ namespace Axiom.Samples.Primitives
 
 			// COLORS
 			// create a color buffer
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR ), vertexData.vertexCount,
+			                                                            BufferUsage.StaticWriteOnly );
 
 			// create an int array of the colors to use.
 			// note: these must be converted to the current API's
 			// preferred packed int format
 			var colors = new int[]
 			             {
-			             	Root.Instance.RenderSystem.ConvertColor( c1 ), Root.Instance.RenderSystem.ConvertColor( c2 ), Root.Instance.RenderSystem.ConvertColor( c3 )
+			             	Root.Instance.RenderSystem.ConvertColor( c1 ), Root.Instance.RenderSystem.ConvertColor( c2 ),
+			             	Root.Instance.RenderSystem.ConvertColor( c3 )
 			             };
 
 			// write the colors to the color buffer
@@ -314,20 +320,20 @@ namespace Axiom.Samples.Primitives
 			// set culling to none so the triangle is drawn 2 sided
 			material.CullingMode = CullingMode.None;
 
-			this.Material = material;
+			Material = material;
 
 			// set the bounding box of the tri
 			// TODO: not right, but good enough for now
-			this.box = new AxisAlignedBox( new Vector3( 25, 50, 0 ), new Vector3( -25, 0, 0 ) );
+			box = new AxisAlignedBox( new Vector3( 25, 50, 0 ), new Vector3( -25, 0, 0 ) );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					MaterialManager.Instance.Remove( this.Material );
+					MaterialManager.Instance.Remove( Material );
 				}
 			}
 
@@ -339,7 +345,7 @@ namespace Axiom.Samples.Primitives
 			Vector3 min, max, mid, dist;
 			min = box.Minimum;
 			max = box.Maximum;
-			mid = ( ( min - max ) * 0.5f ) + min;
+			mid = ( ( min - max )*0.5f ) + min;
 			dist = camera.DerivedPosition - mid;
 
 			return dist.LengthSquared;

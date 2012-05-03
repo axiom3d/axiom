@@ -41,7 +41,6 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -138,7 +137,7 @@ namespace Axiom.Scripting
 		public static string[] GetParams( string[] all )
 		{
 			// create a seperate parm list that has the command removed
-			var parms = new string[ all.Length - 1 ];
+			var parms = new string[all.Length - 1];
 			Array.Copy( all, 1, parms, 0, parms.Length );
 
 			return parms;

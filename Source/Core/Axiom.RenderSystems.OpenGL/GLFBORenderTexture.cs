@@ -41,7 +41,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Graphics;
@@ -54,7 +53,7 @@ namespace Axiom.RenderSystems.OpenGL
 	{
 		#region Fields and Properties
 
-		private GLFrameBufferObject _fbo;
+		private readonly GLFrameBufferObject _fbo;
 
 		#endregion Fields and Properties
 
@@ -69,8 +68,8 @@ namespace Axiom.RenderSystems.OpenGL
 			_fbo.BindSurface( 0, target );
 
 			// Get attributes
-			this.width = _fbo.Width;
-			this.height = _fbo.Height;
+			width = _fbo.Width;
+			height = _fbo.Height;
 		}
 
 		#endregion Construction and Destruction

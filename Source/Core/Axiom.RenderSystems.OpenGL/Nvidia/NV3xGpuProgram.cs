@@ -39,12 +39,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Runtime.InteropServices;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using Tao.OpenGl;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -63,7 +60,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 	{
 		#region Constructor
 
-		public NV3xGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		public NV3xGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                       IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			throw new AxiomException( "This needs upgrading" );
@@ -87,7 +85,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 			Gl.glBindProgramNV( programType, programId );
 
 			// load the ASM source into an NV program
-			Gl.glLoadProgramNV( programType, programId, Source.Length, System.Text.Encoding.ASCII.GetBytes( Source ) ); // TAO 2.0
+			Gl.glLoadProgramNV( programType, programId, Source.Length, System.Text.Encoding.ASCII.GetBytes( Source ) );
+				// TAO 2.0
 			//Gl.glLoadProgramNV( programType, programId, source.Length, source );
 
 			// get the error string from the NV program loader
@@ -152,7 +151,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 	{
 		#region Constructor
 
-		public VP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		public VP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                       IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			throw new AxiomException( "This needs upgrading" );
@@ -207,7 +207,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 	{
 		#region Constructor
 
-		public FP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		public FP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                       IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			throw new AxiomException( "This needs upgrading" );
@@ -258,7 +259,8 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 	{
 		#region IOpenGLGpuProgramFactory Members
 
-		public GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
+		public GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                            IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
 			GLGpuProgram ret;
 			if ( type == GpuProgramType.Vertex )

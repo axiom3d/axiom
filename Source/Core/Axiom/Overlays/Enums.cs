@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -51,18 +50,15 @@ namespace Axiom.Overlays
 	public enum MetricsMode
 	{
 		/// <summary>'left', 'top', 'height' and 'width' are parametrics from 0.0 to 1.0</summary>
-		[ScriptEnum( "relative" )]
-		Relative,
+		[ScriptEnum( "relative" )] Relative,
 
 		/// <summary>Positions &amp; sizes are in absolute pixels.</summary>
-		[ScriptEnum( "pixels" )]
-		Pixels,
+		[ScriptEnum( "pixels" )] Pixels,
 
 		/// <summary>
 		/// Positions &amp; sizes are in virtual pixels
 		/// </summary>
-		[ScriptEnum( "relative_aspect_adjusted" )]
-		Relative_Aspect_Adjusted
+		[ScriptEnum( "relative_aspect_adjusted" )] Relative_Aspect_Adjusted
 	}
 
 	/// <summary>
@@ -73,20 +69,17 @@ namespace Axiom.Overlays
 		/// <summary>
 		/// 
 		/// </summary>
-		[ScriptEnum( "left" )]
-		Left,
+		[ScriptEnum( "left" )] Left,
 
 		/// <summary>
 		/// 
 		/// </summary>
-		[ScriptEnum( "center" )]
-		Center,
+		[ScriptEnum( "center" )] Center,
 
 		/// <summary>
 		/// 
 		/// </summary>
-		[ScriptEnum( "right" )]
-		Right
+		[ScriptEnum( "right" )] Right
 	}
 
 	/// <summary>
@@ -97,19 +90,16 @@ namespace Axiom.Overlays
 		/// <summary>
 		/// 
 		/// </summary>
-		[ScriptEnum( "top" )]
-		Top,
+		[ScriptEnum( "top" )] Top,
 
 		/// <summary>
 		/// 
 		/// </summary>
-		[ScriptEnum( "center" )]
-		Center,
+		[ScriptEnum( "center" )] Center,
 
 		/// <summary>
 		///
 		/// </summary>
-		[ScriptEnum( "bottom" )]
-		Bottom
+		[ScriptEnum( "bottom" )] Bottom
 	}
 }

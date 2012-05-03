@@ -134,7 +134,8 @@ namespace Axiom.FileSystem
 		/// <param name="pattern"></param>
 		/// <param name="recursive"></param>
 		/// <param name="simpleList"></param>
-		protected virtual void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
+		protected virtual void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList,
+		                                  string currentDir )
 		{
 			if ( pattern == "" )
 			{
@@ -145,7 +146,7 @@ namespace Axiom.FileSystem
 				currentDir = _basePath;
 			}
 
-			var files = this.getFiles( currentDir, pattern, recursive );
+			var files = getFiles( currentDir, pattern, recursive );
 
 			foreach ( var file in files )
 			{
@@ -201,14 +202,14 @@ namespace Axiom.FileSystem
 		/// <param name="pattern">The search string to match against the names of files in path.</param>
 		protected virtual string[] getFilesRecursively( string dir, string pattern )
 		{
-			List<string> searchResults = new List<string>();
+			var searchResults = new List<string>();
 #if !SILVERLIGHT
 			string[] folders = Directory.GetDirectories( dir );
 			string[] files = Directory.GetFiles( dir );
 
 			foreach ( string folder in folders )
 			{
-				searchResults.AddRange( this.getFilesRecursively( dir + Path.GetFileName( folder ) + "\\", pattern ) );
+				searchResults.AddRange( getFilesRecursively( dir + Path.GetFileName( folder ) + "\\", pattern ) );
 			}
 
 			foreach ( string file in files )
@@ -268,7 +269,9 @@ namespace Axiom.FileSystem
 		#region Constructors and Destructors
 
 		public FileSystemArchive( string name, string archType )
-			: base( name, archType ) {}
+			: base( name, archType )
+		{
+		}
 
 		~FileSystemArchive()
 		{
@@ -361,7 +364,9 @@ namespace Axiom.FileSystem
 			                                	if ( File.Exists( _basePath + filename ) )
 			                                	{
 			                                		var fi = new System.IO.FileInfo( _basePath + filename );
-			                                		strm = (Stream)fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
+			                                		strm =
+			                                			(Stream)
+			                                			fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
 			                                	}
 			                                } );
 

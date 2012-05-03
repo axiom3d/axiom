@@ -38,10 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Graphics;
 using Axiom.Core;
-
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -58,9 +56,13 @@ namespace Axiom.ParticleSystems
 	public abstract class ParticleSystemRenderer : DisposableObject
 	{
 		/// Constructor
-		public ParticleSystemRenderer() {}
+		public ParticleSystemRenderer()
+		{
+		}
 
-		public ParticleSystemRenderer( string name ) {}
+		public ParticleSystemRenderer( string name )
+		{
+		}
 
 		/// <summary>
 		/// Gets the type of this renderer - must be implemented by subclasses
@@ -73,21 +75,27 @@ namespace Axiom.ParticleSystems
 		/// <remarks>
 		/// The subclass must update the render queue using whichever Renderable instance(s) it wishes.
 		/// </remarks>
-		public virtual void UpdateRenderQueue( RenderQueue queue, List<Particle> currentParticles, bool cullIndividually ) {}
+		public virtual void UpdateRenderQueue( RenderQueue queue, List<Particle> currentParticles, bool cullIndividually )
+		{
+		}
 
 		/// <summary>
 		/// Sets the material this renderer must use; called by ParticleSystem.
 		/// </summary>
 		public virtual Material Material
 		{
-			set {}
+			set
+			{
+			}
 		}
 
 		/// <summary>
 		/// Delegated to by ParticleSystem.NotifyCurrentCamera
 		/// </summary>
 		/// <param name="cam"></param>
-		public virtual void NotifyCurrentCamera( Camera cam ) {}
+		public virtual void NotifyCurrentCamera( Camera cam )
+		{
+		}
 
 		/// <summary>
 		/// Delegated to by ParticleSystem.NotifyAttached
@@ -97,44 +105,60 @@ namespace Axiom.ParticleSystems
 			NotifyAttached( parent, false );
 		}
 
-		public virtual void NotifyAttached( Node parent, bool isTagPoint ) {}
+		public virtual void NotifyAttached( Node parent, bool isTagPoint )
+		{
+		}
 
 		/// <summary>
 		/// Optional callback notified when particles are rotated
 		/// </summary>
-		public virtual void NotifyParticleRotated() {}
+		public virtual void NotifyParticleRotated()
+		{
+		}
 
 		/// <summary>
 		/// Optional callback notified when particles are emitted
 		/// </summary>
-		public virtual void NotifyParticleEmitted( Particle particle ) {}
+		public virtual void NotifyParticleEmitted( Particle particle )
+		{
+		}
 
 		/// <summary>
 		/// Optional callback notified when particles are resized individually
 		/// </summary>
-		public virtual void NotifyParticleResized() {}
+		public virtual void NotifyParticleResized()
+		{
+		}
 
 		/// <summary>
 		/// Tells the renderer that the particle quota has changed 
 		/// </summary>
 		/// <param name="quota"></param>
-		public virtual void NotifyParticleQuota( int quota ) {}
+		public virtual void NotifyParticleQuota( int quota )
+		{
+		}
 
 		/// <summary>
 		/// Optional callback notified when particles are moved
 		/// </summary>
 		/// <param name="activeParticles"></param>
-		public virtual void NotifyParticleMoved( List<Particle> activeParticles ) {}
+		public virtual void NotifyParticleMoved( List<Particle> activeParticles )
+		{
+		}
 
 		/// <summary>
 		/// Optional callback notified when particles are moved
 		/// </summary>
-		public virtual void NotifyParticleExpired( Particle particle ) {}
+		public virtual void NotifyParticleExpired( Particle particle )
+		{
+		}
 
 		/// <summary>
 		/// Tells the renderer that the particle default size has changed
 		/// </summary>
-		public virtual void NotifyDefaultDimensions( float width, float height ) {}
+		public virtual void NotifyDefaultDimensions( float width, float height )
+		{
+		}
 
 		/// <summary>
 		/// Create a new ParticleVisualData instance for attachment to a particle.
@@ -169,7 +193,9 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		public virtual RenderQueueGroupID RenderQueueGroup
 		{
-			set {}
+			set
+			{
+			}
 		}
 
 		public abstract void CopyParametersTo( ParticleSystemRenderer other );

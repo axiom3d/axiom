@@ -41,7 +41,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -259,7 +258,7 @@ namespace Axiom.Core
 			set
 			{
 				upperDistance = value;
-				squaredUpperDistance = upperDistance * upperDistance;
+				squaredUpperDistance = upperDistance*upperDistance;
 			}
 		}
 
@@ -306,7 +305,7 @@ namespace Axiom.Core
 			set
 			{
 				regionDimensions = value;
-				halfRegionDimensions = value * 0.5f;
+				halfRegionDimensions = value*0.5f;
 			}
 		}
 
@@ -374,7 +373,7 @@ namespace Axiom.Core
 			squaredUpperDistance = 0.0f;
 			castShadows = false;
 			regionDimensions = new Vector3( regionSize, regionSize, regionSize );
-			halfRegionDimensions = regionDimensions * 0.5f;
+			halfRegionDimensions = regionDimensions*0.5f;
 			origin = Vector3.Zero;
 			visible = true;
 			renderQueueID = RenderQueueGroupID.Main;
@@ -442,19 +441,24 @@ namespace Axiom.Core
 			var boxdiff = box.Maximum - box.Minimum;
 			var intersectDiff = intersectBox.Maximum - intersectBox.Minimum;
 
-			return ( boxdiff.x == 0 ? 1 : intersectDiff.x ) * ( boxdiff.y == 0 ? 1 : intersectDiff.y ) * ( boxdiff.z == 0 ? 1 : intersectDiff.z );
+			return ( boxdiff.x == 0 ? 1 : intersectDiff.x )*( boxdiff.y == 0 ? 1 : intersectDiff.y )*
+			       ( boxdiff.z == 0 ? 1 : intersectDiff.z );
 		}
 
 		protected AxisAlignedBox GetRegionBounds( ushort x, ushort y, ushort z )
 		{
-			var min = new Vector3( ( (float)x - regionHalfRange ) * regionDimensions.x + origin.x, ( (float)y - regionHalfRange ) * regionDimensions.y + origin.y, ( (float)z - regionHalfRange ) * regionDimensions.z + origin.z );
+			var min = new Vector3( ( (float)x - regionHalfRange )*regionDimensions.x + origin.x,
+			                       ( (float)y - regionHalfRange )*regionDimensions.y + origin.y,
+			                       ( (float)z - regionHalfRange )*regionDimensions.z + origin.z );
 			var max = min + regionDimensions;
 			return new AxisAlignedBox( min, max );
 		}
 
 		protected Vector3 GetRegionCenter( ushort x, ushort y, ushort z )
 		{
-			return new Vector3( ( (float)x - regionHalfRange ) * regionDimensions.x + origin.x + halfRegionDimensions.x, ( (float)y - regionHalfRange ) * regionDimensions.y + origin.y + halfRegionDimensions.y, ( (float)z - regionHalfRange ) * regionDimensions.z + origin.z + halfRegionDimensions.z );
+			return new Vector3( ( (float)x - regionHalfRange )*regionDimensions.x + origin.x + halfRegionDimensions.x,
+			                    ( (float)y - regionHalfRange )*regionDimensions.y + origin.y + halfRegionDimensions.y,
+			                    ( (float)z - regionHalfRange )*regionDimensions.z + origin.z + halfRegionDimensions.z );
 		}
 
 		protected Region GetRegion( ushort x, ushort y, ushort z, bool autoCreate )
@@ -495,7 +499,7 @@ namespace Axiom.Core
 		protected void GetRegionIndexes( Vector3 point, out ushort x, out ushort y, out ushort z )
 		{
 			// Scale the point into multiples of region and adjust for origin
-			var scaledPoint = ( point - origin ) / regionDimensions;
+			var scaledPoint = ( point - origin )/regionDimensions;
 
 			// Round down to 'bottom left' point which represents the cell index
 			var ix = (int)System.Math.Floor( scaledPoint.x );
@@ -503,7 +507,8 @@ namespace Axiom.Core
 			var iz = (int)System.Math.Floor( scaledPoint.z );
 
 			// Check bounds
-			if ( ix < regionMinIndex || ix > regionMaxIndex || iy < regionMinIndex || iy > regionMaxIndex || iz < regionMinIndex || iz > regionMaxIndex )
+			if ( ix < regionMinIndex || ix > regionMaxIndex || iy < regionMinIndex || iy > regionMaxIndex || iz < regionMinIndex ||
+			     iz > regionMaxIndex )
 			{
 				throw new Exception( "Point out of bounds in StaticGeometry.GetRegionIndexes" );
 			}
@@ -526,7 +531,8 @@ namespace Axiom.Core
 			return GetRegion( x, y, z, autoCreate );
 		}
 
-		protected AxisAlignedBox CalculateBounds( VertexData vertexData, Vector3 position, Quaternion orientation, Vector3 scale )
+		protected AxisAlignedBox CalculateBounds( VertexData vertexData, Vector3 position, Quaternion orientation,
+		                                          Vector3 scale )
 		{
 #if !AXIOM_SAFE_ONLY
 			unsafe
@@ -546,7 +552,7 @@ namespace Axiom.Core
 					var pFloat = ( vertex + posElem.Offset ).ToFloatPointer();
 					var pt = new Vector3( pFloat[ 0 ], pFloat[ 1 ], pFloat[ 2 ] );
 					// Transform to world (scale, rotate, translate)
-					pt = ( orientation * ( pt * scale ) ) + position;
+					pt = ( orientation*( pt*scale ) ) + position;
 					if ( first )
 					{
 						min = max = pt;
@@ -610,7 +616,9 @@ namespace Axiom.Core
 						SplitGeometry( sm.VertexData, lodIndexData, geomLink );
 					}
 				}
-				Debug.Assert( geomLink.vertexData.vertexStart == 0, "Cannot use vertexStart > 0 on indexed geometry due to " + "rendersystem incompatibilities - see the docs!" );
+				Debug.Assert( geomLink.vertexData.vertexStart == 0,
+				              "Cannot use vertexStart > 0 on indexed geometry due to " +
+				              "rendersystem incompatibilities - see the docs!" );
 			}
 			return lodList;
 		}
@@ -671,7 +679,8 @@ namespace Axiom.Core
 					// Lock old buffer
 					var oldBuf = vd.vertexBufferBinding.GetBuffer( b );
 					// Create new buffer
-					var newBuf = HardwareBufferManager.Instance.CreateVertexBuffer( oldBuf.VertexDeclaration, indexRemap.Count, BufferUsage.Static );
+					var newBuf = HardwareBufferManager.Instance.CreateVertexBuffer( oldBuf.VertexDeclaration, indexRemap.Count,
+					                                                                BufferUsage.Static );
 					// rebind
 					newvd.vertexBufferBinding.SetBinding( b, newBuf );
 
@@ -693,8 +702,8 @@ namespace Axiom.Core
 						Debug.Assert( pair.Key < oldBuf.VertexCount );
 						Debug.Assert( pair.Value < newBuf.VertexCount );
 
-						var pSrc = ( pSrcBase + pair.Key * vertexSize ).ToBytePointer();
-						var pDst = ( pDstBase + pair.Value * vertexSize ).ToBytePointer();
+						var pSrc = ( pSrcBase + pair.Key*vertexSize ).ToBytePointer();
+						var pDst = ( pDstBase + pair.Value*vertexSize ).ToBytePointer();
 						for ( var i = 0; i < vertexSize; i++ )
 						{
 							pDst[ i ] = pSrc[ i ];
@@ -774,7 +783,8 @@ namespace Axiom.Core
 			// Validate
 			if ( msh.IsLodManual )
 			{
-				LogManager.Instance.Write( "WARNING (StaticGeometry): Manual LOD is not supported. " + "Using only highest LOD level for mesh " + msh.Name );
+				LogManager.Instance.Write( "WARNING (StaticGeometry): Manual LOD is not supported. " +
+				                           "Using only highest LOD level for mesh " + msh.Name );
 			}
 			// queue this entities submeshes and choice of material
 			// also build the lists of geometry to be used for the source of lods

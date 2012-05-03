@@ -66,7 +66,7 @@ namespace Axiom.Math
 	public struct Degree : IComparable<Degree>, IComparable<Radian>, IComparable<Real>
 #endif
 	{
-		private static readonly Real _degreesToRadians = Utility.PI / 180.0f;
+		private static readonly Real _degreesToRadians = Utility.PI/180.0f;
 
 		public static readonly Degree Zero = (Degree)Real.Zero;
 
@@ -91,7 +91,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return _value * _degreesToRadians;
+				return _value*_degreesToRadians;
 			}
 		}
 
@@ -170,27 +170,27 @@ namespace Axiom.Math
 
 		public static Degree operator *( Degree left, Real right )
 		{
-			return left._value * right;
+			return left._value*right;
 		}
 
 		public static Degree operator *( Real left, Degree right )
 		{
-			return left * right._value;
+			return left*right._value;
 		}
 
 		public static Degree operator *( Degree left, Degree right )
 		{
-			return left._value * right._value;
+			return left._value*right._value;
 		}
 
 		public static Degree operator *( Degree left, Radian right )
 		{
-			return left._value * right.InDegrees;
+			return left._value*right.InDegrees;
 		}
 
 		public static Degree operator /( Degree left, Real right )
 		{
-			return left._value / right;
+			return left._value/right;
 		}
 
 		public static bool operator <( Degree left, Degree right )
@@ -246,17 +246,17 @@ namespace Axiom.Math
 
 		public int CompareTo( Degree other )
 		{
-			return this._value.CompareTo( other );
+			return _value.CompareTo( other );
 		}
 
 		public int CompareTo( Radian other )
 		{
-			return this._value.CompareTo( other.InDegrees );
+			return _value.CompareTo( other.InDegrees );
 		}
 
 		public int CompareTo( Real other )
 		{
-			return this._value.CompareTo( other );
+			return _value.CompareTo( other );
 		}
 
 		#endregion

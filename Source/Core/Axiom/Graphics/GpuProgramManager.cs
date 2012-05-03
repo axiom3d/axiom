@@ -38,9 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Core;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -54,7 +52,8 @@ namespace Axiom.Graphics
 	{
 		private static readonly object _autoMutex = new object();
 
-		protected Dictionary<string, GpuProgramParameters.GpuSharedParameters> sharedParametersMap = new Dictionary<string, GpuProgramParameters.GpuSharedParameters>();
+		protected Dictionary<string, GpuProgramParameters.GpuSharedParameters> sharedParametersMap =
+			new Dictionary<string, GpuProgramParameters.GpuSharedParameters>();
 
 		#region Singleton implementation
 
@@ -85,7 +84,7 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", GetType().Name );
 			}
 
 			// subclasses should register with resource group manager
@@ -128,11 +127,13 @@ namespace Axiom.Graphics
 #if NET_40
 	    public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual = false, IManualResourceLoader loader = null )
 #else
-		public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual, IManualResourceLoader loader )
+		public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual,
+		                                  IManualResourceLoader loader )
 #endif
 		{
 			// Call creation implementation
-			var ret = (GpuProgram)_create( name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader, type, syntaxCode );
+			var ret =
+				(GpuProgram)_create( name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader, type, syntaxCode );
 
 			_add( ret );
 			// Tell resource group manager
@@ -166,7 +167,8 @@ namespace Axiom.Graphics
 		/// <param name="syntaxCode">Syntax of the program, i.e. vs_1_1, arbvp1, etc.</param>
 		/// <returns>A new instance of GpuProgram.</returns>
 		[OgreVersion( 1, 7, 2 )]
-		protected abstract Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode );
+		protected abstract Resource _create( string name, ResourceHandle handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, GpuProgramType type, string syntaxCode );
 
 		/// <summary>
 		///    Create a new, unloaded GpuProgram from a file of assembly.
@@ -190,7 +192,8 @@ namespace Axiom.Graphics
 		///    An unloaded GpuProgram instance.
 		/// </returns>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual GpuProgram CreateProgram( string name, string group, string fileName, GpuProgramType type, string syntaxCode )
+		public virtual GpuProgram CreateProgram( string name, string group, string fileName, GpuProgramType type,
+		                                         string syntaxCode )
 		{
 			var program = Create( name, group, type, syntaxCode );
 			// Set all prarmeters (create does not set, just determines factory)
@@ -221,7 +224,8 @@ namespace Axiom.Graphics
 		/// </param>
 		/// <returns>An unloaded GpuProgram instance.</returns>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual GpuProgram CreateProgramFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
+		public virtual GpuProgram CreateProgramFromString( string name, string group, string source, GpuProgramType type,
+		                                                   string syntaxCode )
 		{
 			var program = Create( name, group, type, syntaxCode );
 			// Set all prarmeters (create does not set, just determines factory)
@@ -306,7 +310,8 @@ namespace Axiom.Graphics
 		///    Syntax code of the program, i.e. vs_1_1, arbvp1, etc.
 		/// </param>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual GpuProgram LoadFromString( string name, string group, string source, GpuProgramType type, string syntaxCode )
+		public virtual GpuProgram LoadFromString( string name, string group, string source, GpuProgramType type,
+		                                          string syntaxCode )
 		{
 			lock ( _autoMutex )
 			{
@@ -352,7 +357,7 @@ namespace Axiom.Graphics
 		/// <see cref="GetByName(string, bool)"/>
 		public new GpuProgram GetByName( string name )
 		{
-			return this.GetByName( name, true );
+			return GetByName( name, true );
 		}
 #endif
 
@@ -407,7 +412,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

@@ -38,10 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -63,7 +61,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///     Reference to the link program manager we create.
 		/// </summary>
-		private GLSLLinkProgramManager glslLinkProgramMgr;
+		private readonly GLSLLinkProgramManager glslLinkProgramMgr;
 
 		#endregion Fields
 
@@ -88,7 +86,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="name">Name of the object.</param>
 		/// <param name="type">Type of the object.</param>
 		/// <returns>A newly created GLSL program object.</returns>
-		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ResourceHandle handle,
+		                                                    string group, bool isManual, IManualResourceLoader loader )
 		{
 			return new GLSLProgram( parent, name, handle, group, isManual, loader );
 		}

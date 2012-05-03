@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
@@ -58,7 +57,7 @@ namespace Axiom.ParticleFX
 		public ScaleAffector( ParticleSystem psys )
 			: base( psys )
 		{
-			this.type = "Scaler";
+			type = "Scaler";
 			scaleAdjust = 0;
 		}
 
@@ -79,7 +78,7 @@ namespace Axiom.ParticleFX
 			float ds;
 
 			// Scale adjustments by time
-			ds = scaleAdjust * timeElapsed;
+			ds = scaleAdjust*timeElapsed;
 
 			float newWide, newHigh;
 
@@ -87,7 +86,7 @@ namespace Axiom.ParticleFX
 
 			for ( int i = 0; i < system.Particles.Count; i++ )
 			{
-				Particle p = (Particle)system.Particles[ i ];
+				var p = (Particle)system.Particles[ i ];
 
 				if ( p.HasOwnDimensions == false )
 				{
@@ -112,13 +111,13 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ScaleAffector affector = target as ScaleAffector;
+				var affector = target as ScaleAffector;
 				return StringConverter.ToString( affector.ScaleAdjust );
 			}
 
 			public void Set( object target, string val )
 			{
-				ScaleAffector affector = target as ScaleAffector;
+				var affector = target as ScaleAffector;
 				affector.ScaleAdjust = StringConverter.ParseFloat( val );
 			}
 

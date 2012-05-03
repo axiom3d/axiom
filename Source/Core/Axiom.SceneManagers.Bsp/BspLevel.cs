@@ -41,18 +41,14 @@ using System;
 using System.IO;
 using System.Collections;
 using System.Runtime.InteropServices;
-
 using Axiom;
 using Axiom.Core;
-
 using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Collections;
 using Axiom.SceneManagers.Bsp.Collections;
 using Axiom.Scripting;
-
 using ResourceHandle = System.UInt64;
-
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -82,7 +78,7 @@ namespace Axiom.SceneManagers.Bsp
 		private const int NUM_LEAVES_PER_PROGRESS_REPORT = 50;
 		private const int NUM_BRUSHES_PER_PROGRESS_REPORT = 50;
 
-		public const int LightmapSize = ( 128 * 128 * 3 );
+		public const int LightmapSize = ( 128*128*3 );
 
 		#region Protected members
 
@@ -243,11 +239,12 @@ namespace Axiom.SceneManagers.Bsp
 		///		Default constructor - used by BspResourceManager (do not call directly).
 		/// </summary>
 		/// <param name="name"></param>
-		public BspLevel( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		public BspLevel( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                 IManualResourceLoader loader, NameValuePairList createParams )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			objectToNodeMap = new MultiMap<MovableObject, BspNode>();
-			this.createParam = createParams;
+			createParam = createParams;
 		}
 
 		#endregion Constructor
@@ -297,7 +294,7 @@ namespace Axiom.SceneManagers.Bsp
 				float.TryParse( createParam[ "AmbientRatio" ], out bspOptions.ambientRatio );
 			}
 
-			Quake3Level q3 = new Quake3Level( bspOptions );
+			var q3 = new Quake3Level( bspOptions );
 
 			q3.LoadFromStream( stream );
 
@@ -344,7 +341,7 @@ namespace Axiom.SceneManagers.Bsp
 			return (result != 0);
 			*/
 
-			byte visSet = visData.tableData[ ( from.VisCluster * visData.rowLength ) + ( to.VisCluster >> 3 ) ];
+			byte visSet = visData.tableData[ ( from.VisCluster*visData.rowLength ) + ( to.VisCluster >> 3 ) ];
 			int result = visSet & ( 1 << ( ( to.VisCluster ) & 7 ) );
 
 			return ( result != 0 );
@@ -383,7 +380,7 @@ namespace Axiom.SceneManagers.Bsp
 				objectToNodeMap.Clear( obj );
 			}
 
-			TagNodesWithObject( this.RootNode, obj, pos );
+			TagNodesWithObject( RootNode, obj, pos );
 		}
 
 		/// <summary>
@@ -457,10 +454,18 @@ namespace Axiom.SceneManagers.Bsp
 
 			rgm.notifyWorldGeometryStageStarted( "Setting up vertex data" );
 			// Create the vertex buffer, allow space for patches
-			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( 0 ), q3lvl.NumVertices + patchVertexCount, BufferUsage.StaticWriteOnly /* the vertices will be read often for texture lighting, use shadow buffer */, true );
+			HardwareVertexBuffer vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( 0 ),
+			                                                                               q3lvl.NumVertices + patchVertexCount,
+			                                                                               BufferUsage.StaticWriteOnly
+			                                                                               /* the vertices will be read often for texture lighting, use shadow buffer */,
+			                                                                               true );
 
 			// Create the vertex buffer for texture lighting, allow space for patches
-			HardwareVertexBuffer texLightBuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( 1 ), q3lvl.NumVertices + patchVertexCount, BufferUsage.DynamicWriteOnly, false );
+			HardwareVertexBuffer texLightBuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( 1 ),
+			                                                                                      q3lvl.NumVertices +
+			                                                                                      patchVertexCount,
+			                                                                                      BufferUsage.DynamicWriteOnly,
+			                                                                                      false );
 
 			// COPY static vertex data - Note that we can't just block-copy the vertex data because we have to reorder
 			// our vertex elements; this is to ensure compatibility with older cards when using
@@ -472,8 +477,8 @@ namespace Axiom.SceneManagers.Bsp
 			unsafe
 #endif
 			{
-				BspVertex vert = new BspVertex();
-				TextureLightMap texLightMap = new TextureLightMap();
+				var vert = new BspVertex();
+				var texLightMap = new TextureLightMap();
 
 				// Keep another base pointer for use later in patch building
 				for ( int v = 0; v < q3lvl.NumVertices; v++ )
@@ -484,9 +489,9 @@ namespace Axiom.SceneManagers.Bsp
 					{
 						using ( var tlptr = BufferBase.Wrap( texLightMap ) )
 						{
-							vbuf.WriteData( v * ManagedBufferBspVertex.Size, ManagedBufferBspVertex.Size, bvptr );
+							vbuf.WriteData( v*ManagedBufferBspVertex.Size, ManagedBufferBspVertex.Size, bvptr );
 
-							texLightBuf.WriteData( v * ManagedBufferTextureLightMap.Size, ManagedBufferTextureLightMap.Size, tlptr );
+							texLightBuf.WriteData( v*ManagedBufferTextureLightMap.Size, ManagedBufferTextureLightMap.Size, tlptr );
 						}
 					}
 				}
@@ -507,10 +512,10 @@ namespace Axiom.SceneManagers.Bsp
 			// Faces
 			//-----------------------------------------------------------------------
 			rgm.notifyWorldGeometryStageStarted( "Setting up face data" );
-			leafFaceGroups = new int[ q3lvl.LeafFaces.Length ];
+			leafFaceGroups = new int[q3lvl.LeafFaces.Length];
 			Array.Copy( q3lvl.LeafFaces, 0, leafFaceGroups, 0, leafFaceGroups.Length );
 
-			faceGroups = new BspStaticFaceGroup[ q3lvl.Faces.Length ];
+			faceGroups = new BspStaticFaceGroup[q3lvl.Faces.Length];
 
 			// Set up index buffer
 			// NB Quake3 indexes are 32-bit
@@ -534,7 +539,7 @@ namespace Axiom.SceneManagers.Bsp
 				idx[i] = (ushort)q3i[i];
 			indexes.Unlock();
 #else
-			indexes.WriteData( 0, Memory.SizeOf( typeof ( uint ) ) * q3lvl.NumElements, q3lvl.Elements, true );
+			indexes.WriteData( 0, Memory.SizeOf( typeof ( uint ) )*q3lvl.NumElements, q3lvl.Elements, true );
 #endif
 			rgm.notifyWorldGeometryStageEnded();
 
@@ -585,7 +590,7 @@ namespace Axiom.SceneManagers.Bsp
 				int shadIdx = q3lvl.Faces[ face ].shader;
 
 				shaderName = String.Format( "{0}#{1}", q3lvl.Shaders[ shadIdx ].name, q3lvl.Faces[ face ].lmTexture );
-				Material shadMat = (Material)MaterialManager.Instance.GetByName( shaderName );
+				var shadMat = (Material)MaterialManager.Instance.GetByName( shaderName );
 
 				if ( shadMat == null && !bspOptions.useLightmaps )
 				{
@@ -601,7 +606,7 @@ namespace Axiom.SceneManagers.Bsp
 					string tryName = q3lvl.Shaders[ shadIdx ].name;
 
 					// Try shader first
-					Quake3Shader shader = (Quake3Shader)Quake3ShaderManager.Instance.GetByName( tryName );
+					var shader = (Quake3Shader)Quake3ShaderManager.Instance.GetByName( tryName );
 
 					if ( shader != null )
 					{
@@ -656,7 +661,7 @@ namespace Axiom.SceneManagers.Bsp
 				shadMat.Load();
 
 				// Copy face data
-				BspStaticFaceGroup dest = new BspStaticFaceGroup();
+				var dest = new BspStaticFaceGroup();
 				InternalBspFace src = q3lvl.Faces[ face ];
 
 				if ( ( q3lvl.Shaders[ src.shader ].surfaceFlags & SurfaceFlags.Sky ) == SurfaceFlags.Sky )
@@ -734,7 +739,7 @@ namespace Axiom.SceneManagers.Bsp
 			// Nodes
 			//-----------------------------------------------------------------------
 			// Allocate memory for all nodes (leaves and splitters)
-			nodes = new BspNode[ q3lvl.NumNodes + q3lvl.NumLeaves ];
+			nodes = new BspNode[q3lvl.NumNodes + q3lvl.NumLeaves];
 			numLeaves = q3lvl.NumLeaves;
 			leafStart = q3lvl.NumNodes;
 
@@ -755,16 +760,18 @@ namespace Axiom.SceneManagers.Bsp
 				node.IsLeaf = false;
 				node.Owner = this;
 
-				Plane splitPlane = new Plane();
+				var splitPlane = new Plane();
 
 				// Set plane
-				splitPlane.Normal = new Vector3( q3lvl.Planes[ q3node.plane ].normal[ 0 ], q3lvl.Planes[ q3node.plane ].normal[ 1 ], q3lvl.Planes[ q3node.plane ].normal[ 2 ] );
+				splitPlane.Normal = new Vector3( q3lvl.Planes[ q3node.plane ].normal[ 0 ], q3lvl.Planes[ q3node.plane ].normal[ 1 ],
+				                                 q3lvl.Planes[ q3node.plane ].normal[ 2 ] );
 				splitPlane.D = -q3lvl.Planes[ q3node.plane ].distance;
 
 				node.SplittingPlane = splitPlane;
 
 				// Set bounding box
-				node.BoundingBox = new AxisAlignedBox( new Vector3( q3node.bbox[ 0 ], q3node.bbox[ 1 ], q3node.bbox[ 2 ] ), new Vector3( q3node.bbox[ 3 ], q3node.bbox[ 4 ], q3node.bbox[ 5 ] ) );
+				node.BoundingBox = new AxisAlignedBox( new Vector3( q3node.bbox[ 0 ], q3node.bbox[ 1 ], q3node.bbox[ 2 ] ),
+				                                       new Vector3( q3node.bbox[ 3 ], q3node.bbox[ 4 ], q3node.bbox[ 5 ] ) );
 
 				// Set back pointer
 				// Negative indexes in Quake3 mean leaves.
@@ -793,14 +800,14 @@ namespace Axiom.SceneManagers.Bsp
 			// Brushes
 			//-----------------------------------------------------------------------
 			// Reserve enough memory for all brushes, solid or not (need to maintain indexes)
-			brushes = new BspBrush[ q3lvl.NumBrushes ];
+			brushes = new BspBrush[q3lvl.NumBrushes];
 
 			for ( int i = 0; i < q3lvl.NumBrushes; i++ )
 			{
 				InternalBspBrush q3brush = q3lvl.Brushes[ i ];
 
 				// Create a new OGRE brush
-				BspBrush brush = new BspBrush();
+				var brush = new BspBrush();
 				int numBrushSides = q3brush.numSides;
 				int brushSideIdx = q3brush.firstSide;
 
@@ -811,7 +818,12 @@ namespace Axiom.SceneManagers.Bsp
 
 					// Notice how we normally invert Q3A plane distances, but here we do not
 					// Because we want plane normals pointing out of solid brushes, not in.
-					Plane brushSide = new Plane( new Vector3( q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ].normal[ 0 ], q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ].normal[ 1 ], q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ].normal[ 2 ] ), q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ].distance );
+					var brushSide =
+						new Plane(
+							new Vector3( q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ].normal[ 0 ],
+							             q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ].normal[ 1 ],
+							             q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ].normal[ 2 ] ),
+							q3lvl.Planes[ q3lvl.BrushSides[ brushSideIdx ].planeNum ].distance );
 
 					brush.Planes.Add( brushSide );
 					brushSideIdx++;
@@ -829,7 +841,7 @@ namespace Axiom.SceneManagers.Bsp
 			//-----------------------------------------------------------------------
 			for ( int i = 0; i < q3lvl.NumLeaves; ++i )
 			{
-				BspNode node = nodes[ i + this.LeafStart ];
+				BspNode node = nodes[ i + LeafStart ];
 				InternalBspLeaf q3leaf = q3lvl.Leaves[ i ];
 
 				node.IsLeaf = true;
@@ -849,7 +861,7 @@ namespace Axiom.SceneManagers.Bsp
 				int brushCount = q3leaf.brushCount;
 				int brushIdx = q3leaf.brushStart;
 
-				node.SolidBrushes = new BspBrush[ brushCount ];
+				node.SolidBrushes = new BspBrush[brushCount];
 
 				while ( brushCount-- > 0 )
 				{
@@ -873,7 +885,7 @@ namespace Axiom.SceneManagers.Bsp
 			// Vis - just copy
 			visData.numClusters = q3lvl.VisData.clusterCount;
 			visData.rowLength = q3lvl.VisData.rowSize;
-			visData.tableData = new byte[ q3lvl.VisData.rowSize * q3lvl.VisData.clusterCount ];
+			visData.tableData = new byte[q3lvl.VisData.rowSize*q3lvl.VisData.clusterCount];
 
 			Array.Copy( q3lvl.VisData.data, 0, visData.tableData, 0, visData.tableData.Length );
 		}
@@ -883,7 +895,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		protected void LoadEntities( Quake3Level q3lvl )
 		{
-			Vector3 origin = new Vector3();
+			var origin = new Vector3();
 			float angle = 0;
 			bool isPlayerStart = false;
 			string[] entities = q3lvl.Entities.Split( '\n' );
@@ -902,7 +914,7 @@ namespace Axiom.SceneManagers.Bsp
 
 				if ( paramList[ 0 ] == "origin" )
 				{
-					float[] vector = new float[ 3 ];
+					var vector = new float[3];
 					for ( int v = 0; v < 3; v++ )
 					{
 						vector[ v ] = StringConverter.ParseFloat( paramList[ v + 1 ] );
@@ -927,7 +939,7 @@ namespace Axiom.SceneManagers.Bsp
 				{
 					if ( isPlayerStart )
 					{
-						ViewPoint vp = new ViewPoint();
+						var vp = new ViewPoint();
 						vp.position = origin;
 
 						if ( q3lvl.Options.setYAxisUp )
@@ -1017,12 +1029,12 @@ namespace Axiom.SceneManagers.Bsp
 						continue;
 					}
 
-					PatchSurface ps = new PatchSurface();
+					var ps = new PatchSurface();
 
 					// Set up control points & format.
 					// Reuse the vertex declaration.
 					// Copy control points into a buffer so we can convert their format.
-					BspVertex[] controlPoints = new BspVertex[ src.vertCount ];
+					var controlPoints = new BspVertex[src.vertCount];
 					TextureLightMap texLightMap;
 
 					for ( int v = 0; v < src.vertCount; v++ )
@@ -1094,7 +1106,7 @@ namespace Axiom.SceneManagers.Bsp
 			//if ( createParam.ContainsKey( "AmbientRatio") )
 			//     float.TryParse( createParam[ "AmbientRatio" ], out bspOptions.ambientRatio );
 
-			Quake3Level q3 = new Quake3Level( bspOptions );
+			var q3 = new Quake3Level( bspOptions );
 
 			Stream chunk = ResourceGroupManager.Instance.OpenResource( Name, ResourceGroupManager.Instance.WorldResourceGroupName );
 			q3.LoadFromStream( chunk );
@@ -1149,14 +1161,15 @@ namespace Axiom.SceneManagers.Bsp
 
 		public static int CalculateLoadingStages( string filename )
 		{
-			Stream stream = ResourceGroupManager.Instance.OpenResource( filename, ResourceGroupManager.Instance.WorldResourceGroupName );
+			Stream stream = ResourceGroupManager.Instance.OpenResource( filename,
+			                                                            ResourceGroupManager.Instance.WorldResourceGroupName );
 			return calculateLoadingStages( stream );
 		}
 
 		//-----------------------------------------------------------------------
 		private static int calculateLoadingStages( Stream stream )
 		{
-			Quake3Level q3 = new Quake3Level( null );
+			var q3 = new Quake3Level( null );
 
 			// Load header only
 			q3.LoadHeaderFromStream( stream );
@@ -1253,7 +1266,9 @@ namespace Axiom.SceneManagers.Bsp
 	public class ManagedBufferBspVertex : ManagedBuffer, ITypePointer<BspVertex>
 	{
 		public ManagedBufferBspVertex( ManagedBuffer buffer )
-			: base( buffer ) {}
+			: base( buffer )
+		{
+		}
 
 		internal static readonly int Size = Memory.SizeOf( typeof ( BspVertex ) );
 
@@ -1262,59 +1277,98 @@ namespace Axiom.SceneManagers.Bsp
 			get
 			{
 				var buf = Buf;
-				index = index * Size + IdxPtr;
+				index = index*Size + IdxPtr;
 				return new BspVertex
 				       {
 				       	position = new Vector3
 				       	           {
 				       	           	x = new FourByte
 				       	           	    {
-				       	           	    	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index++ ]
-				       	           	    }.Float, y = new FourByte
-				       	           	                 {
-				       	           	                 	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index++ ]
-				       	           	                 }.Float, z = new FourByte
-				       	           	                              {
-				       	           	                              	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index++ ]
-				       	           	                              }.Float
-				       	           }, normal = new Vector3
-				       	                       {
-				       	                       	x = new FourByte
-				       	                       	    {
-				       	                       	    	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index++ ]
-				       	                       	    }.Float, y = new FourByte
-				       	                       	                 {
-				       	                       	                 	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index++ ]
-				       	                       	                 }.Float, z = new FourByte
-				       	                       	                              {
-				       	                       	                              	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index++ ]
-				       	                       	                              }.Float
-				       	                       }, texCoords = new Vector2
-				       	                                      {
-				       	                                      	x = new FourByte
-				       	                                      	    {
-				       	                                      	    	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index++ ]
-				       	                                      	    }.Float, y = new FourByte
-				       	                                      	                 {
-				       	                                      	                 	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index++ ]
-				       	                                      	                 }.Float
-				       	                                      }, lightMap = new Vector2
-				       	                                                    {
-				       	                                                    	x = new FourByte
-				       	                                                    	    {
-				       	                                                    	    	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index++ ]
-				       	                                                    	    }.Float, y = new FourByte
-				       	                                                    	                 {
-				       	                                                    	                 	b0 = buf[ index++ ], b1 = buf[ index++ ], b2 = buf[ index++ ], b3 = buf[ index ]
-				       	                                                    	                 }.Float
-				       	                                                    }
+				       	           	    	b0 = buf[ index++ ],
+				       	           	    	b1 = buf[ index++ ],
+				       	           	    	b2 = buf[ index++ ],
+				       	           	    	b3 = buf[ index++ ]
+				       	           	    }.Float,
+				       	           	y = new FourByte
+				       	           	    {
+				       	           	    	b0 = buf[ index++ ],
+				       	           	    	b1 = buf[ index++ ],
+				       	           	    	b2 = buf[ index++ ],
+				       	           	    	b3 = buf[ index++ ]
+				       	           	    }.Float,
+				       	           	z = new FourByte
+				       	           	    {
+				       	           	    	b0 = buf[ index++ ],
+				       	           	    	b1 = buf[ index++ ],
+				       	           	    	b2 = buf[ index++ ],
+				       	           	    	b3 = buf[ index++ ]
+				       	           	    }.Float
+				       	           },
+				       	normal = new Vector3
+				       	         {
+				       	         	x = new FourByte
+				       	         	    {
+				       	         	    	b0 = buf[ index++ ],
+				       	         	    	b1 = buf[ index++ ],
+				       	         	    	b2 = buf[ index++ ],
+				       	         	    	b3 = buf[ index++ ]
+				       	         	    }.Float,
+				       	         	y = new FourByte
+				       	         	    {
+				       	         	    	b0 = buf[ index++ ],
+				       	         	    	b1 = buf[ index++ ],
+				       	         	    	b2 = buf[ index++ ],
+				       	         	    	b3 = buf[ index++ ]
+				       	         	    }.Float,
+				       	         	z = new FourByte
+				       	         	    {
+				       	         	    	b0 = buf[ index++ ],
+				       	         	    	b1 = buf[ index++ ],
+				       	         	    	b2 = buf[ index++ ],
+				       	         	    	b3 = buf[ index++ ]
+				       	         	    }.Float
+				       	         },
+				       	texCoords = new Vector2
+				       	            {
+				       	            	x = new FourByte
+				       	            	    {
+				       	            	    	b0 = buf[ index++ ],
+				       	            	    	b1 = buf[ index++ ],
+				       	            	    	b2 = buf[ index++ ],
+				       	            	    	b3 = buf[ index++ ]
+				       	            	    }.Float,
+				       	            	y = new FourByte
+				       	            	    {
+				       	            	    	b0 = buf[ index++ ],
+				       	            	    	b1 = buf[ index++ ],
+				       	            	    	b2 = buf[ index++ ],
+				       	            	    	b3 = buf[ index++ ]
+				       	            	    }.Float
+				       	            },
+				       	lightMap = new Vector2
+				       	           {
+				       	           	x = new FourByte
+				       	           	    {
+				       	           	    	b0 = buf[ index++ ],
+				       	           	    	b1 = buf[ index++ ],
+				       	           	    	b2 = buf[ index++ ],
+				       	           	    	b3 = buf[ index++ ]
+				       	           	    }.Float,
+				       	           	y = new FourByte
+				       	           	    {
+				       	           	    	b0 = buf[ index++ ],
+				       	           	    	b1 = buf[ index++ ],
+				       	           	    	b2 = buf[ index++ ],
+				       	           	    	b3 = buf[ index ]
+				       	           	    }.Float
+				       	           }
 				       };
 			}
 			set
 			{
 				var f = new FourByte();
 				var buf = Buf;
-				index = index * Size + IdxPtr;
+				index = index*Size + IdxPtr;
 				f.Float = value.position.x;
 				buf[ index++ ] = f.b0;
 				buf[ index++ ] = f.b1;

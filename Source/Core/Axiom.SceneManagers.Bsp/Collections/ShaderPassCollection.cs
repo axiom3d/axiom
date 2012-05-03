@@ -57,7 +57,9 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		///		Default constructor.
 		/// </summary>
 		public ShaderPassCollection()
-			: base() {}
+			: base()
+		{
+		}
 
 		/// <summary>
 		///		Constructor that takes a parent object to, and calls the base class constructor to 

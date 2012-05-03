@@ -39,12 +39,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting;
 using Axiom.Utilities;
-
 using Tao.Cg;
 
 #endregion Namespace Declarations
@@ -66,7 +64,7 @@ namespace Axiom.CgPrograms
 	{
 		#region Fields
 
-		protected string[] cgArguments = new string[ 0 ];
+		protected string[] cgArguments = new string[0];
 
 		/// <summary>
 		///    Current Cg context id.
@@ -95,7 +93,8 @@ namespace Axiom.CgPrograms
 
 		protected int selectedCgProfile;
 
-		private readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap = new GpuProgramParameters.GpuConstantDefinitionMap();
+		private readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap =
+			new GpuProgramParameters.GpuConstantDefinitionMap();
 
 		private string programString;
 
@@ -110,7 +109,8 @@ namespace Axiom.CgPrograms
 		/// <param name="type">Type of this program, vertex or fragment program.</param>
 		/// <param name="language">HLSL language of this program.</param>
 		/// <param name="context">CG context id.</param>
-		public CgProgram( ResourceManager parent, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, IntPtr context )
+		public CgProgram( ResourceManager parent, string name, ulong handle, string group, bool isManual,
+		                  IManualResourceLoader loader, IntPtr context )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			cgContext = context;
@@ -233,7 +233,8 @@ namespace Axiom.CgPrograms
 					programString = programString.Replace( "oDepth.z", "oDepth" );
 				}
 				// Create a low-level program, give it the same name as us
-				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( _name, _group, programString, type, selectedProfile );
+				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( _name, _group, programString, type,
+				                                                                       selectedProfile );
 			}
 			// Shader params need to be forwarded to low level implementation
 			assemblerProgram.IsAdjacencyInfoRequired = IsAdjacencyInfoRequired;
@@ -261,7 +262,10 @@ namespace Axiom.CgPrograms
 				// Look for uniform parameters only
 				// Don't bother enumerating unused parameters, especially since they will
 				// be optimized out and therefore not in the indexed versions
-				if ( Cg.cgIsParameterReferenced( parameter ) != 0 && Cg.cgGetParameterVariability( parameter ) == Cg.CG_UNIFORM && Cg.cgGetParameterDirection( parameter ) != Cg.CG_OUT && paramType != Cg.CG_SAMPLER1D && paramType != Cg.CG_SAMPLER2D && paramType != Cg.CG_SAMPLER3D && paramType != Cg.CG_SAMPLERCUBE && paramType != Cg.CG_SAMPLERRECT )
+				if ( Cg.cgIsParameterReferenced( parameter ) != 0 && Cg.cgGetParameterVariability( parameter ) == Cg.CG_UNIFORM &&
+				     Cg.cgGetParameterDirection( parameter ) != Cg.CG_OUT && paramType != Cg.CG_SAMPLER1D &&
+				     paramType != Cg.CG_SAMPLER2D && paramType != Cg.CG_SAMPLER3D && paramType != Cg.CG_SAMPLERCUBE &&
+				     paramType != Cg.CG_SAMPLERRECT )
 				{
 					int arraySize;
 
@@ -289,13 +293,13 @@ namespace Axiom.CgPrograms
 								case Cg.CG_COMBINER_STAGE_CONST0:
 									// register combiner, const 0
 									// the index relates to the texture stage; store this as (stage * 2) + 0
-									regCombinerPhysicalIndex = logicalIndex * 2;
+									regCombinerPhysicalIndex = logicalIndex*2;
 									isRegisterCombiner = true;
 									break;
 								case Cg.CG_COMBINER_STAGE_CONST1:
 									// register combiner, const 1
 									// the index relates to the texture stage; store this as (stage * 2) + 1
-									regCombinerPhysicalIndex = ( logicalIndex * 2 ) + 1;
+									regCombinerPhysicalIndex = ( logicalIndex*2 ) + 1;
 									isRegisterCombiner = true;
 									break;
 								default:
@@ -355,18 +359,26 @@ namespace Axiom.CgPrograms
 							{
 								lock ( floatLogicalToPhysical.Mutex )
 								{
-									floatLogicalToPhysical.Map.Add( def.LogicalIndex, new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, GpuProgramParameters.GpuParamVariability.Global ) );
+									floatLogicalToPhysical.Map.Add( def.LogicalIndex,
+									                                new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex,
+									                                                                             def.ArraySize*def.ElementSize,
+									                                                                             GpuProgramParameters.
+									                                                                             	GpuParamVariability.Global ) );
 
-									floatLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
+									floatLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
 								}
 							}
 							else
 							{
 								lock ( intLogicalToPhysical.Mutex )
 								{
-									intLogicalToPhysical.Map.Add( def.LogicalIndex, new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, GpuProgramParameters.GpuParamVariability.Global ) );
+									intLogicalToPhysical.Map.Add( def.LogicalIndex,
+									                              new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex,
+									                                                                           def.ArraySize*def.ElementSize,
+									                                                                           GpuProgramParameters.
+									                                                                           	GpuParamVariability.Global ) );
 
-									intLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
+									intLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
 								}
 							}
 
@@ -384,7 +396,8 @@ namespace Axiom.CgPrograms
 		#region MapTypeAndElementSize
 
 		[OgreVersion( 1, 7, 2790 )]
-		private void MapTypeAndElementSize( int cgType, bool isRegisterCombiner, GpuProgramParameters.GpuConstantDefinition def )
+		private void MapTypeAndElementSize( int cgType, bool isRegisterCombiner,
+		                                    GpuProgramParameters.GpuConstantDefinition def )
 		{
 			if ( isRegisterCombiner )
 			{
@@ -553,16 +566,24 @@ namespace Axiom.CgPrograms
 				{
 					lock ( floatLogicalToPhysical.Mutex )
 					{
-						floatLogicalToPhysical.Map.Add( def.LogicalIndex, new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, GpuProgramParameters.GpuParamVariability.Global ) );
-						floatLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
+						floatLogicalToPhysical.Map.Add( def.LogicalIndex,
+						                                new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex,
+						                                                                             def.ArraySize*def.ElementSize,
+						                                                                             GpuProgramParameters.
+						                                                                             	GpuParamVariability.Global ) );
+						floatLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
 					}
 				}
 				else
 				{
 					lock ( intLogicalToPhysical.Mutex )
 					{
-						intLogicalToPhysical.Map.Add( def.LogicalIndex, new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, GpuProgramParameters.GpuParamVariability.Global ) );
-						intLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
+						intLogicalToPhysical.Map.Add( def.LogicalIndex,
+						                              new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex,
+						                                                                           def.ArraySize*def.ElementSize,
+						                                                                           GpuProgramParameters.
+						                                                                           	GpuParamVariability.Global ) );
+						intLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
 					}
 				}
 
@@ -576,7 +597,9 @@ namespace Axiom.CgPrograms
 		#region UnloadHighLevelImpl
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected override void UnloadHighLevelImpl() {}
+		protected override void UnloadHighLevelImpl()
+		{
+		}
 
 		#endregion
 
@@ -629,7 +652,8 @@ namespace Axiom.CgPrograms
 					startIt = inSource.IndexOf( "<", afterIncludePos );
 					if ( startIt == -1 || startIt > newLineAfter )
 					{
-						throw new AxiomException( "Badly formed #include directive (expected \" or <) in file " + fileName + ": " + inSource.Substring( includePos, newLineAfter - includePos ) );
+						throw new AxiomException( "Badly formed #include directive (expected \" or <) in file " + fileName + ": " +
+						                          inSource.Substring( includePos, newLineAfter - includePos ) );
 					}
 					else
 					{
@@ -639,14 +663,16 @@ namespace Axiom.CgPrograms
 				var endIt = inSource.IndexOf( endDelimeter, startIt + 1 );
 				if ( endIt == -1 || endIt <= startIt )
 				{
-					throw new AxiomException( "Badly formed #include directive (expected " + endDelimeter + ") in file " + fileName + ": " + inSource.Substring( includePos, newLineAfter - includePos ) );
+					throw new AxiomException( "Badly formed #include directive (expected " + endDelimeter + ") in file " + fileName +
+					                          ": " + inSource.Substring( includePos, newLineAfter - includePos ) );
 				}
 
 				// extract filename
 				var filename = inSource.Substring( startIt + 1, endIt - startIt - 1 );
 
 				// open included file
-				var resource = ResourceGroupManager.Instance.OpenResource( filename, resourceBeingLoaded.Group, true, resourceBeingLoaded );
+				var resource = ResourceGroupManager.Instance.OpenResource( filename, resourceBeingLoaded.Group, true,
+				                                                           resourceBeingLoaded );
 
 				// replace entire include directive line
 				// copy up to just before include
@@ -699,7 +725,7 @@ namespace Axiom.CgPrograms
 		/// </summary>
 		public override void Touch()
 		{
-			if ( this.IsSupported )
+			if ( IsSupported )
 			{
 				base.Touch();
 			}
@@ -722,7 +748,8 @@ namespace Axiom.CgPrograms
 				}
 
 				// If skeletal animation is being done, we need support for UBYTE4
-				if ( this.IsSkeletalAnimationIncluded && !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
+				if ( IsSkeletalAnimationIncluded &&
+				     !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
 				{
 					return false;
 				}

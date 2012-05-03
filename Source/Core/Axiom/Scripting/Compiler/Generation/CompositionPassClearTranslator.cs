@@ -195,7 +195,8 @@ namespace Axiom.Scripting.Compiler
 								#endregion ID_STENCIL_VALUE
 
 							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
+								                   "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						}
 					}

@@ -26,11 +26,9 @@
 
 using System;
 using System.Linq;
-
 using Axiom.Core;
 using Axiom.Framework.Configuration;
 using Axiom.Graphics;
-
 using Vector3 = Axiom.Math.Vector3;
 
 #endregion Namespace Declarations
@@ -69,7 +67,7 @@ namespace Axiom.Framework
 
 		private void PreInitialize()
 		{
-			this.ConfigurationManager = new DefaultConfigurationManager();
+			ConfigurationManager = new DefaultConfigurationManager();
 
 			// instantiate the Root singleton
 			Engine = new Root( ConfigurationManager.LogFilename );
@@ -80,7 +78,7 @@ namespace Axiom.Framework
 
 		public virtual void LoadConfiguration()
 		{
-			ConfigurationManager.RestoreConfiguration( this.Engine );
+			ConfigurationManager.RestoreConfiguration( Engine );
 		}
 
 
@@ -89,7 +87,9 @@ namespace Axiom.Framework
 			Update( e.TimeSinceLastFrame );
 		}
 
-		public virtual void Initialize() {}
+		public virtual void Initialize()
+		{
+		}
 
 		public virtual void CreateRenderSystem()
 		{
@@ -144,8 +144,8 @@ namespace Axiom.Framework
 
 		public virtual void CreateInput()
 		{
-			SharpInputSystem.ParameterList pl = new SharpInputSystem.ParameterList();
-			pl.Add( new SharpInputSystem.Parameter( "WINDOW", this.Window[ "WINDOW" ] ) );
+			var pl = new SharpInputSystem.ParameterList();
+			pl.Add( new SharpInputSystem.Parameter( "WINDOW", Window[ "WINDOW" ] ) );
 
 			if ( RenderSystem.Name.Contains( "DirectX" ) )
 			{
@@ -162,28 +162,18 @@ namespace Axiom.Framework
 
 		public abstract void CreateScene();
 
-		public virtual void Update( float timeSinceLastFrame ) {}
+		public virtual void Update( float timeSinceLastFrame )
+		{
+		}
 
 		#region IDisposable Implementation
 
 		#region IsDisposed Property
 
-		private bool _disposed = false;
-
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		public bool IsDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		public bool IsDisposed { get; set; }
 
 		#endregion IsDisposed Property
 
@@ -270,13 +260,17 @@ namespace Axiom.Framework
 		/// Window has moved position
 		/// </summary>
 		/// <param name="rw">The RenderWindow which created this event</param>
-		public void WindowMoved( RenderWindow rw ) {}
+		public void WindowMoved( RenderWindow rw )
+		{
+		}
 
 		/// <summary>
 		/// Window has resized
 		/// </summary>
 		/// <param name="rw">The RenderWindow which created this event</param>
-		public void WindowResized( RenderWindow rw ) {}
+		public void WindowResized( RenderWindow rw )
+		{
+		}
 
 		/// <summary>
 		/// Window has closed
@@ -295,7 +289,9 @@ namespace Axiom.Framework
 		/// Window lost/regained the focus
 		/// </summary>
 		/// <param name="rw">The RenderWindow which created this event</param>
-		public void WindowFocusChange( RenderWindow rw ) {}
+		public void WindowFocusChange( RenderWindow rw )
+		{
+		}
 
 		#endregion
 	}

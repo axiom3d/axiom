@@ -34,7 +34,6 @@
 #region Namespace Declarations
 
 using System.Diagnostics;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations

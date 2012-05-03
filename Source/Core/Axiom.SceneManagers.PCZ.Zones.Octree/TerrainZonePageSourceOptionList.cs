@@ -55,5 +55,7 @@ namespace OctreeZone
 	//    }
 	//}
 
-	public class TerrainZonePageSourceOptionList : AxiomSortedCollection<string, string> {}
+	public class TerrainZonePageSourceOptionList : AxiomSortedCollection<string, string>
+	{
+	}
 }

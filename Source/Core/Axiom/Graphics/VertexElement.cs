@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Runtime.InteropServices;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -91,7 +90,9 @@ namespace Axiom.Graphics
 		/// <param name="type">The type of element.</param>
 		/// <param name="semantic">The meaning of the element.</param>
 		public VertexElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic )
-			: this( source, offset, type, semantic, 0 ) {}
+			: this( source, offset, type, semantic, 0 )
+		{
+		}
 
 		/// <summary>
 		///     Constructor.
@@ -130,28 +131,28 @@ namespace Axiom.Graphics
 					return Memory.SizeOf( typeof ( float ) );
 
 				case VertexElementType.Float2:
-					return Memory.SizeOf( typeof ( float ) ) * 2;
+					return Memory.SizeOf( typeof ( float ) )*2;
 
 				case VertexElementType.Float3:
-					return Memory.SizeOf( typeof ( float ) ) * 3;
+					return Memory.SizeOf( typeof ( float ) )*3;
 
 				case VertexElementType.Float4:
-					return Memory.SizeOf( typeof ( float ) ) * 4;
+					return Memory.SizeOf( typeof ( float ) )*4;
 
 				case VertexElementType.Short1:
 					return Memory.SizeOf( typeof ( short ) );
 
 				case VertexElementType.Short2:
-					return Memory.SizeOf( typeof ( short ) ) * 2;
+					return Memory.SizeOf( typeof ( short ) )*2;
 
 				case VertexElementType.Short3:
-					return Memory.SizeOf( typeof ( short ) ) * 3;
+					return Memory.SizeOf( typeof ( short ) )*3;
 
 				case VertexElementType.Short4:
-					return Memory.SizeOf( typeof ( short ) ) * 4;
+					return Memory.SizeOf( typeof ( short ) )*4;
 
 				case VertexElementType.UByte4:
-					return Memory.SizeOf( typeof ( byte ) ) * 4;
+					return Memory.SizeOf( typeof ( byte ) )*4;
 			} // end switch
 
 			// keep the compiler happy
@@ -332,7 +333,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public object Clone()
 		{
-			return this.MemberwiseClone();
+			return MemberwiseClone();
 		}
 
 		#endregion

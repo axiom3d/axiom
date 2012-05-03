@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics.Collections;
@@ -80,7 +79,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		List of passes with dirty hashes.
 		/// </summary>
-		private static PassList _dirtyList = new PassList();
+		private static readonly PassList _dirtyList = new PassList();
 
 		/// <summary>
 		///		Gets a list of dirty passes.
@@ -100,7 +99,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		List of passes queued for deletion.
 		/// </summary>
-		private static PassList _graveyardList = new PassList();
+		private static readonly PassList _graveyardList = new PassList();
 
 		/// <summary>
 		///		Gets a list of passes queued for deletion.
@@ -174,7 +173,7 @@ namespace Axiom.Graphics
 			set
 			{
 				_index = value;
-				this.DirtyHash();
+				DirtyHash();
 			}
 		}
 
@@ -679,7 +678,6 @@ namespace Axiom.Graphics
 
 		private CompareFunction _alphaRejectFunction = CompareFunction.AlwaysPass;
 		private int _alphaRejectValue;
-		private bool _alphaToCoverageEnabled;
 
 		/// <summary>
 		/// Sets the way the pass will have use alpha to totally reject pixels from the pipeline.
@@ -729,17 +727,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Whether to use alpha to coverage (A2C) when blending alpha rejected values
 		/// </summary>
-		public bool IsAlphaToCoverageEnabled
-		{
-			get
-			{
-				return _alphaToCoverageEnabled;
-			}
-			set
-			{
-				_alphaToCoverageEnabled = value;
-			}
-		}
+		public bool IsAlphaToCoverageEnabled { get; set; }
 
 		#endregion AlphaReject Properties
 
@@ -875,11 +863,6 @@ namespace Axiom.Graphics
 		#region StartLight Property
 
 		/// <summary>
-		///    the light index that this pass will start at in the light list.
-		/// </summary>
-		private bool _startLight;
-
-		/// <summary>
 		///    Sets the light index that this pass will start at in the light list.
 		/// </summary>
 		/// <remarks>
@@ -891,17 +874,7 @@ namespace Axiom.Graphics
 		/// if you choose to iterate this pass per light too, the iteration will
 		/// only begin from light 4.
 		/// </remarks>
-		public bool StartLight
-		{
-			get
-			{
-				return _startLight;
-			}
-			set
-			{
-				_startLight = value;
-			}
-		}
+		public bool StartLight { get; set; }
 
 		#endregion StartLight Property
 
@@ -1325,7 +1298,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
+				Debug.Assert( HasVertexProgram, "This pass does not contain a vertex program!" );
 				return _vertexProgramUsage.Program;
 			}
 		}
@@ -1348,7 +1321,7 @@ namespace Axiom.Graphics
 			{
 				lock ( _gpuProgramChangeMutex )
 				{
-					if ( this.HasVertexProgram )
+					if ( HasVertexProgram )
 					{
 						return _vertexProgramUsage.ProgramName;
 					}
@@ -1376,12 +1349,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
+				Debug.Assert( HasVertexProgram, "This pass does not contain a vertex program!" );
 				return _vertexProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( this.HasVertexProgram, "This pass does not contain a vertex program!" );
+				Debug.Assert( HasVertexProgram, "This pass does not contain a vertex program!" );
 				_vertexProgramUsage.Parameters = value;
 			}
 		}
@@ -1416,7 +1389,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
+				Debug.Assert( HasFragmentProgram, "This pass does not contain a fragment program!" );
 				return _fragmentProgramUsage.Program;
 			}
 		}
@@ -1437,7 +1410,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// return blank if there is no fragment program in this pass
-				if ( this.HasFragmentProgram )
+				if ( HasFragmentProgram )
 				{
 					return _fragmentProgramUsage.ProgramName;
 				}
@@ -1464,12 +1437,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
+				Debug.Assert( HasFragmentProgram, "This pass does not contain a fragment program!" );
 				return _fragmentProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( this.HasFragmentProgram, "This pass does not contain a fragment program!" );
+				Debug.Assert( HasFragmentProgram, "This pass does not contain a fragment program!" );
 				_fragmentProgramUsage.Parameters = value;
 			}
 		}
@@ -1504,7 +1477,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geometry program!" );
+				Debug.Assert( HasGeometryProgram, "This pass does not contain a geometry program!" );
 				return _geometryProgramUsage.Program;
 			}
 		}
@@ -1525,7 +1498,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// return blank if there is no geometry program in this pass
-				if ( this.HasGeometryProgram )
+				if ( HasGeometryProgram )
 				{
 					return _geometryProgramUsage.ProgramName;
 				}
@@ -1552,12 +1525,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geomtery program!" );
+				Debug.Assert( HasGeometryProgram, "This pass does not contain a geomtery program!" );
 				return _geometryProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( this.HasGeometryProgram, "This pass does not contain a geometry program!" );
+				Debug.Assert( HasGeometryProgram, "This pass does not contain a geometry program!" );
 				_geometryProgramUsage.Parameters = value;
 			}
 		}
@@ -1586,7 +1559,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( this.HasShadowCasterVertexProgram )
+				if ( HasShadowCasterVertexProgram )
 				{
 					return shadowCasterVertexProgramUsage.ProgramName;
 				}
@@ -1601,12 +1574,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( this.HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
+				Debug.Assert( HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
 				return shadowCasterVertexProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( this.HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
+				Debug.Assert( HasShadowCasterVertexProgram, "This pass does not contain a shadow caster vertex program!" );
 				shadowCasterVertexProgramUsage.Parameters = value;
 			}
 		}
@@ -1635,7 +1608,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( this.HasShadowCasterFragmentProgram )
+				if ( HasShadowCasterFragmentProgram )
 				{
 					return _shadowCasterFragmentProgramUsage.ProgramName;
 				}
@@ -1650,12 +1623,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( this.HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
+				Debug.Assert( HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
 				return _shadowCasterFragmentProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( this.HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
+				Debug.Assert( HasShadowCasterFragmentProgram, "This pass does not contain a shadow caster fragment program!" );
 				_shadowCasterFragmentProgramUsage.Parameters = value;
 			}
 		}
@@ -1684,7 +1657,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( this.HasShadowReceiverVertexProgram )
+				if ( HasShadowReceiverVertexProgram )
 				{
 					return _shadowReceiverVertexProgramUsage.ProgramName;
 				}
@@ -1699,12 +1672,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( this.HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
+				Debug.Assert( HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
 				return _shadowReceiverVertexProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( this.HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
+				Debug.Assert( HasShadowReceiverVertexProgram, "This pass does not contain a shadow receiver vertex program!" );
 				_shadowReceiverVertexProgramUsage.Parameters = value;
 			}
 		}
@@ -1733,7 +1706,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( this.HasShadowReceiverFragmentProgram )
+				if ( HasShadowReceiverFragmentProgram )
 				{
 					return _shadowReceiverFragmentProgramUsage.ProgramName;
 				}
@@ -1748,12 +1721,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				Debug.Assert( this.HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
+				Debug.Assert( HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
 				return _shadowReceiverFragmentProgramUsage.Parameters;
 			}
 			set
 			{
-				Debug.Assert( this.HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
+				Debug.Assert( HasShadowReceiverFragmentProgram, "This pass does not contain a shadow receiver fragment program!" );
 				_shadowReceiverFragmentProgramUsage.Parameters = value;
 			}
 		}
@@ -1764,73 +1737,25 @@ namespace Axiom.Graphics
 
 		#region PointSize Property
 
-		private float _pointSize;
-
-		public float PointSize
-		{
-			get
-			{
-				return _pointSize;
-			}
-			set
-			{
-				_pointSize = value;
-			}
-		}
+		public float PointSize { get; set; }
 
 		#endregion PointSize Property
 
 		#region PointMinSize Property
 
-		private float _pointMinSize;
-
-		public float PointMinSize
-		{
-			get
-			{
-				return _pointMinSize;
-			}
-			set
-			{
-				_pointMinSize = value;
-			}
-		}
+		public float PointMinSize { get; set; }
 
 		#endregion PointMinSize Property
 
 		#region PointMaxSize Property
 
-		private float _pointMaxSize;
-
-		public float PointMaxSize
-		{
-			get
-			{
-				return _pointMaxSize;
-			}
-			set
-			{
-				_pointMaxSize = value;
-			}
-		}
+		public float PointMaxSize { get; set; }
 
 		#endregion PointMaxSize Property
 
 		#region PointSpritesEnabled Property
 
-		private bool _pointSpritesEnabled;
-
-		public bool PointSpritesEnabled
-		{
-			get
-			{
-				return _pointSpritesEnabled;
-			}
-			set
-			{
-				_pointSpritesEnabled = value;
-			}
-		}
+		public bool PointSpritesEnabled { get; set; }
 
 		#endregion PointSpritesEnabled Property
 
@@ -1988,12 +1913,12 @@ namespace Axiom.Graphics
 		public Pass( Technique parent, int index )
 			: base()
 		{
-			this._parent = parent;
-			this._index = index;
+			_parent = parent;
+			_index = index;
 
 			lock ( passLock )
 			{
-				this.passId = nextPassId++;
+				passId = nextPassId++;
 			}
 
 			// color defaults
@@ -2042,7 +1967,7 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -2302,37 +2227,37 @@ namespace Axiom.Graphics
 			}
 
 			// load programs
-			if ( this.HasVertexProgram )
+			if ( HasVertexProgram )
 			{
 				// load vertex program
 				_vertexProgramUsage.Load();
 			}
 
-			if ( this.HasFragmentProgram )
+			if ( HasFragmentProgram )
 			{
 				// load vertex program
 				_fragmentProgramUsage.Load();
 			}
 
-			if ( this.HasShadowCasterVertexProgram )
+			if ( HasShadowCasterVertexProgram )
 			{
 				// load shadow caster vertex program
 				shadowCasterVertexProgramUsage.Load();
 			}
 
-			if ( this.HasShadowCasterFragmentProgram )
+			if ( HasShadowCasterFragmentProgram )
 			{
 				// load shadow caster fragment program
 				_shadowCasterFragmentProgramUsage.Load();
 			}
 
-			if ( this.HasShadowReceiverVertexProgram )
+			if ( HasShadowReceiverVertexProgram )
 			{
 				// load shadow receiver vertex program
 				_shadowReceiverVertexProgramUsage.Load();
 			}
 
-			if ( this.HasShadowReceiverFragmentProgram )
+			if ( HasShadowReceiverFragmentProgram )
 			{
 				// load shadow receiver fragment program
 				_shadowReceiverFragmentProgramUsage.Load();
@@ -2768,7 +2693,8 @@ namespace Axiom.Graphics
 		/// <param name="sourceFactorAlpha">The alpha source factor in the above calculation, i.e. multiplied by the texture alpha component.</param>
 		/// <param name="destFactorAlpha">The alpha destination factor in the above calculation, i.e. multiplied by the pixel alpha component.</param>
 		[OgreVersion( 1, 7, 2 )]
-		public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
+		public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
+		                                      SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
 		{
 			_sourceBlendFactor = sourceFactor;
 			_destinationBlendFactor = destFactor;
@@ -2798,7 +2724,7 @@ namespace Axiom.Graphics
 			else
 			{
 				// create a new usage object
-				if ( !this.HasFragmentProgram )
+				if ( !HasFragmentProgram )
 				{
 					_fragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
 				}
@@ -2825,7 +2751,7 @@ namespace Axiom.Graphics
 			else
 			{
 				// create a new usage object
-				if ( !this.HasGeometryProgram )
+				if ( !HasGeometryProgram )
 				{
 					_geometryProgramUsage = new GpuProgramUsage( GpuProgramType.Geometry, this );
 				}
@@ -2847,7 +2773,7 @@ namespace Axiom.Graphics
 			else
 			{
 				// create a new usage object
-				if ( !this.HasShadowCasterFragmentProgram )
+				if ( !HasShadowCasterFragmentProgram )
 				{
 					_shadowCasterFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
 				}
@@ -2869,7 +2795,7 @@ namespace Axiom.Graphics
 			else
 			{
 				// create a new usage object
-				if ( !this.HasShadowReceiverFragmentProgram )
+				if ( !HasShadowReceiverFragmentProgram )
 				{
 					_shadowReceiverFragmentProgramUsage = new GpuProgramUsage( GpuProgramType.Fragment, this );
 				}
@@ -2911,7 +2837,7 @@ namespace Axiom.Graphics
 		{
 			lock ( _gpuProgramChangeMutex )
 			{
-				if ( this.VertexProgramName == name )
+				if ( VertexProgramName == name )
 				{
 					return;
 				}
@@ -2925,7 +2851,7 @@ namespace Axiom.Graphics
 				else
 				{
 					// create a new usage object
-					if ( !this.HasVertexProgram )
+					if ( !HasVertexProgram )
 					{
 						_vertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
 					}
@@ -2960,7 +2886,7 @@ namespace Axiom.Graphics
 			else
 			{
 				// create a new usage object
-				if ( !this.HasShadowCasterVertexProgram )
+				if ( !HasShadowCasterVertexProgram )
 				{
 					shadowCasterVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
 				}
@@ -2982,7 +2908,7 @@ namespace Axiom.Graphics
 			else
 			{
 				// create a new usage object
-				if ( !this.HasShadowReceiverVertexProgram )
+				if ( !HasShadowReceiverVertexProgram )
 				{
 					_shadowReceiverVertexProgramUsage = new GpuProgramUsage( GpuProgramType.Vertex, this );
 				}
@@ -3034,7 +2960,8 @@ namespace Axiom.Graphics
 			// can't split programmable passes
 			if ( _vertexProgramUsage != null || _geometryProgramUsage != null || _fragmentProgramUsage != null )
 			{
-				throw new AxiomException( "Passes with fragment programs cannot be automatically split.  Define a fallback technique instead" );
+				throw new AxiomException(
+					"Passes with fragment programs cannot be automatically split.  Define a fallback technique instead" );
 			}
 
 			if ( textureUnitStates.Count > numUnits )
@@ -3085,14 +3012,14 @@ namespace Axiom.Graphics
 				( (TextureUnitState)textureUnitStates[ i ] ).Unload();
 			}
 
-			if ( this.HasFragmentProgram )
+			if ( HasFragmentProgram )
 			{
-				this._fragmentProgramUsage.Program.Unload();
+				_fragmentProgramUsage.Program.Unload();
 			}
 
-			if ( this.HasVertexProgram )
+			if ( HasVertexProgram )
 			{
-				this._vertexProgramUsage.Program.Unload();
+				_vertexProgramUsage.Program.Unload();
 			}
 		}
 

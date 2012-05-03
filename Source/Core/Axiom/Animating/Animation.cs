@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -160,13 +159,13 @@ namespace Axiom.Animating
 			this.length = length;
 
 			// use the default interpolation modes
-			this.interpolationMode = Animation.DefaultInterpolationMode;
-			this.rotationInterpolationMode = Animation.DefaultRotationInterpolationMode;
+			interpolationMode = Animation.DefaultInterpolationMode;
+			rotationInterpolationMode = Animation.DefaultRotationInterpolationMode;
 
 			// Create the track lists
-			this.nodeTrackList = new Dictionary<ushort, NodeAnimationTrack>();
-			this.numericTrackList = new Dictionary<ushort, NumericAnimationTrack>();
-			this.vertexTrackList = new Dictionary<ushort, VertexAnimationTrack>();
+			nodeTrackList = new Dictionary<ushort, NodeAnimationTrack>();
+			numericTrackList = new Dictionary<ushort, NumericAnimationTrack>();
+			vertexTrackList = new Dictionary<ushort, VertexAnimationTrack>();
 		}
 
 		#endregion
@@ -489,7 +488,9 @@ namespace Axiom.Animating
 
 		#region Event handlers
 
-		private void TrackAdded( object source, System.EventArgs e ) {}
+		private void TrackAdded( object source, System.EventArgs e )
+		{
+		}
 
 		private void TracksCleared( object source, System.EventArgs e )
 		{

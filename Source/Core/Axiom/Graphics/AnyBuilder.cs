@@ -42,7 +42,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
@@ -288,7 +287,7 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

@@ -41,7 +41,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -61,8 +60,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			///    The type of the parameter.
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public AutoConstantType Type;
+			[OgreVersion( 1, 7, 2790 )] public AutoConstantType Type;
 
 			#endregion
 
@@ -71,8 +69,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			///    The target index.
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int PhysicalIndex;
+			[OgreVersion( 1, 7, 2790 )] public int PhysicalIndex;
 
 			#endregion
 
@@ -83,8 +80,7 @@ namespace Axiom.Graphics
 			/// Used in case people used packed elements smaller than 4 (e.g. GLSL)
 			/// and bind an auto which is 4-element packed to it
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int ElementCount;
+			[OgreVersion( 1, 7, 2790 )] public int ElementCount;
 
 			#endregion
 
@@ -93,8 +89,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			///    Any additional info to go with the parameter.
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int Data;
+			[OgreVersion( 1, 7, 2790 )] public int Data;
 
 			#endregion
 
@@ -103,8 +98,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			///    Any additional info to go with the parameter.
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public float FData;
+			[OgreVersion( 1, 7, 2790 )] public float FData;
 
 			#endregion
 
@@ -113,8 +107,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// The Variability of this parameter (see <see>GpuParamVariability</see>)
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public GpuParamVariability Variability;
+			[OgreVersion( 1, 7, 2790 )] public GpuParamVariability Variability;
 
 			#endregion
 
@@ -129,7 +122,9 @@ namespace Axiom.Graphics
 			/// <param name="variability">Variability of parameter</param>
 			[OgreVersion( 1, 7, 2790 )]
 			public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability )
-				: this( type, index, data, variability, 4 ) {}
+				: this( type, index, data, variability, 4 )
+			{
+			}
 
 			/// <summary>
 			///    Default constructor.
@@ -140,7 +135,8 @@ namespace Axiom.Graphics
 			/// <param name="variability">Variability of parameter</param>
 			/// <param name="elementCount"></param>
 			[OgreVersion( 1, 7, 2790 )]
-			public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability, int elementCount )
+			public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability,
+			                          int elementCount )
 			{
 				Type = type;
 				PhysicalIndex = index;
@@ -162,7 +158,9 @@ namespace Axiom.Graphics
 			/// <param name="elementCount"></param>
 			[OgreVersion( 1, 7, 2790 )]
 			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability )
-				: this( type, index, fdata, variability, 4 ) {}
+				: this( type, index, fdata, variability, 4 )
+			{
+			}
 
 			/// <summary>
 			///    Default constructor.
@@ -173,7 +171,8 @@ namespace Axiom.Graphics
 			/// <param name="variability">Variability of parameter</param>
 			/// <param name="elementCount"></param>
 			[OgreVersion( 1, 7, 2790 )]
-			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability, int elementCount )
+			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability,
+			                          int elementCount )
 			{
 				Type = type;
 				PhysicalIndex = index;
@@ -200,7 +199,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public class AutoConstantsList : List<AutoConstantEntry>
 		{
-			public AutoConstantsList() {}
+			public AutoConstantsList()
+			{
+			}
 
 			public AutoConstantsList( AutoConstantsList other )
 			{

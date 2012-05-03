@@ -23,7 +23,6 @@
 #endregion License
 
 using System;
-
 using Axiom.Samples;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -85,7 +84,7 @@ namespace Axiom.Samples.BezierPatch
 
 			// define the control point vertices for our patch
 			// Patch data
-			PatchVertex[] patchVertices = new PatchVertex[ 9 ];
+			var patchVertices = new PatchVertex[9];
 
 			patchVertices[ 0 ].X = -500;
 			patchVertices[ 0 ].Y = 200;
@@ -174,14 +173,17 @@ namespace Axiom.Samples.BezierPatch
 			patchDeclaration.AddElement( 0, 24, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
 			// create a patch mesh using vertices and declaration
-			patch = MeshManager.Instance.CreateBezierPatch( "patch", ResourceGroupManager.DefaultResourceGroupName, patchVertices, patchDeclaration, 3, 3, 5, 5, VisibleSide.Both, BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
+			patch = MeshManager.Instance.CreateBezierPatch( "patch", ResourceGroupManager.DefaultResourceGroupName, patchVertices,
+			                                                patchDeclaration, 3, 3, 5, 5, VisibleSide.Both,
+			                                                BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true, true );
 
 			// Start patch at 0 detail
 			patch.Subdivision = 0;
 
 			// Create entity based on patch
 			patchEntity = SceneManager.CreateEntity( "Entity1", "patch" );
-			Material material = (Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
+			var material =
+				(Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
 			material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "BumpyMetal.jpg" );
 
 			patchEntity.MaterialName = "TextMat";

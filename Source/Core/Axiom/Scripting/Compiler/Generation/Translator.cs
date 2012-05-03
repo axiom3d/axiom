@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Scripting.Compiler.AST;
@@ -295,7 +294,7 @@ namespace Axiom.Scripting.Compiler
 			/// <returns>true if successful</returns>
 			protected static bool getColor( IList<AbstractNode> nodes, int i, out ColorEx result, int maxEntries )
 			{
-				var vals = new Real[ 4 ]
+				var vals = new Real[4]
 				           {
 				           	0, 0, 0, 0
 				           };
@@ -349,7 +348,7 @@ namespace Axiom.Scripting.Compiler
 					{
 						if ( nodes[ i ] is AtomAbstractNode && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
 						{
-							m[ n / 4, n % 4 ] = ( (AtomAbstractNode)nodes[ i ] ).Number;
+							m[ n/4, n%4 ] = ( (AtomAbstractNode)nodes[ i ] ).Number;
 						}
 						else
 						{
@@ -375,7 +374,7 @@ namespace Axiom.Scripting.Compiler
 			protected static bool getInts( IList<AbstractNode> nodes, int i, out int[] vals, int count )
 			{
 				var success = true;
-				vals = new int[ count ];
+				vals = new int[count];
 
 				if ( nodes == null )
 				{
@@ -423,7 +422,7 @@ namespace Axiom.Scripting.Compiler
 			protected static bool getFloats( IList<AbstractNode> nodes, int i, out float[] vals, int count )
 			{
 				var success = true;
-				vals = new float[ count ];
+				vals = new float[count];
 
 				if ( nodes == null )
 				{

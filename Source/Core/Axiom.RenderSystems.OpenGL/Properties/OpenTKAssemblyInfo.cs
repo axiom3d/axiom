@@ -50,4 +50,6 @@ using System.Runtime.CompilerServices;
 //
 
 [assembly: AssemblyTitle( "Axiom OpenGL (OpenTK) Rendering Subsystem" )]
-[assembly: AssemblyDescription( "Rendering system implementation which implements the 3D graphics API abstraction layer using OpenGL and OpenTK." )]
+[assembly:
+	AssemblyDescription(
+		"Rendering system implementation which implements the 3D graphics API abstraction layer using OpenGL and OpenTK." )]

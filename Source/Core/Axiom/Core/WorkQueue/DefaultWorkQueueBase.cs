@@ -35,7 +35,6 @@
 
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -63,7 +62,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected class RequestHandlerHolder
 		{
-			private object _mutex = new object();
+			private readonly object _mutex = new object();
 			private IRequestHandler _handler;
 
 			/// <summary>
@@ -123,8 +122,12 @@ namespace Axiom.Core
 			}
 		};
 
-		protected Dictionary<ushort, List<RequestHandlerHolder>> requestHandlers = new Dictionary<ushort, List<RequestHandlerHolder>>();
-		protected Dictionary<ushort, List<IResponseHandler>> responseHandlers = new Dictionary<ushort, List<IResponseHandler>>();
+		protected Dictionary<ushort, List<RequestHandlerHolder>> requestHandlers =
+			new Dictionary<ushort, List<RequestHandlerHolder>>();
+
+		protected Dictionary<ushort, List<IResponseHandler>> responseHandlers =
+			new Dictionary<ushort, List<IResponseHandler>>();
+
 		protected uint requestCount;
 		protected bool paused;
 		protected bool acceptRequests;
@@ -274,7 +277,9 @@ namespace Axiom.Core
 		public DefaultWorkQueueBase( string name = "" )
 #else
 		public DefaultWorkQueueBase()
-			: this( string.Empty ) {}
+			: this( string.Empty )
+		{
+		}
 
 		/// <summary>
 		/// Contructor
@@ -295,7 +300,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2, "~DefaultWorkQueueBase" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -403,7 +408,8 @@ namespace Axiom.Core
 #if NET_40
 		public override RequestID AddRequest( ushort channel, ushort requestType, object rData, byte retryCount = 0, bool forceSynchronous = false )
 #else
-		public override RequestID AddRequest( ushort channel, ushort requestType, object rData, byte retryCount, bool forceSynchronous )
+		public override RequestID AddRequest( ushort channel, ushort requestType, object rData, byte retryCount,
+		                                      bool forceSynchronous )
 #endif
 		{
 			Request req;
@@ -419,7 +425,9 @@ namespace Axiom.Core
 				rid = ++requestCount;
 				req = new Request( channel, requestType, rData, retryCount, rid );
 
-				LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - QUEUED(thread:{1}): ID={2} channel={3} requestType={4}", name, GetThreadName(), rid, channel, requestType );
+				LogManager.Instance.Write( LogMessageLevel.Trivial, false,
+				                           "DefaultWorkQueueBase('{0}') - QUEUED(thread:{1}): ID={2} channel={3} requestType={4}",
+				                           name, GetThreadName(), rid, channel, requestType );
 
 #if AXIOM_THREAD_SUPPORT
 				if ( !forceSynchronous )
@@ -454,9 +462,11 @@ namespace Axiom.Core
 					return;
 				}
 
-				Request req = new Request( channel, requestType, rData, retryCount, rid );
+				var req = new Request( channel, requestType, rData, retryCount, rid );
 
-				LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - REQUEUED(thread:{1}): ID={2} channel={3} requestType={4}", name, GetThreadName(), rid, channel, requestType );
+				LogManager.Instance.Write( LogMessageLevel.Trivial, false,
+				                           "DefaultWorkQueueBase('{0}') - REQUEUED(thread:{1}): ID={2} channel={3} requestType={4}",
+				                           name, GetThreadName(), rid, channel, requestType );
 
 #if AXIOM_THREAD_SUPPORT
 				requestQueue.Add( req );
@@ -667,7 +677,9 @@ namespace Axiom.Core
 				else
 				{
 					// no response, delete request
-					LogManager.Instance.Write( "DefaultWorkQueueBase('{0}') warning: no handler processed request {1}, channel {2}, type {3}", name, r.ID, r.Channel, r.Type );
+					LogManager.Instance.Write(
+						"DefaultWorkQueueBase('{0}') warning: no handler processed request {1}, channel {2}, type {3}", name, r.ID,
+						r.Channel, r.Type );
 					//OGRE_DELETE r;
 				}
 			}
@@ -726,7 +738,8 @@ namespace Axiom.Core
 			var dbgMsg = new StringBuilder();
 			dbgMsg.AppendFormat( "{0}): ID={1} channel={2} requestType={3}", GetThreadName(), r.ID, r.Channel, r.Type );
 
-			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_REQUEST_START({1}", name, dbgMsg.ToString() );
+			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_REQUEST_START({1}",
+			                           name, dbgMsg.ToString() );
 			if ( handlerListCopy.ContainsKey( r.Channel ) )
 			{
 				List<RequestHandlerHolder> handlers = handlerListCopy[ r.Channel ];
@@ -742,7 +755,9 @@ namespace Axiom.Core
 				}
 			}
 
-			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_REQUEST_END({1} processed={2}", name, dbgMsg.ToString(), response != null );
+			LogManager.Instance.Write( LogMessageLevel.Trivial, false,
+			                           "DefaultWorkQueueBase('{0}') - PROCESS_REQUEST_END({1} processed={2}", name,
+			                           dbgMsg.ToString(), response != null );
 
 			return response;
 		}
@@ -751,9 +766,11 @@ namespace Axiom.Core
 		protected void ProcessResponse( Response r )
 		{
 			var dbgMsg = new StringBuilder();
-			dbgMsg.AppendFormat( "thread:{0}): ID={1} success={2} messages=[{3}] channel={4} requestType={5}", GetThreadName(), r.Request.ID, r.Succeeded, r.Messages, r.Request.Channel, r.Request.Type );
+			dbgMsg.AppendFormat( "thread:{0}): ID={1} success={2} messages=[{3}] channel={4} requestType={5}", GetThreadName(),
+			                     r.Request.ID, r.Succeeded, r.Messages, r.Request.Channel, r.Request.Type );
 
-			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_RESPONSE_START({1}", name, dbgMsg.ToString() );
+			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_RESPONSE_START({1}",
+			                           name, dbgMsg.ToString() );
 			ushort channel = r.Request.Channel;
 			if ( responseHandlers.ContainsKey( channel ) )
 			{
@@ -766,7 +783,8 @@ namespace Axiom.Core
 				}
 			}
 
-			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_RESPONSE_END({1}", name, dbgMsg.ToString() );
+			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_RESPONSE_END({1}",
+			                           name, dbgMsg.ToString() );
 		}
 	};
 }

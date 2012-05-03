@@ -52,7 +52,7 @@ namespace Axiom.Samples
 			{
 #if !(XBOX || XBOX360)
 				Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
-				using ( SampleBrowser sb = new SampleBrowser() )
+				using ( var sb = new SampleBrowser() )
 #else
 				using (SampleBrowser sb = new Xna.SampleBrowser())
 #endif

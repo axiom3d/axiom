@@ -40,13 +40,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.RenderSystems.OpenGL;
-
 using Tao.OpenGl;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -60,7 +57,8 @@ namespace Axiom.RenderSystems.OpenGL
 	{
 		#region Constructor
 
-		public ARBGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		public ARBGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                      IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			// generate a new program
@@ -230,7 +228,8 @@ namespace Axiom.RenderSystems.OpenGL
 	{
 		#region IOpenGLGpuProgramFactory Implementation
 
-		public GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
+		public GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                            IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
 			GLGpuProgram ret = new ARBGpuProgram( parent, name, handle, group, isManual, loader );
 			ret.Type = type;

@@ -50,7 +50,6 @@ using System.IO;
 using System.Windows;
 #endif
 using Axiom.Core;
-
 using Ionic.Zip;
 
 #endregion Namespace Declarations
@@ -103,7 +102,8 @@ namespace Axiom.FileSystem
 		/// <param name="pattern"></param>
 		/// <param name="recursive"></param>
 		/// <param name="simpleList"></param>
-		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
+		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList,
+		                          string currentDir )
 		{
 			if ( currentDir == "" )
 			{
@@ -117,7 +117,7 @@ namespace Axiom.FileSystem
 			}
 			var ex = new Regex( pattern );
 
-			foreach (var entry in _zipStream)
+			foreach ( var entry in _zipStream )
 			{
 				// get the full path for the output file
 				var file = entry.FileName;
@@ -141,7 +141,6 @@ namespace Axiom.FileSystem
 					}
 				}
 			}
-
 		}
 
 		#endregion Utility Methods
@@ -149,7 +148,9 @@ namespace Axiom.FileSystem
 		#region Constructors and Destructor
 
 		public ZipArchive( string name, string archType )
-			: base( name, archType ) {}
+			: base( name, archType )
+		{
+		}
 
 		~ZipArchive()
 		{
@@ -197,8 +198,8 @@ namespace Axiom.FileSystem
 					_zipFile = Name.Replace( '/', '.' );
 
 					var assemblyContent = ( from assembly in AssemblyEx.Neighbors()
-											where _zipFile.StartsWith( assembly.FullName.Split( ',' )[ 0 ] )
-											select assembly ).FirstOrDefault();
+					                        where _zipFile.StartsWith( assembly.FullName.Split( ',' )[ 0 ] )
+					                        select assembly ).FirstOrDefault();
 					if ( assemblyContent != null )
 					{
 						fs = assemblyContent.GetManifestResourceStream( _zipFile );
@@ -278,11 +279,11 @@ namespace Axiom.FileSystem
 		{
 			Load();
 
-			if (_zipStream.ContainsEntry( filename ) )
+			if ( _zipStream.ContainsEntry( filename ) )
 			{
 				var entry = _zipStream[ filename ];
 				var output = new MemoryStream();
-				entry.Extract(output);
+				entry.Extract( output );
 
 				// reset the position to make sure it is at the beginning of the stream
 				output.Position = 0;

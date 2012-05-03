@@ -36,7 +36,6 @@
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Collections;
 

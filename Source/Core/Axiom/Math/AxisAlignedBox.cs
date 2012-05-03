@@ -67,7 +67,7 @@ namespace Axiom.Math
 
 		internal Vector3 minVector;
 		internal Vector3 maxVector;
-		private Vector3[] corners = new Vector3[ 8 ];
+		private readonly Vector3[] corners = new Vector3[8];
 		private bool isNull;
 		private bool isInfinite;
 
@@ -137,35 +137,35 @@ namespace Axiom.Math
 			// First corner 
 			// min min min
 			currentCorner = oldMin;
-			Merge( matrix * currentCorner );
+			Merge( matrix*currentCorner );
 
 			// min,min,max
 			currentCorner.z = oldMax.z;
-			Merge( matrix * currentCorner );
+			Merge( matrix*currentCorner );
 
 			// min max max
 			currentCorner.y = oldMax.y;
-			Merge( matrix * currentCorner );
+			Merge( matrix*currentCorner );
 
 			// min max min
 			currentCorner.z = oldMin.z;
-			Merge( matrix * currentCorner );
+			Merge( matrix*currentCorner );
 
 			// max max min
 			currentCorner.x = oldMax.x;
-			Merge( matrix * currentCorner );
+			Merge( matrix*currentCorner );
 
 			// max max max
 			currentCorner.z = oldMax.z;
-			Merge( matrix * currentCorner );
+			Merge( matrix*currentCorner );
 
 			// max min max
 			currentCorner.y = oldMin.y;
-			Merge( matrix * currentCorner );
+			Merge( matrix*currentCorner );
 
 			// max min min
 			currentCorner.z = oldMin.z;
-			Merge( matrix * currentCorner );
+			Merge( matrix*currentCorner );
 		}
 
 		/// <summary>
@@ -192,11 +192,15 @@ namespace Axiom.Math
 				return;
 			}
 
-			Vector3 centre = this.Center;
-			Vector3 halfSize = this.HalfSize;
+			Vector3 centre = Center;
+			Vector3 halfSize = HalfSize;
 
 			Vector3 newCentre = m.TransformAffine( centre );
-			Vector3 newHalfSize = new Vector3( Utility.Abs( m[ 0, 0 ] ) * halfSize.x + Utility.Abs( m[ 0, 1 ] ) * halfSize.y + Utility.Abs( m[ 0, 2 ] ) * halfSize.z, Utility.Abs( m[ 1, 0 ] ) * halfSize.x + Utility.Abs( m[ 1, 1 ] ) * halfSize.y + Utility.Abs( m[ 1, 2 ] ) * halfSize.z, Utility.Abs( m[ 2, 0 ] ) * halfSize.x + Utility.Abs( m[ 2, 1 ] ) * halfSize.y + Utility.Abs( m[ 2, 2 ] ) * halfSize.z );
+			var newHalfSize =
+				new Vector3(
+					Utility.Abs( m[ 0, 0 ] )*halfSize.x + Utility.Abs( m[ 0, 1 ] )*halfSize.y + Utility.Abs( m[ 0, 2 ] )*halfSize.z,
+					Utility.Abs( m[ 1, 0 ] )*halfSize.x + Utility.Abs( m[ 1, 1 ] )*halfSize.y + Utility.Abs( m[ 1, 2 ] )*halfSize.z,
+					Utility.Abs( m[ 2, 0 ] )*halfSize.x + Utility.Abs( m[ 2, 1 ] )*halfSize.y + Utility.Abs( m[ 2, 2 ] )*halfSize.z );
 
 			SetExtents( newCentre - newHalfSize, newCentre + newHalfSize );
 		}
@@ -254,7 +258,7 @@ namespace Axiom.Math
 		/// <param name="factor">Factor of scaling to apply to the box.</param>
 		public void Scale( Vector3 factor )
 		{
-			SetExtents( minVector * factor, maxVector * factor );
+			SetExtents( minVector*factor, maxVector*factor );
 		}
 
 		/// <summary>
@@ -265,7 +269,7 @@ namespace Axiom.Math
 		/// <returns>New bounding box</returns>
 		public static AxisAlignedBox FromDimensions( Vector3 center, Vector3 size )
 		{
-			var halfSize = .5f * size;
+			var halfSize = .5f*size;
 
 			return new AxisAlignedBox( center - halfSize, center + halfSize );
 		}
@@ -284,13 +288,13 @@ namespace Axiom.Math
 			}
 			else if ( box.IsInfinite )
 			{
-				this.IsInfinite = true;
+				IsInfinite = true;
 			}
-			else if ( this.IsNull )
+			else if ( IsNull )
 			{
 				SetExtents( box.Minimum, box.Maximum );
 			}
-			else if ( !this.IsInfinite )
+			else if ( !IsInfinite )
 			{
 				minVector.Floor( box.Minimum );
 				maxVector.Ceil( box.Maximum );
@@ -363,7 +367,8 @@ namespace Axiom.Math
 				return true;
 			}
 
-			return Minimum.x <= v.x && v.x <= Maximum.x && Minimum.y <= v.y && v.y <= Maximum.y && Minimum.z <= v.z && v.z <= Maximum.z;
+			return Minimum.x <= v.x && v.x <= Maximum.x && Minimum.y <= v.y && v.y <= Maximum.y && Minimum.z <= v.z &&
+			       v.z <= Maximum.z;
 		}
 
 		#endregion Contain methods
@@ -378,39 +383,39 @@ namespace Axiom.Math
 		public bool Intersects( AxisAlignedBox box2 )
 		{
 			// Early-fail for nulls
-			if ( this.IsNull || box2.IsNull )
+			if ( IsNull || box2.IsNull )
 			{
 				return false;
 			}
 
-			if ( this.IsInfinite || box2.IsInfinite )
+			if ( IsInfinite || box2.IsInfinite )
 			{
 				return true;
 			}
 
 			// Use up to 6 separating planes
-			if ( this.maxVector.x < box2.minVector.x )
+			if ( maxVector.x < box2.minVector.x )
 			{
 				return false;
 			}
-			if ( this.maxVector.y < box2.minVector.y )
+			if ( maxVector.y < box2.minVector.y )
 			{
 				return false;
 			}
-			if ( this.maxVector.z < box2.minVector.z )
+			if ( maxVector.z < box2.minVector.z )
 			{
 				return false;
 			}
 
-			if ( this.minVector.x > box2.maxVector.x )
+			if ( minVector.x > box2.maxVector.x )
 			{
 				return false;
 			}
-			if ( this.minVector.y > box2.maxVector.y )
+			if ( minVector.y > box2.maxVector.y )
 			{
 				return false;
 			}
-			if ( this.minVector.z > box2.maxVector.z )
+			if ( minVector.z > box2.maxVector.z )
 			{
 				return false;
 			}
@@ -446,7 +451,8 @@ namespace Axiom.Math
 		/// <returns>True if the vector is within this box, false otherwise.</returns>
 		public bool Intersects( Vector3 vector )
 		{
-			return ( vector.x >= minVector.x && vector.x <= maxVector.x && vector.y >= minVector.y && vector.y <= maxVector.y && vector.z >= minVector.z && vector.z <= maxVector.z );
+			return ( vector.x >= minVector.x && vector.x <= maxVector.x && vector.y >= minVector.y && vector.y <= maxVector.y &&
+			         vector.z >= minVector.z && vector.z <= maxVector.z );
 		}
 
 		/// <summary>
@@ -536,7 +542,7 @@ namespace Axiom.Math
 					return Vector3.PositiveInfinity;
 				}
 
-				return ( Maximum - Minimum ) * 0.5f;
+				return ( Maximum - Minimum )*0.5f;
 			}
 		}
 
@@ -552,7 +558,7 @@ namespace Axiom.Math
 			set
 			{
 				var center = Center;
-				var halfSize = .5f * value;
+				var halfSize = .5f*value;
 				minVector = center - halfSize;
 				maxVector = center + halfSize;
 				UpdateCorners();
@@ -566,11 +572,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return ( minVector + maxVector ) * 0.5f;
+				return ( minVector + maxVector )*0.5f;
 			}
 			set
 			{
-				var halfSize = .5f * Size;
+				var halfSize = .5f*Size;
 				minVector = value - halfSize;
 				maxVector = value + halfSize;
 				UpdateCorners();
@@ -718,7 +724,7 @@ namespace Axiom.Math
 				}
 
 				var diff = Maximum - Minimum;
-				return diff.x * diff.y * diff.z;
+				return diff.x*diff.y*diff.z;
 			}
 		}
 
@@ -728,32 +734,42 @@ namespace Axiom.Math
 
 		public static bool operator ==( AxisAlignedBox left, AxisAlignedBox right )
 		{
-			if ( ( object.ReferenceEquals( left, null ) || left.isNull ) && ( object.ReferenceEquals( right, null ) || right.isNull ) )
+			if ( ( object.ReferenceEquals( left, null ) || left.isNull ) &&
+			     ( object.ReferenceEquals( right, null ) || right.isNull ) )
 			{
 				return true;
 			}
 
-			else if ( ( object.ReferenceEquals( left, null ) || left.isNull ) || ( object.ReferenceEquals( right, null ) || right.isNull ) )
+			else if ( ( object.ReferenceEquals( left, null ) || left.isNull ) ||
+			          ( object.ReferenceEquals( right, null ) || right.isNull ) )
 			{
 				return false;
 			}
 
-			return ( left.corners[ 0 ] == right.corners[ 0 ] && left.corners[ 1 ] == right.corners[ 1 ] && left.corners[ 2 ] == right.corners[ 2 ] && left.corners[ 3 ] == right.corners[ 3 ] && left.corners[ 4 ] == right.corners[ 4 ] && left.corners[ 5 ] == right.corners[ 5 ] && left.corners[ 6 ] == right.corners[ 6 ] && left.corners[ 7 ] == right.corners[ 7 ] );
+			return ( left.corners[ 0 ] == right.corners[ 0 ] && left.corners[ 1 ] == right.corners[ 1 ] &&
+			         left.corners[ 2 ] == right.corners[ 2 ] && left.corners[ 3 ] == right.corners[ 3 ] &&
+			         left.corners[ 4 ] == right.corners[ 4 ] && left.corners[ 5 ] == right.corners[ 5 ] &&
+			         left.corners[ 6 ] == right.corners[ 6 ] && left.corners[ 7 ] == right.corners[ 7 ] );
 		}
 
 		public static bool operator !=( AxisAlignedBox left, AxisAlignedBox right )
 		{
-			if ( ( object.ReferenceEquals( left, null ) || left.isNull ) && ( object.ReferenceEquals( right, null ) || right.isNull ) )
+			if ( ( object.ReferenceEquals( left, null ) || left.isNull ) &&
+			     ( object.ReferenceEquals( right, null ) || right.isNull ) )
 			{
 				return false;
 			}
 
-			else if ( ( object.ReferenceEquals( left, null ) || left.isNull ) || ( object.ReferenceEquals( right, null ) || right.isNull ) )
+			else if ( ( object.ReferenceEquals( left, null ) || left.isNull ) ||
+			          ( object.ReferenceEquals( right, null ) || right.isNull ) )
 			{
 				return true;
 			}
 
-			return ( left.corners[ 0 ] != right.corners[ 0 ] || left.corners[ 1 ] != right.corners[ 1 ] || left.corners[ 2 ] != right.corners[ 2 ] || left.corners[ 3 ] != right.corners[ 3 ] || left.corners[ 4 ] != right.corners[ 4 ] || left.corners[ 5 ] != right.corners[ 5 ] || left.corners[ 6 ] != right.corners[ 6 ] || left.corners[ 7 ] != right.corners[ 7 ] );
+			return ( left.corners[ 0 ] != right.corners[ 0 ] || left.corners[ 1 ] != right.corners[ 1 ] ||
+			         left.corners[ 2 ] != right.corners[ 2 ] || left.corners[ 3 ] != right.corners[ 3 ] ||
+			         left.corners[ 4 ] != right.corners[ 4 ] || left.corners[ 5 ] != right.corners[ 5 ] ||
+			         left.corners[ 6 ] != right.corners[ 6 ] || left.corners[ 7 ] != right.corners[ 7 ] );
 		}
 
 		public override bool Equals( object obj )
@@ -768,12 +784,14 @@ namespace Axiom.Math
 				return 0;
 			}
 
-			return corners[ 0 ].GetHashCode() ^ corners[ 1 ].GetHashCode() ^ corners[ 2 ].GetHashCode() ^ corners[ 3 ].GetHashCode() ^ corners[ 4 ].GetHashCode() ^ corners[ 5 ].GetHashCode() ^ corners[ 6 ].GetHashCode() ^ corners[ 7 ].GetHashCode();
+			return corners[ 0 ].GetHashCode() ^ corners[ 1 ].GetHashCode() ^ corners[ 2 ].GetHashCode() ^
+			       corners[ 3 ].GetHashCode() ^ corners[ 4 ].GetHashCode() ^ corners[ 5 ].GetHashCode() ^
+			       corners[ 6 ].GetHashCode() ^ corners[ 7 ].GetHashCode();
 		}
 
 		public override string ToString()
 		{
-			return String.Format( "{0}:{1}", this.minVector, this.maxVector );
+			return String.Format( "{0}:{1}", minVector, maxVector );
 		}
 
 		#endregion

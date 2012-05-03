@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
@@ -114,15 +113,15 @@ namespace Axiom.ParticleFX
 			// ellipse and the outer circle (radius 1.0)
 			// with alpha, and a and b we select a random point on this ellipse
 			// and calculate it's coordinates
-			x = a * Utility.Sin( alpha );
-			y = b * Utility.Cos( alpha );
+			x = a*Utility.Sin( alpha );
+			y = b*Utility.Cos( alpha );
 			// the height is simple running from 0 to 1
 			z = Utility.UnitRandom(); // 0..1
 
 			// scale the found point to the ring's size and move it
 			// relatively to the center of the emitter point
 
-			particle.Position = position + x * xRange + y * yRange + z * zRange;
+			particle.Position = position + x*xRange + y*yRange + z*zRange;
 
 			// Generate complex data by reference
 			GenerateEmissionColor( ref particle.Color );
@@ -143,13 +142,13 @@ namespace Axiom.ParticleFX
 		{
 			public void Set( object target, string val )
 			{
-				RingEmitter emitter = target as RingEmitter;
+				var emitter = target as RingEmitter;
 				emitter.Width = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				RingEmitter emitter = target as RingEmitter;
+				var emitter = target as RingEmitter;
 				return StringConverter.ToString( emitter.Width );
 			}
 		}
@@ -162,13 +161,13 @@ namespace Axiom.ParticleFX
 		{
 			public void Set( object target, string val )
 			{
-				RingEmitter emitter = target as RingEmitter;
+				var emitter = target as RingEmitter;
 				emitter.Height = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				RingEmitter emitter = target as RingEmitter;
+				var emitter = target as RingEmitter;
 				return StringConverter.ToString( emitter.Height );
 			}
 		}
@@ -181,13 +180,13 @@ namespace Axiom.ParticleFX
 		{
 			public void Set( object target, string val )
 			{
-				RingEmitter emitter = target as RingEmitter;
+				var emitter = target as RingEmitter;
 				emitter.Depth = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				RingEmitter emitter = target as RingEmitter;
+				var emitter = target as RingEmitter;
 				return StringConverter.ToString( emitter.Depth );
 			}
 		}
@@ -195,18 +194,19 @@ namespace Axiom.ParticleFX
 		/// <summary>
 		///
 		/// </summary>
-		[ScriptableProperty( "inner_width", "Parametric value describing the proportion of the shape which is hollow.", typeof ( ParticleEmitter ) )]
+		[ScriptableProperty( "inner_width", "Parametric value describing the proportion of the shape which is hollow.",
+			typeof ( ParticleEmitter ) )]
 		public class InnerWidthCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
-				RingEmitter emitter = target as RingEmitter;
+				var emitter = target as RingEmitter;
 				emitter.InnerX = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				RingEmitter emitter = target as RingEmitter;
+				var emitter = target as RingEmitter;
 				return StringConverter.ToString( emitter.InnerX );
 			}
 		}
@@ -214,18 +214,19 @@ namespace Axiom.ParticleFX
 		/// <summary>
 		///
 		/// </summary>
-		[ScriptableProperty( "inner_height", "Parametric value describing the proportion of the shape which is hollow.", typeof ( ParticleEmitter ) )]
+		[ScriptableProperty( "inner_height", "Parametric value describing the proportion of the shape which is hollow.",
+			typeof ( ParticleEmitter ) )]
 		public class InnerHeightCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
-				RingEmitter emitter = target as RingEmitter;
+				var emitter = target as RingEmitter;
 				emitter.InnerY = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				RingEmitter emitter = target as RingEmitter;
+				var emitter = target as RingEmitter;
 				return StringConverter.ToString( emitter.InnerY );
 			}
 		}

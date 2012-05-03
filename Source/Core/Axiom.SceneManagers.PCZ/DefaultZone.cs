@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -125,7 +124,8 @@ namespace Axiom.SceneManagers.PortalConnected
 				// make sure portal is unique (at least in this zone)
 				if ( mPortals.Contains( newPortal ) )
 				{
-					throw new AxiomException( "A portal with the name " + newPortal.getName() + "already exists. DefaultZone._addPortal" );
+					throw new AxiomException( "A portal with the name " + newPortal.getName() +
+					                          "already exists. DefaultZone._addPortal" );
 				}
 
 				// add portal to portals list
@@ -191,7 +191,8 @@ namespace Axiom.SceneManagers.PortalConnected
 		*       of any zone-specific optimizations for checking portal visibility
 		*/
 
-		public override void CheckLightAgainstPortals( PCZLight light, ulong frameCount, PCZFrustum portalFrustum, Portal ignorePortal )
+		public override void CheckLightAgainstPortals( PCZLight light, ulong frameCount, PCZFrustum portalFrustum,
+		                                               Portal ignorePortal )
 		{
 			foreach ( Portal p in mPortals )
 			{
@@ -212,7 +213,8 @@ namespace Axiom.SceneManagers.PortalConnected
 								if ( lightToPortal.Length <= light.AttenuationRange )
 								{
 									// if portal is quad portal it must be pointing towards the light
-									if ( ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD && lightToPortal.Dot( p.getDerivedDirection() ) < 0.0 ) || ( p.Type != PORTAL_TYPE.PORTAL_TYPE_QUAD ) )
+									if ( ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD && lightToPortal.Dot( p.getDerivedDirection() ) < 0.0 ) ||
+									     ( p.Type != PORTAL_TYPE.PORTAL_TYPE_QUAD ) )
 									{
 										if ( !light.AffectsZone( targetZone ) )
 										{
@@ -237,7 +239,8 @@ namespace Axiom.SceneManagers.PortalConnected
 								if ( lightToPortal.Dot( light.DerivedDirection ) >= 0.0 )
 								{
 									// if portal is quad portal it must be pointing towards the light
-									if ( ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD && lightToPortal.Dot( p.getDerivedDirection() ) < 0.0 ) || ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD ) )
+									if ( ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD && lightToPortal.Dot( p.getDerivedDirection() ) < 0.0 ) ||
+									     ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD ) )
 									{
 										if ( !light.AffectsZone( targetZone ) )
 										{
@@ -264,7 +267,8 @@ namespace Axiom.SceneManagers.PortalConnected
 								if ( lightToPortal.Length <= light.AttenuationRange )
 								{
 									// if portal is quad portal it must be pointing towards the light
-									if ( ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD && lightToPortal.Dot( p.getDerivedDirection() ) < 0.0 ) || ( p.Type != PORTAL_TYPE.PORTAL_TYPE_QUAD ) )
+									if ( ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD && lightToPortal.Dot( p.getDerivedDirection() ) < 0.0 ) ||
+									     ( p.Type != PORTAL_TYPE.PORTAL_TYPE_QUAD ) )
 									{
 										if ( !light.AffectsZone( targetZone ) )
 										{
@@ -308,7 +312,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public override void UpdatePortalsZoneData()
 		{
-			List<Portal> transferPortalList = new List<Portal>();
+			var transferPortalList = new List<Portal>();
 
 			// check each portal to see if it's intersecting another portal of greater size
 			foreach ( Portal p in mPortals )
@@ -425,7 +429,9 @@ namespace Axiom.SceneManagers.PortalConnected
 		// Recursively walk the zones, adding all visible SceneNodes to the list of visible nodes.
 		*/
 
-		public override void FindVisibleNodes( PCZCamera camera, ref List<PCZSceneNode> visibleNodeList, RenderQueue queue, VisibleObjectsBoundsInfo visibleBounds, bool onlyShadowCasters, bool displayNodes, bool showBoundingBoxes )
+		public override void FindVisibleNodes( PCZCamera camera, ref List<PCZSceneNode> visibleNodeList, RenderQueue queue,
+		                                       VisibleObjectsBoundsInfo visibleBounds, bool onlyShadowCasters,
+		                                       bool displayNodes, bool showBoundingBoxes )
 		{
 			//return immediately if nothing is in the zone.
 			if ( mHomeNodeList.Count == 0 && mVisitorNodeList.Count == 0 && mPortals.Count == 0 )
@@ -525,7 +531,8 @@ namespace Axiom.SceneManagers.PortalConnected
 					portal.getTargetZone().LastVisibleFrame = mLastVisibleFrame;
 					portal.getTargetZone().LastVisibleFromCamera = camera;
 					// recurse into the connected zone
-					portal.getTargetZone().FindVisibleNodes( camera, ref visibleNodeList, queue, visibleBounds, onlyShadowCasters, displayNodes, showBoundingBoxes );
+					portal.getTargetZone().FindVisibleNodes( camera, ref visibleNodeList, queue, visibleBounds, onlyShadowCasters,
+					                                         displayNodes, showBoundingBoxes );
 					if ( planes_added > 0 )
 					{
 						// Then remove the extra culling planes added before going to the next portal in this zone.
@@ -536,7 +543,8 @@ namespace Axiom.SceneManagers.PortalConnected
 		}
 
 		// --- find nodes which intersect various types of BV's ---
-		public override void FindNodes( AxisAlignedBox t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
+		public override void FindNodes( AxisAlignedBox t, ref List<PCZSceneNode> list, List<Portal> visitedPortals,
+		                                bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
 		{
 			// if this zone has an enclosure, check against the enclosure AABB first
 			if ( null != mEnclosureNode )
@@ -607,7 +615,8 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 		}
 
-		public override void FindNodes( Sphere t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
+		public override void FindNodes( Sphere t, ref List<PCZSceneNode> list, List<Portal> visitedPortals,
+		                                bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
 		{
 			// if this zone has an enclosure, check against the enclosure AABB first
 			if ( null != mEnclosureNode )
@@ -679,7 +688,8 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 		}
 
-		public override void FindNodes( PlaneBoundedVolume t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
+		public override void FindNodes( PlaneBoundedVolume t, ref List<PCZSceneNode> list, List<Portal> visitedPortals,
+		                                bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
 		{
 			// if this zone has an enclosure, check against the enclosure AABB first
 			if ( null != mEnclosureNode )
@@ -751,7 +761,8 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 		}
 
-		public override void FindNodes( Ray t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
+		public override void FindNodes( Ray t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors,
+		                                bool recurseThruPortals, PCZSceneNode exclude )
 		{
 			// if this zone has an enclosure, check against the enclosure AABB first
 			if ( null != mEnclosureNode )
@@ -835,17 +846,27 @@ namespace Axiom.SceneManagers.PortalConnected
 		/** called when the scene manager creates a camera because
 			some zone managers (like TerrainZone) need the camera info.
 		*/
-		public override void NotifyCameraCreated( Camera c ) {}
+
+		public override void NotifyCameraCreated( Camera c )
+		{
+		}
+
 		//-------------------------------------------------------------------------
-		public override void NotifyWorldGeometryRenderQueue( int qid ) {}
+		public override void NotifyWorldGeometryRenderQueue( int qid )
+		{
+		}
+
 		//-------------------------------------------------------------------------
-		public override void NotifyBeginRenderScene() {}
+		public override void NotifyBeginRenderScene()
+		{
+		}
+
 		//-------------------------------------------------------------------------
 		public override void SetZoneGeometry( string filename, PCZSceneNode parentNode )
 		{
 			String entityName, nodeName;
-			entityName = this.Name + "_entity";
-			nodeName = this.Name + "_Node";
+			entityName = Name + "_entity";
+			nodeName = Name + "_Node";
 			Entity ent = mPCZSM.CreateEntity( entityName, filename );
 			// create a node for the entity
 			PCZSceneNode node;

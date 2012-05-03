@@ -83,7 +83,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		{
 			get
 			{
-				return this.extension;
+				return extension;
 			}
 		}
 

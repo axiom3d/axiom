@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 	//using System.Security.AccessControl;
 using System.Text;
-
 using Axiom.Serialization;
 
 namespace Axiom.Graphics
@@ -39,7 +38,9 @@ namespace Axiom.Graphics
 
 			private void ExportNamedConstants( GpuNamedConstants pConsts, Stream stream, Endian endianMode )
 			{
-				using ( var w = new BinaryWriter( stream ) ) {}
+				using ( var w = new BinaryWriter( stream ) )
+				{
+				}
 
 				throw new NotImplementedException();
 			}

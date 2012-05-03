@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -118,8 +117,7 @@ namespace Axiom.Core
 
 		#region Camera Property
 
-		[OgreVersion( 1, 7, 2790 )]
-		private Camera _camera;
+		[OgreVersion( 1, 7, 2790 )] private Camera _camera;
 
 		/// <summary>
 		///		Retrieves a reference to the camera for this viewport.
@@ -148,7 +146,7 @@ namespace Axiom.Core
 					// update aspect ratio of new camera if needed.
 					if ( value.AutoAspectRatio )
 					{
-						value.AspectRatio = ( (Real)ActualWidth / ActualHeight );
+						value.AspectRatio = ( (Real)ActualWidth/ActualHeight );
 					}
 #if !AXIOM_NO_VIEWPORT_ORIENTATIONMODE
 					value.OrientationMode = OrientationMode;
@@ -453,8 +451,7 @@ namespace Axiom.Core
 
 		#region RenderQueueSequence Properties Property
 
-		[OgreVersion( 1, 7, 2790, "Protected in Ogre" )]
-		private string _rqSequenceName;
+		[OgreVersion( 1, 7, 2790, "Protected in Ogre" )] private string _rqSequenceName;
 
 		/// <summary>
 		/// The name of the render queue invocation sequence for this target.
@@ -553,7 +550,9 @@ namespace Axiom.Core
 		public Viewport( Camera camera, RenderTarget target, float left, float top, float width, float height, int zOrder )
 			: base()
 		{
-			LogManager.Instance.Write( "Creating viewport rendering from camera '{0}', relative dimensions L:{1},T:{2},W:{3},H:{4}, Z-Order:{5}", camera.Name, left, top, width, height, zOrder );
+			LogManager.Instance.Write(
+				"Creating viewport rendering from camera '{0}', relative dimensions L:{1},T:{2},W:{3},H:{4}, Z-Order:{5}",
+				camera.Name, left, top, width, height, zOrder );
 
 			Camera = camera;
 			Target = target;
@@ -614,10 +613,10 @@ namespace Axiom.Core
 			var height = (Real)Target.Height;
 			var width = (Real)Target.Width;
 
-			ActualLeft = (int)( Left * width );
-			ActualTop = (int)( Top * height );
-			ActualWidth = (int)( Width * width );
-			ActualHeight = (int)( Height * height );
+			ActualLeft = (int)( Left*width );
+			ActualTop = (int)( Top*height );
+			ActualWidth = (int)( Width*width );
+			ActualHeight = (int)( Height*height );
 
 			// This will check if  the cameras getAutoAspectRation() property is set.
 			// If it's true its aspect ratio is fit to the current viewport
@@ -629,12 +628,13 @@ namespace Axiom.Core
 			{
 				if ( Camera.AutoAspectRatio )
 				{
-					Camera.AspectRatio = (Real)ActualWidth / ActualHeight;
+					Camera.AspectRatio = (Real)ActualWidth/ActualHeight;
 				}
 				Camera.OrientationMode = OrientationMode;
 			}
 
-			LogManager.Instance.Write( "Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}, AR:{5}", Camera.Name, ActualLeft, ActualTop, ActualWidth, ActualHeight, Camera.AspectRatio );
+			LogManager.Instance.Write( "Viewport for camera '{0}' - actual dimensions L:{1},T:{2},W:{3},H:{4}, AR:{5}",
+			                           Camera.Name, ActualLeft, ActualTop, ActualWidth, ActualHeight, Camera.AspectRatio );
 
 			IsUpdated = true;
 
@@ -837,7 +837,8 @@ namespace Axiom.Core
 
 
 		[OgreVersion( 1, 7, 2790 )]
-		public void PointOrientedToScreen( Real orientedX, Real orientedY, OrientationMode orientationMode, out Real screenX, out Real screenY )
+		public void PointOrientedToScreen( Real orientedX, Real orientedY, OrientationMode orientationMode, out Real screenX,
+		                                   out Real screenY )
 		{
 			var orX = orientedX;
 			var orY = orientedY;

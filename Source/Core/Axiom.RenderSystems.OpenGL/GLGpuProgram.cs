@@ -38,14 +38,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using Tao.OpenGl;
-
 using System.Diagnostics;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -72,7 +68,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///     For use internally to store temp values for passing constants, etc.
 		/// </summary>
-		protected float[] tempProgramFloats = new float[ 4 ];
+		protected float[] tempProgramFloats = new float[4];
 
 		#endregion Fields
 
@@ -84,8 +80,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="name">Name of the program.</param>
 		/// <param name="type">Type of program (vertex or fragment).</param>
 		/// <param name="syntaxCode">Syntax code (i.e. arbvp1, etc).</param>
-		internal GLGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader ) {}
+		internal GLGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                       IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
+		{
+		}
 
 		#endregion Constructors
 

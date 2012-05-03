@@ -26,7 +26,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Text;
-
 using Axiom.Core;
 
 namespace Axiom.Samples.MousePicking

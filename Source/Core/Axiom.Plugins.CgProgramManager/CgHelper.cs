@@ -39,9 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Text;
-
 using Axiom.Core;
-
 using Tao.Cg;
 
 #endregion Namespace Declarations
@@ -65,7 +63,7 @@ namespace Axiom.CgPrograms
 
 			if ( error != Cg.CG_NO_ERROR )
 			{
-				StringBuilder sb = new StringBuilder();
+				var sb = new StringBuilder();
 				sb.Append( Environment.NewLine );
 				sb.Append( potentialError );
 				sb.Append( Environment.NewLine );

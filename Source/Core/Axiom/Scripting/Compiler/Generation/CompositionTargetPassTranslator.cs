@@ -59,7 +59,7 @@ namespace Axiom.Scripting.Compiler
 			#region Translator Implementation
 
 			/// <see cref="Translator.CheckFor"/>
-            public override bool CheckFor(Keywords nodeId, Keywords parentId)
+			public override bool CheckFor( Keywords nodeId, Keywords parentId )
 			{
 				return ( nodeId == Keywords.ID_TARGET || nodeId == Keywords.ID_TARGET_OUTPUT ) && parentId == Keywords.ID_TECHNIQUE;
 			}
@@ -283,7 +283,8 @@ namespace Axiom.Scripting.Compiler
 								#endregion ID_SHADOWS_ENABLED
 
 							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
+								                   "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						}
 					}

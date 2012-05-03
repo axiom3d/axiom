@@ -60,8 +60,8 @@ namespace Axiom.Samples.Smoke
 		/// <returns></returns>
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			_pivot.Position = new Vector3( 0, Utility.Sin( Root.Timer.Milliseconds / 150.0f ) * 10, 0 );
-			_pivot.Yaw( (Real)( new Degree( (Real)( -evt.TimeSinceLastFrame * 15f ) ) ) );
+			_pivot.Position = new Vector3( 0, Utility.Sin( Root.Timer.Milliseconds/150.0f )*10, 0 );
+			_pivot.Yaw( (Real)( new Degree( (Real)( -evt.TimeSinceLastFrame*15f ) ) ) );
 			return base.FrameRenderingQueued( evt );
 		}
 

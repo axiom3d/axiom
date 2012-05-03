@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom;
 using Axiom.Core;
 using Axiom.Math;
@@ -349,7 +348,9 @@ namespace Axiom.SceneManagers.Bsp
 			this.isLeaf = isLeaf;
 		}
 
-		public BspNode() {}
+		public BspNode()
+		{
+		}
 
 		#endregion Constructors
 
@@ -390,11 +391,11 @@ namespace Axiom.SceneManagers.Bsp
 
 			if ( sd == PlaneSide.Negative )
 			{
-				return this.BackNode;
+				return BackNode;
 			}
 			else
 			{
-				return this.FrontNode;
+				return FrontNode;
 			}
 		}
 
@@ -449,43 +450,20 @@ namespace Axiom.SceneManagers.Bsp
 
 	public class BspBrush
 	{
-		private PlaneList planes;
-		private SceneQuery.WorldFragment fragment;
+		public PlaneList Planes { get; set; }
 
-		public PlaneList Planes
-		{
-			get
-			{
-				return planes;
-			}
-			set
-			{
-				planes = value;
-			}
-		}
-
-		public SceneQuery.WorldFragment Fragment
-		{
-			get
-			{
-				return fragment;
-			}
-			set
-			{
-				fragment = value;
-			}
-		}
+		public SceneQuery.WorldFragment Fragment { get; set; }
 
 		public BspBrush()
 		{
-			this.planes = new PlaneList();
-			this.fragment = new SceneQuery.WorldFragment();
+			Planes = new PlaneList();
+			Fragment = new SceneQuery.WorldFragment();
 		}
 
 		public BspBrush( PlaneList planes, SceneQuery.WorldFragment fragment )
 		{
-			this.planes = planes;
-			this.fragment = fragment;
+			this.Planes = planes;
+			this.Fragment = fragment;
 		}
 	}
 }

@@ -38,12 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Collections;
-
 using ResourceHandle = System.UInt64;
-
 using System.IO;
 
 #endregion Namespace Declarations
@@ -78,7 +75,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			RemoveAll();
 
-			BspLevel bsp = (BspLevel)Create( "bsplevel", ResourceGroupManager.Instance.WorldResourceGroupName, true, null, null );
+			var bsp = (BspLevel)Create( "bsplevel", ResourceGroupManager.Instance.WorldResourceGroupName, true, null, null );
 			bsp.Load( stream );
 
 			return bsp;
@@ -116,7 +113,7 @@ namespace Axiom.SceneManagers.Bsp
 			}
 			else
 			{
-				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", GetType().Name );
 			}
 		}
 
@@ -136,7 +133,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -170,7 +167,8 @@ namespace Axiom.SceneManagers.Bsp
 		/// <param name="loader"></param>
 		/// <param name="loadParams"></param>
 		/// <returns></returns>
-		public override Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, bool backgroundThread )
+		public override Resource Load( string name, string group, bool isManual, IManualResourceLoader loader,
+		                               NameValuePairList loadParams, bool backgroundThread )
 		{
 			RemoveAll(); // Only one level at a time.
 
@@ -182,7 +180,8 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Creates a BspLevel resource - mainly used internally.
 		/// </summary>
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			return new BspLevel( this, name, handle, group, isManual, loader, createParams );
 		}

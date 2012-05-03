@@ -76,7 +76,7 @@ namespace Axiom.Math
 		/// <summary>
 		///		Culture info to use for parsing numeric data.
 		/// </summary>
-		private static CultureInfo englishCulture = new CultureInfo( "en-US" );
+		private static readonly CultureInfo englishCulture = new CultureInfo( "en-US" );
 
 		/// <summary>Internal storage for value</summary>
 		private Numeric _value;
@@ -201,37 +201,37 @@ namespace Axiom.Math
 		/// <param name="value">an integer representation of the value to convert</param>
 		public Real( int value )
 		{
-			this._value = value;
+			_value = value;
 		}
 
 		/// <param name="value">a long representation of the value to convert</param>
 		public Real( long value )
 		{
-			this._value = value;
+			_value = value;
 		}
 
 		/// <param name="value">a float representation of the value to convert</param>
 		public Real( float value )
 		{
-			this._value = value;
+			_value = value;
 		}
 
 		/// <param name="value">a double representation of the value to convert</param>
 		public Real( double value )
 		{
-			this._value = (Numeric)value;
+			_value = (Numeric)value;
 		}
 
 		/// <param name="value">a decimal representation of the value to convert</param>
 		public Real( decimal value )
 		{
-			this._value = (Numeric)value;
+			_value = (Numeric)value;
 		}
 
 		/// <param name="value">a string representation of the value to convert</param>
 		public Real( string value )
 		{
-			this._value = Numeric.Parse( value );
+			_value = Numeric.Parse( value );
 		}
 
 		#endregion Constructors
@@ -524,7 +524,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real operator *( Real left, Real right )
 		{
-			return left._value * right._value;
+			return left._value*right._value;
 		}
 
 		/// <summary>
@@ -535,7 +535,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real operator /( Real left, Real right )
 		{
-			return left._value / right._value;
+			return left._value/right._value;
 		}
 
 		/// <summary>
@@ -584,7 +584,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real Multiply( Real left, Real right )
 		{
-			return left * right;
+			return left*right;
 		}
 
 		/// <summary>
@@ -595,7 +595,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Real Divide( Real left, Real right )
 		{
-			return left / right;
+			return left/right;
 		}
 
 		/// <summary>
@@ -644,7 +644,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return this._value.ToString( englishCulture );
+			return _value.ToString( englishCulture );
 		}
 
 		/// <summary>
@@ -661,7 +661,7 @@ namespace Axiom.Math
 		/// </summary>
 		public bool Equals( Real obj )
 		{
-			return this.Equals( obj, Tolerance );
+			return Equals( obj, Tolerance );
 		}
 
 		/// <summary>
@@ -675,7 +675,7 @@ namespace Axiom.Math
 		/// </summary>
 		public override int GetHashCode()
 		{
-			return this._value.GetHashCode();
+			return _value.GetHashCode();
 		}
 
 		#endregion System.Object Overrides
@@ -718,7 +718,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public int CompareTo( Real other )
 		{
-			return this._value.CompareTo( other._value );
+			return _value.CompareTo( other._value );
 		}
 
 		#endregion
@@ -860,7 +860,7 @@ namespace Axiom.Math
 
 		public static float[] ToFloatArray( Real[] real )
 		{
-			var floatArray = new float[ real.Length ];
+			var floatArray = new float[real.Length];
 			for ( var myIndex = 0; myIndex < real.Length; myIndex++ )
 			{
 				floatArray[ myIndex ] = real[ myIndex ];
@@ -887,7 +887,7 @@ namespace Axiom.Math
 
 		public void WriteXml( XmlWriter writer )
 		{
-			writer.WriteString( this._value.ToString( CultureInfo.InvariantCulture ) );
+			writer.WriteString( _value.ToString( CultureInfo.InvariantCulture ) );
 		}
 
 		public void ReadXml( XmlReader reader )
@@ -896,7 +896,7 @@ namespace Axiom.Math
 			try
 			{
 				var v = reader.ReadElementContentAsString();
-				this._value = float.Parse( v, CultureInfo.InvariantCulture );
+				_value = float.Parse( v, CultureInfo.InvariantCulture );
 			}
 			catch ( Exception e )
 			{

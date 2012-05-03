@@ -35,11 +35,9 @@
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Utilities;
-
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
 
@@ -78,7 +76,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		/// Map between device to buffer resources.
 		/// </summary>
-		private Dictionary<D3D9.Device, BufferResources> _mapDeviceToBufferResources;
+		private readonly Dictionary<D3D9.Device, BufferResources> _mapDeviceToBufferResources;
 
 		/// <summary>
 		/// Buffer description.
@@ -88,7 +86,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		/// Consistent system memory buffer for multiple devices support.
 		/// </summary>
-		private BufferBase _systemMemoryBuffer;
+		private readonly BufferBase _systemMemoryBuffer;
 
 		#endregion Member variables
 
@@ -131,7 +129,8 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Construction and destruction
 
 		[OgreVersion( 1, 7, 2 )]
-		public D3D9HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+		public D3D9HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage,
+		                                bool useSystemMemory, bool useShadowBuffer )
 			: base( manager, type, numIndices, usage, useSystemMemory, useShadowBuffer )
 		{
 			//Entering critical section
@@ -150,7 +149,7 @@ namespace Axiom.RenderSystems.DirectX9
 			_bufferDesc.Pool = eResourcePool;
 
 			// Allocate the system memory buffer.
-			_systemMemoryBuffer = BufferBase.Wrap( new byte[ sizeInBytes ] );
+			_systemMemoryBuffer = BufferBase.Wrap( new byte[sizeInBytes] );
 
 			// Case we have to create this buffer resource on loading.
 			if ( D3D9RenderSystem.ResourceManager.CreationPolicy == D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices )
@@ -261,7 +260,8 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				var bufferResources = it.Value;
 
-				if ( bufferResources.IsOutOfDate && bufferResources.IndexBuffer != null && nextFrameNumber - bufferResources.LastUsedFrame <= 1 )
+				if ( bufferResources.IsOutOfDate && bufferResources.IndexBuffer != null &&
+				     nextFrameNumber - bufferResources.LastUsedFrame <= 1 )
 				{
 					_updateBufferResources( _systemMemoryBuffer, ref bufferResources );
 				}
@@ -279,13 +279,13 @@ namespace Axiom.RenderSystems.DirectX9
 			// lock, copy & unlock
 
 			// lock the buffer for reading
-			var src = this.Lock( offset, length, BufferLocking.ReadOnly );
+			var src = Lock( offset, length, BufferLocking.ReadOnly );
 
 			// copy that data in there
 			Memory.Copy( src, dest, length );
 
 			// unlock the buffer
-			this.Unlock();
+			Unlock();
 		}
 
 		/// <see cref="Axiom.Graphics.HardwareBuffer.WriteData(int, int, BufferBase, bool)"/>
@@ -296,13 +296,13 @@ namespace Axiom.RenderSystems.DirectX9
 			// lock, copy & unlock
 
 			// lock the buffer real quick
-			var dest = this.Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
+			var dest = Lock( offset, length, discardWholeBuffer ? BufferLocking.Discard : BufferLocking.Normal );
 
 			// copy that data in there
 			Memory.Copy( src, dest, length );
 
 			// unlock the buffer
-			this.Unlock();
+			Unlock();
 		}
 
 		/// <summary>
@@ -337,7 +337,8 @@ namespace Axiom.RenderSystems.DirectX9
 			// Create the Index buffer
 			try
 			{
-				bufferResources.IndexBuffer = new D3D9.IndexBuffer( d3d9Device, sizeInBytes, D3D9Helper.ConvertEnum( usage ), ePool, D3D9Helper.ConvertEnum( this.type ) );
+				bufferResources.IndexBuffer = new D3D9.IndexBuffer( d3d9Device, sizeInBytes, D3D9Helper.ConvertEnum( usage ), ePool,
+				                                                    D3D9Helper.ConvertEnum( type ) );
 			}
 			catch ( Exception ex )
 			{
@@ -364,7 +365,8 @@ namespace Axiom.RenderSystems.DirectX9
 			// Lock the buffer
 			try
 			{
-				dstBytes = bufferResources.IndexBuffer.Lock( bufferResources.LockOffset, bufferResources.LockLength, D3D9Helper.ConvertEnum( bufferResources.LockOptions, this.usage ) );
+				dstBytes = bufferResources.IndexBuffer.Lock( bufferResources.LockOffset, bufferResources.LockLength,
+				                                             D3D9Helper.ConvertEnum( bufferResources.LockOptions, usage ) );
 			}
 			catch ( Exception ex )
 			{

@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Animating;
 using Axiom.Math;
@@ -106,7 +105,8 @@ namespace Axiom.Serialization
 						break;
 
 					default:
-						LogManager.Instance.Write( "Can only parse bones, parents, and animations at the top level during skeleton loading." );
+						LogManager.Instance.Write(
+							"Can only parse bones, parents, and animations at the top level during skeleton loading." );
 						LogManager.Instance.Write( "Unexpected chunk: " + chunkID.ToString() );
 						break;
 				} // switch

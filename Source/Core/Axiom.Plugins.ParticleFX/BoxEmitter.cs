@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
@@ -63,9 +62,9 @@ namespace Axiom.ParticleFX
 		{
 			Vector3 xOff, yOff, zOff;
 
-			xOff = Utility.SymmetricRandom() * xRange;
-			yOff = Utility.SymmetricRandom() * yRange;
-			zOff = Utility.SymmetricRandom() * zRange;
+			xOff = Utility.SymmetricRandom()*xRange;
+			yOff = Utility.SymmetricRandom()*yRange;
+			zOff = Utility.SymmetricRandom()*zRange;
 
 			particle.Position = position + xOff + yOff + zOff;
 
@@ -88,13 +87,13 @@ namespace Axiom.ParticleFX
 		{
 			public void Set( object target, string val )
 			{
-				BoxEmitter emitter = target as BoxEmitter;
+				var emitter = target as BoxEmitter;
 				emitter.Width = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				BoxEmitter emitter = target as BoxEmitter;
+				var emitter = target as BoxEmitter;
 				return StringConverter.ToString( emitter.Width );
 			}
 		}
@@ -107,13 +106,13 @@ namespace Axiom.ParticleFX
 		{
 			public void Set( object target, string val )
 			{
-				BoxEmitter emitter = target as BoxEmitter;
+				var emitter = target as BoxEmitter;
 				emitter.Height = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				BoxEmitter emitter = target as BoxEmitter;
+				var emitter = target as BoxEmitter;
 				return StringConverter.ToString( emitter.Height );
 			}
 		}
@@ -126,13 +125,13 @@ namespace Axiom.ParticleFX
 		{
 			public void Set( object target, string val )
 			{
-				BoxEmitter emitter = target as BoxEmitter;
+				var emitter = target as BoxEmitter;
 				emitter.Depth = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				BoxEmitter emitter = target as BoxEmitter;
+				var emitter = target as BoxEmitter;
 				return StringConverter.ToString( emitter.Depth );
 			}
 		}

@@ -40,12 +40,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Math.Collections;
-
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -303,7 +301,7 @@ namespace Axiom.Graphics
 			switch ( opType )
 			{
 				case OperationType.TriangleList:
-					iterations = indexData.indexCount / 3;
+					iterations = indexData.indexCount/3;
 					break;
 
 				case OperationType.TriangleFan:
@@ -344,8 +342,8 @@ namespace Axiom.Graphics
 					tri.indexSet = indexSet;
 					tri.vertexSet = vertexSet;
 
-					var index = new int[ 3 ];
-					var v = new Vector3[ 3 ];
+					var index = new int[3];
+					var v = new Vector3[3];
 
 					for ( var i = 0; i < 3; i++ )
 					{
@@ -392,7 +390,7 @@ namespace Axiom.Graphics
 						tri.vertIndex[ i ] = index[ i ];
 
 						// Retrieve the vertex position
-						var pVertex = pBaseVertex + ( index[ i ] * posBuffer.VertexSize );
+						var pVertex = pBaseVertex + ( index[ i ]*posBuffer.VertexSize );
 						var pReal = ( pVertex + posElem.Offset ).ToFloatPointer();
 
 						v[ i ].x = pReal[ 0 ];
@@ -414,15 +412,18 @@ namespace Axiom.Graphics
 						// create edges from common list
 						if ( tri.sharedVertIndex[ 0 ] < tri.sharedVertIndex[ 1 ] )
 						{
-							CreateEdge( vertexSet, triStart + t, tri.vertIndex[ 0 ], tri.vertIndex[ 1 ], tri.sharedVertIndex[ 0 ], tri.sharedVertIndex[ 1 ] );
+							CreateEdge( vertexSet, triStart + t, tri.vertIndex[ 0 ], tri.vertIndex[ 1 ], tri.sharedVertIndex[ 0 ],
+							            tri.sharedVertIndex[ 1 ] );
 						}
 						if ( tri.sharedVertIndex[ 1 ] < tri.sharedVertIndex[ 2 ] )
 						{
-							CreateEdge( vertexSet, triStart + t, tri.vertIndex[ 1 ], tri.vertIndex[ 2 ], tri.sharedVertIndex[ 1 ], tri.sharedVertIndex[ 2 ] );
+							CreateEdge( vertexSet, triStart + t, tri.vertIndex[ 1 ], tri.vertIndex[ 2 ], tri.sharedVertIndex[ 1 ],
+							            tri.sharedVertIndex[ 2 ] );
 						}
 						if ( tri.sharedVertIndex[ 2 ] < tri.sharedVertIndex[ 0 ] )
 						{
-							CreateEdge( vertexSet, triStart + t, tri.vertIndex[ 2 ], tri.vertIndex[ 0 ], tri.sharedVertIndex[ 2 ], tri.sharedVertIndex[ 0 ] );
+							CreateEdge( vertexSet, triStart + t, tri.vertIndex[ 2 ], tri.vertIndex[ 0 ], tri.sharedVertIndex[ 2 ],
+							            tri.sharedVertIndex[ 0 ] );
 						}
 					}
 					catch ( Exception ex )
@@ -452,7 +453,8 @@ namespace Axiom.Graphics
 		/// <param name="vertexIndex1"></param>
 		/// <param name="sharedVertIndex0"></param>
 		/// <param name="sharedVertIndex1"></param>
-		protected void CreateEdge( int vertexSet, int triangleIndex, int vertexIndex0, int vertexIndex1, int sharedVertIndex0, int sharedVertIndex1 )
+		protected void CreateEdge( int vertexSet, int triangleIndex, int vertexIndex0, int vertexIndex1, int sharedVertIndex0,
+		                           int sharedVertIndex1 )
 		{
 			var vertPair = new UniqueEdge();
 			vertPair.vertexIndex1 = sharedVertIndex0;
@@ -563,7 +565,12 @@ namespace Axiom.Graphics
 			{
 				var commonVec = (CommonVertex)vertices[ index ];
 
-				if ( Utility.RealEqual( vec.x, commonVec.position.x, 1e-04f ) && Utility.RealEqual( vec.y, commonVec.position.y, 1e-04f ) && Utility.RealEqual( vec.z, commonVec.position.z, 1e-04f ) && ( commonVec.vertexSet == vertexSet || weldVerticesAcrossVertexSets ) && ( commonVec.indexSet == indexSet || weldVerticesAcrossIndexSets ) && ( commonVec.originalIndex == originalIndex || weldVertices ) )
+				if ( Utility.RealEqual( vec.x, commonVec.position.x, 1e-04f ) &&
+				     Utility.RealEqual( vec.y, commonVec.position.y, 1e-04f ) &&
+				     Utility.RealEqual( vec.z, commonVec.position.z, 1e-04f ) &&
+				     ( commonVec.vertexSet == vertexSet || weldVerticesAcrossVertexSets ) &&
+				     ( commonVec.indexSet == indexSet || weldVerticesAcrossIndexSets ) &&
+				     ( commonVec.originalIndex == originalIndex || weldVertices ) )
 				{
 					return index;
 				}
@@ -627,7 +634,8 @@ namespace Axiom.Graphics
 			{
 				var iData = (IndexData)indexDataList[ i ];
 				log.Write( "." );
-				log.Write( "Original triangle set {0} - index count {1} - vertex set {2})", i, iData.indexCount, indexDataVertexDataSetList[ i ] );
+				log.Write( "Original triangle set {0} - index count {1} - vertex set {2})", i, iData.indexCount,
+				           indexDataVertexDataSetList[ i ] );
 
 				var idxPtr = iData.indexBuffer.Lock( BufferLocking.ReadOnly );
 
@@ -640,7 +648,7 @@ namespace Axiom.Graphics
 					var p32Idx = idxPtr.ToIntPointer();
 					var p16Idx = idxPtr.ToShortPointer();
 
-					for ( j = 0; j < iData.indexCount / 3; j++ )
+					for ( j = 0; j < iData.indexCount/3; j++ )
 					{
 						if ( iData.indexBuffer.Type == IndexType.Size32 )
 						{
@@ -663,7 +671,8 @@ namespace Axiom.Graphics
 				{
 					var c = (CommonVertex)vertices[ i ];
 
-					log.Write( "Common vertex {0}: (vertexSet={1}, originalIndex={2}, position={3}", i, c.vertexSet, c.index, c.position );
+					log.Write( "Common vertex {0}: (vertexSet={1}, originalIndex={2}, position={3}", i, c.vertexSet, c.index,
+					           c.position );
 				}
 			}
 		}
@@ -712,9 +721,13 @@ namespace Axiom.Graphics
 			public int vertexIndex2;
 		}
 
-		public class CommonVertexList : List<CommonVertex> {}
+		public class CommonVertexList : List<CommonVertex>
+		{
+		}
 
-		public class UniqueEdgeList : List<UniqueEdge> {}
+		public class UniqueEdgeList : List<UniqueEdge>
+		{
+		}
 
 		#endregion Structs
 	}

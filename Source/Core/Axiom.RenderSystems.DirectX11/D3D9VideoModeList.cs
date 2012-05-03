@@ -36,9 +36,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using Axiom.Core;
-
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -76,14 +74,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 		~D3D9VideoModeList()
 		{
-			this.Dispose();
+			Dispose();
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public void Dispose()
 		{
 			_mpDriver = null;
-			this.Clear();
+			Clear();
 
 			GC.SuppressFinalize( this );
 		}
@@ -115,10 +113,11 @@ namespace Axiom.RenderSystems.DirectX9
 
 				// Check to see if it is already in the list (to filter out refresh rates)
 				var found = false;
-				for ( var it = 0; it < this.Count; it++ )
+				for ( var it = 0; it < Count; it++ )
 				{
 					var oldDisp = this[ it ].DisplayMode;
-					if ( oldDisp.Width == displayMode.Width && oldDisp.Height == displayMode.Height && oldDisp.Format == displayMode.Format )
+					if ( oldDisp.Width == displayMode.Width && oldDisp.Height == displayMode.Height &&
+					     oldDisp.Format == displayMode.Format )
 					{
 						// Check refresh rate and favour higher if poss
 						if ( oldDisp.RefreshRate < displayMode.RefreshRate )
@@ -133,7 +132,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				if ( !found )
 				{
-					this.Add( new D3D9VideoMode( displayMode ) );
+					Add( new D3D9VideoMode( displayMode ) );
 				}
 			}
 		}

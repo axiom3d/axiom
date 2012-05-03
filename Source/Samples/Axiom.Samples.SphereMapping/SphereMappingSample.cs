@@ -11,7 +11,8 @@ namespace Axiom.Samples.SphereMapping
 		public SphereMappingSample()
 		{
 			Metadata[ "Title" ] = "Sphere Mapping";
-			Metadata[ "Description" ] = "Shows the sphere mapping feature of materials. " + "Sphere maps are not wrapped, and look the same from all directions.";
+			Metadata[ "Description" ] = "Shows the sphere mapping feature of materials. " +
+			                            "Sphere maps are not wrapped, and look the same from all directions.";
 			Metadata[ "Thumbnail" ] = "thumb_spheremap.png";
 			Metadata[ "Category" ] = "Unsorted";
 		}

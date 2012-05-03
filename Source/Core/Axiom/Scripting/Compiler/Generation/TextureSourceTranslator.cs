@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Graphics;
 using Axiom.Scripting.Compiler.AST;
 
@@ -51,12 +50,14 @@ namespace Axiom.Scripting.Compiler
 		public class TextureSourceTranslator : Translator
 		{
 			public TextureSourceTranslator()
-				: base() {}
+				: base()
+			{
+			}
 
 			#region Translator Implementation
 
 			/// <see cref="Translator.CheckFor"/>
-            public override bool CheckFor(Keywords nodeId, Keywords parentId)
+			public override bool CheckFor( Keywords nodeId, Keywords parentId )
 			{
 				return nodeId == Keywords.ID_TEXTURE_SOURCE && parentId == Keywords.ID_TEXTURE_UNIT;
 			}

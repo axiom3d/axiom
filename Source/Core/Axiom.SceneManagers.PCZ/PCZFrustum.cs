@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -59,8 +58,8 @@ namespace Axiom.SceneManagers.PortalConnected
 		private Vector3 mOrigin;
 		private Plane mOriginPlane;
 		private bool mUseOriginPlane;
-		private List<PCPlane> mActiveCullingPlanes = new List<PCPlane>();
-		private List<PCPlane> mCullingPlaneReservoir = new List<PCPlane>();
+		private readonly List<PCPlane> mActiveCullingPlanes = new List<PCPlane>();
+		private readonly List<PCPlane> mCullingPlaneReservoir = new List<PCPlane>();
 		private Projection projType;
 
 
@@ -205,7 +204,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			// if portal is of type AABB or Sphere, then use simple bound check against planes
 			if ( portal.Type == PORTAL_TYPE.PORTAL_TYPE_AABB )
 			{
-				AxisAlignedBox aabb = new AxisAlignedBox();
+				var aabb = new AxisAlignedBox();
 				aabb.SetExtents( portal.getDerivedCorner( 0 ), portal.getDerivedCorner( 1 ) );
 				return IsObjectVisible( aabb );
 			}
@@ -398,7 +397,8 @@ namespace Axiom.SceneManagers.PortalConnected
 					PCPlane newPlane = GetUnusedCullingPlane();
 					if ( projType == Projection.Orthographic ) // use camera direction if projection is orthographic.
 					{
-						newPlane.Redefine( portal.getDerivedCorner( j ) + mOriginPlane.Normal, portal.getDerivedCorner( j ), portal.getDerivedCorner( i ) );
+						newPlane.Redefine( portal.getDerivedCorner( j ) + mOriginPlane.Normal, portal.getDerivedCorner( j ),
+						                   portal.getDerivedCorner( i ) );
 					}
 					else
 					{

@@ -38,10 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Graphics;
 using Axiom.Core;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -62,6 +60,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="type"></param>
 		/// <param name="syntaxCode"></param>
 		/// <returns></returns>
-		GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode );
+		GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                     IManualResourceLoader loader, GpuProgramType type, string syntaxCode );
 	}
 }

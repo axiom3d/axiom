@@ -58,7 +58,7 @@ namespace Axiom.Samples.ParticleFX
 		[OgreVersion( 1, 7, 2 )]
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			fountainPivot.Yaw( evt.TimeSinceLastFrame * 30 ); // spin the fountains around
+			fountainPivot.Yaw( evt.TimeSinceLastFrame*30 ); // spin the fountains around
 			return base.FrameRenderingQueued( evt ); // don't forget the parent class updates!
 		}
 

@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -113,43 +112,32 @@ namespace Axiom.Core
 	/// </summary>
 	public enum BillboardOrigin
 	{
-		[ScriptEnum( "top_left" )]
-		TopLeft,
+		[ScriptEnum( "top_left" )] TopLeft,
 
-		[ScriptEnum( "top_center" )]
-		TopCenter,
+		[ScriptEnum( "top_center" )] TopCenter,
 
-		[ScriptEnum( "top_right" )]
-		TopRight,
+		[ScriptEnum( "top_right" )] TopRight,
 
-		[ScriptEnum( "center_left" )]
-		CenterLeft,
+		[ScriptEnum( "center_left" )] CenterLeft,
 
-		[ScriptEnum( "center" )]
-		Center,
+		[ScriptEnum( "center" )] Center,
 
-		[ScriptEnum( "center_right" )]
-		CenterRight,
+		[ScriptEnum( "center_right" )] CenterRight,
 
-		[ScriptEnum( "bottom_left" )]
-		BottomLeft,
+		[ScriptEnum( "bottom_left" )] BottomLeft,
 
-		[ScriptEnum( "bottom_center" )]
-		BottomCenter,
+		[ScriptEnum( "bottom_center" )] BottomCenter,
 
-		[ScriptEnum( "bottom_right" )]
-		BottomRight
+		[ScriptEnum( "bottom_right" )] BottomRight
 	}
 
 	public enum BillboardRotationType
 	{
 		/// <summary>Rotate the billboard's vertices around their facing direction</summary>
-		[ScriptEnum( "vertex" )]
-		Vertex,
+		[ScriptEnum( "vertex" )] Vertex,
 
 		/// <summary>Rotate the billboard's texture coordinates</summary>
-		[ScriptEnum( "texcoord" )]
-		Texcoord
+		[ScriptEnum( "texcoord" )] Texcoord
 	}
 
 	/// <summary>
@@ -158,24 +146,19 @@ namespace Axiom.Core
 	public enum BillboardType
 	{
 		/// <summary>Standard point billboard (default), always faces the camera completely and is always upright</summary>
-		[ScriptEnum( "point" )]
-		Point,
+		[ScriptEnum( "point" )] Point,
 
 		/// <summary>Billboards are oriented around a shared direction vector (used as Y axis) and only rotate around this to face the camera</summary>
-		[ScriptEnum( "oriented_common" )]
-		OrientedCommon,
+		[ScriptEnum( "oriented_common" )] OrientedCommon,
 
 		/// <summary>Billboards are oriented around their own direction vector (their own Y axis) and only rotate around this to face the camera</summary>
-		[ScriptEnum( "oriented_self" )]
-		OrientedSelf,
+		[ScriptEnum( "oriented_self" )] OrientedSelf,
 
 		/// <summary>Billboards are oriented perpendicular to a shared direction vector</summary>
-		[ScriptEnum( "perpendicular_common" )]
-		PerpendicularCommon,
+		[ScriptEnum( "perpendicular_common" )] PerpendicularCommon,
 
 		/// <summary>Billboards are oriented perpendicular to their own direction vector</summary>
-		[ScriptEnum( "perpendicular_self" )]
-		PerpendicularSelf
+		[ScriptEnum( "perpendicular_self" )] PerpendicularSelf
 	}
 
 	/// <summary>

@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -108,7 +107,7 @@ namespace Axiom.Core
 			{
 				this.parent = parent;
 				this.lod = lod;
-				this.squaredDistance = lodDist;
+				squaredDistance = lodDist;
 				materialBucketMap = new Dictionary<string, MaterialBucket>();
 				queuedGeometryList = new List<QueuedGeometry>();
 			}
@@ -184,7 +183,7 @@ namespace Axiom.Core
 			/// </summary>
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !this.IsDisposed )
+				if ( !IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{

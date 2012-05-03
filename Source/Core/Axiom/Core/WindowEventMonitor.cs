@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Graphics;
 using Axiom.Utilities;
 
@@ -77,7 +76,9 @@ namespace Axiom.Core
 
 	public class WindowEventMonitor : DisposableObject // Singleton<WindowMonitor>
 	{
-		private Dictionary<RenderWindow, List<IWindowEventListener>> _listeners = new Dictionary<RenderWindow, List<IWindowEventListener>>();
+		private Dictionary<RenderWindow, List<IWindowEventListener>> _listeners =
+			new Dictionary<RenderWindow, List<IWindowEventListener>>();
+
 		private List<RenderWindow> _windows = new List<RenderWindow>();
 
 		public IEnumerable<RenderWindow> Windows
@@ -89,7 +90,9 @@ namespace Axiom.Core
 		}
 
 		private WindowEventMonitor()
-			: base() {}
+			: base()
+		{
+		}
 
 		private static readonly WindowEventMonitor _instance = new WindowEventMonitor();
 
@@ -275,7 +278,7 @@ namespace Axiom.Core
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

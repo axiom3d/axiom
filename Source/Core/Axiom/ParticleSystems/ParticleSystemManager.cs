@@ -43,7 +43,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Scripting;
@@ -142,17 +141,20 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///     Factories for named emitter type (can be extended using plugins).
 		/// </summary>
-		private Dictionary<int, ParticleEmitterFactory> emitterFactoryList = new Dictionary<int, ParticleEmitterFactory>();
+		private readonly Dictionary<int, ParticleEmitterFactory> emitterFactoryList =
+			new Dictionary<int, ParticleEmitterFactory>();
 
 		/// <summary>
 		///     Factories for named affector types (can be extended using plugins).
 		/// </summary>
-		private Dictionary<int, ParticleAffectorFactory> affectorFactoryList = new Dictionary<int, ParticleAffectorFactory>();
+		private readonly Dictionary<int, ParticleAffectorFactory> affectorFactoryList =
+			new Dictionary<int, ParticleAffectorFactory>();
 
 		/// <summary>
 		///     Factories for named renderer types (can be extended using plugins).
 		/// </summary>
-		private Dictionary<int, ParticleSystemRendererFactory> rendererFactoryList = new Dictionary<int, ParticleSystemRendererFactory>();
+		private readonly Dictionary<int, ParticleSystemRendererFactory> rendererFactoryList =
+			new Dictionary<int, ParticleSystemRendererFactory>();
 
 
 		/// <summary>
@@ -356,7 +358,9 @@ namespace Axiom.ParticleSystems
 		{
 			if ( !systemTemplateList.ContainsKey( templateName.ToLower().GetHashCode() ) )
 			{
-				LogManager.Instance.Write( "Cannot create a particle system with template '{0}' because it does not exist, using NullParticleSystem.", templateName );
+				LogManager.Instance.Write(
+					"Cannot create a particle system with template '{0}' because it does not exist, using NullParticleSystem.",
+					templateName );
 				return CreateSystem( name, "NullParticleSystem" );
 			}
 
@@ -560,7 +564,7 @@ namespace Axiom.ParticleSystems
 			emitterFactoryList.Clear();
 			affectorFactoryList.Clear();
 
-			foreach ( var system in this.systemList.Values )
+			foreach ( var system in systemList.Values )
 			{
 				if ( !system.IsDisposed )
 				{
@@ -570,7 +574,7 @@ namespace Axiom.ParticleSystems
 			systemList.Clear();
 			systemList = null;
 
-			foreach ( var system in this.systemTemplateList.Values )
+			foreach ( var system in systemTemplateList.Values )
 			{
 				if ( !system.IsDisposed )
 				{
@@ -652,7 +656,7 @@ namespace Axiom.ParticleSystems
 		private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
 		{
 			// Apply time factor
-			var timeSinceLastFrame = timeFactor * e.TimeSinceLastFrame;
+			var timeSinceLastFrame = timeFactor*e.TimeSinceLastFrame;
 
 			// loop through and update each particle system
 			foreach ( var system in systemList.Values )
@@ -672,7 +676,7 @@ namespace Axiom.ParticleSystems
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -692,7 +696,7 @@ namespace Axiom.ParticleSystems
 
 		#region IScriptLoader Implementation
 
-		private List<string> _scriptPatterns = new List<string>();
+		private readonly List<string> _scriptPatterns = new List<string>();
 
 		public List<string> ScriptPatterns
 		{

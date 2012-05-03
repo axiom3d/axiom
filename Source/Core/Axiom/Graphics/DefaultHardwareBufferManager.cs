@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -50,7 +49,9 @@ namespace Axiom.Graphics
 	public class DefaultHardwareBufferManager : HardwareBufferManager
 	{
 		public DefaultHardwareBufferManager()
-			: base( new DefaultHardwareBufferManagerBase() ) {}
+			: base( new DefaultHardwareBufferManagerBase() )
+		{
+		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{

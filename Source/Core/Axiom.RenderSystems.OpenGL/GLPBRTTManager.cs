@@ -41,7 +41,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Graphics;
@@ -67,11 +66,11 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Fields and Properties
 
-		private BaseGLSupport _glSupport;
-		private GLContext _mainGLContext;
-		private RenderTarget _mainWindow;
+		private readonly BaseGLSupport _glSupport;
+		private readonly GLContext _mainGLContext;
+		private readonly RenderTarget _mainWindow;
 
-		private PixelBufferUsage[] pBuffers = new PixelBufferUsage[ (int)PixelComponentType.Count ];
+		private readonly PixelBufferUsage[] pBuffers = new PixelBufferUsage[(int)PixelComponentType.Count];
 
 		#endregion Fields and Properties
 
@@ -112,7 +111,7 @@ namespace Axiom.RenderSystems.OpenGL
 			object attr = target.GetCustomAttribute( "target" );
 			if ( attr != null )
 			{
-				GLSurfaceDesc surface = (GLSurfaceDesc)attr;
+				var surface = (GLSurfaceDesc)attr;
 				if ( surface.Buffer != null )
 				{
 					( (GLTextureBuffer)surface.Buffer ).CopyFromFrameBuffer( surface.ZOffset );
@@ -162,7 +161,7 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( pBuffer == null )
 			{
 				// create pixelbuffer via rendersystem
-				pBuffers[ (int)pcType ].PixelBuffer = this._glSupport.CreatePBuffer( pcType, width, height );
+				pBuffers[ (int)pcType ].PixelBuffer = _glSupport.CreatePBuffer( pcType, width, height );
 			}
 			pBuffers[ (int)pcType ].InUseCount++;
 		}
@@ -193,9 +192,9 @@ namespace Axiom.RenderSystems.OpenGL
 			// and pcType is PixelComponentType.Byte. This must be checked every time because the window might have been resized
 			if ( pcType == PixelComponentType.Byte )
 			{
-				if ( width <= this._mainWindow.Width && height <= this._mainWindow.Height )
+				if ( width <= _mainWindow.Width && height <= _mainWindow.Height )
 				{
-					return this._mainGLContext;
+					return _mainGLContext;
 				}
 			}
 			Debug.Assert( pBuffers[ (int)pcType ].PixelBuffer != null );

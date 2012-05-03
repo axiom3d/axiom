@@ -36,7 +36,6 @@
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
-
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -101,7 +100,7 @@ namespace Axiom.RenderSystems.DirectX9
 				switch ( attribute.ToUpper() )
 				{
 					case "DDBACKBUFFER":
-						var surface = new D3D9.Surface[ Config.MaxMultipleRenderTargets ];
+						var surface = new D3D9.Surface[Config.MaxMultipleRenderTargets];
 						if ( fsaa > 0 )
 						{
 							surface[ 0 ] = ( (D3D9HardwarePixelBuffer)pixelBuffer ).GetFSAASurface( D3D9RenderSystem.ActiveD3D9Device );
@@ -142,7 +141,8 @@ namespace Axiom.RenderSystems.DirectX9
 					if ( device.IsDeviceLost == false )
 					{
 						var d3d9Device = device.D3DDevice;
-						var res = d3d9Device.StretchRectangle( buf.GetFSAASurface( d3d9Device ), buf.GetSurface( d3d9Device ), D3D9.TextureFilter.None );
+						var res = d3d9Device.StretchRectangle( buf.GetFSAASurface( d3d9Device ), buf.GetSurface( d3d9Device ),
+						                                       D3D9.TextureFilter.None );
 
 						if ( res.Failure )
 						{

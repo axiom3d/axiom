@@ -45,10 +45,8 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.IO;
-
 using Axiom.Core;
 using Axiom.Configuration;
-
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -80,7 +78,7 @@ namespace Axiom.Graphics
 			public InputTexture( string name )
 			{
 				Name = name;
-				this.MrtIndex = 0;
+				MrtIndex = 0;
 			}
 
 			/// <summary>
@@ -91,7 +89,7 @@ namespace Axiom.Graphics
 			public InputTexture( string name, int mrtIndex )
 			{
 				Name = name;
-				this.MrtIndex = mrtIndex;
+				MrtIndex = mrtIndex;
 			}
 		}
 
@@ -340,7 +338,7 @@ namespace Axiom.Graphics
 		///    Inputs (for material used for rendering the quad)
 		///    An empty string signifies that no input is used
 		///</summary>
-		protected InputTexture[] inputs = new InputTexture[ Config.MaxTextureLayers ];
+		protected InputTexture[] inputs = new InputTexture[Config.MaxTextureLayers];
 
 		///<summary>
 		///    Inputs (for material used for rendering the quad)

@@ -45,7 +45,6 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Scripting;
@@ -158,7 +157,8 @@ namespace Axiom.Graphics
 										}
 										break;
 									default:
-										LogError( context, "After opening brace '{' of compositor definition, expected 'technique', but got '{0}'", token );
+										LogError( context, "After opening brace '{' of compositor definition, expected 'technique', but got '{0}'",
+										          token );
 										continue; // next line
 								}
 								break;

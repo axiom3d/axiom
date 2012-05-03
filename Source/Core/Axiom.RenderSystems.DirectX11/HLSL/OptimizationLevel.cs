@@ -48,37 +48,31 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// <summary>
 		/// Default optimization - no optimization in debug mode, LevelOne in release
 		/// </summary>
-		[ScriptEnum( "default" )]
-		Default,
+		[ScriptEnum( "default" )] Default,
 
 		/// <summary>
 		/// No optimization
 		/// </summary>
-		[ScriptEnum( "none" )]
-		None,
+		[ScriptEnum( "none" )] None,
 
 		/// <summary>
 		/// Optimization level 0
 		/// </summary>
-		[ScriptEnum( "0" )]
-		LevelZero,
+		[ScriptEnum( "0" )] LevelZero,
 
 		/// <summary>
 		/// Optimization level 1
 		/// </summary>
-		[ScriptEnum( "1" )]
-		LevelOne,
+		[ScriptEnum( "1" )] LevelOne,
 
 		/// <summary>
 		/// Optimization level 2
 		/// </summary>
-		[ScriptEnum( "2" )]
-		LevelTwo,
+		[ScriptEnum( "2" )] LevelTwo,
 
 		/// <summary>
 		/// Optimization level 3
 		/// </summary>
-		[ScriptEnum( "3" )]
-		LevelThree
+		[ScriptEnum( "3" )] LevelThree
 	};
 }

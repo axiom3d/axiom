@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
@@ -94,9 +93,9 @@ namespace Axiom.RenderSystems.OpenGL
 				switch ( attribute.ToUpper() )
 				{
 					case "TARGET":
-						GLSurfaceDesc target = new GLSurfaceDesc();
-						target.Buffer = (GLHardwarePixelBuffer)this.pixelBuffer;
-						target.ZOffset = this.zOffset;
+						var target = new GLSurfaceDesc();
+						target.Buffer = (GLHardwarePixelBuffer)pixelBuffer;
+						target.ZOffset = zOffset;
 						return target;
 						break;
 					case "GLCONTEXT":

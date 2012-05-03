@@ -41,7 +41,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Scripting;
@@ -185,7 +184,8 @@ namespace Axiom.Graphics
 					return true;
 				}
 
-				return ( a.DevicePattern == b.DevicePattern ) && ( a.Include == b.Include ) && ( a.CaseSensitive == b.CaseSensitive );
+				return ( a.DevicePattern == b.DevicePattern ) && ( a.Include == b.Include ) &&
+				       ( a.CaseSensitive == b.CaseSensitive );
 			}
 
 			public static bool operator !=( GPUDeviceNameRule a, GPUDeviceNameRule b )
@@ -201,19 +201,20 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    The list of passes (fixed function or programmable) contained in this technique.
 		/// </summary>
-		private List<Pass> _passes = new List<Pass>();
+		private readonly List<Pass> _passes = new List<Pass>();
 
 		protected List<GPUVendorRule> _GPUVendorRules = new List<GPUVendorRule>();
 		protected List<GPUDeviceNameRule> _GPUDeviceNameRules = new List<GPUDeviceNameRule>();
 
 		#region IlluminationPasses Property
 
-		private IlluminationPassesCompilationPhase _illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
+		private IlluminationPassesCompilationPhase _illuminationPassesCompilationPhase =
+			IlluminationPassesCompilationPhase.NotCompiled;
 
 		/// <summary>
 		///		List of derived passes, categorized (and ordered) into illumination stages.
 		/// </summary>
-		private List<IlluminationPass> _illuminationPasses = new List<IlluminationPass>();
+		private readonly List<IlluminationPass> _illuminationPasses = new List<IlluminationPass>();
 
 		public IEnumerable<IlluminationPass> IlluminationPasses
 		{
@@ -291,24 +292,9 @@ namespace Axiom.Graphics
 		#region Name Property
 
 		/// <summary>
-		///    Name of this technique.
-		/// </summary>
-		private string _name;
-
-		/// <summary>
 		///    Gets/Sets the name of this technique.
 		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return _name;
-			}
-			set
-			{
-				_name = value;
-			}
-		}
+		public string Name { get; set; }
 
 		#endregion Name Property
 
@@ -906,8 +892,8 @@ namespace Axiom.Graphics
 
 		public Technique( Material parent )
 		{
-			this._parent = parent;
-			this._compiledIlluminationPasses = false;
+			_parent = parent;
+			_compiledIlluminationPasses = false;
 		}
 
 		#endregion
@@ -1012,7 +998,9 @@ namespace Axiom.Graphics
 				_passes[ i ].Index = passNum;
 
 				//Check for advanced blending operation support
-				if ( ( _passes[ i ].SceneBlendingOperation != SceneBlendOperation.Add || _passes[ i ].SceneBlendingOperationAlpha != SceneBlendOperation.Add ) && !caps.HasCapability( Capabilities.AdvancedBlendOperations ) )
+				if ( ( _passes[ i ].SceneBlendingOperation != SceneBlendOperation.Add ||
+				       _passes[ i ].SceneBlendingOperationAlpha != SceneBlendOperation.Add ) &&
+				     !caps.HasCapability( Capabilities.AdvancedBlendOperations ) )
 				{
 					return false;
 				}
@@ -1031,13 +1019,15 @@ namespace Axiom.Graphics
 						if ( !autoManageTextureUnits )
 						{
 							// The user disabled auto pass split
-							compileErrors.AppendLine( "Pass " + passNum + ": Too many texture units for the current hardware and no splitting allowed." );
+							compileErrors.AppendLine( "Pass " + passNum +
+							                          ": Too many texture units for the current hardware and no splitting allowed." );
 							return false;
 						}
 						else if ( _passes[ i ].HasVertexProgram )
 						{
 							// Can't do this one, and can't split a programmable pass
-							compileErrors.AppendLine( "Pass " + passNum + ": Too many texture units for the current hardware and cannot split programmable passes." );
+							compileErrors.AppendLine( "Pass " + passNum +
+							                          ": Too many texture units for the current hardware and cannot split programmable passes." );
 							return false;
 						}
 					}
@@ -1049,7 +1039,8 @@ namespace Axiom.Graphics
 					if ( !_passes[ i ].VertexProgram.IsSupported )
 					{
 						// Can't do this one
-						compileErrors.Append( "Pass " + passNum + ": Vertex program " + _passes[ i ].VertexProgram.Name + " cannot be used - " );
+						compileErrors.Append( "Pass " + passNum + ": Vertex program " + _passes[ i ].VertexProgram.Name +
+						                      " cannot be used - " );
 
 						if ( _passes[ i ].VertexProgram.HasCompileError )
 						{
@@ -1071,7 +1062,8 @@ namespace Axiom.Graphics
 					if ( !_passes[ i ].GeometryProgram.IsSupported )
 					{
 						// Can't do this one
-						compileErrors.Append( "Pass " + passNum + ": Geometry program " + _passes[ i ].GeometryProgram.Name + " cannot be used - " );
+						compileErrors.Append( "Pass " + passNum + ": Geometry program " + _passes[ i ].GeometryProgram.Name +
+						                      " cannot be used - " );
 						if ( _passes[ i ].GeometryProgram.HasCompileError )
 						{
 							compileErrors.Append( "compile error." );
@@ -1092,7 +1084,8 @@ namespace Axiom.Graphics
 					if ( !_passes[ i ].FragmentProgram.IsSupported )
 					{
 						// Can't do this one
-						compileErrors.Append( "Pass " + passNum + ": Fragment program " + _passes[ i ].FragmentProgram.Name + " cannot be used - " );
+						compileErrors.Append( "Pass " + passNum + ": Fragment program " + _passes[ i ].FragmentProgram.Name +
+						                      " cannot be used - " );
 						if ( _passes[ i ].FragmentProgram.HasCompileError )
 						{
 							compileErrors.Append( "compile error." );
@@ -1120,7 +1113,8 @@ namespace Axiom.Graphics
 						if ( tex.Is3D && !caps.HasCapability( Capabilities.CubeMapping ) )
 						{
 							// Fail
-							compileErrors.AppendLine( "Pass " + passNum + " Tex " + texUnit + ": Cube maps not supported by current environment." );
+							compileErrors.AppendLine( "Pass " + passNum + " Tex " + texUnit +
+							                          ": Cube maps not supported by current environment." );
 							return false;
 						}
 						// Any 3D textures? NB we make the assumption that any
@@ -1129,14 +1123,16 @@ namespace Axiom.Graphics
 						if ( tex.TextureType == TextureType.ThreeD && !caps.HasCapability( Capabilities.Texture3D ) )
 						{
 							// Fail
-							compileErrors.AppendLine( "Pass " + passNum + " Tex " + texUnit + ": Volume textures not supported by current environment." );
+							compileErrors.AppendLine( "Pass " + passNum + " Tex " + texUnit +
+							                          ": Volume textures not supported by current environment." );
 							return false;
 						}
 						// Any Dot3 blending?
 						if ( tex.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.HasCapability( Capabilities.Dot3 ) )
 						{
 							// Fail
-							compileErrors.AppendLine( "Pass " + passNum + " Tex " + texUnit + ": DOT3 blending not supported by current environment." );
+							compileErrors.AppendLine( "Pass " + passNum + " Tex " + texUnit +
+							                          ": DOT3 blending not supported by current environment." );
 							return false;
 						}
 						++texUnit;
@@ -1228,7 +1224,9 @@ namespace Axiom.Graphics
 			foreach ( var i in _GPUDeviceNameRules )
 			{
 				//StringUtil::match(caps->getDeviceName(), i->devicePattern, i->caseSensitive)
-				bool checkCondition = i.CaseSensitive ? i.DevicePattern.Contains( caps.DeviceName ) : i.DevicePattern.ToLower().Contains( caps.DeviceName.ToLower() );
+				bool checkCondition = i.CaseSensitive
+				                      	? i.DevicePattern.Contains( caps.DeviceName )
+				                      	: i.DevicePattern.ToLower().Contains( caps.DeviceName.ToLower() );
 
 				if ( i.Include )
 				{
@@ -1267,7 +1265,7 @@ namespace Axiom.Graphics
 			ClearIlluminationPasses();
 
 			// don't need to split transparent passes since they are rendered seperately
-			if ( this.IsTransparent )
+			if ( IsTransparent )
 			{
 				return;
 			}
@@ -1378,7 +1376,8 @@ namespace Axiom.Graphics
 						else
 						{
 							// split off per-light details (can only be done for one)
-							if ( pass.LightingEnabled && ( pass.Diffuse.CompareTo( ColorEx.Black ) != 0 || pass.Specular.CompareTo( ColorEx.Black ) != 0 ) )
+							if ( pass.LightingEnabled &&
+							     ( pass.Diffuse.CompareTo( ColorEx.Black ) != 0 || pass.Specular.CompareTo( ColorEx.Black ) != 0 ) )
 							{
 								// copy existing pass
 								var newPass = new Pass( this, pass.Index );
@@ -1670,7 +1669,8 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <see cref="Pass.SetSeparateSceneBlending"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
+		public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
+		                                      SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
 		{
 			for ( var i = 0; i < _passes.Count; i++ )
 			{
@@ -1739,7 +1739,7 @@ namespace Axiom.Graphics
 			set
 			{
 				SchemeIndex = MaterialManager.Instance.GetSchemeIndex( value );
-				this.NotifyNeedsRecompile();
+				NotifyNeedsRecompile();
 			}
 		}
 
