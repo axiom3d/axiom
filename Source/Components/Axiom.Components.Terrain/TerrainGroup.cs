@@ -35,7 +35,6 @@
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Media;
@@ -106,11 +105,11 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2, "~TerrainSlotDefinition" )]
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !this.IsDisposed )
+				if ( !IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
-						this.FreeImportData();
+						FreeImportData();
 					}
 				}
 				base.dispose( disposeManagedResources );
@@ -165,7 +164,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2, "~TerrainSlot" )]
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !this.IsDisposed )
+				if ( !IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
@@ -226,14 +225,14 @@ namespace Axiom.Components.Terrain
 		public static ushort WORKQUEUE_LOAD_REQUEST = 1;
 		public static uint ChunkID = StreamSerializer.MakeIdentifier( "TERG" );
 		public static ushort ChunkVersion = 1;
-		private SceneManager _sceneManager;
+		private readonly SceneManager _sceneManager;
 		private Alignment _alignment;
 		private ushort _terrainSize;
 		private Real _terrainWorldSize;
-		private ImportData _defaultImportData;
+		private readonly ImportData _defaultImportData;
 		private Vector3 _origin;
-		private Dictionary<UInt32, TerrainSlot> _terrainSlots = new Dictionary<uint, TerrainSlot>();
-		private ushort _workQueueChannel;
+		private readonly Dictionary<UInt32, TerrainSlot> _terrainSlots = new Dictionary<uint, TerrainSlot>();
+		private readonly ushort _workQueueChannel;
 		private string _filenamePrefix;
 		private string _filenameExtension;
 		private string _resourceGroup;
@@ -326,7 +325,7 @@ namespace Axiom.Components.Terrain
 		{
 			get
 			{
-				List<TerrainSlot> slots = new List<TerrainSlot>( _terrainSlots.Values );
+				var slots = new List<TerrainSlot>( _terrainSlots.Values );
 				return slots;
 			}
 		}
@@ -456,12 +455,14 @@ namespace Axiom.Components.Terrain
 		/// <param name="sm">The SceneManager which will parent the terrain instances.</param>
 		[OgreVersion( 1, 7, 2 )]
 		public TerrainGroup( SceneManager sm )
-			: this( sm, Alignment.Align_X_Z, 0, 0 ) {}
+			: this( sm, Alignment.Align_X_Z, 0, 0 )
+		{
+		}
 
 		[OgreVersion( 1, 7, 2, "~TerrainGroup" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -658,7 +659,7 @@ namespace Axiom.Components.Terrain
 			if ( data != null )
 			{
 				// copy data - this will get deleted by importData
-				slot.Def.ImportData.InputFloat = new float[ data.Length ];
+				slot.Def.ImportData.InputFloat = new float[data.Length];
 				Array.Copy( data, slot.Def.ImportData.InputFloat, data.Length );
 			}
 			if ( layers != null )
@@ -726,7 +727,7 @@ namespace Axiom.Components.Terrain
 		/// <see cref="TerrainGroup.LoadAllTerrains( bool )"/>
 		public void LoadAllTerrains()
 		{
-			this.LoadAllTerrains( false );
+			LoadAllTerrains( false );
 		}
 #endif
 
@@ -1035,7 +1036,7 @@ namespace Axiom.Components.Terrain
 			long curr_x = 0, curr_z = 0;
 			ConvertWorldPositionToTerrainSlot( ray.Origin, out curr_x, out curr_z );
 			var slot = GetTerrainSlot( curr_x, curr_z );
-			RayResult result = new RayResult( false, null, Vector3.Zero );
+			var result = new RayResult( false, null, Vector3.Zero );
 
 			Vector3 tmp, localRayDir, centreOrigin, offset;
 			tmp = Vector3.Zero;
@@ -1073,7 +1074,8 @@ namespace Axiom.Components.Terrain
 			offset /= _terrainWorldSize;
 			offset += 0.5f;
 			// this is our counter moving away from the 'current' square
-			Vector3 inc = new Vector3( Math.Utility.Abs( localRayDir.x ), Math.Utility.Abs( localRayDir.y ), Math.Utility.Abs( localRayDir.z ) );
+			var inc = new Vector3( Math.Utility.Abs( localRayDir.x ), Math.Utility.Abs( localRayDir.y ),
+			                       Math.Utility.Abs( localRayDir.z ) );
 			long xdir = localRayDir.x > 0.0f ? 1 : -1;
 			long zdir = localRayDir.z > 0.0f ? 1 : -1;
 
@@ -1117,8 +1119,8 @@ namespace Axiom.Components.Terrain
 						// We crossed a corner, need to figure out which we passed first
 						Real diffz = 1.0f - oldoffset.z;
 						Real diffx = 1.0f - oldoffset.x;
-						Real distz = diffz / inc.z;
-						Real distx = diffx / inc.x;
+						Real distz = diffz/inc.z;
+						Real distx = diffx/inc.x;
 						if ( distx < distz )
 						{
 							curr_x += xdir;
@@ -1244,12 +1246,12 @@ namespace Axiom.Components.Terrain
 			// convert to standard xy base (z up), make relative to origin
 			Terrain.ConvertWorldToTerrainAxes( _alignment, position - _origin, out terrainPos );
 
-			Real offset = _terrainWorldSize * 0.5f;
+			Real offset = _terrainWorldSize*0.5f;
 			terrainPos.x += offset;
 			terrainPos.y += offset;
 
-			x = (long)( System.Math.Floor( terrainPos.x / _terrainWorldSize ) );
-			y = (long)( System.Math.Floor( terrainPos.y / _terrainWorldSize ) );
+			x = (long)( System.Math.Floor( terrainPos.x/_terrainWorldSize ) );
+			y = (long)( System.Math.Floor( terrainPos.y/_terrainWorldSize ) );
 		}
 
 		/// <summary>
@@ -1261,7 +1263,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void ConvertTerrainSlotToWorldPosition( long x, long y, out Vector3 position )
 		{
-			Vector3 terrainPos = new Vector3( x * _terrainWorldSize, y * _terrainWorldSize, 0 );
+			var terrainPos = new Vector3( x*_terrainWorldSize, y*_terrainWorldSize, 0 );
 			Terrain.ConvertTerrainToWorldAxes( _alignment, terrainPos, out position );
 			position += _origin;
 		}
@@ -1273,7 +1275,8 @@ namespace Axiom.Components.Terrain
 			if ( neighbourSlot != null && neighbourSlot.Instance != null && neighbourSlot.Instance.IsLoaded )
 			{
 				// reclaculate if imported
-				slot.Instance.SetNeighbour( Terrain.GetNeighbourIndex( offsetx, offsety ), neighbourSlot.Instance, slot.Def.ImportData != null );
+				slot.Instance.SetNeighbour( Terrain.GetNeighbourIndex( offsetx, offsety ), neighbourSlot.Instance,
+				                            slot.Def.ImportData != null );
 			}
 		}
 
@@ -1318,7 +1321,8 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public string GenerateFilename( long x, long y )
 		{
-			return string.Format( "{0}_{1}.{2}", _filenamePrefix, PackIndex( x, y ).ToString().PadLeft( 8, '0' ), _filenameExtension );
+			return string.Format( "{0}_{1}.{2}", _filenamePrefix, PackIndex( x, y ).ToString().PadLeft( 8, '0' ),
+			                      _filenameExtension );
 		}
 
 		/// <summary>
@@ -1460,7 +1464,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void SaveGroupDefinition( string filename )
 		{
-			var stream = Root.Instance.CreateFileStream( filename, this.ResourceGroup, true );
+			var stream = Root.Instance.CreateFileStream( filename, ResourceGroup, true );
 			var ser = new StreamSerializer( stream );
 			SaveGroupDefinition( ref ser );
 		}
@@ -1499,7 +1503,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void LoadGroupDefinition( string filename )
 		{
-			var stream = Root.Instance.OpenFileStream( filename, this.ResourceGroup );
+			var stream = Root.Instance.OpenFileStream( filename, ResourceGroup );
 			var ser = new StreamSerializer( stream );
 			LoadGroupDefinition( ref ser );
 		}
@@ -1533,7 +1537,8 @@ namespace Axiom.Components.Terrain
 			_defaultImportData.LayerDeclaration = new TerrainLayerDeclaration();
 			Terrain.ReadLayerDeclaration( ref stream, ref _defaultImportData.LayerDeclaration );
 			_defaultImportData.LayerList = new List<LayerInstance>();
-			Terrain.ReadLayerInstanceList( ref stream, _defaultImportData.LayerDeclaration.Samplers.Count, ref _defaultImportData.LayerList );
+			Terrain.ReadLayerInstanceList( ref stream, _defaultImportData.LayerDeclaration.Samplers.Count,
+			                               ref _defaultImportData.LayerList );
 
 			// copy data that would have normally happened on construction
 			_defaultImportData.TerrainAlign = _alignment;
@@ -1552,7 +1557,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public bool CanHandleRequest( WorkQueue.Request req, WorkQueue srcQ )
 		{
-			LoadRequest lreq = (LoadRequest)req.Data;
+			var lreq = (LoadRequest)req.Data;
 			// only deal with own requests
 			if ( lreq.Origin != this )
 			{
@@ -1568,7 +1573,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public WorkQueue.Response HandleRequest( WorkQueue.Request req, WorkQueue srcQ )
 		{
-			LoadRequest lreq = (LoadRequest)req.Data;
+			var lreq = (LoadRequest)req.Data;
 
 			var def = lreq.Slot.Def;
 			var t = lreq.Slot.Instance;
@@ -1606,7 +1611,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public bool CanHandleResponse( WorkQueue.Response res, WorkQueue srcq )
 		{
-			LoadRequest lreq = (LoadRequest)res.Request.Data;
+			var lreq = (LoadRequest)res.Request.Data;
 			// only deal with own requests
 			if ( lreq.Origin != this )
 			{
@@ -1623,7 +1628,7 @@ namespace Axiom.Components.Terrain
 		public void HandleResponse( WorkQueue.Response res, WorkQueue srcq )
 		{
 			// No response data, just request
-			LoadRequest lreq = (LoadRequest)res.Request.Data;
+			var lreq = (LoadRequest)res.Request.Data;
 
 			if ( res.Succeeded )
 			{
@@ -1652,7 +1657,9 @@ namespace Axiom.Components.Terrain
 			else
 			{
 				// oh dear
-				LogManager.Instance.Write( LogMessageLevel.Critical, false, "We failed to prepare the terrain at ({0}, {1}) with the error '{2}'", lreq.Slot.X, lreq.Slot.Y, res.Messages );
+				LogManager.Instance.Write( LogMessageLevel.Critical, false,
+				                           "We failed to prepare the terrain at ({0}, {1}) with the error '{2}'", lreq.Slot.X,
+				                           lreq.Slot.Y, res.Messages );
 				lreq.Slot.FreeInstance();
 			}
 		}

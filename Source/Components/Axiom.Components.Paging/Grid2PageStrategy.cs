@@ -80,12 +80,14 @@ namespace Axiom.Components.Paging
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public Grid2PageStrategy( PageManager manager )
-			: base( "Grid2D", manager ) {}
+			: base( "Grid2D", manager )
+		{
+		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public override void NotifyCamera( Camera cam, PagedWorldSection section )
 		{
-			Grid2DPageStrategyData stratData = (Grid2DPageStrategyData)section.StrategyData;
+			var stratData = (Grid2DPageStrategyData)section.StrategyData;
 
 			Vector3 pos = cam.DerivedPosition;
 			Vector2 gridpos = Vector2.Zero;
@@ -164,10 +166,10 @@ namespace Axiom.Components.Paging
 				// wouldn't easily deal with paging parameter changes. There shouldn't 
 				// be that many pages anyway, and this is debug after all, so update every time
 				int x, y;
-				Grid2DPageStrategyData stratData = (Grid2DPageStrategyData)p.ParentSection.StrategyData;
+				var stratData = (Grid2DPageStrategyData)p.ParentSection.StrategyData;
 				stratData.CalculateCell( p.PageID, out x, out y );
 
-				Grid2DPageStrategyData data = (Grid2DPageStrategyData)p.ParentSection.StrategyData;
+				var data = (Grid2DPageStrategyData)p.ParentSection.StrategyData;
 
 				// Determine our centre point, we'll anchor here
 				// Note that world points are initialised to ZERO since only 2 dimensions
@@ -179,8 +181,8 @@ namespace Axiom.Components.Paging
 
 				sn.Position = worldMidPoint;
 
-				Vector2[] gridCorners = new Vector2[ 4 ];
-				Vector3[] worldCorners = new Vector3[ 4 ];
+				var gridCorners = new Vector2[4];
+				var worldCorners = new Vector3[4];
 
 				data.GetCornersGridSpace( x, y, ref gridCorners );
 				for ( int i = 0; i < 4; ++i )
@@ -192,7 +194,7 @@ namespace Axiom.Components.Paging
 				}
 
 				string matName = "Axiom/G2D/Debug";
-				Material mat = (Material)MaterialManager.Instance.GetByName( matName );
+				var mat = (Material)MaterialManager.Instance.GetByName( matName );
 				if ( mat == null )
 				{
 					mat = (Material)MaterialManager.Instance.Create( matName, ResourceGroupManager.DefaultResourceGroupName );
@@ -218,7 +220,7 @@ namespace Axiom.Components.Paging
 				ColorEx vcol = ColorEx.Green;
 				for ( int i = 0; i < 5; ++i )
 				{
-					mo.Position( worldCorners[ i % 4 ] );
+					mo.Position( worldCorners[ i%4 ] );
 					mo.Color( vcol );
 				}
 
@@ -234,7 +236,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public override PageID GetPageID( Vector3 worldPos, PagedWorldSection section )
 		{
-			Grid2DPageStrategyData stratData = (Grid2DPageStrategyData)section.StrategyData;
+			var stratData = (Grid2DPageStrategyData)section.StrategyData;
 
 			Vector2 gridpos = Vector2.Zero;
 			stratData.ConvertWorldToGridSpace( worldPos, ref gridpos );

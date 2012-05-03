@@ -112,7 +112,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2, "~TerrainPaging" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -170,14 +170,16 @@ namespace Axiom.Components.Terrain
 		/// There is no 'destroy' method because you destroy via the PagedWorld, this is just a
 		/// helper function.</returns>
 		[OgreVersion( 1, 7, 2 )]
-		public TerrainPagedWorldSection CreateWorldSection( PagedWorld world, TerrainGroup terrainGroup, Real loadRadius, Real holdRadius,
+		public TerrainPagedWorldSection CreateWorldSection( PagedWorld world, TerrainGroup terrainGroup, Real loadRadius,
+		                                                    Real holdRadius,
 #if NET_40
             int minX = -10, int minY = -10, int maxX = 10, int maxY = 10, string sectionName = "" )
 #else
 		                                                    int minX, int minY, int maxX, int maxY, string sectionName )
 #endif
 		{
-			TerrainPagedWorldSection ret = (TerrainPagedWorldSection)world.CreateSection( terrainGroup.SceneManager, sectionFactory.Name, sectionName );
+			var ret =
+				(TerrainPagedWorldSection)world.CreateSection( terrainGroup.SceneManager, sectionFactory.Name, sectionName );
 
 			ret.Initialize( terrainGroup );
 			ret.LoadRadius = loadRadius;
@@ -189,33 +191,38 @@ namespace Axiom.Components.Terrain
 
 #if !NET_40
 		/// <see cref="TerrainPagedWorldSection.CreateWorldSection( PagedWorld, TerrainGroup, Real, Real, int, int, int, int, string )"/>
-		public TerrainPagedWorldSection CreateWorldSection( PagedWorld world, TerrainGroup terrainGroup, Real loadRadius, Real holdRadius )
+		public TerrainPagedWorldSection CreateWorldSection( PagedWorld world, TerrainGroup terrainGroup, Real loadRadius,
+		                                                    Real holdRadius )
 		{
-			return this.CreateWorldSection( world, terrainGroup, loadRadius, holdRadius, -10, -10, 10, 10, string.Empty );
+			return CreateWorldSection( world, terrainGroup, loadRadius, holdRadius, -10, -10, 10, 10, string.Empty );
 		}
 
 		/// <see cref="TerrainPagedWorldSection.CreateWorldSection( PagedWorld, TerrainGroup, Real, Real, int, int, int, int, string )"/>
-		public TerrainPagedWorldSection CreateWorldSection( PagedWorld world, TerrainGroup terrainGroup, Real loadRadius, Real holdRadius, int minX )
+		public TerrainPagedWorldSection CreateWorldSection( PagedWorld world, TerrainGroup terrainGroup, Real loadRadius,
+		                                                    Real holdRadius, int minX )
 		{
-			return this.CreateWorldSection( world, terrainGroup, loadRadius, holdRadius, minX, -10, 10, 10, string.Empty );
+			return CreateWorldSection( world, terrainGroup, loadRadius, holdRadius, minX, -10, 10, 10, string.Empty );
 		}
 
 		/// <see cref="TerrainPagedWorldSection.CreateWorldSection( PagedWorld, TerrainGroup, Real, Real, int, int, int, int, string )"/>
-		public TerrainPagedWorldSection CreateWorldSection( PagedWorld world, TerrainGroup terrainGroup, Real loadRadius, Real holdRadius, int minX, int minY )
+		public TerrainPagedWorldSection CreateWorldSection( PagedWorld world, TerrainGroup terrainGroup, Real loadRadius,
+		                                                    Real holdRadius, int minX, int minY )
 		{
-			return this.CreateWorldSection( world, terrainGroup, loadRadius, holdRadius, minX, minY, 10, 10, string.Empty );
+			return CreateWorldSection( world, terrainGroup, loadRadius, holdRadius, minX, minY, 10, 10, string.Empty );
 		}
 
 		/// <see cref="TerrainPagedWorldSection.CreateWorldSection( PagedWorld, TerrainGroup, Real, Real, int, int, int, int, string )"/>
-		public TerrainPagedWorldSection CreateWorldSection( PagedWorld world, TerrainGroup terrainGroup, Real loadRadius, Real holdRadius, int minX, int minY, int maxX )
+		public TerrainPagedWorldSection CreateWorldSection( PagedWorld world, TerrainGroup terrainGroup, Real loadRadius,
+		                                                    Real holdRadius, int minX, int minY, int maxX )
 		{
-			return this.CreateWorldSection( world, terrainGroup, loadRadius, holdRadius, minX, minY, maxX, 10, string.Empty );
+			return CreateWorldSection( world, terrainGroup, loadRadius, holdRadius, minX, minY, maxX, 10, string.Empty );
 		}
 
 		/// <see cref="TerrainPagedWorldSection.CreateWorldSection( PagedWorld, TerrainGroup, Real, Real, int, int, int, int, string )"/>
-		public TerrainPagedWorldSection CreateWorldSection( PagedWorld world, TerrainGroup terrainGroup, Real loadRadius, Real holdRadius, int minX, int minY, int maxX, int maxY )
+		public TerrainPagedWorldSection CreateWorldSection( PagedWorld world, TerrainGroup terrainGroup, Real loadRadius,
+		                                                    Real holdRadius, int minX, int minY, int maxX, int maxY )
 		{
-			return this.CreateWorldSection( world, terrainGroup, loadRadius, holdRadius, minX, minY, maxX, maxY, string.Empty );
+			return CreateWorldSection( world, terrainGroup, loadRadius, holdRadius, minX, minY, maxX, maxY, string.Empty );
 		}
 #endif
 	};

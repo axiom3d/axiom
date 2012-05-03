@@ -35,7 +35,6 @@
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -107,7 +106,8 @@ namespace Axiom.Components.Terrain
 		/// <returns></returns>
 		public static bool operator ==( TerrainLayerSamplerElement left, TerrainLayerSamplerElement right )
 		{
-			return left.Source == right.Source && left.Semantic == right.Semantic && left.ElementStart == right.ElementStart && left.ElementCount == right.ElementCount;
+			return left.Source == right.Source && left.Semantic == right.Semantic && left.ElementStart == right.ElementStart &&
+			       left.ElementCount == right.ElementCount;
 		}
 
 		/// <summary>
@@ -118,7 +118,8 @@ namespace Axiom.Components.Terrain
 		/// <returns></returns>
 		public static bool operator !=( TerrainLayerSamplerElement left, TerrainLayerSamplerElement right )
 		{
-			return left.Source != right.Source && left.Semantic != right.Semantic && left.ElementStart != right.ElementStart && left.ElementCount != right.ElementCount;
+			return left.Source != right.Source && left.Semantic != right.Semantic && left.ElementStart != right.ElementStart &&
+			       left.ElementCount != right.ElementCount;
 		}
 
 		/// <summary>
@@ -523,22 +524,22 @@ namespace Axiom.Components.Terrain
 			{
 				// convert point-space rect into image space
 				int compSize = terrain.CompositeMap.Width;
-				Rectangle imgRect = new Rectangle();
+				var imgRect = new Rectangle();
 				Vector3 inVec = Vector3.Zero, outVec = Vector3.Zero;
 				inVec.x = rect.Left;
 				inVec.y = rect.Bottom - 1; // this is 'top' in image space, also make inclusive
 				terrain.ConvertPosition( Space.PointSpace, inVec, Space.TerrainSpace, ref outVec );
-				float left = ( outVec.x * compSize );
-				float top = ( ( 1.0f - outVec.y ) * compSize );
+				float left = ( outVec.x*compSize );
+				float top = ( ( 1.0f - outVec.y )*compSize );
 				;
 				imgRect.Left = (long)left;
 				imgRect.Top = (long)top;
 				inVec.x = rect.Right - 1;
 				inVec.y = rect.Top; // this is 'bottom' in image space
 				terrain.ConvertPosition( Space.PointSpace, inVec, Space.TerrainSpace, ref outVec );
-				float right = ( outVec.x * (float)compSize + 1 );
+				float right = ( outVec.x*(float)compSize + 1 );
 				imgRect.Right = (long)right;
-				float bottom = ( ( 1.0f - outVec.y ) * compSize + 1 );
+				float bottom = ( ( 1.0f - outVec.y )*compSize + 1 );
 				imgRect.Bottom = (long)bottom;
 
 				imgRect.Left = System.Math.Max( 0L, imgRect.Left );
@@ -740,13 +741,13 @@ terrain.CompositeMap);
 
 				mCompositeMapSM = Root.Instance.CreateSceneManager( SceneType.ExteriorClose, "TerrainMaterialGenerator_SceneManager" );
 				float camDist = 100;
-				float halfCamDist = camDist * 0.5f;
+				float halfCamDist = camDist*0.5f;
 				mCompositeMapCam = mCompositeMapSM.CreateCamera( "TerrainMaterialGenerator_Camera" );
 				mCompositeMapCam.Position = new Vector3( 0, 0, camDist );
 				//mCompositeMapCam.LookAt(Vector3.Zero);
 				mCompositeMapCam.ProjectionType = Projection.Orthographic;
 				mCompositeMapCam.Near = 10;
-				mCompositeMapCam.Far = 999999 * 3;
+				mCompositeMapCam.Far = 999999*3;
 				//mCompositeMapCam.AspectRatio = camDist / camDist;
 				mCompositeMapCam.SetOrthoWindow( camDist, camDist );
 				// Just in case material relies on light auto params
@@ -754,8 +755,8 @@ terrain.CompositeMap);
 				mCompositeMapLight.Type = LightType.Directional;
 
 				RenderSystem rSys = Root.Instance.RenderSystem;
-				float hOffset = rSys.HorizontalTexelOffset / (float)size;
-				float vOffset = rSys.VerticalTexelOffset / (float)size;
+				float hOffset = rSys.HorizontalTexelOffset/(float)size;
+				float vOffset = rSys.VerticalTexelOffset/(float)size;
 
 				//setup scene
 				mCompositeMapPlane = mCompositeMapSM.CreateManualObject( "TerrainMaterialGenerator_ManualObject" );
@@ -788,7 +789,10 @@ terrain.CompositeMap);
 			}
 			if ( mCompositeMapRTT == null )
 			{
-				mCompositeMapRTT = TextureManager.Instance.CreateManual( mCompositeMapSM.Name + "/compRTT", ResourceGroupManager.DefaultResourceGroupName, TextureType.TwoD, size, size, 0, PixelFormat.BYTE_RGBA, TextureUsage.RenderTarget );
+				mCompositeMapRTT = TextureManager.Instance.CreateManual( mCompositeMapSM.Name + "/compRTT",
+				                                                         ResourceGroupManager.DefaultResourceGroupName,
+				                                                         TextureType.TwoD, size, size, 0, PixelFormat.BYTE_RGBA,
+				                                                         TextureUsage.RenderTarget );
 
 				RenderTarget rtt = mCompositeMapRTT.GetBuffer().GetRenderTarget();
 				// don't render all the time, only on demand
@@ -799,12 +803,12 @@ terrain.CompositeMap);
 			}
 
 			// calculate the area we need to update
-			float vpleft = (float)rect.Left / (float)size;
-			float vptop = (float)rect.Top / (float)size;
-			float vpright = (float)rect.Right / (float)size;
-			float vpbottom = (float)rect.Bottom / (float)size;
-			float vpwidth = (float)rect.Width / (float)size;
-			float vpheight = (float)rect.Height / (float)size;
+			float vpleft = (float)rect.Left/(float)size;
+			float vptop = (float)rect.Top/(float)size;
+			float vpright = (float)rect.Right/(float)size;
+			float vpbottom = (float)rect.Bottom/(float)size;
+			float vpwidth = (float)rect.Width/(float)size;
+			float vpheight = (float)rect.Height/(float)size;
 
 			RenderTarget rtt2 = mCompositeMapRTT.GetBuffer().GetRenderTarget();
 			Viewport vp2 = rtt2.GetViewport( 0 );
@@ -815,7 +819,7 @@ terrain.CompositeMap);
 			// That's because in non-update scenarios we don't want to keep an RTT
 			// around. We use a single RTT to serve all terrain pages which is more
 			// efficient.
-			BasicBox box = new BasicBox( (int)rect.Left, (int)rect.Top, (int)rect.Right, (int)rect.Bottom );
+			var box = new BasicBox( (int)rect.Left, (int)rect.Top, (int)rect.Right, (int)rect.Bottom );
 			destCompositeMap.GetBuffer().Blit( mCompositeMapRTT.GetBuffer(), box, box );
 		}
 

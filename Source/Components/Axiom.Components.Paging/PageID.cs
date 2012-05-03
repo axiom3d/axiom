@@ -39,7 +39,7 @@ namespace Axiom.Components.Paging
 {
 	public struct PageID
 	{
-		private uint mValue;
+		private readonly uint mValue;
 
 		public uint Value
 		{

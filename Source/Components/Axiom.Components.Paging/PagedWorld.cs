@@ -35,7 +35,6 @@
 
 using System.Collections.Generic;
 using System.IO;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Serialization;
@@ -173,7 +172,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2, "~PagedWorld" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -201,7 +200,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void Load( Stream stream )
 		{
-			StreamSerializer ser = new StreamSerializer( stream );
+			var ser = new StreamSerializer( stream );
 			Load( ser );
 		}
 
@@ -261,7 +260,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void Save( Stream stream )
 		{
-			StreamSerializer ser = new StreamSerializer( stream );
+			var ser = new StreamSerializer( stream );
 			Save( ser );
 		}
 
@@ -346,7 +345,7 @@ namespace Axiom.Components.Paging
 
 		public PagedWorldSection CreateSection( SceneManager sceneMgr, string typeName )
 		{
-			return this.CreateSection( sceneMgr, typeName, string.Empty );
+			return CreateSection( sceneMgr, typeName, string.Empty );
 		}
 
 		/// <summary>
@@ -369,12 +368,12 @@ namespace Axiom.Components.Paging
 		{
 			// get the strategy
 			PageStrategy strategy = mManager.GetStrategy( strategyName );
-			return this.CreateSection( strategy, sceneMgr, sectionName );
+			return CreateSection( strategy, sceneMgr, sectionName );
 		}
 
 		public PagedWorldSection CreateSection( string strategyName, SceneManager sceneMgr )
 		{
-			return this.CreateSection( strategyName, sceneMgr, string.Empty );
+			return CreateSection( strategyName, sceneMgr, string.Empty );
 		}
 
 		/// <summary>
@@ -394,14 +393,14 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public PagedWorldSection CreateSection( PageStrategy strategy, SceneManager sceneMgr, string sectionName )
 		{
-			PagedWorldSection ret = this.CreateSection( sceneMgr, "General", sectionName );
+			PagedWorldSection ret = CreateSection( sceneMgr, "General", sectionName );
 			ret.Strategy = strategy;
 			return ret;
 		}
 
 		public PagedWorldSection CreateSection( PageStrategy strategy, SceneManager sceneMgr )
 		{
-			return this.CreateSection( strategy, sceneMgr, string.Empty );
+			return CreateSection( strategy, sceneMgr, string.Empty );
 		}
 
 		/// <summary>
@@ -638,7 +637,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2, "operator <<" )]
 		public override string ToString()
 		{
-			return string.Format( "PagedWorld({0})", this.Name );
+			return string.Format( "PagedWorld({0})", Name );
 		}
 	};
 }

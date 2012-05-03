@@ -36,7 +36,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Serialization;
@@ -228,7 +227,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2, "~Page" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -296,7 +295,8 @@ namespace Axiom.Components.Paging
 			stream.Read( out storedID );
 			if ( mID.Value != storedID )
 			{
-				LogManager.Instance.Write( "Error: Tried to populate Page ID {0} with data corresponding to page ID {1}", mID.Value, storedID );
+				LogManager.Instance.Write( "Error: Tried to populate Page ID {0} with data corresponding to page ID {1}", mID.Value,
+				                           storedID );
 				stream.UndoReadChunk( CHUNK_ID );
 				return false;
 			}
@@ -320,13 +320,13 @@ namespace Axiom.Components.Paging
 					}
 					else
 					{
-						LogManager.Instance.Write( "Error preparing PageContentCollection type: {0} in {1}", factoryName, this.ToString() );
+						LogManager.Instance.Write( "Error preparing PageContentCollection type: {0} in {1}", factoryName, ToString() );
 						collFact.DestroyInstance( ref collInst );
 					}
 				}
 				else
 				{
-					LogManager.Instance.Write( "Unsupported PageContentCollection type: {0} in {1}", factoryName, this.ToString() );
+					LogManager.Instance.Write( "Unsupported PageContentCollection type: {0} in {1}", factoryName, ToString() );
 					//skip
 					stream.ReadChunkEnd( collChunk.id );
 				}
@@ -346,7 +346,7 @@ namespace Axiom.Components.Paging
 			if ( !mDeferredProcessInProgress )
 			{
 				DestroyAllContentCollections();
-				PageRequest req = new PageRequest( this );
+				var req = new PageRequest( this );
 				mDeferredProcessInProgress = true;
 
 				Root.Instance.WorkQueue.AddRequest( workQueueChannel, WORKQUEUE_PREPARE_REQUEST, req, 0, synchronous );
@@ -566,7 +566,7 @@ namespace Axiom.Components.Paging
 		/// <see cref="WorkQueue.IRequestHandler.CanHandleRequest"/>
 		public bool CanHandleRequest( WorkQueue.Request req, WorkQueue srcQ )
 		{
-			PageRequest preq = (PageRequest)req.Data;
+			var preq = (PageRequest)req.Data;
 			// only deal with own requests
 			// we do this because if we delete a page we want any pending tasks to be discarded
 			if ( preq.srcPage != this )
@@ -585,14 +585,14 @@ namespace Axiom.Components.Paging
 		{
 			// Background thread (maybe)
 
-			PageRequest preq = (PageRequest)req.Data;
+			var preq = (PageRequest)req.Data;
 			// only deal with own requests; we shouldn't ever get here though
 			if ( preq.srcPage != this )
 			{
 				return null;
 			}
 
-			PageResponse res = new PageResponse();
+			var res = new PageResponse();
 			res.pageData = new PageData();
 			WorkQueue.Response response;
 			try
@@ -617,7 +617,7 @@ namespace Axiom.Components.Paging
 		/// <see cref="WorkQueue.IResponseHandler.CanHandleResponse"/>
 		public bool CanHandleResponse( WorkQueue.Response res, WorkQueue srcq )
 		{
-			PageRequest preq = (PageRequest)res.Request.Data;
+			var preq = (PageRequest)res.Request.Data;
 			// only deal with own requests
 			// we do this because if we delete a page we want any pending tasks to be discarded
 			if ( preq.srcPage != this )
@@ -635,8 +635,8 @@ namespace Axiom.Components.Paging
 		public void HandleResponse( WorkQueue.Response res, WorkQueue srcq )
 		{
 			// Main thread
-			PageResponse pres = (PageResponse)res.Data;
-			PageRequest preq = (PageRequest)res.Request.Data;
+			var pres = (PageResponse)res.Data;
+			var preq = (PageRequest)res.Request.Data;
 
 			// only deal with own requests
 			if ( preq.srcPage != this )

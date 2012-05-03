@@ -34,7 +34,6 @@
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -57,7 +56,8 @@ namespace Axiom.Components.Terrain
 		/// <param name="numVertices">The total number of vertices</param>
 		/// <param name="destPos">Pointer to a vertex buffer for positions, to be bound</param>
 		/// <param name="destDelta">Pointer to a vertex buffer for deltas, to be bound</param>
-		public abstract void AllocateVertexBuffers( Terrain forTerrain, int numVertices, out HardwareVertexBuffer destPos, out HardwareVertexBuffer destDelta );
+		public abstract void AllocateVertexBuffers( Terrain forTerrain, int numVertices, out HardwareVertexBuffer destPos,
+		                                            out HardwareVertexBuffer destDelta );
 
 		/// <summary>
 		/// Free (or return to the pool) vertex buffers for terrain. 
@@ -81,7 +81,9 @@ namespace Axiom.Components.Terrain
 		/// <param name="numSkirtRowsCols">Number of rows and columns of skirts</param>
 		/// <param name="skirtRowColSkip">The number of rows / cols to skip in between skirts</param>
 		/// <returns></returns>
-		public abstract HardwareIndexBuffer GetSharedIndexBuffer( ushort batchSize, ushort vdatasize, int vertexIncrement, ushort xoffset, ushort yoffset, ushort numSkirtRowsCols, ushort skirtRowColSkip );
+		public abstract HardwareIndexBuffer GetSharedIndexBuffer( ushort batchSize, ushort vdatasize, int vertexIncrement,
+		                                                          ushort xoffset, ushort yoffset, ushort numSkirtRowsCols,
+		                                                          ushort skirtRowColSkip );
 
 		/// <summary>
 		/// Free any buffers we're holding
@@ -99,13 +101,14 @@ namespace Axiom.Components.Terrain
 		protected Dictionary<int, HardwareIndexBuffer> SharedIBufMap = new Dictionary<int, HardwareIndexBuffer>();
 
 		[OgreVersion( 1, 7, 2 )]
-		public override void AllocateVertexBuffers( Terrain forTerrain, int numVertices, out HardwareVertexBuffer destPos, out HardwareVertexBuffer destDelta )
+		public override void AllocateVertexBuffers( Terrain forTerrain, int numVertices, out HardwareVertexBuffer destPos,
+		                                            out HardwareVertexBuffer destDelta )
 		{
 			//destPos = this.GetVertexBuffer( ref FreePosBufList, forTerrain.PositionBufVertexSize, numVertices );
 			//destDelta = this.GetVertexBuffer( ref FreeDeltaBufList, forTerrain.DeltaBufVertexSize, numVertices );
 
-			destPos = this.GetVertexBuffer( ref FreePosBufList, forTerrain.PositionVertexDecl, numVertices );
-			destDelta = this.GetVertexBuffer( ref FreeDeltaBufList, forTerrain.DeltaVertexDecl, numVertices );
+			destPos = GetVertexBuffer( ref FreePosBufList, forTerrain.PositionVertexDecl, numVertices );
+			destDelta = GetVertexBuffer( ref FreeDeltaBufList, forTerrain.DeltaVertexDecl, numVertices );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -116,17 +119,21 @@ namespace Axiom.Components.Terrain
 		}
 
 		[OgreVersion( 1, 7, 2 )]
-		public override HardwareIndexBuffer GetSharedIndexBuffer( ushort batchSize, ushort vdatasize, int vertexIncrement, ushort xoffset, ushort yoffset, ushort numSkirtRowsCols, ushort skirtRowColSkip )
+		public override HardwareIndexBuffer GetSharedIndexBuffer( ushort batchSize, ushort vdatasize, int vertexIncrement,
+		                                                          ushort xoffset, ushort yoffset, ushort numSkirtRowsCols,
+		                                                          ushort skirtRowColSkip )
 		{
-			int hsh = this.HashIndexBuffer( batchSize, vdatasize, vertexIncrement, xoffset, yoffset, numSkirtRowsCols, skirtRowColSkip );
+			int hsh = HashIndexBuffer( batchSize, vdatasize, vertexIncrement, xoffset, yoffset, numSkirtRowsCols, skirtRowColSkip );
 
 			if ( !SharedIBufMap.ContainsKey( hsh ) )
 			{
 				// create new
 				int indexCount = Terrain.GetNumIndexesForBatchSize( batchSize );
-				HardwareIndexBuffer ret = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, indexCount, BufferUsage.StaticWriteOnly );
+				HardwareIndexBuffer ret = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, indexCount,
+				                                                                            BufferUsage.StaticWriteOnly );
 				var pI = ret.Lock( BufferLocking.Discard );
-				Terrain.PopulateIndexBuffer( pI, batchSize, vdatasize, vertexIncrement, xoffset, yoffset, numSkirtRowsCols, skirtRowColSkip );
+				Terrain.PopulateIndexBuffer( pI, batchSize, vdatasize, vertexIncrement, xoffset, yoffset, numSkirtRowsCols,
+				                             skirtRowColSkip );
 				ret.Unlock();
 
 				SharedIBufMap.Add( hsh, ret );
@@ -159,11 +166,11 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2, "~DefaultGpuBufferAllocator" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					this.FreeAllBuffers();
+					FreeAllBuffers();
 				}
 			}
 
@@ -171,7 +178,8 @@ namespace Axiom.Components.Terrain
 		}
 
 		[OgreVersion( 1, 7, 2 )]
-		protected int HashIndexBuffer( ushort batchSize, ushort vdatasize, int vertexIncrement, ushort xoffset, ushort yoffset, ushort numSkirtRowsCols, ushort skirtRowColSkip )
+		protected int HashIndexBuffer( ushort batchSize, ushort vdatasize, int vertexIncrement, ushort xoffset, ushort yoffset,
+		                               ushort numSkirtRowsCols, ushort skirtRowColSkip )
 		{
 			int ret = batchSize.GetHashCode();
 			ret ^= vdatasize.GetHashCode();
@@ -185,9 +193,10 @@ namespace Axiom.Components.Terrain
 
 		[OgreVersion( 1, 7, 2 )]
 		//protected HardwareVertexBuffer GetVertexBuffer( ref List<HardwareVertexBuffer> list, int vertexSize, int numVertices )
-		protected HardwareVertexBuffer GetVertexBuffer( ref List<HardwareVertexBuffer> list, VertexDeclaration decl, int numVertices )
+		protected HardwareVertexBuffer GetVertexBuffer( ref List<HardwareVertexBuffer> list, VertexDeclaration decl,
+		                                                int numVertices )
 		{
-			int sz = decl.GetVertexSize() * numVertices; // vertexSize* numVertices;
+			int sz = decl.GetVertexSize()*numVertices; // vertexSize* numVertices;
 			foreach ( var i in list )
 			{
 				if ( i.Size == sz )

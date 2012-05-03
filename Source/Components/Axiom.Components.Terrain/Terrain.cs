@@ -36,10 +36,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-
 using Axiom.Core;
 using Axiom.Core.Collections;
-
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Media;
@@ -345,7 +343,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2, "~ImportData" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -669,7 +667,7 @@ namespace Axiom.Components.Terrain
 		protected Camera mLastLODCamera;
 		protected ulong mLastLODFrame = 0;
 		protected Rectangle mLightmapExtraDirtyRect;
-		protected Terrain[] mNeighbours = new Terrain[ (int)NeighbourIndex.Count ];
+		protected Terrain[] mNeighbours = new Terrain[(int)NeighbourIndex.Count];
 		protected Rectangle mDirtyGeometryRectForNeighbours = new Rectangle( 0, 0, 0, 0 );
 		protected Rectangle mDirtyLightmapFromNeighboursRect = new Rectangle( 0, 0, 0, 0 );
 		private BufferBase mHeightDataPtr;
@@ -690,13 +688,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				if ( this.QuadTree == null )
+				if ( QuadTree == null )
 				{
 					return AxisAlignedBox.Null;
 				}
 				else
 				{
-					return this.QuadTree.AABB;
+					return QuadTree.AABB;
 				}
 			}
 		}
@@ -710,7 +708,7 @@ namespace Axiom.Components.Terrain
 			get
 			{
 				Matrix4 m = Matrix4.Identity;
-				m.Translation = this.Position;
+				m.Translation = Position;
 
 				AxisAlignedBox ret = AABB;
 				ret.TransformAffine( m );
@@ -726,13 +724,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				if ( this.QuadTree == null )
+				if ( QuadTree == null )
 				{
 					return 0;
 				}
 				else
 				{
-					return this.QuadTree.MinHeight;
+					return QuadTree.MinHeight;
 				}
 			}
 		}
@@ -745,13 +743,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				if ( this.QuadTree == null )
+				if ( QuadTree == null )
 				{
 					return 0;
 				}
 				else
 				{
-					return this.QuadTree.MaxHeight;
+					return QuadTree.MaxHeight;
 				}
 			}
 		}
@@ -764,13 +762,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				if ( this.QuadTree == null )
+				if ( QuadTree == null )
 				{
 					return 0;
 				}
 				else
 				{
-					return this.QuadTree.BoundingRadius;
+					return QuadTree.BoundingRadius;
 				}
 			}
 		}
@@ -783,13 +781,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				if ( string.IsNullOrEmpty( this.ResourceGroup ) )
+				if ( string.IsNullOrEmpty( ResourceGroup ) )
 				{
 					return TerrainGlobalOptions.DefaultResourceGroup;
 				}
 				else
 				{
-					return this.ResourceGroup;
+					return ResourceGroup;
 				}
 			}
 		}
@@ -897,9 +895,9 @@ namespace Axiom.Components.Terrain
 				if ( mPos != value )
 				{
 					mPos = value;
-					this.RootSceneNode.Position = mPos;
+					RootSceneNode.Position = mPos;
 					UpdateBaseScale();
-					this.IsModified = true;
+					IsModified = true;
 				}
 			}
 		}
@@ -998,10 +996,12 @@ namespace Axiom.Components.Terrain
 
 					// Check NPOT textures supported. We have to use NPOT textures to map
 					// texels to vertices directly!
-					if ( !mNormalMapRequired && Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.NonPowerOf2Textures ) )
+					if ( !mNormalMapRequired &&
+					     Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.NonPowerOf2Textures ) )
 					{
 						mNormalMapRequired = false;
-						LogManager.Instance.Write( LogMessageLevel.Critical, false, @"Terrain: Ignoring request for normal map generation since
+						LogManager.Instance.Write( LogMessageLevel.Critical, false,
+						                           @"Terrain: Ignoring request for normal map generation since
 							non-power-of-two texture support is required." );
 					}
 
@@ -1085,7 +1085,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				if ( this.GpuBufferAllocator != value )
+				if ( GpuBufferAllocator != value )
 				{
 					if ( IsLoaded )
 					{
@@ -1123,8 +1123,10 @@ namespace Axiom.Components.Terrain
 				if ( _posDecl == null )
 				{
 					_posDecl = new VertexDeclaration();
-					_posDecl.AddElement( TerrainQuadTreeNode.POSITION_BUFFER, 0, VertexElementType.Float3, VertexElementSemantic.Position );
-					_posDecl.AddElement( TerrainQuadTreeNode.POSITION_BUFFER, VertexElement.GetTypeSize( VertexElementType.Float3 ), VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
+					_posDecl.AddElement( TerrainQuadTreeNode.POSITION_BUFFER, 0, VertexElementType.Float3,
+					                     VertexElementSemantic.Position );
+					_posDecl.AddElement( TerrainQuadTreeNode.POSITION_BUFFER, VertexElement.GetTypeSize( VertexElementType.Float3 ),
+					                     VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 				}
 
 				return _posDecl;
@@ -1149,7 +1151,8 @@ namespace Axiom.Components.Terrain
 				if ( _deltaDecl == null )
 				{
 					_deltaDecl = new VertexDeclaration();
-					_deltaDecl.AddElement( TerrainQuadTreeNode.DELTA_BUFFER, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 1 );
+					_deltaDecl.AddElement( TerrainQuadTreeNode.DELTA_BUFFER, 0, VertexElementType.Float2,
+					                       VertexElementSemantic.TexCoords, 1 );
 				}
 
 				return _deltaDecl;
@@ -1393,12 +1396,12 @@ namespace Axiom.Components.Terrain
 		public Terrain( SceneManager sm )
 			: base()
 		{
-			this.SceneManager = sm;
-			this.ResourceGroup = string.Empty;
+			SceneManager = sm;
+			ResourceGroup = string.Empty;
 
 			mRootNode = sm.RootSceneNode.CreateChildSceneNode();
-			this.SceneManager.PreFindVisibleObjects += new FindVisibleObjectsEvent( _preFindVisibleObjects );
-			this.SceneManager.SceneManagerDestroyed += new SceneManagerDestroyedEvent( _sceneManagerDestroyed );
+			SceneManager.PreFindVisibleObjects += new FindVisibleObjectsEvent( _preFindVisibleObjects );
+			SceneManager.SceneManagerDestroyed += new SceneManagerDestroyedEvent( _sceneManagerDestroyed );
 			msBlendTextureGenerator = new NameGenerator<Texture>( "TerrBlend" );
 
 			var wq = Root.Instance.WorkQueue;
@@ -1410,13 +1413,13 @@ namespace Axiom.Components.Terrain
 			// name to be consistent & unique no matter what generator is being used
 			// so use our own pointer as identifier, use FashHash rather than just casting
 			// the pointer to a long so we support 64-bit pointers
-			mMaterialName = "AxiomTerrain/" + this.GetHashCode();
+			mMaterialName = "AxiomTerrain/" + GetHashCode();
 		}
 
 		[OgreVersion( 1, 7, 2, "~Terrain" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -1430,11 +1433,11 @@ namespace Axiom.Components.Terrain
 					FreeTemporaryResources();
 					FreeGPUResources();
 					FreeCPUResources();
-					if ( this.SceneManager != null )
+					if ( SceneManager != null )
 					{
-						this.SceneManager.DestroySceneNode( this.RootSceneNode );
-						this.SceneManager.PreFindVisibleObjects -= _preFindVisibleObjects;
-						this.SceneManager.SceneManagerDestroyed -= _sceneManagerDestroyed;
+						SceneManager.DestroySceneNode( RootSceneNode );
+						SceneManager.PreFindVisibleObjects -= _preFindVisibleObjects;
+						SceneManager.SceneManagerDestroyed -= _sceneManagerDestroyed;
 					}
 				}
 			}
@@ -1471,7 +1474,7 @@ namespace Axiom.Components.Terrain
 			// wait for any queued processes to finish
 			WaitForDerivedProcesses();
 
-			if ( this.IsHeightDataModified )
+			if ( IsHeightDataModified )
 			{
 				// When modifying, for efficiency we only increase the max deltas at each LOD,
 				// we never reduce them (since that would require re-examining more samples)
@@ -1488,7 +1491,7 @@ namespace Axiom.Components.Terrain
 
 			stream.WriteChunkBegin( TERRAIN_CHUNK_ID, TERRAIN_CHUNK_VERSION );
 
-			var align = (byte)this.Alignment;
+			var align = (byte)Alignment;
 			stream.Write( align );
 
 			stream.Write( mSize );
@@ -1520,7 +1523,7 @@ namespace Axiom.Components.Terrain
 				{
 					var fmt = GetBlendTextureFormat( (byte)i, numLayers );
 					var channels = PixelUtil.GetNumElemBytes( fmt );
-					var dataSz = channels * mLayerBlendMapSize * mLayerBlendMapSize;
+					var dataSz = channels*mLayerBlendMapSize*mLayerBlendMapSize;
 					var pData = mCpuBlendMapStorage[ i ];
 					stream.Write( pData );
 					stream.Write( dataSz );
@@ -1530,17 +1533,18 @@ namespace Axiom.Components.Terrain
 			{
 				if ( mLayerBlendMapSize != mLayerBlendSizeActual )
 				{
-					LogManager.Instance.Write( @"WARNING: blend maps were requested at a size larger than was supported
+					LogManager.Instance.Write(
+						@"WARNING: blend maps were requested at a size larger than was supported
 						on this hardware, which means the quality has been degraded" );
 				}
 				stream.Write( mLayerBlendSizeActual );
-				var tmpData = new byte[ mLayerBlendSizeActual * mLayerBlendSizeActual * 4 ];
+				var tmpData = new byte[mLayerBlendSizeActual*mLayerBlendSizeActual*4];
 				var pTmpDataF = BufferBase.Wrap( tmpData );
 				foreach ( var tex in mBlendTextureList )
 				{
 					var dst = new PixelBox( mLayerBlendSizeActual, mLayerBlendSizeActual, 1, tex.Format, pTmpDataF );
 					tex.GetBuffer().BlitToMemory( dst );
-					int dataSz = PixelUtil.GetNumElemBytes( tex.Format ) * mLayerBlendSizeActual * mLayerBlendSizeActual;
+					int dataSz = PixelUtil.GetNumElemBytes( tex.Format )*mLayerBlendSizeActual*mLayerBlendSizeActual;
 					stream.Write( tmpData );
 					stream.Write( dataSz );
 				}
@@ -1553,7 +1557,7 @@ namespace Axiom.Components.Terrain
 			stream.Write( mSize );
 			if ( mCpuTerrainNormalMap != null )
 			{
-				var aData = new byte[ mSize * mSize * 3 ];
+				var aData = new byte[mSize*mSize*3];
 				using ( var dest = BufferBase.Wrap( aData ) )
 				{
 					Memory.Copy( mCpuTerrainNormalMap.Data, dest, aData.Length );
@@ -1563,11 +1567,11 @@ namespace Axiom.Components.Terrain
 			}
 			else
 			{
-				var tmpData = new byte[ mSize * mSize * 3 ];
+				var tmpData = new byte[mSize*mSize*3];
 				using ( var wrap = BufferBase.Wrap( tmpData ) )
 				{
 					var dst = new PixelBox( mSize, mSize, 1, PixelFormat.BYTE_RGB, wrap );
-					this.TerrainNormalMap.GetBuffer().BlitToMemory( dst );
+					TerrainNormalMap.GetBuffer().BlitToMemory( dst );
 					stream.Write( tmpData );
 				}
 				tmpData = null;
@@ -1575,11 +1579,11 @@ namespace Axiom.Components.Terrain
 			stream.WriteChunkEnd( TERRAINDERIVEDDATA_CHUNK_ID );
 
 			//color map
-			if ( this.IsGlobalColorMapEnabled )
+			if ( IsGlobalColorMapEnabled )
 			{
 				stream.WriteChunkBegin( TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION );
 				stream.Write( "colormap" );
-				stream.Write( this.GlobalColorMapSize );
+				stream.Write( GlobalColorMapSize );
 				if ( mCpuColorMapStorage != null )
 				{
 					// save from CPU data if it's there, it means GPU data was never created
@@ -1587,11 +1591,11 @@ namespace Axiom.Components.Terrain
 				}
 				else
 				{
-					var aData = new byte[ this.GlobalColorMapSize * this.GlobalColorMapSize * 3 ];
+					var aData = new byte[GlobalColorMapSize*GlobalColorMapSize*3];
 					using ( var pDataF = BufferBase.Wrap( aData ) )
 					{
-						var dst = new PixelBox( this.GlobalColorMapSize, this.GlobalColorMapSize, 1, PixelFormat.BYTE_RGB, pDataF );
-						this.GlobalColorMap.GetBuffer().BlitToMemory( dst );
+						var dst = new PixelBox( GlobalColorMapSize, GlobalColorMapSize, 1, PixelFormat.BYTE_RGB, pDataF );
+						GlobalColorMap.GetBuffer().BlitToMemory( dst );
 					}
 					stream.Write( aData );
 				}
@@ -1603,7 +1607,7 @@ namespace Axiom.Components.Terrain
 			{
 				stream.WriteChunkBegin( TERRAINDERIVEDDATA_CHUNK_ID, TERRAINDERIVEDDATA_CHUNK_VERSION );
 				stream.Write( "lightmap" );
-				stream.Write( this.LightMapSize );
+				stream.Write( LightMapSize );
 				if ( mCpuLightmapStorage != null )
 				{
 					// save from CPU data if it's there, it means GPU data was never created
@@ -1611,11 +1615,11 @@ namespace Axiom.Components.Terrain
 				}
 				else
 				{
-					var aData = new byte[ this.LightMapSize * this.LightMapSize ];
+					var aData = new byte[LightMapSize*LightMapSize];
 					using ( var pDataF = BufferBase.Wrap( aData ) )
 					{
-						var dst = new PixelBox( this.LightMapSize, this.LightMapSize, 1, PixelFormat.L8, pDataF );
-						this.LightMap.GetBuffer().BlitToMemory( dst );
+						var dst = new PixelBox( LightMapSize, LightMapSize, 1, PixelFormat.L8, pDataF );
+						LightMap.GetBuffer().BlitToMemory( dst );
 					}
 					stream.Write( aData );
 				}
@@ -1636,11 +1640,11 @@ namespace Axiom.Components.Terrain
 				else
 				{
 					// composite map is 4 channel, 3x diffuse, 1x specular mask
-					var aData = new byte[ mCompositeMapSize * mCompositeMapSize * 4 ];
+					var aData = new byte[mCompositeMapSize*mCompositeMapSize*4];
 					using ( var pDataF = BufferBase.Wrap( aData ) )
 					{
 						var dst = new PixelBox( mCompositeMapSize, mCompositeMapSize, 1, PixelFormat.BYTE_RGB, pDataF );
-						this.CompositeMap.GetBuffer().BlitToMemory( dst );
+						CompositeMap.GetBuffer().BlitToMemory( dst );
 					}
 					stream.Write( aData );
 				}
@@ -1651,12 +1655,12 @@ namespace Axiom.Components.Terrain
 			stream.Write( mDeltaDataPtr );
 
 			//write the quadtree
-			this.QuadTree.Save( stream );
+			QuadTree.Save( stream );
 
 			stream.WriteChunkEnd( TERRAIN_CHUNK_ID );
 
-			this.IsModified = false;
-			this.IsHeightDataModified = false;
+			IsModified = false;
+			IsHeightDataModified = false;
 		}
 
 		/// <summary>
@@ -1760,7 +1764,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public static void WriteLayerInstanceList( List<LayerInstance> layers, ref StreamSerializer stream )
 		{
-			byte numLayers = (byte)layers.Count;
+			var numLayers = (byte)layers.Count;
 			stream.Write( numLayers );
 			foreach ( var inst in layers )
 			{
@@ -1779,7 +1783,8 @@ namespace Axiom.Components.Terrain
 		/// Utility method to read a layer instance list from a stream
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public static bool ReadLayerInstanceList( ref StreamSerializer stream, int numSamplers, ref List<LayerInstance> targetLayers )
+		public static bool ReadLayerInstanceList( ref StreamSerializer stream, int numSamplers,
+		                                          ref List<LayerInstance> targetLayers )
 		{
 			byte numLayers;
 			stream.Read( out numLayers );
@@ -1821,7 +1826,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public bool Prepare( string fileName )
 		{
-			var stream = (FileStream)ResourceGroupManager.Instance.OpenResource( fileName, this.DerivedResourceGroup );
+			var stream = (FileStream)ResourceGroupManager.Instance.OpenResource( fileName, DerivedResourceGroup );
 			var ser = new StreamSerializer( stream );
 			return Prepare( ser );
 		}
@@ -1850,19 +1855,19 @@ namespace Axiom.Components.Terrain
 
 			byte align;
 			stream.Read( out align );
-			this.Alignment = (Alignment)align;
+			Alignment = (Alignment)align;
 			stream.Read( out mSize );
 			stream.Read( out mWorldSize );
 
 			stream.Read( out mMaxBatchSize );
 			stream.Read( out mMinBatchSize );
 			stream.Read( out mPos );
-			this.RootSceneNode.Position = mPos;
+			RootSceneNode.Position = mPos;
 			UpdateBaseScale();
 			DetermineLodLevels();
 
-			int numVertices = mSize * mSize;
-			mHeightData = new float[ numVertices ];
+			int numVertices = mSize*mSize;
+			mHeightData = new float[numVertices];
 			stream.Read( out mHeightData );
 
 			// layer declaration
@@ -1871,7 +1876,7 @@ namespace Axiom.Components.Terrain
 				return false;
 			}
 
-			this.CheckDeclaration();
+			CheckDeclaration();
 
 			// Layers
 			if ( !ReadLayerInstanceList( ref stream, mLayerDecl.Elements.Count, ref mLayers ) )
@@ -1891,8 +1896,8 @@ namespace Axiom.Components.Terrain
 			{
 				var fmt = GetBlendTextureFormat( (byte)i, numLayers );
 				var channels = PixelUtil.GetNumElemBytes( fmt );
-				var dataSz = channels * mLayerBlendMapSize * mLayerBlendMapSize;
-				var data = new byte[ dataSz ];
+				var dataSz = channels*mLayerBlendMapSize*mLayerBlendMapSize;
+				var data = new byte[dataSz];
 				stream.Read( out data );
 				mCpuBlendMapStorage.AddRange( data );
 			}
@@ -1909,7 +1914,7 @@ namespace Axiom.Components.Terrain
 				if ( name == "normalmap" )
 				{
 					mNormalMapRequired = true;
-					var data = new byte[ sz * sz * 3 ];
+					var data = new byte[sz*sz*3];
 					stream.Read( out data );
 					using ( var pDataF = BufferBase.Wrap( data ) )
 					{
@@ -1918,23 +1923,23 @@ namespace Axiom.Components.Terrain
 				}
 				else if ( name == "colormap" )
 				{
-					this.IsGlobalColorMapEnabled = true;
-					this.GlobalColorMapSize = sz;
-					mCpuColorMapStorage = new byte[ sz * sz * 3 ];
+					IsGlobalColorMapEnabled = true;
+					GlobalColorMapSize = sz;
+					mCpuColorMapStorage = new byte[sz*sz*3];
 					stream.Read( out mCpuColorMapStorage );
 				}
 				else if ( name == "lightmap" )
 				{
 					mLightMapRequired = true;
-					this.LightMapSize = sz;
-					mCpuLightmapStorage = new byte[ sz * sz ];
+					LightMapSize = sz;
+					mCpuLightmapStorage = new byte[sz*sz];
 					stream.Read( out mCpuLightmapStorage );
 				}
 				else if ( name == "compositemap" )
 				{
 					mCompositeMapRequired = true;
 					mCompositeMapSize = sz;
-					mCpuCompositeMapStorage = new byte[ sz * sz * 4 ];
+					mCpuCompositeMapStorage = new byte[sz*sz*4];
 					stream.Read( out mCpuCompositeMapStorage );
 				}
 
@@ -1942,20 +1947,20 @@ namespace Axiom.Components.Terrain
 			}
 
 			//Load delta data
-			var deltaData = new float[ sizeof ( float ) * numVertices ];
+			var deltaData = new float[sizeof ( float )*numVertices];
 			stream.Read( out deltaData );
 			mDeltaDataPtr = BufferBase.Wrap( deltaData );
 
 			//Create and load quadtree
-			this.QuadTree = new TerrainQuadTreeNode( this, null, 0, 0, mSize, (ushort)( this.NumLodLevels - 1 ), 0, 0 );
-			this.QuadTree.Prepare();
+			QuadTree = new TerrainQuadTreeNode( this, null, 0, 0, mSize, (ushort)( NumLodLevels - 1 ), 0, 0 );
+			QuadTree.Prepare();
 
 			stream.ReadChunkEnd( TERRAIN_CHUNK_ID );
 
 			DistributeVertexData();
 
-			this.IsModified = false;
-			this.IsHeightDataModified = false;
+			IsModified = false;
+			IsHeightDataModified = false;
 
 			return true;
 		}
@@ -1978,7 +1983,9 @@ namespace Axiom.Components.Terrain
 			CopyGlobalOptions();
 
 			//validate
-			if ( !( Bitwise.IsPow2( importData.TerrainSize - 1 ) && Bitwise.IsPow2( importData.MinBatchSize - 1 ) && Bitwise.IsPow2( importData.MaxBatchSize - 1 ) ) )
+			if (
+				!( Bitwise.IsPow2( importData.TerrainSize - 1 ) && Bitwise.IsPow2( importData.MinBatchSize - 1 ) &&
+				   Bitwise.IsPow2( importData.MaxBatchSize - 1 ) ) )
 			{
 				throw new AxiomException( "terrainSize, minBatchSize and maxBatchSize must all be n^2 + 1. Terrain.Prepare" );
 			}
@@ -1993,7 +2000,7 @@ namespace Axiom.Components.Terrain
 				throw new AxiomException( "MaxBatchSize must be not larger then {0} . Terrain.Prepare", TERRAIN_MAX_BATCH_SIZE );
 			}
 
-			this.Alignment = importData.TerrainAlign;
+			Alignment = importData.TerrainAlign;
 			mSize = importData.TerrainSize;
 			mWorldSize = importData.WorldSize;
 			mLayerDecl = importData.LayerDeclaration;
@@ -2007,15 +2014,15 @@ namespace Axiom.Components.Terrain
 			UpdateBaseScale();
 			DetermineLodLevels();
 
-			int numVertices = mSize * mSize;
-			mHeightData = new float[ numVertices ];
+			int numVertices = mSize*mSize;
+			mHeightData = new float[numVertices];
 
 			if ( importData.InputFloat != null )
 			{
 				if ( Utility.RealEqual( importData.InputBias, 0.0f ) && Utility.RealEqual( importData.InputScale, 1.0f ) )
 				{
 					//straigt copy
-					mHeightData = new float[ numVertices ];
+					mHeightData = new float[numVertices];
 					Array.Copy( importData.InputFloat, mHeightData, mHeightData.Length );
 				}
 				else
@@ -2024,7 +2031,7 @@ namespace Axiom.Components.Terrain
 					var src = importData.InputFloat;
 					for ( var i = 0; i < numVertices; ++i )
 					{
-						mHeightData[ i ] = ( src[ i ] * importData.InputScale ) + importData.InputBias;
+						mHeightData[ i ] = ( src[ i ]*importData.InputScale ) + importData.InputBias;
 					}
 				}
 			}
@@ -2044,9 +2051,9 @@ namespace Axiom.Components.Terrain
 				for ( var i = 0; i < mSize; ++i )
 				{
 					var srcy = mSize - i - 1;
-					using ( var pSrc = pSrcBaseF + srcy * img.RowSpan )
+					using ( var pSrc = pSrcBaseF + srcy*img.RowSpan )
 					{
-						using ( var pDest = pHeightDataF + i * mSize * sizeof ( float ) )
+						using ( var pDest = pHeightDataF + i*mSize*sizeof ( float ) )
 						{
 							PixelConverter.BulkPixelConversion( pSrc, img.Format, pDest, PixelFormat.FLOAT32_R, mSize );
 						}
@@ -2060,24 +2067,24 @@ namespace Axiom.Components.Terrain
 				{
 					for ( int i = 0; i < numVertices; ++i )
 					{
-						mHeightData[ i ] = ( mHeightData[ i ] * importData.InputScale ) + importData.InputBias;
+						mHeightData[ i ] = ( mHeightData[ i ]*importData.InputScale ) + importData.InputBias;
 					}
 				}
 			}
 			else
 			{
 				// start with flat terrain
-				mHeightData = new float[ mSize * mSize ];
+				mHeightData = new float[mSize*mSize];
 			}
 
-			var deltaData = new float[ numVertices ];
+			var deltaData = new float[numVertices];
 
 			mHeightDataPtr = BufferBase.Wrap( mHeightData );
 			mDeltaDataPtr = BufferBase.Wrap( deltaData );
 
-			ushort numLevel = (ushort)(int)( this.NumLodLevels - 1 );
-			this.QuadTree = new TerrainQuadTreeNode( this, null, 0, 0, mSize, (ushort)( this.NumLodLevels - 1 ), 0, 0 );
-			this.QuadTree.Prepare();
+			var numLevel = (ushort)(int)( NumLodLevels - 1 );
+			QuadTree = new TerrainQuadTreeNode( this, null, 0, 0, mSize, (ushort)( NumLodLevels - 1 ), 0, 0 );
+			QuadTree.Prepare();
 
 			//calculate entire terrain
 			var rect = new Rectangle();
@@ -2091,8 +2098,8 @@ namespace Axiom.Components.Terrain
 			DistributeVertexData();
 
 			// Imported data is treated as modified because it's not saved
-			this.IsModified = true;
-			this.IsHeightDataModified = true;
+			IsModified = true;
+			IsHeightDataModified = true;
 
 			return true;
 		}
@@ -2101,13 +2108,13 @@ namespace Axiom.Components.Terrain
 		protected void CopyGlobalOptions()
 		{
 			SkirtSize = TerrainGlobalOptions.SkirtSize;
-			this.RenderQueueGroupID = TerrainGlobalOptions.RenderQueueGroup;
+			RenderQueueGroupID = TerrainGlobalOptions.RenderQueueGroup;
 			VisibilityFlags = TerrainGlobalOptions.VisibilityFlags;
 			QueryFlags = TerrainGlobalOptions.QueryFlags;
 			mLayerBlendMapSize = TerrainGlobalOptions.LayerBlendMapSize;
 			mLayerBlendSizeActual = mLayerBlendMapSize; // for now, until we check
-			this.LightMapSize = TerrainGlobalOptions.LightMapSize;
-			mLightmapSizeActual = this.LightMapSize; // for now, until we check
+			LightMapSize = TerrainGlobalOptions.LightMapSize;
+			mLightmapSizeActual = LightMapSize; // for now, until we check
 			mCompositeMapSize = TerrainGlobalOptions.CompositeMapSize;
 			mCompositeMapSizeActual = mCompositeMapSize; // for now, until we check
 		}
@@ -2145,11 +2152,13 @@ namespace Axiom.Components.Terrain
 				17 vertices (per side) or 33. This makes buffer re-use much easier while
 				still giving the full range of LODs.
 			*/
-			this.NumLodLevelsPerLeaf = (ushort)( Utility.Log2( mMaxBatchSize - 1 ) - Utility.Log2( mMinBatchSize - 1 ) + 1 );
-			this.NumLodLevels = (ushort)( Utility.Log2( mSize - 1 ) - Utility.Log2( mMinBatchSize - 1 ) + 1 );
-			mTreeDepth = (ushort)( this.NumLodLevels - this.NumLodLevelsPerLeaf + 1 );
+			NumLodLevelsPerLeaf = (ushort)( Utility.Log2( mMaxBatchSize - 1 ) - Utility.Log2( mMinBatchSize - 1 ) + 1 );
+			NumLodLevels = (ushort)( Utility.Log2( mSize - 1 ) - Utility.Log2( mMinBatchSize - 1 ) + 1 );
+			mTreeDepth = (ushort)( NumLodLevels - NumLodLevelsPerLeaf + 1 );
 
-			LogManager.Instance.Write( "Terrain created; size={0}, minBatch={1}, maxBatch={2}, treedepth={3}, lodLevels={4}, leafNodes={5}", mSize, mMinBatchSize, mMaxBatchSize, mTreeDepth, this.NumLodLevels, this.NumLodLevelsPerLeaf );
+			LogManager.Instance.Write(
+				"Terrain created; size={0}, minBatch={1}, maxBatch={2}, treedepth={3}, lodLevels={4}, leafNodes={5}", mSize,
+				mMinBatchSize, mMaxBatchSize, mTreeDepth, NumLodLevels, NumLodLevelsPerLeaf );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -2223,29 +2232,32 @@ namespace Axiom.Components.Terrain
 
 		*/
 			LogManager logMgr = LogManager.Instance;
-			logMgr.Write( LogMessageLevel.Trivial, false, @"Terrain.DistributeVertexData processing source 
+			logMgr.Write( LogMessageLevel.Trivial, false,
+			              @"Terrain.DistributeVertexData processing source 
 				terrain size of " + mSize, null );
 
 			var depth = mTreeDepth;
 			var prevDepth = depth;
 			var currentresolution = mSize;
 			var bakedresolution = mSize;
-			var targetsplits = (ushort)( ( bakedresolution - 1 ) / ( TERRAIN_MAX_BATCH_SIZE - 1 ) );
+			var targetsplits = (ushort)( ( bakedresolution - 1 )/( TERRAIN_MAX_BATCH_SIZE - 1 ) );
 			while ( depth-- != 0 && targetsplits != 0 )
 			{
 				var splits = (ushort)( 1 << depth );
 				if ( splits == targetsplits )
 				{
-					logMgr.Write( LogMessageLevel.Trivial, false, "Assigning vertex data, resolution={0}, startDepth={1}, endDepth={2}, splits={3}", bakedresolution, depth, prevDepth, splits );
+					logMgr.Write( LogMessageLevel.Trivial, false,
+					              "Assigning vertex data, resolution={0}, startDepth={1}, endDepth={2}, splits={3}", bakedresolution,
+					              depth, prevDepth, splits );
 					// vertex data goes at this level, at bakedresolution
 					// applies to all lower levels (except those with a closer vertex data)
 					// determine physical size (as opposed to resolution)
-					int sz = ( ( bakedresolution - 1 ) / splits ) + 1;
-					this.QuadTree.AssignVertexData( depth, prevDepth, bakedresolution, (ushort)sz );
+					int sz = ( ( bakedresolution - 1 )/splits ) + 1;
+					QuadTree.AssignVertexData( depth, prevDepth, bakedresolution, (ushort)sz );
 
 					// next set to look for
 					bakedresolution = (ushort)( ( ( currentresolution - 1 ) >> 1 ) + 1 );
-					targetsplits = (ushort)( ( bakedresolution - 1 ) / ( TERRAIN_MAX_BATCH_SIZE - 1 ) );
+					targetsplits = (ushort)( ( bakedresolution - 1 )/( TERRAIN_MAX_BATCH_SIZE - 1 ) );
 					prevDepth = depth;
 				}
 
@@ -2255,8 +2267,9 @@ namespace Axiom.Components.Terrain
 			// Always assign vertex data to the top of the tree
 			if ( prevDepth > 0 )
 			{
-				this.QuadTree.AssignVertexData( 0, 1, bakedresolution, bakedresolution );
-				logMgr.Write( LogMessageLevel.Trivial, false, "Assigning vertex data, resolution: {0}, startDepth=0, endDepth=1, splits=1", bakedresolution );
+				QuadTree.AssignVertexData( 0, 1, bakedresolution, bakedresolution );
+				logMgr.Write( LogMessageLevel.Trivial, false,
+				              "Assigning vertex data, resolution: {0}, startDepth=0, endDepth=1, splits=1", bakedresolution );
 			}
 
 			logMgr.Write( LogMessageLevel.Trivial, false, "Terrain.DistributeVertexdata finished" );
@@ -2313,14 +2326,14 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void Load()
 		{
-			if ( this.IsLoaded )
+			if ( IsLoaded )
 			{
 				return;
 			}
 
-			if ( this.QuadTree != null )
+			if ( QuadTree != null )
 			{
-				this.QuadTree.Load();
+				QuadTree.Load();
 			}
 
 			CheckLayers( true );
@@ -2331,7 +2344,7 @@ namespace Axiom.Components.Terrain
 
 			mMaterialGenerator.RequestOption( this );
 
-			this.IsLoaded = true;
+			IsLoaded = true;
 		}
 
 		/// <summary>
@@ -2343,22 +2356,22 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void Unload()
 		{
-			if ( !this.IsLoaded )
+			if ( !IsLoaded )
 			{
 				return;
 			}
 
-			if ( this.QuadTree != null )
+			if ( QuadTree != null )
 			{
-				this.QuadTree.Unload();
+				QuadTree.Unload();
 			}
 
 			// free own buffers if used, but not custom
 			mDefaultGpuBufferAllocator.FreeAllBuffers();
 
-			this.IsLoaded = false;
-			this.IsModified = false;
-			this.IsHeightDataModified = false;
+			IsLoaded = false;
+			IsModified = false;
+			IsHeightDataModified = false;
 		}
 
 		/// <summary>
@@ -2370,9 +2383,9 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void Unprepare()
 		{
-			if ( this.QuadTree != null )
+			if ( QuadTree != null )
 			{
-				this.QuadTree.Unprepare();
+				QuadTree.Unprepare();
 			}
 		}
 
@@ -2383,7 +2396,7 @@ namespace Axiom.Components.Terrain
 		public BufferBase GetHeightData( long x, long y )
 		{
 			System.Diagnostics.Debug.Assert( x >= 0 && x < mSize && y >= 0 && y < mSize, "Out of bounds.." );
-			return mHeightDataPtr + ( y * mSize + x ) * sizeof ( float );
+			return mHeightDataPtr + ( y*mSize + x )*sizeof ( float );
 		}
 
 		/// <summary>
@@ -2403,7 +2416,7 @@ namespace Axiom.Components.Terrain
 			y = Utility.Min( y, (long)mSize - 1L );
 			y = Utility.Max( y, 0L );
 
-			return mHeightData[ y + mSize * x ];
+			return mHeightData[ y + mSize*x ];
 		}
 
 		/// <summary>
@@ -2426,7 +2439,7 @@ namespace Axiom.Components.Terrain
 			y = Utility.Min( y, (long)mSize - 1L );
 			y = Utility.Max( y, 0L );
 
-			mHeightData[ y + mSize * x ] = heightVal;
+			mHeightData[ y + mSize*x ] = heightVal;
 			var rec = new Rectangle();
 			rec.Left = x;
 			rec.Right = x + 1;
@@ -2445,27 +2458,27 @@ namespace Axiom.Components.Terrain
 		{
 			// get left / bottom points (rounded down)
 			Real factor = mSize - 1;
-			Real invFactor = 1.0f / factor;
+			Real invFactor = 1.0f/factor;
 
-			var startX = (long)( x * factor );
-			var startY = (long)( y * factor );
+			var startX = (long)( x*factor );
+			var startY = (long)( y*factor );
 			var endX = startX + 1;
 			var endY = startY + 1;
 
 			// now get points in terrain space (effectively rounding them to boundaries)
 			// note that we do not clamp! We need a valid plane
-			Real startXTS = startX * invFactor;
-			Real startYTS = startY * invFactor;
-			Real endXTS = endX * invFactor;
-			Real endYTS = endY * invFactor;
+			Real startXTS = startX*invFactor;
+			Real startYTS = startY*invFactor;
+			Real endXTS = endX*invFactor;
+			Real endYTS = endY*invFactor;
 
 			//now clamp
 			endX = Utility.Min( endX, (long)mSize - 1 );
 			endY = Utility.Min( endY, (long)mSize - 1 );
 
 			// get parametric from start coord to next point
-			Real xParam = ( x - startXTS ) / invFactor;
-			Real yParam = ( y - startYTS ) / invFactor;
+			Real xParam = ( x - startXTS )/invFactor;
+			Real yParam = ( y - startYTS )/invFactor;
 
 			/* For even / odd tri strip rows, triangles are this shape:
 				even     odd
@@ -2481,7 +2494,7 @@ namespace Axiom.Components.Terrain
 			var v3 = new Vector3( startXTS, endYTS, GetHeightAtPoint( startX, endY ) );
 			//define this plane in terrain space
 			var plane = new Plane();
-			if ( startY % 2 != 0 )
+			if ( startY%2 != 0 )
 			{
 				//odd row
 				var secondTri = ( ( 1.0f - yParam ) > xParam );
@@ -2509,7 +2522,7 @@ namespace Axiom.Components.Terrain
 			}
 
 			//solve plane quation for z
-			return ( -plane.Normal.x * x - plane.Normal.y * y - plane.D ) / plane.Normal.z;
+			return ( -plane.Normal.x*x - plane.Normal.y*y - plane.D )/plane.Normal.z;
 		}
 
 		/// <summary>
@@ -2549,7 +2562,7 @@ namespace Axiom.Components.Terrain
 		public BufferBase GetDeltaData( long x, long y )
 		{
 			System.Diagnostics.Debug.Assert( x >= 0 && x < mSize && y >= 0 && y < mSize, "Out of bounds.." );
-			return mDeltaDataPtr + ( y * mSize + x ) * sizeof ( float );
+			return mDeltaDataPtr + ( y*mSize + x )*sizeof ( float );
 		}
 
 		/// <summary>
@@ -2647,8 +2660,8 @@ namespace Axiom.Components.Terrain
 								{
 									outVec.x -= mBase;
 									outVec.y -= mBase;
-									outVec.x /= ( mSize - 1 ) * mScale;
-									outVec.y /= ( mSize - 1 ) * mScale;
+									outVec.x /= ( mSize - 1 )*mScale;
+									outVec.y /= ( mSize - 1 )*mScale;
 								}
 								currSpace = Space.TerrainSpace;
 							}
@@ -2667,8 +2680,8 @@ namespace Axiom.Components.Terrain
 								// go via local space
 								if ( translation )
 								{
-									outVec.x *= ( mSize - 1 ) * mScale;
-									outVec.y *= ( mSize - 1 ) * mScale;
+									outVec.x *= ( mSize - 1 )*mScale;
+									outVec.y *= ( mSize - 1 )*mScale;
 									outVec.x += mBase;
 									outVec.y += mBase;
 								}
@@ -2760,7 +2773,7 @@ namespace Axiom.Components.Terrain
 		protected Vector3 convertWorldToTerrainAxes( Vector3 inVec )
 		{
 			Vector3 ret;
-			ConvertWorldToTerrainAxes( this.Alignment, inVec, out ret );
+			ConvertWorldToTerrainAxes( Alignment, inVec, out ret );
 			return ret;
 		}
 
@@ -2768,7 +2781,7 @@ namespace Axiom.Components.Terrain
 		protected Vector3 convertTerrainToWorldAxes( Vector3 inVec )
 		{
 			Vector3 ret;
-			ConvertTerrainToWorldAxes( this.Alignment, inVec, out ret );
+			ConvertTerrainToWorldAxes( Alignment, inVec, out ret );
 			return ret;
 		}
 
@@ -2785,7 +2798,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void GetPoint( long x, long y, ref Vector3 outpos )
 		{
-			GetPointAlign( x, y, this.Alignment, ref outpos );
+			GetPointAlign( x, y, Alignment, ref outpos );
 		}
 
 		/// <summary>
@@ -2796,7 +2809,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void GetPoint( long x, long y, float height, ref Vector3 outpos )
 		{
-			GetPointAlign( x, y, height, this.Alignment, ref outpos );
+			GetPointAlign( x, y, height, Alignment, ref outpos );
 		}
 
 		/// <summary>
@@ -2806,7 +2819,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void GetPointAlign( long x, long y, Alignment align, ref Vector3 outPos )
 		{
-			var height = mHeightData[ y + mSize * x ];
+			var height = mHeightData[ y + mSize*x ];
 			GetPointAlign( x, y, height, align, ref outPos );
 		}
 
@@ -2822,20 +2835,20 @@ namespace Axiom.Components.Terrain
 			{
 				case Alignment.Align_X_Z:
 					outPos.y = height;
-					outPos.x = x * mScale + mBase;
-					outPos.z = y * -mScale - mBase;
+					outPos.x = x*mScale + mBase;
+					outPos.z = y*-mScale - mBase;
 					break;
 
 				case Alignment.Align_Y_Z:
 					outPos.x = height;
-					outPos.z = x * -mScale - mBase;
-					outPos.y = y * mScale + mBase;
+					outPos.z = x*-mScale - mBase;
+					outPos.y = y*mScale + mBase;
 					break;
 
 				case Alignment.Align_X_Y:
 					outPos.z = height;
-					outPos.x = x * mScale + mBase;
-					outPos.y = y * mScale + mBase;
+					outPos.x = x*mScale + mBase;
+					outPos.y = y*mScale + mBase;
 					break;
 			}
 		}
@@ -2846,7 +2859,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void GetVector( Vector3 invec, ref Vector3 outVec )
 		{
-			GetVectorAlign( invec.x, invec.y, invec.z, this.Alignment, ref outVec );
+			GetVectorAlign( invec.x, invec.y, invec.z, Alignment, ref outVec );
 		}
 
 		/// <summary>
@@ -2861,7 +2874,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void GetVector( Real x, Real y, Real z, ref Vector3 outVec )
 		{
-			GetVectorAlign( x, y, z, this.Alignment, ref outVec );
+			GetVectorAlign( x, y, z, Alignment, ref outVec );
 		}
 
 		/// <summary>
@@ -2916,7 +2929,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void GetPosition( Vector3 TSPos, ref Vector3 outWSpos )
 		{
-			GetPositionAlign( TSPos, this.Alignment, ref outWSpos );
+			GetPositionAlign( TSPos, Alignment, ref outWSpos );
 		}
 
 		/// <summary>
@@ -2936,7 +2949,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void GetPosition( Real x, Real y, Real z, ref Vector3 outWSpos )
 		{
-			GetPositionAlign( x, y, z, this.Alignment, ref outWSpos );
+			GetPositionAlign( x, y, z, Alignment, ref outWSpos );
 		}
 
 		/// <summary>
@@ -2949,7 +2962,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void GetTerrainPosition( Vector3 WSpos, ref Vector3 outTSpos )
 		{
-			GetTerrainPositionAlign( WSpos, this.Alignment, ref outTSpos );
+			GetTerrainPositionAlign( WSpos, Alignment, ref outTSpos );
 		}
 
 		/// <summary>
@@ -2964,7 +2977,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void GetTerrainPosition( Real x, Real y, Real z, ref Vector3 outTSpos )
 		{
-			GetTerrainPositionAlign( x, y, z, this.Alignment, ref outTSpos );
+			GetTerrainPositionAlign( x, y, z, Alignment, ref outTSpos );
 		}
 
 		/// <summary>
@@ -3000,20 +3013,20 @@ namespace Axiom.Components.Terrain
 			{
 				case Alignment.Align_X_Z:
 					outWSpos.y = z;
-					outWSpos.x = x * ( mSize - 1 ) * mScale + mBase;
-					outWSpos.z = y * ( mSize - 1 ) * -mScale - mBase;
+					outWSpos.x = x*( mSize - 1 )*mScale + mBase;
+					outWSpos.z = y*( mSize - 1 )*-mScale - mBase;
 					break;
 
 				case Alignment.Align_Y_Z:
 					outWSpos.x = z;
-					outWSpos.y = y * ( mSize - 1 ) * mScale + mBase;
-					outWSpos.z = x * ( mSize - 1 ) * -mScale - mBase;
+					outWSpos.y = y*( mSize - 1 )*mScale + mBase;
+					outWSpos.z = x*( mSize - 1 )*-mScale - mBase;
 					break;
 
 				case Alignment.Align_X_Y:
 					outWSpos.z = z;
-					outWSpos.x = x * ( mSize - 1 ) * mScale + mBase;
-					outWSpos.y = y * ( mSize - 1 ) * mScale + mBase;
+					outWSpos.x = x*( mSize - 1 )*mScale + mBase;
+					outWSpos.y = y*( mSize - 1 )*mScale + mBase;
 					break;
 			}
 		}
@@ -3046,20 +3059,20 @@ namespace Axiom.Components.Terrain
 			switch ( align )
 			{
 				case Alignment.Align_X_Z:
-					outTSpos.x = ( x - mBase - mPos.x ) / ( ( mSize - 1 ) * mScale );
-					outTSpos.y = ( z + mBase - mPos.z ) / ( ( mSize - 1 ) * -mScale );
+					outTSpos.x = ( x - mBase - mPos.x )/( ( mSize - 1 )*mScale );
+					outTSpos.y = ( z + mBase - mPos.z )/( ( mSize - 1 )*-mScale );
 					outTSpos.z = y;
 					break;
 
 				case Alignment.Align_Y_Z:
-					outTSpos.x = ( z - mBase - mPos.z ) / ( ( mSize - 1 ) * -mScale );
-					outTSpos.y = ( y + mBase - mPos.y ) / ( ( mSize - 1 ) * mScale );
+					outTSpos.x = ( z - mBase - mPos.z )/( ( mSize - 1 )*-mScale );
+					outTSpos.y = ( y + mBase - mPos.y )/( ( mSize - 1 )*mScale );
 					outTSpos.z = x;
 					break;
 
 				case Alignment.Align_X_Y:
-					outTSpos.x = ( x - mBase - mPos.x ) / ( ( mSize - 1 ) * mScale );
-					outTSpos.y = ( y - mBase - mPos.y ) / ( ( mSize - 1 ) * mScale );
+					outTSpos.x = ( x - mBase - mPos.x )/( ( mSize - 1 )*mScale );
+					outTSpos.y = ( y - mBase - mPos.y )/( ( mSize - 1 )*mScale );
 					outTSpos.z = z;
 					break;
 			}
@@ -3073,7 +3086,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void GetTerrainVector( Vector3 inVec, ref Vector3 outVec )
 		{
-			GetTerrainVectorAlign( inVec.x, inVec.y, inVec.z, this.Alignment, ref outVec );
+			GetTerrainVectorAlign( inVec.x, inVec.y, inVec.z, Alignment, ref outVec );
 		}
 
 		/// <summary>
@@ -3089,7 +3102,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void GetTerrainVector( Real x, Real y, Real z, ref Vector3 outVec )
 		{
-			GetTerrainVectorAlign( x, y, z, this.Alignment, ref outVec );
+			GetTerrainVectorAlign( x, y, z, Alignment, ref outVec );
 		}
 
 		/// <summary>
@@ -3174,17 +3187,17 @@ namespace Axiom.Components.Terrain
 			{
 				if ( index >= mLayerUVMultiplier.Count )
 				{
-					mLayerUVMultiplier.Add( mWorldSize / size );
+					mLayerUVMultiplier.Add( mWorldSize/size );
 				}
 				else
 				{
-					mLayerUVMultiplier[ index ] = mWorldSize / size;
+					mLayerUVMultiplier[ index ] = mWorldSize/size;
 				}
 
 				var inst = mLayers[ index ];
 				inst.WorldSize = size;
 				mMaterialParamsDirty = true;
-				this.IsModified = true;
+				IsModified = true;
 			}
 		}
 
@@ -3226,7 +3239,7 @@ namespace Axiom.Components.Terrain
 			for ( var i = 0; i < mLayers.Count; ++i )
 			{
 				var inst = mLayers[ i ];
-				mLayerUVMultiplier.Add( mWorldSize / inst.WorldSize );
+				mLayerUVMultiplier.Add( mWorldSize/inst.WorldSize );
 			}
 		}
 
@@ -3266,7 +3279,7 @@ namespace Axiom.Components.Terrain
 					mLayers[ layerIndex ].TextureNames[ samplerIndex ] = textureName;
 					mMaterialDirty = true;
 					mMaterialParamsDirty = true;
-					this.IsModified = true;
+					IsModified = true;
 				}
 			}
 		}
@@ -3275,9 +3288,9 @@ namespace Axiom.Components.Terrain
 		protected void UpdateBaseScale()
 		{
 			//centre the terrain on local origin
-			mBase = -mWorldSize * 0.5f;
+			mBase = -mWorldSize*0.5f;
 			// scale determines what 1 unit on the grid becomes in world space
-			mScale = mWorldSize / (Real)( mSize - 1 );
+			mScale = mWorldSize/(Real)( mSize - 1 );
 		}
 
 		/// <summary>
@@ -3315,8 +3328,8 @@ namespace Axiom.Components.Terrain
 			mDirtyDerivedDataRect.Merge( rect );
 			mCompositeMapDirtyRect.Merge( rect );
 
-			this.IsModified = true;
-			this.IsHeightDataModified = true;
+			IsModified = true;
+			IsHeightDataModified = true;
 		}
 
 		/// <summary>
@@ -3331,7 +3344,7 @@ namespace Axiom.Components.Terrain
 		internal void DirtyCompositeMapRect( Rectangle rect )
 		{
 			mCompositeMapDirtyRect.Merge( rect );
-			this.IsModified = true;
+			IsModified = true;
 		}
 
 		/// <summary>
@@ -3350,7 +3363,7 @@ namespace Axiom.Components.Terrain
 		public void DirtyLightmapRect( Rectangle rect )
 		{
 			mDirtyDerivedDataRect.Merge( rect );
-			this.IsModified = true;
+			IsModified = true;
 		}
 
 		/// <summary>
@@ -3430,7 +3443,7 @@ namespace Axiom.Components.Terrain
 		{
 			if ( !mDirtyGeometryRect.IsNull )
 			{
-				this.QuadTree.UpdateVertexData( true, false, mDirtyGeometryRect, false );
+				QuadTree.UpdateVertexData( true, false, mDirtyGeometryRect, false );
 				mDirtyGeometryRect.IsNull = true;
 			}
 
@@ -3459,8 +3472,8 @@ namespace Axiom.Components.Terrain
 		{
 			if ( !mDirtyDerivedDataRect.IsNull || !mDirtyLightmapFromNeighboursRect.IsNull )
 			{
-				this.IsModified = true;
-				if ( this.IsDerivedDataUpdateInProgress )
+				IsModified = true;
+				if ( IsDerivedDataUpdateInProgress )
 				{
 					// Don't launch many updates, instead wait for the other one 
 					// to finish and issue another afterwards.
@@ -3499,7 +3512,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		protected void UpdateDerivedDataImpl( Rectangle rect, Rectangle lightmapExtraRect, bool synchronous, byte typeMask )
 		{
-			this.IsDerivedDataUpdateInProgress = true;
+			IsDerivedDataUpdateInProgress = true;
 			mDerivedUpdatePendingMask = 0;
 
 			var req = new DerivedDataRequest();
@@ -3524,7 +3537,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		protected void WaitForDerivedProcesses()
 		{
-			while ( this.IsDerivedDataUpdateInProgress )
+			while ( IsDerivedDataUpdateInProgress )
 			{
 				//we need to wait for this to finish
 				System.Threading.Thread.Sleep( 50 );
@@ -3540,8 +3553,8 @@ namespace Axiom.Components.Terrain
 			mDeltaDataPtr.SafeDispose();
 			mDeltaDataPtr = null;
 
-			this.QuadTree.SafeDispose();
-			this.QuadTree = null;
+			QuadTree.SafeDispose();
+			QuadTree = null;
 
 			if ( mCpuTerrainNormalMap != null )
 			{
@@ -3570,28 +3583,28 @@ namespace Axiom.Components.Terrain
 
 				mBlendTextureList.Clear();
 
-				if ( this.TerrainNormalMap != null )
+				if ( TerrainNormalMap != null )
 				{
-					tmgr.Remove( this.TerrainNormalMap.Handle );
-					this.TerrainNormalMap = null;
+					tmgr.Remove( TerrainNormalMap.Handle );
+					TerrainNormalMap = null;
 				}
 
-				if ( this.GlobalColorMap != null )
+				if ( GlobalColorMap != null )
 				{
-					tmgr.Remove( this.GlobalColorMap.Handle );
-					this.GlobalColorMap = null;
+					tmgr.Remove( GlobalColorMap.Handle );
+					GlobalColorMap = null;
 				}
 
-				if ( this.LightMap != null )
+				if ( LightMap != null )
 				{
-					tmgr.Remove( this.LightMap.Handle );
-					this.LightMap = null;
+					tmgr.Remove( LightMap.Handle );
+					LightMap = null;
 				}
 
-				if ( this.CompositeMap != null )
+				if ( CompositeMap != null )
 				{
-					tmgr.Remove( this.CompositeMap.Handle );
-					this.CompositeMap = null;
+					tmgr.Remove( CompositeMap.Handle );
+					CompositeMap = null;
 				}
 
 				if ( mMaterial != null )
@@ -3627,10 +3640,10 @@ namespace Axiom.Components.Terrain
 			clampedRect.Bottom = Utility.Min( (long)mSize, clampedRect.Bottom );
 
 			var finalRect = new Rectangle( clampedRect );
-			this.QuadTree.PreDeltaCalculation( clampedRect );
+			QuadTree.PreDeltaCalculation( clampedRect );
 
 			// Iterate over target levels, 
-			for ( var targetLevel = 1; targetLevel < this.NumLodLevels; ++targetLevel )
+			for ( var targetLevel = 1; targetLevel < NumLodLevels; ++targetLevel )
 			{
 				var sourceLevel = targetLevel - 1;
 				var step = 1 << targetLevel;
@@ -3649,15 +3662,15 @@ namespace Axiom.Components.Terrain
 				// now round the rectangle at this level so that it starts & ends on 
 				// the step boundaries
 				var lodRect = new Rectangle( widendRect );
-				lodRect.Left -= lodRect.Left % step;
-				lodRect.Top -= lodRect.Top % step;
-				if ( lodRect.Right % step != 0 )
+				lodRect.Left -= lodRect.Left%step;
+				lodRect.Top -= lodRect.Top%step;
+				if ( lodRect.Right%step != 0 )
 				{
-					lodRect.Right += step - ( lodRect.Right % step );
+					lodRect.Right += step - ( lodRect.Right%step );
 				}
-				if ( lodRect.Bottom % step != 0 )
+				if ( lodRect.Bottom%step != 0 )
 				{
-					lodRect.Bottom += step - ( lodRect.Bottom % step );
+					lodRect.Bottom += step - ( lodRect.Bottom%step );
 				}
 
 				for ( var j = (int)lodRect.Top; j < lodRect.Bottom - step; j += step )
@@ -3687,7 +3700,7 @@ namespace Axiom.Components.Terrain
 						var t2 = new Plane();
 						var backwardTri = false;
 						// Odd or even in terms of target level
-						if ( ( j / step ) % 2 == 0 )
+						if ( ( j/step )%2 == 0 )
 						{
 							t1.Redefine( v0, v1, v3 );
 							t2.Redefine( v0, v3, v2 );
@@ -3709,13 +3722,13 @@ namespace Axiom.Components.Terrain
 							{
 								var fulldetailx = i + x;
 								var fulldetaily = j + y;
-								if ( fulldetailx % step == 0 && fulldetaily % step == 0 )
+								if ( fulldetailx%step == 0 && fulldetaily%step == 0 )
 								{
 									// Skip, this one is a vertex at this level
 									continue;
 								}
-								var ypct = (Real)y / (Real)step;
-								var xpct = (Real)x / (Real)step;
+								var ypct = (Real)y/(Real)step;
+								var xpct = (Real)x/(Real)step;
 
 								//interpolated height
 								var actualPos = Vector3.Zero;
@@ -3725,12 +3738,12 @@ namespace Axiom.Components.Terrain
 								if ( ( xpct > ypct && !backwardTri ) || ( xpct > ( 1 - ypct ) && backwardTri ) )
 								{
 									// Solve for x/z
-									interp_h = ( -t1.Normal.x * actualPos.x - t1.Normal.y * actualPos.y - t1.D ) / t1.Normal.z;
+									interp_h = ( -t1.Normal.x*actualPos.x - t1.Normal.y*actualPos.y - t1.D )/t1.Normal.z;
 								}
 								else
 								{
 									// Second tri
-									interp_h = ( -t2.Normal.x * actualPos.x - t2.Normal.y * actualPos.y - t2.D ) / t2.Normal.z;
+									interp_h = ( -t2.Normal.x*actualPos.x - t2.Normal.y*actualPos.y - t2.D )/t2.Normal.z;
 								}
 
 								var actual_h = actualPos.z;
@@ -3738,9 +3751,11 @@ namespace Axiom.Components.Terrain
 
 								// max(delta) is the worst case scenario at this LOD
 								// compared to the original heightmap
-								if ( delta == float.NaN ) {}
+								if ( delta == float.NaN )
+								{
+								}
 								// tell the quadtree about this 
-								this.QuadTree.NotifyDelta( (ushort)fulldetailx, (ushort)fulldetaily, (ushort)sourceLevel, delta );
+								QuadTree.NotifyDelta( (ushort)fulldetailx, (ushort)fulldetaily, (ushort)sourceLevel, delta );
 
 
 								// If this vertex is being removed at this LOD, 
@@ -3748,15 +3763,16 @@ namespace Axiom.Components.Terrain
 								// it will need to make. Vertices to be removed at this LOD
 								// are halfway between the steps, but exclude those that
 								// would have been eliminated at earlier levels
-								int halfStep = step / 2;
-								if ( ( ( fulldetailx % step ) == halfStep && ( fulldetaily % halfStep ) == 0 ) || ( ( fulldetaily % step ) == halfStep && ( fulldetailx % halfStep ) == 0 ) )
+								int halfStep = step/2;
+								if ( ( ( fulldetailx%step ) == halfStep && ( fulldetaily%halfStep ) == 0 ) ||
+								     ( ( fulldetaily%step ) == halfStep && ( fulldetailx%halfStep ) == 0 ) )
 								{
 #if !AXIOM_SAFE_ONLY
 									unsafe
 #endif
 									{
 										// Save height difference 
-										var pDest = this.GetDeltaData( fulldetailx, fulldetaily ).ToFloatPointer();
+										var pDest = GetDeltaData( fulldetailx, fulldetaily ).ToFloatPointer();
 										pDest[ 0 ] = delta;
 									}
 								}
@@ -3766,7 +3782,7 @@ namespace Axiom.Components.Terrain
 				} //j
 			} //targetlevel
 
-			this.QuadTree.PostDeltaCalculation( clampedRect );
+			QuadTree.PostDeltaCalculation( clampedRect );
 
 			return finalRect;
 		}
@@ -3789,9 +3805,9 @@ namespace Axiom.Components.Terrain
 			clampedRect.Bottom = Utility.Min( (long)mSize, clampedRect.Bottom );
 
 			// min/max information
-			this.QuadTree.FinaliseDeltaValues( clampedRect );
+			QuadTree.FinaliseDeltaValues( clampedRect );
 			// dekta vertex data
-			this.QuadTree.UpdateVertexData( false, true, clampedRect, cpuData );
+			QuadTree.UpdateVertexData( false, true, clampedRect, cpuData );
 		}
 
 		/// <summary>
@@ -3808,7 +3824,7 @@ namespace Axiom.Components.Terrain
 		private void _preFindVisibleObjects( SceneManager source, IlluminationRenderStage irs, Viewport v )
 		{
 			//Early-out
-			if ( !this.IsLoaded )
+			if ( !IsLoaded )
 			{
 				return;
 			}
@@ -3851,16 +3867,16 @@ namespace Axiom.Components.Terrain
 		{
 			Unload();
 			Unprepare();
-			if ( source == this.SceneManager )
+			if ( source == SceneManager )
 			{
-				this.SceneManager = null;
+				SceneManager = null;
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected void CalculateCurrentLod( Viewport vp )
 		{
-			if ( this.QuadTree != null )
+			if ( QuadTree != null )
 			{
 				// calculate error terms
 				var cam = vp.Camera.LodCamera;
@@ -3868,14 +3884,14 @@ namespace Axiom.Components.Terrain
 				// W. de Boer 2000 calculation
 				// A = vp_near / abs(vp_top)
 				// A = 1 / tan(fovy*0.5)    (== 1 for fovy=45*2)
-				var A = 1.0f / Utility.Tan( cam.FieldOfView * 0.5 );
+				var A = 1.0f/Utility.Tan( cam.FieldOfView*0.5 );
 				// T = 2 * maxPixelError / vertRes
-				var maxPixelError = TerrainGlobalOptions.MaxPixelError * cam.InverseLodBias;
-				var T = 2.0f * maxPixelError / (Real)vp.ActualHeight;
+				var maxPixelError = TerrainGlobalOptions.MaxPixelError*cam.InverseLodBias;
+				var T = 2.0f*maxPixelError/(Real)vp.ActualHeight;
 
 				// CFactor = A / T
-				var cFactor = A / T;
-				this.QuadTree.CalculateCurrentLod( cam, cFactor );
+				var cFactor = A/T;
+				QuadTree.CalculateCurrentLod( cam, cFactor );
 			}
 		}
 
@@ -3930,8 +3946,8 @@ namespace Axiom.Components.Terrain
 					break;
 			}
 			// readjust coordinate origin
-			rayOrigin.x += mWorldSize / 2;
-			rayOrigin.z += mWorldSize / 2;
+			rayOrigin.x += mWorldSize/2;
+			rayOrigin.z += mWorldSize/2;
 			// scale down to vertex level
 			rayOrigin.x /= mScale;
 			rayOrigin.z /= mScale;
@@ -3970,7 +3986,7 @@ namespace Axiom.Components.Terrain
 			var zDir = ( rayDirection.z < 0 ? -1 : 1 );
 
 			Result = new KeyValuePair<bool, Vector3>( true, Vector3.Zero );
-			var dummyHighValue = (Real)mSize * 10000;
+			var dummyHighValue = (Real)mSize*10000;
 
 			while ( cur.y >= ( minHeight - 1e-3 ) && cur.y <= ( maxHeight + 1e-3 ) )
 			{
@@ -3986,17 +4002,17 @@ namespace Axiom.Components.Terrain
 				}
 
 				// determine next quad to test
-				var xDist = Utility.RealEqual( rayDirection.x, 0.0f ) ? dummyHighValue : ( quadX - cur.x + flipX ) / rayDirection.x;
-				var zDist = Utility.RealEqual( rayDirection.z, 0.0f ) ? dummyHighValue : ( quadZ - cur.z + flipZ ) / rayDirection.z;
+				var xDist = Utility.RealEqual( rayDirection.x, 0.0f ) ? dummyHighValue : ( quadX - cur.x + flipX )/rayDirection.x;
+				var zDist = Utility.RealEqual( rayDirection.z, 0.0f ) ? dummyHighValue : ( quadZ - cur.z + flipZ )/rayDirection.z;
 				if ( xDist < zDist )
 				{
 					quadX += xDir;
-					cur += rayDirection * xDist;
+					cur += rayDirection*xDist;
 				}
 				else
 				{
 					quadZ += zDir;
-					cur += rayDirection * zDist;
+					cur += rayDirection*zDist;
 				}
 			}
 			var resVec = Vector3.Zero;
@@ -4007,8 +4023,8 @@ namespace Axiom.Components.Terrain
 				resVec = Result.Value;
 				resVec.x *= mScale;
 				resVec.z *= mScale;
-				resVec.x -= mWorldSize / 2;
-				resVec.z -= mWorldSize / 2;
+				resVec.x -= mWorldSize/2;
+				resVec.z -= mWorldSize/2;
 				switch ( Alignment )
 				{
 					case Alignment.Align_X_Y:
@@ -4059,11 +4075,14 @@ namespace Axiom.Components.Terrain
 		protected KeyValuePair<bool, Vector3> CheckQuadIntersection( int x, int z, Ray ray )
 		{
 			// build the two planes belonging to the quad's triangles
-			Vector3 v1 = new Vector3( x, mHeightData[ z + mSize * x ], z ), v2 = new Vector3( x + 1, mHeightData[ z + mSize * ( x + 1 ) ], z ), v3 = new Vector3( x, mHeightData[ ( z + 1 ) + mSize * x ], z + 1 ), v4 = new Vector3( x + 1, mHeightData[ ( z + 1 ) + mSize * ( x + 1 ) ], z + 1 );
+			Vector3 v1 = new Vector3( x, mHeightData[ z + mSize*x ], z ),
+			        v2 = new Vector3( x + 1, mHeightData[ z + mSize*( x + 1 ) ], z ),
+			        v3 = new Vector3( x, mHeightData[ ( z + 1 ) + mSize*x ], z + 1 ),
+			        v4 = new Vector3( x + 1, mHeightData[ ( z + 1 ) + mSize*( x + 1 ) ], z + 1 );
 
 			Plane p1 = new Plane(), p2 = new Plane();
 			var oddRow = false;
-			if ( z % 2 != 0 )
+			if ( z%2 != 0 )
 			{
 				/* odd
 					3---4
@@ -4190,7 +4209,7 @@ namespace Axiom.Components.Terrain
 
 				mMaterialDirty = true;
 				mMaterialParamsDirty = true;
-				this.IsModified = true;
+				IsModified = true;
 			}
 		}
 
@@ -4268,7 +4287,7 @@ namespace Axiom.Components.Terrain
 
 			mMaterialDirty = true;
 			mMaterialParamsDirty = true;
-			this.IsModified = true;
+			IsModified = true;
 		}
 
 		/// <see cref="Terrain.AddLayer(byte, Real, List<string>)"/>
@@ -4313,7 +4332,7 @@ namespace Axiom.Components.Terrain
 
 				mMaterialDirty = true;
 				mMaterialParamsDirty = true;
-				this.IsModified = true;
+				IsModified = true;
 			}
 		}
 
@@ -4342,12 +4361,12 @@ namespace Axiom.Components.Terrain
 			var idx = (byte)( layerIndex - 1 );
 			if ( mLayerBlendMapList[ idx ] == null )
 			{
-				if ( mBlendTextureList.Count < (int)( idx / 4 ) )
+				if ( mBlendTextureList.Count < (int)( idx/4 ) )
 				{
 					CheckLayers( true );
 				}
 
-				var tex = mBlendTextureList[ idx / 4 ];
+				var tex = mBlendTextureList[ idx/4 ];
 				mLayerBlendMapList[ idx ] = new TerrainLayerBlendMap( this, layerIndex, tex.GetBuffer() );
 			}
 
@@ -4360,7 +4379,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public byte GetBlendTextureCount( byte numLayers )
 		{
-			return (byte)( ( ( numLayers - 1 ) / 4 ) + 1 );
+			return (byte)( ( ( numLayers - 1 )/4 ) + 1 );
 		}
 
 		/// <summary>
@@ -4387,7 +4406,7 @@ namespace Axiom.Components.Terrain
 		protected void shiftUpGPUBlendChannels( byte index )
 		{
 			// checkLayers() has been called to make sure the blend textures have been created
-			System.Diagnostics.Debug.Assert( mBlendTextureList.Count == GetBlendTextureCount( this.LayerCount ) );
+			System.Diagnostics.Debug.Assert( mBlendTextureList.Count == GetBlendTextureCount( LayerCount ) );
 
 			// Shift all blend channels > index UP one slot, possibly into the next texture
 			// Example:  index = 2
@@ -4395,7 +4414,7 @@ namespace Axiom.Components.Terrain
 			//      After:  [1 2 0 3] [4 5]
 
 			var layerIndex = (byte)( index + 1 );
-			for ( var i = (byte)( this.LayerCount - 1 ); i > layerIndex; --i )
+			for ( var i = (byte)( LayerCount - 1 ); i > layerIndex; --i )
 			{
 				var destPair = GetLayerBlendTextureIndex( i );
 				var srcPair = GetLayerBlendTextureIndex( (byte)( i - 1 ) );
@@ -4415,7 +4434,7 @@ namespace Axiom.Components.Terrain
 		protected void shiftDownGPUBlendChannels( byte index )
 		{
 			// checkLayers() has been called to make sure the blend textures have been created
-			System.Diagnostics.Debug.Assert( mBlendTextureList.Count == GetBlendTextureCount( this.LayerCount ) );
+			System.Diagnostics.Debug.Assert( mBlendTextureList.Count == GetBlendTextureCount( LayerCount ) );
 
 			// Shift all blend channels above layerIndex DOWN one slot, possibly into the previous texture
 			// Example:  index = 2
@@ -4432,9 +4451,9 @@ namespace Axiom.Components.Terrain
 			}
 
 			// Reset the layer to black
-			if ( this.LayerCount > 1 )
+			if ( LayerCount > 1 )
 			{
-				var layerPair = GetLayerBlendTextureIndex( (byte)( this.LayerCount - 1 ) );
+				var layerPair = GetLayerBlendTextureIndex( (byte)( LayerCount - 1 ) );
 				clearGPUBlendChannel( layerPair.Key, layerPair.Value );
 			}
 		}
@@ -4452,7 +4471,7 @@ namespace Axiom.Components.Terrain
 
 			var pDestBase = destBuffer.Lock( box, BufferLocking.Normal ).Data;
 			var rgbaShift = PixelUtil.GetBitShifts( destBuffer.Format );
-			var pDest = pDestBase + rgbaShift[ destChannel ] / 8;
+			var pDest = pDestBase + rgbaShift[ destChannel ]/8;
 			var destInc = PixelUtil.GetNumElemBytes( destBuffer.Format );
 
 			int srcInc;
@@ -4460,14 +4479,14 @@ namespace Axiom.Components.Terrain
 
 			if ( destBuffer == srcBuffer )
 			{
-				pSrc = pDestBase + rgbaShift[ srcChannel ] / 8;
+				pSrc = pDestBase + rgbaShift[ srcChannel ]/8;
 				srcInc = destInc;
 			}
 			else
 			{
 				pSrc = srcBuffer.Lock( box, BufferLocking.ReadOnly ).Data;
 				rgbaShift = PixelUtil.GetBitShifts( srcBuffer.Format );
-				pSrc += rgbaShift[ srcChannel ] / 8;
+				pSrc += rgbaShift[ srcChannel ]/8;
 				srcInc = PixelUtil.GetNumElemBytes( srcBuffer.Format );
 			}
 
@@ -4500,7 +4519,7 @@ namespace Axiom.Components.Terrain
 
 			var pData = buffer.Lock( box, BufferLocking.Normal ).Data;
 			var rgbaShift = PixelUtil.GetBitShifts( buffer.Format );
-			pData += rgbaShift[ channel ] / 8;
+			pData += rgbaShift[ channel ]/8;
 			var inc = PixelUtil.GetNumElemBytes( buffer.Format );
 
 			for ( var y = box.Top; y < box.Bottom; ++y )
@@ -4541,7 +4560,10 @@ namespace Axiom.Components.Terrain
 				// Use TU_STATIC because although we will update this, we won't do it every frame
 				// in normal circumstances, so we don't want TU_DYNAMIC. Also we will 
 				// read it (if we've cleared local temp areas) so no WRITE_ONLY
-				mBlendTextureList.Add( (Texture)tmgr.CreateManual( msBlendTextureGenerator.GetNextUniqueName(), this.DerivedResourceGroup, TextureType.TwoD, mLayerBlendMapSize, mLayerBlendMapSize, 1, 0, fmt, TextureUsage.Static, null ) );
+				mBlendTextureList.Add(
+					(Texture)
+					tmgr.CreateManual( msBlendTextureGenerator.GetNextUniqueName(), DerivedResourceGroup, TextureType.TwoD,
+					                   mLayerBlendMapSize, mLayerBlendMapSize, 1, 0, fmt, TextureUsage.Static, null ) );
 
 				mLayerBlendSizeActual = (ushort)mBlendTextureList[ i ].Width;
 				if ( mCpuBlendMapStorage.Count > i )
@@ -4559,7 +4581,7 @@ namespace Axiom.Components.Terrain
 					var box = new BasicBox( 0, 0, mLayerBlendMapSize, mLayerBlendMapSize );
 					var buf = mBlendTextureList[ i ].GetBuffer();
 					var pInit = buf.Lock( box, BufferLocking.Discard ).Data;
-					var aZero = new byte[ PixelUtil.GetNumElemBytes( fmt ) * mLayerBlendMapSize * mLayerBlendMapSize ];
+					var aZero = new byte[PixelUtil.GetNumElemBytes( fmt )*mLayerBlendMapSize*mLayerBlendMapSize];
 					using ( var src = BufferBase.Wrap( aZero ) )
 					{
 						Memory.Copy( src, pInit, aZero.Length );
@@ -4594,24 +4616,26 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		protected void CreateOrDestroyGPUNormalMap()
 		{
-			if ( mNormalMapRequired && this.TerrainNormalMap == null )
+			if ( mNormalMapRequired && TerrainNormalMap == null )
 			{
 				//create 
-				this.TerrainNormalMap = TextureManager.Instance.CreateManual( mMaterialName + "/nm", this.DerivedResourceGroup, TextureType.TwoD, mSize, mSize, 1, 0, PixelFormat.BYTE_RGB, TextureUsage.Static, null );
+				TerrainNormalMap = TextureManager.Instance.CreateManual( mMaterialName + "/nm", DerivedResourceGroup,
+				                                                         TextureType.TwoD, mSize, mSize, 1, 0, PixelFormat.BYTE_RGB,
+				                                                         TextureUsage.Static, null );
 
 				//upload loaded normal data if present
 				if ( mCpuTerrainNormalMap != null )
 				{
-					this.TerrainNormalMap.GetBuffer().BlitFromMemory( mCpuTerrainNormalMap );
+					TerrainNormalMap.GetBuffer().BlitFromMemory( mCpuTerrainNormalMap );
 					mCpuTerrainNormalMap.Data = null;
 					mCpuTerrainNormalMap = null;
 				}
 			}
-			else if ( !mNormalMapRequired && this.TerrainNormalMap != null )
+			else if ( !mNormalMapRequired && TerrainNormalMap != null )
 			{
 				//destroy 
-				TextureManager.Instance.Remove( this.TerrainNormalMap.Handle );
-				this.TerrainNormalMap = null;
+				TextureManager.Instance.Remove( TerrainNormalMap.Handle );
+				TerrainNormalMap = null;
 			}
 		}
 
@@ -4669,7 +4693,7 @@ namespace Axiom.Components.Terrain
 		{
 			System.Diagnostics.Debug.Assert( layerIndex > 0 && layerIndex < mLayers.Count, "Given index is out of Bound!" );
 			var idx = (byte)( layerIndex - 1 );
-			return new KeyValuePair<byte, byte>( (byte)( idx / 4 ), (byte)( idx % 4 ) );
+			return new KeyValuePair<byte, byte>( (byte)( idx/4 ), (byte)( idx%4 ) );
 		}
 
 		/// <summary>
@@ -4738,15 +4762,15 @@ namespace Axiom.Components.Terrain
 		{
 			// LOD levels bisect the domain.
 			// start at the lowest detail
-			var currentElim = (ushort)( ( mSize - 1 ) / ( mMinBatchSize - 1 ) );
+			var currentElim = (ushort)( ( mSize - 1 )/( mMinBatchSize - 1 ) );
 			// start at a non-exitant LOD index, this applies to the min batch vertices
 			// which are never eliminated
-			var currentLod = this.NumLodLevels;
+			var currentLod = NumLodLevels;
 
-			while ( rowOrColulmn % currentElim != 0 )
+			while ( rowOrColulmn%currentElim != 0 )
 			{
 				// not on this boundary, look finer
-				currentElim = (ushort)( currentElim / 2 );
+				currentElim = (ushort)( currentElim/2 );
 				--currentLod;
 				// This will always terminate since (anything % 1 == 0)
 			}
@@ -4765,11 +4789,14 @@ namespace Axiom.Components.Terrain
 		{
 			// Widen the rectangle by 1 element in all directions since height
 			// changes affect neighbours normals
-			var widenedRect = new Rectangle( Utility.Max( 0L, rect.Left - 1L ), Utility.Max( 0L, rect.Top - 1L ), Utility.Min( (long)mSize, rect.Right + 1L ), Utility.Min( (long)mSize, rect.Bottom + 1L ) );
+			var widenedRect = new Rectangle( Utility.Max( 0L, rect.Left - 1L ), Utility.Max( 0L, rect.Top - 1L ),
+			                                 Utility.Min( (long)mSize, rect.Right + 1L ),
+			                                 Utility.Min( (long)mSize, rect.Bottom + 1L ) );
 
 			// allocate memory for RGB
-			var pData = new byte[ widenedRect.Width * widenedRect.Height * 3 ];
-			var pixbox = new PixelBox( (int)widenedRect.Width, (int)widenedRect.Height, 1, PixelFormat.BYTE_RGB, BufferBase.Wrap( pData ) );
+			var pData = new byte[widenedRect.Width*widenedRect.Height*3];
+			var pixbox = new PixelBox( (int)widenedRect.Width, (int)widenedRect.Height, 1, PixelFormat.BYTE_RGB,
+			                           BufferBase.Wrap( pData ) );
 
 			// Evaluate normal like this
 			//  3---2---1
@@ -4787,7 +4814,7 @@ namespace Axiom.Components.Terrain
 
 					// Build points to sample
 					var centrePoint = Vector3.Zero;
-					var adjacentPoints = new Vector3[ 8 ];
+					var adjacentPoints = new Vector3[8];
 					GetPointFromSelfOrNeighbour( x, y, ref centrePoint );
 					GetPointFromSelfOrNeighbour( x + 1, y, ref adjacentPoints[ 0 ] );
 					GetPointFromSelfOrNeighbour( x + 1, y + 1, ref adjacentPoints[ 1 ] );
@@ -4800,7 +4827,7 @@ namespace Axiom.Components.Terrain
 
 					for ( var i = 0; i < 8; ++i )
 					{
-						plane.Redefine( centrePoint, adjacentPoints[ i ], adjacentPoints[ ( i + 1 ) % 8 ] );
+						plane.Redefine( centrePoint, adjacentPoints[ i ], adjacentPoints[ ( i + 1 )%8 ] );
 						cumulativeNormal += plane.Normal;
 					}
 
@@ -4812,10 +4839,10 @@ namespace Axiom.Components.Terrain
 					var storeX = x - widenedRect.Left;
 					var storeY = widenedRect.Bottom - y - 1;
 
-					var pStore = ( ( storeY * widenedRect.Width ) + storeX ) * 3;
-					pData[ pStore++ ] = (byte)( ( cumulativeNormal.x + 1.0f ) * 0.5f * 255.0f );
-					pData[ pStore++ ] = (byte)( ( cumulativeNormal.y + 1.0f ) * 0.5f * 255.0f );
-					pData[ pStore++ ] = (byte)( ( cumulativeNormal.z + 1.0f ) * 0.5f * 255.0f );
+					var pStore = ( ( storeY*widenedRect.Width ) + storeX )*3;
+					pData[ pStore++ ] = (byte)( ( cumulativeNormal.x + 1.0f )*0.5f*255.0f );
+					pData[ pStore++ ] = (byte)( ( cumulativeNormal.y + 1.0f )*0.5f*255.0f );
+					pData[ pStore++ ] = (byte)( ( cumulativeNormal.z + 1.0f )*0.5f*255.0f );
 				} //x
 			} //y
 
@@ -4836,12 +4863,12 @@ namespace Axiom.Components.Terrain
 		{
 			CreateOrDestroyGPUNormalMap();
 			// deal with race condition where nm has been disabled while we were working!
-			if ( this.TerrainNormalMap != null )
+			if ( TerrainNormalMap != null )
 			{
 				// blit the normals into the texture
 				if ( rect.Left == 0 && rect.Top == 0 && rect.Bottom == mSize && rect.Right == mSize )
 				{
-					this.TerrainNormalMap.GetBuffer().BlitFromMemory( normalsBox );
+					TerrainNormalMap.GetBuffer().BlitFromMemory( normalsBox );
 				}
 				else
 				{
@@ -4852,7 +4879,7 @@ namespace Axiom.Components.Terrain
 					dstBox.Right = (int)rect.Right;
 					dstBox.Top = (int)( mSize - rect.Bottom );
 					dstBox.Bottom = (int)( mSize - rect.Top );
-					this.TerrainNormalMap.GetBuffer().BlitFromMemory( normalsBox, dstBox );
+					TerrainNormalMap.GetBuffer().BlitFromMemory( normalsBox, dstBox );
 				}
 			}
 
@@ -4913,7 +4940,7 @@ namespace Axiom.Components.Terrain
 				return;
 			}
 
-			var corners = new Vector3[ 4 ];
+			var corners = new Vector3[4];
 			var startHeight = verticalVal < 0.0f ? maxHeight : minHeight;
 			GetPoint( inRect.Left, inRect.Top, startHeight, ref corners[ 0 ] );
 			GetPoint( inRect.Right - 1, inRect.Top, startHeight, ref corners[ 1 ] );
@@ -4932,7 +4959,9 @@ namespace Axiom.Components.Terrain
 					GetTerrainPosition( pt, ref terrainHitPos );
 					// build rectangle which has rounded down & rounded up values
 					// remember right & bottom are exclusive
-					var mergeRect = new Rectangle( (long)terrainHitPos.x * ( mSize - 1 ), (long)terrainHitPos.y * ( mSize - 1 ), (long)( terrainHitPos.x * (float)( mSize - 1 ) + 0.5f ) + 1, (long)( terrainHitPos.y * (float)( mSize - 1 ) + 0.5f ) + 1 );
+					var mergeRect = new Rectangle( (long)terrainHitPos.x*( mSize - 1 ), (long)terrainHitPos.y*( mSize - 1 ),
+					                               (long)( terrainHitPos.x*(float)( mSize - 1 ) + 0.5f ) + 1,
+					                               (long)( terrainHitPos.y*(float)( mSize - 1 ) + 0.5f ) + 1 );
 					outRect.Merge( mergeRect );
 				}
 			}
@@ -4964,11 +4993,11 @@ namespace Axiom.Components.Terrain
 
 			// widenedRect now contains terrain point space version of the area we
 			// need to calculate. However, we need to calculate in lightmap image space
-			var terrainToLightmapScale = (float)mLightmapSizeActual / (float)mSize;
-			widenedRect.Left = (long)( widenedRect.Left * terrainToLightmapScale );
-			widenedRect.Right = (long)( widenedRect.Right * terrainToLightmapScale );
-			widenedRect.Top = (long)( widenedRect.Top * terrainToLightmapScale );
-			widenedRect.Bottom = (long)( widenedRect.Bottom * terrainToLightmapScale );
+			var terrainToLightmapScale = (float)mLightmapSizeActual/(float)mSize;
+			widenedRect.Left = (long)( widenedRect.Left*terrainToLightmapScale );
+			widenedRect.Right = (long)( widenedRect.Right*terrainToLightmapScale );
+			widenedRect.Top = (long)( widenedRect.Top*terrainToLightmapScale );
+			widenedRect.Bottom = (long)( widenedRect.Bottom*terrainToLightmapScale );
 
 			//clamp
 			widenedRect.Left = Utility.Max( 0L, widenedRect.Left );
@@ -4979,11 +5008,11 @@ namespace Axiom.Components.Terrain
 			outFinalRect = widenedRect;
 
 			// allocate memory (L8)
-			var pData = new byte[ widenedRect.Width * widenedRect.Height ];
+			var pData = new byte[widenedRect.Width*widenedRect.Height];
 			var pDataPtr = BufferBase.Wrap( pData );
 			var pixbox = new PixelBox( (int)widenedRect.Width, (int)widenedRect.Height, 1, PixelFormat.L8, pDataPtr );
 
-			var heightPad = ( MaxHeight - MinHeight ) * 1.0e-3f;
+			var heightPad = ( MaxHeight - MinHeight )*1.0e-3f;
 
 			for ( var y = widenedRect.Top; y < widenedRect.Bottom; ++y )
 			{
@@ -4992,14 +5021,14 @@ namespace Axiom.Components.Terrain
 					var litVal = 1.0f;
 
 					// convert to terrain space (not points, allow this to go between points)
-					var Tx = (float)x / (float)( mLightmapSizeActual - 1 );
-					var Ty = (float)y / (float)( mLightmapSizeActual - 1 );
+					var Tx = (float)x/(float)( mLightmapSizeActual - 1 );
+					var Ty = (float)y/(float)( mLightmapSizeActual - 1 );
 
 					// get world space point
 					// add a little height padding to stop shadowing self
 					var wpos = Vector3.Zero;
 					GetPosition( Tx, Ty, GetHeightAtTerrainPosition( Tx, Ty ) + heightPad, ref wpos );
-					wpos += this.Position;
+					wpos += Position;
 					// build ray, cast backwards along light direction
 					var ray = new Ray( wpos, -lightVec );
 
@@ -5017,10 +5046,10 @@ namespace Axiom.Components.Terrain
 					var storeX = x - widenedRect.Left;
 					var storeY = widenedRect.Bottom - y - 1;
 
-					using ( var wrap = pDataPtr + ( ( storeY * widenedRect.Width ) + storeX ) )
+					using ( var wrap = pDataPtr + ( ( storeY*widenedRect.Width ) + storeX ) )
 					{
 						var pStore = (ITypePointer<byte>)wrap;
-						pStore[ 0 ] = (byte)( litVal * 255.0 );
+						pStore[ 0 ] = (byte)( litVal*255.0 );
 					}
 				}
 			}
@@ -5041,12 +5070,12 @@ namespace Axiom.Components.Terrain
 		{
 			CreateOrDestroyGPULightmap();
 			// deal with race condition where lm has been disabled while we were working!
-			if ( this.LightMap != null )
+			if ( LightMap != null )
 			{
 				// blit the normals into the texture
 				if ( rect.Left == 0 && rect.Top == 0 && rect.Bottom == mLightmapSizeActual && rect.Right == mLightmapSizeActual )
 				{
-					this.LightMap.GetBuffer().BlitFromMemory( lightmapBox );
+					LightMap.GetBuffer().BlitFromMemory( lightmapBox );
 				}
 				else
 				{
@@ -5057,7 +5086,7 @@ namespace Axiom.Components.Terrain
 					dstBox.Right = (int)rect.Right;
 					dstBox.Top = (int)( mLightmapSizeActual - rect.Bottom );
 					dstBox.Bottom = (int)( mLightmapSizeActual - rect.Top );
-					this.LightMap.GetBuffer().BlitFromMemory( lightmapBox, dstBox );
+					LightMap.GetBuffer().BlitFromMemory( lightmapBox, dstBox );
 				}
 			}
 
@@ -5086,9 +5115,10 @@ namespace Axiom.Components.Terrain
 			// All done in the render thread
 			if ( mCompositeMapRequired && !mCompositeMapDirtyRect.IsNull )
 			{
-				this.IsModified = true;
+				IsModified = true;
 				CreateOrDestroyGPUCompositeMap();
-				if ( mCompositeMapDirtyRectLightmapUpdate && ( mCompositeMapDirtyRect.Width < mSize || mCompositeMapDirtyRect.Height < mSize ) )
+				if ( mCompositeMapDirtyRectLightmapUpdate &&
+				     ( mCompositeMapDirtyRect.Width < mSize || mCompositeMapDirtyRect.Height < mSize ) )
 				{
 					// widen the dirty rectangle since lighting makes it wider
 					var widenedRect = new Rectangle();
@@ -5129,7 +5159,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void UpdateCompositeMapWithDelay( Real delay )
 		{
-			mCompositeMapUpdateCountdown = (long)( delay * 1000 );
+			mCompositeMapUpdateCountdown = (long)( delay*1000 );
 		}
 
 		/// <see cref="Terrain.UpdateCompositeMapWithDelay"/>
@@ -5152,7 +5182,7 @@ namespace Axiom.Components.Terrain
 				throw new AxiomException( "Invalid layer index, Terrain.GetBlendTextureIndex" );
 			}
 
-			return (byte)( layerIndex - 1 % 4 );
+			return (byte)( layerIndex - 1%4 );
 		}
 
 		/// <summary>
@@ -5199,16 +5229,16 @@ namespace Axiom.Components.Terrain
 				sz = TerrainGlobalOptions.DefaultGlobalColorMapSize;
 			}
 
-			if ( enabled != this.IsGlobalColorMapEnabled || ( enabled && this.GlobalColorMapSize != sz ) )
+			if ( enabled != IsGlobalColorMapEnabled || ( enabled && GlobalColorMapSize != sz ) )
 			{
-				this.IsGlobalColorMapEnabled = enabled;
-				this.GlobalColorMapSize = sz;
+				IsGlobalColorMapEnabled = enabled;
+				GlobalColorMapSize = sz;
 
 				CreateOrDestroyGPUColorMap();
 
 				mMaterialDirty = true;
 				mMaterialParamsDirty = true;
-				this.IsModified = true;
+				IsModified = true;
 			}
 		}
 
@@ -5223,49 +5253,52 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		protected void CreateOrDestroyGPUColorMap()
 		{
-			if ( this.IsGlobalColorMapEnabled && this.GlobalColorMap == null )
+			if ( IsGlobalColorMapEnabled && GlobalColorMap == null )
 			{
 #warning Check MIP_DEFAULT
 				// create
-				this.GlobalColorMap = TextureManager.Instance.CreateManual( mMaterialName + "/cm", this.DerivedResourceGroup, TextureType.TwoD, this.GlobalColorMapSize, this.GlobalColorMapSize, 1, PixelFormat.BYTE_RGB, TextureUsage.Static );
+				GlobalColorMap = TextureManager.Instance.CreateManual( mMaterialName + "/cm", DerivedResourceGroup, TextureType.TwoD,
+				                                                       GlobalColorMapSize, GlobalColorMapSize, 1,
+				                                                       PixelFormat.BYTE_RGB, TextureUsage.Static );
 
 				if ( mCpuColorMapStorage != null )
 				{
 					// Load cached data
 					using ( var data = BufferBase.Wrap( mCpuColorMapStorage ) )
 					{
-						var src = new PixelBox( (int)this.GlobalColorMapSize, (int)this.GlobalColorMapSize, 1, PixelFormat.BYTE_RGB, data );
-						this.GlobalColorMap.GetBuffer().BlitFromMemory( src );
+						var src = new PixelBox( (int)GlobalColorMapSize, (int)GlobalColorMapSize, 1, PixelFormat.BYTE_RGB, data );
+						GlobalColorMap.GetBuffer().BlitFromMemory( src );
 					}
 					// release CPU copy, don't need it anymore
 					mCpuColorMapStorage = null;
 				}
 			}
-			else if ( !this.IsGlobalColorMapEnabled && this.GlobalColorMap != null )
+			else if ( !IsGlobalColorMapEnabled && GlobalColorMap != null )
 			{
 				// destroy
-				TextureManager.Instance.Remove( this.GlobalColorMap.Handle );
-				this.GlobalColorMap = null;
+				TextureManager.Instance.Remove( GlobalColorMap.Handle );
+				GlobalColorMap = null;
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected void CreateOrDestroyGPULightmap()
 		{
-			if ( mLightMapRequired && this.LightMap == null )
+			if ( mLightMapRequired && LightMap == null )
 			{
 				//create
-				this.LightMap = TextureManager.Instance.CreateManual( mMaterialName + "/lm", this.DerivedResourceGroup, TextureType.TwoD, this.LightMapSize, this.LightMapSize, 0, PixelFormat.L8, TextureUsage.Static );
+				LightMap = TextureManager.Instance.CreateManual( mMaterialName + "/lm", DerivedResourceGroup, TextureType.TwoD,
+				                                                 LightMapSize, LightMapSize, 0, PixelFormat.L8, TextureUsage.Static );
 
-				mLightmapSizeActual = (ushort)this.LightMap.Width;
+				mLightmapSizeActual = (ushort)LightMap.Width;
 
 				if ( mCpuLightmapStorage != null )
 				{
 					// Load cached data
 					using ( var data = BufferBase.Wrap( mCpuLightmapStorage ) )
 					{
-						var src = new PixelBox( (int)this.LightMapSize, (int)this.LightMapSize, 1, PixelFormat.L8, data );
-						this.LightMap.GetBuffer().BlitFromMemory( src );
+						var src = new PixelBox( (int)LightMapSize, (int)LightMapSize, 1, PixelFormat.L8, data );
+						LightMap.GetBuffer().BlitFromMemory( src );
 					}
 					mCpuLightmapStorage = null;
 				}
@@ -5273,8 +5306,8 @@ namespace Axiom.Components.Terrain
 				{
 					// initialise to full-bright
 					var box = new BasicBox( 0, 0, (int)mLightmapSizeActual, (int)mLightmapSizeActual );
-					var aInit = new byte[ mLightmapSizeActual * mLightmapSizeActual ];
-					var buf = this.LightMap.GetBuffer();
+					var aInit = new byte[mLightmapSizeActual*mLightmapSizeActual];
+					var buf = LightMap.GetBuffer();
 					var pInit = buf.Lock( box, BufferLocking.Discard ).Data;
 					using ( var wrap = BufferBase.Wrap( aInit ) )
 					{
@@ -5284,23 +5317,25 @@ namespace Axiom.Components.Terrain
 					buf.Unlock();
 				}
 			}
-			else if ( !mLightMapRequired && this.LightMap != null )
+			else if ( !mLightMapRequired && LightMap != null )
 			{
 				// destroy
-				TextureManager.Instance.Remove( this.LightMap.Handle );
-				this.LightMap = null;
+				TextureManager.Instance.Remove( LightMap.Handle );
+				LightMap = null;
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected void CreateOrDestroyGPUCompositeMap()
 		{
-			if ( mCompositeMapRequired && this.CompositeMap == null )
+			if ( mCompositeMapRequired && CompositeMap == null )
 			{
 				//create
-				this.CompositeMap = TextureManager.Instance.CreateManual( mMaterialName + "/comp", this.DerivedResourceGroup, TextureType.TwoD, mCompositeMapSize, mCompositeMapSize, 0, PixelFormat.BYTE_RGBA, TextureUsage.Static );
+				CompositeMap = TextureManager.Instance.CreateManual( mMaterialName + "/comp", DerivedResourceGroup, TextureType.TwoD,
+				                                                     mCompositeMapSize, mCompositeMapSize, 0, PixelFormat.BYTE_RGBA,
+				                                                     TextureUsage.Static );
 
-				mCompositeMapSizeActual = (ushort)this.CompositeMap.Width;
+				mCompositeMapSizeActual = (ushort)CompositeMap.Width;
 
 				if ( mCpuCompositeMapStorage != null )
 				{
@@ -5308,7 +5343,7 @@ namespace Axiom.Components.Terrain
 					using ( var data = BufferBase.Wrap( mCpuCompositeMapStorage ) )
 					{
 						var src = new PixelBox( (int)mCompositeMapSize, (int)mCompositeMapSize, 1, PixelFormat.BYTE_RGBA, data );
-						this.CompositeMap.GetBuffer().BlitFromMemory( src );
+						CompositeMap.GetBuffer().BlitFromMemory( src );
 						// release CPU copy, don't need it anymore
 					}
 					mCpuCompositeMapStorage = null;
@@ -5317,8 +5352,8 @@ namespace Axiom.Components.Terrain
 				{
 					// initialise to black
 					var box = new BasicBox( 0, 0, (int)mCompositeMapSizeActual, (int)mCompositeMapSizeActual );
-					var aInit = new byte[ mCompositeMapSizeActual * mCompositeMapSizeActual ];
-					var buf = this.CompositeMap.GetBuffer();
+					var aInit = new byte[mCompositeMapSizeActual*mCompositeMapSizeActual];
+					var buf = CompositeMap.GetBuffer();
 					var pInit = buf.Lock( box, BufferLocking.Discard ).Data;
 					using ( var wrap = BufferBase.Wrap( aInit ) )
 					{
@@ -5327,11 +5362,11 @@ namespace Axiom.Components.Terrain
 					buf.Unlock();
 				}
 			}
-			else if ( !mCompositeMapRequired && this.CompositeMap != null )
+			else if ( !mCompositeMapRequired && CompositeMap != null )
 			{
 				// destroy
-				TextureManager.Instance.Remove( this.CompositeMap.Handle );
-				this.CompositeMap = null;
+				TextureManager.Instance.Remove( CompositeMap.Handle );
+				CompositeMap = null;
 			}
 		}
 
@@ -5428,8 +5463,8 @@ namespace Axiom.Components.Terrain
 		public static NeighbourIndex GetOppositeNeighbour( NeighbourIndex index )
 		{
 			var intindex = (int)index;
-			intindex += (int)( NeighbourIndex.Count ) / 2;
-			intindex = intindex % (int)NeighbourIndex.Count;
+			intindex += (int)( NeighbourIndex.Count )/2;
+			intindex = intindex%(int)NeighbourIndex.Count;
 			return (NeighbourIndex)intindex;
 		}
 
@@ -5714,7 +5749,8 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void GetNeighbourEdgeRect( NeighbourIndex index, Rectangle inRect, ref Rectangle outRect )
 		{
-			System.Diagnostics.Debug.Assert( mSize == GetNeighbour( index ).Size, "Neighbour has not the same size as this instance" );
+			System.Diagnostics.Debug.Assert( mSize == GetNeighbour( index ).Size,
+			                                 "Neighbour has not the same size as this instance" );
 
 			// Basically just reflect the rect 
 			// remember index is neighbour relationship from OUR perspective so
@@ -5769,7 +5805,8 @@ namespace Axiom.Components.Terrain
 		{
 			// Get the index of the point we should be looking at on a neighbour
 			// in order to match up points
-			System.Diagnostics.Debug.Assert( mSize == GetNeighbour( index ).Size, "Neighbour has not the same size as this instance" );
+			System.Diagnostics.Debug.Assert( mSize == GetNeighbour( index ).Size,
+			                                 "Neighbour has not the same size as this instance" );
 
 			// left/right
 			switch ( index )
@@ -5927,7 +5964,7 @@ namespace Axiom.Components.Terrain
 			// Move back half a square - if we're on the edge of the AABB we might
 			// miss the intersection otherwise; it's ok for everywhere else since
 			// we want the far intersection anyway
-			modifiedRay.Origin = modifiedRay.GetPoint( -mWorldSize / mSize * 0.5f );
+			modifiedRay.Origin = modifiedRay.GetPoint( -mWorldSize/mSize*0.5f );
 
 			// transform into terrain space
 			var tPos = Vector3.Zero;
@@ -5980,7 +6017,7 @@ namespace Axiom.Components.Terrain
 			}
 
 			// discard out of range
-			if ( dist * mWorldSize > distanceLimit )
+			if ( dist*mWorldSize > distanceLimit )
 			{
 				return null;
 			}
@@ -6031,27 +6068,27 @@ namespace Axiom.Components.Terrain
 			var format = string.Format( "{0}_{1}{2}", prefix, "{0}", suffix );
 			Image img;
 
-			if ( this.TerrainNormalMap != null )
+			if ( TerrainNormalMap != null )
 			{
-				this.TerrainNormalMap.ConvertToImage( out img );
+				TerrainNormalMap.ConvertToImage( out img );
 				img.Save( string.Format( format, "normalmap" ) );
 			}
 
-			if ( this.GlobalColorMap != null )
+			if ( GlobalColorMap != null )
 			{
-				this.GlobalColorMap.ConvertToImage( out img );
+				GlobalColorMap.ConvertToImage( out img );
 				img.Save( string.Format( format, "colormap" ) );
 			}
 
-			if ( this.LightMap != null )
+			if ( LightMap != null )
 			{
-				this.LightMap.ConvertToImage( out img );
+				LightMap.ConvertToImage( out img );
 				img.Save( string.Format( format, "lightmap" ) );
 			}
 
-			if ( this.CompositeMap != null )
+			if ( CompositeMap != null )
 			{
-				this.CompositeMap.ConvertToImage( out img );
+				CompositeMap.ConvertToImage( out img );
 				img.Save( string.Format( format, "compositemap" ) );
 			}
 
@@ -6073,13 +6110,13 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		internal static int GetNumIndexesForBatchSize( ushort batchSize )
 		{
-			int mainIndexesPerRow = batchSize * 2 + 1;
+			int mainIndexesPerRow = batchSize*2 + 1;
 			int numRows = batchSize - 1;
-			int mainIndexCount = mainIndexesPerRow * numRows;
+			int mainIndexCount = mainIndexesPerRow*numRows;
 			// skirts share edges, so they take 1 less row per side than batchSize, 
 			// but with 2 extra at the end (repeated) to finish the strip
 			// * 2 for the vertical line, * 4 for the sides, +2 to finish
-			int skirtIndexCount = ( batchSize - 1 ) * 2 * 4 + 2;
+			int skirtIndexCount = ( batchSize - 1 )*2*4 + 2;
 			return mainIndexCount + skirtIndexCount;
 		}
 
@@ -6095,7 +6132,9 @@ namespace Axiom.Components.Terrain
 		/// <param name="numSkirtRowsCols">Number of rows and columns of skirts</param>
 		/// <param name="skirtRowColSkip">The number of rows / cols to skip in between skirts</param>
 		[OgreVersion( 1, 7, 2 )]
-		internal static void PopulateIndexBuffer( BufferBase pIndexes, ushort batchSize, ushort vdatasize, int vertexIncrement, ushort xoffset, ushort yoffset, ushort numSkirtRowsCols, ushort skirtRowColSkip )
+		internal static void PopulateIndexBuffer( BufferBase pIndexes, ushort batchSize, ushort vdatasize, int vertexIncrement,
+		                                          ushort xoffset, ushort yoffset, ushort numSkirtRowsCols,
+		                                          ushort skirtRowColSkip )
 		{
 			/* For even / odd tri strip rows, triangles are this shape:
 			6---7---8
@@ -6124,18 +6163,18 @@ namespace Axiom.Components.Terrain
 			unsafe
 #endif
 			{
-				var rowSize = vdatasize * vertexIncrement;
+				var rowSize = vdatasize*vertexIncrement;
 				var numRows = batchSize - 1;
 				var pI = pIndexes.ToUShortPointer();
 				var offset = 0;
 
 				// Start on the right
-				var currentVertex = (ushort)( ( batchSize - 1 ) * vertexIncrement );
+				var currentVertex = (ushort)( ( batchSize - 1 )*vertexIncrement );
 				// but, our quad area might not start at 0 in this vertex data
 				// offsets are at main terrain resolution, remember
 				var columnStart = xoffset;
 				var rowStart = yoffset;
-				currentVertex += (ushort)( rowStart * vdatasize + columnStart );
+				currentVertex += (ushort)( rowStart*vdatasize + columnStart );
 				var rightToLeft = true;
 				for ( ushort r = 0; r < numRows; ++r )
 				{
@@ -6148,7 +6187,9 @@ namespace Axiom.Components.Terrain
 						// row as we 'snake' across the tile
 						if ( c + 1 < batchSize )
 						{
-							currentVertex = rightToLeft ? (ushort)( currentVertex - vertexIncrement ) : (ushort)( currentVertex + vertexIncrement );
+							currentVertex = rightToLeft
+							                	? (ushort)( currentVertex - vertexIncrement )
+							                	: (ushort)( currentVertex + vertexIncrement );
 						}
 					}
 					rightToLeft = !rightToLeft;
@@ -6189,7 +6230,7 @@ namespace Axiom.Components.Terrain
 							break;
 					}
 					// Skirts are stored in contiguous rows / columns (rows 0/2, cols 1/3)
-					var skirtIndex = CalcSkirtVertexIndex( currentVertex, vdatasize, ( s % 2 ) != 0, numSkirtRowsCols, skirtRowColSkip );
+					var skirtIndex = CalcSkirtVertexIndex( currentVertex, vdatasize, ( s%2 ) != 0, numSkirtRowsCols, skirtRowColSkip );
 
 					for ( var c = 0; c < batchSize - 1; ++c )
 					{
@@ -6215,14 +6256,15 @@ namespace Axiom.Components.Terrain
 		/// Utility method to calculate the skirt index for a given original vertex index.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		internal static ushort CalcSkirtVertexIndex( ushort mainIndex, ushort vdatasize, bool isCol, ushort numSkirtRowsCols, ushort skirtRowColSkip )
+		internal static ushort CalcSkirtVertexIndex( ushort mainIndex, ushort vdatasize, bool isCol, ushort numSkirtRowsCols,
+		                                             ushort skirtRowColSkip )
 		{
 			// row / col in main vertex resolution
-			var row = (ushort)( mainIndex / vdatasize );
-			var col = (ushort)( mainIndex % vdatasize );
+			var row = (ushort)( mainIndex/vdatasize );
+			var col = (ushort)( mainIndex%vdatasize );
 
 			// skrits are after main vertices, so skip them
-			var b = (ushort)( vdatasize * vdatasize );
+			var b = (ushort)( vdatasize*vdatasize );
 
 			// The layout in vertex data is:
 			// 1. row skirts
@@ -6234,14 +6276,14 @@ namespace Axiom.Components.Terrain
 			// which is already relative
 			if ( isCol )
 			{
-				var skirtNum = (ushort)( col / skirtRowColSkip );
-				var colbase = (ushort)( numSkirtRowsCols * vdatasize );
-				return (ushort)( b + colbase + vdatasize * skirtNum + row );
+				var skirtNum = (ushort)( col/skirtRowColSkip );
+				var colbase = (ushort)( numSkirtRowsCols*vdatasize );
+				return (ushort)( b + colbase + vdatasize*skirtNum + row );
 			}
 			else
 			{
-				var skirtNum = (ushort)( row / skirtRowColSkip );
-				return (ushort)( b + vdatasize * skirtNum + col );
+				var skirtNum = (ushort)( row/skirtRowColSkip );
+				return (ushort)( b + vdatasize*skirtNum + col );
 			}
 		}
 
@@ -6341,23 +6383,26 @@ namespace Axiom.Components.Terrain
 				return;
 			}
 
-			if ( ( ( ddreq.TypeMask & DERIVED_DATA_DELTAS ) == ddreq.TypeMask ) && ( ( ddres.RemainingTypeMask & DERIVED_DATA_DELTAS ) != DERIVED_DATA_DELTAS ) )
+			if ( ( ( ddreq.TypeMask & DERIVED_DATA_DELTAS ) == ddreq.TypeMask ) &&
+			     ( ( ddres.RemainingTypeMask & DERIVED_DATA_DELTAS ) != DERIVED_DATA_DELTAS ) )
 			{
 				FinalizeHeightDeltas( ddres.DeltaUpdateRect, false );
 			}
-			if ( ( ( ddreq.TypeMask & DERIVED_DATA_NORMALS ) == ddreq.TypeMask ) && ( ( ddres.RemainingTypeMask & DERIVED_DATA_NORMALS ) != DERIVED_DATA_NORMALS ) )
+			if ( ( ( ddreq.TypeMask & DERIVED_DATA_NORMALS ) == ddreq.TypeMask ) &&
+			     ( ( ddres.RemainingTypeMask & DERIVED_DATA_NORMALS ) != DERIVED_DATA_NORMALS ) )
 			{
 				FinalizeNormals( ddres.NormalUpdateRect, ddres.NormalMapBox );
 				mCompositeMapDirtyRect.Merge( ddreq.DirtyRect );
 			}
-			if ( ( ( ddreq.TypeMask & DERIVED_DATA_LIGHTMAP ) == ddreq.TypeMask ) && ( ( ddres.RemainingTypeMask & DERIVED_DATA_LIGHTMAP ) != DERIVED_DATA_LIGHTMAP ) )
+			if ( ( ( ddreq.TypeMask & DERIVED_DATA_LIGHTMAP ) == ddreq.TypeMask ) &&
+			     ( ( ddres.RemainingTypeMask & DERIVED_DATA_LIGHTMAP ) != DERIVED_DATA_LIGHTMAP ) )
 			{
 				FinalizeLightMap( ddres.LightMapUpdateRect, ddres.LightMapPixelBox );
 				mCompositeMapDirtyRect.Merge( ddreq.DirtyRect );
 				mCompositeMapDirtyRectLightmapUpdate = true;
 			}
 
-			this.IsDerivedDataUpdateInProgress = false;
+			IsDerivedDataUpdateInProgress = false;
 
 			// Re-trigger another request if there are still things to do, or if
 			// we had a new request since this one

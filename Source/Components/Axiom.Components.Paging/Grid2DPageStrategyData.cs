@@ -34,7 +34,6 @@
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Serialization;
@@ -420,8 +419,8 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		protected void UpdateDerivedMetrics()
 		{
-			mLoadRadiusInCells = mLoadRadius / mCellSize;
-			mHoldRadiusInCells = mHoldRadius / mCellSize;
+			mLoadRadiusInCells = mLoadRadius/mCellSize;
+			mHoldRadiusInCells = mHoldRadius/mCellSize;
 		}
 
 		/// <summary>
@@ -431,12 +430,12 @@ namespace Axiom.Components.Paging
 		public void DetermineGridLocation( Vector2 gridPos, out int x, out int y )
 		{
 			Vector2 relPos = gridPos - mOrigin;
-			Real offset = mCellSize * 0.5f;
+			Real offset = mCellSize*0.5f;
 			relPos.x += offset;
 			relPos.y += offset;
 
-			x = (int)System.Math.Floor( relPos.x / mCellSize );
-			y = (int)System.Math.Floor( relPos.y / mCellSize );
+			x = (int)System.Math.Floor( relPos.x/mCellSize );
+			y = (int)System.Math.Floor( relPos.y/mCellSize );
 		}
 
 		/// <summary>
@@ -445,9 +444,9 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void GetBottomLeftGridSpace( int x, int y, ref Vector2 bl )
 		{
-			Real offset = mCellSize * 0.5f;
-			bl.x = mOrigin.x - offset + x * mCellSize;
-			bl.y = mOrigin.y - offset + y * mCellSize;
+			Real offset = mCellSize*0.5f;
+			bl.x = mOrigin.x - offset + x*mCellSize;
+			bl.y = mOrigin.y - offset + y*mCellSize;
 		}
 
 		/// <summary>
@@ -456,8 +455,8 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void GetMidPointGridSpace( int x, int y, ref Vector2 mid )
 		{
-			mid.x = mOrigin.x + x * mCellSize;
-			mid.y = mOrigin.y + y * mCellSize;
+			mid.x = mOrigin.x + x*mCellSize;
+			mid.y = mOrigin.y + y*mCellSize;
 		}
 
 		/// <summary>
@@ -469,7 +468,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void GetCornersGridSpace( int x, int y, ref Vector2[] fourPoints )
 		{
-			this.GetBottomLeftGridSpace( x, y, ref fourPoints[ 0 ] );
+			GetBottomLeftGridSpace( x, y, ref fourPoints[ 0 ] );
 			fourPoints[ 1 ] = fourPoints[ 0 ] + new Vector2( mCellSize, 0 );
 			fourPoints[ 2 ] = fourPoints[ 0 ] + new Vector2( mCellSize, mCellSize );
 			fourPoints[ 3 ] = fourPoints[ 0 ] + new Vector2( 0, mCellSize );
@@ -479,12 +478,12 @@ namespace Axiom.Components.Paging
 		public PageID CalculatePageID( int x, int y )
 		{
 			// Convert to signed 16-bit so sign bit is in bit 15
-			Int16 xs16 = (Int16)x;
-			Int16 ys16 = (Int16)y;
+			var xs16 = (Int16)x;
+			var ys16 = (Int16)y;
 
 			// convert to unsigned because we do not want to propagate sign bit to 32-bits
-			UInt16 x16 = (UInt16)xs16;
-			UInt16 y16 = (UInt16)ys16;
+			var x16 = (UInt16)xs16;
+			var y16 = (UInt16)ys16;
 
 			uint key = 0;
 			key = (uint)( ( x16 << 16 ) | y16 );
@@ -497,8 +496,8 @@ namespace Axiom.Components.Paging
 		{
 			// inverse of calculatePageID
 			// unsigned versions
-			UInt16 y16 = (UInt16)( inPageID.Value & 0xFFFF );
-			UInt16 x16 = (UInt16)( ( inPageID.Value >> 16 ) & 0xFFFF );
+			var y16 = (UInt16)( inPageID.Value & 0xFFFF );
+			var x16 = (UInt16)( ( inPageID.Value >> 16 ) & 0xFFFF );
 
 			x = (Int16)x16;
 			y = (Int16)y16;
