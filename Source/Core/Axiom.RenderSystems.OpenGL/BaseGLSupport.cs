@@ -41,14 +41,11 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Graphics;
 using Axiom.Media;
-
 using Tao.OpenGl;
-
 using Axiom.Math;
 using Axiom.Graphics.Collections;
 
@@ -297,7 +294,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="parent"></param>
 		/// <param name="vsync"></param>
 		/// <returns></returns>
-		public abstract RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams );
+		public abstract RenderWindow NewWindow( string name, int width, int height, bool fullScreen,
+		                                        NamedParameterList miscParams );
 
 		#endregion Abstract Members
 

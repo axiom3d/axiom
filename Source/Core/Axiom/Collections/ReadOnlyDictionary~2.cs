@@ -46,11 +46,12 @@ using System.Text;
 
 namespace Axiom.Collections
 {
-	public class ReadOnlyDictionary<TKey, TValue> /*: ICollection, ICollection<KeyValuePair<TKey, TValue>>,
+	public class ReadOnlyDictionary<TKey, TValue>
+		/*: ICollection, ICollection<KeyValuePair<TKey, TValue>>,
 													IDictionary, IDictionary<TKey, TValue>,
 													IEnumerable, IEnumerable<KeyValuePair<TKey, TValue>> */
 	{
-		private IDictionary<TKey, TValue> dictionary;
+		private readonly IDictionary<TKey, TValue> dictionary;
 
 		public ReadOnlyDictionary( IDictionary<TKey, TValue> dictionary )
 		{

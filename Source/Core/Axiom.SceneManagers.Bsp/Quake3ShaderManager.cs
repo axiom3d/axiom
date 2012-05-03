@@ -40,12 +40,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 using System.Text;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -81,7 +79,7 @@ namespace Axiom.SceneManagers.Bsp
 		protected void ParseNewShaderPass( StreamReader stream, Quake3Shader shader )
 		{
 			string line;
-			ShaderPass pass = new ShaderPass();
+			var pass = new ShaderPass();
 
 			// Default pass details
 			pass.animNumFrames = 0;
@@ -178,7 +176,7 @@ namespace Axiom.SceneManagers.Bsp
 			}
 			else if ( attribParams[ 0 ] == "fogparms" )
 			{
-				string[] fogValues = new string[ 4 ];
+				var fogValues = new string[4];
 				Array.Copy( attribParams, 1, fogValues, 0, 4 );
 
 				shader.Fog = true;
@@ -277,11 +275,13 @@ namespace Axiom.SceneManagers.Bsp
 					{
 						pass.blend = LayerBlendOperation.Add;
 					}
-					else if ( ( ( pass.blendSrc == SceneBlendFactor.Zero ) && ( pass.blendDest == SceneBlendFactor.SourceColor ) ) || ( ( pass.blendSrc == SceneBlendFactor.DestColor ) && ( pass.blendDest == SceneBlendFactor.Zero ) ) )
+					else if ( ( ( pass.blendSrc == SceneBlendFactor.Zero ) && ( pass.blendDest == SceneBlendFactor.SourceColor ) ) ||
+					          ( ( pass.blendSrc == SceneBlendFactor.DestColor ) && ( pass.blendDest == SceneBlendFactor.Zero ) ) )
 					{
 						pass.blend = LayerBlendOperation.Modulate;
 					}
-					else if ( ( pass.blendSrc == SceneBlendFactor.SourceAlpha ) && ( pass.blendDest == SceneBlendFactor.OneMinusSourceAlpha ) )
+					else if ( ( pass.blendSrc == SceneBlendFactor.SourceAlpha ) &&
+					          ( pass.blendDest == SceneBlendFactor.OneMinusSourceAlpha ) )
 					{
 						pass.blend = LayerBlendOperation.AlphaBlend;
 					}
@@ -324,7 +324,8 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				if ( attribParams[ 1 ] == "rotate" )
 				{
-					pass.tcModRotate = -StringConverter.ParseFloat( attribParams[ 2 ] ) / 360; // +ve is clockwise degrees in Q3 shader, anticlockwise complete rotations in Ogre
+					pass.tcModRotate = -StringConverter.ParseFloat( attribParams[ 2 ] )/360;
+						// +ve is clockwise degrees in Q3 shader, anticlockwise complete rotations in Ogre
 				}
 				else if ( attribParams[ 1 ] == "scroll" )
 				{
@@ -459,9 +460,10 @@ namespace Axiom.SceneManagers.Bsp
 		/// <param name="loader"></param>
 		/// <param name="createParams"></param>
 		/// <returns></returns>
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
-			Quake3Shader s = new Quake3Shader( this, name, handle, ResourceGroupManager.Instance.WorldResourceGroupName );
+			var s = new Quake3Shader( this, name, handle, ResourceGroupManager.Instance.WorldResourceGroupName );
 
 			return s;
 		}
@@ -474,7 +476,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <param name="fileName"></param>
 		public override void ParseScript( Stream stream, string groupName, string fileName )
 		{
-			StreamReader file = new StreamReader( stream, Encoding.UTF8 );
+			var file = new StreamReader( stream, Encoding.UTF8 );
 			string line;
 			Quake3Shader shader = null;
 
@@ -544,7 +546,7 @@ namespace Axiom.SceneManagers.Bsp
 			}
 			else
 			{
-				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", GetType().Name );
 			}
 		}
 
@@ -564,7 +566,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

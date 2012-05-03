@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Core.Collections;
@@ -83,7 +82,9 @@ namespace Axiom.Graphics
 		///		Default constructor.
 		/// </summary>
 		public SimpleRenderable()
-			: this( "SimpleRenderable" + nextAutoGenName++ ) {}
+			: this( "SimpleRenderable" + nextAutoGenName++ )
+		{
+		}
 
 		/// <summary>
 		///		Default constructor.
@@ -99,9 +100,9 @@ namespace Axiom.Graphics
 
 		private void LoadDefaultMaterial()
 		{
-			this.materialName = "BaseWhite";
-			this.material = (Material)MaterialManager.Instance[ "BaseWhite" ];
-			this.material.Load();
+			materialName = "BaseWhite";
+			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
+			material.Load();
 		}
 
 		#endregion Constructor
@@ -135,7 +136,7 @@ namespace Axiom.Graphics
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
 			// add ourself to the render queue
-			queue.AddRenderable( this, this.RenderQueueGroup );
+			queue.AddRenderable( this, RenderQueueGroup );
 		}
 
 		#endregion Implementation of MovableObject
@@ -191,7 +192,7 @@ namespace Axiom.Graphics
 		/// <param name="matrices"></param>
 		public virtual void GetWorldTransforms( Matrix4[] matrices )
 		{
-			matrices[ 0 ] = worldTransform * parentNode.FullTransform;
+			matrices[ 0 ] = worldTransform*parentNode.FullTransform;
 		}
 
 		public bool NormalizeNormals
@@ -339,16 +340,16 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
 					if ( renderOperation != null )
 					{
-						if ( !this.renderOperation.IsDisposed )
+						if ( !renderOperation.IsDisposed )
 						{
-							this.renderOperation.Dispose();
+							renderOperation.Dispose();
 						}
 
 						renderOperation = null;
@@ -356,22 +357,22 @@ namespace Axiom.Graphics
 
 					if ( indexData != null )
 					{
-						if ( !this.indexData.IsDisposed )
+						if ( !indexData.IsDisposed )
 						{
 							indexData.Dispose();
 						}
 
-						this.indexData = null;
+						indexData = null;
 					}
 
 					if ( vertexData != null )
 					{
-						if ( !this.vertexData.IsDisposed )
+						if ( !vertexData.IsDisposed )
 						{
 							vertexData.Dispose();
 						}
 
-						this.vertexData = null;
+						vertexData = null;
 					}
 				}
 

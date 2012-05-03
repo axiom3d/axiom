@@ -40,12 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Net.NetworkInformation;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using Tao.OpenGl;
-
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -76,8 +73,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 		private struct CustomAttribute
 		{
-			public string name;
-			public uint attrib;
+			public readonly string name;
+			public readonly uint attrib;
 
 			public CustomAttribute( string _name, uint _attrib )
 			{
@@ -90,9 +87,13 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 		#region Inner Classes
 
-		public class UniformReferenceList : List<UniformReference> {}
+		public class UniformReferenceList : List<UniformReference>
+		{
+		}
 
-		public class AttributeSet : HashSet<uint> {}
+		public class AttributeSet : HashSet<uint>
+		{
+		}
 
 		#endregion Inner Classes
 
@@ -141,10 +142,59 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		// Custom attribute bindings
 		protected AttributeSet validAttributes = new AttributeSet();
 
-		private CustomAttribute[] sCustomAttributes = new CustomAttribute[]
-		                                              {
-		                                              	new CustomAttribute( "vertex", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.Position, 0 ) ), new CustomAttribute( "blendWeights", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.BlendWeights, 0 ) ), new CustomAttribute( "normal", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.Normal, 0 ) ), new CustomAttribute( "colour", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.Diffuse, 0 ) ), new CustomAttribute( "secondary_colour", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.Specular, 0 ) ), new CustomAttribute( "blendIndices", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.BlendIndices, 0 ) ), new CustomAttribute( "uv0", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.TexCoords, 0 ) ), new CustomAttribute( "uv1", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.TexCoords, 1 ) ), new CustomAttribute( "uv2", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.TexCoords, 2 ) ), new CustomAttribute( "uv3", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.TexCoords, 3 ) ), new CustomAttribute( "uv4", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.TexCoords, 4 ) ), new CustomAttribute( "uv5", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.TexCoords, 5 ) ), new CustomAttribute( "uv6", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.TexCoords, 6 ) ), new CustomAttribute( "uv7", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.TexCoords, 7 ) ), new CustomAttribute( "tangent", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.Tangent, 0 ) ), new CustomAttribute( "binormal", GLGpuProgram.FixedAttributeIndex( VertexElementSemantic.Binormal, 0 ) ),
-		                                              };
+		private readonly CustomAttribute[] sCustomAttributes = new CustomAttribute[]
+		                                                       {
+		                                                       	new CustomAttribute( "vertex",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.Position, 0 ) ),
+		                                                       	new CustomAttribute( "blendWeights",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.BlendWeights, 0 ) )
+		                                                       	,
+		                                                       	new CustomAttribute( "normal",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.Normal, 0 ) ),
+		                                                       	new CustomAttribute( "colour",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.Diffuse, 0 ) ),
+		                                                       	new CustomAttribute( "secondary_colour",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.Specular, 0 ) ),
+		                                                       	new CustomAttribute( "blendIndices",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.BlendIndices, 0 ) )
+		                                                       	,
+		                                                       	new CustomAttribute( "uv0",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.TexCoords, 0 ) ),
+		                                                       	new CustomAttribute( "uv1",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.TexCoords, 1 ) ),
+		                                                       	new CustomAttribute( "uv2",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.TexCoords, 2 ) ),
+		                                                       	new CustomAttribute( "uv3",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.TexCoords, 3 ) ),
+		                                                       	new CustomAttribute( "uv4",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.TexCoords, 4 ) ),
+		                                                       	new CustomAttribute( "uv5",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.TexCoords, 5 ) ),
+		                                                       	new CustomAttribute( "uv6",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.TexCoords, 6 ) ),
+		                                                       	new CustomAttribute( "uv7",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.TexCoords, 7 ) ),
+		                                                       	new CustomAttribute( "tangent",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.Tangent, 0 ) ),
+		                                                       	new CustomAttribute( "binormal",
+		                                                       	                     GLGpuProgram.FixedAttributeIndex(
+		                                                       	                     	VertexElementSemantic.Binormal, 0 ) ),
+		                                                       };
 
 		#endregion Fields
 
@@ -182,7 +232,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				case OperationType.TriangleStrip:
 					return Tao.OpenGl.Gl.GL_TRIANGLE_STRIP;
 				default:
-					throw new AxiomException( "Geometry shader output operation type can only be point list," + "line strip or triangle strip" + "GLSLLinkProgram::activate" );
+					throw new AxiomException( "Geometry shader output operation type can only be point list," +
+					                          "line strip or triangle strip" + "GLSLLinkProgram::activate" );
 			}
 		}
 
@@ -196,9 +247,9 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			this.vertexProgram = vertexProgram;
 			this.geometryProgram = geometryProgram;
 			this.fragmentProgram = fragmentProgram;
-			this.uniformRefsBuilt = false;
-			this.linked = false;
-			this.triedToLinkAndFailed = false;
+			uniformRefsBuilt = false;
+			linked = false;
+			triedToLinkAndFailed = false;
 		}
 
 		#endregion Constructor
@@ -348,7 +399,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		///		normally called by GLSLGpuProgram.BindParameters() just before rendering occurs.
 		/// </summary>
 		/// <param name="parameters">GPU Parameters to use to update the uniforms params.</param>
-		public void UpdateUniforms( GpuProgramParameters parameters, GpuProgramParameters.GpuParamVariability mask, GpuProgramType fromProgType )
+		public void UpdateUniforms( GpuProgramParameters parameters, GpuProgramParameters.GpuParamVariability mask,
+		                            GpuProgramType fromProgType )
 		{
 			foreach ( var currentUniform in uniformReferences )
 			{
@@ -559,7 +611,9 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				//Don't set adjacency flag. We handle it internally and expose "false"
 
 				OperationType inputOperationType = geometryProgram.GLSLProgram.InputOperationType;
-				Gl.glProgramParameteriEXT( glHandle, Gl.GL_GEOMETRY_INPUT_TYPE_EXT, GetGLGeometryInputPrimitiveType( inputOperationType, geometryProgram.IsAdjacencyInfoRequired ) );
+				Gl.glProgramParameteriEXT( glHandle, Gl.GL_GEOMETRY_INPUT_TYPE_EXT,
+				                           GetGLGeometryInputPrimitiveType( inputOperationType,
+				                                                            geometryProgram.IsAdjacencyInfoRequired ) );
 
 				OperationType outputOperationType = geometryProgram.GLSLProgram.OutputOperationType;
 				switch ( outputOperationType )
@@ -572,7 +626,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					case OperationType.TriangleFan:
 						break;
 				}
-				Gl.glProgramParameteriEXT( glHandle, Gl.GL_GEOMETRY_OUTPUT_TYPE_EXT, GetGLGeometryOutputPrimitiveType( outputOperationType ) );
+				Gl.glProgramParameteriEXT( glHandle, Gl.GL_GEOMETRY_OUTPUT_TYPE_EXT,
+				                           GetGLGeometryOutputPrimitiveType( outputOperationType ) );
 
 				Gl.glProgramParameteriEXT( glHandle, Gl.GL_GEOMETRY_VERTICES_OUT_EXT, geometryProgram.GLSLProgram.MaxOutputVertices );
 			}

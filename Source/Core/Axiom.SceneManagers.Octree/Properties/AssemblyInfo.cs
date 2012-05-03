@@ -50,4 +50,6 @@ using System.Runtime.CompilerServices;
 //
 
 [assembly: AssemblyTitle( "Axiom Octree SceneManager Plugin" )]
-[assembly: AssemblyDescription( "A SceneManager Plugin that can render OcTree based scenes. Also includes a Terrain Scene Manager." )]
+[assembly:
+	AssemblyDescription(
+		"A SceneManager Plugin that can render OcTree based scenes. Also includes a Terrain Scene Manager." )]

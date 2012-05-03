@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -88,7 +87,7 @@ namespace Axiom.Core
 
 		public bool Equals( Pair<T> other )
 		{
-			return this.data.Equals( other.data );
+			return data.Equals( other.data );
 		}
 
 
@@ -96,7 +95,7 @@ namespace Axiom.Core
 		{
 			if ( other is Pair<T> )
 			{
-				return this.Equals( (Pair<T>)other );
+				return Equals( (Pair<T>)other );
 			}
 			return false;
 		}
@@ -107,7 +106,7 @@ namespace Axiom.Core
 
 		public override int GetHashCode()
 		{
-			return this.First.GetHashCode() ^ this.Second.GetHashCode();
+			return First.GetHashCode() ^ Second.GetHashCode();
 		}
 
 		#endregion System.Object Implementation

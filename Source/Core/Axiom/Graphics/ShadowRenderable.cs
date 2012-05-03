@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Core.Collections;
@@ -121,9 +120,9 @@ namespace Axiom.Graphics
 
 		protected ShadowRenderable()
 		{
-			this.renderOperation = new RenderOperation();
-			this.renderOperation.useIndices = true;
-			this.renderOperation.operationType = OperationType.TriangleList;
+			renderOperation = new RenderOperation();
+			renderOperation.useIndices = true;
+			renderOperation.operationType = OperationType.TriangleList;
 		}
 
 		#endregion Construction and Destruction
@@ -173,7 +172,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.Material.GetBestTechnique();
+				return Material.GetBestTechnique();
 			}
 		}
 
@@ -309,29 +308,29 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
 					if ( renderOperation != null )
 					{
-						if ( !this.renderOperation.IsDisposed )
+						if ( !renderOperation.IsDisposed )
 						{
-							this.renderOperation.Dispose();
+							renderOperation.Dispose();
 						}
 
 						renderOperation = null;
 					}
 
-					if ( this.material != null )
+					if ( material != null )
 					{
-						if ( !this.material.IsDisposed )
+						if ( !material.IsDisposed )
 						{
-							this.material.Dispose();
+							material.Dispose();
 						}
 
-						this.material = null;
+						material = null;
 					}
 				}
 

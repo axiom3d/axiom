@@ -12,7 +12,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -27,8 +26,8 @@ namespace Axiom.SceneManagers.Octree
 		protected internal TerrainRaySceneQuery( SceneManager creator )
 			: base( creator )
 		{
-			this.worldFragmentTypes = WorldFragmentType.SingleIntersection;
-			this.WorldFragment = new WorldFragment();
+			worldFragmentTypes = WorldFragmentType.SingleIntersection;
+			WorldFragment = new WorldFragment();
 		}
 
 		public override void Execute( IRaySceneQueryListener listener )
@@ -41,10 +40,10 @@ namespace Axiom.SceneManagers.Octree
 				float height = ( (TerrainSceneManager)creator ).GetHeightAt( origin, -1 );
 				if ( height != -1 && ( height <= origin.y && dir.y < 0 ) || ( height >= origin.y && dir.y > 0 ) )
 				{
-					this.WorldFragment.SingleIntersection.x = origin.x;
-					this.WorldFragment.SingleIntersection.z = origin.z;
-					this.WorldFragment.SingleIntersection.y = height;
-					if ( !listener.OnQueryResult( this.WorldFragment, ( this.WorldFragment.SingleIntersection - origin ).Length ) )
+					WorldFragment.SingleIntersection.x = origin.x;
+					WorldFragment.SingleIntersection.z = origin.z;
+					WorldFragment.SingleIntersection.y = height;
+					if ( !listener.OnQueryResult( WorldFragment, ( WorldFragment.SingleIntersection - origin ).Length ) )
 					{
 						return;
 					}
@@ -52,9 +51,9 @@ namespace Axiom.SceneManagers.Octree
 			}
 			else
 			{
-				TerrainSceneManager tsm = (TerrainSceneManager)creator;
-				this.WorldFragment.SingleIntersection = tsm.IntersectSegment( origin, origin + ( dir * 100000 ) );
-				if ( !listener.OnQueryResult( this.WorldFragment, ( this.WorldFragment.SingleIntersection - origin ).Length ) )
+				var tsm = (TerrainSceneManager)creator;
+				WorldFragment.SingleIntersection = tsm.IntersectSegment( origin, origin + ( dir*100000 ) );
+				if ( !listener.OnQueryResult( WorldFragment, ( WorldFragment.SingleIntersection - origin ).Length ) )
 				{
 					return;
 				}

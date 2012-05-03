@@ -39,16 +39,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
 using Axiom;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Math.Collections;
 using Axiom.SceneManagers.PortalConnected;
-
 using System.Collections.Generic;
-
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -95,7 +92,7 @@ namespace OctreeZone
 		Children are dynamically created as needed when nodes are inserted in the Octree.
 		If, later, the all the nodes are removed from the child, it is still kept arround.
 		*/
-		public Octree[ ,, ] Children = new Octree[ 8,8,8 ];
+		public Octree[,,] Children = new Octree[8,8,8];
 
 		protected Octree parent = null;
 
@@ -131,13 +128,13 @@ namespace OctreeZone
 			get
 			{
 				// Create a WireBoundingBox if needed
-				if ( this.wireBoundingBox == null )
+				if ( wireBoundingBox == null )
 				{
-					this.wireBoundingBox = new WireBoundingBox();
+					wireBoundingBox = new WireBoundingBox();
 				}
 
-				this.wireBoundingBox.BoundingBox = this.box;
-				return this.wireBoundingBox;
+				wireBoundingBox.BoundingBox = box;
+				return wireBoundingBox;
 			}
 
 			set
@@ -174,11 +171,11 @@ namespace OctreeZone
 
 		public Octree( PCZone zone, Octree parent )
 		{
-			this.wireBoundingBox = null;
-			this.HalfSize = new Vector3();
+			wireBoundingBox = null;
+			HalfSize = new Vector3();
 
 			this.parent = parent;
-			this.NunodeList = 0;
+			NunodeList = 0;
 			this.zone = zone;
 
 			//initialize all children to null.
@@ -239,7 +236,9 @@ namespace OctreeZone
 			Vector3[] pts1 = this.box.Corners;
 			Vector3[] pts2 = box.Corners;
 
-			return ( ( pts2[ 4 ].x - pts2[ 0 ].x ) <= ( pts1[ 4 ].x - pts1[ 0 ].x ) / 2 ) && ( ( pts2[ 4 ].y - pts2[ 0 ].y ) <= ( pts1[ 4 ].y - pts1[ 0 ].y ) / 2 ) && ( ( pts2[ 4 ].z - pts2[ 0 ].z ) <= ( pts1[ 4 ].z - pts1[ 0 ].z ) / 2 );
+			return ( ( pts2[ 4 ].x - pts2[ 0 ].x ) <= ( pts1[ 4 ].x - pts1[ 0 ].x )/2 ) &&
+			       ( ( pts2[ 4 ].y - pts2[ 0 ].y ) <= ( pts1[ 4 ].y - pts1[ 0 ].y )/2 ) &&
+			       ( ( pts2[ 4 ].z - pts2[ 0 ].z ) <= ( pts1[ 4 ].z - pts1[ 0 ].z )/2 );
 		}
 
 		/// <summary>
@@ -251,10 +250,10 @@ namespace OctreeZone
 		/// </summary>
 		public void GetChildIndexes( AxisAlignedBox aabox, out int x, out int y, out int z )
 		{
-			Vector3 max = this.box.Maximum;
+			Vector3 max = box.Maximum;
 			Vector3 min = aabox.Minimum;
 
-			Vector3 Center = this.box.Maximum.MidPoint( this.box.Minimum );
+			Vector3 Center = box.Maximum.MidPoint( box.Minimum );
 			Vector3 CheckCenter = aabox.Maximum.MidPoint( aabox.Minimum );
 
 			if ( CheckCenter.x > Center.x )
@@ -297,8 +296,8 @@ namespace OctreeZone
 		{
 			get
 			{
-				Vector3[] Corners = this.box.Corners;
-				box.SetExtents( Corners[ 0 ] - this.HalfSize, Corners[ 4 ] + this.HalfSize );
+				Vector3[] Corners = box.Corners;
+				box.SetExtents( Corners[ 0 ] - HalfSize, Corners[ 4 ] + HalfSize );
 
 				return box;
 			}
@@ -343,7 +342,7 @@ namespace OctreeZone
 			Vector3 origin = one.Origin;
 			Vector3 dir = one.Direction;
 
-			Vector3 maxT = new Vector3( -1, -1, -1 );
+			var maxT = new Vector3( -1, -1, -1 );
 
 			int i = 0;
 			for ( i = 0; i < 3; i++ )
@@ -353,7 +352,7 @@ namespace OctreeZone
 					inside = false;
 					if ( dir[ i ] > 0 )
 					{
-						maxT[ i ] = ( twoMin[ i ] - origin[ i ] ) / dir[ i ];
+						maxT[ i ] = ( twoMin[ i ] - origin[ i ] )/dir[ i ];
 					}
 				}
 				else if ( origin[ i ] > twoMax[ i ] )
@@ -361,7 +360,7 @@ namespace OctreeZone
 					inside = false;
 					if ( dir[ i ] < 0 )
 					{
-						maxT[ i ] = ( twoMax[ i ] - origin[ i ] ) / dir[ i ];
+						maxT[ i ] = ( twoMax[ i ] - origin[ i ] )/dir[ i ];
 					}
 				}
 			}
@@ -388,7 +387,7 @@ namespace OctreeZone
 			{
 				if ( i != whichPlane )
 				{
-					float f = origin[ i ] + maxT[ whichPlane ] * dir[ i ];
+					float f = origin[ i ] + maxT[ whichPlane ]*dir[ i ];
 					if ( f < ( twoMin[ i ] - 0.00001f ) || f > ( twoMax[ i ] + 0.00001f ) )
 					{
 						return Intersection.OUTSIDE;
@@ -478,12 +477,14 @@ namespace OctreeZone
 			Vector3 outsideMin = one.Minimum;
 			Vector3 outsideMax = one.Maximum;
 
-			if ( insideMax.x < outsideMin.x || insideMax.y < outsideMin.y || insideMax.z < outsideMin.z || insideMin.x > outsideMax.x || insideMin.y > outsideMax.y || insideMin.z > outsideMax.z )
+			if ( insideMax.x < outsideMin.x || insideMax.y < outsideMin.y || insideMax.z < outsideMin.z ||
+			     insideMin.x > outsideMax.x || insideMin.y > outsideMax.y || insideMin.z > outsideMax.z )
 			{
 				return Intersection.OUTSIDE;
 			}
 
-			bool full = ( insideMin.x > outsideMin.x && insideMin.y > outsideMin.y && insideMin.z > outsideMin.z && insideMax.x < outsideMax.x && insideMax.y < outsideMax.y && insideMax.z < outsideMax.z );
+			bool full = ( insideMin.x > outsideMin.x && insideMin.y > outsideMin.y && insideMin.z > outsideMin.z &&
+			              insideMax.x < outsideMax.x && insideMax.y < outsideMax.y && insideMax.z < outsideMax.z );
 
 			if ( full )
 			{
@@ -536,13 +537,13 @@ namespace OctreeZone
 				if ( scenter[ i ] < twoMin[ i ] )
 				{
 					s = scenter[ i ] - twoMin[ i ];
-					d += s * s;
+					d += s*s;
 				}
 
 				else if ( scenter[ i ] > twoMax[ i ] )
 				{
 					s = scenter[ i ] - twoMax[ i ];
-					d += s * s;
+					d += s*s;
 				}
 			}
 
@@ -565,7 +566,8 @@ namespace OctreeZone
 		}
 
 
-		public void _findNodes( AxisAlignedBox t, ref List<PCZSceneNode> list, PCZSceneNode exclude, bool includeVisitors, bool full )
+		public void _findNodes( AxisAlignedBox t, ref List<PCZSceneNode> list, PCZSceneNode exclude, bool includeVisitors,
+		                        bool full )
 		{
 			if ( !full )
 			{
@@ -816,7 +818,8 @@ namespace OctreeZone
 		}
 
 
-		public void _findNodes( PlaneBoundedVolume t, ref List<PCZSceneNode> list, PCZSceneNode exclude, bool includeVisitors, bool full )
+		public void _findNodes( PlaneBoundedVolume t, ref List<PCZSceneNode> list, PCZSceneNode exclude, bool includeVisitors,
+		                        bool full )
 		{
 			if ( !full )
 			{

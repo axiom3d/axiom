@@ -42,7 +42,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -80,8 +79,8 @@ namespace Axiom.SceneManagers.PortalConnected
 				return false;
 			}
 
-			LightInfo rhs = (LightInfo)obj;
-			return this.light == rhs.light && this.type == rhs.type && this.range == rhs.range && this.position == rhs.position;
+			var rhs = (LightInfo)obj;
+			return light == rhs.light && type == rhs.type && range == rhs.range && position == rhs.position;
 		}
 
 		public override int GetHashCode()
@@ -179,13 +178,14 @@ namespace Axiom.SceneManagers.PortalConnected
 
 			// create a new default zone
 			zoneFactoryManager = PCZoneFactoryManager.Instance;
-			defaultZone = CreateZoneFromFile( this.defaultZoneTypeName, "Default_Zone", RootSceneNode as PCZSceneNode, defaultZoneFileName );
+			defaultZone = CreateZoneFromFile( this.defaultZoneTypeName, "Default_Zone", RootSceneNode as PCZSceneNode,
+			                                  defaultZoneFileName );
 		}
 
 		// Create a portal instance
 		public Portal CreatePortal( String name, PORTAL_TYPE type )
 		{
-			Portal newPortal = new Portal( name, type );
+			var newPortal = new Portal( name, type );
 			portals.Add( newPortal );
 			return newPortal;
 		}
@@ -197,7 +197,8 @@ namespace Axiom.SceneManagers.PortalConnected
 			Portal targetPortal = p.getTargetPortal();
 			if ( null != targetPortal )
 			{
-				targetPortal.setTargetPortal( null ); // the targetPortal will still have targetZone value, but targetPortal will be invalid
+				targetPortal.setTargetPortal( null );
+					// the targetPortal will still have targetZone value, but targetPortal will be invalid
 			}
 			// remove the Portal from it's home zone
 			PCZone homeZone = p.getCurrentHomeZone();
@@ -609,7 +610,7 @@ namespace Axiom.SceneManagers.PortalConnected
 				return;
 			}
 
-			PCZSceneNode pczsn = (PCZSceneNode)sn;
+			var pczsn = (PCZSceneNode)sn;
 
 			// clear all references to the node in visited zones
 			pczsn.ClearNodeFromVisitedZones();
@@ -767,7 +768,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 			foreach ( PCZone zone in zones )
 			{
-				AxisAlignedBox aabb = new AxisAlignedBox();
+				var aabb = new AxisAlignedBox();
 				zone.GetAABB( ref aabb );
 				SceneNode enclosureNode = zone.EnclosureNode;
 				if ( null != enclosureNode )
@@ -819,7 +820,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		public void SetNodeHomeZone( SceneNode node, PCZone zone )
 		{
 			// cast the SceneNode to a PCZSceneNode
-			PCZSceneNode pczsn = (PCZSceneNode)node;
+			var pczsn = (PCZSceneNode)node;
 			pczsn.HomeZone = zone;
 		}
 
@@ -906,7 +907,7 @@ namespace Axiom.SceneManagers.PortalConnected
 							// Just see if the lights attenuation range is within the frustum
 							lightInfo.range = l.AttenuationRange;
 							lightInfo.position = l.GetDerivedPosition();
-							Sphere sphere = new Sphere( lightInfo.position, lightInfo.range );
+							var sphere = new Sphere( lightInfo.position, lightInfo.range );
 							if ( camera.IsObjectVisible( sphere ) )
 							{
 								mTestLightInfos.Add( lightInfo );
@@ -945,7 +946,9 @@ namespace Axiom.SceneManagers.PortalConnected
 					}
 				}
 
-				if ( IsShadowTechniqueTextureBased ) {}
+				if ( IsShadowTechniqueTextureBased )
+				{
+				}
 
 				// Sort the lights if using texture shadows, since the first 'n' will be
 				// used to generate shadow textures and we should pick the most appropriate
@@ -998,7 +1001,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			int count = shadowTextureCameras.Count;
 			for ( int i = 0; i < count; ++i )
 			{
-				PCZSceneNode node = (PCZSceneNode)rootSceneNode.CreateChildSceneNode( shadowTextureCameras[ i ].Name );
+				var node = (PCZSceneNode)rootSceneNode.CreateChildSceneNode( shadowTextureCameras[ i ].Name );
 				node.AttachObject( shadowTextureCameras[ i ] );
 				AddPCZSceneNode( node, defaultZone );
 			}
@@ -1029,7 +1032,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		//---------------------------------------------------------------------
 		public void FireShadowTexturesPreCaster( Light light, Camera camera, int iteration )
 		{
-			PCZSceneNode camNode = (PCZSceneNode)camera.ParentSceneNode;
+			var camNode = (PCZSceneNode)camera.ParentSceneNode;
 
 			if ( light.Type == LightType.Directional )
 			{
@@ -1040,7 +1043,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 			else
 			{
-				PCZSceneNode lightNode = (PCZSceneNode)light.ParentSceneNode;
+				var lightNode = (PCZSceneNode)light.ParentSceneNode;
 				Debug.Assert( null != lightNode, "Error, lightNode shoudn't be null" );
 				PCZone lightZone = lightNode.HomeZone;
 				if ( camNode.HomeZone != lightZone )
@@ -1093,7 +1096,8 @@ namespace Axiom.SceneManagers.PortalConnected
 						if ( foundMatch == false )
 						{
 							// error, didn't find a matching portal!
-							throw new AxiomException( "Could not find matching portal for portal " + portal.getName() + "PCZSceneManager.connectPortalsToTargetZonesByLocation" );
+							throw new AxiomException( "Could not find matching portal for portal " + portal.getName() +
+							                          "PCZSceneManager.connectPortalsToTargetZonesByLocation" );
 						}
 					}
 				}
@@ -1129,12 +1133,13 @@ namespace Axiom.SceneManagers.PortalConnected
 			// walk the zones, starting from the camera home zone,
 			// adding all visible scene nodes to the mVisibles list
 			cameraHomeZone.LastVisibleFrame = frameCount;
-			cameraHomeZone.FindVisibleNodes( (PCZCamera)cam, ref visibleNodes, renderQueue, visibleBounds, onlyShadowCasters, displayNodes, showBoundingBoxes );
+			cameraHomeZone.FindVisibleNodes( (PCZCamera)cam, ref visibleNodes, renderQueue, visibleBounds, onlyShadowCasters,
+			                                 displayNodes, showBoundingBoxes );
 		}
 
 		public void FindNodesIn( AxisAlignedBox box, ref List<PCZSceneNode> list, PCZone startZone, PCZSceneNode exclude )
 		{
-			List<Portal> visitedPortals = new List<Portal>();
+			var visitedPortals = new List<Portal>();
 			if ( null != startZone )
 			{
 				// start in startzone, and recurse through portals if necessary
@@ -1152,7 +1157,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public void FindNodesIn( Sphere sphere, ref List<PCZSceneNode> list, PCZone startZone, PCZSceneNode exclude )
 		{
-			List<Portal> visitedPortals = new List<Portal>();
+			var visitedPortals = new List<Portal>();
 			if ( null != startZone )
 			{
 				// start in startzone, and recurse through portals if necessary
@@ -1168,9 +1173,10 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 		}
 
-		public void FindNodesIn( PlaneBoundedVolume volumes, ref List<PCZSceneNode> list, PCZone startZone, PCZSceneNode exclude )
+		public void FindNodesIn( PlaneBoundedVolume volumes, ref List<PCZSceneNode> list, PCZone startZone,
+		                         PCZSceneNode exclude )
 		{
-			List<Portal> visitedPortals = new List<Portal>();
+			var visitedPortals = new List<Portal>();
 			if ( null != startZone )
 			{
 				// start in startzone, and recurse through portals if necessary
@@ -1188,7 +1194,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public void FindNodesIn( Ray r, ref List<PCZSceneNode> list, PCZone startZone, PCZSceneNode exclude )
 		{
-			List<Portal> visitedPortals = new List<Portal>();
+			var visitedPortals = new List<Portal>();
 			if ( null != startZone )
 			{
 				// start in startzone, and recurse through portals if necessary
@@ -1284,7 +1290,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		//---------------------------------------------------------------------
 		public override AxisAlignedBoxRegionSceneQuery CreateAABBRegionQuery( AxisAlignedBox box, uint mask )
 		{
-			PCZAxisAlignedBoxSceneQuery q = new PCZAxisAlignedBoxSceneQuery( this );
+			var q = new PCZAxisAlignedBoxSceneQuery( this );
 			q.Box = box;
 			q.QueryMask = mask;
 			return q;
@@ -1293,16 +1299,17 @@ namespace Axiom.SceneManagers.PortalConnected
 		//---------------------------------------------------------------------
 		public override SphereRegionSceneQuery CreateSphereRegionQuery( Sphere sphere, uint mask )
 		{
-			PCZSphereSceneQuery q = new PCZSphereSceneQuery( this );
+			var q = new PCZSphereSceneQuery( this );
 			q.Sphere = sphere;
 			q.QueryMask = mask;
 			return q;
 		}
 
 		//---------------------------------------------------------------------
-		public override PlaneBoundedVolumeListSceneQuery CreatePlaneBoundedVolumeQuery( PlaneBoundedVolumeList volumes, uint mask )
+		public override PlaneBoundedVolumeListSceneQuery CreatePlaneBoundedVolumeQuery( PlaneBoundedVolumeList volumes,
+		                                                                                uint mask )
 		{
-			PCZPlaneBoundedVolumeListSceneQuery q = new PCZPlaneBoundedVolumeListSceneQuery( this );
+			var q = new PCZPlaneBoundedVolumeListSceneQuery( this );
 			q.Volumes = volumes;
 			q.QueryMask = mask;
 			return q;
@@ -1311,7 +1318,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		//---------------------------------------------------------------------
 		public override RaySceneQuery CreateRayQuery( Ray ray, uint mask )
 		{
-			PCZRaySceneQuery q = new PCZRaySceneQuery( this );
+			var q = new PCZRaySceneQuery( this );
 			q.Ray = ray;
 			q.QueryMask = mask;
 			return q;
@@ -1320,7 +1327,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		//---------------------------------------------------------------------
 		public override IntersectionSceneQuery CreateIntersectionQuery( uint mask )
 		{
-			PCZIntersectionSceneQuery q = new PCZIntersectionSceneQuery( this );
+			var q = new PCZIntersectionSceneQuery( this );
 			q.QueryMask = mask;
 			return q;
 		}

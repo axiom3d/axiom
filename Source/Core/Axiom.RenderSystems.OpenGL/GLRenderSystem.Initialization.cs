@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
-
 using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL
@@ -45,7 +43,8 @@ namespace Axiom.RenderSystems.OpenGL
 		#region CreateRenderWindow
 
 		[OgreVersion( 1, 7, 2790 )]
-		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullscreen, NamedParameterList miscParams )
+		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullscreen,
+		                                                 NamedParameterList miscParams )
 		{
 			if ( renderTargets.ContainsKey( name ) )
 			{
@@ -54,7 +53,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// Log a message
 			var msg = new StringBuilder();
-			msg.AppendFormat( "GLRenderSystem.CreateRenderWindow \"{0}\", {1}x{2} {3} ", name, width, height, isFullscreen ? "fullscreen" : "windowed" );
+			msg.AppendFormat( "GLRenderSystem.CreateRenderWindow \"{0}\", {1}x{2} {3} ", name, width, height,
+			                  isFullscreen ? "fullscreen" : "windowed" );
 			if ( miscParams != null )
 			{
 				msg.Append( "miscParams: " );
@@ -127,7 +127,8 @@ namespace Axiom.RenderSystems.OpenGL
 				//Only Copy does, but Copy means only one depth buffer...
 				var windowContext = (GLContext)window[ "GLCONTEXT" ];
 
-				var depthBuffer = new GLDepthBuffer( PoolId.Default, this, windowContext, null, null, window.Width, window.Height, window.FSAA, 0, true );
+				var depthBuffer = new GLDepthBuffer( PoolId.Default, this, windowContext, null, null, window.Width, window.Height,
+				                                     window.FSAA, 0, true );
 
 				depthBufferPool[ depthBuffer.PoolId ].Add( depthBuffer );
 
@@ -147,7 +148,8 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			if ( caps.RendersystemName != Name )
 			{
-				throw new AxiomException( "Trying to initialize GLRenderSystem from RenderSystemCapabilities that do not support OpenGL" );
+				throw new AxiomException(
+					"Trying to initialize GLRenderSystem from RenderSystemCapabilities that do not support OpenGL" );
 			}
 
 			// set texture the number of texture units
@@ -373,7 +375,8 @@ namespace Axiom.RenderSystems.OpenGL
 					// No pbuffer support either -- fallback to simplest copying from framebuffer
 					rttManager = new GLCopyingRTTManager( _glSupport );
 					LogManager.Instance.Write( "GL: Using framebuffer copy for rendering to textures (worst)" );
-					LogManager.Instance.Write( "GL: Warning: RenderTexture size is restricted to size of framebuffer. If you are on Linux, consider using GLX instead of SDL." );
+					LogManager.Instance.Write(
+						"GL: Warning: RenderTexture size is restricted to size of framebuffer. If you are on Linux, consider using GLX instead of SDL." );
 
 					//Copy method uses the main depth buffer but no other depth buffer
 					caps.SetCapability( Graphics.Capabilities.RTTMainDepthbufferAttachable );

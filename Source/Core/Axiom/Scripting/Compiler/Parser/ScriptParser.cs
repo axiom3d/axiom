@@ -53,7 +53,9 @@ namespace Axiom.Scripting.Compiler.Parser
 			Object
 		}
 
-		public ScriptParser() {}
+		public ScriptParser()
+		{
+		}
 
 		public IList<ConcreteNode> Parse( IList<ScriptToken> tokens )
 		{

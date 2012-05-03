@@ -39,9 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Windows.Forms;
-
 using Axiom.Core;
-
 using OpenTK;
 using OpenTK.Graphics;
 
@@ -51,9 +49,9 @@ namespace Axiom.RenderSystems.OpenGL
 {
 	internal class OpenTKGLContext : GLContext
 	{
-		private GLControl glControl;
-		private GraphicsContext graphicsContext;
-		private OpenTK.Platform.IWindowInfo windowInfo;
+		private readonly GLControl glControl;
+		private readonly GraphicsContext graphicsContext;
+		private readonly OpenTK.Platform.IWindowInfo windowInfo;
 
 		public OpenTKGLContext( OpenTK.Platform.IWindowInfo windowInfo )
 		{
@@ -86,11 +84,13 @@ namespace Axiom.RenderSystems.OpenGL
 				throw new Exception( "glControl.Context == null" );
 			}
 
-			Form form = (Form)parent;
+			var form = (Form)parent;
 			form.Controls.Add( glControl );
 			control.Hide();
 
-			if ( ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" ).Count > 0 )
+			if (
+				ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" )
+					.Count > 0 )
 			{
 				using ( System.IO.Stream icon = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico" ) )
 				{
@@ -141,7 +141,9 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 		}
 
-		public override void EndCurrent() {}
+		public override void EndCurrent()
+		{
+		}
 
 		public override GLContext Clone()
 		{

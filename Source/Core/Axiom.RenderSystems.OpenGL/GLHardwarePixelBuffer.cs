@@ -40,11 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Runtime.InteropServices;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-
 using Tao.OpenGl;
 
 #endregion Namespace Declarations
@@ -79,20 +77,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region GLInternalFormat Property
 
-		private int _glInternalFormat;
-
-		public int GLFormat
-		{
-			get
-			{
-				return _glInternalFormat;
-			}
-
-			protected set
-			{
-				_glInternalFormat = value;
-			}
-		}
+		public int GLFormat { get; protected set; }
 
 		#endregion GLInternalFormat Property
 
@@ -133,7 +118,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// Allocate storage
-			_data = new byte[ this.sizeInBytes ];
+			_data = new byte[sizeInBytes];
 			buffer.Data = BufferBase.Wrap( _data );
 			// TODO: use PBO if we're HBU_DYNAMIC
 		}
@@ -238,7 +223,9 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				throw new ArgumentException( "Source box out of range." );
 			}
-			if ( srcBox.Left == 0 && srcBox.Right == Width && srcBox.Top == 0 && srcBox.Bottom == Height && srcBox.Front == 0 && srcBox.Back == Depth && dst.Width == Width && dst.Height == Height && dst.Depth == Depth && GLPixelUtil.GetGLOriginFormat( dst.Format ) != 0 )
+			if ( srcBox.Left == 0 && srcBox.Right == Width && srcBox.Top == 0 && srcBox.Bottom == Height && srcBox.Front == 0 &&
+			     srcBox.Back == Depth && dst.Width == Width && dst.Height == Height && dst.Depth == Depth &&
+			     GLPixelUtil.GetGLOriginFormat( dst.Format ) != 0 )
 			{
 				// The direct case: the user wants the entire texture in a format supported by GL
 				// so we don't need an intermediate buffer

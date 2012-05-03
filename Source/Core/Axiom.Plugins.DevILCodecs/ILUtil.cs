@@ -34,10 +34,8 @@
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Media;
-
 using Tao.DevIl;
 
 #endregion Namespace Declarations
@@ -74,7 +72,7 @@ namespace Axiom.Plugins.DevILCodecs
 			{
 				get
 				{
-					return ( this.Format != -1 );
+					return ( Format != -1 );
 				}
 			}
 
@@ -82,19 +80,25 @@ namespace Axiom.Plugins.DevILCodecs
 			/// Construct an invalidated ILFormat structure
 			/// </summary>
 			public ILFormat()
-				: this( 0, -1, -1 ) {}
+				: this( 0, -1, -1 )
+			{
+			}
 
 			/// <summary>
 			/// Construct an invalidated ILFormat structure
 			/// </summary>
 			public ILFormat( int channels )
-				: this( channels, -1, -1 ) {}
+				: this( channels, -1, -1 )
+			{
+			}
 
 			/// <summary>
 			/// Construct a ILFormat from parameters
 			/// </summary>
 			public ILFormat( int channels, int format )
-				: this( channels, format, -1 ) {}
+				: this( channels, format, -1 )
+			{
+			}
 
 			/// <summary>
 			/// Construct a ILFormat from parameters
@@ -102,9 +106,9 @@ namespace Axiom.Plugins.DevILCodecs
 			[OgreVersion( 1, 7, 2 )]
 			public ILFormat( int channels, int format, int type )
 			{
-				this.Channels = channels;
-				this.Format = format;
-				this.Type = type;
+				Channels = channels;
+				Format = format;
+				Type = type;
 			}
 		};
 
@@ -307,15 +311,24 @@ namespace Axiom.Plugins.DevILCodecs
 
 			if ( destType == typeof ( byte ) )
 			{
-				PixelConverter.PackColor( (uint)System.Convert.ChangeType( r, typeof ( uint ) ), (uint)System.Convert.ChangeType( g, typeof ( uint ) ), (uint)System.Convert.ChangeType( b, typeof ( uint ) ), (uint)System.Convert.ChangeType( a, typeof ( uint ) ), pf, dest );
+				PixelConverter.PackColor( (uint)System.Convert.ChangeType( r, typeof ( uint ) ),
+				                          (uint)System.Convert.ChangeType( g, typeof ( uint ) ),
+				                          (uint)System.Convert.ChangeType( b, typeof ( uint ) ),
+				                          (uint)System.Convert.ChangeType( a, typeof ( uint ) ), pf, dest );
 			}
 			else if ( destType == typeof ( ushort ) )
 			{
-				PixelConverter.PackColor( (float)System.Convert.ChangeType( r, destType ) / 65535.0f, (float)System.Convert.ChangeType( g, destType ) / 65535.0f, (float)System.Convert.ChangeType( b, destType ) / 65535.0f, (float)System.Convert.ChangeType( a, destType ) / 65535.0f, pf, dest );
+				PixelConverter.PackColor( (float)System.Convert.ChangeType( r, destType )/65535.0f,
+				                          (float)System.Convert.ChangeType( g, destType )/65535.0f,
+				                          (float)System.Convert.ChangeType( b, destType )/65535.0f,
+				                          (float)System.Convert.ChangeType( a, destType )/65535.0f, pf, dest );
 			}
 			else if ( destType == typeof ( float ) )
 			{
-				PixelConverter.PackColor( (float)System.Convert.ChangeType( r, destType ), (float)System.Convert.ChangeType( g, destType ), (float)System.Convert.ChangeType( b, destType ), (float)System.Convert.ChangeType( a, destType ), pf, dest );
+				PixelConverter.PackColor( (float)System.Convert.ChangeType( r, destType ),
+				                          (float)System.Convert.ChangeType( g, destType ),
+				                          (float)System.Convert.ChangeType( b, destType ),
+				                          (float)System.Convert.ChangeType( a, destType ), pf, dest );
 			}
 			else
 			{
@@ -430,7 +443,8 @@ namespace Axiom.Plugins.DevILCodecs
 				throw new NotImplementedException( "Destination must currently be consecutive" );
 			}
 
-			if ( dst.Width != Il.ilGetInteger( Il.IL_IMAGE_WIDTH ) || dst.Height != Il.ilGetInteger( Il.IL_IMAGE_HEIGHT ) || dst.Depth != Il.ilGetInteger( Il.IL_IMAGE_DEPTH ) )
+			if ( dst.Width != Il.ilGetInteger( Il.IL_IMAGE_WIDTH ) || dst.Height != Il.ilGetInteger( Il.IL_IMAGE_HEIGHT ) ||
+			     dst.Depth != Il.ilGetInteger( Il.IL_IMAGE_DEPTH ) )
 			{
 				throw new AxiomException( "Destination dimensions must equal IL dimension" );
 			}
@@ -530,7 +544,8 @@ namespace Axiom.Plugins.DevILCodecs
 
 				// Native endian format with all bit depths<8 can safely and quickly be 
 				// converted to 24/32 bit
-				if ( PixelUtil.IsNativeEndian( src.Format ) && depths[ 0 ] <= 8 && depths[ 1 ] <= 8 && depths[ 2 ] <= 8 && depths[ 3 ] <= 8 )
+				if ( PixelUtil.IsNativeEndian( src.Format ) && depths[ 0 ] <= 8 && depths[ 1 ] <= 8 && depths[ 2 ] <= 8 &&
+				     depths[ 3 ] <= 8 )
 				{
 					if ( PixelUtil.HasAlpha( src.Format ) )
 					{
@@ -544,7 +559,8 @@ namespace Axiom.Plugins.DevILCodecs
 
 				// Let DevIL allocate the memory for us, then do the conversion ourselves
 				ifmt = Convert( fmt );
-				Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, IntPtr.Zero ); // TAO 2.0
+				Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, IntPtr.Zero );
+					// TAO 2.0
 				//Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, null );
 				using ( var dstbuf = BufferBase.Wrap( Il.ilGetData(), Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) ) )
 				{

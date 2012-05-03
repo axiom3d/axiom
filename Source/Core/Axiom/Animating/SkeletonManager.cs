@@ -38,10 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Collections;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -99,14 +97,15 @@ namespace Axiom.Animating
 		/// <summary>
 		///    Creates a new skeleton object.
 		/// </summary>
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			return new Skeleton( this, name, handle, group, isManual, loader );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

@@ -38,14 +38,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom;
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Core.Collections;
-
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -108,10 +106,14 @@ namespace Axiom.SceneManagers.Octree
 		#region Constructors
 
 		public OctreeNode( SceneManager scene )
-			: base( scene ) {}
+			: base( scene )
+		{
+		}
 
 		public OctreeNode( SceneManager scene, string name )
-			: base( scene, name ) {}
+			: base( scene, name )
+		{
+		}
 
 		#endregion Constructors
 
@@ -165,7 +167,7 @@ namespace Axiom.SceneManagers.Octree
 
 			if ( !worldAABB.IsNull )
 			{
-				OctreeSceneManager oManager = (OctreeSceneManager)this.creator;
+				var oManager = (OctreeSceneManager)creator;
 				oManager.UpdateOctreeNode( this );
 			}
 		}

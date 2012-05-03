@@ -67,7 +67,9 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		///		Default constructor.
 		/// </summary>
-		public ParticleAffectorFactory() {}
+		public ParticleAffectorFactory()
+		{
+		}
 
 		#endregion
 

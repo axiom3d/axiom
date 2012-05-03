@@ -39,15 +39,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Media;
-
 using OpenTK;
 using OpenTK.Graphics;
-
 using Tao.OpenGl;
 
 #endregion Namespace Declarations
@@ -69,7 +66,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#endregion Fields
 
-		public OpenTKWindow() {}
+		public OpenTKWindow()
+		{
+		}
 
 		#region RenderWindow Members
 
@@ -164,7 +163,7 @@ namespace Axiom.RenderSystems.OpenGL
 			this.name = name;
 			this.width = width;
 			this.height = height;
-			this.colorDepth = 32;
+			colorDepth = 32;
 			this.fullScreen = fullScreen;
 			displayDevice = DisplayDevice.Default;
 
@@ -172,7 +171,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			if ( miscParams != null )
 			{
-				foreach ( KeyValuePair<string, object> entry in miscParams )
+				foreach ( var entry in miscParams )
 				{
 					switch ( entry.Key )
 					{
@@ -245,10 +244,13 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( glContext == null )
 			{
 				// create window
-				_window = new NativeWindow( width, height, title, GameWindowFlags.Default, new GraphicsMode( GraphicsMode.Default.ColorFormat, depthBuffer, GraphicsMode.Default.Stencil, FSAA ), displayDevice );
+				_window = new NativeWindow( width, height, title, GameWindowFlags.Default,
+				                            new GraphicsMode( GraphicsMode.Default.ColorFormat, depthBuffer,
+				                                              GraphicsMode.Default.Stencil, FSAA ), displayDevice );
 				glContext = new OpenTKGLContext( _window.WindowInfo );
 
-				FileSystem.FileInfoList ico = ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" );
+				FileSystem.FileInfoList ico =
+					ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" );
 				if ( ico.Count != 0 )
 				{
 					_window.Icon = System.Drawing.Icon.ExtractAssociatedIcon( ico[ 0 ].Filename );
@@ -312,7 +314,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void WindowMovedOrResized()
 		{
 			// Update dimensions incase changed
-			foreach ( Viewport entry in this.ViewportList.Values )
+			foreach ( Viewport entry in ViewportList.Values )
 			{
 				entry.UpdateDimensions();
 			}
@@ -320,7 +322,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )
 		{
-			if ( ( dst.Left < 0 ) || ( dst.Right > Width ) || ( dst.Top < 0 ) || ( dst.Bottom > Height ) || ( dst.Front != 0 ) || ( dst.Back != 1 ) )
+			if ( ( dst.Left < 0 ) || ( dst.Right > Width ) || ( dst.Top < 0 ) || ( dst.Bottom > Height ) || ( dst.Front != 0 ) ||
+			     ( dst.Back != 1 ) )
 			{
 				throw new Exception( "Invalid box." );
 			}
@@ -354,9 +357,9 @@ namespace Axiom.RenderSystems.OpenGL
 			//vertical flip
 
 			{
-				int rowSpan = dst.Width * PixelUtil.GetNumElemBytes( dst.Format );
+				int rowSpan = dst.Width*PixelUtil.GetNumElemBytes( dst.Format );
 				int height = dst.Height;
-				byte[] tmpData = new byte[ rowSpan * height ];
+				var tmpData = new byte[rowSpan*height];
 #if !AXIOM_SAFE_ONLY
 				unsafe
 #endif
@@ -368,12 +371,12 @@ namespace Axiom.RenderSystems.OpenGL
 					{
 						for ( int col = 0; col < rowSpan; col++ )
 						{
-							tmpData[ tmpRow * rowSpan + col ] = dataPtr[ row * rowSpan + col ];
+							tmpData[ tmpRow*rowSpan + col ] = dataPtr[ row*rowSpan + col ];
 						}
 					}
 				}
 				var tmpDataHandle = Memory.PinObject( tmpData );
-				Memory.Copy( tmpDataHandle, dst.Data, rowSpan * height );
+				Memory.Copy( tmpDataHandle, dst.Data, rowSpan*height );
 				Memory.UnpinObject( tmpData );
 			}
 		}

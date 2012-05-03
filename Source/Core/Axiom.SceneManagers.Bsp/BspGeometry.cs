@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -64,7 +63,9 @@ namespace Axiom.SceneManagers.Bsp
 
 			if ( geometryMat == null )
 			{
-				geometryMat = (Material)MaterialManager.Instance.Create( "Axiom/BspGeometryMaterial", ResourceGroupManager.Instance.WorldResourceGroupName );
+				geometryMat =
+					(Material)
+					MaterialManager.Instance.Create( "Axiom/BspGeometryMaterial", ResourceGroupManager.Instance.WorldResourceGroupName );
 				geometryMat.ReceiveShadows = true;
 				technique = geometryMat.GetTechnique( 0 );
 			}
@@ -135,7 +136,9 @@ namespace Axiom.SceneManagers.Bsp
 		///    does use vertex blending it will fill the passed in pointer with an array of matrices,
 		///    the length being the value returned from getNumWorldTransforms.
 		/// </remarks>
-		public void GetWorldTransforms( Matrix4[] matrices ) {}
+		public void GetWorldTransforms( Matrix4[] matrices )
+		{
+		}
 
 		/// <summary>
 		///    Gets a list of lights, ordered relative to how close they are to this renderable.
@@ -307,7 +310,9 @@ namespace Axiom.SceneManagers.Bsp
 		///		two is performed by the AutoConstant.Custom entry, if that is used.
 		/// </param>
 		/// <param name="val">The value to associate.</param>
-		public void SetCustomParameter( int index, Vector4 val ) {}
+		public void SetCustomParameter( int index, Vector4 val )
+		{
+		}
 
 		/// <summary>
 		///		Update a custom GpuProgramParameters constant which is derived from
@@ -326,7 +331,9 @@ namespace Axiom.SceneManagers.Bsp
 		/// </remarks>
 		/// <param name="constant">The auto constant entry referring to the parameter being updated.</param>
 		/// <param name="parameters">The parameters object which this method should call to set the updated parameters.</param>
-		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constant, GpuProgramParameters parameters ) {}
+		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constant, GpuProgramParameters parameters )
+		{
+		}
 
 		#endregion Public Methods
 
@@ -336,22 +343,10 @@ namespace Axiom.SceneManagers.Bsp
 
 		#region isDisposed Property
 
-		private bool _disposed = false;
-
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get; set; }
 
 		#endregion isDisposed Property
 

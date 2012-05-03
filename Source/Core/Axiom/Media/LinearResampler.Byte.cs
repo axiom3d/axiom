@@ -57,11 +57,13 @@ namespace Axiom.Media
 			private readonly int _channels;
 
 			public Byte()
-				: this( 1 ) {}
+				: this( 1 )
+			{
+			}
 
 			public Byte( int channels )
 			{
-				this._channels = channels;
+				_channels = channels;
 			}
 
 			public void Scale( PixelBox src, PixelBox dst )
@@ -86,8 +88,8 @@ namespace Axiom.Media
 
 					// sx_48,sy_48 represent current position in source
 					// using 16/48-bit fixed precision, incremented by steps
-					var stepx = (UInt64)( ( src.Width << 48 ) / dst.Width );
-					var stepy = (UInt64)( ( src.Height << 48 ) / dst.Height );
+					var stepx = (UInt64)( ( src.Width << 48 )/dst.Width );
+					var stepy = (UInt64)( ( src.Height << 48 )/dst.Height );
 
 					// bottom 28 bits of temp are 16/12 bit fixed precision, used to
 					// adjust a source coordinate backwards by half a pixel so that the
@@ -103,8 +105,8 @@ namespace Axiom.Media
 						var syf = temp & 0xFFF;
 						var sy1 = temp >> 12;
 						var sy2 = (uint)System.Math.Min( sy1 + 1, src.Bottom - src.Top - 1 );
-						var syoff1 = (uint)( sy1 * src.RowPitch );
-						var syoff2 = (uint)( sy2 * src.RowPitch );
+						var syoff1 = (uint)( sy1*src.RowPitch );
+						var syoff2 = (uint)( sy2*src.RowPitch );
 
 						var sx_48 = ( stepx >> 1 ) - 1;
 						for ( var x = (uint)dst.Left; x < dst.Right; x++, sx_48 += stepx )
@@ -115,16 +117,22 @@ namespace Axiom.Media
 							var sx1 = temp >> 12;
 							var sx2 = (uint)System.Math.Min( sx1 + 1, src.Right - src.Left - 1 );
 
-							var sxfsyf = sxf * syf;
-							for ( uint k = 0; k < this._channels; k++ )
+							var sxfsyf = sxf*syf;
+							for ( uint k = 0; k < _channels; k++ )
 							{
-								var accum = (uint)( srcdata[ (int)( ( sx1 + syoff1 ) * this._channels + k ) ] * (char)( 0x1000000 - ( sxf << 12 ) - ( syf << 12 ) + sxfsyf ) + srcdata[ (int)( ( sx2 + syoff1 ) * this._channels + k ) ] * (char)( ( sxf << 12 ) - sxfsyf ) + srcdata[ (int)( ( sx1 + syoff2 ) * this._channels + k ) ] * (char)( ( syf << 12 ) - sxfsyf ) + srcdata[ (int)( ( sx2 + syoff2 ) * this._channels + k ) ] * (char)sxfsyf );
+								var accum =
+									(uint)
+									( srcdata[ (int)( ( sx1 + syoff1 )*_channels + k ) ]*
+									  (char)( 0x1000000 - ( sxf << 12 ) - ( syf << 12 ) + sxfsyf ) +
+									  srcdata[ (int)( ( sx2 + syoff1 )*_channels + k ) ]*(char)( ( sxf << 12 ) - sxfsyf ) +
+									  srcdata[ (int)( ( sx1 + syoff2 )*_channels + k ) ]*(char)( ( syf << 12 ) - sxfsyf ) +
+									  srcdata[ (int)( ( sx2 + syoff2 )*_channels + k ) ]*(char)sxfsyf );
 								// accum is computed using 8/24-bit fixed-point math
 								// (maximum is 0xFF000000; rounding will not cause overflow)
 								dstData[ pdst++ ] = (byte)( ( accum + 0x800000 ) >> 24 );
 							}
 						}
-						pdst += this._channels * dst.RowSkip;
+						pdst += _channels*dst.RowSkip;
 					}
 				}
 			}

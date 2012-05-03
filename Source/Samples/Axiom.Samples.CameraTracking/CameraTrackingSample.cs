@@ -44,7 +44,8 @@ namespace Axiom.Samples.CameraTrack
 		public CameraTrackingSample()
 		{
 			Metadata[ "Title" ] = "Camera Tracking";
-			Metadata[ "Description" ] = "An example of using AnimationTracks to make a node smoothly follow " + "a predefined path with spline interpolation. Also uses the auto-tracking feature of the camera.";
+			Metadata[ "Description" ] = "An example of using AnimationTracks to make a node smoothly follow " +
+			                            "a predefined path with spline interpolation. Also uses the auto-tracking feature of the camera.";
 			Metadata[ "Thumbnail" ] = "thumb_camtrack.png";
 			Metadata[ "Category" ] = "Unsorted";
 		}
@@ -74,7 +75,8 @@ namespace Axiom.Samples.CameraTrack
 			Entity head = SceneManager.CreateEntity( "Head", "ogrehead.mesh" );
 			SceneNode headNode = SceneManager.RootSceneNode.CreateChildSceneNode();
 			headNode.AttachObject( head );
-			CameraManager.setStyle( CameraStyle.Manual ); // we will be controlling the camera ourselves, so disable the camera man
+			CameraManager.setStyle( CameraStyle.Manual );
+				// we will be controlling the camera ourselves, so disable the camera man
 			Camera.SetAutoTracking( true, headNode ); // make the camera face the head
 
 

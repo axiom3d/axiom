@@ -40,12 +40,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.SceneManagers.PortalConnected;
-
 using Visibility = Axiom.SceneManagers.PortalConnected.PCZFrustum.Visibility;
 
 #endregion Namespace Declarations
@@ -70,7 +68,7 @@ namespace OctreeZone
 		{
 			mZoneTypeName = "ZoneType_Octree";
 			// init octree
-			AxisAlignedBox b = new AxisAlignedBox( new Vector3( -10000, -10000, -10000 ), new Vector3( 10000, 10000, 10000 ) );
+			var b = new AxisAlignedBox( new Vector3( -10000, -10000, -10000 ), new Vector3( 10000, 10000, 10000 ) );
 			int depth = 8;
 			rootOctree = null;
 			Init( b, depth );
@@ -94,7 +92,7 @@ namespace OctreeZone
 
 			Vector3 max = box.Maximum;
 
-			rootOctree.HalfSize = ( max - min ) / 2;
+			rootOctree.HalfSize = ( max - min )/2;
 		}
 
 		public override void AddNode( PCZSceneNode n )
@@ -152,7 +150,7 @@ namespace OctreeZone
 			rootOctree.Box = box;
 			Vector3 min = box.Minimum;
 			Vector3 max = box.Maximum;
-			rootOctree.HalfSize = ( max - min ) * 0.5f;
+			rootOctree.HalfSize = ( max - min )*0.5f;
 
 			OctreeZoneData ozd;
 			foreach ( PCZSceneNode on in mHomeNodeList )
@@ -187,7 +185,8 @@ namespace OctreeZone
 				// make sure portal is unique (at least in this zone)
 				if ( mPortals.Contains( newPortal ) )
 				{
-					throw new AxiomException( "A portal with the name " + newPortal.getName() + " already exists. OctreeZone._addPortal" );
+					throw new AxiomException( "A portal with the name " + newPortal.getName() +
+					                          " already exists. OctreeZone._addPortal" );
 				}
 				// add portal to portals list
 				mPortals.Add( newPortal );
@@ -233,7 +232,8 @@ namespace OctreeZone
 			}
 		}
 
-		public override void CheckLightAgainstPortals( PCZLight light, ulong frameCount, PCZFrustum portalFrustum, Portal ignorePortal )
+		public override void CheckLightAgainstPortals( PCZLight light, ulong frameCount, PCZFrustum portalFrustum,
+		                                               Portal ignorePortal )
 		{
 			foreach ( Portal p in mPortals )
 			{
@@ -253,7 +253,8 @@ namespace OctreeZone
 								if ( lightToPortal.Length <= light.AttenuationRange )
 								{
 									// if portal is quad portal it must be pointing towards the light
-									if ( ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD && lightToPortal.Dot( p.getDerivedDirection() ) < 0.0 ) || ( p.Type != PORTAL_TYPE.PORTAL_TYPE_QUAD ) )
+									if ( ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD && lightToPortal.Dot( p.getDerivedDirection() ) < 0.0 ) ||
+									     ( p.Type != PORTAL_TYPE.PORTAL_TYPE_QUAD ) )
 									{
 										if ( !light.AffectsZone( targetZone ) )
 										{
@@ -278,7 +279,8 @@ namespace OctreeZone
 								if ( lightToPortal.Dot( light.DerivedDirection ) >= 0.0 )
 								{
 									// if portal is quad portal it must be pointing towards the light
-									if ( ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD && lightToPortal.Dot( p.getDerivedDirection() ) < 0.0 ) || ( p.Type != PORTAL_TYPE.PORTAL_TYPE_QUAD ) )
+									if ( ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD && lightToPortal.Dot( p.getDerivedDirection() ) < 0.0 ) ||
+									     ( p.Type != PORTAL_TYPE.PORTAL_TYPE_QUAD ) )
 									{
 										if ( !light.AffectsZone( targetZone ) )
 										{
@@ -305,7 +307,8 @@ namespace OctreeZone
 								if ( lightToPortal.Length <= light.AttenuationRange )
 								{
 									// if portal is quad portal it must be pointing towards the light
-									if ( ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD && lightToPortal.Dot( p.getDerivedDirection() ) < 0.0 ) || ( p.Type != PORTAL_TYPE.PORTAL_TYPE_QUAD ) )
+									if ( ( p.Type == PORTAL_TYPE.PORTAL_TYPE_QUAD && lightToPortal.Dot( p.getDerivedDirection() ) < 0.0 ) ||
+									     ( p.Type != PORTAL_TYPE.PORTAL_TYPE_QUAD ) )
 									{
 										if ( !light.AffectsZone( targetZone ) )
 										{
@@ -341,7 +344,7 @@ namespace OctreeZone
 
 		public override void UpdatePortalsZoneData()
 		{
-			List<Portal> transferPortalList = new List<Portal>();
+			var transferPortalList = new List<Portal>();
 			// check each portal to see if it's intersecting another portal of greater size
 			foreach ( Portal p in mPortals )
 			{
@@ -445,7 +448,9 @@ namespace OctreeZone
 			return newHomeZone;
 		}
 
-		public override void FindVisibleNodes( PCZCamera camera, ref List<PCZSceneNode> visibleNodeList, RenderQueue queue, VisibleObjectsBoundsInfo visibleBounds, bool onlyShadowCasters, bool displayNodes, bool showBoundingBoxes )
+		public override void FindVisibleNodes( PCZCamera camera, ref List<PCZSceneNode> visibleNodeList, RenderQueue queue,
+		                                       VisibleObjectsBoundsInfo visibleBounds, bool onlyShadowCasters,
+		                                       bool displayNodes, bool showBoundingBoxes )
 		{
 			//return immediately if nothing is in the zone.
 			if ( mHomeNodeList.Count == 0 && mVisitorNodeList.Count == 0 && mPortals.Count == 0 )
@@ -465,7 +470,8 @@ namespace OctreeZone
 			}
 
 			// Recursively find visible nodes in the zone
-			WalkOctree( camera, ref visibleNodeList, queue, rootOctree, visibleBounds, false, onlyShadowCasters, displayNodes, showBoundingBoxes );
+			WalkOctree( camera, ref visibleNodeList, queue, rootOctree, visibleBounds, false, onlyShadowCasters, displayNodes,
+			            showBoundingBoxes );
 
 			// find visible portals in the zone and recurse into them
 			bool vis;
@@ -482,7 +488,8 @@ namespace OctreeZone
 					portal.getTargetZone().LastVisibleFrame = mLastVisibleFrame;
 					portal.getTargetZone().LastVisibleFromCamera = camera;
 					// recurse into the connected zone
-					portal.getTargetZone().FindVisibleNodes( camera, ref visibleNodeList, queue, visibleBounds, onlyShadowCasters, displayNodes, showBoundingBoxes );
+					portal.getTargetZone().FindVisibleNodes( camera, ref visibleNodeList, queue, visibleBounds, onlyShadowCasters,
+					                                         displayNodes, showBoundingBoxes );
 					if ( planes_added > 0 )
 					{
 						// Then remove the extra culling planes added before going to the next portal in this zone.
@@ -492,7 +499,9 @@ namespace OctreeZone
 			}
 		}
 
-		private void WalkOctree( PCZCamera camera, ref List<PCZSceneNode> visibleNodeList, RenderQueue queue, Octree octant, VisibleObjectsBoundsInfo visibleBounds, bool foundvisible, bool onlyShadowCasters, bool displayNodes, bool showBoundingBoxes )
+		private void WalkOctree( PCZCamera camera, ref List<PCZSceneNode> visibleNodeList, RenderQueue queue, Octree octant,
+		                         VisibleObjectsBoundsInfo visibleBounds, bool foundvisible, bool onlyShadowCasters,
+		                         bool displayNodes, bool showBoundingBoxes )
 		{
 			//return immediately if nothing is in the node.
 			if ( octant.NunodeList == 0 )
@@ -565,48 +574,57 @@ namespace OctreeZone
 				bool childfoundvisible = ( v == Visibility.Full );
 				if ( ( child = octant.Children[ 0, 0, 0 ] ) != null )
 				{
-					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters, displayNodes, showBoundingBoxes );
+					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters,
+					            displayNodes, showBoundingBoxes );
 				}
 
 				if ( ( child = octant.Children[ 1, 0, 0 ] ) != null )
 				{
-					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters, displayNodes, showBoundingBoxes );
+					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters,
+					            displayNodes, showBoundingBoxes );
 				}
 
 				if ( ( child = octant.Children[ 0, 1, 0 ] ) != null )
 				{
-					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters, displayNodes, showBoundingBoxes );
+					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters,
+					            displayNodes, showBoundingBoxes );
 				}
 
 				if ( ( child = octant.Children[ 1, 1, 0 ] ) != null )
 				{
-					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters, displayNodes, showBoundingBoxes );
+					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters,
+					            displayNodes, showBoundingBoxes );
 				}
 
 				if ( ( child = octant.Children[ 0, 0, 1 ] ) != null )
 				{
-					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters, displayNodes, showBoundingBoxes );
+					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters,
+					            displayNodes, showBoundingBoxes );
 				}
 
 				if ( ( child = octant.Children[ 1, 0, 1 ] ) != null )
 				{
-					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters, displayNodes, showBoundingBoxes );
+					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters,
+					            displayNodes, showBoundingBoxes );
 				}
 
 				if ( ( child = octant.Children[ 0, 1, 1 ] ) != null )
 				{
-					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters, displayNodes, showBoundingBoxes );
+					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters,
+					            displayNodes, showBoundingBoxes );
 				}
 
 				if ( ( child = octant.Children[ 1, 1, 1 ] ) != null )
 				{
-					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters, displayNodes, showBoundingBoxes );
+					WalkOctree( camera, ref visibleNodeList, queue, child, visibleBounds, childfoundvisible, onlyShadowCasters,
+					            displayNodes, showBoundingBoxes );
 				}
 			}
 		}
 
 
-		public override void FindNodes( AxisAlignedBox t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
+		public override void FindNodes( AxisAlignedBox t, ref List<PCZSceneNode> list, List<Portal> visitedPortals,
+		                                bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
 		{
 			// if this zone has an enclosure, check against the enclosure AABB first
 			if ( null != mEnclosureNode )
@@ -745,41 +763,41 @@ namespace OctreeZone
 					if ( x == 0 )
 					{
 						min.x = octantMin.x;
-						max.x = ( octantMin.x + octantMax.x ) / 2;
+						max.x = ( octantMin.x + octantMax.x )/2;
 					}
 
 					else
 					{
-						min.x = ( octantMin.x + octantMax.x ) / 2;
+						min.x = ( octantMin.x + octantMax.x )/2;
 						max.x = octantMax.x;
 					}
 
 					if ( y == 0 )
 					{
 						min.y = octantMin.y;
-						max.y = ( octantMin.y + octantMax.y ) / 2;
+						max.y = ( octantMin.y + octantMax.y )/2;
 					}
 
 					else
 					{
-						min.y = ( octantMin.y + octantMax.y ) / 2;
+						min.y = ( octantMin.y + octantMax.y )/2;
 						max.y = octantMax.y;
 					}
 
 					if ( z == 0 )
 					{
 						min.z = octantMin.z;
-						max.z = ( octantMin.z + octantMax.z ) / 2;
+						max.z = ( octantMin.z + octantMax.z )/2;
 					}
 
 					else
 					{
-						min.z = ( octantMin.z + octantMax.z ) / 2;
+						min.z = ( octantMin.z + octantMax.z )/2;
 						max.z = octantMax.z;
 					}
 
 					octant.Children[ x, y, z ].Box.SetExtents( min, max );
-					octant.Children[ x, y, z ].HalfSize = ( max - min ) / 2;
+					octant.Children[ x, y, z ].HalfSize = ( max - min )/2;
 				}
 
 				AddNodeToOctree( n, octant.Children[ x, y, z ], ++depth );
@@ -797,7 +815,8 @@ namespace OctreeZone
 		}
 
 
-		public override void FindNodes( Sphere t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
+		public override void FindNodes( Sphere t, ref List<PCZSceneNode> list, List<Portal> visitedPortals,
+		                                bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
 		{
 			// if this zone has an enclosure, check against the enclosure AABB first
 			if ( null != mEnclosureNode )
@@ -833,7 +852,8 @@ namespace OctreeZone
 			}
 		}
 
-		public override void FindNodes( PlaneBoundedVolume t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
+		public override void FindNodes( PlaneBoundedVolume t, ref List<PCZSceneNode> list, List<Portal> visitedPortals,
+		                                bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
 		{
 			// if this zone has an enclosure, check against the enclosure AABB first
 			if ( null != mEnclosureNode )
@@ -870,7 +890,8 @@ namespace OctreeZone
 			}
 		}
 
-		public override void FindNodes( Ray t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude )
+		public override void FindNodes( Ray t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors,
+		                                bool recurseThruPortals, PCZSceneNode exclude )
 		{
 			// if this zone has an enclosure, check against the enclosure AABB first
 			if ( null != mEnclosureNode )
@@ -951,8 +972,8 @@ namespace OctreeZone
 		public override void SetZoneGeometry( string filename, PCZSceneNode parentNode )
 		{
 			string entityName, nodeName;
-			entityName = this.Name + "_entity";
-			nodeName = this.Name + "_Node";
+			entityName = Name + "_entity";
+			nodeName = Name + "_Node";
 			Entity ent = mPCZSM.CreateEntity( entityName, filename );
 			// create a node for the entity
 			PCZSceneNode node;
@@ -974,7 +995,7 @@ namespace OctreeZone
 
 		public override void CreateNodeZoneData( PCZSceneNode node )
 		{
-			OctreeZoneData ozd = new OctreeZoneData( node, this );
+			var ozd = new OctreeZoneData( node, this );
 			node.SetZoneData( this, ozd );
 		}
 	}

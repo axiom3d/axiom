@@ -34,12 +34,10 @@
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting;
 using Axiom.Utilities;
-
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
 using ResourceHandle = System.UInt64;
@@ -102,7 +100,8 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Construction and Destruction
 
 		[OgreVersion( 1, 7, 2 )]
-		protected D3D9GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		protected D3D9GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                          IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			D3D9RenderSystem.ResourceManager.NotifyResourceCreated( this );
@@ -314,16 +313,24 @@ namespace Axiom.RenderSystems.DirectX9
 		#region ID3D9Resource Members
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceCreate"/>
-		public virtual void NotifyOnDeviceCreate( D3D9.Device d3d9Device ) {}
+		public virtual void NotifyOnDeviceCreate( D3D9.Device d3d9Device )
+		{
+		}
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceDestroy"/>
-		public virtual void NotifyOnDeviceDestroy( D3D9.Device d3d9Device ) {}
+		public virtual void NotifyOnDeviceDestroy( D3D9.Device d3d9Device )
+		{
+		}
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceLost"/>
-		public virtual void NotifyOnDeviceLost( D3D9.Device d3d9Device ) {}
+		public virtual void NotifyOnDeviceLost( D3D9.Device d3d9Device )
+		{
+		}
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceReset"/>
-		public virtual void NotifyOnDeviceReset( D3D9.Device d3d9Device ) {}
+		public virtual void NotifyOnDeviceReset( D3D9.Device d3d9Device )
+		{
+		}
 
 		#endregion ID3D9Resource Members
 	};
@@ -335,8 +342,8 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Fields
 
-		[OgreVersion( 1, 7, 2790 )]
-		private readonly Dictionary<D3D9.Device, D3D9.VertexShader> _mapDeviceToVertexShader = new Dictionary<D3D9.Device, D3D9.VertexShader>();
+		[OgreVersion( 1, 7, 2790 )] private readonly Dictionary<D3D9.Device, D3D9.VertexShader> _mapDeviceToVertexShader =
+			new Dictionary<D3D9.Device, D3D9.VertexShader>();
 
 		#endregion Fields
 
@@ -375,7 +382,8 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Construction and Destruction
 
 		[OgreVersion( 1, 7, 2 )]
-		internal D3D9GpuVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		internal D3D9GpuVertexProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                               IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			Type = GpuProgramType.Vertex;
@@ -384,7 +392,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9GpuVertexProgram" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed && disposeManagedResources )
+			if ( !IsDisposed && disposeManagedResources )
 			{
 				// have to call this here rather than in Resource destructor
 				// since calling virtual methods in base destructors causes crash
@@ -484,8 +492,8 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Fields
 
-		[OgreVersion( 1, 7, 2790 )]
-		private readonly Dictionary<D3D9.Device, D3D9.PixelShader> _mapDeviceToPixelShader = new Dictionary<D3D9.Device, D3D9.PixelShader>();
+		[OgreVersion( 1, 7, 2790 )] private readonly Dictionary<D3D9.Device, D3D9.PixelShader> _mapDeviceToPixelShader =
+			new Dictionary<D3D9.Device, D3D9.PixelShader>();
 
 		#endregion Fields
 
@@ -524,7 +532,8 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Construction and Destruction
 
 		[OgreVersion( 1, 7, 2 )]
-		internal D3D9GpuFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		internal D3D9GpuFragmentProgram( ResourceManager parent, string name, ResourceHandle handle, string group,
+		                                 bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			Type = GpuProgramType.Fragment;
@@ -533,7 +542,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9GpuFragmentProgram" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed && disposeManagedResources )
+			if ( !IsDisposed && disposeManagedResources )
 			{
 				// have to call this here rather than in Resource destructor
 				// since calling virtual methods in base destructors causes crash

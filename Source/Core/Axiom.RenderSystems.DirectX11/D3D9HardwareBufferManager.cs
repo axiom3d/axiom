@@ -56,12 +56,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9HardwareBufferManagerBase()
-			: base() {}
+			: base()
+		{
+		}
 
 		[OgreVersion( 1, 7, 2, "~D3D9HardwareBufferManagerBase" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -79,15 +81,16 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Graphics.HardwareBufferManagerBase.CreateVertexBuffer(VertexDeclaration, int, BufferUsage, bool)"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts,
+		                                                         BufferUsage usage, bool useShadowBuffer )
 		{
 			Contract.Requires( numVerts > 0 );
 
 #if AXIOM_D3D_MANAGE_BUFFERS
-			// Override shadow buffer setting; managed buffers are automatically
-			// backed by system memory
-			// Don't override shadow buffer if discardable, since then we use
-			// unmanaged buffers for speed (avoids write-through overhead)
+	// Override shadow buffer setting; managed buffers are automatically
+	// backed by system memory
+	// Don't override shadow buffer if discardable, since then we use
+	// unmanaged buffers for speed (avoids write-through overhead)
 			if ( useShadowBuffer && ( usage & BufferUsage.Discardable ) == 0 )
 			{
 				useShadowBuffer = false;
@@ -114,13 +117,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Graphics.HardwareBufferManagerBase.CreateIndexBuffer(IndexType, int, BufferUsage, bool)"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
+		                                                       bool useShadowBuffer )
 		{
 			Contract.Requires( numIndices > 0 );
 
 #if AXIOM_D3D_MANAGE_BUFFERS
-			// Override shadow buffer setting; managed buffers are automatically
-			// backed by system memory
+	// Override shadow buffer setting; managed buffers are automatically
+	// backed by system memory
 			if ( useShadowBuffer )
 			{
 				useShadowBuffer = false;
@@ -173,12 +177,14 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9HardwareBufferManager()
-			: base( new D3D9HardwareBufferManagerBase() ) {}
+			: base( new D3D9HardwareBufferManagerBase() )
+		{
+		}
 
 		[OgreVersion( 1, 7, 2, "~D3D9HardwareBufferManager" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

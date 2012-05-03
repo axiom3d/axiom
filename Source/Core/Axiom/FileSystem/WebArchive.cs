@@ -43,7 +43,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -79,10 +78,12 @@ namespace Axiom.FileSystem
 		protected override string[] getFiles( string dir, string pattern, bool recurse )
 		{
 			var searchResults = new List<string>();
-			var files = !pattern.Contains( "*" ) && Exists( dir + "/" + pattern ) ? new[]
-			                                                                        {
-			                                                                        	pattern
-			                                                                        } : new string[ 0 ]; //Directory.EnumerateFiles( dir );
+			var files = !pattern.Contains( "*" ) && Exists( dir + "/" + pattern )
+			            	? new[]
+			            	  {
+			            	  	pattern
+			            	  }
+			            	: new string[0]; //Directory.EnumerateFiles( dir );
 
 			foreach ( var file in files )
 			{
@@ -102,7 +103,9 @@ namespace Axiom.FileSystem
 		#region Constructors and Destructors
 
 		public WebArchive( string name, string archType )
-			: base( name, archType ) {}
+			: base( name, archType )
+		{
+		}
 
 		#endregion Constructors and Destructors
 

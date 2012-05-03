@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-
 using ShaderControlsContainer = System.Collections.Generic.List<Axiom.Samples.Ocean.ShaderControl>;
-
 using Axiom.Utilities;
 using Axiom.Core;
 
@@ -82,13 +80,14 @@ namespace Axiom.Samples.Ocean
 			// if there are not five elements then log error and move on
 			if ( lineParams.Length != 6 )
 			{
-				LogManager.Instance.Write( "Incorrect number of parameters passed in params string for MaterialControls.AddControl()" );
+				LogManager.Instance.Write(
+					"Incorrect number of parameters passed in params string for MaterialControls.AddControl()" );
 				return;
 			}
 
 			try
 			{
-				ShaderControl newControl = new ShaderControl();
+				var newControl = new ShaderControl();
 				newControl.Name = lineParams[ 0 ].Trim();
 				newControl.ParamName = lineParams[ 1 ].Trim();
 				newControl.Type = lineParams[ 2 ].Trim() == "GPU_VERTEX" ? ShaderType.GpuVertex : ShaderType.GpuFragment;

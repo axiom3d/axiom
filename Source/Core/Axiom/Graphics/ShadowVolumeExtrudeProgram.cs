@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -148,47 +147,120 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		This is a static class; don't allow instantiation.
 		/// </summary>
-		private ShadowVolumeExtrudeProgram() {}
+		private ShadowVolumeExtrudeProgram()
+		{
+		}
 
 		#endregion Constructor
 
 		#region Program Definitions
 
 		// c4 is the light position/direction in these
-		private const string pointArbvp1 = "!!ARBvp1.0\n" + "PARAM c5 = { 0, 0, 0, 0 };\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" + "ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c4 = program.local[4];\n" + "ADD R0.xyz, v16.xyzx, -c4.xyzx;\n" + "MOV R0.w, c5.x;\n" + "MAD R0, v24.x, c4, R0;\n" + "DP4 result.position.x, c0[0], R0;\n" + "DP4 result.position.y, c0[1], R0;\n" + "DP4 result.position.z, c0[2], R0;\n" + "DP4 result.position.w, c0[3], R0;\n" + "END\n";
+		private const string pointArbvp1 =
+			"!!ARBvp1.0\n" + "PARAM c5 = { 0, 0, 0, 0 };\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" +
+			"ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c4 = program.local[4];\n" +
+			"ADD R0.xyz, v16.xyzx, -c4.xyzx;\n" + "MOV R0.w, c5.x;\n" + "MAD R0, v24.x, c4, R0;\n" +
+			"DP4 result.position.x, c0[0], R0;\n" + "DP4 result.position.y, c0[1], R0;\n" + "DP4 result.position.z, c0[2], R0;\n" +
+			"DP4 result.position.w, c0[3], R0;\n" + "END\n";
 
-		private const string pointVs_1_1 = "vs_1_1\n" + "def c5, 0, 0, 0, 0\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "add r0.xyz, v0.xyz, -c4.xyz\n" + "mov r0.w, c5.x\n" + "mad r0, v7.x, c4, r0\n" + "dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n";
+		private const string pointVs_1_1 =
+			"vs_1_1\n" + "def c5, 0, 0, 0, 0\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "add r0.xyz, v0.xyz, -c4.xyz\n" +
+			"mov r0.w, c5.x\n" + "mad r0, v7.x, c4, r0\n" + "dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" +
+			"dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n";
 
-		private const string dirArbvp1 = "!!ARBvp1.0\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" + "ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c4 = program.local[4];\n" + "ADD R0, v16, c4;\n" + "MAD R0, v24.x, R0, -c4;\n" + "DP4 result.position.x, c0[0], R0;\n" + "DP4 result.position.y, c0[1], R0;\n" + "DP4 result.position.z, c0[2], R0;\n" + "DP4 result.position.w, c0[3], R0;\n" + "END\n";
+		private const string dirArbvp1 =
+			"!!ARBvp1.0\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" + "ATTRIB v16 = vertex.position;\n" +
+			"PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c4 = program.local[4];\n" + "ADD R0, v16, c4;\n" +
+			"MAD R0, v24.x, R0, -c4;\n" + "DP4 result.position.x, c0[0], R0;\n" + "DP4 result.position.y, c0[1], R0;\n" +
+			"DP4 result.position.z, c0[2], R0;\n" + "DP4 result.position.w, c0[3], R0;\n" + "END\n";
 
-		private const string dirVs_1_1 = "vs_1_1\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "add r0, v0, c4\n" + "mad r0, v7.x, r0, -c4\n" + "dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n";
+		private const string dirVs_1_1 =
+			"vs_1_1\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "add r0, v0, c4\n" + "mad r0, v7.x, r0, -c4\n" +
+			"dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n";
 
-		private const string pointArbvp1Debug = "!!ARBvp1.0\n" + "PARAM c5 = { 0, 0, 0, 0 };\n" + "PARAM c6 = { 1, 1, 1, 1 };\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" + "ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c4 = program.local[4];\n" + "ADD R0.xyz, v16.xyzx, -c4.xyzx;\n" + "MOV R0.w, c5.x;\n" + "MAD R0, v24.x, c4, R0;\n" + "DP4 result.position.x, c0[0], R0;\n" + "DP4 result.position.y, c0[1], R0;\n" + "DP4 result.position.z, c0[2], R0;\n" + "DP4 result.position.w, c0[3], R0;\n" + "MOV result.color.front.primary, c6.x;\n" + "END\n";
+		private const string pointArbvp1Debug =
+			"!!ARBvp1.0\n" + "PARAM c5 = { 0, 0, 0, 0 };\n" + "PARAM c6 = { 1, 1, 1, 1 };\n" + "TEMP R0;\n" +
+			"ATTRIB v24 = vertex.texcoord[0];\n" + "ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" +
+			"PARAM c4 = program.local[4];\n" + "ADD R0.xyz, v16.xyzx, -c4.xyzx;\n" + "MOV R0.w, c5.x;\n" +
+			"MAD R0, v24.x, c4, R0;\n" + "DP4 result.position.x, c0[0], R0;\n" + "DP4 result.position.y, c0[1], R0;\n" +
+			"DP4 result.position.z, c0[2], R0;\n" + "DP4 result.position.w, c0[3], R0;\n" +
+			"MOV result.color.front.primary, c6.x;\n" + "END\n";
 
-		private const string pointVs_1_1Debug = "vs_1_1\n" + "def c5, 0, 0, 0, 0\n" + "def c6, 1, 1, 1, 1\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "add r0.xyz, v0.xyz, -c4.xyz\n" + "mov r0.w, c5.x\n" + "mad r0, v7.x, c4, r0\n" + "dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n" + "mov oD0, c6.x\n";
+		private const string pointVs_1_1Debug =
+			"vs_1_1\n" + "def c5, 0, 0, 0, 0\n" + "def c6, 1, 1, 1, 1\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" +
+			"add r0.xyz, v0.xyz, -c4.xyz\n" + "mov r0.w, c5.x\n" + "mad r0, v7.x, c4, r0\n" + "dp4 oPos.x, c0, r0\n" +
+			"dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n" + "mov oD0, c6.x\n";
 
-		private const string dirArbvp1Debug = "!!ARBvp1.0\n" + "PARAM c5 = { 1, 1, 1, 1};\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" + "ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c4 = program.local[4];\n" + "ADD R0, v16, c4;\n" + "MAD R0, v24.x, R0, -c4;\n" + "DP4 result.position.x, c0[0], R0;\n" + "DP4 result.position.y, c0[1], R0;\n" + "DP4 result.position.z, c0[2], R0;\n" + "DP4 result.position.w, c0[3], R0;\n" + "MOV result.color.front.primary, c5.x;" + "END\n";
+		private const string dirArbvp1Debug =
+			"!!ARBvp1.0\n" + "PARAM c5 = { 1, 1, 1, 1};\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" +
+			"ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c4 = program.local[4];\n" +
+			"ADD R0, v16, c4;\n" + "MAD R0, v24.x, R0, -c4;\n" + "DP4 result.position.x, c0[0], R0;\n" +
+			"DP4 result.position.y, c0[1], R0;\n" + "DP4 result.position.z, c0[2], R0;\n" + "DP4 result.position.w, c0[3], R0;\n" +
+			"MOV result.color.front.primary, c5.x;" + "END\n";
 
-		private const string dirVs_1_1Debug = "vs_1_1\n" + "def c5, 1, 1, 1, 1\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "add r0, v0, c4\n" + "mad r0, v7.x, r0, -c4\n" + "dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n" + "mov oD0, c5.x\n";
+		private const string dirVs_1_1Debug =
+			"vs_1_1\n" + "def c5, 1, 1, 1, 1\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "add r0, v0, c4\n" +
+			"mad r0, v7.x, r0, -c4\n" + "dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" +
+			"dp4 oPos.w, c3, r0\n" + "mov oD0, c5.x\n";
 
 
 		// c4 is the light position/direction in these
 		// c5 is extrusion distance
-		private const string pointArbvp1Finite = "!!ARBvp1.0\n" + "PARAM c6 = { 1, 0, 0, 0 };\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" + "ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c5 = program.local[5];\n" + "PARAM c4 = program.local[4];\n" + "ADD R0.x, c6.x, -v24.x;\n" + "MUL R0.w, R0.x, c5.x;\n" + "ADD R0.xyz, v16.xyzx, -c4.xyzx;\n" + "MAD R0.xyz, R0.w, R0.xyzx, v16.xyzx;\n" + "DPH result.position.x, R0.xyzz, c0[0];\n" + "DPH result.position.y, R0.xyzz, c0[1];\n" + "DPH result.position.z, R0.xyzz, c0[2];\n" + "DPH result.position.w, R0.xyzz, c0[3];\n" + "END\n";
+		private const string pointArbvp1Finite =
+			"!!ARBvp1.0\n" + "PARAM c6 = { 1, 0, 0, 0 };\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" +
+			"ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c5 = program.local[5];\n" +
+			"PARAM c4 = program.local[4];\n" + "ADD R0.x, c6.x, -v24.x;\n" + "MUL R0.w, R0.x, c5.x;\n" +
+			"ADD R0.xyz, v16.xyzx, -c4.xyzx;\n" + "MAD R0.xyz, R0.w, R0.xyzx, v16.xyzx;\n" +
+			"DPH result.position.x, R0.xyzz, c0[0];\n" + "DPH result.position.y, R0.xyzz, c0[1];\n" +
+			"DPH result.position.z, R0.xyzz, c0[2];\n" + "DPH result.position.w, R0.xyzz, c0[3];\n" + "END\n";
 
-		private const string pointVs_1_1Finite = "vs_1_1\n" + "def c6, 1, 0, 0, 0\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "add r0.x, c6.x, -v7.x\n" + "mul r1.x, r0.x, c5.x\n" + "add r0.yzw, v0.xxyz, -c4.xxyz\n" + "dp3 r0.x, r0.yzw, r0.yzw\n" + "rsq r0.x, r0.x\n" + "mul r0.xyz, r0.x, r0.yzw\n" + "mad r0.xyz, r1.x, r0.xyz, v0.xyz\n" + "mov r0.w, c6.x\n" + "dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n";
+		private const string pointVs_1_1Finite =
+			"vs_1_1\n" + "def c6, 1, 0, 0, 0\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "add r0.x, c6.x, -v7.x\n" +
+			"mul r1.x, r0.x, c5.x\n" + "add r0.yzw, v0.xxyz, -c4.xxyz\n" + "dp3 r0.x, r0.yzw, r0.yzw\n" + "rsq r0.x, r0.x\n" +
+			"mul r0.xyz, r0.x, r0.yzw\n" + "mad r0.xyz, r1.x, r0.xyz, v0.xyz\n" + "mov r0.w, c6.x\n" + "dp4 oPos.x, c0, r0\n" +
+			"dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n";
 
-		private const string dirArbvp1Finite = "!!ARBvp1.0\n" + "PARAM c6 = { 1, 0, 0, 0 };\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" + "ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c4 = program.local[4];\n" + "PARAM c5 = program.local[5];\n" + "ADD R0.x, c6.x, -v24.x;\n" + "MUL R0.x, R0.x, c5.x;\n" + "MAD R0.xyz, -R0.x, c4.xyzx, v16.xyzx;\n" + "DPH result.position.x, R0.xyzz, c0[0];\n" + "DPH result.position.y, R0.xyzz, c0[1];\n" + "DPH result.position.z, R0.xyzz, c0[2];\n" + "DPH result.position.w, R0.xyzz, c0[3];\n" + "END\n";
+		private const string dirArbvp1Finite =
+			"!!ARBvp1.0\n" + "PARAM c6 = { 1, 0, 0, 0 };\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" +
+			"ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c4 = program.local[4];\n" +
+			"PARAM c5 = program.local[5];\n" + "ADD R0.x, c6.x, -v24.x;\n" + "MUL R0.x, R0.x, c5.x;\n" +
+			"MAD R0.xyz, -R0.x, c4.xyzx, v16.xyzx;\n" + "DPH result.position.x, R0.xyzz, c0[0];\n" +
+			"DPH result.position.y, R0.xyzz, c0[1];\n" + "DPH result.position.z, R0.xyzz, c0[2];\n" +
+			"DPH result.position.w, R0.xyzz, c0[3];\n" + "END\n";
 
-		private const string dirVs_1_1Finite = "vs_1_1\n" + "def c6, 1, 0, 0, 0\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "add r0.x, c6.x, -v7.x\n" + "mul r0.x, r0.x, c5.x\n" + "mad r0.xyz, -r0.x, c4.xyz, v0.xyz\n" + "mov r0.w, c6.x\n" + "dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n";
+		private const string dirVs_1_1Finite =
+			"vs_1_1\n" + "def c6, 1, 0, 0, 0\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "add r0.x, c6.x, -v7.x\n" +
+			"mul r0.x, r0.x, c5.x\n" + "mad r0.xyz, -r0.x, c4.xyz, v0.xyz\n" + "mov r0.w, c6.x\n" + "dp4 oPos.x, c0, r0\n" +
+			"dp4 oPos.y, c1, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n";
 
-		private const string pointArbvp1FiniteDebug = "!!ARBvp1.0\n" + "PARAM c6 = { 1, 0, 0, 0 };\n" + "TEMP R0, R1;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" + "ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c5 = program.local[5];\n" + "PARAM c4 = program.local[4];\n" + "MOV result.color.front.primary, c6.x;\n" + "ADD R0.x, c6.x, -v24.x;\n" + "MUL R1.x, R0.x, c5.x;\n" + "ADD R0.yzw, v16.xxyz, -c4.xxyz;\n" + "DP3 R0.x, R0.yzwy, R0.yzwy;\n" + "RSQ R0.x, R0.x;\n" + "MUL R0.xyz, R0.x, R0.yzwy;\n" + "MAD R0.xyz, R1.x, R0.xyzx, v16.xyzx;\n" + "DPH result.position.x, R0.xyzz, c0[0];\n" + "DPH result.position.y, R0.xyzz, c0[1];\n" + "DPH result.position.z, R0.xyzz, c0[2];\n" + "DPH result.position.w, R0.xyzz, c0[3];\n" + "END\n";
+		private const string pointArbvp1FiniteDebug =
+			"!!ARBvp1.0\n" + "PARAM c6 = { 1, 0, 0, 0 };\n" + "TEMP R0, R1;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" +
+			"ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c5 = program.local[5];\n" +
+			"PARAM c4 = program.local[4];\n" + "MOV result.color.front.primary, c6.x;\n" + "ADD R0.x, c6.x, -v24.x;\n" +
+			"MUL R1.x, R0.x, c5.x;\n" + "ADD R0.yzw, v16.xxyz, -c4.xxyz;\n" + "DP3 R0.x, R0.yzwy, R0.yzwy;\n" +
+			"RSQ R0.x, R0.x;\n" + "MUL R0.xyz, R0.x, R0.yzwy;\n" + "MAD R0.xyz, R1.x, R0.xyzx, v16.xyzx;\n" +
+			"DPH result.position.x, R0.xyzz, c0[0];\n" + "DPH result.position.y, R0.xyzz, c0[1];\n" +
+			"DPH result.position.z, R0.xyzz, c0[2];\n" + "DPH result.position.w, R0.xyzz, c0[3];\n" + "END\n";
 
-		private const string pointVs_1_1FiniteDebug = "vs_1_1\n" + "def c6, 1, 0, 0, 0\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "mov oD0, c6.x\n" + "add r0.x, c6.x, -v7.x\n" + "mul r1.x, r0.x, c5.x\n" + "add r0.yzw, v0.xxyz, -c4.xxyz\n" + "dp3 r0.x, r0.yzw, r0.yzw\n" + "rsq r0.x, r0.x\n" + "mul r0.xyz, r0.x, r0.yzw\n" + "mad r0.xyz, r1.x, r0.xyz, v0.xyz\n" + "mov r0.w, c6.x\n" + "dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n";
+		private const string pointVs_1_1FiniteDebug =
+			"vs_1_1\n" + "def c6, 1, 0, 0, 0\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "mov oD0, c6.x\n" +
+			"add r0.x, c6.x, -v7.x\n" + "mul r1.x, r0.x, c5.x\n" + "add r0.yzw, v0.xxyz, -c4.xxyz\n" +
+			"dp3 r0.x, r0.yzw, r0.yzw\n" + "rsq r0.x, r0.x\n" + "mul r0.xyz, r0.x, r0.yzw\n" +
+			"mad r0.xyz, r1.x, r0.xyz, v0.xyz\n" + "mov r0.w, c6.x\n" + "dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" +
+			"dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n";
 
-		private const string dirArbvp1FiniteDebug = "!!ARBvp1.0\n" + "PARAM c6 = { 1, 0, 0, 0 };\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" + "ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c4 = program.local[4];\n" + "PARAM c5 = program.local[5];\n" + "MOV result.color.front.primary, c6.x;\n" + "ADD R0.x, c6.x, -v24.x;\n" + "MUL R0.x, R0.x, c5.x;\n" + "MAD R0.xyz, -R0.x, c4.xyzx, v16.xyzx;\n" + "DPH result.position.x, R0.xyzz, c0[0];\n" + "DPH result.position.y, R0.xyzz, c0[1];\n" + "DPH result.position.z, R0.xyzz, c0[2];\n" + "DPH result.position.w, R0.xyzz, c0[3];\n" + "END\n";
+		private const string dirArbvp1FiniteDebug =
+			"!!ARBvp1.0\n" + "PARAM c6 = { 1, 0, 0, 0 };\n" + "TEMP R0;\n" + "ATTRIB v24 = vertex.texcoord[0];\n" +
+			"ATTRIB v16 = vertex.position;\n" + "PARAM c0[4] = { program.local[0..3] };\n" + "PARAM c4 = program.local[4];\n" +
+			"PARAM c5 = program.local[5];\n" + "MOV result.color.front.primary, c6.x;\n" + "ADD R0.x, c6.x, -v24.x;\n" +
+			"MUL R0.x, R0.x, c5.x;\n" + "MAD R0.xyz, -R0.x, c4.xyzx, v16.xyzx;\n" + "DPH result.position.x, R0.xyzz, c0[0];\n" +
+			"DPH result.position.y, R0.xyzz, c0[1];\n" + "DPH result.position.z, R0.xyzz, c0[2];\n" +
+			"DPH result.position.w, R0.xyzz, c0[3];\n" + "END\n";
 
-		private const string dirVs_1_1FiniteDebug = "vs_1_1\n" + "def c6, 1, 0, 0, 0\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "mov oD0, c6.x\n" + "add r0.x, c6.x, -v7.x\n" + "mul r0.x, r0.x, c5.x\n" + "mad r0.xyz, -r0.x, c4.xyz, v0.xyz\n" + "mov r0.w, c6.x\n" + "dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n";
+		private const string dirVs_1_1FiniteDebug =
+			"vs_1_1\n" + "def c6, 1, 0, 0, 0\n" + "dcl_texcoord0 v7\n" + "dcl_position v0\n" + "mov oD0, c6.x\n" +
+			"add r0.x, c6.x, -v7.x\n" + "mul r0.x, r0.x, c5.x\n" + "mad r0.xyz, -r0.x, c4.xyz, v0.xyz\n" + "mov r0.w, c6.x\n" +
+			"dp4 oPos.x, c0, r0\n" + "dp4 oPos.y, c1, r0\n" + "dp4 oPos.z, c2, r0\n" + "dp4 oPos.w, c3, r0\n";
 
 		private const int NumShadowExtruderPrograms = 8;
 
@@ -199,7 +271,11 @@ namespace Axiom.Graphics
 
 		public static string[] programNames = new string[]
 		                                      {
-		                                      	"Axiom/ShadowExtrudePointLight", "Axiom/ShadowExtrudePointLightDebug", "Axiom/ShadowExtrudeDirLight", "Axiom/ShadowExtrudeDirLightDebug", "Axiom/ShadowExtrudePointLightFinite", "Axiom/ShadowExtrudePointLightFiniteDebug", "Axiom/ShadowExtrudeDirLightFinite", "Axiom/ShadowExtrudeDirLightFiniteDebug"
+		                                      	"Axiom/ShadowExtrudePointLight", "Axiom/ShadowExtrudePointLightDebug",
+		                                      	"Axiom/ShadowExtrudeDirLight", "Axiom/ShadowExtrudeDirLightDebug",
+		                                      	"Axiom/ShadowExtrudePointLightFinite",
+		                                      	"Axiom/ShadowExtrudePointLightFiniteDebug", "Axiom/ShadowExtrudeDirLightFinite"
+		                                      	, "Axiom/ShadowExtrudeDirLightFiniteDebug"
 		                                      };
 
 		/// <summary>
@@ -473,7 +549,8 @@ namespace Axiom.Graphics
 				// types of lights that each of the programs target
 				var vertexProgramLightTypes = new LightType[]
 				                              {
-				                              	LightType.Point, LightType.Point, LightType.Directional, LightType.Directional, LightType.Point, LightType.Point, LightType.Directional, LightType.Directional
+				                              	LightType.Point, LightType.Point, LightType.Directional, LightType.Directional,
+				                              	LightType.Point, LightType.Point, LightType.Directional, LightType.Directional
 				                              };
 
 				// load hardware extrusion programs for point & dir lights
@@ -487,7 +564,8 @@ namespace Axiom.Graphics
 				}
 				else
 				{
-					throw new AxiomException( "Vertex programs are supposedly supported, but neither arbvp1 nor vs_1_1 syntaxes are supported." );
+					throw new AxiomException(
+						"Vertex programs are supposedly supported, but neither arbvp1 nor vs_1_1 syntaxes are supported." );
 				}
 
 				// create the programs
@@ -496,10 +574,13 @@ namespace Axiom.Graphics
 					// sanity check to make sure it doesn't already exist
 					if ( GpuProgramManager.Instance.GetByName( programNames[ i ] ) == null )
 					{
-						var source = ShadowVolumeExtrudeProgram.GetProgramSource( vertexProgramLightTypes[ i ], syntax, vertexProgramFinite[ i ], vertexProgramDebug[ i ] );
+						var source = ShadowVolumeExtrudeProgram.GetProgramSource( vertexProgramLightTypes[ i ], syntax,
+						                                                          vertexProgramFinite[ i ], vertexProgramDebug[ i ] );
 
 						// create the program from the static source
-						var program = GpuProgramManager.Instance.CreateProgramFromString( programNames[ i ], ResourceGroupManager.InternalResourceGroupName, source, GpuProgramType.Vertex, syntax );
+						var program = GpuProgramManager.Instance.CreateProgramFromString( programNames[ i ],
+						                                                                  ResourceGroupManager.InternalResourceGroupName,
+						                                                                  source, GpuProgramType.Vertex, syntax );
 
 						// load the program
 						program.Load();

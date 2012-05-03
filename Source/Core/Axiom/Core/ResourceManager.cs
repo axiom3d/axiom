@@ -42,11 +42,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-
 using Axiom.Collections;
 using Axiom.Math;
 using Axiom.Scripting;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -90,7 +88,8 @@ namespace Axiom.Core
 
 		#region Resources Property
 
-		private readonly Dictionary<string, Resource> _resources = new Dictionary<string, Resource>( new CaseInsensitiveStringComparer() );
+		private readonly Dictionary<string, Resource> _resources =
+			new Dictionary<string, Resource>( new CaseInsensitiveStringComparer() );
 
 		/// <summary>
 		///		A cached list of all resources in memory.
@@ -170,22 +169,10 @@ namespace Axiom.Core
 
 		#region ResourceType Property
 
-		private string _resourceType;
-
 		/// <summary>
 		/// Gets/Sets a string identifying the type of resource this manager handles.
 		/// </summary>
-		public string ResourceType
-		{
-			get
-			{
-				return _resourceType;
-			}
-			protected set
-			{
-				_resourceType = value;
-			}
-		}
+		public string ResourceType { get; protected set; }
 
 		#endregion ResourceType Property
 
@@ -320,7 +307,8 @@ namespace Axiom.Core
 		/// </param>
 		/// <param name="createParams">If any parameters are required to create an instance, they should be supplied here as name / value pairs</param>
 		/// <param name="name"></param>
-		public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		public virtual Resource Create( string name, string group, bool isManual, IManualResourceLoader loader,
+		                                NameValuePairList createParams )
 		{
 			// Call creation implementation
 			var ret = _create( name, (ResourceHandle)name.ToLower().GetHashCode(), group, isManual, loader, createParams );
@@ -342,9 +330,10 @@ namespace Axiom.Core
 			return CreateOrRetrieve( name, group, false, null, null );
 		}
 
-		public Axiom.Math.Tuple<Resource, bool> CreateOrRetrieve( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList paramaters )
+		public Axiom.Math.Tuple<Resource, bool> CreateOrRetrieve( string name, string group, bool isManual,
+		                                                          IManualResourceLoader loader, NameValuePairList paramaters )
 		{
-			ResourceHandle hashCode = (ResourceHandle)name.ToLower().GetHashCode();
+			var hashCode = (ResourceHandle)name.ToLower().GetHashCode();
 
 			var res = this[ hashCode ];
 			var created = false;
@@ -389,7 +378,8 @@ namespace Axiom.Core
 		/// <param name="backgroundThread">Optional boolean which lets the load routine know if it
 		/// is being run on the background resource loading thread</param>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, bool backgroundThread )
+		public virtual Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader,
+		                                 NameValuePairList loadParams, bool backgroundThread )
 		{
 			var r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
 			// ensure prepared
@@ -399,22 +389,23 @@ namespace Axiom.Core
 
 		public Resource Prepare( string name, string group )
 		{
-			return this.Prepare( name, group, false, null, null, false );
+			return Prepare( name, group, false, null, null, false );
 		}
 
 		public Resource Prepare( string name, string group, bool isManual )
 		{
-			return this.Prepare( name, group, isManual, null, null, false );
+			return Prepare( name, group, isManual, null, null, false );
 		}
 
 		public Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader )
 		{
-			return this.Prepare( name, group, isManual, loader, null, false );
+			return Prepare( name, group, isManual, loader, null, false );
 		}
 
-		public Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
+		public Resource Prepare( string name, string group, bool isManual, IManualResourceLoader loader,
+		                         NameValuePairList loadParams )
 		{
-			return this.Prepare( name, group, isManual, loader, loadParams, false );
+			return Prepare( name, group, isManual, loader, loadParams, false );
 		}
 
 		#endregion Prepare Method
@@ -440,7 +431,8 @@ namespace Axiom.Core
 		/// <param name="backgroundThread">Optional boolean which lets the load routine know if it
 		/// is being run on the background resource loading thread</param>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, bool backgroundThread )
+		public virtual Resource Load( string name, string group, bool isManual, IManualResourceLoader loader,
+		                              NameValuePairList loadParams, bool backgroundThread )
 		{
 			var r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
 			// ensure loaded
@@ -450,22 +442,23 @@ namespace Axiom.Core
 
 		public Resource Load( string name, string group )
 		{
-			return this.Load( name, group, false, null, null, false );
+			return Load( name, group, false, null, null, false );
 		}
 
 		public Resource Load( string name, string group, bool isManual )
 		{
-			return this.Load( name, group, isManual, null, null, false );
+			return Load( name, group, isManual, null, null, false );
 		}
 
 		public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader )
 		{
-			return this.Load( name, group, isManual, loader, null, false );
+			return Load( name, group, isManual, loader, null, false );
 		}
 
-		public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
+		public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader,
+		                      NameValuePairList loadParams )
 		{
-			return this.Load( name, group, isManual, loader, loadParams, false );
+			return Load( name, group, isManual, loader, loadParams, false );
 		}
 
 		#endregion Load Method
@@ -719,7 +712,8 @@ namespace Axiom.Core
 		///     to differentiate which concrete class is created.
 		/// </param>
 		/// <returns></returns>
-		protected abstract Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams );
+		protected abstract Resource _create( string name, ResourceHandle handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams );
 
 		/// <summary>
 		/// Add a newly created resource to the manager
@@ -795,7 +789,7 @@ namespace Axiom.Core
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -851,7 +845,9 @@ namespace Axiom.Core
 		/// are created during the parse of this script.
 		/// </param>
 		/// <param name="fileName"></param>
-		public virtual void ParseScript( Stream stream, string groupName, string fileName ) {}
+		public virtual void ParseScript( Stream stream, string groupName, string fileName )
+		{
+		}
 
 		#endregion ParseScriptMethod
 

@@ -6,167 +6,113 @@ namespace Axiom.RenderSystems.OpenGL
 {
 	public partial class GLRenderSystem
 	{
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_VERSION_1_2;
+		[AxiomHelper( 0, 8 )] private bool GLEW_VERSION_1_2;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GL_VERSION_1_3;
+		[AxiomHelper( 0, 8 )] private bool GL_VERSION_1_3;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_VERSION_1_3;
+		[AxiomHelper( 0, 8 )] private bool GLEW_VERSION_1_3;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_VERSION_1_4;
+		[AxiomHelper( 0, 8 )] private bool GLEW_VERSION_1_4;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_VERSION_1_5;
+		[AxiomHelper( 0, 8 )] private bool GLEW_VERSION_1_5;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_VERSION_2_0;
+		[AxiomHelper( 0, 8 )] private bool GLEW_VERSION_2_0;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_VERSION_3_3;
+		[AxiomHelper( 0, 8 )] private bool GLEW_VERSION_3_3;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_blend_equation_separate;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_blend_equation_separate;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_blend_minmax;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_blend_minmax;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_imaging;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_imaging;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_SGIS_generate_mipmap;
+		[AxiomHelper( 0, 8 )] private bool GLEW_SGIS_generate_mipmap;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_texture_env_combine;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_texture_env_combine;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_texture_env_combine;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_texture_env_combine;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_multitexture;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_multitexture;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_fragment_program;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_fragment_program;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_texture_filter_anisotropic;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_texture_filter_anisotropic;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_texture_env_dot3;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_texture_env_dot3;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_texture_env_dot3;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_texture_env_dot3;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_texture_cube_map;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_texture_cube_map;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_texture_cube_map;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_texture_cube_map;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_point_sprite;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_point_sprite;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_point_parameters;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_point_parameters;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_point_parameters;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_point_parameters;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_vertex_buffer_object;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_vertex_buffer_object;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_vertex_program;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_vertex_program;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_NV_vertex_program2_option;
+		[AxiomHelper( 0, 8 )] private bool GLEW_NV_vertex_program2_option;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_NV_vertex_program3;
+		[AxiomHelper( 0, 8 )] private bool GLEW_NV_vertex_program3;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_NV_vertex_program4;
+		[AxiomHelper( 0, 8 )] private bool GLEW_NV_vertex_program4;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_NV_register_combiners2;
+		[AxiomHelper( 0, 8 )] private bool GLEW_NV_register_combiners2;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_NV_texture_shader;
+		[AxiomHelper( 0, 8 )] private bool GLEW_NV_texture_shader;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ATI_fragment_shader;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ATI_fragment_shader;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_NV_fragment_program_option;
+		[AxiomHelper( 0, 8 )] private bool GLEW_NV_fragment_program_option;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_NV_fragment_program2;
+		[AxiomHelper( 0, 8 )] private bool GLEW_NV_fragment_program2;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_shading_language_100;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_shading_language_100;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_shader_objects;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_shader_objects;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_fragment_shader;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_fragment_shader;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_vertex_shader;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_vertex_shader;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_geometry_shader4;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_geometry_shader4;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_NV_transform_feedback;
+		[AxiomHelper( 0, 8 )] private bool GLEW_NV_transform_feedback;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_texture_compression;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_texture_compression;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_texture_compression_s3tc;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_texture_compression_s3tc;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_NV_texture_compression_vtc;
+		[AxiomHelper( 0, 8 )] private bool GLEW_NV_texture_compression_vtc;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_stencil_two_side;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_stencil_two_side;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_stencil_wrap;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_stencil_wrap;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_occlusion_query;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_occlusion_query;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_NV_occlusion_query;
+		[AxiomHelper( 0, 8 )] private bool GLEW_NV_occlusion_query;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_texture_non_power_of_two;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_texture_non_power_of_two;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ATI_texture_float;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ATI_texture_float;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_texture_float;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_texture_float;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_framebuffer_object;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_framebuffer_object;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ARB_draw_buffers;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ARB_draw_buffers;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_ATI_draw_buffers;
+		[AxiomHelper( 0, 8 )] private bool GLEW_ATI_draw_buffers;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_texture_lod_bias;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_texture_lod_bias;
 
-		[AxiomHelper( 0, 8 )]
-		private bool GLEW_EXT_secondary_color;
+		[AxiomHelper( 0, 8 )] private bool GLEW_EXT_secondary_color;
 
 		[AxiomHelper( 0, 8 )]
 		private void InitGLEW()

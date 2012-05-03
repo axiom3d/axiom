@@ -42,8 +42,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-
-
 #endregion Namespace Declarations
 
 namespace Axiom.Core
@@ -58,15 +56,16 @@ namespace Axiom.Core
 			if ( !typeof ( T ).IsArray )
 			{
 				size = Memory.SizeOf( typeof ( T ) );
-				buffer = new byte[ size ];
+				buffer = new byte[size];
 				dst = Memory.PinObject( buffer );
 				Marshal.StructureToPtr( value, dst.Pin(), true );
 				dst.UnPin();
 			}
 			else
 			{
-				size = Memory.SizeOf( typeof ( T ).GetElementType() ) * (int)typeof ( T ).GetProperty( "Length" ).GetValue( value, null );
-				buffer = new byte[ size ];
+				size = Memory.SizeOf( typeof ( T ).GetElementType() )*
+				       (int)typeof ( T ).GetProperty( "Length" ).GetValue( value, null );
+				buffer = new byte[size];
 				dst = Memory.PinObject( buffer );
 
 				var src = Memory.PinObject( value as Array );
@@ -91,8 +90,8 @@ namespace Axiom.Core
 
 		public static void SetBytes<T>( byte[] buffer, out T[] dest )
 		{
-			var size = buffer.Length / Memory.SizeOf( typeof ( T ) );
-			dest = new T[ size ];
+			var size = buffer.Length/Memory.SizeOf( typeof ( T ) );
+			dest = new T[size];
 			var src = Memory.PinObject( buffer );
 			var dst = Memory.PinObject( dest );
 			Memory.Copy( src, dst, buffer.Length );

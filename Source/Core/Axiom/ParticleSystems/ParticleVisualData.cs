@@ -59,6 +59,8 @@ namespace Axiom.ParticleSystems
 		/// <summary>
 		/// Default Constructor
 		/// </summary>
-		public ParticleVisualData() {}
+		public ParticleVisualData()
+		{
+		}
 	};
 }

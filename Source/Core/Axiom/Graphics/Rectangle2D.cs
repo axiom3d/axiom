@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -60,13 +59,15 @@ namespace Axiom.Graphics
 		private const int TEXCOORD = 1;
 		private const int NORMAL = 2;
 
-		private static float[] texCoords = new float[]
-		                                   {
-		                                   	0, 0, 0, 1, 1, 0, 1, 1
-		                                   };
+		private static readonly float[] texCoords = new float[]
+		                                            {
+		                                            	0, 0, 0, 1, 1, 0, 1, 1
+		                                            };
 
 		public Rectangle2D()
-			: this( false ) {}
+			: this( false )
+		{
+		}
 
 		public Rectangle2D( bool includeTextureCoordinates )
 		{
@@ -83,13 +84,16 @@ namespace Axiom.Graphics
 
 			decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
-			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), vertexData.vertexCount,
+			                                                                BufferUsage.StaticWriteOnly );
 
 			binding.SetBinding( POSITION, buffer );
 
 			decl.AddElement( NORMAL, 0, VertexElementType.Float3, VertexElementSemantic.Normal );
 
-			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( NORMAL ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+			buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( NORMAL ),
+			                                                            renderOperation.vertexData.vertexCount,
+			                                                            BufferUsage.StaticWriteOnly );
 
 			binding.SetBinding( NORMAL, buffer );
 
@@ -121,7 +125,8 @@ namespace Axiom.Graphics
 			{
 				decl.AddElement( TEXCOORD, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords );
 
-				buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORD ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+				buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORD ), vertexData.vertexCount,
+				                                                            BufferUsage.StaticWriteOnly );
 
 				binding.SetBinding( TEXCOORD, buffer );
 

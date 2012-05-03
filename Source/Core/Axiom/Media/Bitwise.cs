@@ -136,7 +136,7 @@ namespace Axiom.Media
 			var destMax = destBitMask >> destBitShift;
 
 			// Scale source value into destination, and shift back
-			var destValue = ( srcValue * destMax ) / srcMax;
+			var destValue = ( srcValue*destMax )/srcMax;
 			return ( destValue << destBitShift );
 		}
 
@@ -165,7 +165,7 @@ namespace Axiom.Media
 				}
 				else
 				{
-					value = value * ( 1u << p ) / ( ( 1u << n ) - 1u );
+					value = value*( 1u << p )/( ( 1u << n ) - 1u );
 				}
 			}
 			return value;
@@ -187,7 +187,7 @@ namespace Axiom.Media
 			}
 			else
 			{
-				return (uint)( value * ( 1u << bits ) );
+				return (uint)( value*( 1u << bits ) );
 			}
 		}
 
@@ -197,7 +197,7 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public static float FixedToFloat( uint value, int bits )
 		{
-			return (float)value / (float)( ( 1u << bits ) - 1 );
+			return (float)value/(float)( ( 1u << bits ) - 1 );
 		}
 
 		/// <summary>
@@ -282,9 +282,9 @@ namespace Axiom.Media
 		public static ushort FloatToHalf( float f )
 		{
 			return FloatToHalfI( new FourByte
-								 {
-									Float = f
-								 }.UInt );
+			                     {
+			                     	Float = f
+			                     }.UInt );
 		}
 
 		///<summary>
@@ -337,9 +337,9 @@ namespace Axiom.Media
 		public static float HalfToFloat( ushort y )
 		{
 			return new FourByte
-				   {
-					UInt = HalfToFloatI( y )
-				   }.Float;
+			       {
+			       	UInt = HalfToFloatI( y )
+			       }.Float;
 		}
 
 		///<summary>

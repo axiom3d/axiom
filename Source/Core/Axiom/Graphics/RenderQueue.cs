@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -113,7 +112,9 @@ namespace Axiom.Graphics
 			defaultGroup = RenderQueueGroupID.Main;
 
 			// create the main queue group up front
-			renderGroups.Add( RenderQueueGroupID.Main, new RenderQueueGroup( this, splitPassesByLightingType, splitNoShadowPasses, shadowCastersCannotBeReceivers ) );
+			renderGroups.Add( RenderQueueGroupID.Main,
+			                  new RenderQueueGroup( this, splitPassesByLightingType, splitNoShadowPasses,
+			                                        shadowCastersCannotBeReceivers ) );
 		}
 
 		#endregion
@@ -284,7 +285,7 @@ namespace Axiom.Graphics
 		/// <param name="priority"></param>
 		public void AddRenderable( IRenderable item, ushort priority )
 		{
-			AddRenderable( item, priority, this.defaultGroup );
+			AddRenderable( item, priority, defaultGroup );
 		}
 
 

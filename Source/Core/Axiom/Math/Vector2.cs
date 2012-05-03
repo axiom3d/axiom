@@ -72,7 +72,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return Utility.Sqrt( x * x + y * y );
+				return Utility.Sqrt( x*x + y*y );
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return x * x + y * y;
+				return x*x + y*y;
 			}
 		}
 
@@ -94,7 +94,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return new Vector2( this.y, -this.x );
+				return new Vector2( y, -x );
 			}
 		}
 
@@ -147,15 +147,15 @@ namespace Axiom.Math
 		///	<returns>The previous length of the vector.</returns>
 		public Real Normalize()
 		{
-			var length = Utility.Sqrt( this.x * this.x + this.y * this.y );
+			var length = Utility.Sqrt( x*x + y*y );
 
 			// Will also work for zero-sized vectors, but will change nothing
 			if ( length > Real.Epsilon )
 			{
-				var inverseLength = 1.0f / length;
+				var inverseLength = 1.0f/length;
 
-				this.x *= inverseLength;
-				this.y *= inverseLength;
+				x *= inverseLength;
+				y *= inverseLength;
 			}
 
 			return length;
@@ -183,7 +183,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Real Cross( Vector2 vector )
 		{
-			return this.x * vector.y - this.y * vector.x;
+			return x*vector.y - y*vector.x;
 		}
 
 		/// <summary>
@@ -195,7 +195,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Real Dot( Vector2 vector )
 		{
-			return this.x * vector.x + this.y * vector.y;
+			return x*vector.x + y*vector.y;
 		}
 
 		#endregion
@@ -276,7 +276,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector2 Multiply( Vector2 left, Real scalar )
 		{
-			return left * scalar;
+			return left*scalar;
 		}
 
 		/// <summary>
@@ -287,7 +287,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector2 operator *( Vector2 left, Real scalar )
 		{
-			return new Vector2( left.x * scalar, left.y * scalar );
+			return new Vector2( left.x*scalar, left.y*scalar );
 		}
 
 		/// <summary>
@@ -298,7 +298,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector2 Multiply( Real scalar, Vector2 right )
 		{
-			return scalar * right;
+			return scalar*right;
 		}
 
 		/// <summary>
@@ -309,7 +309,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector2 operator *( Real scalar, Vector2 right )
 		{
-			return new Vector2( right.x * scalar, right.y * scalar );
+			return new Vector2( right.x*scalar, right.y*scalar );
 		}
 
 		/// <summary>
@@ -343,7 +343,7 @@ namespace Axiom.Math
 
 		public override string ToString()
 		{
-			return String.Format( CultureInfo.InvariantCulture, "Vector2({0}, {1})", this.x, this.y );
+			return String.Format( CultureInfo.InvariantCulture, "Vector2({0}, {1})", x, y );
 		}
 
 		#endregion
@@ -360,7 +360,8 @@ namespace Axiom.Math
 
 			var values = s.Substring( 8 ).TrimEnd( ')' ).Split( ',' );
 
-			return new Vector2( Real.Parse( values[ 0 ], CultureInfo.InvariantCulture ), Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ) );
+			return new Vector2( Real.Parse( values[ 0 ], CultureInfo.InvariantCulture ),
+			                    Real.Parse( values[ 1 ], CultureInfo.InvariantCulture ) );
 		}
 
 		#endregion

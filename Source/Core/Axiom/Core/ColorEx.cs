@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-
 using Axiom.Utilities;
 using Axiom.Math;
 
@@ -91,7 +90,9 @@ namespace Axiom.Core
 		/// <param name="g">Green color component.</param>
 		/// <param name="b">Blue color component.</param>
 		public ColorEx( float r, float g, float b )
-			: this( 1.0f, r, g, b ) {}
+			: this( 1.0f, r, g, b )
+		{
+		}
 
 		/// <summary>
 		///		Constructor taking all component values.
@@ -120,10 +121,10 @@ namespace Axiom.Core
 		public ColorEx( ColorEx other )
 			: this()
 		{
-			this.a = other.a;
-			this.r = other.r;
-			this.g = other.g;
-			this.b = other.b;
+			a = other.a;
+			r = other.r;
+			g = other.g;
+			b = other.b;
 		}
 
 		#endregion Constructors
@@ -134,10 +135,10 @@ namespace Axiom.Core
 		{
 			var result = 0;
 
-			result += ( (int)( r * 255.0f ) ) << 24;
-			result += ( (int)( g * 255.0f ) ) << 16;
-			result += ( (int)( b * 255.0f ) ) << 8;
-			result += ( (int)( a * 255.0f ) );
+			result += ( (int)( r*255.0f ) ) << 24;
+			result += ( (int)( g*255.0f ) ) << 16;
+			result += ( (int)( b*255.0f ) ) << 8;
+			result += ( (int)( a*255.0f ) );
 
 			return result;
 		}
@@ -151,10 +152,10 @@ namespace Axiom.Core
 		{
 			var result = 0;
 
-			result += ( (int)( a * 255.0f ) ) << 24;
-			result += ( (int)( b * 255.0f ) ) << 16;
-			result += ( (int)( g * 255.0f ) ) << 8;
-			result += ( (int)( r * 255.0f ) );
+			result += ( (int)( a*255.0f ) ) << 24;
+			result += ( (int)( b*255.0f ) ) << 16;
+			result += ( (int)( g*255.0f ) ) << 8;
+			result += ( (int)( r*255.0f ) );
 
 			return result;
 		}
@@ -167,10 +168,10 @@ namespace Axiom.Core
 		{
 			var result = 0;
 
-			result += ( (int)( a * 255.0f ) ) << 24;
-			result += ( (int)( r * 255.0f ) ) << 16;
-			result += ( (int)( g * 255.0f ) ) << 8;
-			result += ( (int)( b * 255.0f ) );
+			result += ( (int)( a*255.0f ) ) << 24;
+			result += ( (int)( r*255.0f ) ) << 16;
+			result += ( (int)( g*255.0f ) ) << 8;
+			result += ( (int)( b*255.0f ) );
 
 			return result;
 		}
@@ -2561,17 +2562,18 @@ namespace Axiom.Core
 			var vals = parsableText.TrimStart( '(', '[', '<' ).TrimEnd( ')', ']', '>' ).Split( ',' );
 			if ( vals.Length < 3 )
 			{
-				throw new FormatException( string.Format( "Cannot parse the text '{0}' because it must of the form (r,g,b) or (r,g,b,a)", parsableText ) );
+				throw new FormatException(
+					string.Format( "Cannot parse the text '{0}' because it must of the form (r,g,b) or (r,g,b,a)", parsableText ) );
 			}
 			//float r, g, b, a;
 			try
 			{
-				retVal.r = int.Parse( vals[ 0 ].Trim() ) / 255f;
-				retVal.g = int.Parse( vals[ 1 ].Trim() ) / 255f;
-				retVal.b = int.Parse( vals[ 2 ].Trim() ) / 255f;
+				retVal.r = int.Parse( vals[ 0 ].Trim() )/255f;
+				retVal.g = int.Parse( vals[ 1 ].Trim() )/255f;
+				retVal.b = int.Parse( vals[ 2 ].Trim() )/255f;
 				if ( vals.Length == 4 )
 				{
-					retVal.a = int.Parse( vals[ 3 ].Trim() ) / 255f;
+					retVal.a = int.Parse( vals[ 3 ].Trim() )/255f;
 				}
 				else
 				{
@@ -2588,7 +2590,7 @@ namespace Axiom.Core
 		//TODO : Move this to StringConverter
 		public string To_0_255_String()
 		{
-			return string.Format( "({0},{1},{2},{3})", (int)( r * 255f ), (int)( g * 255f ), (int)( b * 255f ), (int)( a * 255f ) );
+			return string.Format( "({0},{1},{2},{3})", (int)( r*255f ), (int)( g*255f ), (int)( b*255f ), (int)( a*255f ) );
 		}
 
 		#endregion Static color properties
@@ -2604,7 +2606,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return this.ToARGB();
+			return ToARGB();
 		}
 
 		public override bool Equals( object obj )
@@ -2619,7 +2621,7 @@ namespace Axiom.Core
 
 		public override string ToString()
 		{
-			return this.To_0_255_String();
+			return To_0_255_String();
 		}
 
 		#endregion Object overloads
@@ -2635,7 +2637,7 @@ namespace Axiom.Core
 		{
 			var other = (ColorEx)obj;
 
-			if ( this.a == other.a && this.r == other.r && this.g == other.g && this.b == other.b )
+			if ( a == other.a && r == other.r && g == other.g && b == other.b )
 			{
 				return 0;
 			}
@@ -2657,10 +2659,10 @@ namespace Axiom.Core
 		public ColorEx Clone()
 		{
 			ColorEx clone;
-			clone.a = this.a;
-			clone.r = this.r;
-			clone.g = this.g;
-			clone.b = this.b;
+			clone.a = a;
+			clone.r = r;
+			clone.g = g;
+			clone.b = b;
 			return clone;
 		}
 

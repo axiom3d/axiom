@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -164,21 +163,23 @@ namespace Axiom.SceneManagers.PortalConnected
 			{
 				default:
 				case PORTAL_TYPE.PORTAL_TYPE_QUAD:
-					mCorners = new Vector3[ 4 ];
-					mDerivedCorners = new Vector3[ 4 ];
+					mCorners = new Vector3[4];
+					mDerivedCorners = new Vector3[4];
 					break;
 				case PORTAL_TYPE.PORTAL_TYPE_AABB:
-					mCorners = new Vector3[ 2 ];
-					mDerivedCorners = new Vector3[ 2 ];
+					mCorners = new Vector3[2];
+					mDerivedCorners = new Vector3[2];
 					break;
 				case PORTAL_TYPE.PORTAL_TYPE_SPHERE:
-					mCorners = new Vector3[ 2 ];
-					mDerivedCorners = new Vector3[ 2 ];
+					mCorners = new Vector3[2];
+					mDerivedCorners = new Vector3[2];
 					break;
 			}
 		}
 
-		~Portal() {}
+		~Portal()
+		{
+		}
 
 		public PORTAL_TYPE Type
 		{
@@ -485,17 +486,17 @@ namespace Axiom.SceneManagers.PortalConnected
 					Matrix3 rotation;
 					// save off the current DerivedCP
 					mPrevDerivedCP = mDerivedCP;
-					mDerivedCP = transform * mLocalCP;
+					mDerivedCP = transform*mLocalCP;
 					mDerivedSphere.Center = mDerivedCP;
 					switch ( mType )
 					{
 						case PORTAL_TYPE.PORTAL_TYPE_QUAD:
 							for ( int i = 0; i < numCorners; i++ )
 							{
-								mDerivedCorners[ i ] = transform * mCorners[ i ];
+								mDerivedCorners[ i ] = transform*mCorners[ i ];
 							}
 							rotation = transform.ExtractRotation();
-							mDerivedDirection = rotation * mDirection;
+							mDerivedDirection = rotation*mDirection;
 							break;
 						case PORTAL_TYPE.PORTAL_TYPE_AABB:
 						{
@@ -511,7 +512,7 @@ namespace Axiom.SceneManagers.PortalConnected
 						case PORTAL_TYPE.PORTAL_TYPE_SPHERE:
 						{
 							mDerivedCorners[ 0 ] = mDerivedCP;
-							mDerivedCorners[ 1 ] = transform * mCorners[ 1 ];
+							mDerivedCorners[ 1 ] = transform*mCorners[ 1 ];
 							mDerivedDirection = mDirection;
 						}
 							break;
@@ -668,7 +669,7 @@ namespace Axiom.SceneManagers.PortalConnected
 					case PORTAL_TYPE.PORTAL_TYPE_AABB:
 					{
 						// aab to aab check
-						AxisAlignedBox aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
+						var aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
 						return ( aab.Intersects( aabb ) );
 					}
 					case PORTAL_TYPE.PORTAL_TYPE_SPHERE:
@@ -704,7 +705,7 @@ namespace Axiom.SceneManagers.PortalConnected
 					case PORTAL_TYPE.PORTAL_TYPE_AABB:
 					{
 						// aab to aab check
-						AxisAlignedBox aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
+						var aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
 						return ( aabb.Intersects( sphere ) );
 					}
 					case PORTAL_TYPE.PORTAL_TYPE_SPHERE:
@@ -753,7 +754,7 @@ namespace Axiom.SceneManagers.PortalConnected
 						break;
 					case PORTAL_TYPE.PORTAL_TYPE_AABB:
 					{
-						AxisAlignedBox aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
+						var aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
 						if ( !pbv.Intersects( aabb ) )
 						{
 							return false;
@@ -828,7 +829,7 @@ namespace Axiom.SceneManagers.PortalConnected
 				}
 				else if ( mType == PORTAL_TYPE.PORTAL_TYPE_AABB )
 				{
-					AxisAlignedBox aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
+					var aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
 					IntersectResult result = ray.Intersects( aabb );
 					return result.Hit;
 				}
@@ -862,11 +863,11 @@ namespace Axiom.SceneManagers.PortalConnected
 				{
 					// the node is modeled as a line segment (prevPostion to currentPosition)
 					// intersection test is then between the capsule and the line segment.
-					Segment nodeSegment = new Segment();
+					var nodeSegment = new Segment();
 					nodeSegment.Set( pczsn.PreviousPosition, pczsn.DerivedPosition );
 
 					// we model the portal as a line swept sphere (mPrevDerivedCP to mDerivedCP).
-					Capsule portalCapsule = new Capsule();
+					var portalCapsule = new Capsule();
 					portalCapsule.Set( mPrevDerivedCP, mDerivedCP, mRadius );
 
 					if ( portalCapsule.Intersects( nodeSegment ) )
@@ -876,13 +877,14 @@ namespace Axiom.SceneManagers.PortalConnected
 						// a crossing occurs if the "side" of the final position of the node compared
 						// to the final position of the portal is negative AND the initial position
 						// of the node compared to the initial position of the portal is non-negative
-						if ( mDerivedPlane.GetSide( pczsn.DerivedPosition ) == PlaneSide.Negative && mPrevDerivedPlane.GetSide( pczsn.DerivedPosition ) != PlaneSide.Negative )
+						if ( mDerivedPlane.GetSide( pczsn.DerivedPosition ) == PlaneSide.Negative &&
+						     mPrevDerivedPlane.GetSide( pczsn.DerivedPosition ) != PlaneSide.Negative )
 						{
 							// safety check - make sure the node has at least one dimension which is
 							// small enough to fit through the portal! (avoid the "elephant fitting
 							// through a mouse hole" case)
 							Vector3 nodeHalfVector = pczsn.WorldAABB.HalfSize;
-							Vector3 portalBox = new Vector3( mRadius, mRadius, mRadius );
+							var portalBox = new Vector3( mRadius, mRadius, mRadius );
 							portalBox.Floor( nodeHalfVector );
 							if ( portalBox.x < mRadius )
 							{
@@ -918,7 +920,7 @@ namespace Axiom.SceneManagers.PortalConnected
 				{
 					// for aabb's we check if the center point went from being inside to being outside
 					// the aabb (or vice versa) for crossing.
-					AxisAlignedBox aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
+					var aabb = new AxisAlignedBox( mDerivedCorners[ 0 ], mDerivedCorners[ 1 ] );
 					//bool previousInside = aabb.contains(pczsn->getPrevPosition());
 					bool currentInside = aabb.Contains( pczsn.DerivedPosition );
 					if ( mDirection == Vector3.UnitZ )
@@ -962,7 +964,7 @@ namespace Axiom.SceneManagers.PortalConnected
 					// the sphere surface (or vice versa) for crossing.
 					//Real previousDistance2 = mPrevDerivedCP.squaredDistance(pczsn->getPrevPosition());
 					Real currentDistance2 = mDerivedCP.DistanceSquared( pczsn.DerivedPosition );
-					Real mRadius2 = mRadius * mRadius;
+					Real mRadius2 = mRadius*mRadius;
 					if ( mDirection == Vector3.UnitZ )
 					{
 						// portal norm is "outward" pointing, look for going from outside to inside
@@ -1008,7 +1010,7 @@ namespace Axiom.SceneManagers.PortalConnected
 				Capsule portalCapsule, otherPortalCapsule;
 
 				portalCapsule = new Capsule();
-				portalCapsule.Set( this.getPrevDerivedCP(), this.getDerivedCP(), this.getRadius() );
+				portalCapsule.Set( getPrevDerivedCP(), getDerivedCP(), getRadius() );
 
 				otherPortalCapsule = new Capsule();
 				otherPortalCapsule.Set( otherPortal.mPrevDerivedCP, otherPortal.mDerivedCP, otherPortal.mRadius );
@@ -1025,7 +1027,8 @@ namespace Axiom.SceneManagers.PortalConnected
 							// of this portal compared to the initial position of the other portal is non-negative
 							// NOTE: This function assumes that this portal is the smaller portal potentially crossing
 							//       over the otherPortal which is larger.
-							if ( otherPortal.getDerivedPlane().GetSide( mDerivedCP ) == PlaneSide.Negative && otherPortal.getPrevDerivedPlane().GetSide( mPrevDerivedCP ) != PlaneSide.Negative )
+							if ( otherPortal.getDerivedPlane().GetSide( mDerivedCP ) == PlaneSide.Negative &&
+							     otherPortal.getPrevDerivedPlane().GetSide( mPrevDerivedCP ) != PlaneSide.Negative )
 							{
 								// crossing occurred!
 								return true;
@@ -1035,7 +1038,7 @@ namespace Axiom.SceneManagers.PortalConnected
 						{
 							// for aabb's we check if the center point went from being inside to being outside
 							// the aabb (or vice versa) for crossing.
-							AxisAlignedBox aabb = new AxisAlignedBox( otherPortal.getDerivedCorner( 0 ), otherPortal.getDerivedCorner( 1 ) );
+							var aabb = new AxisAlignedBox( otherPortal.getDerivedCorner( 0 ), otherPortal.getDerivedCorner( 1 ) );
 							//bool previousInside = aabb.contains(mPrevDerivedCP);
 							bool currentInside = aabb.Contains( mDerivedCP );
 							if ( otherPortal.getDerivedDirection() == Vector3.UnitZ )
@@ -1115,15 +1118,16 @@ namespace Axiom.SceneManagers.PortalConnected
 				{
 					// quad portals must be within 1/4 sphere of each other
 					Sphere quarterSphere1 = mDerivedSphere;
-					quarterSphere1.Radius = quarterSphere1.Radius * 0.25f;
+					quarterSphere1.Radius = quarterSphere1.Radius*0.25f;
 					Sphere quarterSphere2 = otherPortal.getDerivedSphere();
-					quarterSphere2.Radius = quarterSphere2.Radius * 0.25f;
+					quarterSphere2.Radius = quarterSphere2.Radius*0.25f;
 					close = quarterSphere1.Intersects( quarterSphere2 );
 				}
 					break;
 				case PORTAL_TYPE.PORTAL_TYPE_AABB:
 					// NOTE: AABB's must match perfectly
-					if ( mDerivedCP == otherPortal.getDerivedCP() && mCorners[ 0 ] == otherPortal.getCorner( 0 ) && mCorners[ 1 ] == otherPortal.getCorner( 1 ) )
+					if ( mDerivedCP == otherPortal.getDerivedCP() && mCorners[ 0 ] == otherPortal.getCorner( 0 ) &&
+					     mCorners[ 1 ] == otherPortal.getCorner( 1 ) )
 					{
 						close = true;
 					}

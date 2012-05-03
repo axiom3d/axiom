@@ -36,10 +36,8 @@
 using System;
 using System.IO;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Media;
-
 using FI = FreeImageAPI;
 using RegisteredCodec = System.Collections.Generic.List<Axiom.Media.ImageCodec>;
 
@@ -56,9 +54,9 @@ namespace Axiom.Plugins.FreeImageCodecs
 	/// </remarks>
 	public class FreeImageCodec : ImageCodec
 	{
-		private string _type;
-		private FI.FREE_IMAGE_TYPE _freeImageType;
-		private static RegisteredCodec _codecList = new RegisteredCodec();
+		private readonly string _type;
+		private readonly FI.FREE_IMAGE_TYPE _freeImageType;
+		private static readonly RegisteredCodec _codecList = new RegisteredCodec();
 
 		[OgreVersion( 1, 7, 2 )]
 		public override string Type
@@ -82,7 +80,8 @@ namespace Axiom.Plugins.FreeImageCodecs
 			// Callback method as required by FreeImage to report problems
 			var format = FI.FreeImage.GetFormatFromFIF( fif );
 
-			LogManager.Instance.Write( "FreeImage error: '{0}'{1}", message, string.IsNullOrEmpty( format ) ? "." : " when loading format " + format );
+			LogManager.Instance.Write( "FreeImage error: '{0}'{1}", message,
+			                           string.IsNullOrEmpty( format ) ? "." : " when loading format " + format );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -175,7 +174,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 
 			if ( imgData != null )
 			{
-				var data = new byte[ (int)input.Length ];
+				var data = new byte[(int)input.Length];
 				input.Read( data, 0, data.Length );
 				var dataPtr = BufferBase.Wrap( data );
 				var src = new PixelBox( imgData.width, imgData.height, imgData.depth, imgData.format, dataPtr );
@@ -287,7 +286,9 @@ namespace Axiom.Plugins.FreeImageCodecs
 				} //end switch
 
 				// Check support for this image type & bit depth
-				if ( !FI.FreeImage.FIFSupportsExportType( (FI.FREE_IMAGE_FORMAT)_freeImageType, imageType ) || !FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, PixelUtil.GetNumElemBits( requiredFormat ) ) )
+				if ( !FI.FreeImage.FIFSupportsExportType( (FI.FREE_IMAGE_FORMAT)_freeImageType, imageType ) ||
+				     !FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType,
+				                                         PixelUtil.GetNumElemBits( requiredFormat ) ) )
 				{
 					// Ok, need to allocate a fallback
 					// Only deal with RGBA . RGB for now
@@ -308,7 +309,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 
 				var conversionRequired = false;
 				input.Position = 0;
-				var srcData = new byte[ (int)input.Length ];
+				var srcData = new byte[(int)input.Length];
 				input.Read( srcData, 0, srcData.Length );
 				var srcDataPtr = Memory.PinObject( srcData );
 
@@ -316,7 +317,8 @@ namespace Axiom.Plugins.FreeImageCodecs
 				var bpp = PixelUtil.GetNumElemBits( requiredFormat );
 				if ( !FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, bpp ) )
 				{
-					if ( bpp == 32 && PixelUtil.HasAlpha( imgData.format ) && FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, 24 ) )
+					if ( bpp == 32 && PixelUtil.HasAlpha( imgData.format ) &&
+					     FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, 24 ) )
 					{
 						// drop to 24 bit (lose alpha)
 						if ( FI.FreeImage.IsLittleEndian() )
@@ -330,7 +332,8 @@ namespace Axiom.Plugins.FreeImageCodecs
 
 						bpp = 24;
 					}
-					else if ( bpp == 128 && PixelUtil.HasAlpha( imgData.format ) && FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, 96 ) )
+					else if ( bpp == 128 && PixelUtil.HasAlpha( imgData.format ) &&
+					          FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, 96 ) )
 					{
 						// drop to 96-bit floating point
 						requiredFormat = PixelFormat.FLOAT32_RGB;
@@ -342,7 +345,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 				{
 					conversionRequired = true;
 					// Allocate memory
-					var convData = new byte[ convBox.ConsecutiveSize ];
+					var convData = new byte[convBox.ConsecutiveSize];
 					convBox.Data = BufferBase.Wrap( convData );
 					// perform conversion and reassign source
 					var newSrc = new PixelBox( imgData.width, imgData.height, 1, imgData.format, dataPtr );
@@ -373,17 +376,17 @@ namespace Axiom.Plugins.FreeImageCodecs
 				}
 
 				var dstPitch = (int)FI.FreeImage.GetPitch( ret );
-				var srcPitch = imgData.width * PixelUtil.GetNumElemBytes( requiredFormat );
+				var srcPitch = imgData.width*PixelUtil.GetNumElemBytes( requiredFormat );
 
 				// Copy data, invert scanlines and respect FreeImage pitch
 				var pSrc = srcDataPtr;
-				using ( var pDest = BufferBase.Wrap( FI.FreeImage.GetBits( ret ), imgData.height * srcPitch ) )
+				using ( var pDest = BufferBase.Wrap( FI.FreeImage.GetBits( ret ), imgData.height*srcPitch ) )
 				{
 					var byteSrcData = pSrc;
 					var byteDstData = pDest;
 					for ( int y = 0; y < imgData.height; ++y )
 					{
-						byteSrcData += ( imgData.height - y - 1 ) * srcPitch;
+						byteSrcData += ( imgData.height - y - 1 )*srcPitch;
 						Memory.Copy( pSrc, pDest, srcPitch );
 						byteDstData += dstPitch;
 					}
@@ -415,7 +418,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 			FI.FreeImage.AcquireMemory( mem, ref data, ref size );
 			// Copy data into our own buffer
 			// Because we're asking MemoryDataStream to free this, must create in a compatible way
-			var ourData = new byte[ size ];
+			var ourData = new byte[size];
 			using ( var src = BufferBase.Wrap( data, (int)size ) )
 			{
 				using ( var dest = BufferBase.Wrap( ourData ) )
@@ -447,7 +450,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 		public override Codec.DecodeResult Decode( Stream input )
 		{
 			// Buffer stream into memory (TODO: override IO functions instead?)
-			var data = new byte[ (int)input.Length ];
+			var data = new byte[(int)input.Length];
 			input.Read( data, 0, data.Length );
 			FI.FIMEMORY fiMem;
 			FI.FREE_IMAGE_FORMAT ff;
@@ -457,7 +460,8 @@ namespace Axiom.Plugins.FreeImageCodecs
 				fiMem = FI.FreeImage.OpenMemory( datPtr.Pin(), (uint)data.Length );
 				datPtr.UnPin();
 				ff = (FI.FREE_IMAGE_FORMAT)_freeImageType;
-				fiBitmap = FI.FreeImage.LoadFromMemory( (FI.FREE_IMAGE_FORMAT)_freeImageType, fiMem, FI.FREE_IMAGE_LOAD_FLAGS.DEFAULT );
+				fiBitmap = FI.FreeImage.LoadFromMemory( (FI.FREE_IMAGE_FORMAT)_freeImageType, fiMem,
+				                                        FI.FREE_IMAGE_LOAD_FLAGS.DEFAULT );
 			}
 
 			if ( fiBitmap.IsNull )
@@ -501,7 +505,8 @@ namespace Axiom.Plugins.FreeImageCodecs
 						colorType = FI.FreeImage.GetColorType( fiBitmap );
 					}
 						// Perform any colour conversions for RGB
-					else if ( bpp < 8 || colorType == FI.FREE_IMAGE_COLOR_TYPE.FIC_PALETTE || colorType == FI.FREE_IMAGE_COLOR_TYPE.FIC_CMYK )
+					else if ( bpp < 8 || colorType == FI.FREE_IMAGE_COLOR_TYPE.FIC_PALETTE ||
+					          colorType == FI.FREE_IMAGE_COLOR_TYPE.FIC_CMYK )
 					{
 						var newBitmap = FI.FreeImage.ConvertTo24Bits( fiBitmap );
 						// free old bitmap and replace
@@ -591,18 +596,18 @@ namespace Axiom.Plugins.FreeImageCodecs
 
 			var srcPitch = (int)FI.FreeImage.GetPitch( fiBitmap );
 			// Final data - invert image and trim pitch at the same time
-			var dstPitch = imgData.width * PixelUtil.GetNumElemBytes( imgData.format );
-			imgData.size = dstPitch * imgData.height;
+			var dstPitch = imgData.width*PixelUtil.GetNumElemBytes( imgData.format );
+			imgData.size = dstPitch*imgData.height;
 			// Bind output buffer
-			var outputData = new byte[ imgData.size ];
+			var outputData = new byte[imgData.size];
 
-			using ( var srcData = BufferBase.Wrap( FI.FreeImage.GetBits( fiBitmap ), imgData.height * srcPitch ) )
+			using ( var srcData = BufferBase.Wrap( FI.FreeImage.GetBits( fiBitmap ), imgData.height*srcPitch ) )
 			{
 				var pDst = BufferBase.Wrap( outputData );
 
 				for ( var y = 0; y < imgData.height; ++y )
 				{
-					using ( var pSrc = srcData + ( imgData.height - y - 1 ) * srcPitch )
+					using ( var pSrc = srcData + ( imgData.height - y - 1 )*srcPitch )
 					{
 						Memory.Copy( pSrc, pDst, dstPitch );
 						pDst += dstPitch;

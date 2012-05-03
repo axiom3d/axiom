@@ -38,10 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using Tao.OpenGl;
 
 #endregion Namespace Declarations
@@ -62,7 +60,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Constructors
 
-		public GLHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, bool useShadowBuffer )
+		public GLHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices,
+		                               BufferUsage usage, bool useShadowBuffer )
 			: base( manager, vertexDeclaration, numVertices, usage, false, useShadowBuffer )
 		{
 			bufferID = 0;
@@ -77,7 +76,8 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
 
 			// initialize this buffer.  we dont have data yet tho
-			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero, GLHelper.ConvertEnum( usage ) ); // TAO 2.0
+			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero, GLHelper.ConvertEnum( usage ) );
+				// TAO 2.0
 			//Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, sizeInBytes, IntPtr.Zero, GLHelper.ConvertEnum( usage ) );
 		}
 
@@ -179,7 +179,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			if ( discardWholeBuffer )
 			{
-				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero, GLHelper.ConvertEnum( usage ) ); // TAO 2.0
+				Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero, GLHelper.ConvertEnum( usage ) );
+					// TAO 2.0
 				//Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB,
 				//    sizeInBytes,
 				//    IntPtr.Zero,
@@ -218,7 +219,8 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
 
-				Gl.glGetBufferSubDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( offset ), new IntPtr( length ), dest.Pin() ); // TAO 2.0
+				Gl.glGetBufferSubDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( offset ), new IntPtr( length ), dest.Pin() );
+					// TAO 2.0
 				dest.UnPin();
 				//Gl.glGetBufferSubDataARB(
 				//    Gl.GL_ARRAY_BUFFER_ARB,
@@ -235,7 +237,9 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			if ( !IsDisposed )
 			{
-				if ( disposeManagedResources ) {}
+				if ( disposeManagedResources )
+				{
+				}
 
 				try
 				{

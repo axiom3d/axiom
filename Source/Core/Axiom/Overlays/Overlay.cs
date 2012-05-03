@@ -39,13 +39,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
-
 using System.Collections.Generic;
-
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
@@ -99,7 +96,8 @@ namespace Axiom.Overlays
 		/// <summary>2D element list.</summary>
 		protected List<OverlayElementContainer> elementList = new List<OverlayElementContainer>();
 
-		protected Dictionary<string, OverlayElementContainer> elementLookup = new Dictionary<string, OverlayElementContainer>();
+		protected Dictionary<string, OverlayElementContainer> elementLookup =
+			new Dictionary<string, OverlayElementContainer>();
 
 		/// <summary>Degrees of rotation around center.</summary>
 		protected float rotate;
@@ -114,7 +112,7 @@ namespace Axiom.Overlays
 		protected Matrix4 transform = Matrix4.Identity;
 
 		/// <summary> Used when passing transform to overlay elements.</summary>
-		protected Matrix4[] xform = new Matrix4[ 1 ]
+		protected Matrix4[] xform = new Matrix4[1]
 		                            {
 		                            	Matrix4.Identity
 		                            };
@@ -138,13 +136,13 @@ namespace Axiom.Overlays
 		internal Overlay( string name )
 			: base()
 		{
-			this.Name = name;
-			this.scaleX = 1.0f;
-			this.scaleY = 1.0f;
-			this.isTransformOutOfDate = true;
-			this.isTransformUpdated = true;
-			this.zOrder = 100;
-			this.isInitialised = false;
+			Name = name;
+			scaleX = 1.0f;
+			scaleY = 1.0f;
+			isTransformOutOfDate = true;
+			isTransformUpdated = true;
+			zOrder = 100;
+			isInitialised = false;
 			rootNode = new SceneNode( null );
 		}
 
@@ -292,7 +290,7 @@ namespace Axiom.Overlays
 				var container = (OverlayElementContainer)elementList[ i ];
 				container.Initialize();
 			}
-			this.isInitialised = true;
+			isInitialised = true;
 		}
 
 		/// <summary>
@@ -335,7 +333,7 @@ namespace Axiom.Overlays
 				var oldPriority = queue.DefaultRenderablePriority;
 
 				queue.DefaultRenderGroup = RenderQueueGroupID.Overlay;
-				queue.DefaultRenderablePriority = (ushort)( ( zOrder * 100 ) - 1 );
+				queue.DefaultRenderablePriority = (ushort)( ( zOrder*100 ) - 1 );
 				rootNode.FindVisibleObjects( camera, queue, true, false );
 
 				// reset the group
@@ -423,7 +421,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		public void Rotate( float degrees )
 		{
-			this.Rotation = ( rotate += degrees );
+			Rotation = ( rotate += degrees );
 		}
 
 		/// <summary>
@@ -500,7 +498,7 @@ namespace Axiom.Overlays
 			scale3x3.m11 = scaleY;
 			scale3x3.m22 = 1.0f;
 
-			transform = rot3x3 * scale3x3;
+			transform = rot3x3*scale3x3;
 			transform.Translation = new Vector3( scrollX, scrollY, 0 );
 
 			isTransformOutOfDate = false;
@@ -511,7 +509,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		protected void AssignZOrders()
 		{
-			var zorder = this.zOrder * 100;
+			var zorder = zOrder*100;
 			// notify attached 2d elements
 			for ( var i = 0; i < elementList.Count; i++ )
 			{

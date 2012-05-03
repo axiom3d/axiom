@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
-
 using Tao.OpenGl;
 
 #pragma warning disable 612,618
@@ -26,7 +24,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			var globalInstanceVertexBuffer = GlobalInstanceVertexBuffer;
 			var globalVertexDeclaration = GlobalInstanceVertexBufferVertexDeclaration;
-			var hasInstanceData = op.useGlobalInstancingVertexBufferIsAvailable && globalInstanceVertexBuffer != null && globalVertexDeclaration != null || op.vertexData.vertexBufferBinding.HasInstanceData;
+			var hasInstanceData = op.useGlobalInstancingVertexBufferIsAvailable && globalInstanceVertexBuffer != null &&
+			                      globalVertexDeclaration != null || op.vertexData.vertexBufferBinding.HasInstanceData;
 
 			var numberOfInstances = op.numberOfInstances;
 
@@ -75,7 +74,8 @@ namespace Axiom.RenderSystems.OpenGL
 			// Find the correct type to render
 			int primType;
 			//Use adjacency if there is a geometry program and it requested adjacency info
-			var useAdjacency = ( geometryProgramBound && currentGeometryProgram != null && currentGeometryProgram.IsAdjacencyInfoRequired );
+			var useAdjacency = ( geometryProgramBound && currentGeometryProgram != null &&
+			                     currentGeometryProgram.IsAdjacencyInfoRequired );
 			switch ( op.operationType )
 			{
 				case OperationType.PointList:
@@ -105,13 +105,16 @@ namespace Axiom.RenderSystems.OpenGL
 
 				if ( currentCapabilities.HasCapability( Graphics.Capabilities.VertexBuffer ) )
 				{
-					Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, ( (GLHardwareIndexBuffer)( op.indexData.indexBuffer ) ).GLBufferID );
+					Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
+					                    ( (GLHardwareIndexBuffer)( op.indexData.indexBuffer ) ).GLBufferID );
 
-					pBufferData = BUFFER_OFFSET( op.indexData.indexStart * op.indexData.indexBuffer.IndexSize );
+					pBufferData = BUFFER_OFFSET( op.indexData.indexStart*op.indexData.indexBuffer.IndexSize );
 				}
 				else
 				{
-					pBufferData = ( (GLDefaultHardwareIndexBuffer)( op.indexData.indexBuffer ) ).DataPtr( op.indexData.indexStart * op.indexData.indexBuffer.IndexSize );
+					pBufferData =
+						( (GLDefaultHardwareIndexBuffer)( op.indexData.indexBuffer ) ).DataPtr( op.indexData.indexStart*
+						                                                                        op.indexData.indexBuffer.IndexSize );
 				}
 
 				var indexType = ( op.indexData.indexBuffer.Type == IndexType.Size16 ) ? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
@@ -121,7 +124,8 @@ namespace Axiom.RenderSystems.OpenGL
 					// Update derived depth bias
 					if ( derivedDepthBias && currentPassIterationNum > 0 )
 					{
-						SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationNum, derivedDepthBiasSlopeScale );
+						SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier*currentPassIterationNum,
+						              derivedDepthBiasSlopeScale );
 					}
 					if ( hasInstanceData )
 					{
@@ -141,7 +145,8 @@ namespace Axiom.RenderSystems.OpenGL
 					// Update derived depth bias
 					if ( derivedDepthBias && currentPassIterationNum > 0 )
 					{
-						SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationNum, derivedDepthBiasSlopeScale );
+						SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier*currentPassIterationNum,
+						              derivedDepthBiasSlopeScale );
 					}
 
 					if ( hasInstanceData )
@@ -202,7 +207,8 @@ namespace Axiom.RenderSystems.OpenGL
 		#region BindVertexElementToGpu
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected void BindVertexElementToGpu( VertexElement elem, HardwareVertexBuffer vertexBuffer, int vertexStart, IList<int> attribsBound, IList<int> instanceAttribsBound )
+		protected void BindVertexElementToGpu( VertexElement elem, HardwareVertexBuffer vertexBuffer, int vertexStart,
+		                                       IList<int> attribsBound, IList<int> instanceAttribsBound )
 		{
 			IntPtr pBufferData;
 			var hwGlBuffer = (GLHardwareVertexBuffer)vertexBuffer;
@@ -220,7 +226,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			if ( vertexStart != 0 )
 			{
-				pBufferData = pBufferData.Offset( vertexStart * vertexBuffer.VertexSize );
+				pBufferData = pBufferData.Offset( vertexStart*vertexBuffer.VertexSize );
 			}
 
 			var sem = elem.Semantic;
@@ -263,7 +269,8 @@ namespace Axiom.RenderSystems.OpenGL
 						break;
 				}
 
-				Gl.glVertexAttribPointerARB( attrib, typeCount, GLHardwareBufferManager.GetGLType( elem.Type ), normalised, vertexBuffer.VertexSize, pBufferData );
+				Gl.glVertexAttribPointerARB( attrib, typeCount, GLHardwareBufferManager.GetGLType( elem.Type ), normalised,
+				                             vertexBuffer.VertexSize, pBufferData );
 				Gl.glEnableVertexAttribArrayARB( attrib );
 
 				attribsBound.Add( (int)attrib );
@@ -274,7 +281,8 @@ namespace Axiom.RenderSystems.OpenGL
 				switch ( sem )
 				{
 					case VertexElementSemantic.Position:
-						Gl.glVertexPointer( VertexElement.GetTypeCount( elem.Type ), GLHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
+						Gl.glVertexPointer( VertexElement.GetTypeCount( elem.Type ), GLHardwareBufferManager.GetGLType( elem.Type ),
+						                    vertexBuffer.VertexSize, pBufferData );
 						Gl.glEnableClientState( Gl.GL_VERTEX_ARRAY );
 						break;
 					case VertexElementSemantic.Normal:
@@ -288,7 +296,8 @@ namespace Axiom.RenderSystems.OpenGL
 					case VertexElementSemantic.Specular:
 						if ( GLEW_EXT_secondary_color )
 						{
-							Gl.glSecondaryColorPointerEXT( 4, GLHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
+							Gl.glSecondaryColorPointerEXT( 4, GLHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize,
+							                               pBufferData );
 							Gl.glEnableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
 						}
 						break;
@@ -298,7 +307,8 @@ namespace Axiom.RenderSystems.OpenGL
 						{
 							// Programmable pipeline - direct UV assignment
 							Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + elem.Index );
-							Gl.glTexCoordPointer( VertexElement.GetTypeCount( elem.Type ), GLHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
+							Gl.glTexCoordPointer( VertexElement.GetTypeCount( elem.Type ), GLHardwareBufferManager.GetGLType( elem.Type ),
+							                      vertexBuffer.VertexSize, pBufferData );
 							Gl.glEnableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
 						}
 						else
@@ -317,7 +327,8 @@ namespace Axiom.RenderSystems.OpenGL
 								{
 									Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + i );
 								}
-								Gl.glTexCoordPointer( VertexElement.GetTypeCount( elem.Type ), GLHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize, pBufferData );
+								Gl.glTexCoordPointer( VertexElement.GetTypeCount( elem.Type ), GLHardwareBufferManager.GetGLType( elem.Type ),
+								                      vertexBuffer.VertexSize, pBufferData );
 								Gl.glEnableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
 							}
 						}

@@ -81,7 +81,7 @@ namespace Axiom.Core
 		private static void _createPlane( Mesh mesh )
 		{
 			var sub = mesh.CreateSubMesh();
-			var vertices = new float[ 32 ]
+			var vertices = new float[32]
 			               {
 			               	-100, -100, 0, // pos
 			               	0, 0, 1, // normal
@@ -110,7 +110,7 @@ namespace Axiom.Core
 			sub.useSharedVertices = true;
 			var ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, 6, BufferUsage.StaticWriteOnly );
 
-			var faces = new short[ 6 ]
+			var faces = new short[6]
 			            {
 			            	0, 1, 2, 0, 2, 3
 			            };
@@ -120,7 +120,7 @@ namespace Axiom.Core
 			ibuf.WriteData( 0, ibuf.Size, faces, true );
 
 			mesh.BoundingBox = new AxisAlignedBox( new Vector3( -100, -100, 0 ), new Vector3( 100, 100, 0 ) );
-			mesh.BoundingSphereRadius = Utility.Sqrt( 100 * 100 + 100 * 100 );
+			mesh.BoundingSphereRadius = Utility.Sqrt( 100*100 + 100*100 );
 		}
 
 		/// <summary>
@@ -131,29 +131,41 @@ namespace Axiom.Core
 		{
 			var sub = mesh.CreateSubMesh();
 
-			const int NUM_VERTICES = 4 * 6; // 4 vertices per side * 6 sides
+			const int NUM_VERTICES = 4*6; // 4 vertices per side * 6 sides
 			const int NUM_ENTRIES_PER_VERTEX = 8;
-			const int NUM_VERTEX_ENTRIES = NUM_VERTICES * NUM_ENTRIES_PER_VERTEX;
-			const int NUM_INDICES = 3 * 2 * 6; // 3 indices per face * 2 faces per side * 6 sides
+			const int NUM_VERTEX_ENTRIES = NUM_VERTICES*NUM_ENTRIES_PER_VERTEX;
+			const int NUM_INDICES = 3*2*6; // 3 indices per face * 2 faces per side * 6 sides
 
 			const float CUBE_SIZE = 100.0f;
-			const float CUBE_HALF_SIZE = CUBE_SIZE / 2.0f;
+			const float CUBE_HALF_SIZE = CUBE_SIZE/2.0f;
 
 			// Create 4 vertices per side instead of 6 that are shared for the whole cube.
 			// The reason for this is with only 6 vertices the normals will look bad
 			// since each vertex can "point" in a different direction depending on the face it is included in.
-			var vertices = new float[ NUM_VERTEX_ENTRIES ]
+			var vertices = new float[NUM_VERTEX_ENTRIES]
 			               {
 			               	// front side
 			               	-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, // pos
 			               	0, 0, 1, // normal
 			               	0, 1, // texcoord
-			               	CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, 0, 0, 1, 1, 1, CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, 0, 0, 1, 1, 0, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, 0, 0, 1, 0, 0, // back side
-			               	CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, 0, -1, 0, 1, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, 0, -1, 1, 1, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, 0, -1, 1, 0, CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, 0, -1, 0, 0, // left side
-			               	-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -1, 0, 0, 0, 1, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, -1, 0, 0, 1, 1, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, -1, 0, 0, 1, 0, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -1, 0, 0, 0, 0, // right side
-			               	CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, 1, 0, 0, 0, 1, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 1, 0, 0, 1, 1, CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 1, 0, 0, 1, 0, CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, 1, 0, 0, 0, 0, // up side
-			               	-CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, 0, 1, 0, 0, 1, CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, 0, 1, 0, 1, 1, CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, 1, 0, 1, 0, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, 1, 0, 0, 0, // down side
-			               	-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, -1, 0, 0, 1, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, -1, 0, 1, 1, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, 0, -1, 0, 1, 0, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, 0, -1, 0, 0, 0
+			               	CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, 0, 0, 1, 1, 1, CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			               	CUBE_HALF_SIZE, 0, 0, 1, 1, 0, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, 0, 0, 1, 0, 0,
+			               	// back side
+			               	CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, 0, -1, 0, 1, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			               	-CUBE_HALF_SIZE, 0, 0, -1, 1, 1, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, 0, -1, 1, 0,
+			               	CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, 0, -1, 0, 0, // left side
+			               	-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -1, 0, 0, 0, 1, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			               	CUBE_HALF_SIZE, -1, 0, 0, 1, 1, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, -1, 0, 0, 1, 0,
+			               	-CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -1, 0, 0, 0, 0, // right side
+			               	CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, 1, 0, 0, 0, 1, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			               	-CUBE_HALF_SIZE, 1, 0, 0, 1, 1, CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 1, 0, 0, 1, 0,
+			               	CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, 1, 0, 0, 0, 0, // up side
+			               	-CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE, 0, 1, 0, 0, 1, CUBE_HALF_SIZE, CUBE_HALF_SIZE,
+			               	CUBE_HALF_SIZE, 0, 1, 0, 1, 1, CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, 1, 0, 1, 0,
+			               	-CUBE_HALF_SIZE, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, 1, 0, 0, 0, // down side
+			               	-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, 0, -1, 0, 0, 1, CUBE_HALF_SIZE, -CUBE_HALF_SIZE,
+			               	-CUBE_HALF_SIZE, 0, -1, 0, 1, 1, CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, 0, -1, 0, 1, 0,
+			               	-CUBE_HALF_SIZE, -CUBE_HALF_SIZE, CUBE_HALF_SIZE, 0, -1, 0, 0, 0
 			               };
 
 			mesh.SharedVertexData = new VertexData();
@@ -175,9 +187,10 @@ namespace Axiom.Core
 			vbuf.WriteData( 0, vbuf.Size, vertices, true );
 
 			sub.useSharedVertices = true;
-			var ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, NUM_INDICES, BufferUsage.StaticWriteOnly );
+			var ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, NUM_INDICES,
+			                                                             BufferUsage.StaticWriteOnly );
 
-			var faces = new short[ NUM_INDICES ]
+			var faces = new short[NUM_INDICES]
 			            {
 			            	// front
 			            	0, 1, 2, 0, 2, 3, // back
@@ -193,7 +206,8 @@ namespace Axiom.Core
 			sub.IndexData.indexStart = 0;
 			ibuf.WriteData( 0, ibuf.Size, faces, true );
 
-			mesh.BoundingBox = new AxisAlignedBox( new Vector3( -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE ), new Vector3( CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE ) );
+			mesh.BoundingBox = new AxisAlignedBox( new Vector3( -CUBE_HALF_SIZE, -CUBE_HALF_SIZE, -CUBE_HALF_SIZE ),
+			                                       new Vector3( CUBE_HALF_SIZE, CUBE_HALF_SIZE, CUBE_HALF_SIZE ) );
 
 			mesh.BoundingSphereRadius = CUBE_HALF_SIZE;
 		}
@@ -228,17 +242,22 @@ namespace Axiom.Core
 			offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
 
 			// allocate the vertex buffer
-			vertexData.vertexCount = ( NUM_RINGS + 1 ) * ( NUM_SEGMENTS + 1 );
+			vertexData.vertexCount = ( NUM_RINGS + 1 )*( NUM_SEGMENTS + 1 );
 
-			var vBuf = HardwareBufferManager.Instance.CreateVertexBuffer( vertexDecl.Clone( 0 ), vertexData.vertexCount, BufferUsage.StaticWriteOnly, false );
+			var vBuf = HardwareBufferManager.Instance.CreateVertexBuffer( vertexDecl.Clone( 0 ), vertexData.vertexCount,
+			                                                              BufferUsage.StaticWriteOnly, false );
 
 			var binding = vertexData.vertexBufferBinding;
 			binding.SetBinding( 0, vBuf );
 
 			// allocate index buffer
-			pSphereVertex.IndexData.indexCount = 6 * NUM_RINGS * ( NUM_SEGMENTS + 1 );
+			pSphereVertex.IndexData.indexCount = 6*NUM_RINGS*( NUM_SEGMENTS + 1 );
 
-			pSphereVertex.IndexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, pSphereVertex.IndexData.indexCount, BufferUsage.StaticWriteOnly, false );
+			pSphereVertex.IndexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16,
+			                                                                                        pSphereVertex.IndexData.
+			                                                                                        	indexCount,
+			                                                                                        BufferUsage.StaticWriteOnly,
+			                                                                                        false );
 			var iBuf = pSphereVertex.IndexData.indexBuffer;
 
 #if !AXIOM_SAFE_ONLY
@@ -250,21 +269,21 @@ namespace Axiom.Core
 				var iIndices = 0;
 				var pIndices = iBuf.Lock( BufferLocking.Discard ).ToUShortPointer();
 
-				float fDeltaRingAngle = ( Utility.PI / NUM_RINGS );
-				float fDeltaSegAngle = ( 2 * Utility.PI / NUM_SEGMENTS );
+				float fDeltaRingAngle = ( Utility.PI/NUM_RINGS );
+				float fDeltaSegAngle = ( 2*Utility.PI/NUM_SEGMENTS );
 				ushort wVerticeIndex = 0;
 
 				// Generate the group of rings for the sphere
 				for ( var ring = 0; ring <= NUM_RINGS; ring++ )
 				{
-					float r0 = SPHERE_RADIUS * Utility.Sin( ring * fDeltaRingAngle );
-					float y0 = SPHERE_RADIUS * Utility.Cos( ring * fDeltaRingAngle );
+					float r0 = SPHERE_RADIUS*Utility.Sin( ring*fDeltaRingAngle );
+					float y0 = SPHERE_RADIUS*Utility.Cos( ring*fDeltaRingAngle );
 
 					// Generate the group of segments for the current ring
 					for ( var seg = 0; seg <= NUM_SEGMENTS; seg++ )
 					{
-						float x0 = r0 * Utility.Sin( seg * fDeltaSegAngle );
-						float z0 = r0 * Utility.Cos( seg * fDeltaSegAngle );
+						float x0 = r0*Utility.Sin( seg*fDeltaSegAngle );
+						float z0 = r0*Utility.Cos( seg*fDeltaSegAngle );
 
 						// Add one vertex to the strip which makes up the sphere
 						pVertex[ iVertex++ ] = x0;
@@ -276,8 +295,8 @@ namespace Axiom.Core
 						pVertex[ iVertex++ ] = vNormal.y;
 						pVertex[ iVertex++ ] = vNormal.z;
 
-						pVertex[ iVertex++ ] = (float)seg / (float)NUM_SEGMENTS;
-						pVertex[ iVertex++ ] = (float)ring / (float)NUM_RINGS;
+						pVertex[ iVertex++ ] = (float)seg/(float)NUM_SEGMENTS;
+						pVertex[ iVertex++ ] = (float)ring/(float)NUM_RINGS;
 
 						if ( ring != NUM_RINGS )
 						{
@@ -303,7 +322,8 @@ namespace Axiom.Core
 			pSphereVertex.useSharedVertices = true;
 
 			// the original code was missing this line:
-			mesh.BoundingBox = new AxisAlignedBox( new Vector3( -SPHERE_RADIUS, -SPHERE_RADIUS, -SPHERE_RADIUS ), new Vector3( SPHERE_RADIUS, SPHERE_RADIUS, SPHERE_RADIUS ) );
+			mesh.BoundingBox = new AxisAlignedBox( new Vector3( -SPHERE_RADIUS, -SPHERE_RADIUS, -SPHERE_RADIUS ),
+			                                       new Vector3( SPHERE_RADIUS, SPHERE_RADIUS, SPHERE_RADIUS ) );
 
 			mesh.BoundingSphereRadius = SPHERE_RADIUS;
 		}

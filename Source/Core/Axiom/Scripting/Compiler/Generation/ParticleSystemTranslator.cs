@@ -59,7 +59,7 @@ namespace Axiom.Scripting.Compiler
 			#region Translator Implementation
 
 			/// <see cref="Translator.CheckFor"/>
-            public override bool CheckFor(Keywords nodeId, Keywords parentId)
+			public override bool CheckFor( Keywords nodeId, Keywords parentId )
 			{
 				return nodeId == Keywords.ID_PARTICLE_SYSTEM;
 			}
@@ -129,7 +129,9 @@ namespace Axiom.Scripting.Compiler
 									{
 										var name = ( (AtomAbstractNode)prop.Values[ 0 ] ).Value;
 
-										ScriptCompilerEvent locEvt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material, name );
+										ScriptCompilerEvent locEvt =
+											new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material,
+											                                            name );
 
 										compiler._fireEvent( ref locEvt );
 										var locEvtName = ( (ProcessResourceNameScriptCompilerEvent)locEvt ).Name;
@@ -140,7 +142,8 @@ namespace Axiom.Scripting.Compiler
 											{
 												if ( !_System.Renderer.SetParameter( "material", locEvtName ) )
 												{
-													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "material property could not be set with material \"" + locEvtName + "\"" );
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+													                   "material property could not be set with material \"" + locEvtName + "\"" );
 												}
 											}
 										}

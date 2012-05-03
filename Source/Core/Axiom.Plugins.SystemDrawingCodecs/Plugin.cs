@@ -34,10 +34,8 @@
 #region Namespace Declarations
 
 using System.ComponentModel.Composition;
-
 using Axiom.Core;
 using Axiom.Media;
-
 using RegisteredCodec = System.Collections.Generic.List<Axiom.Media.ImageCodec>;
 
 #endregion Namespace Declarations

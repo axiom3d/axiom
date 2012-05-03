@@ -41,7 +41,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Animating;
@@ -219,7 +218,9 @@ namespace Axiom.Core
 
 				if ( material == null )
 				{
-					LogManager.Instance.Write( "Cannot assign material '{0}' to Entity.SubEntity '{1}.{2}' because the material doesn't exist.", materialName, parent.Name, this.Name );
+					LogManager.Instance.Write(
+						"Cannot assign material '{0}' to Entity.SubEntity '{1}.{2}' because the material doesn't exist.", materialName,
+						parent.Name, Name );
 
 					// give it base white so we can continue
 					material = (Material)MaterialManager.Instance[ "BaseWhite" ];
@@ -466,9 +467,9 @@ namespace Axiom.Core
 			get
 			{
 				// use LOD
-				this.subMesh.GetRenderOperation( renderOperation, this.parent.MeshLodIndex );
+				subMesh.GetRenderOperation( renderOperation, parent.MeshLodIndex );
 				// Deal with any vertex data overrides
-				renderOperation.vertexData = this.GetVertexDataForBinding();
+				renderOperation.vertexData = GetVertexDataForBinding();
 				return renderOperation;
 			}
 		}
@@ -739,7 +740,7 @@ namespace Axiom.Core
 				// If there are more than 4 entries, this will be called more than once
 				var val = Vector4.Zero;
 
-				var animIndex = entry.Data * 4;
+				var animIndex = entry.Data*4;
 				for ( var i = 0; i < 4 && animIndex < hardwareVertexAnimVertexData.HWAnimationDataList.Count; ++i, ++animIndex )
 				{
 					val[ i ] = hardwareVertexAnimVertexData.HWAnimationDataList[ animIndex ].Parametric;
@@ -770,13 +771,16 @@ namespace Axiom.Core
 			//  We didn't apply any animation and
 			//    We're morph animated (hardware binds keyframe, software is missing)
 			//    or we're pose animated and software (hardware is fine, still bound)
-			if ( subMesh.VertexAnimationType != VertexAnimationType.None && !subMesh.useSharedVertices && !vertexAnimationAppliedThisFrame && ( !hardwareAnimation || subMesh.VertexAnimationType == VertexAnimationType.Morph ) )
+			if ( subMesh.VertexAnimationType != VertexAnimationType.None && !subMesh.useSharedVertices &&
+			     !vertexAnimationAppliedThisFrame &&
+			     ( !hardwareAnimation || subMesh.VertexAnimationType == VertexAnimationType.Morph ) )
 			{
 				var srcPosElem = subMesh.vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 				var srcBuf = subMesh.vertexData.vertexBufferBinding.GetBuffer( srcPosElem.Source );
 
 				// Bind to software
-				var destPosElem = softwareVertexAnimVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+				var destPosElem =
+					softwareVertexAnimVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 				softwareVertexAnimVertexData.vertexBufferBinding.SetBinding( destPosElem.Source, srcBuf );
 			}
 		}
@@ -811,27 +815,27 @@ namespace Axiom.Core
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( this.renderOperation != null )
+					if ( renderOperation != null )
 					{
 						//if (!this.renderOperation.IsDisposed)
 						//    this.renderOperation.Dispose();
 
-						this.renderOperation = null;
+						renderOperation = null;
 					}
 
-					if ( this.skelAnimVertexData != null )
+					if ( skelAnimVertexData != null )
 					{
-						if ( !this.skelAnimVertexData.IsDisposed )
+						if ( !skelAnimVertexData.IsDisposed )
 						{
-							this.skelAnimVertexData.Dispose();
+							skelAnimVertexData.Dispose();
 						}
 
-						this.skelAnimVertexData = null;
+						skelAnimVertexData = null;
 					}
 				}
 

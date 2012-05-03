@@ -39,15 +39,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using System.Runtime.InteropServices;
 using System.Reflection;
-
 using Axiom.Utilities;
-
 using System.Diagnostics;
 
 #endregion Namespace Declarations
@@ -128,10 +124,10 @@ namespace Axiom.Collections
 
 		/// Alpha-pass counters of values (histogram)
 		/// 4 of them so we can radix sort a maximum of a 32bit value
-		protected int[ , ] _counters = new int[ 4,256 ];
+		protected int[,] _counters = new int[4,256];
 
 		/// Beta-pass offsets
-		protected int[] _offsets = new int[ 256 ];
+		protected int[] _offsets = new int[256];
 
 		/// Sort area size
 		protected int _sortSize = 0;
@@ -168,8 +164,8 @@ namespace Axiom.Collections
 
 			// Setup container areas
 			_sortSize = container.Count;
-			_sortArea1 = new SortEntry[ _sortSize ];
-			_sortArea2 = new SortEntry[ _sortSize ];
+			_sortArea1 = new SortEntry[_sortSize];
+			_sortArea2 = new SortEntry[_sortSize];
 
 			// Perform alpha pass to count
 			var prevValue = valueFunction( container[ 0 ] );
@@ -380,10 +376,10 @@ namespace Axiom.Collections
 
 		/// Alpha-pass counters of values (histogram)
 		/// 4 of them so we can radix sort a maximum of a 32bit value
-		protected int[ , ] _counters = new int[ 4,256 ];
+		protected int[,] _counters = new int[4,256];
 
 		/// Beta-pass offsets
-		protected int[] _offsets = new int[ 256 ];
+		protected int[] _offsets = new int[256];
 
 		/// Sort area size
 		protected int _sortSize = 0;
@@ -420,8 +416,8 @@ namespace Axiom.Collections
 
 			// Setup container areas
 			_sortSize = container.Count;
-			_sortArea1 = new SortEntry[ _sortSize ];
-			_sortArea2 = new SortEntry[ _sortSize ];
+			_sortArea1 = new SortEntry[_sortSize];
+			_sortArea2 = new SortEntry[_sortSize];
 
 			// Perform alpha pass to count
 			var prevValue = valueFunction( container[ 0 ] );
@@ -633,10 +629,10 @@ namespace Axiom.Collections
 
 		/// Alpha-pass counters of values (histogram)
 		/// 4 of them so we can radix sort a maximum of a 32bit value
-		protected int[ , ] _counters = new int[ 4,256 ];
+		protected int[,] _counters = new int[4,256];
 
 		/// Beta-pass offsets
-		protected int[] _offsets = new int[ 256 ];
+		protected int[] _offsets = new int[256];
 
 		/// Sort area size
 		protected int _sortSize = 0;
@@ -673,8 +669,8 @@ namespace Axiom.Collections
 
 			// Setup container areas
 			_sortSize = container.Count;
-			_sortArea1 = new SortEntry[ _sortSize ];
-			_sortArea2 = new SortEntry[ _sortSize ];
+			_sortArea1 = new SortEntry[_sortSize];
+			_sortArea2 = new SortEntry[_sortSize];
 
 			// Perform alpha pass to count
 			var prevValue = valueFunction( container[ 0 ] );

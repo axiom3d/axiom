@@ -42,7 +42,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -203,7 +202,7 @@ namespace Axiom.Graphics
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( this.bindingMap != null )
+					if ( bindingMap != null )
 					{
 						foreach ( var item in bindingMap.Values )
 						{

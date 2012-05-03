@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -50,11 +49,19 @@ namespace Axiom.Collections
 	/// <summary>
 	/// Summary description for AnimationCollection.
 	/// </summary>
-	public class ControllerList : ArrayList {}
+	public class ControllerList : ArrayList
+	{
+	}
 
-	public class MaterialList : ArrayList {}
+	public class MaterialList : ArrayList
+	{
+	}
 
-	public class BillboardList : ArrayList {}
+	public class BillboardList : ArrayList
+	{
+	}
 
-	public class ImageList : ArrayList {}
+	public class ImageList : ArrayList
+	{
+	}
 }

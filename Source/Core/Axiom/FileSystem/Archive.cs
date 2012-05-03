@@ -41,7 +41,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.IO;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -84,7 +83,9 @@ namespace Axiom.FileSystem
 	/// <ogre name="FileInfoList">
 	///     <file name="OgreArchive.h"   revision="1.7" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre> 
-	public class FileInfoList : List<FileInfo> {}
+	public class FileInfoList : List<FileInfo>
+	{
+	}
 
 	#endregion FileInfo Class and Collection
 
@@ -115,57 +116,21 @@ namespace Axiom.FileSystem
 
 		#region Name Property
 
-		private string _name;
-
 		/// Archive name
-		public string Name
-		{
-			get
-			{
-				return _name;
-			}
-			protected set
-			{
-				_name = value;
-			}
-		}
+		public string Name { get; protected set; }
 
 		#endregion Name Property
 
 		#region Type Property
 
-		private string _type;
-
 		/// Archive type code
-		public string Type
-		{
-			get
-			{
-				return _type;
-			}
-			protected set
-			{
-				_type = value;
-			}
-		}
+		public string Type { get; protected set; }
 
 		#endregion Type Property
 
 		#region IsReadOnly Property
 
-		private bool _isReadOnly;
-
-		public bool IsReadOnly
-		{
-			get
-			{
-				return _isReadOnly;
-			}
-			protected set
-			{
-				_isReadOnly = value;
-			}
-		}
+		public bool IsReadOnly { get; protected set; }
 
 		#endregion IsReadOnly Property
 
@@ -195,9 +160,9 @@ namespace Axiom.FileSystem
 		public Archive( string name, string archType )
 			: base()
 		{
-			_name = name;
-			_type = archType;
-			_isReadOnly = true;
+			Name = name;
+			Type = archType;
+			IsReadOnly = true;
 		}
 
 		#endregion Constructors
@@ -363,7 +328,7 @@ namespace Axiom.FileSystem
 		/// <returns></returns>
 		public virtual DateTime GetModifiedTime( string fileName )
 		{
-			var list = this.ListFileInfo();
+			var list = ListFileInfo();
 
 			foreach ( var currentInfo in list )
 			{
@@ -429,7 +394,7 @@ namespace Axiom.FileSystem
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -467,7 +432,9 @@ namespace Axiom.FileSystem
 	/// <ogre name="ArchiveFactory">
 	///     <file name="OgreArchiveFactory.h"   revision="1.11" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre> 
-	public class ArchiveFactory : AbstractFactory<Archive> {}
+	public class ArchiveFactory : AbstractFactory<Archive>
+	{
+	}
 
 	#endregion Archive Abstract Class and Factory
 }

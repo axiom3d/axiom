@@ -40,9 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Scripting;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -306,64 +304,28 @@ namespace Axiom.Core
 
 		#region LastAccessed Property
 
-		private long _lastAccessed;
-
 		/// <summary>
 		///		Timestamp of the last time this resource was accessed.
 		/// </summary>
-		public long LastAccessed
-		{
-			get
-			{
-				return _lastAccessed;
-			}
-			protected set
-			{
-				_lastAccessed = value;
-			}
-		}
+		public long LastAccessed { get; protected set; }
 
 		#endregion LastAccessed Property
 
 		#region Handle Property
 
-		private ResourceHandle _handle;
-
 		/// <summary>
 		///		Unique handle of this resource.
 		/// </summary>
-		public ResourceHandle Handle
-		{
-			get
-			{
-				return _handle;
-			}
-			set
-			{
-				_handle = value;
-			}
-		}
+		public ResourceHandle Handle { get; set; }
 
 		#endregion Handle Property
 
 		#region Origin Property
 
-		private string _origin;
-
 		/// <summary>
 		/// Origin of this resource (e.g. script name) - optional
 		/// </summary>
-		public string Origin
-		{
-			get
-			{
-				return _origin;
-			}
-			set
-			{
-				_origin = value;
-			}
-		}
+		public string Origin { get; set; }
 
 		#endregion Origin Property
 
@@ -464,7 +426,9 @@ namespace Axiom.Core
 		///	Protected unnamed constructor to prevent default construction.
 		/// </summary>
 		protected Resource()
-			: this( null, string.Empty, 0, string.Empty, false, null ) {}
+			: this( null, string.Empty, 0, string.Empty, false, null )
+		{
+		}
 
 		/// <overloads>
 		/// <summary>
@@ -476,7 +440,9 @@ namespace Axiom.Core
 		/// <param name="group">The name of the resource group to which this resource belongs</param>
 		/// </overloads>
 		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group )
-			: this( parent, name, handle, group, false, null ) {}
+			: this( parent, name, handle, group, false, null )
+		{
+		}
 
 		/// <param name="group"></param>
 		/// <param name="isManual">
@@ -495,12 +461,13 @@ namespace Axiom.Core
 		/// <param name="parent"></param>
 		/// <param name="name"></param>
 		/// <param name="handle"></param>
-		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                    IManualResourceLoader loader )
 			: base()
 		{
 			_creator = parent;
 			_name = name;
-			_handle = handle;
+			Handle = handle;
 			_group = group;
 			_size = 0;
 			_isManuallyLoaded = isManual;
@@ -527,7 +494,9 @@ namespace Axiom.Core
 		/// Also, this call will occur even when using a <see>IManualResourceLoader</see>
 		/// (when <see>load()</see> is not actually called)
 		/// </remarks>
-		protected virtual void preLoad() {}
+		protected virtual void preLoad()
+		{
+		}
 
 		/// <summary>
 		/// Internal hook to perform actions after the load process, but
@@ -538,7 +507,9 @@ namespace Axiom.Core
 		/// Also, this call will occur even when using a <see>IManualResourceLoader</see>
 		/// (when <see>load()</see> is not actually called)
 		/// </remarks>
-		protected virtual void postLoad() {}
+		protected virtual void postLoad()
+		{
+		}
 
 		/// <summary>
 		/// Internal hook to perform actions before the unload process, but
@@ -549,7 +520,9 @@ namespace Axiom.Core
 		/// Also, this call will occur even when using a <see>IManualResourceLoader</see>
 		/// (when <see>unload()</see> is not actually called)
 		/// </remarks>
-		protected virtual void preUnload() {}
+		protected virtual void preUnload()
+		{
+		}
 
 		/// <summary>
 		/// Internal hook to perform actions after the unload process, but
@@ -560,19 +533,25 @@ namespace Axiom.Core
 		/// Also, this call will occur even when using a <see>IManualResourceLoader</see>
 		/// (when <see>unload()</see> is not actually called)
 		/// </remarks>
-		protected virtual void postUnload() {}
+		protected virtual void postUnload()
+		{
+		}
 
 		/// <summary>
 		/// Internal implementation of the meat of the 'prepare' action.
 		/// </summary>
-		protected virtual void prepare() {}
+		protected virtual void prepare()
+		{
+		}
 
 		/// <summary>
 		/// Internal function for undoing the 'prepare' action.  Called when
 		/// the load is completed, and when resources are unloaded when they
 		/// are prepared but not yet loaded.
 		/// </summary>
-		protected virtual void unPrepare() {}
+		protected virtual void unPrepare()
+		{
+		}
 
 		#endregion Load/Unload Stage Notifiers
 
@@ -609,7 +588,7 @@ namespace Axiom.Core
 		/// <see cref="Resource.Prepare(bool)"/>
 		public void Prepare()
 		{
-			this.Prepare( false );
+			Prepare( false );
 		}
 #endif
 
@@ -730,7 +709,9 @@ namespace Axiom.Core
 						else
 						{
 							// Warn that this resource is not reloadable
-							LogManager.Instance.Write( "WARNING: {0} instance '{1}' was defined as manually loaded, but no manual loader was provided. This Resource " + "will be lost if it has to be reloaded.", _creator.ResourceType, _name );
+							LogManager.Instance.Write(
+								"WARNING: {0} instance '{1}' was defined as manually loaded, but no manual loader was provided. This Resource " +
+								"will be lost if it has to be reloaded.", _creator.ResourceType, _name );
 						}
 						postLoad();
 					}

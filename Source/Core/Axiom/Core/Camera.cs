@@ -41,7 +41,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -158,8 +157,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Camera orientation.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected Quaternion orientation;
+		[OgreVersion( 1, 7, 2790 )] protected Quaternion orientation;
 
 		/// <summary>
 		///     Gets/Sets the camera's orientation.
@@ -186,8 +184,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Camera position.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected Vector3 position;
+		[OgreVersion( 1, 7, 2790 )] protected Vector3 position;
 
 		/// <summary>
 		///     Gets/Sets the camera's position.
@@ -218,7 +215,7 @@ namespace Axiom.Core
 			// Direction points down the negatize Z axis by default.
 			get
 			{
-				return orientation * -Vector3.UnitZ;
+				return orientation*-Vector3.UnitZ;
 			}
 			set
 			{
@@ -271,13 +268,13 @@ namespace Axiom.Core
 						rotationQuat = zAxis.GetRotationTo( zAdjustVector );
 					}
 
-					targetWorldOrientation = rotationQuat * orientation;
+					targetWorldOrientation = rotationQuat*orientation;
 				}
 
 				// transform to parent space
 				if ( parentNode != null )
 				{
-					orientation = parentNode.DerivedOrientation.Inverse() * targetWorldOrientation;
+					orientation = parentNode.DerivedOrientation.Inverse()*targetWorldOrientation;
 				}
 				else
 				{
@@ -303,7 +300,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return Orientation * Vector3.UnitY;
+				return Orientation*Vector3.UnitY;
 			}
 		}
 
@@ -318,7 +315,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return Orientation * Vector3.UnitX;
+				return Orientation*Vector3.UnitX;
 			}
 		}
 
@@ -329,8 +326,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Orientation derived from parent.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected Quaternion derivedOrientation;
+		[OgreVersion( 1, 7, 2790 )] protected Quaternion derivedOrientation;
 
 		/// <summary>
 		///	Gets the derived orientation of the camera, including any
@@ -353,8 +349,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Position derived from parent.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected Vector3 derivedPosition;
+		[OgreVersion( 1, 7, 2790 )] protected Vector3 derivedPosition;
 
 		/// <summary>
 		///	Gets the derived position of the camera, including any
@@ -386,7 +381,7 @@ namespace Axiom.Core
 				UpdateView();
 
 				// RH coords, direction points down -Z by default
-				return derivedOrientation * -Vector3.UnitZ;
+				return derivedOrientation*-Vector3.UnitZ;
 			}
 		}
 
@@ -404,7 +399,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateView();
-				return derivedOrientation * Vector3.UnitY;
+				return derivedOrientation*Vector3.UnitY;
 			}
 		}
 
@@ -422,7 +417,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateView();
-				return derivedOrientation * Vector3.UnitX;
+				return derivedOrientation*Vector3.UnitX;
 			}
 		}
 
@@ -433,8 +428,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Real world orientation of the camera.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected Quaternion realOrientation;
+		[OgreVersion( 1, 7, 2790 )] protected Quaternion realOrientation;
 
 		/// <summary>
 		/// Gets the real world orientation of the camera, including any
@@ -457,8 +451,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Real world position of the camera.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected Vector3 realPosition;
+		[OgreVersion( 1, 7, 2790 )] protected Vector3 realPosition;
 
 		/// <summary>
 		/// Gets the real world orientation of the camera, including any
@@ -490,7 +483,7 @@ namespace Axiom.Core
 				UpdateView();
 
 				// RH coords, direction points down -Z by default
-				return realOrientation * -Vector3.UnitZ;
+				return realOrientation*-Vector3.UnitZ;
 			}
 		}
 
@@ -508,7 +501,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateView();
-				return realOrientation * Vector3.UnitY;
+				return realOrientation*Vector3.UnitY;
 			}
 		}
 
@@ -526,7 +519,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateView();
-				return realOrientation * Vector3.UnitX;
+				return realOrientation*Vector3.UnitX;
 			}
 		}
 
@@ -640,8 +633,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Scene LOD factor used to adjust overall LOD.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected Real sceneLodFactor;
+		[OgreVersion( 1, 7, 2790 )] protected Real sceneLodFactor;
 
 		/// <summary>
 		///     Sets the level-of-detail factor for this Camera.
@@ -671,7 +663,7 @@ namespace Axiom.Core
 			{
 				Debug.Assert( value > 0.0f, "Lod bias must be greater than 0" );
 				sceneLodFactor = value;
-				invSceneLodFactor = 1.0f / sceneLodFactor;
+				invSceneLodFactor = 1.0f/sceneLodFactor;
 			}
 		}
 
@@ -679,8 +671,7 @@ namespace Axiom.Core
 
 		#region LodCamera Property
 
-		[OgreVersion( 1, 7, 2790 )]
-		private Camera _lodCamera;
+		[OgreVersion( 1, 7, 2790 )] private Camera _lodCamera;
 
 		/// <summary>
 		/// Get/Sets a reference to the Camera which should be used to determine LOD settings.
@@ -715,8 +706,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Inverted scene LOD factor, can be used by Renderables to adjust their LOD.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected float invSceneLodFactor;
+		[OgreVersion( 1, 7, 2790 )] protected float invSceneLodFactor;
 
 		/// <summary>
 		///     Used for internal Lod calculations.
@@ -757,8 +747,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Is viewing window used.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool isWindowSet;
+		[OgreVersion( 1, 7, 2790 )] protected bool isWindowSet;
 
 		/// <summary>
 		///		Gets the flag specifying if a viewport window is being used.
@@ -779,8 +768,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Windowed viewport clip planes.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected List<Plane> windowClipPlanes = new List<Plane>();
+		[OgreVersion( 1, 7, 2790 )] protected List<Plane> windowClipPlanes = new List<Plane>();
 
 		/// <summary>
 		///  Gets the window clip planes, only applicable if isWindowSet == true
@@ -903,7 +891,7 @@ namespace Axiom.Core
 			useRenderingDistance = true;
 
 
-			FieldOfView = (float)System.Math.PI / 4.0f;
+			FieldOfView = (float)System.Math.PI/4.0f;
 			Near = 100.0f;
 			Far = 100000.0f;
 			AspectRatio = 1.33333333333333f;
@@ -978,13 +966,14 @@ namespace Axiom.Core
 				// are we attached to another node?
 				if ( parentNode != null )
 				{
-					if ( _recalculateView || parentNode.DerivedOrientation != _lastParentOrientation || parentNode.DerivedPosition != _lastParentPosition )
+					if ( _recalculateView || parentNode.DerivedOrientation != _lastParentOrientation ||
+					     parentNode.DerivedPosition != _lastParentPosition )
 					{
 						// we are out of date with the parent scene node
 						_lastParentOrientation = parentNode.DerivedOrientation;
 						_lastParentPosition = parentNode.DerivedPosition;
-						realOrientation = _lastParentOrientation * orientation;
-						realPosition = ( _lastParentOrientation * position ) + _lastParentPosition;
+						realOrientation = _lastParentOrientation*orientation;
+						realPosition = ( _lastParentOrientation*position ) + _lastParentPosition;
 						_recalculateView = true;
 						recalculateWindow = true;
 					}
@@ -1011,10 +1000,10 @@ namespace Axiom.Core
 					if ( IsReflected )
 					{
 						// Calculate reflected orientation, use up-vector as fallback axis.
-						var dir = realOrientation * Vector3.NegativeUnitZ;
+						var dir = realOrientation*Vector3.NegativeUnitZ;
 						var rdir = dir.Reflect( ReflectionPlane.Normal );
-						var up = realOrientation * Vector3.UnitY;
-						derivedOrientation = dir.GetRotationTo( rdir, up ) * realOrientation;
+						var up = realOrientation*Vector3.UnitY;
+						derivedOrientation = dir.GetRotationTo( rdir, up )*realOrientation;
 
 						// Calculate reflected position.
 						derivedPosition = ReflectionMatrix.TransformAffine( realPosition );
@@ -1260,7 +1249,7 @@ namespace Axiom.Core
 			{
 				// return a little bigger than the near distance
 				// just to keep things just outside
-				return Near * 1.5f;
+				return Near*1.5f;
 			}
 		}
 
@@ -1312,7 +1301,7 @@ namespace Axiom.Core
 		public void MoveRelative( Vector3 offset )
 		{
 			// Transform the axes of the relative vector by camera's local axes
-			var transform = orientation * offset;
+			var transform = orientation*offset;
 
 			position += transform;
 			InvalidateView();
@@ -1335,7 +1324,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2790 )]
 		public void Pitch( float degrees )
 		{
-			var xAxis = orientation * Vector3.UnitX;
+			var xAxis = orientation*Vector3.UnitX;
 			Rotate( xAxis, degrees );
 
 			InvalidateView();
@@ -1358,7 +1347,7 @@ namespace Axiom.Core
 			else
 			{
 				// Rotate around local Y axis
-				yAxis = orientation * Vector3.UnitY;
+				yAxis = orientation*Vector3.UnitY;
 			}
 
 			Rotate( yAxis, degrees );
@@ -1374,7 +1363,7 @@ namespace Axiom.Core
 		public void Roll( float degrees )
 		{
 			// Rotate around local Z axis
-			var zAxis = orientation * Vector3.UnitZ;
+			var zAxis = orientation*Vector3.UnitZ;
 			Rotate( zAxis, degrees );
 
 			InvalidateView();
@@ -1391,7 +1380,7 @@ namespace Axiom.Core
 
 			// Normalise the quat to avoid cumulative problems with precision
 			qnorm.Normalize();
-			orientation = qnorm * orientation;
+			orientation = qnorm*orientation;
 
 			InvalidateView();
 		}
@@ -1536,14 +1525,15 @@ namespace Axiom.Core
 		/// Helper function for forwardIntersect that intersects rays with canonical plane
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		protected virtual IEnumerable<Vector4> GetRayForwardIntersect( Vector3 anchor, IEnumerable<Vector3> dir, Real planeOffset )
+		protected virtual IEnumerable<Vector4> GetRayForwardIntersect( Vector3 anchor, IEnumerable<Vector3> dir,
+		                                                               Real planeOffset )
 		{
 			if ( dir == null )
 			{
 				yield break;
 			}
 
-			var vec = new Vector3[ 4 ];
+			var vec = new Vector3[4];
 			var infpt = new[]
 			            {
 			            	0, 0, 0, 0
@@ -1561,7 +1551,7 @@ namespace Axiom.Core
 			{
 				edir.MoveNext();
 				var cur = edir.Current;
-				var test = cur.z * delta;
+				var test = cur.z*delta;
 				if ( test == 0.0 )
 				{
 					vec[ i ] = cur;
@@ -1569,8 +1559,8 @@ namespace Axiom.Core
 				}
 				else
 				{
-					var lambda = delta / cur.z;
-					vec[ i ] = anchor + ( lambda * cur );
+					var lambda = delta/cur.z;
+					vec[ i ] = anchor + ( lambda*cur );
 					if ( test < 0.0 )
 					{
 						infpt[ i ] = 2;
@@ -1591,8 +1581,8 @@ namespace Axiom.Core
 					// handle the infinite points of intersection;
 					// cases split up into the possible frustum planes 
 					// pieces which may contain a finite intersection point
-					var nextind = ( i + 1 ) % 4;
-					var prevind = ( i + 3 ) % 4;
+					var nextind = ( i + 1 )%4;
+					var prevind = ( i + 3 )%4;
 					if ( ( infpt[ prevind ] == 0 ) || ( infpt[ nextind ] == 0 ) )
 					{
 						if ( infpt[ i ] == 1 )
@@ -1663,14 +1653,14 @@ namespace Axiom.Core
 			}
 			var invPlaneRot = pval.Normal.GetRotationTo( Vector3.UnitZ );
 
-			var vec = new Vector3[ 4 ];
+			var vec = new Vector3[4];
 
 			// get rotated light
-			var lPos = invPlaneRot * DerivedPosition;
-			vec[ 0 ] = invPlaneRot * trCorner - lPos;
-			vec[ 1 ] = invPlaneRot * tlCorner - lPos;
-			vec[ 2 ] = invPlaneRot * blCorner - lPos;
-			vec[ 3 ] = invPlaneRot * brCorner - lPos;
+			var lPos = invPlaneRot*DerivedPosition;
+			vec[ 0 ] = invPlaneRot*trCorner - lPos;
+			vec[ 1 ] = invPlaneRot*tlCorner - lPos;
+			vec[ 2 ] = invPlaneRot*blCorner - lPos;
+			vec[ 3 ] = invPlaneRot*brCorner - lPos;
 
 			var iPnt = GetRayForwardIntersect( lPos, vec, -pval.D );
 
@@ -1681,7 +1671,7 @@ namespace Axiom.Core
 				intersect3D.Clear();
 				foreach ( var v in iPnt )
 				{
-					var intersection = planeRot * new Vector3( v.x, v.y, v.z );
+					var intersection = planeRot*new Vector3( v.x, v.y, v.z );
 					intersect3D.Add( new Vector4( intersection.x, intersection.y, intersection.z, v.w ) );
 				}
 			}
@@ -1705,10 +1695,10 @@ namespace Axiom.Core
 			float vpWidth = vpRight - vpLeft;
 			float vpHeight = vpTop - vpBottom;
 
-			float wvpLeft = vpLeft + windowLeft * vpWidth;
-			float wvpRight = vpLeft + windowRight * vpWidth;
-			float wvpTop = vpTop - windowTop * vpHeight;
-			float wvpBottom = vpTop - windowBottom * vpHeight;
+			float wvpLeft = vpLeft + windowLeft*vpWidth;
+			float wvpRight = vpLeft + windowRight*vpWidth;
+			float wvpTop = vpTop - windowTop*vpHeight;
+			float wvpBottom = vpTop - windowBottom*vpHeight;
 
 			var vpUpLeft = new Vector3( wvpLeft, wvpTop, -Near );
 			var vpUpRight = new Vector3( wvpRight, wvpTop, -Near );
@@ -1791,30 +1781,30 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2790, "Slightly different" )]
 		public void GetCameraToViewportRay( float screenX, float screenY, out Ray ray )
 		{
-			var inverseVP = ( _projectionMatrix * _viewMatrix ).Inverse();
+			var inverseVP = ( _projectionMatrix*_viewMatrix ).Inverse();
 
 #if !AXIOM_NO_VIEWPORT_ORIENTATIONMODE
 			// We need to convert screen point to our oriented viewport (temp solution)
 			Real tX = screenX;
-			Real a = (int)OrientationMode * System.Math.PI * 0.5f;
-			screenX = System.Math.Cos( a ) * ( tX - 0.5f ) + System.Math.Sin( a ) * ( screenY - 0.5f ) + 0.5f;
-			screenY = System.Math.Sin( a ) * ( tX - 0.5f ) + System.Math.Cos( a ) * ( screenY - 0.5f ) + 0.5f;
+			Real a = (int)OrientationMode*System.Math.PI*0.5f;
+			screenX = System.Math.Cos( a )*( tX - 0.5f ) + System.Math.Sin( a )*( screenY - 0.5f ) + 0.5f;
+			screenY = System.Math.Sin( a )*( tX - 0.5f ) + System.Math.Cos( a )*( screenY - 0.5f ) + 0.5f;
 			if ( ( ( (int)OrientationMode ) & 1 ) == 1 )
 			{
 				screenY = 1.0f - screenY;
 			}
 #endif
 
-			Real nx = ( 2.0f * screenX ) - 1.0f;
-			Real ny = 1.0f - ( 2.0f * screenY );
+			Real nx = ( 2.0f*screenX ) - 1.0f;
+			Real ny = 1.0f - ( 2.0f*screenY );
 			var nearPoint = new Vector3( nx, ny, -1.0f );
 			// Use midPoint rather than far point to avoid issues with infinite projection
 			var midPoint = new Vector3( nx, ny, 0.0f );
 
 			// Get ray origin and ray target on near plane in world space
 
-			var rayOrigin = inverseVP * nearPoint;
-			var rayTarget = inverseVP * midPoint;
+			var rayOrigin = inverseVP*nearPoint;
+			var rayTarget = inverseVP*midPoint;
 
 			var rayDirection = rayTarget - rayOrigin;
 			rayDirection.Normalize();
@@ -1854,7 +1844,8 @@ namespace Axiom.Core
 		/// Can be useful for populating a <see cref="PlaneBoundedVolumeListSceneQuery"/>, e.g. for a rubber-band selection.
 		/// </remarks>
 		/// <returns></returns>
-		public PlaneBoundedVolume GetCameraToViewportBoxVolume( Real screenLeft, Real screenTop, Real screenRight, Real screenBottom, bool includeFarPlane )
+		public PlaneBoundedVolume GetCameraToViewportBoxVolume( Real screenLeft, Real screenTop, Real screenRight,
+		                                                        Real screenBottom, bool includeFarPlane )
 		{
 			var vol = new PlaneBoundedVolume();
 			GetCameraToViewportBoxVolume( screenLeft, screenTop, screenRight, screenBottom, vol, includeFarPlane );
@@ -1874,7 +1865,8 @@ namespace Axiom.Core
 		/// Can be useful for populating a <see cref="PlaneBoundedVolumeListSceneQuery"/>, e.g. for a rubber-band selection.
 		/// </remarks>
 		/// <returns></returns>
-		public void GetCameraToViewportBoxVolume( Real screenLeft, Real screenTop, Real screenRight, Real screenBottom, PlaneBoundedVolume outVolume, bool includeFarPlane )
+		public void GetCameraToViewportBoxVolume( Real screenLeft, Real screenTop, Real screenRight, Real screenBottom,
+		                                          PlaneBoundedVolume outVolume, bool includeFarPlane )
 		{
 			outVolume.planes.Clear();
 
@@ -1995,7 +1987,7 @@ namespace Axiom.Core
 
 		public override string ToString()
 		{
-			var dir = orientation * new Vector3( 0, 0, -1 );
+			var dir = orientation*new Vector3( 0, 0, -1 );
 			var s = new StringBuilder();
 
 			s.Append( "Camera(" );

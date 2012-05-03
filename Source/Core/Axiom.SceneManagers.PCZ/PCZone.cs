@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -60,7 +59,9 @@ namespace Axiom.SceneManagers.PortalConnected
 			mAssociatedNode = node;
 		}
 
-		public virtual void update() {}
+		public virtual void update()
+		{
+		}
 	}
 
 	public abstract class PCZone
@@ -74,7 +75,6 @@ namespace Axiom.SceneManagers.PortalConnected
 		// frame counter for visibility
 		protected ulong mLastVisibleFrame;
 		// last camera which this zone was visible to
-		private PCZCamera mLastVisibleFromCamera;
 		// flag determining whether or not this zone has sky in it.
 		protected bool mHasSky;
 		//SceneNode which corresponds to the enclosure for this zone
@@ -103,7 +103,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		public PCZone( PCZSceneManager creator, string name )
 		{
 			mLastVisibleFrame = 0;
-			mLastVisibleFromCamera = null;
+			LastVisibleFromCamera = null;
 			mName = name;
 			mZoneTypeName = "ZoneType_Undefined";
 			mEnclosureNode = null;
@@ -134,7 +134,10 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		/** create zone specific data for a node
 		*/
-		public virtual void CreateNodeZoneData( PCZSceneNode pczsn ) {}
+
+		public virtual void CreateNodeZoneData( PCZSceneNode pczsn )
+		{
+		}
 
 		/* Add a portal to the zone
 		*/
@@ -150,7 +153,9 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		/** (recursive) check the given light against all portals in the zone
 		*/
-		public abstract void CheckLightAgainstPortals( PCZLight light, ulong frameCount, PCZFrustum portalFrustum, Portal ignorePortal );
+
+		public abstract void CheckLightAgainstPortals( PCZLight light, ulong frameCount, PCZFrustum portalFrustum,
+		                                               Portal ignorePortal );
 
 		/** Update the spatial data for the portals in the zone
 		*/
@@ -168,13 +173,24 @@ namespace Axiom.SceneManagers.PortalConnected
 		Starts with objects in the zone and proceeds through visible portals
 		This is a recursive call (the main call should be to _findVisibleObjects)
 		*/
-		public abstract void FindVisibleNodes( PCZCamera camera, ref List<PCZSceneNode> visibleNodeList, RenderQueue queue, VisibleObjectsBoundsInfo visibleBounds, bool onlyShadowCasters, bool displayNodes, bool showBoundingBoxes );
+
+		public abstract void FindVisibleNodes( PCZCamera camera, ref List<PCZSceneNode> visibleNodeList, RenderQueue queue,
+		                                       VisibleObjectsBoundsInfo visibleBounds, bool onlyShadowCasters,
+		                                       bool displayNodes, bool showBoundingBoxes );
 
 		/* Functions for finding Nodes that intersect various shapes */
-		public abstract void FindNodes( AxisAlignedBox t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude );
-		public abstract void FindNodes( Sphere t, ref List<PCZSceneNode> nodes, List<Portal> portals, bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude );
-		public abstract void FindNodes( PlaneBoundedVolume t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude );
-		public abstract void FindNodes( Ray t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude );
+
+		public abstract void FindNodes( AxisAlignedBox t, ref List<PCZSceneNode> list, List<Portal> visitedPortals,
+		                                bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude );
+
+		public abstract void FindNodes( Sphere t, ref List<PCZSceneNode> nodes, List<Portal> portals, bool includeVisitors,
+		                                bool recurseThruPortals, PCZSceneNode exclude );
+
+		public abstract void FindNodes( PlaneBoundedVolume t, ref List<PCZSceneNode> list, List<Portal> visitedPortals,
+		                                bool includeVisitors, bool recurseThruPortals, PCZSceneNode exclude );
+
+		public abstract void FindNodes( Ray t, ref List<PCZSceneNode> list, List<Portal> visitedPortals, bool includeVisitors,
+		                                bool recurseThruPortals, PCZSceneNode exclude );
 
 		/** Sets the options for the Zone */
 		public abstract bool SetOption( string name, object value );
@@ -238,17 +254,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 		}
 
-		public PCZCamera LastVisibleFromCamera
-		{
-			get
-			{
-				return mLastVisibleFromCamera;
-			}
-			set
-			{
-				mLastVisibleFromCamera = value;
-			}
-		}
+		public PCZCamera LastVisibleFromCamera { get; set; }
 
 		public virtual bool HasSky
 		{
@@ -298,7 +304,8 @@ namespace Axiom.SceneManagers.PortalConnected
 			{
 				//portal2 = pi2;
 				//portal2->updateDerivedValues();
-				if ( portal2.getTargetZone() == null && portal2.closeTo( portal ) && portal2.getDerivedDirection().Dot( portal.getDerivedDirection() ) < -0.9 )
+				if ( portal2.getTargetZone() == null && portal2.closeTo( portal ) &&
+				     portal2.getDerivedDirection().Dot( portal.getDerivedDirection() ) < -0.9 )
 				{
 					// found a match!
 					return portal2;

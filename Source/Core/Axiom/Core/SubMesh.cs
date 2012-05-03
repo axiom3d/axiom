@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Animating;
 using Axiom.Graphics;
 
@@ -79,7 +78,8 @@ namespace Axiom.Core
 		protected bool isMaterialInitialized;
 
 		/// <summary>List of bone assignment for this mesh.</summary>
-		protected Dictionary<int, List<VertexBoneAssignment>> boneAssignmentList = new Dictionary<int, List<VertexBoneAssignment>>();
+		protected Dictionary<int, List<VertexBoneAssignment>> boneAssignmentList =
+			new Dictionary<int, List<VertexBoneAssignment>>();
 
 		/// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
 		protected internal bool boneAssignmentsOutOfDate;
@@ -297,7 +297,7 @@ namespace Axiom.Core
 				}
 				if ( operationType == OperationType.TriangleList )
 				{
-					numFaces = indexData.indexCount / 3;
+					numFaces = indexData.indexCount/3;
 				}
 				else
 				{

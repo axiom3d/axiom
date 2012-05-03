@@ -59,7 +59,7 @@ namespace Axiom.Scripting.Compiler
 			#region Translator Implementation
 
 			/// <see cref="Translator.CheckFor"/>
-            public override bool CheckFor(Keywords nodeId, Keywords parentId)
+			public override bool CheckFor( Keywords nodeId, Keywords parentId )
 			{
 				return nodeId == Keywords.ID_TECHNIQUE && parentId == Keywords.ID_MATERIAL;
 			}
@@ -98,7 +98,8 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "scheme only supports 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+									                   "scheme only supports 1 argument" );
 								}
 								else
 								{
@@ -109,7 +110,8 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "scheme must have 1 string argument" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+										                   "scheme must have 1 string argument" );
 									}
 								}
 								break;
@@ -125,7 +127,8 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "lod_index only supports 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+									                   "lod_index only supports 1 argument" );
 								}
 								else
 								{
@@ -136,7 +139,8 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "lod_index cannot accept argument \"" + prop.Values[ 0 ].Value + "\"" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+										                   "lod_index cannot accept argument \"" + prop.Values[ 0 ].Value + "\"" );
 									}
 								}
 								break;
@@ -152,7 +156,8 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "shadow_caster_material only accepts 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+									                   "shadow_caster_material only accepts 1 argument" );
 								}
 								else
 								{
@@ -161,7 +166,9 @@ namespace Axiom.Scripting.Compiler
 									{
 										var evtMatName = string.Empty;
 
-										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material, matName );
+										ScriptCompilerEvent evt =
+											new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material,
+											                                            matName );
 
 										compiler._fireEvent( ref evt );
 										evtMatName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
@@ -169,7 +176,8 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "shadow_caster_material cannot accept argument \"" + prop.Values[ 0 ].Value + "\"" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+										                   "shadow_caster_material cannot accept argument \"" + prop.Values[ 0 ].Value + "\"" );
 									}
 								}
 								break;
@@ -185,7 +193,8 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "shadow_receiver_material only accepts 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+									                   "shadow_receiver_material only accepts 1 argument" );
 								}
 								else
 								{
@@ -195,7 +204,9 @@ namespace Axiom.Scripting.Compiler
 									{
 										var evtName = string.Empty;
 
-										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material, matName );
+										ScriptCompilerEvent evt =
+											new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material,
+											                                            matName );
 
 										compiler._fireEvent( ref evt );
 										evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
@@ -203,7 +214,8 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "shadow_receiver_material_name cannot accept argument \"" + i0.Value + "\"" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+										                   "shadow_receiver_material_name cannot accept argument \"" + i0.Value + "\"" );
 									}
 								}
 								break;
@@ -215,11 +227,13 @@ namespace Axiom.Scripting.Compiler
 							case Keywords.ID_GPU_VENDOR_RULE:
 								if ( prop.Values.Count < 2 )
 								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line, "gpu_vendor_rule must have 2 arguments" );
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line,
+									                   "gpu_vendor_rule must have 2 arguments" );
 								}
 								else if ( prop.Values.Count > 2 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "gpu_vendor_rule must have 2 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+									                   "gpu_vendor_rule must have 2 arguments" );
 								}
 								else
 								{
@@ -242,13 +256,15 @@ namespace Axiom.Scripting.Compiler
 										}
 										else
 										{
-											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "gpu_vendor_rule cannot accept \"" + i0.Value + "\" as first argument" );
+											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+											                   "gpu_vendor_rule cannot accept \"" + i0.Value + "\" as first argument" );
 										}
 
 										var vendor = string.Empty;
 										if ( !getString( i1, out vendor ) )
 										{
-											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "gpu_vendor_rule cannot accept \"" + i1.Value + "\" as second argument" );
+											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+											                   "gpu_vendor_rule cannot accept \"" + i1.Value + "\" as second argument" );
 										}
 
 										rule.Vendor = RenderSystemCapabilities.VendorFromString( vendor );
@@ -260,7 +276,8 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "gpu_vendor_rule cannot accept \"" + i0.Value + "\" as first argument" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+										                   "gpu_vendor_rule cannot accept \"" + i0.Value + "\" as first argument" );
 									}
 								}
 								break;
@@ -272,11 +289,13 @@ namespace Axiom.Scripting.Compiler
 							case Keywords.ID_GPU_DEVICE_RULE:
 								if ( prop.Values.Count < 2 )
 								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line, "gpu_device_rule must have at least 2 arguments" );
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line,
+									                   "gpu_device_rule must have at least 2 arguments" );
 								}
 								else if ( prop.Values.Count > 3 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "gpu_device_rule must have at most 3 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+									                   "gpu_device_rule must have at most 3 arguments" );
 								}
 								else
 								{
@@ -299,12 +318,14 @@ namespace Axiom.Scripting.Compiler
 										}
 										else
 										{
-											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "gpu_device_rule cannot accept \"" + i0.Value + "\" as first argument" );
+											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+											                   "gpu_device_rule cannot accept \"" + i0.Value + "\" as first argument" );
 										}
 
 										if ( !getString( i1, out rule.DevicePattern ) )
 										{
-											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "gpu_device_rule cannot accept \"" + i1.Value + "\" as second argument" );
+											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+											                   "gpu_device_rule cannot accept \"" + i1.Value + "\" as second argument" );
 										}
 
 										if ( prop.Values.Count == 3 )
@@ -312,7 +333,8 @@ namespace Axiom.Scripting.Compiler
 											var i2 = getNodeAt( prop.Values, 2 );
 											if ( !getBoolean( i2, out rule.CaseSensitive ) )
 											{
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "gpu_device_rule third argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+												                   "gpu_device_rule third argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
 											}
 										}
 
@@ -320,7 +342,8 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "gpu_device_rule cannot accept \"" + i0.Value + "\" as first argument" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+										                   "gpu_device_rule cannot accept \"" + i0.Value + "\" as first argument" );
 									}
 								}
 								break;
@@ -328,7 +351,8 @@ namespace Axiom.Scripting.Compiler
 								#endregion ID_GPU_DEVICE_RULE
 
 							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
+								                   "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						} //end of switch statement
 					} // end of if ( i is PropertyAbstractNode )

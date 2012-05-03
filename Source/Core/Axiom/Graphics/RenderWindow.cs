@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Collections;
 
@@ -146,7 +145,9 @@ namespace Axiom.Graphics
 			{
 				return true;
 			}
-			set {}
+			set
+			{
+			}
 		}
 
 		#endregion IsVisible Property
@@ -200,7 +201,9 @@ namespace Axiom.Graphics
 			{
 				return false;
 			}
-			set {}
+			set
+			{
+			}
 		}
 
 		#endregion
@@ -211,7 +214,7 @@ namespace Axiom.Graphics
 			: base()
 		{
 			// render windows are low priority
-			this.Priority = RenderTargetPriority.Default;
+			Priority = RenderTargetPriority.Default;
 		}
 
 		#endregion
@@ -222,9 +225,11 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
-				if ( disposeManagedResources ) {}
+				if ( disposeManagedResources )
+				{
+				}
 			}
 
 			// make sure this window is no longer active
@@ -263,7 +268,9 @@ namespace Axiom.Graphics
 		/// Notify that the window has been resized
 		/// </summary>
 		/// <remarks>You don't need to call this unless you created the window externally.</remarks>
-		public virtual void WindowMovedOrResized() {}
+		public virtual void WindowMovedOrResized()
+		{
+		}
 
 		#endregion
 
@@ -292,7 +299,9 @@ namespace Axiom.Graphics
 		/// <param name="width">The new width to use</param>
 		/// <param name="height">The new height to use</param>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual void SetFullScreen( bool fullScreen, int width, int height ) {}
+		public virtual void SetFullScreen( bool fullScreen, int width, int height )
+		{
+		}
 
 		/// <summary>
 		/// Destroys the window.
@@ -301,5 +310,7 @@ namespace Axiom.Graphics
 		public abstract void Destroy();
 	}
 
-	public class RenderWindowList : List<RenderWindow> {}
+	public class RenderWindowList : List<RenderWindow>
+	{
+	}
 }

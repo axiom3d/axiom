@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
@@ -79,7 +78,7 @@ namespace Axiom.ParticleFX
 				// as usual we can omit the sqrt(), since sqrt(1) == 1 and we
 				// use the 1 as boundary. z is not taken into account, since
 				// all values in the z-direction are inside the cylinder:
-				if ( xOff * xOff + yOff * yOff <= 1 )
+				if ( xOff*xOff + yOff*yOff <= 1 )
 				{
 					// found one valid point inside
 					break;
@@ -89,7 +88,7 @@ namespace Axiom.ParticleFX
 			// scale the found point to the cylinder's size and move it
 			// relatively to the center of the emitter point
 
-			particle.Position = position + xOff * xRange + yOff * yRange * zOff * zRange;
+			particle.Position = position + xOff*xRange + yOff*yRange*zOff*zRange;
 
 			// Generate complex data by reference
 			GenerateEmissionColor( ref particle.Color );
@@ -110,13 +109,13 @@ namespace Axiom.ParticleFX
 		{
 			public void Set( object target, string val )
 			{
-				CylinderEmitter emitter = target as CylinderEmitter;
+				var emitter = target as CylinderEmitter;
 				emitter.Width = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				CylinderEmitter emitter = target as CylinderEmitter;
+				var emitter = target as CylinderEmitter;
 				return StringConverter.ToString( emitter.Width );
 			}
 		}
@@ -129,13 +128,13 @@ namespace Axiom.ParticleFX
 		{
 			public void Set( object target, string val )
 			{
-				CylinderEmitter emitter = target as CylinderEmitter;
+				var emitter = target as CylinderEmitter;
 				emitter.Height = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				CylinderEmitter emitter = target as CylinderEmitter;
+				var emitter = target as CylinderEmitter;
 				return StringConverter.ToString( emitter.Height );
 			}
 		}
@@ -148,13 +147,13 @@ namespace Axiom.ParticleFX
 		{
 			public void Set( object target, string val )
 			{
-				CylinderEmitter emitter = target as CylinderEmitter;
+				var emitter = target as CylinderEmitter;
 				emitter.Depth = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				CylinderEmitter emitter = target as CylinderEmitter;
+				var emitter = target as CylinderEmitter;
 				return StringConverter.ToString( emitter.Depth );
 			}
 		}

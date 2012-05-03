@@ -105,7 +105,7 @@ namespace Axiom.Math
 		/// <returns>A Real representing the dot product value.</returns>
 		public Real Dot( Vector4 vec )
 		{
-			return x * vec.x + y * vec.y + z * vec.z + w * vec.w;
+			return x*vec.x + y*vec.y + z*vec.z + w*vec.w;
 		}
 
 		#endregion Methods
@@ -120,7 +120,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector4 Multiply( Vector4 vector, Matrix4 matrix )
 		{
-			return vector * matrix;
+			return vector*matrix;
 		}
 
 		/// <summary>
@@ -133,10 +133,10 @@ namespace Axiom.Math
 		{
 			var result = new Vector4();
 
-			result.x = vector.x * matrix.m00 + vector.y * matrix.m01 + vector.z * matrix.m02 + vector.w * matrix.m03;
-			result.y = vector.x * matrix.m10 + vector.y * matrix.m11 + vector.z * matrix.m12 + vector.w * matrix.m13;
-			result.z = vector.x * matrix.m20 + vector.y * matrix.m21 + vector.z * matrix.m22 + vector.w * matrix.m23;
-			result.w = vector.x * matrix.m30 + vector.y * matrix.m31 + vector.z * matrix.m32 + vector.w * matrix.m33;
+			result.x = vector.x*matrix.m00 + vector.y*matrix.m01 + vector.z*matrix.m02 + vector.w*matrix.m03;
+			result.y = vector.x*matrix.m10 + vector.y*matrix.m11 + vector.z*matrix.m12 + vector.w*matrix.m13;
+			result.z = vector.x*matrix.m20 + vector.y*matrix.m21 + vector.z*matrix.m22 + vector.w*matrix.m23;
+			result.w = vector.x*matrix.m30 + vector.y*matrix.m31 + vector.z*matrix.m32 + vector.w*matrix.m33;
 
 			return result;
 		}
@@ -146,10 +146,10 @@ namespace Axiom.Math
 		{
 			var result = new Vector4();
 
-			result.x = vector.x * matrix.m00 + vector.y * matrix.m10 + vector.z * matrix.m20 + vector.w * matrix.m30;
-			result.y = vector.x * matrix.m01 + vector.y * matrix.m11 + vector.z * matrix.m21 + vector.w * matrix.m31;
-			result.z = vector.x * matrix.m02 + vector.y * matrix.m12 + vector.z * matrix.m22 + vector.w * matrix.m32;
-			result.w = vector.x * matrix.m03 + vector.y * matrix.m13 + vector.z * matrix.m23 + vector.w * matrix.m33;
+			result.x = vector.x*matrix.m00 + vector.y*matrix.m10 + vector.z*matrix.m20 + vector.w*matrix.m30;
+			result.y = vector.x*matrix.m01 + vector.y*matrix.m11 + vector.z*matrix.m21 + vector.w*matrix.m31;
+			result.z = vector.x*matrix.m02 + vector.y*matrix.m12 + vector.z*matrix.m22 + vector.w*matrix.m32;
+			result.w = vector.x*matrix.m03 + vector.y*matrix.m13 + vector.z*matrix.m23 + vector.w*matrix.m33;
 
 			return result;
 		}
@@ -164,10 +164,10 @@ namespace Axiom.Math
 		{
 			var result = new Vector4();
 
-			result.x = vector.x * scalar;
-			result.y = vector.y * scalar;
-			result.z = vector.z * scalar;
-			result.w = vector.w * scalar;
+			result.x = vector.x*scalar;
+			result.y = vector.y*scalar;
+			result.z = vector.z*scalar;
+			result.w = vector.w*scalar;
 
 			return result;
 		}
@@ -175,7 +175,7 @@ namespace Axiom.Math
 		[OgreVersion( 1, 7, 2 )]
 		public static Vector4 operator /( Real fScalar, Vector4 rkVector )
 		{
-			return new Vector4( fScalar / rkVector.x, fScalar / rkVector.y, fScalar / rkVector.z, fScalar / rkVector.w );
+			return new Vector4( fScalar/rkVector.x, fScalar/rkVector.y, fScalar/rkVector.z, fScalar/rkVector.w );
 		}
 
 		/// <summary>
@@ -311,7 +311,7 @@ namespace Axiom.Math
 		/// <returns>A string representation of a Vector4.</returns>
 		public override string ToString()
 		{
-			return string.Format( "<{0},{1},{2},{3}>", this.x, this.y, this.z, this.w );
+			return string.Format( "<{0},{1},{2},{3}>", x, y, z, w );
 		}
 
 		/// <summary>
@@ -325,7 +325,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return this.x.GetHashCode() ^ this.y.GetHashCode() ^ this.z.GetHashCode() ^ this.w.GetHashCode();
+			return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode() ^ w.GetHashCode();
 		}
 
 		/// <summary>
@@ -356,7 +356,8 @@ namespace Axiom.Math
 		{
 			var vals = vector.TrimStart( '<' ).TrimEnd( '>' ).Split( ',' );
 
-			return new Vector4( Real.Parse( vals[ 0 ].Trim() ), Real.Parse( vals[ 1 ].Trim() ), Real.Parse( vals[ 2 ].Trim() ), Real.Parse( vals[ 3 ].Trim() ) );
+			return new Vector4( Real.Parse( vals[ 0 ].Trim() ), Real.Parse( vals[ 1 ].Trim() ), Real.Parse( vals[ 2 ].Trim() ),
+			                    Real.Parse( vals[ 3 ].Trim() ) );
 		}
 
 		#endregion

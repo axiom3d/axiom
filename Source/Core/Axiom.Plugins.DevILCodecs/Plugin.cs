@@ -36,10 +36,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-
 using Axiom.Core;
 using Axiom.Media;
-
 using Tao.DevIl;
 
 #endregion Namespace Declarations
@@ -52,7 +50,7 @@ namespace Axiom.Plugins.DevILCodecs
 	[Export( typeof ( IPlugin ) )]
 	public class DevILPlugin : IPlugin
 	{
-		private static List<ILImageCodec> codecList = new List<ILImageCodec>();
+		private static readonly List<ILImageCodec> codecList = new List<ILImageCodec>();
 
 		[OgreVersion( 1, 7, 2 )]
 		private static int _IlTypeFromExt( string ext )

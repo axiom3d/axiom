@@ -58,7 +58,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public GLFBOMultiRenderTarget( GLFBORTTManager manager, string name )
 			: base( name )
 		{
-			this._manager = manager;
+			_manager = manager;
 		}
 
 		#endregion Construction and Destruction
@@ -79,16 +79,16 @@ namespace Axiom.RenderSystems.OpenGL
 		protected override void BindSurfaceImpl( int attachment, RenderTexture target )
 		{
 			/// Check if the render target is in the rendertarget->FBO map
-			GLFrameBufferObject fbObject = (GLFrameBufferObject)target[ "FBO" ];
+			var fbObject = (GLFrameBufferObject)target[ "FBO" ];
 			Proclaim.NotNull( fbObject );
 
-			this._fbo.BindSurface( attachment, fbObject.SurfaceDesc );
+			_fbo.BindSurface( attachment, fbObject.SurfaceDesc );
 
 			// Initialize?
 
 			// Set width and height
-			this.width = this._fbo.Width;
-			this.height = this._fbo.Height;
+			width = _fbo.Width;
+			height = _fbo.Height;
 		}
 
 		/// <summary>
@@ -97,9 +97,9 @@ namespace Axiom.RenderSystems.OpenGL
 		[OgreVersion( 1, 7, 2 )]
 		protected override void UnbindSurfaceImpl( int attachment )
 		{
-			this._fbo.UnbindSurface( attachment );
-			this.width = this._fbo.Width;
-			this.height = this._fbo.Height;
+			_fbo.UnbindSurface( attachment );
+			width = _fbo.Width;
+			height = _fbo.Height;
 		}
 
 		#endregion Methods
@@ -112,7 +112,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( attribute == "FBO" )
 				{
-					return this._fbo;
+					return _fbo;
 				}
 
 				return base[ attribute ];

@@ -62,7 +62,8 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		}
 
 		[OgreVersion( 1, 7, 2 )]
-		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader )
+		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ulong handle, string group,
+		                                                    bool isManual, IManualResourceLoader loader )
 		{
 			return new D3D9HLSLProgram( creator, name, handle, group, isManual, loader );
 		}

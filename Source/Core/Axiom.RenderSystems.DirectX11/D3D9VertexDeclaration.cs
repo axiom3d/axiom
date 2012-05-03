@@ -34,10 +34,8 @@
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -51,7 +49,8 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Member variables
 
-		private Dictionary<D3D9.Device, D3D9.VertexDeclaration> _mapDeviceToDeclaration = new Dictionary<D3D9.Device, D3D9.VertexDeclaration>();
+		private readonly Dictionary<D3D9.Device, D3D9.VertexDeclaration> _mapDeviceToDeclaration =
+			new Dictionary<D3D9.Device, D3D9.VertexDeclaration>();
 
 		#endregion Member variables
 
@@ -72,7 +71,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// Case we have to create the declaration for this device.
 				if ( declFound = false || it == null )
 				{
-					var d3dElements = new D3D9.VertexElement[ elements.Count + 1 ];
+					var d3dElements = new D3D9.VertexElement[elements.Count + 1];
 
 					// loop through and configure each element for D3D
 					ushort idx;
@@ -147,7 +146,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9VertexDeclaration" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -170,7 +169,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Graphics.VertexDeclaration.AddElement(short, int, VertexElementType, VertexElementSemantic, int)"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override Axiom.Graphics.VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public override Axiom.Graphics.VertexElement AddElement( short source, int offset, VertexElementType type,
+		                                                         VertexElementSemantic semantic, int index )
 		{
 			_releaseDeclaration();
 			return base.AddElement( source, offset, type, semantic, index );
@@ -178,7 +178,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Graphics.VertexDeclaration.InsertElement(int, short, int, VertexElementType, VertexElementSemantic, int)"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override Axiom.Graphics.VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public override Axiom.Graphics.VertexElement InsertElement( int position, short source, int offset,
+		                                                            VertexElementType type, VertexElementSemantic semantic,
+		                                                            int index )
 		{
 			_releaseDeclaration();
 			return base.InsertElement( position, source, offset, type, semantic, index );
@@ -210,7 +212,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Graphics.VertexDeclaration.ModifyElement(int, short, int, VertexElementType, VertexElementSemantic, int)"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public override void ModifyElement( int elemIndex, short source, int offset, VertexElementType type,
+		                                    VertexElementSemantic semantic, int index )
 		{
 			base.ModifyElement( elemIndex, source, offset, type, semantic, index );
 			_releaseDeclaration();
@@ -239,7 +242,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceCreate"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceCreate( D3D9.Device d3d9Device ) {}
+		public void NotifyOnDeviceCreate( D3D9.Device d3d9Device )
+		{
+		}
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceDestroy"/>
 		[OgreVersion( 1, 7, 2 )]
@@ -260,11 +265,15 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceLost"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceLost( D3D9.Device d3d9Device ) {}
+		public void NotifyOnDeviceLost( D3D9.Device d3d9Device )
+		{
+		}
 
 		/// <see cref="ID3D9Resource.NotifyOnDeviceReset"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void NotifyOnDeviceReset( D3D9.Device d3d9Device ) {}
+		public void NotifyOnDeviceReset( D3D9.Device d3d9Device )
+		{
+		}
 
 		#endregion ID3D9Resource Members
 	};

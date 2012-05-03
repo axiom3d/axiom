@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
@@ -80,7 +79,7 @@ namespace Axiom.ParticleFX
 		public RotationAffector( ParticleSystem psys )
 			: base( psys )
 		{
-			this.type = "Rotator";
+			type = "Rotator";
 			rotationSpeedRangeStart = 0;
 			rotationSpeedRangeEnd = 0;
 			rotationRangeStart = 0;
@@ -89,8 +88,9 @@ namespace Axiom.ParticleFX
 
 		public override void InitParticle( ref Particle particle )
 		{
-			particle.Rotation = rotationRangeStart + ( Utility.UnitRandom() * ( rotationRangeEnd - rotationRangeStart ) );
-			particle.RotationSpeed = rotationSpeedRangeStart + ( Utility.UnitRandom() * ( rotationSpeedRangeEnd - rotationSpeedRangeStart ) );
+			particle.Rotation = rotationRangeStart + ( Utility.UnitRandom()*( rotationRangeEnd - rotationRangeStart ) );
+			particle.RotationSpeed = rotationSpeedRangeStart +
+			                         ( Utility.UnitRandom()*( rotationSpeedRangeEnd - rotationSpeedRangeStart ) );
 		}
 
 		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
@@ -105,49 +105,51 @@ namespace Axiom.ParticleFX
 			// loop through the particles
 			for ( int i = 0; i < system.Particles.Count; i++ )
 			{
-				Particle p = (Particle)system.Particles[ i ];
+				var p = (Particle)system.Particles[ i ];
 
-				newRotation = p.Rotation + ( ds * p.RotationSpeed );
+				newRotation = p.Rotation + ( ds*p.RotationSpeed );
 				p.Rotation = newRotation;
 			}
 		}
 
 		#region Command definition classes
 
-		[ScriptableProperty( "rotation_speed_range_start", "Start range of particle rotation speed.", typeof ( ParticleAffector ) )]
+		[ScriptableProperty( "rotation_speed_range_start", "Start range of particle rotation speed.",
+			typeof ( ParticleAffector ) )]
 		public class RotationSpeedRangeStartCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
 			public string Get( object target )
 			{
-				RotationAffector affector = target as RotationAffector;
+				var affector = target as RotationAffector;
 				return StringConverter.ToString( affector.rotationSpeedRangeStart );
 			}
 
 			public void Set( object target, string val )
 			{
-				RotationAffector affector = target as RotationAffector;
+				var affector = target as RotationAffector;
 				affector.rotationSpeedRangeStart = StringConverter.ParseFloat( val );
 			}
 
 			#endregion IPropertyCommand Members
 		}
 
-		[ScriptableProperty( "rotation_speed_range_end", "End range of particle rotation speed.", typeof ( ParticleAffector ) )]
+		[ScriptableProperty( "rotation_speed_range_end", "End range of particle rotation speed.", typeof ( ParticleAffector )
+			)]
 		public class RotationSpeedRangeEndCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
 
 			public string Get( object target )
 			{
-				RotationAffector affector = target as RotationAffector;
+				var affector = target as RotationAffector;
 				return StringConverter.ToString( affector.rotationSpeedRangeEnd );
 			}
 
 			public void Set( object target, string val )
 			{
-				RotationAffector affector = target as RotationAffector;
+				var affector = target as RotationAffector;
 				affector.rotationSpeedRangeEnd = StringConverter.ParseFloat( val );
 			}
 
@@ -161,13 +163,13 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				RotationAffector affector = target as RotationAffector;
+				var affector = target as RotationAffector;
 				return StringConverter.ToString( affector.rotationRangeStart );
 			}
 
 			public void Set( object target, string val )
 			{
-				RotationAffector affector = target as RotationAffector;
+				var affector = target as RotationAffector;
 				affector.rotationRangeStart = StringConverter.ParseFloat( val );
 			}
 
@@ -182,13 +184,13 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				RotationAffector affector = target as RotationAffector;
+				var affector = target as RotationAffector;
 				return StringConverter.ToString( affector.rotationRangeEnd );
 			}
 
 			public void Set( object target, string val )
 			{
-				RotationAffector affector = target as RotationAffector;
+				var affector = target as RotationAffector;
 				affector.rotationRangeEnd = StringConverter.ParseFloat( val );
 			}
 

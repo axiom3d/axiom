@@ -38,13 +38,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.RenderSystems.OpenGL;
-
 using Tao.OpenGl;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -56,7 +53,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 	/// </summary>
 	public class ATIFragmentShaderGpuProgram : GLGpuProgram
 	{
-		public ATIFragmentShaderGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		public ATIFragmentShaderGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group,
+		                                    bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			throw new AxiomException( "This needs upgrading" );
@@ -68,7 +66,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		protected override void LoadFromSource()
 		{
-			PixelShader assembler = new PixelShader();
+			var assembler = new PixelShader();
 
 			//bool testError = assembler.RunTests();
 
@@ -84,7 +82,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 				Gl.glEndFragmentShaderATI();
 			}
-			else {}
+			else
+			{
+			}
 		}
 
 		public override void Unload()
@@ -144,7 +144,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 	{
 		#region IOpenGLGpuProgramFactory Members
 
-		public GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
+		public GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                            IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
 			// creates and returns a new ATI fragment shader implementation
 			GLGpuProgram ret = new ATIFragmentShaderGpuProgram( parent, name, handle, group, isManual, loader );

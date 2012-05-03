@@ -45,10 +45,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
 using Axiom.Math.Collections;
 using Axiom.Utilities;
-
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -103,7 +101,7 @@ namespace Axiom.Math
 			// This will cause a change in velocity for interpolation.
 
 			// What segment this is in?
-			var segment = t * ( pointList.Count - 1 );
+			var segment = t*( pointList.Count - 1 );
 			var segIndex = (int)segment;
 
 			// apportion t
@@ -144,9 +142,9 @@ namespace Axiom.Math
 			// Construct a Vector4 of powers of 2
 			Real t2, t3;
 			// t^2
-			t2 = t * t;
+			t2 = t*t;
 			// t^3
-			t3 = t2 * t;
+			t3 = t2*t;
 
 			var powers = new Vector4( t3, t2, t, 1 );
 
@@ -176,7 +174,7 @@ namespace Axiom.Math
 			point.m33 = 1.0f;
 
 			// get the final result in a Vector4
-			var result = powers * hermitePoly * point;
+			var result = powers*hermitePoly*point;
 
 			// return the final result
 			return new Vector3( result.x, result.y, result.z );
@@ -228,11 +226,11 @@ namespace Axiom.Math
 					if ( isClosed )
 					{
 						// Use numPoints-2 since numPoints-1 is the last point and == [0]
-						tangentList.Add( 0.5f * ( pointList[ 1 ] - pointList[ numPoints - 2 ] ) );
+						tangentList.Add( 0.5f*( pointList[ 1 ] - pointList[ numPoints - 2 ] ) );
 					}
 					else
 					{
-						tangentList.Add( 0.5f * ( pointList[ 1 ] - pointList[ 0 ] ) );
+						tangentList.Add( 0.5f*( pointList[ 1 ] - pointList[ 0 ] ) );
 					}
 				}
 				else if ( i == numPoints - 1 )
@@ -244,12 +242,12 @@ namespace Axiom.Math
 					}
 					else
 					{
-						tangentList.Add( 0.5f * ( pointList[ i ] - pointList[ i - 1 ] ) );
+						tangentList.Add( 0.5f*( pointList[ i ] - pointList[ i - 1 ] ) );
 					}
 				}
 				else
 				{
-					tangentList.Add( 0.5f * ( pointList[ i + 1 ] - pointList[ i - 1 ] ) );
+					tangentList.Add( 0.5f*( pointList[ i + 1 ] - pointList[ i - 1 ] ) );
 				}
 			}
 		}

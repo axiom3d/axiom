@@ -35,7 +35,6 @@
 
 using System;
 using System.Collections.Generic;
-
 #if !AXIOM_SAFE_ONLY
 using System.Runtime.InteropServices;
 

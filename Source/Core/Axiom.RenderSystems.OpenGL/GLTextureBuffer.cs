@@ -40,14 +40,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Graphics;
 using Axiom.Media;
-
 using Tao.OpenGl;
-
 using Axiom.Core;
-
 using System.Diagnostics;
 
 #endregion Namespace Declarations
@@ -58,23 +54,24 @@ namespace Axiom.RenderSystems.OpenGL
 	{
 		#region Fields and Properties
 
-		private BaseGLSupport _glSupport;
+		private readonly BaseGLSupport _glSupport;
 
 		// In case this is a texture level
-		private int _target;
-		private int _faceTarget; // same as _target in case of Gl.GL_TEXTURE_xD, but cubemap face for cubemaps
-		private int _textureId;
-		private int _face;
-		private int _level;
-		private bool _softwareMipmap; // Use GLU for mip mapping
+		private readonly int _target;
+		private readonly int _faceTarget; // same as _target in case of Gl.GL_TEXTURE_xD, but cubemap face for cubemaps
+		private readonly int _textureId;
+		private readonly int _face;
+		private readonly int _level;
+		private readonly bool _softwareMipmap; // Use GLU for mip mapping
 
-		private List<RenderTexture> _sliceTRT = new List<RenderTexture>();
+		private readonly List<RenderTexture> _sliceTRT = new List<RenderTexture>();
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
-		public GLTextureBuffer( string baseName, int target, int id, int face, int level, BufferUsage usage, bool softwareMipmap, BaseGLSupport glSupport, bool writeGamma, int fsaa )
+		public GLTextureBuffer( string baseName, int target, int id, int face, int level, BufferUsage usage,
+		                        bool softwareMipmap, BaseGLSupport glSupport, bool writeGamma, int fsaa )
 			: base( 0, 0, 0, PixelFormat.Unknown, usage )
 		{
 			int value;
@@ -129,11 +126,11 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// Default
 			rowPitch = Width;
-			slicePitch = Height * Width;
+			slicePitch = Height*Width;
 			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
 			// Set up pixel box
-			this.buffer = new PixelBox( Width, Height, Depth, Format );
+			buffer = new PixelBox( Width, Height, Depth, Format );
 
 			if ( Width == 0 || Height == 0 || Depth == 0 )
 			{
@@ -210,7 +207,8 @@ namespace Axiom.RenderSystems.OpenGL
 			/// Fall back to normal GLHardwarePixelBuffer.BlitFromMemory in case
 			/// - FBO is not supported
 			/// - the source dimensions match the destination ones, in which case no scaling is needed
-			if ( !_glSupport.CheckExtension( "GL_EXT_framebuffer_object" ) || ( src.Width == dstBox.Width && src.Height == dstBox.Height && src.Depth == dstBox.Depth ) )
+			if ( !_glSupport.CheckExtension( "GL_EXT_framebuffer_object" ) ||
+			     ( src.Width == dstBox.Width && src.Height == dstBox.Height && src.Depth == dstBox.Depth ) )
 			{
 				base.BlitFromMemory( src, dstBox );
 				return;
@@ -269,17 +267,18 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					Gl.glPixelStorei( Gl.GL_PACK_ROW_LENGTH, data.RowPitch );
 				}
-				if ( data.Height * data.Width != data.SlicePitch )
+				if ( data.Height*data.Width != data.SlicePitch )
 				{
-					Gl.glPixelStorei( Gl.GL_PACK_IMAGE_HEIGHT, ( data.SlicePitch / data.Width ) );
+					Gl.glPixelStorei( Gl.GL_PACK_IMAGE_HEIGHT, ( data.SlicePitch/data.Width ) );
 				}
-				if ( ( ( data.Width * PixelUtil.GetNumElemBytes( data.Format ) ) & 3 ) != 0 )
+				if ( ( ( data.Width*PixelUtil.GetNumElemBytes( data.Format ) ) & 3 ) != 0 )
 				{
 					// Standard alignment of 4 is not right
 					Gl.glPixelStorei( Gl.GL_PACK_ALIGNMENT, 1 );
 				}
 				// We can only get the entire texture
-				Gl.glGetTexImage( _faceTarget, _level, GLPixelUtil.GetGLOriginFormat( data.Format ), GLPixelUtil.GetGLOriginDataType( data.Format ), data.Data.Pin() );
+				Gl.glGetTexImage( _faceTarget, _level, GLPixelUtil.GetGLOriginFormat( data.Format ),
+				                  GLPixelUtil.GetGLOriginDataType( data.Format ), data.Data.Pin() );
 				data.Data.UnPin();
 				// Restore defaults
 				Gl.glPixelStorei( Gl.GL_PACK_ROW_LENGTH, 0 );
@@ -304,16 +303,19 @@ namespace Axiom.RenderSystems.OpenGL
 				switch ( _target )
 				{
 					case Gl.GL_TEXTURE_1D:
-						Gl.glCompressedTexSubImage1DARB( Gl.GL_TEXTURE_1D, _level, box.Left, box.Width, format, box.ConsecutiveSize, box.Data.Pin() );
+						Gl.glCompressedTexSubImage1DARB( Gl.GL_TEXTURE_1D, _level, box.Left, box.Width, format, box.ConsecutiveSize,
+						                                 box.Data.Pin() );
 						box.Data.UnPin();
 						break;
 					case Gl.GL_TEXTURE_2D:
 					case Gl.GL_TEXTURE_CUBE_MAP:
-						Gl.glCompressedTexSubImage2DARB( _faceTarget, _level, box.Left, box.Top, box.Width, box.Height, format, box.ConsecutiveSize, box.Data.Pin() );
+						Gl.glCompressedTexSubImage2DARB( _faceTarget, _level, box.Left, box.Top, box.Width, box.Height, format,
+						                                 box.ConsecutiveSize, box.Data.Pin() );
 						box.Data.UnPin();
 						break;
 					case Gl.GL_TEXTURE_3D:
-						Gl.glCompressedTexSubImage3DARB( Gl.GL_TEXTURE_3D, _level, box.Left, box.Top, box.Front, box.Width, box.Height, box.Depth, format, box.ConsecutiveSize, box.Data.Pin() );
+						Gl.glCompressedTexSubImage3DARB( Gl.GL_TEXTURE_3D, _level, box.Left, box.Top, box.Front, box.Width, box.Height,
+						                                 box.Depth, format, box.ConsecutiveSize, box.Data.Pin() );
 						box.Data.UnPin();
 						break;
 				}
@@ -326,21 +328,24 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					Gl.glPixelStorei( Gl.GL_UNPACK_ROW_LENGTH, box.RowPitch );
 				}
-				if ( box.Height * box.Width != box.SlicePitch )
+				if ( box.Height*box.Width != box.SlicePitch )
 				{
-					Gl.glPixelStorei( Gl.GL_UNPACK_IMAGE_HEIGHT, ( box.SlicePitch / box.Width ) );
+					Gl.glPixelStorei( Gl.GL_UNPACK_IMAGE_HEIGHT, ( box.SlicePitch/box.Width ) );
 				}
 				Gl.glPixelStorei( Gl.GL_UNPACK_ALIGNMENT, 1 );
 
 				switch ( _target )
 				{
 					case Gl.GL_TEXTURE_1D:
-						Glu.gluBuild1DMipmaps( Gl.GL_TEXTURE_1D, internalFormat, box.Width, GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ), box.Data.Pin() );
+						Glu.gluBuild1DMipmaps( Gl.GL_TEXTURE_1D, internalFormat, box.Width, GLPixelUtil.GetGLOriginFormat( box.Format ),
+						                       GLPixelUtil.GetGLOriginDataType( box.Format ), box.Data.Pin() );
 						box.Data.UnPin();
 						break;
 					case Gl.GL_TEXTURE_2D:
 					case Gl.GL_TEXTURE_CUBE_MAP:
-						Glu.gluBuild2DMipmaps( _faceTarget, internalFormat, box.Width, box.Height, GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ), box.Data.Pin() );
+						Glu.gluBuild2DMipmaps( _faceTarget, internalFormat, box.Width, box.Height,
+						                       GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+						                       box.Data.Pin() );
 						box.Data.UnPin();
 						break;
 					case Gl.GL_TEXTURE_3D:
@@ -352,7 +357,9 @@ namespace Axiom.RenderSystems.OpenGL
 							GLPixelUtil.getGLOriginFormat(box.format), GLPixelUtil.getGLOriginDataType(box.format),
 							box.box);
 						*/
-						Gl.glTexImage3D( Gl.GL_TEXTURE_3D, 0, internalFormat, box.Width, box.Height, box.Depth, 0, GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ), box.Data.Pin() );
+						Gl.glTexImage3D( Gl.GL_TEXTURE_3D, 0, internalFormat, box.Width, box.Height, box.Depth, 0,
+						                 GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+						                 box.Data.Pin() );
 						box.Data.UnPin();
 						break;
 				}
@@ -363,11 +370,11 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					Gl.glPixelStorei( Gl.GL_UNPACK_ROW_LENGTH, box.RowPitch );
 				}
-				if ( box.Height * box.Width != box.SlicePitch )
+				if ( box.Height*box.Width != box.SlicePitch )
 				{
-					Gl.glPixelStorei( Gl.GL_UNPACK_IMAGE_HEIGHT, ( box.SlicePitch / box.Width ) );
+					Gl.glPixelStorei( Gl.GL_UNPACK_IMAGE_HEIGHT, ( box.SlicePitch/box.Width ) );
 				}
-				if ( ( ( box.Width * PixelUtil.GetNumElemBytes( box.Format ) ) & 3 ) != 0 )
+				if ( ( ( box.Width*PixelUtil.GetNumElemBytes( box.Format ) ) & 3 ) != 0 )
 				{
 					// Standard alignment of 4 is not right
 					Gl.glPixelStorei( Gl.GL_UNPACK_ALIGNMENT, 1 );
@@ -375,16 +382,21 @@ namespace Axiom.RenderSystems.OpenGL
 				switch ( _target )
 				{
 					case Gl.GL_TEXTURE_1D:
-						Gl.glTexSubImage1D( Gl.GL_TEXTURE_1D, _level, box.Left, box.Width, GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ), box.Data.Pin() );
+						Gl.glTexSubImage1D( Gl.GL_TEXTURE_1D, _level, box.Left, box.Width, GLPixelUtil.GetGLOriginFormat( box.Format ),
+						                    GLPixelUtil.GetGLOriginDataType( box.Format ), box.Data.Pin() );
 						box.Data.UnPin();
 						break;
 					case Gl.GL_TEXTURE_2D:
 					case Gl.GL_TEXTURE_CUBE_MAP:
-						Gl.glTexSubImage2D( _faceTarget, _level, box.Left, box.Top, box.Width, box.Height, GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ), box.Data.Pin() );
+						Gl.glTexSubImage2D( _faceTarget, _level, box.Left, box.Top, box.Width, box.Height,
+						                    GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+						                    box.Data.Pin() );
 						box.Data.UnPin();
 						break;
 					case Gl.GL_TEXTURE_3D:
-						Gl.glTexSubImage3D( Gl.GL_TEXTURE_3D, _level, box.Left, box.Top, box.Front, box.Width, box.Height, box.Depth, GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ), box.Data.Pin() );
+						Gl.glTexSubImage3D( Gl.GL_TEXTURE_3D, _level, box.Left, box.Top, box.Front, box.Width, box.Height, box.Depth,
+						                    GLPixelUtil.GetGLOriginFormat( box.Format ), GLPixelUtil.GetGLOriginDataType( box.Format ),
+						                    box.Data.Pin() );
 						box.Data.UnPin();
 						break;
 				}

@@ -50,11 +50,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Configuration;
-
 using Axiom.Math;
 using Axiom.Serialization;
 using Axiom.Graphics;
@@ -216,7 +214,7 @@ namespace Axiom.Core
 				}
 				for ( var i = 0; i < 3; i++ )
 				{
-					var i2 = ( i + 1 ) % 3;
+					var i2 = ( i + 1 )%3;
 					if ( vertex[ i ] == null || vertex[ i2 ] == null )
 					{
 						continue;
@@ -230,7 +228,7 @@ namespace Axiom.Core
 				removed = true;
 			}
 
-			internal PMFaceVertex[] vertex = new PMFaceVertex[ 3 ]; // the 3 points that make this tri
+			internal PMFaceVertex[] vertex = new PMFaceVertex[3]; // the 3 points that make this tri
 			internal Vector3 normal; // unit vector othogonal to this face
 			internal bool removed = false; // true if this tri is now removed
 			private uint index;
@@ -273,7 +271,7 @@ namespace Axiom.Core
 				if ( neighbors.Count == 0 && !toBeRemoved )
 				{
 					// This vertex has been removed through isolation (collapsing around it)
-					this.NotifyRemoved();
+					NotifyRemoved();
 				}
 			}
 
@@ -312,8 +310,8 @@ namespace Axiom.Core
 					vertex.neighbors.Remove( this );
 				}
 				removed = true;
-				this.collapseTo = null;
-				this.collapseCost = float.MaxValue;
+				collapseTo = null;
+				collapseCost = float.MaxValue;
 			}
 
 			#endregion
@@ -376,8 +374,8 @@ namespace Axiom.Core
 			#endregion
 			internal void SetDetails( Vector3 pos, uint numCommon )
 			{
-				this.position = pos;
-				this.index = numCommon;
+				position = pos;
+				index = numCommon;
 			}
 		}
 
@@ -390,13 +388,13 @@ namespace Axiom.Core
 
 		#region Fields
 
-		private VertexData vertexData;
-		private IndexData indexData;
+		private readonly VertexData vertexData;
+		private readonly IndexData indexData;
 		private uint currNumIndexes;
 		private uint numCommonVertices;
 
 		/// Multiple copies, 1 per vertex buffer
-		private List<PMWorkingData> workingDataList = new List<PMWorkingData>();
+		private readonly List<PMWorkingData> workingDataList = new List<PMWorkingData>();
 
 		/// The worst collapse cost from all vertex buffers for each vertex
 		private float[] worstCosts;
@@ -441,7 +439,7 @@ namespace Axiom.Core
 		/// </param>
 		public void AddExtraVertexPositionBuffer( VertexData vertexData )
 		{
-			AddWorkingData( vertexData, this.indexData );
+			AddWorkingData( vertexData, indexData );
 		}
 
 
@@ -484,7 +482,7 @@ namespace Axiom.Core
 				{
 					if ( quota == VertexReductionQuota.Proportional )
 					{
-						numCollapses = (uint)( numVerts * reductionValue );
+						numCollapses = (uint)( numVerts*reductionValue );
 					}
 					else
 					{
@@ -537,13 +535,13 @@ namespace Axiom.Core
 		{
 			// Insert blank working data, then fill
 			var work = new PMWorkingData();
-			this.workingDataList.Add( work );
+			workingDataList.Add( work );
 
 			// Build vertex list
 			// Resize face list (this will always be this big)
-			work.faceVertList = new PMFaceVertex[ vertexData.vertexCount ];
+			work.faceVertList = new PMFaceVertex[vertexData.vertexCount];
 			// Also resize common vert list to max, to avoid reallocations
-			work.vertList = new PMVertex[ vertexData.vertexCount ];
+			work.vertList = new PMVertex[vertexData.vertexCount];
 
 			// locate position element & the buffer to go with it
 			var posElem = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
@@ -609,7 +607,7 @@ namespace Axiom.Core
 			numCommonVertices = numCommon;
 
 			// Build tri list
-			var numTris = (uint)indexData.indexCount / 3;
+			var numTris = (uint)indexData.indexCount/3;
 			var ibuf = indexData.indexBuffer;
 			var use32bitindexes = ( ibuf.Type == IndexType.Size32 );
 			var indexBufferPtr = ibuf.Lock( BufferLocking.ReadOnly );
@@ -620,7 +618,7 @@ namespace Axiom.Core
 				var pInt = indexBufferPtr.ToUIntPointer();
 				var pShort = indexBufferPtr.ToUShortPointer();
 				var idx = 0;
-				work.triList = new PMTriangle[ (int)numTris ]; // assumed tri list
+				work.triList = new PMTriangle[(int)numTris]; // assumed tri list
 				for ( uint i = 0; i < numTris; ++i )
 				{
 					// use 32-bit index always since we're not storing
@@ -642,7 +640,7 @@ namespace Axiom.Core
 		/// Internal method for initialising the edge collapse costs
 		private void InitialiseEdgeCollapseCosts()
 		{
-			worstCosts = new float[ vertexData.vertexCount ];
+			worstCosts = new float[vertexData.vertexCount];
 			foreach ( var data in workingDataList )
 			{
 				for ( var i = 0; i < data.vertList.Length; ++i )
@@ -720,7 +718,7 @@ namespace Axiom.Core
 							// This time, the nearer the dot is to -1, the better, because that means
 							// the edges are opposite each other, therefore less kinkiness
 							// Scale into [0..1]
-							kinkiness = ( otherBorderEdge.Dot( collapseEdge ) + 1.002f ) * 0.5f;
+							kinkiness = ( otherBorderEdge.Dot( collapseEdge ) + 1.002f )*0.5f;
 							maxKinkiness = Utility.Max( kinkiness, maxKinkiness );
 						}
 					}
@@ -745,7 +743,7 @@ namespace Axiom.Core
 						float dotprod = srcFace.normal.Dot( sideFace.normal );
 						// NB we do (1-..) to invert curvature where 1 is high curvature [0..1]
 						// Whilst dot product is high when angle difference is low
-						mincurv = Utility.Min( mincurv, ( 1.002f - dotprod ) * 0.5f );
+						mincurv = Utility.Min( mincurv, ( 1.002f - dotprod )*0.5f );
 					}
 					curvature = Utility.Max( curvature, mincurv );
 				}
@@ -854,7 +852,7 @@ namespace Axiom.Core
 			{
 				worstCost = Utility.Max( worstCost, ComputeEdgeCostAtVertexForBuffer( data, vertIndex ) );
 			}
-			this.worstCosts[ (int)vertIndex ] = worstCost;
+			worstCosts[ (int)vertIndex ] = worstCost;
 		}
 
 		/// Internal method to compute edge collapse costs for all buffers /
@@ -899,7 +897,9 @@ namespace Axiom.Core
 			var use32bitindexes = ( this.indexData.indexBuffer.Type == IndexType.Size32 );
 
 			// Create index buffer, we don't need to read it back or modify it a lot
-			indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( this.indexData.indexBuffer.Type, indexData.indexCount, BufferUsage.StaticWriteOnly, false );
+			indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( this.indexData.indexBuffer.Type,
+			                                                                          indexData.indexCount,
+			                                                                          BufferUsage.StaticWriteOnly, false );
 
 			var bufPtr = indexData.indexBuffer.Lock( BufferLocking.Discard );
 
@@ -911,7 +911,7 @@ namespace Axiom.Core
 				var pShort = bufPtr.ToUShortPointer();
 				var pInt = bufPtr.ToUIntPointer();
 				// Use the first working data buffer, they are all the same index-wise
-				var work = this.workingDataList[ 0 ];
+				var work = workingDataList[ 0 ];
 				foreach ( var tri in work.triList )
 				{
 					if ( !tri.removed )

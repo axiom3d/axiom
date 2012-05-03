@@ -38,12 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using System.Collections.Generic;
-
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -173,7 +170,9 @@ namespace Axiom.Graphics
 
 			#region Construction and Destruction
 
-			public DepthSortDescendingComparer() {}
+			public DepthSortDescendingComparer()
+			{
+			}
 
 			#endregion Construction and Destruction
 
@@ -214,27 +213,32 @@ namespace Axiom.Graphics
 		#region Fields and Properties
 
 		/// Radix sorter for accessing sort value 1 (Pass)
-		private static RadixSortUInt32<List<RenderablePass>, RenderablePass> _radixSorter1 = new RadixSortUInt32<List<RenderablePass>, RenderablePass>();
+		private static readonly RadixSortUInt32<List<RenderablePass>, RenderablePass> _radixSorter1 =
+			new RadixSortUInt32<List<RenderablePass>, RenderablePass>();
 
 		/// Radix sorter for sort value 2 (distance)
-		private static RadixSortSingle<List<RenderablePass>, RenderablePass> _radixSorter2 = new RadixSortSingle<List<RenderablePass>, RenderablePass>();
+		private static readonly RadixSortSingle<List<RenderablePass>, RenderablePass> _radixSorter2 =
+			new RadixSortSingle<List<RenderablePass>, RenderablePass>();
 
 		/// Bitmask of the organization modes requested
 		private OrganizationMode _organizationMode;
 
 		/// Grouped 
-		private AxiomSortedCollection<Pass, List<IRenderable>> _grouped = new AxiomSortedCollection<Pass, List<IRenderable>>( new PassGroupComparer() );
+		private readonly AxiomSortedCollection<Pass, List<IRenderable>> _grouped =
+			new AxiomSortedCollection<Pass, List<IRenderable>>( new PassGroupComparer() );
 
 		/// Sorted descending (can iterate backwards to get ascending)
-		private List<RenderablePass> _sortedDescending = new List<RenderablePass>();
+		private readonly List<RenderablePass> _sortedDescending = new List<RenderablePass>();
 
-		private DepthSortDescendingComparer _defaultDepthSortComparer = new DepthSortDescendingComparer();
+		private readonly DepthSortDescendingComparer _defaultDepthSortComparer = new DepthSortDescendingComparer();
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
-		public QueuedRenderableCollection() {}
+		public QueuedRenderableCollection()
+		{
+		}
 
 		#endregion Construction and Destruction
 
@@ -375,7 +379,9 @@ namespace Axiom.Graphics
 		{
 			if ( (int)( organizationMode & _organizationMode ) == 0 )
 			{
-				throw new ArgumentException( "Organization mode requested in AcceptVistor was not notified " + "to this class ahead of time, therefore may not be supported.", "organizationMode" );
+				throw new ArgumentException(
+					"Organization mode requested in AcceptVistor was not notified " +
+					"to this class ahead of time, therefore may not be supported.", "organizationMode" );
 			}
 
 			switch ( organizationMode )

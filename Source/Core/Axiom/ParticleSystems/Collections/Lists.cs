@@ -48,15 +48,21 @@ namespace Axiom.ParticleSystems.Collections
 	/// <summary>
 	/// 
 	/// </summary>
-	public class EmitterList : List<ParticleEmitter> {}
+	public class EmitterList : List<ParticleEmitter>
+	{
+	}
 
 	/// <summary>
 	/// 
 	/// </summary>
-	public class AffectorList : List<ParticleAffector> {}
+	public class AffectorList : List<ParticleAffector>
+	{
+	}
 
 	/// <summary>
 	/// 
 	/// </summary>
-	public class ParticleList : List<Particle> {}
+	public class ParticleList : List<Particle>
+	{
+	}
 }

@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -84,23 +83,20 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Type of program (vertex or fragment) this usage is being specified for.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected GpuProgramType type;
+		[OgreVersion( 1, 7, 2790 )] protected GpuProgramType type;
 
 		#endregion
 
 		#region parent
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected Pass parent;
+		[OgreVersion( 1, 7, 2790 )] protected Pass parent;
 
 		#endregion
 
 		#region recreateParams
 
 		/// Whether to recreate parameters next load
-		[OgreVersion( 1, 7, 2790 )]
-		private bool recreateParams;
+		[OgreVersion( 1, 7, 2790 )] private bool recreateParams;
 
 		#endregion
 
@@ -109,8 +105,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Reference to the program whose usage is being specified within this class.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected GpuProgram program;
+		[OgreVersion( 1, 7, 2790 )] protected GpuProgram program;
 
 		#endregion
 
@@ -119,8 +114,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Low level GPU program parameters.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected GpuProgramParameters parameters;
+		[OgreVersion( 1, 7, 2790 )] protected GpuProgramParameters parameters;
 
 		#endregion
 
@@ -164,7 +158,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -200,7 +194,8 @@ namespace Axiom.Graphics
 			{
 				var myType = type.ToString();
 				var yourType = program.Type.ToString();
-				throw new AxiomException( "{0} is a {1} program, but you are assigning it to a {2} program slot. This is invalid.", program.Name, yourType, myType );
+				throw new AxiomException( "{0} is a {1} program, but you are assigning it to a {2} program slot. This is invalid.",
+				                          program.Name, yourType, myType );
 			}
 
 			// hackaround as Listener::loadingComplete is not in place, yet

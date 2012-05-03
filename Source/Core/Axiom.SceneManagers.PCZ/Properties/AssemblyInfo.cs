@@ -49,5 +49,5 @@ using System.Runtime.CompilerServices;
 // associated with an assembly.
 //
 
-[assembly: AssemblyTitle("Axiom Portal Connected Scene Manager Plugin")]
-[assembly: AssemblyDescription("A SceneManager Plugin that can render scenes using portals.")]
+[assembly: AssemblyTitle( "Axiom Portal Connected Scene Manager Plugin" )]
+[assembly: AssemblyDescription( "A SceneManager Plugin that can render scenes using portals." )]

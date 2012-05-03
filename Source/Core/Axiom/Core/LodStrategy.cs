@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -62,22 +61,7 @@ namespace Axiom.Core
 	{
 		#region Fields and Properties
 
-		/// <summary>
-		/// Name of this strategy.
-		/// </summary>
-		private string _name;
-
-		public string Name
-		{
-			get
-			{
-				return this._name;
-			}
-			protected set
-			{
-				this._name = value;
-			}
-		}
+		public string Name { get; protected set; }
 
 		#endregion Fields and Properties
 
@@ -89,7 +73,7 @@ namespace Axiom.Core
 		/// <param name="name"></param>
 		public LodStrategy( string name )
 		{
-			_name = name;
+			Name = name;
 		}
 
 		#endregion Construction and Destruction

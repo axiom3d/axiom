@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -66,8 +65,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///		GL Handle for the shader object.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected GLSLProgram glslProgram;
+		[OgreVersion( 1, 7, 2790 )] protected GLSLProgram glslProgram;
 
 		#endregion
 
@@ -76,8 +74,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///		Keep track of the number of vertex shaders created.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected static int vertexShaderCount;
+		[OgreVersion( 1, 7, 2790 )] protected static int vertexShaderCount;
 
 		#endregion
 
@@ -86,8 +83,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///		Keep track of the number of fragment shaders created.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected static int fragmentShaderCount;
+		[OgreVersion( 1, 7, 2790 )] protected static int fragmentShaderCount;
 
 		#endregion
 
@@ -96,8 +92,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <summary>
 		///		Keep track of the number of geometry shaders created.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected static int geometryShaderCount;
+		[OgreVersion( 1, 7, 2790 )] protected static int geometryShaderCount;
 
 		#endregion
 

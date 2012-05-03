@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Math;
 using Axiom.Core;
 
@@ -90,7 +89,7 @@ namespace Axiom.Animating
 			: base()
 		{
 			this.handle = handle;
-			this.isManuallyControlled = false;
+			isManuallyControlled = false;
 			this.creator = creator;
 		}
 
@@ -101,7 +100,7 @@ namespace Axiom.Animating
 			: base( name )
 		{
 			this.handle = handle;
-			this.isManuallyControlled = false;
+			isManuallyControlled = false;
 			this.creator = creator;
 		}
 
@@ -150,7 +149,7 @@ namespace Axiom.Animating
 			var bone = creator.CreateBone( handle );
 			bone.Translate( translate );
 			bone.Rotate( rotate );
-			this.AddChild( bone );
+			AddChild( bone );
 
 			return bone;
 		}
@@ -177,7 +176,7 @@ namespace Axiom.Animating
 			SetInitialState();
 
 			// save inverse derived, used for mesh transform later (assumes Update has been called by Skeleton
-			MakeInverseTransform( this.DerivedPosition, Vector3.UnitScale, this.DerivedOrientation, ref bindDerivedInverseTransform );
+			MakeInverseTransform( DerivedPosition, Vector3.UnitScale, DerivedOrientation, ref bindDerivedInverseTransform );
 		}
 
 		#endregion
@@ -240,7 +239,9 @@ namespace Axiom.Animating
 		public ushort boneIndex;
 		public float weight;
 
-		public VertexBoneAssignment() {}
+		public VertexBoneAssignment()
+		{
+		}
 
 		public VertexBoneAssignment( VertexBoneAssignment other )
 		{

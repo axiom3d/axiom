@@ -51,12 +51,12 @@ namespace Axiom.Scripting
 	[AttributeUsage( AttributeTargets.Method, AllowMultiple = true )]
 	public sealed class ParserCommandAttribute : Attribute
 	{
-		private string attributeName;
-		private string parserType;
+		private readonly string attributeName;
+		private readonly string parserType;
 
 		public ParserCommandAttribute( string name, string parserType )
 		{
-			this.attributeName = name;
+			attributeName = name;
 			this.parserType = parserType;
 		}
 

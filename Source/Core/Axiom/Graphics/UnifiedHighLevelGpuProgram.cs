@@ -40,10 +40,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Scripting;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -73,7 +71,7 @@ namespace Axiom.Graphics
 	{
 		#region Fields and Properties
 
-		private List<String> _delegateNames = new List<string>();
+		private readonly List<String> _delegateNames = new List<string>();
 
 		private HighLevelGpuProgram _chosenDelegate;
 
@@ -94,10 +92,15 @@ namespace Axiom.Graphics
 		#region Construction and Destruction
 
 		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group )
-			: this( creator, name, handle, group, false, null ) {}
+			: this( creator, name, handle, group, false, null )
+		{
+		}
 
-		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( creator, name, handle, group, isManual, loader ) {}
+		internal UnifiedHighLevelGpuProgram( ResourceManager creator, string name, ResourceHandle handle, string group,
+		                                     bool isManual, IManualResourceLoader loader )
+			: base( creator, name, handle, group, isManual, loader )
+		{
+		}
 
 		#endregion Construction and Destruction
 
@@ -118,7 +121,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		protected virtual void buildConstantDefinitions() {}
+		protected virtual void buildConstantDefinitions()
+		{
+		}
 
 		/// <summary>
 		/// Adds a new delegate program to the list.
@@ -355,7 +360,8 @@ namespace Axiom.Graphics
 			}
 		}
 
-		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle,
+		                                                    string group, bool isManual, IManualResourceLoader loader )
 		{
 			return new UnifiedHighLevelGpuProgram( creator, name, handle, group, isManual, loader );
 		}

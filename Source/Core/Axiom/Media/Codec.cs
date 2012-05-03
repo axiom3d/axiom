@@ -34,7 +34,6 @@
 #region Namespace Declarations
 
 using System.IO;
-
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -77,7 +76,7 @@ namespace Axiom.Media
 			{
 				get
 				{
-					return this._tuple.First;
+					return _tuple.First;
 				}
 			}
 
@@ -85,13 +84,13 @@ namespace Axiom.Media
 			{
 				get
 				{
-					return this._tuple.Second;
+					return _tuple.Second;
 				}
 			}
 
 			public DecodeResult( Stream s, CodecData data )
 			{
-				this._tuple = new Tuple<Stream, CodecData>( s, data );
+				_tuple = new Tuple<Stream, CodecData>( s, data );
 			}
 		};
 

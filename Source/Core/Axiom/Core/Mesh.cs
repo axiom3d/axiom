@@ -43,18 +43,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
-
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Configuration;
-
 using Axiom.Math;
 using Axiom.Math.Collections;
 using Axiom.Serialization;
 using Axiom.Graphics;
-
 using ResourceHandle = System.UInt64;
-
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -128,7 +124,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		Collection of sub meshes for this mesh.
 		///	</summary>
-		private SubMeshList _subMeshList = new SubMeshList();
+		private readonly SubMeshList _subMeshList = new SubMeshList();
 
 		/// <summary>
 		///    Gets the number of submeshes belonging to this mesh.
@@ -257,7 +253,8 @@ namespace Axiom.Core
 					}
 					catch ( Exception )
 					{
-						LogManager.Instance.Write( "Unable to load skeleton " + _skeletonName + " for Mesh " + Name + ". This Mesh will not be animated. You can ignore this message if you are using an offline tool." );
+						LogManager.Instance.Write( "Unable to load skeleton " + _skeletonName + " for Mesh " + Name +
+						                           ". This Mesh will not be animated. You can ignore this message if you are using an offline tool." );
 					}
 				}
 			}
@@ -283,7 +280,8 @@ namespace Axiom.Core
 		#region BoneAssignmentList Property
 
 		/// <summary>List of bone assignment for this mesh.</summary>
-		private Dictionary<int, List<VertexBoneAssignment>> _boneAssignmentList = new Dictionary<int, List<VertexBoneAssignment>>();
+		private readonly Dictionary<int, List<VertexBoneAssignment>> _boneAssignmentList =
+			new Dictionary<int, List<VertexBoneAssignment>>();
 
 		/// <summary>
 		///		Gets bone assigment list
@@ -477,7 +475,7 @@ namespace Axiom.Core
 		#region AttachmentPoints Property
 
 		/// <summary>Internal list of named transforms attached to this mesh.</summary>
-		private List<AttachmentPoint> _attachmentPoints = new List<AttachmentPoint>();
+		private readonly List<AttachmentPoint> _attachmentPoints = new List<AttachmentPoint>();
 
 		/// <summary>
 		/// Llist of named transforms attached to this mesh.
@@ -496,7 +494,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     Storage of morph animations, lookup by name
 		/// </summary>
-		private Dictionary<string, Animation> _animationsList = new Dictionary<string, Animation>();
+		private readonly Dictionary<string, Animation> _animationsList = new Dictionary<string, Animation>();
 
 		/// <summary>
 		///   The number of vertex animations in the mesh
@@ -565,7 +563,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     List of available poses for shared and dedicated geometryPoseList
 		/// </summary>
-		private List<Pose> _poseList = new List<Pose>();
+		private readonly List<Pose> _poseList = new List<Pose>();
 
 		/// <summary>
 		///		Gets bone assigment list
@@ -606,7 +604,8 @@ namespace Axiom.Core
 
 		#region Construction and Destruction
 
-		public Mesh( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		public Mesh( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		             IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			// This will be set to false by serializers 1.3 and above
@@ -635,7 +634,7 @@ namespace Axiom.Core
 			// always use software blending for now
 			useSoftwareBlending = true;
 
-			this.SkeletonName = "";
+			SkeletonName = "";
 		}
 
 		#endregion Construction and Destruction
@@ -831,13 +830,13 @@ namespace Axiom.Core
 			}
 
 			// temp data buffers
-			var vertIdx = new ushort[ 3 ];
-			var vertPos = new Vector3[ 3 ];
-			var u = new float[ 3 ];
-			var v = new float[ 3 ];
+			var vertIdx = new ushort[3];
+			var vertPos = new Vector3[3];
+			var u = new float[3];
+			var v = new float[3];
 
 			// setup a new 3D texture coord-set buffer for every sub mesh
-			var numSubMeshes = this.SubMeshCount;
+			var numSubMeshes = SubMeshCount;
 
 			var sharedGeometryDone = false;
 
@@ -890,7 +889,9 @@ namespace Axiom.Core
 					if ( srcElem == null || srcElem.Type != VertexElementType.Float2 )
 					{
 						// TODO: SubMesh names
-						throw new AxiomException( "SubMesh '{0}' of Mesh '{1}' has no 2D texture coordinates at the selected set, therefore we cannot calculate tangents.", "<TODO: SubMesh name>", Name );
+						throw new AxiomException(
+							"SubMesh '{0}' of Mesh '{1}' has no 2D texture coordinates at the selected set, therefore we cannot calculate tangents.",
+							"<TODO: SubMesh name>", Name );
 					}
 
 					HardwareVertexBuffer srcBuffer = null, destBuffer = null, posBuffer = null;
@@ -940,7 +941,7 @@ namespace Axiom.Core
 					}
 
 					// loop through all faces to calculate the tangents and normals
-					var numFaces = idxData.indexCount / 3;
+					var numFaces = idxData.indexCount/3;
 					var vCount = 0;
 
 					// loop through all faces to calculate the tangents
@@ -953,7 +954,7 @@ namespace Axiom.Core
 							// get indices of vertices that form a polygon in the position buffer
 							vertIdx[ i ] = pIdx[ vCount++ ];
 
-							var tmpPtr = posPtr + ( elemPos.Offset + ( posInc * vertIdx[ i ] ) );
+							var tmpPtr = posPtr + ( elemPos.Offset + ( posInc*vertIdx[ i ] ) );
 
 							// vertex position buffer, read only
 							var pVPos = tmpPtr.ToFloatPointer();
@@ -964,7 +965,7 @@ namespace Axiom.Core
 							vertPos[ i ].z = pVPos[ 2 ];
 
 							// get the vertex tex coords from the 2D tex coord buffer
-							tmpPtr = srcPtr + ( srcElem.Offset + ( srcInc * vertIdx[ i ] ) );
+							tmpPtr = srcPtr + ( srcElem.Offset + ( srcInc*vertIdx[ i ] ) );
 							// pointer to 2D tex.coords, read only
 							var p2DTC = tmpPtr.ToFloatPointer();
 
@@ -973,7 +974,8 @@ namespace Axiom.Core
 						} // for v = 1 to 3
 
 						// calculate the tangent space vector
-						var tangent = Utility.CalculateTangentSpaceVector( vertPos[ 0 ], vertPos[ 1 ], vertPos[ 2 ], u[ 0 ], v[ 0 ], u[ 1 ], v[ 1 ], u[ 2 ], v[ 2 ] );
+						var tangent = Utility.CalculateTangentSpaceVector( vertPos[ 0 ], vertPos[ 1 ], vertPos[ 2 ], u[ 0 ], v[ 0 ],
+						                                                   u[ 1 ], v[ 1 ], u[ 2 ], v[ 2 ] );
 
 						// write new tex.coords
 						// note we only write the tangent, not the binormal since we can calculate
@@ -984,7 +986,7 @@ namespace Axiom.Core
 						{
 							// write values (they must be 0 and we must add them so we can average
 							// all the contributions from all the faces
-							var tmpPtr = destPtr + ( destElem.Offset + ( destInc * vertIdx[ i ] ) );
+							var tmpPtr = destPtr + ( destElem.Offset + ( destInc*vertIdx[ i ] ) );
 
 							// pointer to 3D tex.coords, write/read (discard)
 							var p3DTC = tmpPtr.ToFloatPointer();
@@ -1092,7 +1094,8 @@ namespace Axiom.Core
 		/// <summary>
 		///    Software blending oriented bone assignment compilation.
 		/// </summary>
-		protected internal void CompileBoneAssignments( Dictionary<int, List<VertexBoneAssignment>> boneAssignments, int numBlendWeightsPerVertex, VertexData targetVertexData )
+		protected internal void CompileBoneAssignments( Dictionary<int, List<VertexBoneAssignment>> boneAssignments,
+		                                                int numBlendWeightsPerVertex, VertexData targetVertexData )
 		{
 			// Create or reuse blend weight / indexes buffer
 			// Indices are always a UBYTE4 no matter how many weights per vertex
@@ -1119,8 +1122,8 @@ namespace Axiom.Core
 				bindIndex = bind.NextIndex;
 			}
 
-			var bufferSize = Memory.SizeOf( typeof ( byte ) ) * 4;
-			bufferSize += Memory.SizeOf( typeof ( float ) ) * numBlendWeightsPerVertex;
+			var bufferSize = Memory.SizeOf( typeof ( byte ) )*4;
+			bufferSize += Memory.SizeOf( typeof ( float ) )*numBlendWeightsPerVertex;
 
 			VertexElement idxElem, weightElem;
 
@@ -1137,19 +1140,26 @@ namespace Axiom.Core
 					insertPoint++;
 				}
 
-				idxElem = decl.InsertElement( insertPoint, bindIndex, 0, VertexElementType.UByte4, VertexElementSemantic.BlendIndices );
+				idxElem = decl.InsertElement( insertPoint, bindIndex, 0, VertexElementType.UByte4,
+				                              VertexElementSemantic.BlendIndices );
 
-				weightElem = decl.InsertElement( insertPoint + 1, bindIndex, Memory.SizeOf( typeof ( byte ) ) * 4, VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ), VertexElementSemantic.BlendWeights );
+				weightElem = decl.InsertElement( insertPoint + 1, bindIndex, Memory.SizeOf( typeof ( byte ) )*4,
+				                                 VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ),
+				                                 VertexElementSemantic.BlendWeights );
 			}
 			else
 			{
 				// Position is not the first semantic, therefore this declaration is
 				// not pre-Dx9 compatible anyway, so just tack it on the end
 				idxElem = decl.AddElement( bindIndex, 0, VertexElementType.UByte4, VertexElementSemantic.BlendIndices );
-				weightElem = decl.AddElement( bindIndex, Memory.SizeOf( typeof ( byte ) ) * 4, VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ), VertexElementSemantic.BlendWeights );
+				weightElem = decl.AddElement( bindIndex, Memory.SizeOf( typeof ( byte ) )*4,
+				                              VertexElement.MultiplyTypeCount( VertexElementType.Float1, numBlendWeightsPerVertex ),
+				                              VertexElementSemantic.BlendWeights );
 			}
 
-			var vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( bindIndex ), targetVertexData.vertexCount, BufferUsage.StaticWriteOnly, true ); // use shadow buffer
+			var vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( bindIndex ), targetVertexData.vertexCount,
+			                                                              BufferUsage.StaticWriteOnly, true );
+				// use shadow buffer
 
 			// bind new buffer
 			bind.SetBinding( bindIndex, vbuf );
@@ -1225,7 +1235,9 @@ namespace Axiom.Core
 			else if ( tex3d.Type != VertexElementType.Float3 )
 			{
 				// tex coord buffer exists, but is not 3d.
-				throw new AxiomException( "Texture coordinate set {0} already exists but is not 3D, therefore cannot contain tangents. Pick an alternative destination coordinate set.", destCoordSet );
+				throw new AxiomException(
+					"Texture coordinate set {0} already exists but is not 3D, therefore cannot contain tangents. Pick an alternative destination coordinate set.",
+					destCoordSet );
 			}
 
 			if ( needsToBeCreated )
@@ -1233,22 +1245,26 @@ namespace Axiom.Core
 				// What we need to do, to be most efficient with our vertex streams,
 				// is to tack the new 3D coordinate set onto the same buffer as the
 				// previous texture coord set
-				var prevTexCoordElem = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.TexCoords, (short)( destCoordSet - 1 ) );
+				var prevTexCoordElem = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.TexCoords,
+				                                                                           (short)( destCoordSet - 1 ) );
 
 				if ( prevTexCoordElem == null )
 				{
-					throw new AxiomException( "Cannot locate the texture coordinate element preceding the destination texture coordinate set to which to append the new tangents." );
+					throw new AxiomException(
+						"Cannot locate the texture coordinate element preceding the destination texture coordinate set to which to append the new tangents." );
 				}
 
 				// find the buffer associated with this element
 				var origBuffer = vertexData.vertexBufferBinding.GetBuffer( prevTexCoordElem.Source );
 
 				// add the new element
-				decl.AddElement( prevTexCoordElem.Source, origBuffer.VertexSize, VertexElementType.Float3, VertexElementSemantic.TexCoords, destCoordSet );
+				decl.AddElement( prevTexCoordElem.Source, origBuffer.VertexSize, VertexElementType.Float3,
+				                 VertexElementSemantic.TexCoords, destCoordSet );
 
 				// Now create a new buffer, which includes the previous contents
 				// plus extra space for the 3D coords
-				var newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount, origBuffer.Usage, origBuffer.HasShadowBuffer );
+				var newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount, origBuffer.Usage,
+				                                                                   origBuffer.HasShadowBuffer );
 
 				// now copy the original data across
 				var srcPtr = origBuffer.Lock( BufferLocking.ReadOnly );
@@ -1257,7 +1273,7 @@ namespace Axiom.Core
 				var vertSize = origBuffer.VertexSize;
 
 				// size of the element to skip
-				var elemSize = sizeof ( float ) * 3;
+				var elemSize = sizeof ( float )*3;
 
 				for ( int i = 0, srcOffset = 0, dstOffset = 0; i < vertexData.vertexCount; i++ )
 				{
@@ -1363,7 +1379,8 @@ namespace Axiom.Core
 				// After iterating, we should have a source and a possible destination (t)
 				if ( sourceElem == null )
 				{
-					throw new AxiomException( "Cannot locate an appropriate 2D texture coordinate set for all the vertex data in this mesh to create tangents from." );
+					throw new AxiomException(
+						"Cannot locate an appropriate 2D texture coordinate set for all the vertex data in this mesh to create tangents from." );
 				}
 
 				// Check that we agree with previous decisions, if this is not the first one
@@ -1371,11 +1388,13 @@ namespace Axiom.Core
 				{
 					if ( sourceElem.Index != sourceCoordSet )
 					{
-						throw new AxiomException( "Multiple sets of vertex data in this mesh disagree on the appropriate index to use for the source texture coordinates. This ambiguity must be rectified before tangents can be generated." );
+						throw new AxiomException(
+							"Multiple sets of vertex data in this mesh disagree on the appropriate index to use for the source texture coordinates. This ambiguity must be rectified before tangents can be generated." );
 					}
 					if ( t != destCoordSet )
 					{
-						throw new AxiomException( "Multiple sets of vertex data in this mesh disagree on the appropriate index to use for the target texture coordinates. This ambiguity must be rectified before tangents can be generated." );
+						throw new AxiomException(
+							"Multiple sets of vertex data in this mesh disagree on the appropriate index to use for the target texture coordinates. This ambiguity must be rectified before tangents can be generated." );
 					}
 				}
 
@@ -1417,7 +1436,7 @@ namespace Axiom.Core
 			}
 
 			// not found
-			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.Name );
+			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, Name );
 		}
 
 		/// <summary>
@@ -1438,7 +1457,7 @@ namespace Axiom.Core
 			}
 
 			// not found
-			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.Name );
+			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, Name );
 		}
 
 		/// <summary>
@@ -1460,7 +1479,7 @@ namespace Axiom.Core
 			}
 
 			// not found
-			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, this.Name );
+			throw new AxiomException( "A SubMesh with the name '{0}' does not exist in mesh '{1}'", name, Name );
 		}
 
 
@@ -1535,7 +1554,7 @@ namespace Axiom.Core
 		/// <param name="skeleton"></param>
 		public void NotifySkeleton( Skeleton skeleton )
 		{
-			this._skeleton = skeleton;
+			_skeleton = skeleton;
 			_skeletonName = skeleton.Name;
 		}
 
@@ -1644,7 +1663,7 @@ namespace Axiom.Core
 				}
 
 				// Now normalise if total weight is outside tolerance
-				var delta = 1.0f / ( 1 << 24 );
+				var delta = 1.0f/( 1 << 24 );
 				if ( !Utility.RealEqual( totalWeight, 1.0f, delta ) )
 				{
 					foreach ( var vba in vbaList )
@@ -1657,7 +1676,9 @@ namespace Axiom.Core
 			// Warn that we've reduced bone assignments
 			if ( maxBones > Config.MaxBlendWeights )
 			{
-				LogManager.Instance.Write( "WARNING: Mesh '{0}' includes vertices with more than {1} bone assignments.  The lowest weighted assignments beyond this limit have been removed.", Name, Config.MaxBlendWeights );
+				LogManager.Instance.Write(
+					"WARNING: Mesh '{0}' includes vertices with more than {1} bone assignments.  The lowest weighted assignments beyond this limit have been removed.",
+					Name, Config.MaxBlendWeights );
 
 				maxBones = Config.MaxBlendWeights;
 			}
@@ -1799,7 +1820,7 @@ namespace Axiom.Core
 
 			// Initialize all types to nothing
 			_sharedVertexDataAnimationType = VertexAnimationType.None;
-			for ( var sm = 0; sm < this.SubMeshCount; sm++ )
+			for ( var sm = 0; sm < SubMeshCount; sm++ )
 			{
 				var subMesh = GetSubMesh( sm );
 				subMesh.VertexAnimationType = VertexAnimationType.None;
@@ -1815,10 +1836,13 @@ namespace Axiom.Core
 					if ( handle == 0 )
 					{
 						// shared data
-						if ( _sharedVertexDataAnimationType != VertexAnimationType.None && _sharedVertexDataAnimationType != track.AnimationType )
+						if ( _sharedVertexDataAnimationType != VertexAnimationType.None &&
+						     _sharedVertexDataAnimationType != track.AnimationType )
 						{
 							// Mixing of morph and pose animation on same data is not allowed
-							throw new Exception( "Animation tracks for shared vertex data on mesh " + Name + " try to mix vertex animation types, which is " + "not allowed, in Mesh.DetermineAnimationTypes" );
+							throw new Exception( "Animation tracks for shared vertex data on mesh " + Name +
+							                     " try to mix vertex animation types, which is " +
+							                     "not allowed, in Mesh.DetermineAnimationTypes" );
 						}
 						_sharedVertexDataAnimationType = track.AnimationType;
 					}
@@ -1826,10 +1850,13 @@ namespace Axiom.Core
 					{
 						// submesh index (-1)
 						var sm = GetSubMesh( handle - 1 );
-						if ( sm.CurrentVertexAnimationType != VertexAnimationType.None && sm.CurrentVertexAnimationType != track.AnimationType )
+						if ( sm.CurrentVertexAnimationType != VertexAnimationType.None &&
+						     sm.CurrentVertexAnimationType != track.AnimationType )
 						{
 							// Mixing of morph and pose animation on same data is not allowed
-							throw new Exception( string.Format( "Animation tracks for dedicated vertex data {0}  on mesh {1}", handle - 1, Name ) + " try to mix vertex animation types, which is " + "not allowed, in Mesh.DetermineAnimationTypes" );
+							throw new Exception(
+								string.Format( "Animation tracks for dedicated vertex data {0}  on mesh {1}", handle - 1, Name ) +
+								" try to mix vertex animation types, which is " + "not allowed, in Mesh.DetermineAnimationTypes" );
 						}
 						sm.VertexAnimationType = track.AnimationType;
 					}
@@ -1987,7 +2014,7 @@ namespace Axiom.Core
 					return i;
 				}
 			}
-			throw new Exception( "No pose called " + name + " found in Mesh " + this.Name + ", in Mesh.GetPoseIndex" );
+			throw new Exception( "No pose called " + name + " found in Mesh " + Name + ", in Mesh.GetPoseIndex" );
 		}
 
 		/// <summary>Destroy a pose by index.</summary>
@@ -2069,14 +2096,14 @@ namespace Axiom.Core
 			set
 			{
 				_lodStrategy = value;
-				Debug.Assert( this.meshLodUsageList.Count > 0 );
+				Debug.Assert( meshLodUsageList.Count > 0 );
 
-				this.meshLodUsageList[ 0 ].Value = this._lodStrategy.BaseValue;
+				meshLodUsageList[ 0 ].Value = _lodStrategy.BaseValue;
 
 				// Re-transform user lod values (starting at index 1, no need to transform base value)
 				foreach ( var meshLodUsage in meshLodUsageList )
 				{
-					meshLodUsage.Value = this._lodStrategy.TransformUserValue( meshLodUsage.UserValue );
+					meshLodUsage.Value = _lodStrategy.TransformUserValue( meshLodUsage.UserValue );
 				}
 			}
 		}
@@ -2107,7 +2134,8 @@ namespace Axiom.Core
 			}
 		}
 
-		public void GenerateLodLevels( LodValueList lodValues, ProgressiveMesh.VertexReductionQuota reductionMethod, Real reductionValue )
+		public void GenerateLodLevels( LodValueList lodValues, ProgressiveMesh.VertexReductionQuota reductionMethod,
+		                               Real reductionValue )
 		{
 			RemoveLodLevels();
 
@@ -2149,23 +2177,23 @@ namespace Axiom.Core
 
 		public void RemoveLodLevels()
 		{
-			if ( !this.IsLodManual )
+			if ( !IsLodManual )
 			{
-				foreach ( var subMesh in this._subMeshList )
+				foreach ( var subMesh in _subMeshList )
 				{
 					subMesh.RemoveLodLevels();
 				}
 			}
 
 			FreeEdgeList();
-			this.meshLodUsageList.Clear();
+			meshLodUsageList.Clear();
 			var lod = new MeshLodUsage();
 			lod.UserValue = float.NaN;
 			lod.Value = _lodStrategy.BaseValue;
 			lod.EdgeData = null;
 			lod.ManualMesh = null;
-			this.meshLodUsageList.Add( lod );
-			this._isLodManual = false;
+			meshLodUsageList.Add( lod );
+			_isLodManual = false;
 		}
 
 		/// <summary>
@@ -2248,7 +2276,8 @@ namespace Axiom.Core
 		/// <param name="blendNormals">If true, normals are blended as well as positions.</param>
 		/// <param name="blendTangents"></param>
 		/// <param name="blendBinorms"></param>
-		public static void SoftwareVertexBlend( VertexData sourceVertexData, VertexData targetVertexData, Matrix4[] matrices, bool blendNormals, bool blendTangents, bool blendBinorms )
+		public static void SoftwareVertexBlend( VertexData sourceVertexData, VertexData targetVertexData, Matrix4[] matrices,
+		                                        bool blendNormals, bool blendTangents, bool blendBinorms )
 		{
 			// Source vectors
 			var sourcePos = Vector3.Zero;
@@ -2272,10 +2301,13 @@ namespace Axiom.Core
 			var srcElemNorm = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Normal );
 			var srcElemTan = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Tangent );
 			var srcElemBinorm = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Binormal );
-			var srcElemBlendIndices = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
-			var srcElemBlendWeights = sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
+			var srcElemBlendIndices =
+				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendIndices );
+			var srcElemBlendWeights =
+				sourceVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.BlendWeights );
 
-			Debug.Assert( srcElemPos != null && srcElemBlendIndices != null && srcElemBlendWeights != null, "You must supply at least positions, blend indices and blend weights" );
+			Debug.Assert( srcElemPos != null && srcElemBlendIndices != null && srcElemBlendWeights != null,
+			              "You must supply at least positions, blend indices and blend weights" );
 
 			// Get elements for target
 			var destElemPos = targetVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
@@ -2466,7 +2498,7 @@ namespace Axiom.Core
 				// Loop per vertex
 				for ( var vertIdx = 0; vertIdx < targetVertexData.vertexCount; vertIdx++ )
 				{
-					var srcPosOffset = ( vertIdx * srcPosBuf.VertexSize + srcElemPos.Offset ) / 4;
+					var srcPosOffset = ( vertIdx*srcPosBuf.VertexSize + srcElemPos.Offset )/4;
 					// Load source vertex elements
 					sourcePos.x = pSrcPos[ srcPosOffset ];
 					sourcePos.y = pSrcPos[ srcPosOffset + 1 ];
@@ -2474,7 +2506,7 @@ namespace Axiom.Core
 
 					if ( includeNormals )
 					{
-						var srcNormOffset = ( vertIdx * srcNormBuf.VertexSize + srcElemNorm.Offset ) / 4;
+						var srcNormOffset = ( vertIdx*srcNormBuf.VertexSize + srcElemNorm.Offset )/4;
 						sourceNorm.x = pSrcNorm[ srcNormOffset ];
 						sourceNorm.y = pSrcNorm[ srcNormOffset + 1 ];
 						sourceNorm.z = pSrcNorm[ srcNormOffset + 2 ];
@@ -2482,7 +2514,7 @@ namespace Axiom.Core
 
 					if ( includeTangents )
 					{
-						var srcTanOffset = ( vertIdx * srcTanBuf.VertexSize + srcElemTan.Offset ) / 4;
+						var srcTanOffset = ( vertIdx*srcTanBuf.VertexSize + srcElemTan.Offset )/4;
 						sourceTan.x = pSrcTan[ srcTanOffset ];
 						sourceTan.y = pSrcTan[ srcTanOffset + 1 ];
 						sourceTan.z = pSrcTan[ srcTanOffset + 2 ];
@@ -2490,7 +2522,7 @@ namespace Axiom.Core
 
 					if ( includeBinormals )
 					{
-						var srcBinormOffset = ( vertIdx * srcBinormBuf.VertexSize + srcElemBinorm.Offset ) / 4;
+						var srcBinormOffset = ( vertIdx*srcBinormBuf.VertexSize + srcElemBinorm.Offset )/4;
 						sourceBinorm.x = pSrcBinorm[ srcBinormOffset ];
 						sourceBinorm.y = pSrcBinorm[ srcBinormOffset + 1 ];
 						sourceBinorm.z = pSrcBinorm[ srcBinormOffset + 2 ];
@@ -2502,8 +2534,8 @@ namespace Axiom.Core
 					accumVecTan = Vector3.Zero;
 					accumVecBinorm = Vector3.Zero;
 
-					var blendWeightOffset = ( vertIdx * srcWeightBuf.VertexSize + srcElemBlendWeights.Offset ) / 4;
-					var blendMatrixOffset = vertIdx * srcIdxBuf.VertexSize + srcElemBlendIndices.Offset;
+					var blendWeightOffset = ( vertIdx*srcWeightBuf.VertexSize + srcElemBlendWeights.Offset )/4;
+					var blendMatrixOffset = vertIdx*srcIdxBuf.VertexSize + srcElemBlendIndices.Offset;
 					// Loop per blend weight
 					for ( var blendIdx = 0; blendIdx < numWeightsPerVertex; blendIdx++ )
 					{
@@ -2539,7 +2571,7 @@ namespace Axiom.Core
 					}
 
 					// Stored blended vertex in hardware buffer
-					var dstPosOffset = ( vertIdx * destPosBuf.VertexSize + destElemPos.Offset ) / 4;
+					var dstPosOffset = ( vertIdx*destPosBuf.VertexSize + destElemPos.Offset )/4;
 					pDestPos[ dstPosOffset ] = accumVecPos.x;
 					pDestPos[ dstPosOffset + 1 ] = accumVecPos.y;
 					pDestPos[ dstPosOffset + 2 ] = accumVecPos.z;
@@ -2549,7 +2581,7 @@ namespace Axiom.Core
 					{
 						// Normalise
 						accumVecNorm.Normalize();
-						var dstNormOffset = ( vertIdx * destNormBuf.VertexSize + destElemNorm.Offset ) / 4;
+						var dstNormOffset = ( vertIdx*destNormBuf.VertexSize + destElemNorm.Offset )/4;
 						pDestNorm[ dstNormOffset ] = accumVecNorm.x;
 						pDestNorm[ dstNormOffset + 1 ] = accumVecNorm.y;
 						pDestNorm[ dstNormOffset + 2 ] = accumVecNorm.z;
@@ -2559,7 +2591,7 @@ namespace Axiom.Core
 					{
 						// Normalise
 						accumVecTan.Normalize();
-						var dstTanOffset = ( vertIdx * destTanBuf.VertexSize + destElemTan.Offset ) / 4;
+						var dstTanOffset = ( vertIdx*destTanBuf.VertexSize + destElemTan.Offset )/4;
 						pDestTan[ dstTanOffset ] = accumVecTan.x;
 						pDestTan[ dstTanOffset + 1 ] = accumVecTan.y;
 						pDestTan[ dstTanOffset + 2 ] = accumVecTan.z;
@@ -2569,7 +2601,7 @@ namespace Axiom.Core
 					{
 						// Normalise
 						accumVecBinorm.Normalize();
-						var dstBinormOffset = ( vertIdx * destBinormBuf.VertexSize + destElemBinorm.Offset ) / 4;
+						var dstBinormOffset = ( vertIdx*destBinormBuf.VertexSize + destElemBinorm.Offset )/4;
 						pDestBinorm[ dstBinormOffset ] = accumVecBinorm.x;
 						pDestBinorm[ dstBinormOffset + 1 ] = accumVecBinorm.y;
 						pDestBinorm[ dstBinormOffset + 2 ] = accumVecBinorm.z;
@@ -2617,20 +2649,20 @@ namespace Axiom.Core
 
 		public static void BlendDirVector( ref Vector3 accumVec, ref Matrix4 mat, ref Vector3 srcVec, float blendWeight )
 		{
-			accumVec.x += ( mat.m00 * srcVec.x + mat.m01 * srcVec.y + mat.m02 * srcVec.z ) * blendWeight;
+			accumVec.x += ( mat.m00*srcVec.x + mat.m01*srcVec.y + mat.m02*srcVec.z )*blendWeight;
 
-			accumVec.y += ( mat.m10 * srcVec.x + mat.m11 * srcVec.y + mat.m12 * srcVec.z ) * blendWeight;
+			accumVec.y += ( mat.m10*srcVec.x + mat.m11*srcVec.y + mat.m12*srcVec.z )*blendWeight;
 
-			accumVec.z += ( mat.m20 * srcVec.x + mat.m21 * srcVec.y + mat.m22 * srcVec.z ) * blendWeight;
+			accumVec.z += ( mat.m20*srcVec.x + mat.m21*srcVec.y + mat.m22*srcVec.z )*blendWeight;
 		}
 
 		public static void BlendPosVector( ref Vector3 accumVec, ref Matrix4 mat, ref Vector3 srcVec, float blendWeight )
 		{
-			accumVec.x += ( mat.m00 * srcVec.x + mat.m01 * srcVec.y + mat.m02 * srcVec.z + mat.m03 ) * blendWeight;
+			accumVec.x += ( mat.m00*srcVec.x + mat.m01*srcVec.y + mat.m02*srcVec.z + mat.m03 )*blendWeight;
 
-			accumVec.y += ( mat.m10 * srcVec.x + mat.m11 * srcVec.y + mat.m12 * srcVec.z + mat.m13 ) * blendWeight;
+			accumVec.y += ( mat.m10*srcVec.x + mat.m11*srcVec.y + mat.m12*srcVec.z + mat.m13 )*blendWeight;
 
-			accumVec.z += ( mat.m20 * srcVec.x + mat.m21 * srcVec.y + mat.m22 * srcVec.z + mat.m23 ) * blendWeight;
+			accumVec.z += ( mat.m20*srcVec.x + mat.m21*srcVec.y + mat.m22*srcVec.z + mat.m23 )*blendWeight;
 		}
 
 		/// <summary>
@@ -2648,7 +2680,8 @@ namespace Axiom.Core
 		///	     buffer already bound, and the number of vertices must agree with the
 		///   number in start and end
 		/// </param>
-		public static void SoftwareVertexMorph( float t, HardwareVertexBuffer b1, HardwareVertexBuffer b2, VertexData targetVertexData )
+		public static void SoftwareVertexMorph( float t, HardwareVertexBuffer b1, HardwareVertexBuffer b2,
+		                                        VertexData targetVertexData )
 		{
 #if !AXIOM_SAFE_ONLY
 			unsafe
@@ -2667,15 +2700,15 @@ namespace Axiom.Core
 				for ( var i = 0; i < targetVertexData.vertexCount; ++i )
 				{
 					// x
-					bpdst[ pdst++ ] = bpb1[ pb1 ] + t * ( bpb2[ pb2 ] - bpb1[ pb1 ] );
+					bpdst[ pdst++ ] = bpb1[ pb1 ] + t*( bpb2[ pb2 ] - bpb1[ pb1 ] );
 					++pb1;
 					++pb2;
 					// y
-					bpdst[ pdst++ ] = bpb1[ pb1 ] + t * ( bpb2[ pb2 ] - bpb1[ pb1 ] );
+					bpdst[ pdst++ ] = bpb1[ pb1 ] + t*( bpb2[ pb2 ] - bpb1[ pb1 ] );
 					++pb1;
 					++pb2;
 					// z
-					bpdst[ pdst++ ] = bpb1[ pb1 ] + t * ( bpb2[ pb2 ] - bpb1[ pb1 ] );
+					bpdst[ pdst++ ] = bpb1[ pb1 ] + t*( bpb2[ pb2 ] - bpb1[ pb1 ] );
 					++pb1;
 					++pb2;
 				}
@@ -2702,7 +2735,8 @@ namespace Axiom.Core
 		///	    buffer already bound, and the number of vertices must agree with the
 		///	    number in start and end
 		/// </param>
-		public static void SoftwareVertexPoseBlend( float weight, Dictionary<int, Vector3> vertexOffsetMap, VertexData targetVertexData )
+		public static void SoftwareVertexPoseBlend( float weight, Dictionary<int, Vector3> vertexOffsetMap,
+		                                            VertexData targetVertexData )
 		{
 			// Do nothing if no weight
 			if ( weight == 0.0f )
@@ -2724,12 +2758,12 @@ namespace Axiom.Core
 				foreach ( var pair in vertexOffsetMap )
 				{
 					// Adjust pointer
-					var pdst = pair.Key * 3;
-					pBase[ pdst ] += ( pair.Value.x * weight );
+					var pdst = pair.Key*3;
+					pBase[ pdst ] += ( pair.Value.x*weight );
 					++pdst;
-					pBase[ pdst ] += ( pair.Value.y * weight );
+					pBase[ pdst ] += ( pair.Value.y*weight );
 					++pdst;
-					pBase[ pdst ] += ( pair.Value.z * weight );
+					pBase[ pdst ] += ( pair.Value.z*weight );
 					++pdst;
 				}
 				destBuf.Unlock();
@@ -2845,12 +2879,12 @@ namespace Axiom.Core
 			// Dispose managed resources.
 			if ( _skeleton != null )
 			{
-				if ( !this.Skeleton.IsDisposed )
+				if ( !Skeleton.IsDisposed )
 				{
-					this._skeleton.Dispose();
+					_skeleton.Dispose();
 				}
 
-				this._skeleton = null;
+				_skeleton = null;
 			}
 
 			foreach ( var subMesh in _subMeshList )
@@ -2862,14 +2896,14 @@ namespace Axiom.Core
 			}
 			_subMeshList.Clear();
 
-			if ( this._sharedVertexData != null )
+			if ( _sharedVertexData != null )
 			{
-				if ( !this._sharedVertexData.IsDisposed )
+				if ( !_sharedVertexData.IsDisposed )
 				{
-					this._sharedVertexData.Dispose();
+					_sharedVertexData.Dispose();
 				}
 
-				this._sharedVertexData = null;
+				_sharedVertexData = null;
 			}
 
 			_isPreparedForShadowVolumes = false;
@@ -2888,9 +2922,9 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.IsLoaded )
+					if ( IsLoaded )
 					{
-						this.unload();
+						unload();
 					}
 				}
 

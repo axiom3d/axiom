@@ -76,7 +76,9 @@ namespace Axiom.Core
 		/// use the name of the type as a base for generating unique names.
 		/// </remarks>
 		public NameGenerator()
-			: this( typeof ( T ).Name ) {}
+			: this( typeof ( T ).Name )
+		{
+		}
 
 		/// <summary>
 		/// Constructor

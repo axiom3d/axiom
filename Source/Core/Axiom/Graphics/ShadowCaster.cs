@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics.Collections;
@@ -123,9 +122,13 @@ namespace Axiom.Graphics
 		/// <param name="extrusionDistance"></param>
 		/// <param name="flags">Technique-specific flags, see <see cref="ShadowRenderableFlags"/></param>
 		/// <returns>An iterator that will allow iteration over all renderables for the full shadow volume.</returns>
-		public abstract IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light, HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, int flags );
+		public abstract IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
+		                                                                 HardwareIndexBuffer indexBuffer, bool extrudeVertices,
+		                                                                 float extrusionDistance, int flags );
 
-		public IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light, HardwareIndexBuffer indexBuffer, float extrusionDistance, bool extrudeVertices )
+		public IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
+		                                                        HardwareIndexBuffer indexBuffer, float extrusionDistance,
+		                                                        bool extrudeVertices )
 		{
 			return GetShadowVolumeRenderableEnumerator( technique, light, indexBuffer, extrudeVertices, extrusionDistance, 0 );
 		}
@@ -157,20 +160,21 @@ namespace Axiom.Graphics
 		/// <param name="lightPosition"> 4D light position in object space, when w=0.0f this
 		/// represents a directional light</param>
 		/// <param name="extrudeDistance">The distance to extrude.</param>
-		public static void ExtrudeVertices( HardwareVertexBuffer vertexBuffer, int originalVertexCount, Vector4 lightPosition, float extrudeDistance )
+		public static void ExtrudeVertices( HardwareVertexBuffer vertexBuffer, int originalVertexCount, Vector4 lightPosition,
+		                                    float extrudeDistance )
 		{
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-				Debug.Assert( vertexBuffer.VertexSize == sizeof ( float ) * 3, "Position buffer should contain only positions!" );
+				Debug.Assert( vertexBuffer.VertexSize == sizeof ( float )*3, "Position buffer should contain only positions!" );
 
 				// Extrude the first area of the buffer into the second area
 				// Lock the entire buffer for writing, even though we'll only be
 				// updating the latter because you can't have 2 locks on the same
 				// buffer
 				var srcPtr = vertexBuffer.Lock( BufferLocking.Normal );
-				var destPtr = srcPtr + ( originalVertexCount * 3 * 4 );
+				var destPtr = srcPtr + ( originalVertexCount*3*4 );
 				var pSrc = srcPtr.ToFloatPointer();
 				var pDest = destPtr.ToFloatPointer();
 
@@ -227,7 +231,8 @@ namespace Axiom.Graphics
 		/// already been constructed but will need populating with details of
 		/// the index ranges to be used.</param>
 		/// <param name="flags">Additional controller flags, see <see cref="ShadowRenderableFlags"/>.</param>
-		protected virtual void GenerateShadowVolume( EdgeData edgeData, HardwareIndexBuffer indexBuffer, Light light, ShadowRenderableList shadowRenderables, int flags )
+		protected virtual void GenerateShadowVolume( EdgeData edgeData, HardwareIndexBuffer indexBuffer, Light light,
+		                                             ShadowRenderableList shadowRenderables, int flags )
 		{
 			// Edge groups should be 1:1 with shadow renderables
 			Debug.Assert( edgeData.edgeGroups.Count == shadowRenderables.Count );
@@ -273,7 +278,9 @@ namespace Axiom.Graphics
 						var edge = (EdgeData.Edge)eg.edges[ edgeCount ];
 
 						var t1 = (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 0 ] ];
-						var t2 = edge.isDegenerate ? (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 0 ] ] : (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 1 ] ];
+						var t2 = edge.isDegenerate
+						         	? (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 0 ] ]
+						         	: (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 1 ] ];
 
 						if ( t1.lightFacing && ( edge.isDegenerate || !t2.lightFacing ) )
 						{

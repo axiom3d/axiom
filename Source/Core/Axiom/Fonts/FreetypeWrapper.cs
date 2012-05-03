@@ -61,7 +61,6 @@ using System.Runtime.InteropServices;
 using System.Security;
 
 
-
 namespace Axiom.Fonts
 {
 
@@ -179,14 +178,12 @@ namespace Axiom.Fonts
 		/// <summary>
 		/// 
 		/// </summary>
-		[FieldOffset( 0 )]
-		public int _value;
+		[FieldOffset( 0 )] public int _value;
 
 		/// <summary>
 		/// 
 		/// </summary>
-		[FieldOffset( 0 )]
-		public IntPtr /*void*/ pointer;
+		[FieldOffset( 0 )] public IntPtr /*void*/ pointer;
 	}
 
 	/// <summary>
@@ -358,7 +355,9 @@ namespace Axiom.Fonts
 	/// 
 	/// </summary>
 	[StructLayout( LayoutKind.Sequential )]
-	public struct RasterRec_ {}
+	public struct RasterRec_
+	{
+	}
 
 	/// <summary>
 	/// A structure used to model a single span of gray (or black) pixels when rendering a monochrome or anti-aliased bitmap
@@ -675,25 +674,33 @@ namespace Axiom.Fonts
 	/// 
 	/// </summary>
 	[StructLayout( LayoutKind.Sequential )]
-	public struct LibraryRec_ {}
+	public struct LibraryRec_
+	{
+	}
 
 	/// <summary>
 	/// /
 	/// </summary>
 	[StructLayout( LayoutKind.Sequential )]
-	public struct ModuleRec_ {}
+	public struct ModuleRec_
+	{
+	}
 
 	/// <summary>
 	/// 
 	/// </summary>
 	[StructLayout( LayoutKind.Sequential )]
-	public struct DriverRec_ {}
+	public struct DriverRec_
+	{
+	}
 
 	/// <summary>
 	/// 
 	/// </summary>
 	[StructLayout( LayoutKind.Sequential )]
-	public struct RendererRec_ {}
+	public struct RendererRec_
+	{
+	}
 
 	/// <summary>
 	/// FreeType root face class structure. A face object models a typeface in a font file.
@@ -1032,13 +1039,17 @@ namespace Axiom.Fonts
 	/// 
 	/// </summary>
 	[StructLayout( LayoutKind.Sequential )]
-	public struct Face_InternalRec_ {}
+	public struct Face_InternalRec_
+	{
+	}
 
 	/// <summary>
 	/// 
 	/// </summary>
 	[StructLayout( LayoutKind.Sequential )]
-	public struct Size_InternalRec_ {}
+	public struct Size_InternalRec_
+	{
+	}
 
 	/// <summary>
 	/// The size metrics structure gives the metrics of a size object.
@@ -1091,13 +1102,17 @@ namespace Axiom.Fonts
 	/// 
 	/// </summary>
 	[StructLayout( LayoutKind.Sequential )]
-	public struct SubGlyphRec_ {}
+	public struct SubGlyphRec_
+	{
+	}
 
 	/// <summary>
 	/// 
 	/// </summary>
 	[StructLayout( LayoutKind.Sequential )]
-	public struct Slot_InternalRec_ {}
+	public struct Slot_InternalRec_
+	{
+	}
 
 	/// <summary>
 	/// A simple structure used to pass more or less generic parameters to FT_Open_Face.
@@ -2496,7 +2511,8 @@ namespace Axiom.Fonts
 #if ( !(XBOX || XBOX360) )
 		[SuppressUnmanagedCodeSecurity]
 #endif
-		public static extern void FT_Library_Version( IntPtr /*LibraryRec_*/ library, ref int amajor, ref int aminor, ref int apatch );
+		public static extern void FT_Library_Version( IntPtr /*LibraryRec_*/ library, ref int amajor, ref int aminor,
+		                                              ref int apatch );
 
 		/// <summary>
 		/// Destroy a given FreeType library object and all of its children, including resources, drivers, faces, sizes, etc.
@@ -2521,7 +2537,8 @@ namespace Axiom.Fonts
 #if ( !(XBOX || XBOX360) )
 		[SuppressUnmanagedCodeSecurity]
 #endif
-		public static extern int FT_New_Face( IntPtr /*LibraryRec_*/ library, string filepathname, int face_index, out IntPtr /*IntPtr FaceRec*/ aface );
+		public static extern int FT_New_Face( IntPtr /*LibraryRec_*/ library, string filepathname, int face_index,
+		                                      out IntPtr /*IntPtr FaceRec*/ aface );
 
 		/// <summary>
 		/// This function calls FT_Open_Face to open a font which has been loaded into memory.
@@ -2537,7 +2554,8 @@ namespace Axiom.Fonts
 #if ( !(XBOX || XBOX360) )
 		[SuppressUnmanagedCodeSecurity]
 #endif
-		public static extern int FT_New_Memory_Face( IntPtr /*LibraryRec_*/ library, [In] byte[] file_base, int file_size, int face_index, out IntPtr /*IntPtr FaceRec*/ aface );
+		public static extern int FT_New_Memory_Face( IntPtr /*LibraryRec_*/ library, [In] byte[] file_base, int file_size,
+		                                             int face_index, out IntPtr /*IntPtr FaceRec*/ aface );
 
 		/// <summary>
 		/// Create a face object from a given resource described by FT_Open_Args.
@@ -2554,7 +2572,8 @@ namespace Axiom.Fonts
 #if ( !(XBOX || XBOX360) )
 		[SuppressUnmanagedCodeSecurity]
 #endif
-		public static extern int FT_Open_Face( IntPtr /*LibraryRec_*/ library, FT_Open_Args args, int face_index, IntPtr /*IntPtr FaceRec*/ aface );
+		public static extern int FT_Open_Face( IntPtr /*LibraryRec_*/ library, FT_Open_Args args, int face_index,
+		                                       IntPtr /*IntPtr FaceRec*/ aface );
 
 		/// <summary>
 		/// This function calls FT_Attach_Stream to attach a file.
@@ -2607,7 +2626,8 @@ namespace Axiom.Fonts
 #if ( !(XBOX || XBOX360) )
 		[SuppressUnmanagedCodeSecurity]
 #endif
-		public static extern int FT_Set_Char_Size( IntPtr /*FaceRec*/ face, int char_width, int char_height, uint horz_resolution, uint vert_resolution );
+		public static extern int FT_Set_Char_Size( IntPtr /*FaceRec*/ face, int char_width, int char_height,
+		                                           uint horz_resolution, uint vert_resolution );
 
 		/// <summary>
 		/// This function calls FT_Request_Size to request the nominal size (in pixels).
@@ -2689,7 +2709,8 @@ namespace Axiom.Fonts
 #if ( !(XBOX || XBOX360) )
 		[SuppressUnmanagedCodeSecurity]
 #endif
-		public static extern int FT_Get_Kerning( IntPtr /*FaceRec*/ face, uint left_glyph, uint right_glyph, uint kern_mode, out FT_Vector akerning );
+		public static extern int FT_Get_Kerning( IntPtr /*FaceRec*/ face, uint left_glyph, uint right_glyph, uint kern_mode,
+		                                         out FT_Vector akerning );
 
 		/// <summary>
 		/// Retrieve the UTF8 name of a given glyph in a face. This only works for those faces where FT_HAS_GLYPH_NAMES(face) returns 1

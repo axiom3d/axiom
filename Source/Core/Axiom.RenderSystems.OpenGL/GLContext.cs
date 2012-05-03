@@ -56,22 +56,10 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Initialized Property
 
-		private bool _initialized;
-
 		/// <summary>
 		///
 		/// </summary>
-		public bool Initialized
-		{
-			get
-			{
-				return _initialized;
-			}
-			set
-			{
-				_initialized = value;
-			}
-		}
+		public bool Initialized { get; set; }
 
 		#endregion Initialized Property
 
@@ -88,7 +76,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Construction and Destruction
 
-		public GLContext() {}
+		public GLContext()
+		{
+		}
 
 		~GLContext()
 		{
@@ -108,9 +98,13 @@ namespace Axiom.RenderSystems.OpenGL
 		/// This is called before another context is made current. By default,
 		/// nothing is done here.
 		/// </summary>
-		public virtual void EndCurrent() {}
+		public virtual void EndCurrent()
+		{
+		}
 
-		public virtual void ReleaseContext() {}
+		public virtual void ReleaseContext()
+		{
+		}
 
 		/// <summary>
 		/// Create a new context based on the same window/pbuffer as this
@@ -128,22 +122,10 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region isDisposed Property
 
-		private bool _disposed = false;
-
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get; set; }
 
 		#endregion isDisposed Property
 

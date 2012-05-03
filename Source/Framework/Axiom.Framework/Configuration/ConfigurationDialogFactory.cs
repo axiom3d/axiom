@@ -23,7 +23,6 @@
 #endregion License
 
 using System;
-
 using Axiom.Core;
 
 namespace Axiom.Framework.Configuration
@@ -33,7 +32,9 @@ namespace Axiom.Framework.Configuration
 	/// </summary>
 	public abstract class ConfigurationDialogFactory : IConfigurationDialogFactory
 	{
-		public ConfigurationDialogFactory() {}
+		public ConfigurationDialogFactory()
+		{
+		}
 
 		/// <summary>
 		/// Create an instance of the ConfigurationDialog

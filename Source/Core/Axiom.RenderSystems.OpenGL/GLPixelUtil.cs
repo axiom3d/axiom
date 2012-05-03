@@ -41,9 +41,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Tao.OpenGl;
-
 using Axiom.Media;
 using Axiom.Graphics;
 using Axiom.Core;
@@ -398,15 +396,15 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( width > 1 )
 				{
-					width = width / 2;
+					width = width/2;
 				}
 				if ( height > 1 )
 				{
-					height = height / 2;
+					height = height/2;
 				}
 				if ( depth > 1 )
 				{
-					depth = depth / 2;
+					depth = depth/2;
 				}
 				count++;
 			}

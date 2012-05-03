@@ -29,19 +29,19 @@ namespace Axiom.Samples.VolumeTexture
 		[OgreVersion( 1, 7, 2 )]
 		public void QMult( ref Quat c, Quat a, Quat b )
 		{
-			c.R = a.R * b.R - a.I * b.I - a.J * b.J - a.K * b.K;
-			c.I = a.R * b.I + a.I * b.R + a.J * b.K - a.K * b.J;
-			c.J = a.R * b.J + a.J * b.R + a.K * b.I - a.I * b.K;
-			c.K = a.R * b.K + a.K * b.R + a.I * b.J - a.J * b.I;
+			c.R = a.R*b.R - a.I*b.I - a.J*b.J - a.K*b.K;
+			c.I = a.R*b.I + a.I*b.R + a.J*b.K - a.K*b.J;
+			c.J = a.R*b.J + a.J*b.R + a.K*b.I - a.I*b.K;
+			c.K = a.R*b.K + a.K*b.R + a.I*b.J - a.J*b.I;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public void QSqr( ref Quat b, Quat a )
 		{
-			b.R = a.R * a.R - a.I * a.I - a.J * a.J - a.K * a.K;
-			b.I = 2.0f * a.R * a.I;
-			b.J = 2.0f * a.R * a.J;
-			b.K = 2.0f * a.R * a.K;
+			b.R = a.R*a.R - a.I*a.I - a.J*a.J - a.K*a.K;
+			b.I = 2.0f*a.R*a.I;
+			b.J = 2.0f*a.R*a.J;
+			b.K = 2.0f*a.R*a.K;
 		}
 
 		protected float globalReal;
@@ -93,7 +93,7 @@ namespace Axiom.Samples.VolumeTexture
 				QMult( ref q, emio, tmp );
 				QAdd( ref q, c );
 
-				if ( q.R * q.R + q.I * q.I + q.J * q.J + q.K * q.K > 8.0 )
+				if ( q.R*q.R + q.I*q.I + q.J*q.J + q.K*q.K > 8.0 )
 				{
 					break;
 				}

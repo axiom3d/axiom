@@ -41,7 +41,6 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq;
-
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
@@ -49,12 +48,9 @@ using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Math.Collections;
 using Axiom.RenderSystems.OpenGL.GLSL;
-
 using Tao.OpenGl;
-
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Graphics.Collections;
 using Axiom.Core.Collections;
 
@@ -73,14 +69,13 @@ namespace Axiom.RenderSystems.OpenGL
 
 		// Check if the GL system has already been initialised
 
-		[OgreVersion( 1, 7, 2790 )]
-		private bool _glInitialised;
+		[OgreVersion( 1, 7, 2790 )] private bool _glInitialised;
 
 		private GLSLProgramFactory _GLSLProgramFactory;
 
-		private List<GLContext> _backgroundContextList = new List<GLContext>();
+		private readonly List<GLContext> _backgroundContextList = new List<GLContext>();
 
-		private object _threadInitMutex = new object();
+		private readonly object _threadInitMutex = new object();
 
 		private bool depthWrite;
 
@@ -101,7 +96,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		///		GLSupport class providing platform specific implementation.
 		/// </summary>
-		private BaseGLSupport _glSupport;
+		private readonly BaseGLSupport _glSupport;
 
 		internal GLContext _mainContext;
 		internal GLContext _currentContext;
@@ -126,11 +121,11 @@ namespace Axiom.RenderSystems.OpenGL
 
 		// used for manual texture matrix calculations, for things like env mapping
 		protected bool useAutoTextureMatrix;
-		protected float[] autoTextureMatrix = new float[ 16 ];
-		protected int[] texCoordIndex = new int[ Config.MaxTextureCoordSets ];
+		protected float[] autoTextureMatrix = new float[16];
+		protected int[] texCoordIndex = new int[Config.MaxTextureCoordSets];
 
 		// keeps track of type for each stage (2d, 3d, cube, etc)
-		protected int[] textureTypes = new int[ Config.MaxTextureLayers ];
+		protected int[] textureTypes = new int[Config.MaxTextureLayers];
 
 		// retained stencil buffer params vals, since we allow setting invidual params but GL
 		// only lets you set them all at once, keep old values around to allow this to work
@@ -151,28 +146,27 @@ namespace Axiom.RenderSystems.OpenGL
 		// render state redundency reduction settings
 		protected ColorEx lastDiffuse, lastAmbient, lastSpecular, lastEmissive;
 		protected float lastShininess;
-		protected TexCoordCalcMethod[] lastTexCalMethods = new TexCoordCalcMethod[ Config.MaxTextureLayers ];
+		protected TexCoordCalcMethod[] lastTexCalMethods = new TexCoordCalcMethod[Config.MaxTextureLayers];
 
 
-		protected LayerBlendOperationEx[] lastColorOp = new LayerBlendOperationEx[ Config.MaxTextureLayers ];
-		protected LayerBlendOperationEx[] lastAlphaOp = new LayerBlendOperationEx[ Config.MaxTextureLayers ];
+		protected LayerBlendOperationEx[] lastColorOp = new LayerBlendOperationEx[Config.MaxTextureLayers];
+		protected LayerBlendOperationEx[] lastAlphaOp = new LayerBlendOperationEx[Config.MaxTextureLayers];
 		protected LayerBlendType lastBlendType;
-		protected TextureAddressing[] lastAddressingMode = new TextureAddressing[ Config.MaxTextureLayers ];
+		protected TextureAddressing[] lastAddressingMode = new TextureAddressing[Config.MaxTextureLayers];
 		protected float lastDepthBias;
 
 
 		private const int MAX_LIGHTS = 8;
-		protected Light[] lights = new Light[ MAX_LIGHTS ];
+		protected Light[] lights = new Light[MAX_LIGHTS];
 
 		// temp arrays to reduce runtime allocations
-		private readonly float[] _tempMatrix = new float[ 16 ];
-		private readonly float[] _tempColorVals = new float[ 4 ];
-		private readonly float[] _tempLightVals = new float[ 4 ];
-		private readonly float[] _tempProgramFloats = new float[ 4 ];
-		private readonly double[] _tempPlane = new double[ 4 ];
+		private readonly float[] _tempMatrix = new float[16];
+		private readonly float[] _tempColorVals = new float[4];
+		private readonly float[] _tempLightVals = new float[4];
+		private readonly float[] _tempProgramFloats = new float[4];
+		private readonly double[] _tempPlane = new double[4];
 
-		[OgreVersion( 1, 7, 2790, "Incorrectly typed as int in Ogre" )]
-		protected int[] ColorWrite = new int[ 4 ];
+		[OgreVersion( 1, 7, 2790, "Incorrectly typed as int in Ogre" )] protected int[] ColorWrite = new int[4];
 
 		protected GLGpuProgramManager gpuProgramMgr;
 		protected GLGpuProgram currentVertexProgram;
@@ -252,7 +246,9 @@ namespace Axiom.RenderSystems.OpenGL
 		[OgreVersion( 1, 7, 2790 )]
 		public override VertexDeclaration VertexDeclaration
 		{
-			set {}
+			set
+			{
+			}
 		}
 
 		#endregion
@@ -262,7 +258,9 @@ namespace Axiom.RenderSystems.OpenGL
 		[OgreVersion( 1, 7, 2790 )]
 		public override VertexBufferBinding VertexBufferBinding
 		{
-			set {}
+			set
+			{
+			}
 		}
 
 		#endregion
@@ -344,7 +342,8 @@ namespace Axiom.RenderSystems.OpenGL
 			              };
 			Gl.glGetIntegerv( Gl.GL_VIEWPORT, viewport );
 			Gl.glGetIntegerv( Gl.GL_SCISSOR_BOX, scissor );
-			bool scissorBoxDifference = viewport[ 0 ] != scissor[ 0 ] || viewport[ 1 ] != scissor[ 1 ] || viewport[ 2 ] != scissor[ 2 ] || viewport[ 3 ] != scissor[ 3 ];
+			bool scissorBoxDifference = viewport[ 0 ] != scissor[ 0 ] || viewport[ 1 ] != scissor[ 1 ] ||
+			                            viewport[ 2 ] != scissor[ 2 ] || viewport[ 3 ] != scissor[ 3 ];
 			if ( scissorBoxDifference )
 			{
 				Gl.glScissor( viewport[ 0 ], viewport[ 1 ], viewport[ 2 ], viewport[ 3 ] );
@@ -479,8 +478,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region LightingEnabled
 
-		[AxiomHelper( 0, 8, "State cache to avoid unnecessary state changes" )]
-		private bool _lightingEnabled;
+		[AxiomHelper( 0, 8, "State cache to avoid unnecessary state changes" )] private bool _lightingEnabled;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override bool LightingEnabled
@@ -512,8 +510,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region NormalizeNormals
 
-		[AxiomHelper( 0, 8, "State cache to avoid unnecessary state changes" )]
-		private bool _normalizingEnabled;
+		[AxiomHelper( 0, 8, "State cache to avoid unnecessary state changes" )] private bool _normalizingEnabled;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override bool NormalizeNormals
@@ -545,8 +542,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region PolygonMode
 
-		[AxiomHelper( 0, 8, "State cache to avoid unnecessary state changes" )]
-		private PolygonMode _lastPolygonMode;
+		[AxiomHelper( 0, 8, "State cache to avoid unnecessary state changes" )] private PolygonMode _lastPolygonMode;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override PolygonMode PolygonMode
@@ -590,8 +586,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region ShadingType
 
-		[AxiomHelper( 0, 8, "State cache to avoid unnecessary state changes" )]
-		private ShadeOptions _lastShadingType;
+		[AxiomHelper( 0, 8, "State cache to avoid unnecessary state changes" )] private ShadeOptions _lastShadingType;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override ShadeOptions ShadingType
@@ -624,8 +619,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region StencilCheckEnabled
 
-		[AxiomHelper( 0, 8, "State cache to avoid unnecessary state changes" )]
-		private bool _lastStencilCheckEnabled;
+		[AxiomHelper( 0, 8, "State cache to avoid unnecessary state changes" )] private bool _lastStencilCheckEnabled;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override bool StencilCheckEnabled
@@ -658,29 +652,30 @@ namespace Axiom.RenderSystems.OpenGL
 		#region MakeOrthoMatrix
 
 		[OgreVersion( 1, 7, 2790 )]
-		public override void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms )
+		public override void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest,
+		                                      bool forGpuPrograms )
 		{
-			float thetaY = Utility.DegreesToRadians( fov / 2.0f );
+			float thetaY = Utility.DegreesToRadians( fov/2.0f );
 			float tanThetaY = Utility.Tan( thetaY );
-			float tanThetaX = tanThetaY * aspectRatio;
+			float tanThetaX = tanThetaY*aspectRatio;
 
-			float halfW = tanThetaX * near;
-			float halfH = tanThetaY * near;
+			float halfW = tanThetaX*near;
+			float halfH = tanThetaY*near;
 
-			var w = 1.0f / halfW;
-			var h = 1.0f / halfH;
+			var w = 1.0f/halfW;
+			var h = 1.0f/halfH;
 			var q = 0.0f;
 
 			if ( far != 0 )
 			{
-				q = 2.0f / ( far - near );
+				q = 2.0f/( far - near );
 			}
 
 			dest = Matrix4.Zero;
 			dest.m00 = w;
 			dest.m11 = h;
 			dest.m22 = -q;
-			dest.m23 = -( far + near ) / ( far - near );
+			dest.m23 = -( far + near )/( far - near );
 			dest.m33 = 1.0f;
 		}
 
@@ -689,25 +684,26 @@ namespace Axiom.RenderSystems.OpenGL
 		#region MakeProjectionMatrix
 
 		[OgreVersion( 1, 7, 2790 )]
-		public override void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram )
+		public override void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest,
+		                                           bool forGpuProgram )
 		{
-			float thetaY = Utility.DegreesToRadians( fov * (Real)0.5f );
+			float thetaY = Utility.DegreesToRadians( fov*(Real)0.5f );
 			float tanThetaY = Utility.Tan( thetaY );
 
-			float w = ( 1.0f / tanThetaY ) / aspectRatio;
-			var h = 1.0f / tanThetaY;
+			float w = ( 1.0f/tanThetaY )/aspectRatio;
+			var h = 1.0f/tanThetaY;
 			var q = 0.0f;
 			var qn = 0.0f;
 
 			if ( far == 0 )
 			{
 				q = Frustum.InfiniteFarPlaneAdjust - 1;
-				qn = near * ( Frustum.InfiniteFarPlaneAdjust - 2 );
+				qn = near*( Frustum.InfiniteFarPlaneAdjust - 2 );
 			}
 			else
 			{
-				q = -( far + near ) / ( far - near );
-				qn = -2 * ( far * near ) / ( far - near );
+				q = -( far + near )/( far - near );
+				qn = -2*( far*near )/( far - near );
 			}
 
 			// NB This creates Z in range [-1,1]
@@ -730,7 +726,8 @@ namespace Axiom.RenderSystems.OpenGL
 		#region MakeProjectionMatrix
 
 		[OgreVersion( 1, 7, 2790 )]
-		public override void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest, bool forGpuProgram )
+		public override void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane,
+		                                           out Matrix4 dest, bool forGpuProgram )
 		{
 			var width = right - left;
 			var height = top - bottom;
@@ -740,19 +737,19 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				// Infinite far plane
 				q = Frustum.InfiniteFarPlaneAdjust - 1;
-				qn = nearPlane * ( Frustum.InfiniteFarPlaneAdjust - 2 );
+				qn = nearPlane*( Frustum.InfiniteFarPlaneAdjust - 2 );
 			}
 			else
 			{
-				q = -( farPlane + nearPlane ) / ( farPlane - nearPlane );
-				qn = -2 * ( farPlane * nearPlane ) / ( farPlane - nearPlane );
+				q = -( farPlane + nearPlane )/( farPlane - nearPlane );
+				qn = -2*( farPlane*nearPlane )/( farPlane - nearPlane );
 			}
 
 			dest = Matrix4.Zero;
-			dest.m00 = 2 * nearPlane / width;
-			dest.m02 = ( right + left ) / width;
-			dest.m11 = 2 * nearPlane / height;
-			dest.m12 = ( top + bottom ) / height;
+			dest.m00 = 2*nearPlane/width;
+			dest.m02 = ( right + left )/width;
+			dest.m11 = 2*nearPlane/height;
+			dest.m12 = ( top + bottom )/height;
 			dest.m22 = q;
 			dest.m23 = qn;
 			dest.m32 = -1;
@@ -876,14 +873,14 @@ namespace Axiom.RenderSystems.OpenGL
 			// by the inverse of the projection matrix
 
 			var q = new Vector4();
-			q.x = ( System.Math.Sign( plane.Normal.x ) + projMatrix.m02 ) / projMatrix.m00;
-			q.y = ( System.Math.Sign( plane.Normal.y ) + projMatrix.m12 ) / projMatrix.m11;
+			q.x = ( System.Math.Sign( plane.Normal.x ) + projMatrix.m02 )/projMatrix.m00;
+			q.y = ( System.Math.Sign( plane.Normal.y ) + projMatrix.m12 )/projMatrix.m11;
 			q.z = -1.0f;
-			q.w = ( 1.0f + projMatrix.m22 ) / projMatrix.m23;
+			q.w = ( 1.0f + projMatrix.m22 )/projMatrix.m23;
 
 			// Calculate the scaled plane vector
 			var clipPlane4D = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
-			var c = clipPlane4D * ( 2.0f / ( clipPlane4D.Dot( q ) ) );
+			var c = clipPlane4D*( 2.0f/( clipPlane4D.Dot( q ) ) );
 
 			// Replace the third row of the projection matrix
 			projMatrix.m20 = c.x;
@@ -974,7 +971,9 @@ namespace Axiom.RenderSystems.OpenGL
 		#region SetStencilBufferParams
 
 		[OgreVersion( 1, 7, 2790 )]
-		public override void SetStencilBufferParams( CompareFunction func, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation )
+		public override void SetStencilBufferParams( CompareFunction func, int refValue, int mask,
+		                                             StencilOperation stencilFailOp, StencilOperation depthFailOp,
+		                                             StencilOperation passOp, bool twoSidedOperation )
 		{
 			if ( twoSidedOperation )
 			{
@@ -991,11 +990,13 @@ namespace Axiom.RenderSystems.OpenGL
 					// Back
 					Gl.glStencilMaskSeparate( Gl.GL_BACK, mask );
 					Gl.glStencilFuncSeparate( Gl.GL_BACK, GLHelper.ConvertEnum( func ), refValue, mask );
-					Gl.glStencilOpSeparate( Gl.GL_BACK, GLHelper.ConvertEnum( stencilFailOp, !flip ), GLHelper.ConvertEnum( depthFailOp, !flip ), GLHelper.ConvertEnum( passOp, !flip ) );
+					Gl.glStencilOpSeparate( Gl.GL_BACK, GLHelper.ConvertEnum( stencilFailOp, !flip ),
+					                        GLHelper.ConvertEnum( depthFailOp, !flip ), GLHelper.ConvertEnum( passOp, !flip ) );
 					// Front
 					Gl.glStencilMaskSeparate( Gl.GL_FRONT, mask );
 					Gl.glStencilFuncSeparate( Gl.GL_FRONT, GLHelper.ConvertEnum( func ), refValue, mask );
-					Gl.glStencilOpSeparate( Gl.GL_FRONT, GLHelper.ConvertEnum( stencilFailOp, flip ), GLHelper.ConvertEnum( depthFailOp, flip ), GLHelper.ConvertEnum( passOp, flip ) );
+					Gl.glStencilOpSeparate( Gl.GL_FRONT, GLHelper.ConvertEnum( stencilFailOp, flip ),
+					                        GLHelper.ConvertEnum( depthFailOp, flip ), GLHelper.ConvertEnum( passOp, flip ) );
 
 					Gl.glActiveStencilFaceEXT( Gl.GL_FRONT );
 				}
@@ -1006,12 +1007,14 @@ namespace Axiom.RenderSystems.OpenGL
 					Gl.glActiveStencilFaceEXT( Gl.GL_BACK );
 					Gl.glStencilMask( mask );
 					Gl.glStencilFunc( GLHelper.ConvertEnum( func ), refValue, mask );
-					Gl.glStencilOp( GLHelper.ConvertEnum( stencilFailOp, !flip ), GLHelper.ConvertEnum( depthFailOp, !flip ), GLHelper.ConvertEnum( passOp, !flip ) );
+					Gl.glStencilOp( GLHelper.ConvertEnum( stencilFailOp, !flip ), GLHelper.ConvertEnum( depthFailOp, !flip ),
+					                GLHelper.ConvertEnum( passOp, !flip ) );
 					// Front
 					Gl.glActiveStencilFaceEXT( Gl.GL_FRONT );
 					Gl.glStencilMask( mask );
 					Gl.glStencilFunc( GLHelper.ConvertEnum( func ), refValue, mask );
-					Gl.glStencilOp( GLHelper.ConvertEnum( stencilFailOp, flip ), GLHelper.ConvertEnum( depthFailOp, flip ), GLHelper.ConvertEnum( passOp, flip ) );
+					Gl.glStencilOp( GLHelper.ConvertEnum( stencilFailOp, flip ), GLHelper.ConvertEnum( depthFailOp, flip ),
+					                GLHelper.ConvertEnum( passOp, flip ) );
 				}
 			}
 			else
@@ -1020,7 +1023,8 @@ namespace Axiom.RenderSystems.OpenGL
 				var flip = false;
 				Gl.glStencilMask( mask );
 				Gl.glStencilFunc( GLHelper.ConvertEnum( func ), refValue, mask );
-				Gl.glStencilOp( GLHelper.ConvertEnum( stencilFailOp, flip ), GLHelper.ConvertEnum( depthFailOp, flip ), GLHelper.ConvertEnum( passOp, flip ) );
+				Gl.glStencilOp( GLHelper.ConvertEnum( stencilFailOp, flip ), GLHelper.ConvertEnum( depthFailOp, flip ),
+				                GLHelper.ConvertEnum( passOp, flip ) );
 			}
 		}
 
@@ -1029,7 +1033,8 @@ namespace Axiom.RenderSystems.OpenGL
 		#region SetSurfaceParams
 
 		[OgreVersion( 1, 7, 2790 )]
-		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive, Real shininess, TrackVertexColor tracking )
+		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive,
+		                                       Real shininess, TrackVertexColor tracking )
 		{
 			if ( tracking == TrackVertexColor.None )
 			{
@@ -1127,7 +1132,8 @@ namespace Axiom.RenderSystems.OpenGL
 		#region SetPointParameters
 
 		[OgreVersion( 1, 7, 2790 )]
-		public override void SetPointParameters( Real size, bool attenuationEnabled, Real constant, Real linear, Real quadratic, Real minSize, Real maxSize )
+		public override void SetPointParameters( Real size, bool attenuationEnabled, Real constant, Real linear,
+		                                         Real quadratic, Real minSize, Real maxSize )
 		{
 			var val = _tempLightVals;
 			val[ 0 ] = 1.0f;
@@ -1142,15 +1148,15 @@ namespace Axiom.RenderSystems.OpenGL
 				// independent size if you're looking for attenuation.
 				// So, scale the point size up by viewport size (this is equivalent to
 				// what D3D does as standard)
-				size = size * activeViewport.ActualHeight;
-				minSize = minSize * activeViewport.ActualHeight;
+				size = size*activeViewport.ActualHeight;
+				minSize = minSize*activeViewport.ActualHeight;
 				if ( maxSize == 0.0f )
 				{
 					maxSize = currentCapabilities.MaxPointSize; // pixels
 				}
 				else
 				{
-					maxSize = maxSize * activeViewport.ActualHeight;
+					maxSize = maxSize*activeViewport.ActualHeight;
 				}
 
 				// XXX: why do I need this for results to be consistent with D3D?
@@ -1158,8 +1164,8 @@ namespace Axiom.RenderSystems.OpenGL
 				Real correction = 0.005;
 				// scaling required
 				val[ 0 ] = constant;
-				val[ 1 ] = linear * correction;
-				val[ 2 ] = quadratic * correction;
+				val[ 1 ] = linear*correction;
+				val[ 2 ] = quadratic*correction;
 				val[ 3 ] = 1;
 
 				if ( currentCapabilities.HasCapability( Graphics.Capabilities.VertexPrograms ) )
@@ -1679,18 +1685,18 @@ namespace Axiom.RenderSystems.OpenGL
 					//projectionBias.m13 = 0.5f;
 					//projectionBias.m33 = 1.0f;
 
-					projectionBias = projectionBias * frustum.ProjectionMatrix;
+					projectionBias = projectionBias*frustum.ProjectionMatrix;
 					if ( texProjRelative )
 					{
 						Matrix4 tmp;
 						frustum.CalcViewMatrixRelative( texProjRelativeOrigin, out tmp );
-						projectionBias = projectionBias * tmp;
+						projectionBias = projectionBias*tmp;
 					}
 					else
 					{
-						projectionBias = projectionBias * frustum.ViewMatrix;
+						projectionBias = projectionBias*frustum.ViewMatrix;
 					}
-					projectionBias = projectionBias * worldMatrix;
+					projectionBias = projectionBias*worldMatrix;
 
 					MakeGLMatrix( ref projectionBias, autoTextureMatrix );
 					break;
@@ -1938,8 +1944,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region SetAlphaRejectSettings
 
-		[OgreVersion( 1, 7, 2790, "State cache, local static in Ogre" )]
-		private bool lasta2c;
+		[OgreVersion( 1, 7, 2790, "State cache, local static in Ogre" )] private bool lasta2c;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetAlphaRejectSettings( CompareFunction func, byte val, bool alphaToCoverage )
@@ -1954,7 +1959,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				Gl.glEnable( Gl.GL_ALPHA_TEST );
 				a2c = alphaToCoverage;
-				Gl.glAlphaFunc( GLHelper.ConvertEnum( func ), val / 255.0f );
+				Gl.glAlphaFunc( GLHelper.ConvertEnum( func ), val/255.0f );
 			}
 
 
@@ -2041,8 +2046,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region SetFog
 
-		[AxiomHelper( 0, 8, "State cache" )]
-		private bool fogEnabled;
+		[AxiomHelper( 0, 8, "State cache" )] private bool fogEnabled;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetFog( FogMode mode, ColorEx color, Real density, Real start, Real end )
@@ -2239,7 +2243,7 @@ namespace Axiom.RenderSystems.OpenGL
 				worldMatrix = value;
 
 				// multiply the view and world matrices, and convert it to GL format
-				Matrix4 multMatrix = viewMatrix * worldMatrix;
+				Matrix4 multMatrix = viewMatrix*worldMatrix;
 				MakeGLMatrix( ref multMatrix, _tempMatrix );
 
 				// change the matrix mode to ModelView
@@ -2416,14 +2420,17 @@ namespace Axiom.RenderSystems.OpenGL
 		#region SetSeparateSceneBlending
 
 		[OgreVersion( 1, 7, 2790 )]
-		public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha, SceneBlendOperation op, SceneBlendOperation alphaOp )
+		public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
+		                                               SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha,
+		                                               SceneBlendOperation op, SceneBlendOperation alphaOp )
 		{
 			int sourceBlend = GLHelper.ConvertEnum( sourceFactor );
 			int destBlend = GLHelper.ConvertEnum( destFactor );
 			int sourceBlendAlpha = GLHelper.ConvertEnum( sourceFactorAlpha );
 			int destBlendAlpha = GLHelper.ConvertEnum( destFactorAlpha );
 
-			if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero && sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
+			if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
+			     sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
 			{
 				Gl.glDisable( Gl.GL_BLEND );
 			}
@@ -2530,8 +2537,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region DepthBufferCheckEnabled
 
-		[AxiomHelper( 0, 8 )]
-		private bool _lastDepthCheckEnabled;
+		[AxiomHelper( 0, 8 )] private bool _lastDepthCheckEnabled;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override bool DepthBufferCheckEnabled
@@ -2562,8 +2568,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region DepthBufferFunction
 
-		[AxiomHelper( 0, 8, "State cache" )]
-		protected CompareFunction lastDepthFunc;
+		[AxiomHelper( 0, 8, "State cache" )] protected CompareFunction lastDepthFunc;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override CompareFunction DepthBufferFunction
@@ -2584,8 +2589,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region DepthBufferWriteEnabled
 
-		[AxiomHelper( 0, 8 )]
-		private bool _lastDepthWriteEnabled;
+		[AxiomHelper( 0, 8 )] private bool _lastDepthWriteEnabled;
 
 		public override bool DepthBufferWriteEnabled
 		{
@@ -2704,7 +2708,8 @@ namespace Axiom.RenderSystems.OpenGL
 		#region BindGpuProgramParameters
 
 		[OgreVersion( 1, 7, 2790 )]
-		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
+		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms,
+		                                               GpuProgramParameters.GpuParamVariability mask )
 		{
 			if ( ( mask & GpuProgramParameters.GpuParamVariability.Global ) != 0 )
 			{
@@ -2876,7 +2881,7 @@ namespace Axiom.RenderSystems.OpenGL
 				switch ( light.Type )
 				{
 					case LightType.Spotlight:
-						Gl.glLightf( lightIndex, Gl.GL_SPOT_CUTOFF, 0.5f * (Real)light.SpotlightOuterAngle.InDegrees );
+						Gl.glLightf( lightIndex, Gl.GL_SPOT_CUTOFF, 0.5f*(Real)light.SpotlightOuterAngle.InDegrees );
 						Gl.glLightf( lightIndex, Gl.GL_SPOT_EXPONENT, light.SpotlightFalloff );
 						break;
 					default:

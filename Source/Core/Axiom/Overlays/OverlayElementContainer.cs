@@ -40,11 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
-
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -128,7 +126,7 @@ namespace Axiom.Overlays
 		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -179,7 +177,8 @@ namespace Axiom.Overlays
 		/// <param name="element"></param>
 		public virtual void AddChildElement( OverlayElement element )
 		{
-			Debug.Assert( !children.ContainsKey( element.Name ), string.Format( "Child with name '{0}' already defined.", element.Name ) );
+			Debug.Assert( !children.ContainsKey( element.Name ),
+			              string.Format( "Child with name '{0}' already defined.", element.Name ) );
 
 			// add to lookup table and list
 			children.Add( element.Name, element );
@@ -326,7 +325,7 @@ namespace Axiom.Overlays
 
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
-			this.UpdateRenderQueue( queue, true );
+			UpdateRenderQueue( queue, true );
 		}
 
 		public override OverlayElement FindElementAt( float x, float y )
@@ -403,7 +402,8 @@ namespace Axiom.Overlays
 				{
 					if ( oldChildElement.IsCloneable )
 					{
-						var newChildElement = OverlayManager.Instance.Elements.CreateElement( oldChildElement.GetType().Name, Name + "/" + oldChildElement.Name );
+						var newChildElement = OverlayManager.Instance.Elements.CreateElement( oldChildElement.GetType().Name,
+						                                                                      Name + "/" + oldChildElement.Name );
 						newChildElement.CopyFromTemplate( oldChildElement );
 						AddChild( (OverlayElement)newChildElement );
 					}

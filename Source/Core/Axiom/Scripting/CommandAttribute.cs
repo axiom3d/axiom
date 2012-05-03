@@ -54,17 +54,17 @@ namespace Axiom.Scripting
 		/// <summary>
 		///    Name of the command the target class will be registered to handle.
 		/// </summary>
-		private string name;
+		private readonly string name;
 
 		/// <summary>
 		///    Description of what this command does.
 		/// </summary>
-		private string description;
+		private readonly string description;
 
 		/// <summary>
 		///    Target type this class is meant to handle commands for.
 		/// </summary>
-		private Type target;
+		private readonly Type target;
 
 		#endregion Fields
 

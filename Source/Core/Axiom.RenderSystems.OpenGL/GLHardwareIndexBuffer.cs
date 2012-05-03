@@ -75,7 +75,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="numIndices"> Number of indices in the buffer. </param>
 		/// <param name="usage"> Usage flags. </param>
 		/// <param name="useShadowBuffer"> Should this buffer be backed by a software shadow buffer? </param>
-		public GLHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+		public GLHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage,
+		                              bool useShadowBuffer )
 			: base( manager, type, numIndices, usage, false, useShadowBuffer )
 		{
 			// generate the buffer
@@ -89,7 +90,8 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, _bufferId );
 
 			// initialize this buffer.  we dont have data yet tho
-			Gl.glBufferDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero, GLHelper.ConvertEnum( usage ) );
+			Gl.glBufferDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero,
+			                    GLHelper.ConvertEnum( usage ) );
 			LogManager.Instance.Write( "OGL: Created IndexBuffer[{0}].", _bufferId );
 		}
 
@@ -214,7 +216,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			if ( discardWholeBuffer )
 			{
-				Gl.glBufferDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero, GLHelper.ConvertEnum( usage ) );
+				Gl.glBufferDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero,
+				                    GLHelper.ConvertEnum( usage ) );
 			}
 
 			Gl.glBufferSubDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( offset ), new IntPtr( length ), src.Pin() );

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Core;
 
 namespace Axiom.Graphics
@@ -75,8 +74,7 @@ namespace Axiom.Graphics
 
 		#region PoolId
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected PoolId poolId;
+		[OgreVersion( 1, 7, 2790 )] protected PoolId poolId;
 
 		/// <summary>
 		/// Gets the pool id in which this DepthBuffer lives
@@ -223,28 +221,23 @@ namespace Axiom.Graphics
 			Debug.Assert( success );
 		}
 
-		protected class RenderTargetSet : List<RenderTarget> {}
+		protected class RenderTargetSet : List<RenderTarget>
+		{
+		}
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected ushort bitDepth;
+		[OgreVersion( 1, 7, 2790 )] protected ushort bitDepth;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected int width;
+		[OgreVersion( 1, 7, 2790 )] protected int width;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected int height;
+		[OgreVersion( 1, 7, 2790 )] protected int height;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected int fsaa;
+		[OgreVersion( 1, 7, 2790 )] protected int fsaa;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected string fsaaHint;
+		[OgreVersion( 1, 7, 2790 )] protected string fsaaHint;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool manual;
+		[OgreVersion( 1, 7, 2790 )] protected bool manual;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected RenderTargetSet attachedRenderTargets = new RenderTargetSet();
+		[OgreVersion( 1, 7, 2790 )] protected RenderTargetSet attachedRenderTargets = new RenderTargetSet();
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected void DetachFromAllRenderTargets()

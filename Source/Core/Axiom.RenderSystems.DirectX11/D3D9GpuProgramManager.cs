@@ -36,7 +36,6 @@
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -61,7 +60,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9GpuProgramManager" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -77,7 +76,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Core.ResourceManager._create(string, ResourceHandle, string, bool, IManualResourceLoader, NameValuePairList)"/>
 		[OgreVersion( 1, 7, 2 )]
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			if ( createParams == null || !createParams.ContainsKey( "type" ) )
 			{
@@ -98,7 +98,8 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Specialised create method with specific parameters
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
 			if ( type == GpuProgramType.Vertex )
 			{

@@ -1,7 +1,6 @@
 ﻿#region Namespace Declarations
 
 using System.ComponentModel.Composition;
-
 using Axiom.Core;
 using Axiom.Input;
 

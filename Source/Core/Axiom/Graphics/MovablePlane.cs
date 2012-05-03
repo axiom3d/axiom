@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -175,7 +174,7 @@ namespace Axiom.Graphics
 						lastTranslate = parentNode.DerivedPosition;
 
 						// rotate normal
-						derivedPlane.Normal = lastRotate * containedPlane.Normal;
+						derivedPlane.Normal = lastRotate*containedPlane.Normal;
 
 						// d remains the same in rotation, since rotation happens first
 						derivedPlane.D = containedPlane.D;

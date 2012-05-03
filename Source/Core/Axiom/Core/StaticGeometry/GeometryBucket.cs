@@ -44,8 +44,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.IO;
-
-
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Collections;
@@ -197,7 +195,9 @@ namespace Axiom.Core
 					Debug.Assert( blendIndices.Source == blendWeights.Source, "Blend indices and weights should be in the same buffer" );
 					// Get the source
 					var source = blendIndices.Source;
-					Debug.Assert( blendIndices.Size + blendWeights.Size == vertexData.vertexBufferBinding.GetBuffer( source ).VertexSize, "Blend indices and blend buffers should have buffer to themselves!" );
+					Debug.Assert(
+						blendIndices.Size + blendWeights.Size == vertexData.vertexBufferBinding.GetBuffer( source ).VertexSize,
+						"Blend indices and blend buffers should have buffer to themselves!" );
 					// Unset the buffer
 					vertexData.vertexBufferBinding.UnsetBinding( source );
 					// Remove the elements
@@ -221,11 +221,11 @@ namespace Axiom.Core
 			{
 				get
 				{
-					renderOperation.indexData = this.indexData;
+					renderOperation.indexData = indexData;
 					renderOperation.operationType = OperationType.TriangleList;
 					//op.srcRenderable = this;
 					renderOperation.useIndices = true;
-					renderOperation.vertexData = this.vertexData;
+					renderOperation.vertexData = vertexData;
 					return renderOperation;
 				}
 			}
@@ -262,9 +262,11 @@ namespace Axiom.Core
 				// create index buffer, and lock
 				if ( logLevel <= 1 )
 				{
-					LogManager.Instance.Write( "GeometryBucket.Build: Creating index buffer indexType {0} indexData.indexCount {1}", indexType, indexData.indexCount );
+					LogManager.Instance.Write( "GeometryBucket.Build: Creating index buffer indexType {0} indexData.indexCount {1}",
+					                           indexType, indexData.indexCount );
 				}
-				indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( indexType, indexData.indexCount, BufferUsage.StaticWriteOnly );
+				indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( indexType, indexData.indexCount,
+				                                                                          BufferUsage.StaticWriteOnly );
 				var indexBufferIntPtr = indexData.indexBuffer.Lock( BufferLocking.Discard );
 
 				// create all vertex buffers, and lock
@@ -277,25 +279,29 @@ namespace Axiom.Core
 				unsafe
 #endif
 				{
-					var destBufferPtrs = new BufferBase[ binds.BindingCount ];
+					var destBufferPtrs = new BufferBase[binds.BindingCount];
 					for ( b = 0; b < binds.BindingCount; ++b )
 					{
 						var vertexCount = vertexData.vertexCount;
 						if ( logLevel <= 1 )
 						{
-							LogManager.Instance.Write( "GeometryBucket.Build b {0}, binds.BindingCount {1}, vertexCount {2}, dcl.GetVertexSize(b) {3}", b, binds.BindingCount, vertexCount, dcl.GetVertexSize( b ) );
+							LogManager.Instance.Write(
+								"GeometryBucket.Build b {0}, binds.BindingCount {1}, vertexCount {2}, dcl.GetVertexSize(b) {3}", b,
+								binds.BindingCount, vertexCount, dcl.GetVertexSize( b ) );
 						}
 						// Need to double the vertex count for the position buffer
 						// if we're doing stencil shadows
 						if ( stencilShadows && b == posBufferIdx )
 						{
-							vertexCount = vertexCount * 2;
+							vertexCount = vertexCount*2;
 							if ( vertexCount > maxVertexIndex )
 							{
-								throw new Exception( "Index range exceeded when using stencil shadows, consider " + "reducing your region size or reducing poly count" );
+								throw new Exception( "Index range exceeded when using stencil shadows, consider " +
+								                     "reducing your region size or reducing poly count" );
 							}
 						}
-						var vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.Clone( b ), vertexCount, BufferUsage.StaticWriteOnly );
+						var vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( dcl.Clone( b ), vertexCount,
+						                                                              BufferUsage.StaticWriteOnly );
 						binds.SetBinding( b, vbuf );
 						var pLock = vbuf.Lock( BufferLocking.Discard );
 						destBufferPtrs[ b ] = pLock;
@@ -340,7 +346,8 @@ namespace Axiom.Core
 						for ( b = 0; b < binds.BindingCount; ++b )
 						{
 							// Iterate over vertices
-							destBufferPtrs[ b ].Ptr = CopyVertices( srcBinds.GetBuffer( b ), destBufferPtrs[ b ], bufferElements[ b ], geom, regionCenter );
+							destBufferPtrs[ b ].Ptr = CopyVertices( srcBinds.GetBuffer( b ), destBufferPtrs[ b ], bufferElements[ b ], geom,
+							                                        regionCenter );
 						}
 						indexOffset += geom.geometry.vertexData.vertexCount;
 					}
@@ -365,9 +372,9 @@ namespace Axiom.Core
 						var src = buf.Lock( BufferLocking.Normal );
 						var pSrc = src.ToBytePointer();
 						// Point dest at second half (remember vertexcount is original count)
-						var pDst = ( src + ( buf.VertexSize * vertexData.vertexCount ) ).ToBytePointer();
+						var pDst = ( src + ( buf.VertexSize*vertexData.vertexCount ) ).ToBytePointer();
 
-						var count = buf.VertexSize * buf.VertexCount;
+						var count = buf.VertexSize*buf.VertexCount;
 						while ( count-- > 0 )
 						{
 							pDst[ count ] = pSrc[ count ];
@@ -380,7 +387,8 @@ namespace Axiom.Core
 						{
 							var decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
 							decl.AddElement( 0, 0, VertexElementType.Float1, VertexElementSemantic.Position );
-							buf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount * 2, BufferUsage.StaticWriteOnly, false );
+							buf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, vertexData.vertexCount*2,
+							                                                         BufferUsage.StaticWriteOnly, false );
 							// Fill the first half with 1.0, second half with 0.0
 							var pbuf = buf.Lock( BufferLocking.Discard ).ToFloatPointer();
 							var pW = 0;
@@ -414,7 +422,8 @@ namespace Axiom.Core
 
 			#region Protected Methods
 
-			protected int CopyVertices( HardwareVertexBuffer srcBuf, BufferBase pDst, List<VertexElement> elems, QueuedGeometry geom, Vector3 regionCenter )
+			protected int CopyVertices( HardwareVertexBuffer srcBuf, BufferBase pDst, List<VertexElement> elems,
+			                            QueuedGeometry geom, Vector3 regionCenter )
 			{
 #if !AXIOM_SAFE_ONLY
 				unsafe
@@ -427,7 +436,7 @@ namespace Axiom.Core
 					var temp = Vector3.Zero;
 
 					// Calculate elem sizes outside the loop
-					var elemSizes = new int[ elems.Count ];
+					var elemSizes = new int[elems.Count];
 					for ( var i = 0; i < elems.Count; i++ )
 					{
 						elemSizes[ i ] = VertexElement.GetTypeSize( elems[ i ].Type );
@@ -452,7 +461,7 @@ namespace Axiom.Core
 									temp.y = pSrcReal[ 1 ];
 									temp.z = pSrcReal[ 2 ];
 									// transform
-									temp = ( geom.orientation * ( temp * geom.scale ) );
+									temp = ( geom.orientation*( temp*geom.scale ) );
 									pDstReal[ 0 ] = temp.x + positionDelta.x;
 									pDstReal[ 1 ] = temp.y + positionDelta.y;
 									pDstReal[ 2 ] = temp.z + positionDelta.z;
@@ -464,7 +473,7 @@ namespace Axiom.Core
 									temp.y = pSrcReal[ 1 ];
 									temp.z = pSrcReal[ 2 ];
 									// rotation only
-									temp = geom.orientation * temp;
+									temp = geom.orientation*temp;
 									pDstReal[ 0 ] = temp.x;
 									pDstReal[ 1 ] = temp.y;
 									pDstReal[ 2 ] = temp.z;
@@ -476,7 +485,7 @@ namespace Axiom.Core
 									// these things are in units of 4
 									if ( ( size & 0x3 ) == 0x3 )
 									{
-										var cnt = size / 4;
+										var cnt = size/4;
 										while ( cnt-- > 0 )
 										{
 											pDstReal[ cnt ] = pSrcReal[ cnt ];
@@ -584,7 +593,7 @@ namespace Axiom.Core
 			/// </summary>
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !this.IsDisposed )
+				if ( !IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
@@ -602,7 +611,7 @@ namespace Axiom.Core
 						{
 							if ( !vertexData.IsDisposed )
 							{
-								this.vertexData.Dispose();
+								vertexData.Dispose();
 							}
 
 							vertexData = null;

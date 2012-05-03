@@ -41,13 +41,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Graphics;
-
 using Tao.OpenGl;
-
 using System.Text;
 
 #endregion Namespace Declarations
@@ -92,7 +89,7 @@ namespace Axiom.RenderSystems.OpenGL
 				public int Stencil;
 			};
 
-			public List<Mode> Modes = new List<Mode>();
+			public readonly List<Mode> Modes = new List<Mode>();
 		};
 
 		/// <summary>
@@ -102,9 +99,9 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		private struct RBFormat
 		{
-			public int Format;
-			public int Width;
-			public int Height;
+			public readonly int Format;
+			public readonly int Width;
+			public readonly int Height;
 
 			public RBFormat( int format, int width, int height )
 			{
@@ -166,11 +163,11 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			public RBRef( GLRenderBuffer buffer )
 			{
-				this.Buffer = buffer;
-				this.Refcount = 1;
+				Buffer = buffer;
+				Refcount = 1;
 			}
 
-			public GLRenderBuffer Buffer;
+			public readonly GLRenderBuffer Buffer;
 			public int Refcount;
 		}
 
@@ -181,43 +178,45 @@ namespace Axiom.RenderSystems.OpenGL
 		private const int PROBE_SIZE = 256;
 
 		/// Stencil and depth formats to be tried
-		private int[] _stencilFormats = new int[]
-		                                {
-		                                	Gl.GL_NONE, // No stencil
-		                                	Gl.GL_STENCIL_INDEX1_EXT, Gl.GL_STENCIL_INDEX4_EXT, Gl.GL_STENCIL_INDEX8_EXT, Gl.GL_STENCIL_INDEX16_EXT
-		                                };
+		private readonly int[] _stencilFormats = new int[]
+		                                         {
+		                                         	Gl.GL_NONE, // No stencil
+		                                         	Gl.GL_STENCIL_INDEX1_EXT, Gl.GL_STENCIL_INDEX4_EXT, Gl.GL_STENCIL_INDEX8_EXT
+		                                         	, Gl.GL_STENCIL_INDEX16_EXT
+		                                         };
 
-		private int[] _stencilBits = new int[]
-		                             {
-		                             	0, 1, 4, 8, 16
-		                             };
+		private readonly int[] _stencilBits = new int[]
+		                                      {
+		                                      	0, 1, 4, 8, 16
+		                                      };
 
-		private int[] _depthFormats = new int[]
-		                              {
-		                              	Gl.GL_NONE, Gl.GL_DEPTH_COMPONENT16, Gl.GL_DEPTH_COMPONENT24, // Prefer 24 bit depth
-		                              	Gl.GL_DEPTH_COMPONENT32, GL_DEPTH24_STENCIL8_EXT // packed depth / stencil
-		                              };
+		private readonly int[] _depthFormats = new int[]
+		                                       {
+		                                       	Gl.GL_NONE, Gl.GL_DEPTH_COMPONENT16, Gl.GL_DEPTH_COMPONENT24,
+		                                       	// Prefer 24 bit depth
+		                                       	Gl.GL_DEPTH_COMPONENT32, GL_DEPTH24_STENCIL8_EXT // packed depth / stencil
+		                                       };
 
-		private int[] _depthBits = new int[]
-		                           {
-		                           	0, 16, 24, 32, 24
-		                           };
+		private readonly int[] _depthBits = new int[]
+		                                    {
+		                                    	0, 16, 24, 32, 24
+		                                    };
 
 
 		/// <summary>
 		///
 		/// </summary>
-		private Dictionary<RBFormat, RBRef> _renderBufferMap = new Dictionary<RBFormat, RBRef>();
+		private readonly Dictionary<RBFormat, RBRef> _renderBufferMap = new Dictionary<RBFormat, RBRef>();
 
 		/// <summary>
 		/// Buggy ATI driver?
 		/// </summary>
-		private bool _atiMode;
+		private readonly bool _atiMode;
 
 		/// <summary>
 		/// Properties for all internal formats defined by OGRE
 		/// </summary>
-		private FormatProperties[] _props = new FormatProperties[ (int)PixelFormat.Count ];
+		private readonly FormatProperties[] _props = new FormatProperties[(int)PixelFormat.Count];
 
 		/// <summary>
 		/// Temporary FBO identifier
@@ -336,12 +335,12 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		public GLSurfaceDesc RequestRenderBuffer( int format, int width, int height )
 		{
-			GLSurfaceDesc retval = new GLSurfaceDesc();
+			var retval = new GLSurfaceDesc();
 
 			retval.Buffer = null; // Return 0 buffer if GL_NONE is requested
 			if ( format != Gl.GL_NONE )
 			{
-				RBFormat key = new RBFormat( format, width, height );
+				var key = new RBFormat( format, width, height );
 				RBRef value;
 				if ( _renderBufferMap.TryGetValue( key, out value ) )
 				{
@@ -353,13 +352,14 @@ namespace Axiom.RenderSystems.OpenGL
 				else
 				{
 					// New one
-					GLRenderBuffer rb = new GLRenderBuffer( format, width, height, 0 );
+					var rb = new GLRenderBuffer( format, width, height, 0 );
 					_renderBufferMap[ key ] = new RBRef( rb );
 					retval.Buffer = rb;
 					retval.ZOffset = 0;
 				}
 			}
-			LogManager.Instance.Write( "Requested renderbuffer with format " + format.ToString() + " of " + width.ToString() + "x" + height.ToString() + "." );
+			LogManager.Instance.Write( "Requested renderbuffer with format " + format.ToString() + " of " + width.ToString() +
+			                           "x" + height.ToString() + "." );
 			return retval;
 		}
 
@@ -375,7 +375,7 @@ namespace Axiom.RenderSystems.OpenGL
 				return;
 			}
 
-			RBFormat key = new RBFormat( surface.Buffer.GLFormat, surface.Buffer.Width, surface.Buffer.Height );
+			var key = new RBFormat( surface.Buffer.GLFormat, surface.Buffer.Width, surface.Buffer.Height );
 			RBRef value;
 			bool result = _renderBufferMap.TryGetValue( key, out value );
 			Debug.Assert( result );
@@ -385,7 +385,9 @@ namespace Axiom.RenderSystems.OpenGL
 				// Increase refcount
 				value.Refcount++;
 			}
-			LogManager.Instance.Write( "Requested renderbuffer with format " + surface.Buffer.GLFormat.ToString() + " of " + surface.Buffer.Width.ToString() + "x" + surface.Buffer.Height.ToString() + " with refcount " + value.Refcount.ToString() + "." );
+			LogManager.Instance.Write( "Requested renderbuffer with format " + surface.Buffer.GLFormat.ToString() + " of " +
+			                           surface.Buffer.Width.ToString() + "x" + surface.Buffer.Height.ToString() +
+			                           " with refcount " + value.Refcount.ToString() + "." );
 		}
 
 		/// <summary>
@@ -399,7 +401,7 @@ namespace Axiom.RenderSystems.OpenGL
 				return;
 			}
 
-			RBFormat key = new RBFormat( surface.Buffer.GLFormat, surface.Buffer.Width, surface.Buffer.Height );
+			var key = new RBFormat( surface.Buffer.GLFormat, surface.Buffer.Width, surface.Buffer.Height );
 			RBRef value;
 			if ( _renderBufferMap.TryGetValue( key, out value ) )
 			{
@@ -493,7 +495,7 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( fmt == Gl.GL_NONE || status == Gl.GL_FRAMEBUFFER_COMPLETE_EXT )
 				{
 					_props[ x ].Valid = true;
-					StringBuilder str = new StringBuilder();
+					var str = new StringBuilder();
 					str.AppendFormat( "\tFBO {0} depth/stencil support: ", PixelUtil.GetFormatName( (PixelFormat)x ) );
 
 					// For each depth/stencil formats
@@ -606,7 +608,8 @@ namespace Axiom.RenderSystems.OpenGL
 					failed = true;
 				}
 				/// Attach stencil
-				Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_STENCIL_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, stencilRB );
+				Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_STENCIL_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT,
+				                                 stencilRB );
 				if ( Gl.glGetError() != Gl.GL_NO_ERROR ) // NV hack
 				{
 					failed = true;
@@ -653,7 +656,8 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			/// Attach stencil
-			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_STENCIL_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, packedRB );
+			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_STENCIL_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT,
+			                                 packedRB );
 			if ( Gl.glGetError() != Gl.GL_NO_ERROR ) // NV hack
 			{
 				failed = true;
@@ -700,7 +704,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void Bind( RenderTarget target )
 		{
 			/// Check if the render target is in the rendertarget->FBO map
-			GLFrameBufferObject fbo = (GLFrameBufferObject)target[ "FBO" ];
+			var fbo = (GLFrameBufferObject)target[ "FBO" ];
 			if ( fbo != null )
 			{
 				fbo.Bind();

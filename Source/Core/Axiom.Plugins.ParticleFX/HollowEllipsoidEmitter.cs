@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
@@ -139,14 +138,14 @@ namespace Axiom.ParticleFX
 			// ellipsoid and the outer sphere (radius 1.0)
 			// with alpha and beta we select on point on this random ellipsoid
 			// and calculate the 3D coordinates of this point
-			x = a * Utility.Cos( alpha ) * Utility.Sin( beta );
-			y = b * Utility.Sin( alpha ) * Utility.Sin( beta );
-			z = c * Utility.Cos( beta );
+			x = a*Utility.Cos( alpha )*Utility.Sin( beta );
+			y = b*Utility.Sin( alpha )*Utility.Sin( beta );
+			z = c*Utility.Cos( beta );
 
 			// scale the found point to the ellipsoid's size and move it
 			// relatively to the center of the emitter point
 
-			particle.Position = position + x * xRange + y * yRange * z * zRange;
+			particle.Position = position + x*xRange + y*yRange*z*zRange;
 
 			// Generate complex data by reference
 			GenerateEmissionColor( ref particle.Color );
@@ -167,13 +166,13 @@ namespace Axiom.ParticleFX
 		{
 			public void Set( object target, string val )
 			{
-				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
+				var emitter = target as HollowEllipsoidEmitter;
 				emitter.Width = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
+				var emitter = target as HollowEllipsoidEmitter;
 				return StringConverter.ToString( emitter.Width );
 			}
 		}
@@ -186,13 +185,13 @@ namespace Axiom.ParticleFX
 		{
 			public void Set( object target, string val )
 			{
-				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
+				var emitter = target as HollowEllipsoidEmitter;
 				emitter.Height = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
+				var emitter = target as HollowEllipsoidEmitter;
 				return StringConverter.ToString( emitter.Height );
 			}
 		}
@@ -205,13 +204,13 @@ namespace Axiom.ParticleFX
 		{
 			public void Set( object target, string val )
 			{
-				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
+				var emitter = target as HollowEllipsoidEmitter;
 				emitter.Depth = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
+				var emitter = target as HollowEllipsoidEmitter;
 				return StringConverter.ToString( emitter.Depth );
 			}
 		}
@@ -219,18 +218,19 @@ namespace Axiom.ParticleFX
 		/// <summary>
 		///
 		/// </summary>
-		[ScriptableProperty( "inner_width", "Parametric value describing the proportion of the shape which is hollow.", typeof ( ParticleEmitter ) )]
+		[ScriptableProperty( "inner_width", "Parametric value describing the proportion of the shape which is hollow.",
+			typeof ( ParticleEmitter ) )]
 		public class InnerWidthCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
-				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
+				var emitter = target as HollowEllipsoidEmitter;
 				emitter.InnerX = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
+				var emitter = target as HollowEllipsoidEmitter;
 				return StringConverter.ToString( emitter.InnerX );
 			}
 		}
@@ -238,18 +238,19 @@ namespace Axiom.ParticleFX
 		/// <summary>
 		///
 		/// </summary>
-		[ScriptableProperty( "inner_height", "Parametric value describing the proportion of the shape which is hollow.", typeof ( ParticleEmitter ) )]
+		[ScriptableProperty( "inner_height", "Parametric value describing the proportion of the shape which is hollow.",
+			typeof ( ParticleEmitter ) )]
 		public class InnerHeightCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
-				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
+				var emitter = target as HollowEllipsoidEmitter;
 				emitter.InnerY = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
+				var emitter = target as HollowEllipsoidEmitter;
 				return StringConverter.ToString( emitter.InnerY );
 			}
 		}
@@ -257,18 +258,19 @@ namespace Axiom.ParticleFX
 		/// <summary>
 		///
 		/// </summary>
-		[ScriptableProperty( "inner_depth", "Parametric value describing the proportion of the shape which is hollow.", typeof ( ParticleEmitter ) )]
+		[ScriptableProperty( "inner_depth", "Parametric value describing the proportion of the shape which is hollow.",
+			typeof ( ParticleEmitter ) )]
 		public class InnerDepthCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )
 			{
-				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
+				var emitter = target as HollowEllipsoidEmitter;
 				emitter.InnerZ = StringConverter.ParseFloat( val );
 			}
 
 			public string Get( object target )
 			{
-				HollowEllipsoidEmitter emitter = target as HollowEllipsoidEmitter;
+				var emitter = target as HollowEllipsoidEmitter;
 				return StringConverter.ToString( emitter.InnerZ );
 			}
 		}

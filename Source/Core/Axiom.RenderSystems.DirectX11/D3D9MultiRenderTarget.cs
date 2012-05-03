@@ -38,7 +38,6 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 using Axiom.Utilities;
-
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -49,7 +48,8 @@ namespace Axiom.RenderSystems.DirectX9
 	{
 		#region Fields and Properties
 
-		private D3D9HardwarePixelBuffer[] _renderTargets = new D3D9HardwarePixelBuffer[ Config.MaxMultipleRenderTargets ];
+		private readonly D3D9HardwarePixelBuffer[] _renderTargets =
+			new D3D9HardwarePixelBuffer[Config.MaxMultipleRenderTargets];
 
 		#endregion Fields and Properties
 
@@ -57,7 +57,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9MultiRenderTarget( string name )
-			: base( name ) {}
+			: base( name )
+		{
+		}
 
 		#endregion Construction and Destruction
 
@@ -97,7 +99,8 @@ namespace Axiom.RenderSystems.DirectX9
 					throw new AxiomException( "MultiRenderTarget surfaces are not the same size." );
 				}
 
-				if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.MRTDifferentBitDepths ) && ( PixelUtil.GetNumElemBits( _renderTargets[ y ].Format ) != PixelUtil.GetNumElemBits( buffer.Format ) ) )
+				if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.MRTDifferentBitDepths ) &&
+				     ( PixelUtil.GetNumElemBits( _renderTargets[ y ].Format ) != PixelUtil.GetNumElemBits( buffer.Format ) ) )
 				{
 					throw new AxiomException( "MultiRenderTarget surfaces are not of same bit depth and hardware requires it" );
 				}
@@ -127,13 +130,13 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			if ( _renderTargets[ 0 ] != null )
 			{
-				this.width = _renderTargets[ 0 ].Width;
-				this.height = _renderTargets[ 0 ].Height;
+				width = _renderTargets[ 0 ].Width;
+				height = _renderTargets[ 0 ].Height;
 			}
 			else
 			{
-				this.width = 0;
-				this.height = 0;
+				width = 0;
+				height = 0;
 			}
 		}
 
@@ -176,7 +179,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				if ( attribute.ToUpper() == "DDBACKBUFFER" )
 				{
-					var surfaces = new D3D9.Surface[ Config.MaxMultipleRenderTargets ];
+					var surfaces = new D3D9.Surface[Config.MaxMultipleRenderTargets];
 					// Transfer surfaces
 					for ( var x = 0; x < Config.MaxMultipleRenderTargets; ++x )
 					{

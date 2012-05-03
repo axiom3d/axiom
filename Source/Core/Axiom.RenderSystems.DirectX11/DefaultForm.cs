@@ -40,10 +40,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using IO = System.IO;
 
 #endregion Namespace Declarations
@@ -110,7 +108,8 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 		}
 
-		public DefaultForm( WindowClassStyle classStyle, WindowsExtendedStyle dwStyleEx, string title, WindowStyles windowStyle, int left, int top, int winWidth, int winHeight, Control parentHWnd )
+		public DefaultForm( WindowClassStyle classStyle, WindowsExtendedStyle dwStyleEx, string title,
+		                    WindowStyles windowStyle, int left, int top, int winWidth, int winHeight, Control parentHWnd )
 		{
 			_classStyle = classStyle;
 			_dwStyleEx = dwStyleEx;
@@ -176,13 +175,16 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			try
 			{
-				var strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
+				var strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico",
+				                                                       ResourceGroupManager.BootstrapResourceGroupName );
 				if ( strm != null )
 				{
 					Icon = new Icon( strm );
 				}
 			}
-			catch ( IO.FileNotFoundException ) {}
+			catch ( IO.FileNotFoundException )
+			{
+			}
 		}
 
 		private void _defaultFormResize( object sender, EventArgs e )

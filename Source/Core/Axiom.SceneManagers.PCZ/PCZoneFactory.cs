@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -91,8 +90,8 @@ namespace Axiom.SceneManagers.PortalConnected
 	public class PCZoneFactoryManager
 	{
 		private static PCZoneFactoryManager instance;
-		private Dictionary<string, PCZoneFactory> pCZoneFactories = new Dictionary<string, PCZoneFactory>();
-		private DefaultZoneFactory defaultFactory = new DefaultZoneFactory( "ZoneType_Default" );
+		private readonly Dictionary<string, PCZoneFactory> pCZoneFactories = new Dictionary<string, PCZoneFactory>();
+		private readonly DefaultZoneFactory defaultFactory = new DefaultZoneFactory( "ZoneType_Default" );
 
 		private PCZoneFactoryManager()
 		{

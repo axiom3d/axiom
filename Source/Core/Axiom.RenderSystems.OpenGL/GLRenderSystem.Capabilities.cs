@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
-
 using Tao.OpenGl;
 
 // TAO is deprecated we should migrate to real OpenTK someday
@@ -262,7 +260,8 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// NFZ - Check if GLSL is supported
-			if ( GLEW_VERSION_2_0 || ( GLEW_ARB_shading_language_100 && GLEW_ARB_shader_objects && GLEW_ARB_fragment_shader && GLEW_ARB_vertex_shader ) )
+			if ( GLEW_VERSION_2_0 ||
+			     ( GLEW_ARB_shading_language_100 && GLEW_ARB_shader_objects && GLEW_ARB_fragment_shader && GLEW_ARB_vertex_shader ) )
 			{
 				rsc.AddShaderProfile( "glsl" );
 			}
@@ -431,7 +430,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			else
 			{
-				var vSize = new int[ 2 ];
+				var vSize = new int[2];
 				Gl.glGetIntegerv( Gl.GL_POINT_SIZE_RANGE, vSize );
 				rsc.MaxPointSize = vSize[ 1 ];
 			}

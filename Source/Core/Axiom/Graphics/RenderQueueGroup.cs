@@ -40,13 +40,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Graphics;
-
 using System.Collections.Generic;
-
 using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
@@ -82,7 +79,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		List of priority groups.
 		/// </summary>
-		private RenderPriorityGroupList priorityGroups = new RenderPriorityGroupList();
+		private readonly RenderPriorityGroupList priorityGroups = new RenderPriorityGroupList();
 
 		/// <summary>
 		///		Are shadows enabled for this group?
@@ -100,7 +97,8 @@ namespace Axiom.Graphics
 		/// <param name="splitPassesByLightingType">Split passes based on lighting stage?</param>
 		/// <param name="splitNoShadowPasses"></param>
 		/// <param name="shadowCastersCannotBeReceivers"></param>
-		public RenderQueueGroup( RenderQueue parent, bool splitPassesByLightingType, bool splitNoShadowPasses, bool shadowCastersCannotBeReceivers )
+		public RenderQueueGroup( RenderQueue parent, bool splitPassesByLightingType, bool splitNoShadowPasses,
+		                         bool shadowCastersCannotBeReceivers )
 		{
 			// shadows enabled by default
 			shadowsEnabled = true;

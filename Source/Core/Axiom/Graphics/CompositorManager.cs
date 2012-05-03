@@ -45,11 +45,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Media;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -254,12 +252,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		///
 		/// </summary>
-		private Dictionary<TextureDefinition, List<Texture>> texturesByDef = new Dictionary<TextureDefinition, List<Texture>>();
+		private readonly Dictionary<TextureDefinition, List<Texture>> texturesByDef =
+			new Dictionary<TextureDefinition, List<Texture>>();
 
 		/// <summary>
 		///
 		/// </summary>
-		private Dictionary<Pair<string>, SortedList<TextureDefinition, Texture>> chainTexturesByRef = new Dictionary<Pair<string>, SortedList<TextureDefinition, Texture>>();
+		private readonly Dictionary<Pair<string>, SortedList<TextureDefinition, Texture>> chainTexturesByRef =
+			new Dictionary<Pair<string>, SortedList<TextureDefinition, Texture>>();
 
 		///<summary>
 		///</summary>
@@ -268,9 +268,9 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// List of registered compositor logics
 		/// </summary>
-		private Dictionary<string, ICompositorLogic> compositorLogics = new Dictionary<string, ICompositorLogic>();
+		private readonly Dictionary<string, ICompositorLogic> compositorLogics = new Dictionary<string, ICompositorLogic>();
 
-		private ReadOnlyDictionary<string, ICompositorLogic> compositorLogicIndex;
+		private readonly ReadOnlyDictionary<string, ICompositorLogic> compositorLogicIndex;
 
 		/// <summary>
 		/// List of registered compositor logics
@@ -286,9 +286,10 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// List of registered custom composition passes
 		/// </summary>
-		private Dictionary<string, ICustomCompositionPass> customCompositionPasses = new Dictionary<string, ICustomCompositionPass>();
+		private readonly Dictionary<string, ICustomCompositionPass> customCompositionPasses =
+			new Dictionary<string, ICustomCompositionPass>();
 
-		private ReadOnlyDictionary<string, ICustomCompositionPass> customCompositionPassesIndex;
+		private readonly ReadOnlyDictionary<string, ICustomCompositionPass> customCompositionPassesIndex;
 
 		/// <summary>
 		/// List of registered custom composition passes
@@ -315,8 +316,8 @@ namespace Axiom.Graphics
 
 				var rs = Root.Instance.RenderSystem;
 				var vp = rs.Viewport;
-				float hOffset = rs.HorizontalTexelOffset / ( 0.5f * vp.ActualWidth );
-				float vOffset = rs.VerticalTexelOffset / ( 0.5f * vp.ActualHeight );
+				float hOffset = rs.HorizontalTexelOffset/( 0.5f*vp.ActualWidth );
+				float vOffset = rs.VerticalTexelOffset/( 0.5f*vp.ActualHeight );
 				rectangle.SetCorners( -1f + hOffset, 1f - vOffset, 1f + hOffset, -1f - vOffset );
 				return rectangle;
 			}
@@ -493,7 +494,7 @@ namespace Axiom.Graphics
 				throw new AxiomException( "Pass '" + name + "' already exists." );
 			}
 
-			this.customCompositionPasses.Add( name, compositionPass );
+			customCompositionPasses.Add( name, compositionPass );
 		}
 
 		#region Pooled Textures
@@ -513,7 +514,9 @@ namespace Axiom.Graphics
 		/// <param name="instance"></param>
 		/// <param name="scope"></param>
 		/// <returns></returns>
-		public Texture GetPooledTexture( string name, string localName, int width, int height, PixelFormat format, int aa, string aaHint, bool srgb, List<Texture> textureAllreadyAssigned, CompositorInstance instance, CompositionTechnique.TextureScope scope )
+		public Texture GetPooledTexture( string name, string localName, int width, int height, PixelFormat format, int aa,
+		                                 string aaHint, bool srgb, List<Texture> textureAllreadyAssigned,
+		                                 CompositorInstance instance, CompositionTechnique.TextureScope scope )
 		{
 			if ( scope == CompositionTechnique.TextureScope.Global )
 			{
@@ -539,7 +542,9 @@ namespace Axiom.Graphics
 					defMap = new SortedList<TextureDefinition, Texture>( new TextureDefLess() );
 				}
 
-				var newTex = TextureManager.Instance.CreateManual( name, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, width, height, 0, format, TextureUsage.RenderTarget, null, srgb, aa, aaHint );
+				var newTex = TextureManager.Instance.CreateManual( name, ResourceGroupManager.InternalResourceGroupName,
+				                                                   TextureType.TwoD, width, height, 0, format,
+				                                                   TextureUsage.RenderTarget, null, srgb, aa, aaHint );
 
 				defMap.Add( def, newTex );
 
@@ -608,7 +613,9 @@ namespace Axiom.Graphics
 			if ( ret == null )
 			{
 				// ok, we need to create a new one
-				ret = TextureManager.Instance.CreateManual( name, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, width, height, 0, format, TextureUsage.RenderTarget, null, srgb, aa, aaHint );
+				ret = TextureManager.Instance.CreateManual( name, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD,
+				                                            width, height, 0, format, TextureUsage.RenderTarget, null, srgb, aa,
+				                                            aaHint );
 				i.Add( ret );
 				texturesByDef[ def ] = i;
 			}
@@ -773,7 +780,8 @@ namespace Axiom.Graphics
 
 		#region ResourceManager Implementation
 
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
 		{
 			return new Compositor( this, name, handle, group, isManual, loader );
 		}
@@ -792,7 +800,7 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

@@ -41,7 +41,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -123,7 +122,8 @@ namespace Axiom.Graphics
 		/// <param name="type">The data format of the element (3 floats, a color etc).</param>
 		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
 		/// <param name="index">Optional index for multi-input elements like texture coordinates.</param>
-		public virtual VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public virtual VertexElement AddElement( short source, int offset, VertexElementType type,
+		                                         VertexElementSemantic semantic, int index )
 		{
 			var element = new VertexElement( source, offset, type, semantic, index );
 			elements.Add( element );
@@ -273,7 +273,7 @@ namespace Axiom.Graphics
 
 		public VertexDeclaration GetAutoOrganizedDeclaration( bool skeletalAnimation, bool vertexAnimation )
 		{
-			var newDecl = (VertexDeclaration)this.Clone();
+			var newDecl = (VertexDeclaration)Clone();
 			// Set all sources to the same buffer (for now)
 			var elems = newDecl.Elements;
 
@@ -307,7 +307,8 @@ namespace Axiom.Graphics
 						break;
 					case VertexElementSemantic.Normal:
 						// Normals can't sharing with blend weights/indices
-						splitWithPrev = ( prevSemantic == VertexElementSemantic.BlendWeights || prevSemantic == VertexElementSemantic.BlendIndices );
+						splitWithPrev = ( prevSemantic == VertexElementSemantic.BlendWeights ||
+						                  prevSemantic == VertexElementSemantic.BlendIndices );
 						// All animated meshes have to split after normal
 						splitWithNext = ( skeletalAnimation || vertexAnimation );
 						break;
@@ -397,7 +398,8 @@ namespace Axiom.Graphics
 		/// <param name="type">The data format of the element (3 floats, a color, etc).</param>
 		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
 		/// <returns>A reference to the newly created element.</returns>
-		public VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic )
+		public VertexElement InsertElement( int position, short source, int offset, VertexElementType type,
+		                                    VertexElementSemantic semantic )
 		{
 			return InsertElement( position, source, offset, type, semantic, 0 );
 		}
@@ -417,7 +419,8 @@ namespace Axiom.Graphics
 		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
 		/// <param name="index">Optional index for multi-input elements like texture coordinates.</param>
 		/// <returns>A reference to the newly created element.</returns>
-		public virtual VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public virtual VertexElement InsertElement( int position, short source, int offset, VertexElementType type,
+		                                            VertexElementSemantic semantic, int index )
 		{
 			if ( position >= elements.Count )
 			{
@@ -459,7 +462,8 @@ namespace Axiom.Graphics
 		/// <param name="offset">Offset of the element.</param>
 		/// <param name="type">Type of the element.</param>
 		/// <param name="semantic">Semantic of the element.</param>
-		public void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic )
+		public void ModifyElement( int elemIndex, short source, int offset, VertexElementType type,
+		                           VertexElementSemantic semantic )
 		{
 			ModifyElement( elemIndex, source, offset, type, semantic, 0 );
 		}
@@ -473,7 +477,8 @@ namespace Axiom.Graphics
 		/// <param name="type">Type of the element.</param>
 		/// <param name="semantic">Semantic of the element.</param>
 		/// <param name="index">Usage index of the element.</param>
-		public virtual void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
+		public virtual void ModifyElement( int elemIndex, short source, int offset, VertexElementType type,
+		                                   VertexElementSemantic semantic, int index )
 		{
 			elements[ elemIndex ] = new VertexElement( source, offset, type, semantic, index );
 		}
@@ -685,7 +690,7 @@ namespace Axiom.Graphics
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

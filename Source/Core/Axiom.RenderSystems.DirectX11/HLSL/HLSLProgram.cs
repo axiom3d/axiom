@@ -34,12 +34,10 @@
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Scripting;
 using Axiom.Utilities;
-
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
 using ResourceHandle = System.UInt64;
@@ -63,7 +61,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		#region Properties and Fields
 
 		protected D3D9.ConstantTable constTable;
-		protected readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap = new GpuProgramParameters.GpuConstantDefinitionMap();
+
+		protected readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap =
+			new GpuProgramParameters.GpuConstantDefinitionMap();
 
 		/// <summary>
 		/// Returns whether this program can be supported on the current renderer and hardware.
@@ -78,7 +78,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 					return false;
 				}
 
-				return GpuProgramManager.Instance.IsSyntaxSupported( this.Target );
+				return GpuProgramManager.Instance.IsSyntaxSupported( Target );
 			}
 		}
 
@@ -138,10 +138,11 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		/// <param name="isManual">is the program manually loaded?</param>
 		/// <param name="loader">the loader responsible for this program</param>
 		[OgreVersion( 1, 7, 2 )]
-		public D3D9HLSLProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
+		public D3D9HLSLProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                        IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-			this.UseColumnMajorMatrices = true;
+			UseColumnMajorMatrices = true;
 		}
 
 		[OgreVersion( 1, 7, 2, "~D3D9HLSLProgram" )]
@@ -153,7 +154,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				{
 					// have to call this here reather than in Resource destructor
 					// since calling virtual methods in base destructors causes crash
-					if ( this.IsLoaded )
+					if ( IsLoaded )
 					{
 						unload();
 					}
@@ -184,9 +185,9 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		{
 			// Populate preprocessor defines
 			var defines = new List<D3D9.Macro>();
-			if ( !string.IsNullOrEmpty( this.PreprocessorDefines ) )
+			if ( !string.IsNullOrEmpty( PreprocessorDefines ) )
 			{
-				var tmp = this.PreprocessorDefines.Split( ' ', ',', ';' );
+				var tmp = PreprocessorDefines.Split( ' ', ',', ';' );
 				foreach ( string define in tmp )
 				{
 					var macro = new D3D9.Macro();
@@ -209,12 +210,14 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			}
 
 			// Populate compile flags
-			var compileFlags = this.UseColumnMajorMatrices ? D3D9.ShaderFlags.PackMatrixColumnMajor : D3D9.ShaderFlags.PackMatrixRowMajor;
+			var compileFlags = UseColumnMajorMatrices
+			                   	? D3D9.ShaderFlags.PackMatrixColumnMajor
+			                   	: D3D9.ShaderFlags.PackMatrixRowMajor;
 
 #if DEBUG
 			compileFlags |= D3D9.ShaderFlags.Debug;
 #endif
-			switch ( this.OptimizationLevel )
+			switch ( OptimizationLevel )
 			{
 				case OptimizationLevel.Default:
 					compileFlags |= D3D9.ShaderFlags.OptimizationLevel1;
@@ -242,7 +245,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			}
 
 			var parseFlags = compileFlags;
-			compileFlags ^= this.UseColumnMajorMatrices ? D3D9.ShaderFlags.PackMatrixColumnMajor : D3D9.ShaderFlags.PackMatrixRowMajor;
+			compileFlags ^= UseColumnMajorMatrices ? D3D9.ShaderFlags.PackMatrixColumnMajor : D3D9.ShaderFlags.PackMatrixRowMajor;
 
 			// include handler
 			var includeHandler = new HLSLIncludeHandler( this );
@@ -254,7 +257,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 			try
 			{
-				this.MicroCode = effectCompiler.CompileShader( new D3D9.EffectHandle( this.EntryPoint ), this.Target, compileFlags, out constTable );
+				MicroCode = effectCompiler.CompileShader( new D3D9.EffectHandle( EntryPoint ), Target, compileFlags, out constTable );
 			}
 			catch ( DX.SharpDXException ex )
 			{
@@ -266,7 +269,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 				// check for errors
 				if ( !string.IsNullOrEmpty( errors ) )
 				{
-					if ( this.MicroCode != null )
+					if ( MicroCode != null )
 					{
 						if ( LogManager.Instance != null )
 						{
@@ -296,11 +299,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			if ( !HasCompileError )
 			{
 				// create a new program, without source since we are setting the microcode manually
-				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "", // dummy source, since we'll be using microcode
-				                                                                       Type, this.Target );
+				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( Name, Group, "",
+				                                                                       // dummy source, since we'll be using microcode
+				                                                                       Type, Target );
 
 				// set the microcode for this program
-				( (D3D9GpuProgram)assemblerProgram ).ExternalMicrocode = this.MicroCode;
+				( (D3D9GpuProgram)assemblerProgram ).ExternalMicrocode = MicroCode;
 			}
 		}
 
@@ -310,8 +314,8 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void UnloadHighLevelImpl()
 		{
-			this.MicroCode.SafeDispose();
-			this.MicroCode = null;
+			MicroCode.SafeDispose();
+			MicroCode = null;
 
 			constTable.SafeDispose();
 			constTable = null;
@@ -373,7 +377,8 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			else
 			{
 				// process params
-				if ( desc.Type == D3D9.ParameterType.Float || desc.Type == D3D9.ParameterType.Int || desc.Type == D3D9.ParameterType.Bool )
+				if ( desc.Type == D3D9.ParameterType.Float || desc.Type == D3D9.ParameterType.Int ||
+				     desc.Type == D3D9.ParameterType.Bool )
 				{
 					var paramIndex = desc.RegisterIndex;
 					var name = prefix + paramName;
@@ -387,9 +392,13 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 						def.PhysicalIndex = floatLogicalToPhysical.BufferSize;
 						lock ( floatLogicalToPhysical.Mutex )
 						{
-							floatLogicalToPhysical.Map.Add( paramIndex, new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, GpuProgramParameters.GpuParamVariability.Global ) );
+							floatLogicalToPhysical.Map.Add( paramIndex,
+							                                new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex,
+							                                                                             def.ArraySize*def.ElementSize,
+							                                                                             GpuProgramParameters.
+							                                                                             	GpuParamVariability.Global ) );
 
-							floatLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
+							floatLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
 							constantDefs.FloatBufferSize = floatLogicalToPhysical.BufferSize;
 						}
 					}
@@ -398,8 +407,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 						def.PhysicalIndex = intLogicalToPhysical.BufferSize;
 						lock ( intLogicalToPhysical.Mutex )
 						{
-							intLogicalToPhysical.Map.Add( paramIndex, new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, GpuProgramParameters.GpuParamVariability.Global ) );
-							intLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
+							intLogicalToPhysical.Map.Add( paramIndex,
+							                              new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex,
+							                                                                           def.ArraySize*def.ElementSize,
+							                                                                           GpuProgramParameters.
+							                                                                           	GpuParamVariability.Global ) );
+							intLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
 							constantDefs.IntBufferSize = intLogicalToPhysical.BufferSize;
 						}
 					}
@@ -448,7 +461,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 						case D3D9.ParameterClass.MatrixColumns:
 						case D3D9.ParameterClass.MatrixRows:
 						{
-							var firstDim = d3DDesc.RegisterCount / d3DDesc.Elements;
+							var firstDim = d3DDesc.RegisterCount/d3DDesc.Elements;
 							var secondDim = d3DDesc.Class == D3D9.ParameterClass.MatrixRows ? d3DDesc.Columns : d3DDesc.Rows;
 
 							switch ( firstDim )
@@ -563,7 +576,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			var parms = base.CreateParameters();
 
 			// Need to transpose matrices if compiled with column-major matrices
-			parms.TransposeMatrices = this.UseColumnMajorMatrices;
+			parms.TransposeMatrices = UseColumnMajorMatrices;
 
 			return parms;
 		}
@@ -691,7 +704,8 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			[OgreVersion( 1, 7, 2 )]
 			public void Set( object target, string val )
 			{
-				( (D3D9HLSLProgram)target ).OptimizationLevel = (OptimizationLevel)ScriptEnumAttribute.Lookup( val, typeof ( OptimizationLevel ) );
+				( (D3D9HLSLProgram)target ).OptimizationLevel =
+					(OptimizationLevel)ScriptEnumAttribute.Lookup( val, typeof ( OptimizationLevel ) );
 			}
 
 			#endregion IPropertyCommand Members

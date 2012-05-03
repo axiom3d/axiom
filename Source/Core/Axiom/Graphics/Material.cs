@@ -42,7 +42,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Core.Collections;
 using Axiom.Graphics.Collections;
@@ -111,7 +110,8 @@ namespace Axiom.Graphics
 		///
 		/// </summary>
 		/// <ogre name="mBestTechniqueList" />
-		protected readonly Dictionary<ushort, Dictionary<int, Technique>> bestTechniquesByScheme = new Dictionary<ushort, Dictionary<int, Technique>>();
+		protected readonly Dictionary<ushort, Dictionary<int, Technique>> bestTechniquesByScheme =
+			new Dictionary<ushort, Dictionary<int, Technique>>();
 
 		#region techniques Property
 
@@ -125,11 +125,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._techniques;
+				return _techniques;
 			}
 			set
 			{
-				this._techniques = value;
+				_techniques = value;
 			}
 		}
 
@@ -137,7 +137,7 @@ namespace Axiom.Graphics
 
 		#region supportedTechniques Property
 
-		private TechniqueList _supportedTechniques = new TechniqueList();
+		private readonly TechniqueList _supportedTechniques = new TechniqueList();
 
 		/// <summary>
 		///    A list of the techniques of this material that are supported by the current hardware.
@@ -147,7 +147,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._supportedTechniques;
+				return _supportedTechniques;
 			}
 		}
 
@@ -165,22 +165,17 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this._compilationRequired;
+				return _compilationRequired;
 			}
 			set
 			{
-				this._compilationRequired = value;
+				_compilationRequired = value;
 			}
 		}
 
 		#endregion compilationRequired Property
 
 		#region ReceiveShadows Property
-
-		/// <summary>
-		///		Should objects using this material receive shadows?
-		/// </summary>
-		private bool _receiveShadows;
 
 		/// <summary>
 		///		Sets whether objects using this material will receive shadows.
@@ -197,26 +192,11 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <ogre name="setRecieveShadows" />
 		/// <ogre name="getRecieveShadows" />
-		public bool ReceiveShadows
-		{
-			get
-			{
-				return this._receiveShadows;
-			}
-			set
-			{
-				this._receiveShadows = value;
-			}
-		}
+		public bool ReceiveShadows { get; set; }
 
 		#endregion ReceiveShadows Property
 
 		#region TransparencyCastsShadows Property
-
-		/// <summary>
-		///		Do transparent objects casts shadows?
-		/// </summary>
-		private bool _transparencyCastsShadows;
 
 		/// <summary>
 		///		Gets/Sets whether objects using this material be classified as opaque to the shadow caster system.
@@ -230,17 +210,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <ogre name="setTransparentCastsShadows" />
 		/// <ogre name="getTransparentCastsShadows" />
-		public bool TransparencyCastsShadows
-		{
-			get
-			{
-				return this._transparencyCastsShadows;
-			}
-			set
-			{
-				this._transparencyCastsShadows = value;
-			}
-		}
+		public bool TransparencyCastsShadows { get; set; }
 
 		#endregion TransparencyCastsShadows Property
 
@@ -255,9 +225,9 @@ namespace Axiom.Graphics
 			get
 			{
 				// check each technique to see if it is transparent
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					if ( this.techniques[ i ].IsTransparent )
+					if ( techniques[ i ].IsTransparent )
 					{
 						return true;
 					}
@@ -276,7 +246,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.techniques.Count;
+				return techniques.Count;
 			}
 		}
 
@@ -301,9 +271,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).Ambient = value;
+					( (Technique)techniques[ i ] ).Ambient = value;
 				}
 			}
 		}
@@ -324,9 +294,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).Diffuse = value;
+					( (Technique)techniques[ i ] ).Diffuse = value;
 				}
 			}
 		}
@@ -347,9 +317,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).Specular = value;
+					( (Technique)techniques[ i ] ).Specular = value;
 				}
 			}
 		}
@@ -370,9 +340,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).Shininess = value;
+					( (Technique)techniques[ i ] ).Shininess = value;
 				}
 			}
 		}
@@ -393,9 +363,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).SelfIllumination = value;
+					( (Technique)techniques[ i ] ).SelfIllumination = value;
 				}
 			}
 		}
@@ -416,9 +386,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).DepthCheck = value;
+					( (Technique)techniques[ i ] ).DepthCheck = value;
 				}
 			}
 		}
@@ -439,9 +409,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).DepthFunction = value;
+					( (Technique)techniques[ i ] ).DepthFunction = value;
 				}
 			}
 		}
@@ -462,9 +432,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).DepthWrite = value;
+					( (Technique)techniques[ i ] ).DepthWrite = value;
 				}
 			}
 		}
@@ -485,9 +455,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).ColorWriteEnabled = value;
+					( (Technique)techniques[ i ] ).ColorWriteEnabled = value;
 				}
 			}
 		}
@@ -508,9 +478,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).CullingMode = value;
+					( (Technique)techniques[ i ] ).CullingMode = value;
 				}
 			}
 		}
@@ -531,9 +501,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).ManualCullingMode = value;
+					( (Technique)techniques[ i ] ).ManualCullingMode = value;
 				}
 			}
 		}
@@ -554,9 +524,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).LightingEnabled = value;
+					( (Technique)techniques[ i ] ).LightingEnabled = value;
 				}
 			}
 		}
@@ -577,9 +547,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).DepthBias = value;
+					( (Technique)techniques[ i ] ).DepthBias = value;
 				}
 			}
 		}
@@ -600,9 +570,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).TextureFiltering = value;
+					( (Technique)techniques[ i ] ).TextureFiltering = value;
 				}
 			}
 		}
@@ -623,9 +593,9 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).TextureAnisotropy = value;
+					( (Technique)techniques[ i ] ).TextureAnisotropy = value;
 				}
 			}
 		}
@@ -646,16 +616,16 @@ namespace Axiom.Graphics
 			set
 			{
 				// load each technique
-				for ( var i = 0; i < this.techniques.Count; i++ )
+				for ( var i = 0; i < techniques.Count; i++ )
 				{
-					( (Technique)this.techniques[ i ] ).ShadingMode = value;
+					( (Technique)techniques[ i ] ).ShadingMode = value;
 				}
 			}
 		}
 
 		public void SetFog( bool overrideScene )
 		{
-			this.SetFog( overrideScene, FogMode.None, ColorEx.White, 0.001f, 0.0f, 1.0f );
+			SetFog( overrideScene, FogMode.None, ColorEx.White, 0.001f, 0.0f, 1.0f );
 		}
 
 		/// <summary>
@@ -670,12 +640,13 @@ namespace Axiom.Graphics
 		/// <see ref="Pass.SetFog"></see>
 		/// </remarks>
 		/// <ogre name="" />
-		public void SetFog( bool overrideScene, FogMode mode, ColorEx color, Single expDensity, Single linearStart, Single linearEnd )
+		public void SetFog( bool overrideScene, FogMode mode, ColorEx color, Single expDensity, Single linearStart,
+		                    Single linearEnd )
 		{
 			// load each technique
-			for ( var i = 0; i < this.techniques.Count; i++ )
+			for ( var i = 0; i < techniques.Count; i++ )
 			{
-				( (Technique)this.techniques[ i ] ).SetFog( overrideScene, mode, color, expDensity, linearStart, linearEnd );
+				( (Technique)techniques[ i ] ).SetFog( overrideScene, mode, color, expDensity, linearStart, linearEnd );
 			}
 		}
 
@@ -694,9 +665,9 @@ namespace Axiom.Graphics
 		public void SetSceneBlending( SceneBlendType blendType )
 		{
 			// load each technique
-			for ( var i = 0; i < this.techniques.Count; i++ )
+			for ( var i = 0; i < techniques.Count; i++ )
 			{
-				this.techniques[ i ].SetSceneBlending( blendType );
+				techniques[ i ].SetSceneBlending( blendType );
 			}
 		}
 
@@ -714,9 +685,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void SetSeparateSceneBlending( SceneBlendType sbt, SceneBlendType sbta )
 		{
-			for ( var i = 0; i < this.techniques.Count; i++ )
+			for ( var i = 0; i < techniques.Count; i++ )
 			{
-				this.techniques[ i ].SetSeparateSceneBlending( sbt, sbta );
+				techniques[ i ].SetSeparateSceneBlending( sbt, sbta );
 			}
 		}
 
@@ -735,9 +706,9 @@ namespace Axiom.Graphics
 		public void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
 			// load each technique
-			for ( var i = 0; i < this.techniques.Count; i++ )
+			for ( var i = 0; i < techniques.Count; i++ )
 			{
-				this.techniques[ i ].SetSceneBlending( src, dest );
+				techniques[ i ].SetSceneBlending( src, dest );
 			}
 		}
 
@@ -753,11 +724,12 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <see cref="Pass.SetSeparateSceneBlending"/>
 		[OgreVersion( 1, 7, 2 )]
-		public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
+		public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
+		                                      SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
 		{
-			for ( var i = 0; i < this.techniques.Count; i++ )
+			for ( var i = 0; i < techniques.Count; i++ )
 			{
-				this.techniques[ i ].SetSeparateSceneBlending( sourceFactor, destFactor, sourceFactorAlpha, destFactorAlpha );
+				techniques[ i ].SetSeparateSceneBlending( sourceFactor, destFactor, sourceFactorAlpha, destFactorAlpha );
 			}
 		}
 
@@ -768,25 +740,30 @@ namespace Axiom.Graphics
 		#region Constructors and Destructor
 
 		public Material( ResourceManager parent, string name, UInt64 handle, string group )
-			: this( parent, name, handle, group, false, null ) {}
+			: this( parent, name, handle, group, false, null )
+		{
+		}
 
-		public Material( ResourceManager parent, string name, UInt64 handle, string group, bool isManual, IManualResourceLoader loader )
+		public Material( ResourceManager parent, string name, UInt64 handle, string group, bool isManual,
+		                 IManualResourceLoader loader )
 			: base( parent, name, handle, group )
 		{
-			this.ReceiveShadows = true;
-			this.TransparencyCastsShadows = false;
-			this._compilationRequired = true;
+			ReceiveShadows = true;
+			TransparencyCastsShadows = false;
+			_compilationRequired = true;
 
 			// Override isManual, not applicable for Material (we always want to call loadImpl)
 			if ( isManual )
 			{
-				this.IsManuallyLoaded = false;
-				LogManager.Instance.Write( "Material {0} was requested with isManual=true, but this is not applicable for materials; the flag has been reset to false.", name );
+				IsManuallyLoaded = false;
+				LogManager.Instance.Write(
+					"Material {0} was requested with isManual=true, but this is not applicable for materials; the flag has been reset to false.",
+					name );
 			}
 
-			this._lodValues.Add( 0.0f );
+			_lodValues.Add( 0.0f );
 
-			this.ApplyDefaults();
+			ApplyDefaults();
 		}
 
 		#endregion Constructors and Destructor
@@ -816,7 +793,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public void Compile()
 		{
-			this.Compile( true );
+			Compile( true );
 		}
 
 		/// <param name="autoManageTextureUnits">
@@ -829,14 +806,14 @@ namespace Axiom.Graphics
 		public void Compile( bool autoManageTextureUnits )
 		{
 			// Compile each technique, then add it to the list of supported techniques
-			this.SupportedTechniques.Clear();
-			this.ClearBestTechniqueList();
+			SupportedTechniques.Clear();
+			ClearBestTechniqueList();
 			var unSupportedReasons = new StringBuilder();
 
 			// compile each technique, adding supported ones to the list of supported techniques
-			for ( var i = 0; i < this.techniques.Count; i++ )
+			for ( var i = 0; i < techniques.Count; i++ )
 			{
-				var t = this.techniques[ i ];
+				var t = techniques[ i ];
 
 				// compile the technique, splitting texture passes if required
 				var compileMessages = t.Compile( autoManageTextureUnits );
@@ -844,21 +821,24 @@ namespace Axiom.Graphics
 				// if supported, add it to the list
 				if ( t.IsSupported )
 				{
-					this.InsertSupportedTechnique( t );
+					InsertSupportedTechnique( t );
 				}
 				else
 				{
-					LogManager.Instance.Write( "Warning: Material '{0}' Technique {1}{2} is not supported.\n{3}", this._name, i, !String.IsNullOrEmpty( t.Name ) ? "(" + t.Name + ")" : "", compileMessages );
+					LogManager.Instance.Write( "Warning: Material '{0}' Technique {1}{2} is not supported.\n{3}", _name, i,
+					                           !String.IsNullOrEmpty( t.Name ) ? "(" + t.Name + ")" : "", compileMessages );
 					unSupportedReasons.Append( compileMessages );
 				}
 			}
 
-			this._compilationRequired = false;
+			_compilationRequired = false;
 
 			// Did we find any?
-			if ( this.SupportedTechniques.Count == 0 )
+			if ( SupportedTechniques.Count == 0 )
 			{
-				LogManager.Instance.Write( "Warning: Material '{0}' has no supportable Techniques on this hardware.  Will be rendered blank. Explanation:", this._name, unSupportedReasons.ToString() );
+				LogManager.Instance.Write(
+					"Warning: Material '{0}' has no supportable Techniques on this hardware.  Will be rendered blank. Explanation:",
+					_name, unSupportedReasons.ToString() );
 			}
 		}
 
@@ -868,27 +848,27 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		private void ClearBestTechniqueList()
 		{
-			foreach ( var pair in this.bestTechniquesByScheme )
+			foreach ( var pair in bestTechniquesByScheme )
 			{
 				pair.Value.Clear();
 			}
-			this.bestTechniquesByScheme.Clear();
+			bestTechniquesByScheme.Clear();
 		}
 
 		private void InsertSupportedTechnique( Technique technique )
 		{
-			this.SupportedTechniques.Add( technique );
+			SupportedTechniques.Add( technique );
 			// get scheme
 			var schemeIndex = technique.SchemeIndex;
 			Dictionary<int, Technique> lodTechniques;
-			if ( !this.bestTechniquesByScheme.ContainsKey( schemeIndex ) )
+			if ( !bestTechniquesByScheme.ContainsKey( schemeIndex ) )
 			{
 				lodTechniques = new Dictionary<int, Technique>();
-				this.bestTechniquesByScheme.Add( schemeIndex, lodTechniques );
+				bestTechniquesByScheme.Add( schemeIndex, lodTechniques );
 			}
 			else
 			{
-				lodTechniques = this.bestTechniquesByScheme[ schemeIndex ];
+				lodTechniques = bestTechniquesByScheme[ schemeIndex ];
 			}
 
 			// Insert won't replace if supported technique for this scheme/lod is
@@ -922,8 +902,8 @@ namespace Axiom.Graphics
 		public Technique CreateTechnique()
 		{
 			var t = new Technique( this );
-			this.techniques.Add( t );
-			this._compilationRequired = true;
+			techniques.Add( t );
+			_compilationRequired = true;
 			return t;
 		}
 
@@ -936,9 +916,9 @@ namespace Axiom.Graphics
 		/// <ogre name="getTechnique" />
 		public Technique GetTechnique( int index )
 		{
-			Debug.Assert( index < this.techniques.Count, "index < techniques.Count" );
+			Debug.Assert( index < techniques.Count, "index < techniques.Count" );
 
-			return this.techniques[ index ];
+			return techniques[ index ];
 		}
 
 		/// <summary>
@@ -948,12 +928,12 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		internal void NotifyNeedsRecompile()
 		{
-			this._compilationRequired = true;
+			_compilationRequired = true;
 
 			// Also need to unload to ensure we loaded any new items
-			if ( this.IsLoaded ) // needed to stop this being called in 'loading' state
+			if ( IsLoaded ) // needed to stop this being called in 'loading' state
 			{
-				this.unload();
+				unload();
 			}
 		}
 
@@ -967,10 +947,10 @@ namespace Axiom.Graphics
 			Debug.Assert( t != null, "t != null" );
 
 			// remove from the list, and force a rebuild of supported techniques
-			this.techniques.Remove( t );
-			this.SupportedTechniques.Clear();
-			this.ClearBestTechniqueList();
-			this._compilationRequired = true;
+			techniques.Remove( t );
+			SupportedTechniques.Clear();
+			ClearBestTechniqueList();
+			_compilationRequired = true;
 		}
 
 		/// <summary>
@@ -979,10 +959,10 @@ namespace Axiom.Graphics
 		/// <ogre name="removeAllTechniques" />
 		public void RemoveAllTechniques()
 		{
-			this.techniques.Clear();
-			this.SupportedTechniques.Clear();
-			this.ClearBestTechniqueList();
-			this._compilationRequired = true;
+			techniques.Clear();
+			SupportedTechniques.Clear();
+			ClearBestTechniqueList();
+			_compilationRequired = true;
 		}
 
 
@@ -994,7 +974,7 @@ namespace Axiom.Graphics
 		/// <ogre name="clone" />
 		public Material Clone( string newName )
 		{
-			return this.Clone( newName, false, "" );
+			return Clone( newName, false, "" );
 		}
 
 		public Material Clone( string newName, bool changeGroup, string newGroup )
@@ -1006,11 +986,11 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				newMaterial = (Material)MaterialManager.Instance.Create( newName, this.Group );
+				newMaterial = (Material)MaterialManager.Instance.Create( newName, Group );
 			}
 
 			// Copy material preserving name, group and handle.
-			this.CopyTo( newMaterial, false );
+			CopyTo( newMaterial, false );
 
 			return newMaterial;
 		}
@@ -1022,7 +1002,7 @@ namespace Axiom.Graphics
 				// copy properties from the default materials
 				defaultSettings.CopyTo( this, false );
 			}
-			this._compilationRequired = true;
+			_compilationRequired = true;
 		}
 
 		public bool ApplyTextureAliases( Dictionary<string, string> aliasList )
@@ -1043,7 +1023,7 @@ namespace Axiom.Graphics
 			// iterate through all techniques and apply texture aliases
 			var testResult = false;
 
-			foreach ( var t in this._techniques )
+			foreach ( var t in _techniques )
 			{
 				if ( t.ApplyTextureAliases( aliasList, apply ) )
 				{
@@ -1066,7 +1046,7 @@ namespace Axiom.Graphics
 		/// </overload>
 		public void CopyTo( Material target )
 		{
-			this.CopyTo( target, true );
+			CopyTo( target, true );
 		}
 
 		/// <param name="target"></param>
@@ -1075,25 +1055,25 @@ namespace Axiom.Graphics
 		{
 			if ( copyUniqueInfo )
 			{
-				target.Name = this.Name;
-				target.Handle = this.Handle;
-				target.Group = this.Group;
-				target.IsManuallyLoaded = this.IsManuallyLoaded;
-				target.loader = this.loader;
+				target.Name = Name;
+				target.Handle = Handle;
+				target.Group = Group;
+				target.IsManuallyLoaded = IsManuallyLoaded;
+				target.loader = loader;
 			}
 
 			// copy basic data
-			target.Size = this.Size;
-			target.LastAccessed = this.LastAccessed;
-			target.ReceiveShadows = this.ReceiveShadows;
-			target.TransparencyCastsShadows = this.TransparencyCastsShadows;
+			target.Size = Size;
+			target.LastAccessed = LastAccessed;
+			target.ReceiveShadows = ReceiveShadows;
+			target.TransparencyCastsShadows = TransparencyCastsShadows;
 
 			target.RemoveAllTechniques();
 
 			// clone a copy of all the techniques
-			for ( var i = 0; i < this.techniques.Count; i++ )
+			for ( var i = 0; i < techniques.Count; i++ )
 			{
-				var technique = this.techniques[ i ];
+				var technique = techniques[ i ];
 				var newTechnique = target.CreateTechnique();
 				technique.CopyTo( newTechnique );
 
@@ -1109,12 +1089,12 @@ namespace Axiom.Graphics
 			target.UserLodValues.Clear();
 
 			// copy LOD distances
-			target._lodValues.AddRange( this._lodValues );
-			target.UserLodValues.AddRange( this.UserLodValues );
+			target._lodValues.AddRange( _lodValues );
+			target.UserLodValues.AddRange( UserLodValues );
 
-			target.LodStrategy = this.LodStrategy;
+			target.LodStrategy = LodStrategy;
 
-			target.compilationRequired = this.compilationRequired;
+			target.compilationRequired = compilationRequired;
 		}
 
 		#endregion Copy Method
@@ -1138,13 +1118,13 @@ namespace Axiom.Graphics
 		/// </overloads>
 		public Technique GetBestTechnique()
 		{
-			return this.GetBestTechnique( 0 );
+			return GetBestTechnique( 0 );
 		}
 
 		/// <param name="lodIndex"></param>
 		public Technique GetBestTechnique( int lodIndex )
 		{
-			return this.GetBestTechnique( lodIndex, null );
+			return GetBestTechnique( lodIndex, null );
 		}
 
 		public Technique GetBestTechnique( int lodIndex, IRenderable renderable )
@@ -1152,9 +1132,9 @@ namespace Axiom.Graphics
 			Technique technique = null;
 			Dictionary<int, Technique> lodTechniques;
 
-			if ( this.SupportedTechniques.Count > 0 )
+			if ( SupportedTechniques.Count > 0 )
 			{
-				if ( !this.bestTechniquesByScheme.ContainsKey( MaterialManager.Instance.ActiveSchemeIndex ) )
+				if ( !bestTechniquesByScheme.ContainsKey( MaterialManager.Instance.ActiveSchemeIndex ) )
 				{
 					technique = MaterialManager.Instance.ArbitrateMissingTechniqueForActiveScheme( this, lodIndex, renderable );
 					if ( technique != null )
@@ -1165,7 +1145,7 @@ namespace Axiom.Graphics
 					// Nope, use default
 					// get the first item, will be 0 (the default) if default
 					// scheme techniques exist, otherwise the earliest defined
-					var iter = this.bestTechniquesByScheme.GetEnumerator();
+					var iter = bestTechniquesByScheme.GetEnumerator();
 					if ( iter.Current.Value == null )
 					{
 						iter.MoveNext();
@@ -1175,7 +1155,7 @@ namespace Axiom.Graphics
 				}
 				else
 				{
-					lodTechniques = this.bestTechniquesByScheme[ MaterialManager.Instance.ActiveSchemeIndex ];
+					lodTechniques = bestTechniquesByScheme[ MaterialManager.Instance.ActiveSchemeIndex ];
 				}
 
 				if ( !lodTechniques.ContainsKey( lodIndex ) )
@@ -1212,7 +1192,7 @@ namespace Axiom.Graphics
 		///	List of LOD distances specified for this material.
 		/// </summary>
 		/// <ogre name="mLodDistances" />
-		private LodValueList _lodValues = new LodValueList();
+		private readonly LodValueList _lodValues = new LodValueList();
 
 		/// <summary>
 		/// Gets an iterator over the list of values at which each LOD comes into effect.
@@ -1260,9 +1240,9 @@ namespace Axiom.Graphics
 
 				_lodValues[ 0 ] = _lodStrategy.BaseValue;
 
-				for ( var index = 0; index < this.UserLodValues.Count; index++ )
+				for ( var index = 0; index < UserLodValues.Count; index++ )
 				{
-					_lodValues[ index ] = _lodStrategy.TransformUserValue( this.UserLodValues[ index ] );
+					_lodValues[ index ] = _lodStrategy.TransformUserValue( UserLodValues[ index ] );
 				}
 			}
 		}
@@ -1275,7 +1255,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return this.bestTechniquesByScheme.Count;
+				return bestTechniquesByScheme.Count;
 			}
 		}
 
@@ -1299,17 +1279,17 @@ namespace Axiom.Graphics
 		public void SetLodLevels( LodValueList lodDistanceList )
 		{
 			// clear and add the 0 distance entry
-			this._lodValues.Clear();
-			this.UserLodValues.Clear();
-			this.UserLodValues.Add( float.NaN );
-			this._lodValues.Add( LodStrategy.BaseValue );
+			_lodValues.Clear();
+			UserLodValues.Clear();
+			UserLodValues.Add( float.NaN );
+			_lodValues.Add( LodStrategy.BaseValue );
 
 			foreach ( var lodValue in lodDistanceList )
 			{
-				this.UserLodValues.Add( lodValue );
+				UserLodValues.Add( lodValue );
 				if ( LodStrategy != null )
 				{
-					this._lodValues.Add( LodStrategy.TransformUserValue( lodValue ) );
+					_lodValues.Add( LodStrategy.TransformUserValue( lodValue ) );
 				}
 			}
 		}
@@ -1351,11 +1331,11 @@ namespace Axiom.Graphics
 			var material = obj as Material;
 
 			// compare this Material with the incoming object to compare to.
-			if ( this.IsTransparent && !material.IsTransparent )
+			if ( IsTransparent && !material.IsTransparent )
 			{
 				return -1;
 			}
-			else if ( !this.IsTransparent && material.IsTransparent )
+			else if ( !IsTransparent && material.IsTransparent )
 			{
 				return 1;
 			}
@@ -1383,9 +1363,9 @@ namespace Axiom.Graphics
 		protected override void load()
 		{
 			// load all the supported techniques
-			for ( var i = 0; i < this.SupportedTechniques.Count; i++ )
+			for ( var i = 0; i < SupportedTechniques.Count; i++ )
 			{
-				this.SupportedTechniques[ i ].Load();
+				SupportedTechniques[ i ].Load();
 			}
 		}
 
@@ -1398,9 +1378,9 @@ namespace Axiom.Graphics
 		protected override void unload()
 		{
 			// unload unsupported techniques
-			for ( var i = 0; i < this.SupportedTechniques.Count; i++ )
+			for ( var i = 0; i < SupportedTechniques.Count; i++ )
 			{
-				this.SupportedTechniques[ i ].Unload();
+				SupportedTechniques[ i ].Unload();
 			}
 		}
 
@@ -1419,9 +1399,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		public override void Touch()
 		{
-			if ( this.compilationRequired )
+			if ( compilationRequired )
 			{
-				this.Compile();
+				Compile();
 			}
 
 			// call base class
@@ -1433,11 +1413,11 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					this.unload();
+					unload();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -1459,7 +1439,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return this._name.GetHashCode();
+			return _name.GetHashCode();
 		}
 
 		/// <summary>
@@ -1468,7 +1448,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return this._name;
+			return _name;
 		}
 
 		#endregion Object overloads

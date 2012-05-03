@@ -243,7 +243,7 @@ namespace Axiom.Math
 			sin = Utility.Sin( roll );
 			var zMat = new Matrix3( cos, -sin, 0, sin, cos, 0, 0, 0, 1 );
 
-			this = xMat * ( yMat * zMat );
+			this = xMat*( yMat*zMat );
 		}
 
 		public Vector3 ToEulerAnglesXYZ()
@@ -253,9 +253,9 @@ namespace Axiom.Math
 			Real pAngle;
 
 			pAngle = Utility.ASin( m01 );
-			if ( pAngle < Utility.PI / 2 )
+			if ( pAngle < Utility.PI/2 )
 			{
-				if ( pAngle > -Utility.PI / 2 )
+				if ( pAngle > -Utility.PI/2 )
 				{
 					yAngle = Utility.ATan2( m21, m11 );
 					rAngle = Utility.ATan2( m02, m00 );
@@ -291,7 +291,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix3 Multiply( Matrix3 left, Matrix3 right )
 		{
-			return left * right;
+			return left*right;
 		}
 
 		/// <summary>
@@ -304,17 +304,17 @@ namespace Axiom.Math
 		{
 			var result = new Matrix3();
 
-			result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20;
-			result.m01 = left.m00 * right.m01 + left.m01 * right.m11 + left.m02 * right.m21;
-			result.m02 = left.m00 * right.m02 + left.m01 * right.m12 + left.m02 * right.m22;
+			result.m00 = left.m00*right.m00 + left.m01*right.m10 + left.m02*right.m20;
+			result.m01 = left.m00*right.m01 + left.m01*right.m11 + left.m02*right.m21;
+			result.m02 = left.m00*right.m02 + left.m01*right.m12 + left.m02*right.m22;
 
-			result.m10 = left.m10 * right.m00 + left.m11 * right.m10 + left.m12 * right.m20;
-			result.m11 = left.m10 * right.m01 + left.m11 * right.m11 + left.m12 * right.m21;
-			result.m12 = left.m10 * right.m02 + left.m11 * right.m12 + left.m12 * right.m22;
+			result.m10 = left.m10*right.m00 + left.m11*right.m10 + left.m12*right.m20;
+			result.m11 = left.m10*right.m01 + left.m11*right.m11 + left.m12*right.m21;
+			result.m12 = left.m10*right.m02 + left.m11*right.m12 + left.m12*right.m22;
 
-			result.m20 = left.m20 * right.m00 + left.m21 * right.m10 + left.m22 * right.m20;
-			result.m21 = left.m20 * right.m01 + left.m21 * right.m11 + left.m22 * right.m21;
-			result.m22 = left.m20 * right.m02 + left.m21 * right.m12 + left.m22 * right.m22;
+			result.m20 = left.m20*right.m00 + left.m21*right.m10 + left.m22*right.m20;
+			result.m21 = left.m20*right.m01 + left.m21*right.m11 + left.m22*right.m21;
+			result.m22 = left.m20*right.m02 + left.m21*right.m12 + left.m22*right.m22;
 
 			return result;
 		}
@@ -327,7 +327,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector3 Multiply( Vector3 vector, Matrix3 matrix )
 		{
-			return vector * matrix;
+			return vector*matrix;
 		}
 
 		/// <summary>
@@ -340,9 +340,9 @@ namespace Axiom.Math
 		{
 			var product = new Vector3();
 
-			product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
-			product.y = matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z;
-			product.z = matrix.m20 * vector.x + matrix.m21 * vector.y + matrix.m22 * vector.z;
+			product.x = matrix.m00*vector.x + matrix.m01*vector.y + matrix.m02*vector.z;
+			product.y = matrix.m10*vector.x + matrix.m11*vector.y + matrix.m12*vector.z;
+			product.z = matrix.m20*vector.x + matrix.m21*vector.y + matrix.m22*vector.z;
 
 			return product;
 		}
@@ -355,7 +355,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector3 Multiply( Matrix3 matrix, Vector3 vector )
 		{
-			return matrix * vector;
+			return matrix*vector;
 		}
 
 		/// <summary>
@@ -368,9 +368,9 @@ namespace Axiom.Math
 		{
 			var product = new Vector3();
 
-			product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
-			product.y = matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z;
-			product.z = matrix.m20 * vector.x + matrix.m21 * vector.y + matrix.m22 * vector.z;
+			product.x = matrix.m00*vector.x + matrix.m01*vector.y + matrix.m02*vector.z;
+			product.y = matrix.m10*vector.x + matrix.m11*vector.y + matrix.m12*vector.z;
+			product.z = matrix.m20*vector.x + matrix.m21*vector.y + matrix.m22*vector.z;
 
 			return product;
 		}
@@ -383,7 +383,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix3 Multiply( Matrix3 matrix, Real scalar )
 		{
-			return matrix * scalar;
+			return matrix*scalar;
 		}
 
 		/// <summary>
@@ -396,15 +396,15 @@ namespace Axiom.Math
 		{
 			var result = new Matrix3();
 
-			result.m00 = matrix.m00 * scalar;
-			result.m01 = matrix.m01 * scalar;
-			result.m02 = matrix.m02 * scalar;
-			result.m10 = matrix.m10 * scalar;
-			result.m11 = matrix.m11 * scalar;
-			result.m12 = matrix.m12 * scalar;
-			result.m20 = matrix.m20 * scalar;
-			result.m21 = matrix.m21 * scalar;
-			result.m22 = matrix.m22 * scalar;
+			result.m00 = matrix.m00*scalar;
+			result.m01 = matrix.m01*scalar;
+			result.m02 = matrix.m02*scalar;
+			result.m10 = matrix.m10*scalar;
+			result.m11 = matrix.m11*scalar;
+			result.m12 = matrix.m12*scalar;
+			result.m20 = matrix.m20*scalar;
+			result.m21 = matrix.m21*scalar;
+			result.m22 = matrix.m22*scalar;
 
 			return result;
 		}
@@ -417,7 +417,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Matrix3 Multiply( Real scalar, Matrix3 matrix )
 		{
-			return scalar * matrix;
+			return scalar*matrix;
 		}
 
 		/// <summary>
@@ -430,15 +430,15 @@ namespace Axiom.Math
 		{
 			var result = new Matrix3();
 
-			result.m00 = matrix.m00 * scalar;
-			result.m01 = matrix.m01 * scalar;
-			result.m02 = matrix.m02 * scalar;
-			result.m10 = matrix.m10 * scalar;
-			result.m11 = matrix.m11 * scalar;
-			result.m12 = matrix.m12 * scalar;
-			result.m20 = matrix.m20 * scalar;
-			result.m21 = matrix.m21 * scalar;
-			result.m22 = matrix.m22 * scalar;
+			result.m00 = matrix.m00*scalar;
+			result.m01 = matrix.m01*scalar;
+			result.m02 = matrix.m02*scalar;
+			result.m10 = matrix.m10*scalar;
+			result.m11 = matrix.m11*scalar;
+			result.m12 = matrix.m12*scalar;
+			result.m20 = matrix.m20*scalar;
+			result.m21 = matrix.m21*scalar;
+			result.m22 = matrix.m22*scalar;
 
 			return result;
 		}
@@ -547,7 +547,9 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static bool operator ==( Matrix3 left, Matrix3 right )
 		{
-			if ( left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 && left.m10 == right.m10 && left.m11 == right.m11 && left.m12 == right.m12 && left.m20 == right.m20 && left.m21 == right.m21 && left.m22 == right.m22 )
+			if ( left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 && left.m10 == right.m10 &&
+			     left.m11 == right.m11 && left.m12 == right.m12 && left.m20 == right.m20 && left.m21 == right.m21 &&
+			     left.m22 == right.m22 )
 			{
 				return true;
 			}
@@ -603,7 +605,7 @@ namespace Axiom.Math
 				{
 					fixed ( Real* pM = &m00 )
 					{
-						return *( pM + ( ( 3 * row ) + col ) );
+						return *( pM + ( ( 3*row ) + col ) );
 					}
 				}
 #endif
@@ -645,7 +647,7 @@ namespace Axiom.Math
 				{
 					fixed ( Real* pM = &m00 )
 					{
-						*( pM + ( ( 3 * row ) + col ) ) = value;
+						*( pM + ( ( 3*row ) + col ) ) = value;
 					}
 				}
 #endif
@@ -722,11 +724,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				var cofactor00 = m11 * m22 - m12 * m21;
-				var cofactor10 = m12 * m20 - m10 * m22;
-				var cofactor20 = m10 * m21 - m11 * m20;
+				var cofactor00 = m11*m22 - m12*m21;
+				var cofactor10 = m12*m20 - m10*m22;
+				var cofactor20 = m10*m21 - m11*m20;
 
-				var result = m00 * cofactor00 + m01 * cofactor10 + m02 * cofactor20;
+				var result = m00*cofactor00 + m01*cofactor10 + m02*cofactor20;
 
 				return result;
 			}

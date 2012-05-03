@@ -1,12 +1,9 @@
 ﻿using System;
-
 using Axiom.Math;
 using Axiom.Core;
 using Axiom.Graphics;
-
 using System.Collections.Generic;
 using System.IO;
-
 using ShaderControlsContainer = System.Collections.Generic.List<Axiom.Samples.Ocean.ShaderControl>;
 using MaterialControlsContainer = System.Collections.Generic.List<Axiom.Samples.Ocean.MaterialControls>;
 
@@ -46,14 +43,14 @@ namespace Axiom.Samples.Ocean
 		protected GpuProgramParameters activeFragmentParameters;
 		protected GpuProgramParameters activeVertexParameters;
 		protected Real rotateSpeed;
-		protected Slider[] shaderControls = new Slider[ ControlsPerPage ];
+		protected Slider[] shaderControls = new Slider[ControlsPerPage];
 		protected ShaderControlsContainer shaderControlsContainer = new ShaderControlsContainer();
 		protected MaterialControlsContainer materialControlsContainer = new MaterialControlsContainer();
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected Vector3[] lightPositions = new Vector3[ NumLights ]
+		protected Vector3[] lightPositions = new Vector3[NumLights]
 		                                     {
 		                                     	new Vector3( 0, 400, 0 )
 		                                     };
@@ -61,7 +58,7 @@ namespace Axiom.Samples.Ocean
 		/// <summary>
 		/// 
 		/// </summary>
-		protected Real[] lightRotationAngles = new Real[ NumLights ]
+		protected Real[] lightRotationAngles = new Real[NumLights]
 		                                       {
 		                                       	35
 		                                       };
@@ -69,7 +66,7 @@ namespace Axiom.Samples.Ocean
 		/// <summary>
 		/// 
 		/// </summary>
-		protected ColorEx[] diffuseLightColors = new ColorEx[ NumLights ]
+		protected ColorEx[] diffuseLightColors = new ColorEx[NumLights]
 		                                         {
 		                                         	new ColorEx( 0.6f, 0.6f, 0.6f )
 		                                         };
@@ -77,7 +74,7 @@ namespace Axiom.Samples.Ocean
 		/// <summary>
 		/// 
 		/// </summary>
-		protected ColorEx[] specularLightColors = new ColorEx[ NumLights ]
+		protected ColorEx[] specularLightColors = new ColorEx[NumLights]
 		                                          {
 		                                          	new ColorEx( 0.5f, 0.5f, 0.5f )
 		                                          };
@@ -85,7 +82,7 @@ namespace Axiom.Samples.Ocean
 		/// <summary>
 		/// 
 		/// </summary>
-		protected Vector3[] lightRotationAxes = new Vector3[ NumLights ]
+		protected Vector3[] lightRotationAxes = new Vector3[NumLights]
 		                                        {
 		                                        	Vector3.UnitX
 		                                        };
@@ -93,12 +90,12 @@ namespace Axiom.Samples.Ocean
 		/// <summary>
 		/// 
 		/// </summary>
-		protected Real[] lightSpeeds = new Real[ NumLights ]
+		protected Real[] lightSpeeds = new Real[NumLights]
 		                               {
 		                               	30
 		                               };
 
-		protected bool[] lightState = new bool[ NumLights ]
+		protected bool[] lightState = new bool[NumLights]
 		                              {
 		                              	true
 		                              };
@@ -106,27 +103,27 @@ namespace Axiom.Samples.Ocean
 		/// <summary>
 		/// 
 		/// </summary>
-		protected SceneNode[] lightNodes = new SceneNode[ NumLights ];
+		protected SceneNode[] lightNodes = new SceneNode[NumLights];
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected SceneNode[] lightPivots = new SceneNode[ NumLights ];
+		protected SceneNode[] lightPivots = new SceneNode[NumLights];
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected Light[] lights = new Light[ NumLights ];
+		protected Light[] lights = new Light[NumLights];
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected BillboardSet[] lightFlareSets = new BillboardSet[ NumLights ];
+		protected BillboardSet[] lightFlareSets = new BillboardSet[NumLights];
 
 		/// <summary>
 		/// 
 		/// </summary>
-		protected Billboard[] lightFlares = new Billboard[ NumLights ];
+		protected Billboard[] lightFlares = new Billboard[NumLights];
 
 		/// <summary>
 		/// 
@@ -144,7 +141,8 @@ namespace Axiom.Samples.Ocean
 		/// </summary>
 		protected void SetupGUI()
 		{
-			SelectMenu selectMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopLeft, "MaterialSelectMenu", "Material", 300, 200, 5 );
+			SelectMenu selectMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopLeft, "MaterialSelectMenu", "Material", 300,
+			                                                          200, 5 );
 
 			for ( int i = 0; i < materialControlsContainer.Count; i++ )
 			{
@@ -158,7 +156,8 @@ namespace Axiom.Samples.Ocean
 			btn.CursorPressed += new CursorPressedHandler( btn_CursorPressed );
 			for ( int i = 0; i < ControlsPerPage; i++ )
 			{
-				shaderControls[ i ] = TrayManager.CreateThickSlider( TrayLocation.TopRight, "ShaderControlSlider" + i, "Control", 256, 80, 0, 1, 100 );
+				shaderControls[ i ] = TrayManager.CreateThickSlider( TrayLocation.TopRight, "ShaderControlSlider" + i, "Control",
+				                                                     256, 80, 0, 1, 100 );
 			}
 
 			selectMenu.SelectItem( 0 );
@@ -172,7 +171,7 @@ namespace Axiom.Samples.Ocean
 
 		private void btn_CursorPressed( object sender, Vector2 cursorPosition )
 		{
-			Button btn = sender as Button;
+			var btn = sender as Button;
 			if ( btn != null && btn.Name == "PageButtonControl" )
 			{
 				ChangePage( -1 );
@@ -184,10 +183,11 @@ namespace Axiom.Samples.Ocean
 			if ( sender != null )
 			{
 				currentMaterial = sender.SelectionIndex;
-				activeMaterial = (Material)MaterialManager.Instance.GetByName( materialControlsContainer[ currentMaterial ].MaterialName );
+				activeMaterial =
+					(Material)MaterialManager.Instance.GetByName( materialControlsContainer[ currentMaterial ].MaterialName );
 				activeMaterial.Load();
 				int numShaders = materialControlsContainer[ currentMaterial ].ShaderControlsCount;
-				numPages = ( numShaders / ControlsPerPage ) + ( numShaders % ControlsPerPage == 0 ? 0 : 1 );
+				numPages = ( numShaders/ControlsPerPage ) + ( numShaders%ControlsPerPage == 0 ? 0 : 1 );
 				ChangePage( 0 );
 
 				if ( oceanSurfaceEnt != null )
@@ -208,7 +208,7 @@ namespace Axiom.Samples.Ocean
 				return;
 			}
 
-			currentPage = ( pageNum == -1 ) ? ( currentPage + 1 ) % numPages : pageNum;
+			currentPage = ( pageNum == -1 ) ? ( currentPage + 1 )%numPages : pageNum;
 
 			string pageText = string.Format( "Parameters {0} / {1}", currentPage + 1, numPages );
 			( (Button)TrayManager.GetWidget( "PageButtonControl" ) ).Caption = pageText;
@@ -234,7 +234,7 @@ namespace Axiom.Samples.Ocean
 
 						int activeControlCount = materialControlsContainer[ currentMaterial ].ShaderControlsCount;
 
-						int startControlIndex = currentPage * ControlsPerPage;
+						int startControlIndex = currentPage*ControlsPerPage;
 						int numControls = activeControlCount - startControlIndex;
 						if ( numControls <= 0 )
 						{
@@ -261,7 +261,9 @@ namespace Axiom.Samples.Ocean
 									case ShaderType.GpuVertex:
 									case ShaderType.GpuFragment:
 									{
-										GpuProgramParameters activeParameters = ( activeShaderDef.Type == ShaderType.GpuVertex ) ? activeVertexParameters : activeFragmentParameters;
+										GpuProgramParameters activeParameters = ( activeShaderDef.Type == ShaderType.GpuVertex )
+										                                        	? activeVertexParameters
+										                                        	: activeFragmentParameters;
 
 										if ( activeParameters != null )
 										{
@@ -325,7 +327,7 @@ namespace Axiom.Samples.Ocean
 			}
 
 			Utilities.Contract.Requires( sliderIndex != -1 );
-			int index = currentPage * ControlsPerPage + sliderIndex;
+			int index = currentPage*ControlsPerPage + sliderIndex;
 			ShaderControl activeShaderDef = materialControlsContainer[ currentMaterial ].GetShaderControl( index );
 
 			float val = slider.Value;
@@ -337,7 +339,9 @@ namespace Axiom.Samples.Ocean
 					case ShaderType.GpuVertex:
 					case ShaderType.GpuFragment:
 					{
-						GpuProgramParameters activeParameters = ( activeShaderDef.Type == ShaderType.GpuVertex ) ? activeVertexParameters : activeFragmentParameters;
+						GpuProgramParameters activeParameters = ( activeShaderDef.Type == ShaderType.GpuVertex )
+						                                        	? activeVertexParameters
+						                                        	: activeFragmentParameters;
 
 						if ( activeParameters != null )
 						{
@@ -460,9 +464,10 @@ namespace Axiom.Samples.Ocean
 			Camera.LookAt( new Vector3( 0, 10, 0 ) );
 
 			// Define a plane mesh that will be used for the ocean surface
-			Plane oceanSurface = new Plane( Vector3.UnitY, 20 );
+			var oceanSurface = new Plane( Vector3.UnitY, 20 );
 
-			MeshManager.Instance.CreatePlane( "OceanSurface", ResourceGroupManager.DefaultResourceGroupName, oceanSurface, 1000, 1000, 50, 50, true, 1, 1, 1, Vector3.UnitZ );
+			MeshManager.Instance.CreatePlane( "OceanSurface", ResourceGroupManager.DefaultResourceGroupName, oceanSurface, 1000,
+			                                  1000, 50, 50, true, 1, 1, 1, Vector3.UnitZ );
 
 			oceanSurfaceEnt = SceneManager.CreateEntity( "OceanSurface", "OceanSurface" );
 			SceneManager.RootSceneNode.CreateChildSceneNode().AttachObject( oceanSurfaceEnt );
@@ -502,10 +507,10 @@ namespace Axiom.Samples.Ocean
 		/// <returns></returns>
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			rotateSpeed = evt.TimeSinceLastFrame * 20;
+			rotateSpeed = evt.TimeSinceLastFrame*20;
 			if ( spinLight )
 			{
-				lightPivots[ 0 ].Rotate( lightRotationAxes[ 0 ], rotateSpeed * 2 );
+				lightPivots[ 0 ].Rotate( lightRotationAxes[ 0 ], rotateSpeed*2 );
 			}
 			return base.FrameRenderingQueued( evt );
 		}
@@ -514,18 +519,20 @@ namespace Axiom.Samples.Ocean
 		/// 
 		/// </summary>
 		/// <param name="newMaterial"></param>
-		protected void SelectOceanMaterial( OceanMaterial newMaterial ) {}
+		protected void SelectOceanMaterial( OceanMaterial newMaterial )
+		{
+		}
 
 		public static void LoadMaterialControlsFile( ref MaterialControlsContainer controlsContainer, string filename )
 		{
 			try
 			{
 				controlsContainer = new MaterialControlsContainer();
-				StreamReader sr = new StreamReader( ResourceGroupManager.Instance.OpenResource( filename, "Popular" ) );
+				var sr = new StreamReader( ResourceGroupManager.Instance.OpenResource( filename, "Popular" ) );
 				string sLine = string.Empty;
 				bool newSection = false;
 				bool inSection = false;
-				Dictionary<string, List<KeyValuePair<string, string>>> _sections = new Dictionary<string, List<KeyValuePair<string, string>>>();
+				var _sections = new Dictionary<string, List<KeyValuePair<string, string>>>();
 				string currentSection = string.Empty;
 				while ( ( sLine = sr.ReadLine() ) != null )
 				{
@@ -577,7 +584,7 @@ namespace Axiom.Samples.Ocean
 						{
 							if ( pai[ i ].Key == "material" )
 							{
-								MaterialControls newMaterialControls = new MaterialControls( section, pai[ i ].Value.TrimStart().TrimEnd() );
+								var newMaterialControls = new MaterialControls( section, pai[ i ].Value.TrimStart().TrimEnd() );
 								controlsContainer.Add( newMaterialControls );
 								index = controlsContainer.Count - 1;
 							}

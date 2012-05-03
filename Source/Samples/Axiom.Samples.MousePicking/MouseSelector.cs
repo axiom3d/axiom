@@ -25,7 +25,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom;
 using Axiom.Core;
 using Axiom.Math;
@@ -79,7 +78,7 @@ namespace Axiom.Samples.MousePicking
 		/// <summary>
 		/// Private variable for the Main Camera from application, set on object creation
 		/// </summary>
-		private Camera _Camera = null;
+		private readonly Camera _Camera = null;
 
 		/// <summary>
 		/// Private variable for the Main Window from application, set on object creation
@@ -94,14 +93,15 @@ namespace Axiom.Samples.MousePicking
 		/// <summary>
 		/// Private variable for the name of the object's selection box and scenenode
 		/// </summary>
-		private static NameGenerator<MouseSelector> _nameGenerator = new NameGenerator<MouseSelector>( "MouseSelector" );
+		private static readonly NameGenerator<MouseSelector> _nameGenerator =
+			new NameGenerator<MouseSelector>( "MouseSelector" );
 
-		private string _name;
+		private readonly string _name;
 
 		/// <summary>
 		/// Private Variable for the Selection Rectangle 
 		/// </summary>
-		private SelectionRectangle _rect;
+		private readonly SelectionRectangle _rect;
 
 		/// <summary>
 		/// Start vector for when the MouseSelector is in SelectionBox mode. Set on mouse down
@@ -125,7 +125,9 @@ namespace Axiom.Samples.MousePicking
 		/// <param name="camera">Camera</param>
 		/// <param name="window">RenderWindow</param>
 		public MouseSelector( Camera camera, RenderWindow window )
-			: this( _nameGenerator.GetNextUniqueName(), camera, window ) {}
+			: this( _nameGenerator.GetNextUniqueName(), camera, window )
+		{
+		}
 
 		/// <summary>
 		/// This is the Constructor for the MouseSelection object, scene must be fully initialized and 
@@ -160,7 +162,8 @@ namespace Axiom.Samples.MousePicking
 		/// </summary>
 		private void PerformSelectionWithMouseClick()
 		{
-			Log( "MouseSelector: " + _name + " single click selecting at (" + _start.x.ToString() + ";" + _start.y.ToString() + ")" );
+			Log( "MouseSelector: " + _name + " single click selecting at (" + _start.x.ToString() + ";" + _start.y.ToString() +
+			     ")" );
 			Ray mouseRay = _Camera.GetCameraToViewportRay( _start.x, _start.y );
 			RaySceneQuery RayScnQuery = Root.Instance.SceneManager.CreateRayQuery( mouseRay );
 			RayScnQuery.SortByDistance = true;
@@ -191,7 +194,7 @@ namespace Axiom.Samples.MousePicking
 				Utility.Swap( ref top, ref bottom );
 			}
 
-			if ( ( right - left ) * ( bottom - top ) < 0.0001 )
+			if ( ( right - left )*( bottom - top ) < 0.0001 )
 			{
 				return;
 			}
@@ -201,14 +204,18 @@ namespace Axiom.Samples.MousePicking
 			Ray bottomLeft = _Camera.GetCameraToViewportRay( left, bottom );
 			Ray bottomRight = _Camera.GetCameraToViewportRay( right, bottom );
 
-			Math.PlaneBoundedVolume vol = new PlaneBoundedVolume();
-			vol.planes.Add( new Math.Plane( topLeft.GetPoint( 3 ), topRight.GetPoint( 3 ), bottomRight.GetPoint( 3 ) ) ); // front plane
+			var vol = new PlaneBoundedVolume();
+			vol.planes.Add( new Math.Plane( topLeft.GetPoint( 3 ), topRight.GetPoint( 3 ), bottomRight.GetPoint( 3 ) ) );
+				// front plane
 			vol.planes.Add( new Math.Plane( topLeft.Origin, topLeft.GetPoint( 100 ), topRight.GetPoint( 100 ) ) ); // top plane
-			vol.planes.Add( new Math.Plane( topLeft.Origin, bottomLeft.GetPoint( 100 ), topLeft.GetPoint( 100 ) ) ); // left plane
-			vol.planes.Add( new Math.Plane( bottomLeft.Origin, bottomRight.GetPoint( 100 ), bottomLeft.GetPoint( 100 ) ) ); // bottom plane
-			vol.planes.Add( new Math.Plane( topRight.Origin, topRight.GetPoint( 100 ), bottomRight.GetPoint( 100 ) ) ); // right plane
+			vol.planes.Add( new Math.Plane( topLeft.Origin, bottomLeft.GetPoint( 100 ), topLeft.GetPoint( 100 ) ) );
+				// left plane
+			vol.planes.Add( new Math.Plane( bottomLeft.Origin, bottomRight.GetPoint( 100 ), bottomLeft.GetPoint( 100 ) ) );
+				// bottom plane
+			vol.planes.Add( new Math.Plane( topRight.Origin, topRight.GetPoint( 100 ), bottomRight.GetPoint( 100 ) ) );
+				// right plane
 
-			PlaneBoundedVolumeList volList = new PlaneBoundedVolumeList();
+			var volList = new PlaneBoundedVolumeList();
 			volList.Add( vol );
 
 			PlaneBoundedVolumeListSceneQuery volQuery;
@@ -269,7 +276,8 @@ namespace Axiom.Samples.MousePicking
 					case SelectionModeType.SelectionBox:
 						Log( "MouseSelector: Selection starting for " + _name );
 						Clear();
-						_start = new Vector2( evt.State.X.Absolute / (float)_Camera.Viewport.ActualWidth, evt.State.Y.Absolute / (float)_Camera.Viewport.ActualHeight );
+						_start = new Vector2( evt.State.X.Absolute/(float)_Camera.Viewport.ActualWidth,
+						                      evt.State.Y.Absolute/(float)_Camera.Viewport.ActualHeight );
 						_stop = _start;
 						_rect.IsVisible = true;
 						Log( "MouseSelector: " + _name + " selecting from top(" + _start.x.ToString() + ";" + _start.y.ToString() + ")" );
@@ -277,7 +285,8 @@ namespace Axiom.Samples.MousePicking
 						break;
 
 					case SelectionModeType.MouseClick:
-						_start = new Vector2( evt.State.X.Absolute / (float)_Camera.Viewport.ActualWidth, evt.State.Y.Absolute / (float)_Camera.Viewport.ActualHeight );
+						_start = new Vector2( evt.State.X.Absolute/(float)_Camera.Viewport.ActualWidth,
+						                      evt.State.Y.Absolute/(float)_Camera.Viewport.ActualHeight );
 						break;
 				}
 			}
@@ -291,7 +300,8 @@ namespace Axiom.Samples.MousePicking
 		{
 			if ( ( SelectionMode == SelectionModeType.SelectionBox ) && Selecting == true )
 			{
-				_stop = new Vector2( evt.State.X.Absolute / (float)_Camera.Viewport.ActualWidth, evt.State.Y.Absolute / (float)_Camera.Viewport.ActualHeight );
+				_stop = new Vector2( evt.State.X.Absolute/(float)_Camera.Viewport.ActualWidth,
+				                     evt.State.Y.Absolute/(float)_Camera.Viewport.ActualHeight );
 				_rect.SetCorners( _start, _stop );
 			}
 		}

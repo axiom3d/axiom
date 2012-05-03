@@ -39,12 +39,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Scripting;
-
 using System.Reflection;
 
 #endregion Namespace Declarations
@@ -246,7 +244,7 @@ namespace Axiom.ParticleSystems
 			// set defaults
 			parentSystem = ps;
 			angle = 0.0f;
-			this.Direction = Vector3.UnitX;
+			Direction = Vector3.UnitX;
 			emissionRate = 10;
 			fixedSpeed = 1;
 			minSpeed = float.NaN;
@@ -585,7 +583,7 @@ namespace Axiom.ParticleSystems
 			}
 			set
 			{
-				this.IsEnabled = false;
+				IsEnabled = false;
 				startTime = value;
 			}
 		}
@@ -701,12 +699,12 @@ namespace Axiom.ParticleSystems
 
 		public void Move( float x, float y, float z )
 		{
-			this.Position += new Vector3( x, y, z );
+			Position += new Vector3( x, y, z );
 		}
 
 		public void MoveTo( float x, float y, float z )
 		{
-			this.Position = new Vector3( x, y, z );
+			Position = new Vector3( x, y, z );
 		}
 
 		/// <summary>
@@ -748,7 +746,7 @@ namespace Axiom.ParticleSystems
 		{
 			if ( angle != 0.0f )
 			{
-				float tempAngle = Utility.UnitRandom() * angle;
+				float tempAngle = Utility.UnitRandom()*angle;
 
 				// randomize direction
 				dest = direction.RandomDeviant( tempAngle, up );
@@ -770,7 +768,7 @@ namespace Axiom.ParticleSystems
 
 			if ( !float.IsNaN( minSpeed ) )
 			{
-				scalar = minSpeed + ( Utility.UnitRandom() * ( maxSpeed - minSpeed ) );
+				scalar = minSpeed + ( Utility.UnitRandom()*( maxSpeed - minSpeed ) );
 			}
 			else
 			{
@@ -788,7 +786,7 @@ namespace Axiom.ParticleSystems
 		{
 			if ( !float.IsNaN( minTTL ) )
 			{
-				return minTTL + ( Utility.UnitRandom() * ( maxTTL - minTTL ) );
+				return minTTL + ( Utility.UnitRandom()*( maxTTL - minTTL ) );
 			}
 			else
 			{
@@ -810,7 +808,7 @@ namespace Axiom.ParticleSystems
 			if ( isEnabled )
 			{
 				// Keep fractions, otherwise a high frame rate will result in zero emissions!
-				remainder += emissionRate * timeElapsed;
+				remainder += emissionRate*timeElapsed;
 				intRequest = (ushort)remainder;
 				remainder -= intRequest;
 
@@ -821,7 +819,7 @@ namespace Axiom.ParticleSystems
 					if ( durationRemain <= 0.0f )
 					{
 						// Disable, duration is out (takes effect next time)
-						this.IsEnabled = false;
+						IsEnabled = false;
 					}
 				}
 				return intRequest;
@@ -835,7 +833,7 @@ namespace Axiom.ParticleSystems
 					if ( repeatDelayRemain <= 0.0f )
 					{
 						// Enable, repeat delay is out (takes effect next time)
-						this.IsEnabled = true;
+						IsEnabled = true;
 					}
 				}
 				if ( startTime > 0.0f )
@@ -844,7 +842,7 @@ namespace Axiom.ParticleSystems
 
 					if ( startTime <= 0.0f )
 					{
-						this.IsEnabled = true;
+						IsEnabled = true;
 						startTime = 0;
 					}
 				}
@@ -863,10 +861,10 @@ namespace Axiom.ParticleSystems
 		{
 			if ( colorRangeStart != null )
 			{
-				color.r = colorRangeStart.r + Utility.UnitRandom() * ( colorRangeEnd.r - colorRangeStart.r );
-				color.g = colorRangeStart.g + Utility.UnitRandom() * ( colorRangeEnd.g - colorRangeStart.g );
-				color.b = colorRangeStart.b + Utility.UnitRandom() * ( colorRangeEnd.b - colorRangeStart.b );
-				color.a = colorRangeStart.a + Utility.UnitRandom() * ( colorRangeEnd.a - colorRangeStart.a );
+				color.r = colorRangeStart.r + Utility.UnitRandom()*( colorRangeEnd.r - colorRangeStart.r );
+				color.g = colorRangeStart.g + Utility.UnitRandom()*( colorRangeEnd.g - colorRangeStart.g );
+				color.b = colorRangeStart.b + Utility.UnitRandom()*( colorRangeEnd.b - colorRangeStart.b );
+				color.a = colorRangeStart.a + Utility.UnitRandom()*( colorRangeEnd.a - colorRangeStart.a );
 			}
 			else
 			{
@@ -986,7 +984,8 @@ namespace Axiom.ParticleSystems
 					var type = types[ i ];
 
 					// get as many command attributes as there are on this type
-					var commandAtts = (ScriptablePropertyAttribute[])type.GetCustomAttributes( typeof ( ScriptablePropertyAttribute ), true );
+					var commandAtts =
+						(ScriptablePropertyAttribute[])type.GetCustomAttributes( typeof ( ScriptablePropertyAttribute ), true );
 
 					// loop through each one we found and register its command
 					for ( var j = 0; j < commandAtts.Length; j++ )
@@ -1064,7 +1063,8 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		[ScriptableProperty( "emit_emitter", "If set, this emitter will emit other emitters instead of visual particles.", typeof ( ParticleEmitter ) )]
+		[ScriptableProperty( "emit_emitter", "If set, this emitter will emit other emitters instead of visual particles.",
+			typeof ( ParticleEmitter ) )]
 		public class EmitEmitterCommand : IPropertyCommand
 		{
 			public void Set( object target, string val )

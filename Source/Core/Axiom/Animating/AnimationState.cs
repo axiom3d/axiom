@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Controllers;
 using Axiom.Collections;
 
@@ -104,7 +103,8 @@ namespace Axiom.Animating
 		/// <param name="length"></param>
 		/// <param name="weight"></param>
 		/// <param name="isEnabled"></param>
-		public AnimationState( string animationName, AnimationStateSet parent, float time, float length, float weight, bool isEnabled )
+		public AnimationState( string animationName, AnimationStateSet parent, float time, float length, float weight,
+		                       bool isEnabled )
 		{
 			this.animationName = animationName;
 			this.parent = parent;
@@ -112,11 +112,11 @@ namespace Axiom.Animating
 			this.weight = weight;
 
 			// Set using Property
-			this.IsEnabled = isEnabled;
+			IsEnabled = isEnabled;
 
 			// set using the Length property
-			this.Length = length;
-			this.loop = true;
+			Length = length;
+			loop = true;
 
 			parent.NotifyDirty();
 		}
@@ -129,7 +129,9 @@ namespace Axiom.Animating
 		/// <param name="time"></param>
 		/// <param name="length"></param>
 		public AnimationState( string animationName, AnimationStateSet animationStates, float time, float length )
-			: this( animationName, animationStates, time, length, 1.0f, false ) {}
+			: this( animationName, animationStates, time, length, 1.0f, false )
+		{
+		}
 
 		/// <summary>
 		///     The moral equivalent of a copy constructor
@@ -139,7 +141,7 @@ namespace Axiom.Animating
 		public AnimationState( AnimationStateSet parent, AnimationState source )
 		{
 			this.parent = parent;
-			this.CopyFrom( source );
+			CopyFrom( source );
 
 			parent.NotifyDirty();
 		}
@@ -215,7 +217,7 @@ namespace Axiom.Animating
 				// update the inverse length of the animation
 				if ( length != 0 )
 				{
-					inverseLength = 1.0f / length;
+					inverseLength = 1.0f/length;
 				}
 				else
 				{
@@ -322,11 +324,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return time * inverseLength;
+				return time*inverseLength;
 			}
 			set
 			{
-				time = value * length;
+				time = value*length;
 			}
 		}
 
@@ -354,7 +356,8 @@ namespace Axiom.Animating
 			{
 				return false;
 			}
-			if ( left.animationName == right.animationName && left.isEnabled == right.isEnabled && left.time == right.time && left.weight == right.weight && left.length == right.length && left.loop == right.loop )
+			if ( left.animationName == right.animationName && left.isEnabled == right.isEnabled && left.time == right.time &&
+			     left.weight == right.weight && left.length == right.length && left.loop == right.loop )
 			{
 				return true;
 			}
@@ -389,7 +392,8 @@ namespace Axiom.Animating
 		{
 			var other = obj as AnimationState;
 
-			if ( animationName == other.animationName && isEnabled == other.isEnabled && time == other.time && weight == other.weight && length == other.length )
+			if ( animationName == other.animationName && isEnabled == other.isEnabled && time == other.time &&
+			     weight == other.weight && length == other.length )
 			{
 				return 0;
 			}

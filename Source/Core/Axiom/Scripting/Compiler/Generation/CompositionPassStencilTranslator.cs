@@ -59,7 +59,7 @@ namespace Axiom.Scripting.Compiler
 			#region Translator Implementation
 
 			/// <see cref="Translator.CheckFor"/>
-            public override bool CheckFor(Keywords nodeId, Keywords parentId)
+			public override bool CheckFor( Keywords nodeId, Keywords parentId )
 			{
 				return nodeId == Keywords.ID_STENCIL && parentId == Keywords.ID_PASS;
 			}
@@ -280,7 +280,8 @@ namespace Axiom.Scripting.Compiler
 								#endregion ID_TWO_SIDED
 
 							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
+								                   "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						}
 					}

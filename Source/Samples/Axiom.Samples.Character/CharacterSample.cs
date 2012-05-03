@@ -23,7 +23,6 @@
 #endregion License
 
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics;
@@ -40,7 +39,11 @@ namespace Axiom.Samples.CharacterSample
 			Metadata[ "Description" ] = "A demo showing 3rd-person character control and use of TagPoints.";
 			Metadata[ "Thumbnail" ] = "thumb_char.png";
 			Metadata[ "Category" ] = "Animation";
-			Metadata[ "Help" ] = "Use the WASD keys to move Sinbad, and the space bar to jump. " + "Use mouse to look around and mouse wheel to zoom. Press Q to take out or put back " + "Sinbad's swords. With the swords equipped, you can left click to slice vertically or " + "right click to slice horizontally. When the swords are not equipped, press E to " + "start/stop a silly dance routine.";
+			Metadata[ "Help" ] = "Use the WASD keys to move Sinbad, and the space bar to jump. " +
+			                     "Use mouse to look around and mouse wheel to zoom. Press Q to take out or put back " +
+			                     "Sinbad's swords. With the swords equipped, you can left click to slice vertically or " +
+			                     "right click to slice horizontally. When the swords are not equipped, press E to " +
+			                     "start/stop a silly dance routine.";
 		}
 
 		/// <summary>
@@ -151,7 +154,8 @@ namespace Axiom.Samples.CharacterSample
 			light.Position = new Vector3( -10, 40, 20 );
 			light.Specular = ColorEx.White;
 
-			MeshManager.Instance.CreatePlane( "floor", ResourceGroupManager.DefaultResourceGroupName, new Plane( Vector3.UnitY, 0 ), 100, 100, 10, 10, true, 1, 10, 10, Vector3.UnitZ );
+			MeshManager.Instance.CreatePlane( "floor", ResourceGroupManager.DefaultResourceGroupName,
+			                                  new Plane( Vector3.UnitY, 0 ), 100, 100, 10, 10, true, 1, 10, 10, Vector3.UnitZ );
 
 			// create a floor entity, give it a material, and place it at the origin
 			Entity floor = SceneManager.CreateEntity( "Floor", "floor" );
@@ -165,7 +169,7 @@ namespace Axiom.Samples.CharacterSample
 
 			TrayManager.ToggleAdvancedFrameStats();
 
-			List<string> items = new List<string>();
+			var items = new List<string>();
 			items.Add( "Help" );
 			ParamsPanel help = TrayManager.CreateParamsPanel( TrayLocation.TopLeft, "HelpMessage", 100, items );
 			help.SetParamValue( "Help", " H / F1" );

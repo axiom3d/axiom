@@ -39,12 +39,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
 using Axiom.Graphics;
-
 using OpenTK;
 
 #endregion Namespace Declarations
@@ -56,10 +54,12 @@ namespace Axiom.RenderSystems.OpenGL
 	/// </summary>
 	internal class GLSupport : BaseGLSupport
 	{
-		private List<int> _fsaaLevels = new List<int>();
+		private readonly List<int> _fsaaLevels = new List<int>();
 
 		public GLSupport()
-			: base() {}
+			: base()
+		{
+		}
 
 		#region BaseGLSupport Members
 
@@ -97,13 +97,13 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		public override void AddConfig()
 		{
-			ConfigOption optFullScreen = new ConfigOption( "Full Screen", "No", false );
-			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "800 x 600", false );
-			ConfigOption optDisplayFrequency = new ConfigOption( "Display Frequency", "", false );
-			ConfigOption optColorDepth = new ConfigOption( "Color Depth", "", false );
-			ConfigOption optFSAA = new ConfigOption( "FSAA", "0", false );
-			ConfigOption optVSync = new ConfigOption( "VSync", "No", false );
-			ConfigOption optRTTMode = new ConfigOption( "RTT Preferred Mode", "FBO", false );
+			var optFullScreen = new ConfigOption( "Full Screen", "No", false );
+			var optVideoMode = new ConfigOption( "Video Mode", "800 x 600", false );
+			var optDisplayFrequency = new ConfigOption( "Display Frequency", "", false );
+			var optColorDepth = new ConfigOption( "Color Depth", "", false );
+			var optFSAA = new ConfigOption( "FSAA", "0", false );
+			var optVSync = new ConfigOption( "VSync", "No", false );
+			var optRTTMode = new ConfigOption( "RTT Preferred Mode", "FBO", false );
 
 			// Full Screen
 			optFullScreen.PossibleValues.Add( 0, "Yes" );
@@ -192,9 +192,10 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="vsync"></param>
 		/// <param name="target"></param>
 		/// <returns></returns>
-		public override RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams )
+		public override RenderWindow NewWindow( string name, int width, int height, bool fullScreen,
+		                                        NamedParameterList miscParams )
 		{
-			OpenTKWindow window = new OpenTKWindow();
+			var window = new OpenTKWindow();
 			window.Create( name, width, height, fullScreen, miscParams );
 			return window;
 		}
@@ -229,7 +230,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 				fullScreen = ( ConfigOptions[ "Full Screen" ].Value == "Yes" );
 
-				NamedParameterList miscParams = new NamedParameterList();
+				var miscParams = new NamedParameterList();
 				ConfigOption opt;
 
 				opt = ConfigOptions[ "Color Depth" ];
@@ -319,7 +320,8 @@ namespace Axiom.RenderSystems.OpenGL
 					}
 					if ( !optDisplayFrequency.PossibleValues.ContainsValue( item.RefreshRate.ToString() ) )
 					{
-						optDisplayFrequency.PossibleValues.Add( optDisplayFrequency.PossibleValues.Values.Count, item.RefreshRate.ToString() );
+						optDisplayFrequency.PossibleValues.Add( optDisplayFrequency.PossibleValues.Values.Count,
+						                                        item.RefreshRate.ToString() );
 					}
 				}
 			}
@@ -332,7 +334,8 @@ namespace Axiom.RenderSystems.OpenGL
 			else
 			{
 				optDisplayFrequency.Immutable = false;
-				optDisplayFrequency.Value = optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
+				optDisplayFrequency.Value =
+					optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
 			}
 			if ( optColorDepth.PossibleValues.Values.Count > 0 )
 			{
@@ -340,7 +343,8 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			if ( optDisplayFrequency.Value != "N/A" )
 			{
-				optDisplayFrequency.Value = optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
+				optDisplayFrequency.Value =
+					optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
 			}
 		}
 

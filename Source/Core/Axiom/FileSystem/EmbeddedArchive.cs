@@ -45,7 +45,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -80,7 +79,8 @@ namespace Axiom.FileSystem
 			         select res ).Any();
 		}
 
-		protected override void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
+		protected override void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList,
+		                                   string currentDir )
 		{
 			if ( pattern == "" )
 			{
@@ -104,7 +104,13 @@ namespace Axiom.FileSystem
 				{
 					detailList.Add( new FileInfo
 					                {
-					                	Archive = this, Filename = file, Basename = file.Substring( currentDir.Length ), Path = currentDir, CompressedSize = 0, UncompressedSize = 0, ModifiedTime = DateTime.Now
+					                	Archive = this,
+					                	Filename = file,
+					                	Basename = file.Substring( currentDir.Length ),
+					                	Path = currentDir,
+					                	CompressedSize = 0,
+					                	UncompressedSize = 0,
+					                	ModifiedTime = DateTime.Now
 					                } );
 				}
 			}
@@ -112,12 +118,14 @@ namespace Axiom.FileSystem
 
 		protected override string[] getFiles( string dir, string pattern, bool recurse )
 		{
-			var files = !pattern.Contains( "*" ) && Exists( dir + pattern ) ? new[]
-			                                                                  {
-			                                                                  	pattern
-			                                                                  } : from res in resources
-			                                                                      where res.StartsWith( dir )
-			                                                                      select res;
+			var files = !pattern.Contains( "*" ) && Exists( dir + pattern )
+			            	? new[]
+			            	  {
+			            	  	pattern
+			            	  }
+			            	: from res in resources
+			            	  where res.StartsWith( dir )
+			            	  select res;
 
 			if ( pattern == "*" )
 			{

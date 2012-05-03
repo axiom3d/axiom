@@ -35,10 +35,8 @@
 
 using System;
 using System.Diagnostics;
-
 using Axiom.Collections;
 using Axiom.Core;
-
 using Axiom.Math;
 using Axiom.Media;
 using Axiom.Utilities;
@@ -202,25 +200,19 @@ namespace Axiom.Graphics
 
 		#region Fields and Properties
 
-		[AxiomHelper( 0, 8, "Cached timer used for statistic queries" )]
-		private readonly ITimer _timer = Root.Instance.Timer;
+		[AxiomHelper( 0, 8, "Cached timer used for statistic queries" )] private readonly ITimer _timer = Root.Instance.Timer;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected FrameStatistics stats;
+		[OgreVersion( 1, 7, 2790 )] protected FrameStatistics stats;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected long lastTime;
+		[OgreVersion( 1, 7, 2790 )] protected long lastTime;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected long lastSecond;
+		[OgreVersion( 1, 7, 2790 )] protected long lastSecond;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected long frameCount;
+		[OgreVersion( 1, 7, 2790 )] protected long frameCount;
 
 		#region DepthBufferPool Property
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected PoolId depthBufferPoolId;
+		[OgreVersion( 1, 7, 2790 )] protected PoolId depthBufferPoolId;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public PoolId DepthBufferPool
@@ -246,8 +238,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Height of this render target.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected int height;
+		[OgreVersion( 1, 7, 2790 )] protected int height;
 
 		/// <summary>
 		/// Gets the height of this render target.
@@ -268,8 +259,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Width of this render target.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected int width;
+		[OgreVersion( 1, 7, 2790 )] protected int width;
 
 		/// <summary>
 		/// Gets the width of this render target.
@@ -290,8 +280,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Color depth of this render target.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected int colorDepth;
+		[OgreVersion( 1, 7, 2790 )] protected int colorDepth;
 
 		/// <summary>
 		/// Gets the color depth of this render target.
@@ -309,8 +298,7 @@ namespace Axiom.Graphics
 
 		#region DepthBuffer Property
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected DepthBuffer depthBuffer;
+		[OgreVersion( 1, 7, 2790 )] protected DepthBuffer depthBuffer;
 
 		/// <summary>
 		/// Gets the depthbuffer attached to this render target.
@@ -331,8 +319,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Indicates the priority of this render target.  Higher priority targets will get processed first.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected RenderTargetPriority priority;
+		[OgreVersion( 1, 7, 2790 )] protected RenderTargetPriority priority;
 
 		/// <summary>
 		/// Gets/Sets the priority of this render target.  Higher priority targets will get processed first.
@@ -357,8 +344,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Unique name assigned to this render target.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected string name;
+		[OgreVersion( 1, 7, 2790 )] protected string name;
 
 		/// <summary>
 		/// Gets the name of this render target.
@@ -390,8 +376,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Flag that states whether this target is active or not.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool active = true;
+		[OgreVersion( 1, 7, 2790 )] protected bool active = true;
 
 		/// <summary>
 		///    Gets/Sets whether this RenderTarget is active or not.  When inactive, it will be skipped
@@ -692,8 +677,7 @@ namespace Axiom.Graphics
 
 		#region Viewport Management
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected ViewportCollection ViewportList = new ViewportCollection();
+		[OgreVersion( 1, 7, 2790 )] protected ViewportCollection ViewportList = new ViewportCollection();
 
 		#region GetViewport
 
@@ -776,7 +760,9 @@ namespace Axiom.Graphics
 		{
 			if ( ViewportList.ContainsKey( zOrder ) )
 			{
-				throw new AxiomException( "Can't create another viewport for {0} with Z-Order {1} because a viewport exists with this Z-Order already.", name, zOrder );
+				throw new AxiomException(
+					"Can't create another viewport for {0} with Z-Order {1} because a viewport exists with this Z-Order already.", name,
+					zOrder );
 			}
 
 			// create a new camera and add it to our internal collection
@@ -1058,7 +1044,7 @@ namespace Axiom.Graphics
 			}
 
 			// new second - not 100% precise
-			stats.LastFPS = (float)frameCount / ( thisTime - lastSecond ) * 1000;
+			stats.LastFPS = (float)frameCount/( thisTime - lastSecond )*1000;
 
 			if ( stats.AverageFPS == 0 )
 			{
@@ -1066,7 +1052,7 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				stats.AverageFPS = ( stats.AverageFPS + stats.LastFPS ) / 2; // not strictly correct, but good enough
+				stats.AverageFPS = ( stats.AverageFPS + stats.LastFPS )/2; // not strictly correct, but good enough
 			}
 
 			stats.BestFPS = Math.Utility.Max( stats.BestFPS, stats.LastFPS );
@@ -1091,7 +1077,9 @@ namespace Axiom.Graphics
 		/// </remarks>
 		/// <param name="attribute">The name of the attribute.</param>
 		/// <returns></returns>
-		[Obsolete( "The GetCustomAttribute function has been deprecated in favor of an indexer property. Use object[\"attribute\"] to get custom attributes." )]
+		[Obsolete(
+			"The GetCustomAttribute function has been deprecated in favor of an indexer property. Use object[\"attribute\"] to get custom attributes."
+			)]
 		[OgreVersion( 1, 7, 2790 )]
 		public object GetCustomAttribute( string attribute )
 		{
@@ -1282,7 +1270,8 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void UpdateViewport( Viewport viewport, bool updateStatistics )
 		{
-			Contract.Requires( viewport.Target == this, "RenderTarget::_updateViewport the requested viewport is not bound to the rendertarget!" );
+			Contract.Requires( viewport.Target == this,
+			                   "RenderTarget::_updateViewport the requested viewport is not bound to the rendertarget!" );
 
 			FireViewportPreUpdate( viewport );
 			viewport.Update();
@@ -1435,7 +1424,7 @@ namespace Axiom.Graphics
 		{
 			var pf = SuggestPixelFormat();
 
-			var data = new byte[ Width * Height * PixelUtil.GetNumElemBytes( pf ) ];
+			var data = new byte[Width*Height*PixelUtil.GetNumElemBytes( pf )];
 			var buf = BufferBase.Wrap( data );
 			var pb = new PixelBox( Width, Height, 1, pf, buf );
 
@@ -1456,7 +1445,8 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual String WriteContentsToTimestampedFile( String filenamePrefix, String filenameSuffix )
 		{
-			var filename = string.Format( "{2}{0:MMddyyyyHHmmss}{1:D3}{3}", DateTime.Now, _timer.Milliseconds % 1000, filenamePrefix, filenameSuffix );
+			var filename = string.Format( "{2}{0:MMddyyyyHHmmss}{1:D3}{3}", DateTime.Now, _timer.Milliseconds%1000,
+			                              filenamePrefix, filenameSuffix );
 			WriteContentsToFile( filename );
 			return filename;
 		}
@@ -1531,7 +1521,9 @@ namespace Axiom.Graphics
 #if NET_40
 		public virtual void SwapBuffers( bool waitForVSync = true ) { }
 #else
-		public virtual void SwapBuffers( bool waitForVSync ) {}
+		public virtual void SwapBuffers( bool waitForVSync )
+		{
+		}
 
 		/// <see cref="Axiom.Graphics.RenderTarget.SwapBuffers(bool)"/>
 		public void SwapBuffers()
@@ -1568,7 +1560,8 @@ namespace Axiom.Graphics
 					// Write final performance stats
 					if ( LogManager.Instance != null )
 					{
-						LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", name, stats.AverageFPS, stats.BestFPS, stats.WorstFPS );
+						LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", name, stats.AverageFPS,
+						                           stats.BestFPS, stats.WorstFPS );
 					}
 				}
 			}

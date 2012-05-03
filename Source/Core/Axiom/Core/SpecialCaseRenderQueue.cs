@@ -135,7 +135,8 @@ namespace Axiom.Core
 		public virtual bool IsRenderQueueToBeProcessed( RenderQueueGroupID queueId )
 		{
 			var inList = _queue.Contains( queueId );
-			return ( inList && _mode == SpecialCaseRenderQueueMode.Include ) || ( !inList && _mode == SpecialCaseRenderQueueMode.Exclude );
+			return ( inList && _mode == SpecialCaseRenderQueueMode.Include ) ||
+			       ( !inList && _mode == SpecialCaseRenderQueueMode.Exclude );
 		}
 	}
 }

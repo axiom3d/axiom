@@ -41,7 +41,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Core;
@@ -66,13 +65,13 @@ namespace Axiom.Animating
 		#region Protected Members
 
 		/// <summary>Target geometry index</summary>
-		private ushort target;
+		private readonly ushort target;
 
 		/// Optional name
-		private string name;
+		private readonly string name;
 
 		/// <summary>Primary storage, sparse vertex use</summary>
-		private Dictionary<int, Vector3> vertexOffsetMap = new Dictionary<int, Vector3>();
+		private readonly Dictionary<int, Vector3> vertexOffsetMap = new Dictionary<int, Vector3>();
 
 		/// <summary>Derived hardware buffer, covers all vertices</summary>
 		private HardwareVertexBuffer vertexBuffer;
@@ -175,7 +174,8 @@ namespace Axiom.Animating
 				var decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
 				decl.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
-				vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, numVertices, BufferUsage.StaticWriteOnly, false );
+				vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, numVertices, BufferUsage.StaticWriteOnly,
+				                                                                  false );
 
 				// lock the vertex buffer
 				var ipBuf = vertexBuffer.Lock( BufferLocking.Discard );
@@ -185,7 +185,7 @@ namespace Axiom.Animating
 #endif
 				{
 					var buffer = ipBuf.ToFloatPointer();
-					for ( var i = 0; i < numVertices * 3; i++ )
+					for ( var i = 0; i < numVertices*3; i++ )
 					{
 						buffer[ i ] = 0f;
 					}
@@ -193,7 +193,7 @@ namespace Axiom.Animating
 					// Set each vertex
 					foreach ( var pair in vertexOffsetMap )
 					{
-						var offset = 3 * pair.Key;
+						var offset = 3*pair.Key;
 						var v = pair.Value;
 						buffer[ offset++ ] = v.x;
 						buffer[ offset++ ] = v.y;

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-
 using Axiom.Math;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -39,7 +38,7 @@ namespace Axiom.Samples.VolumeTexture
 			this.size = size;
 			this.texture = texture;
 
-			radius = Utility.Sqrt( size * size + size * size + size * size ) / 2.0f;
+			radius = Utility.Sqrt( size*size + size*size + size*size )/2.0f;
 			box = new AxisAlignedBox( new Vector3( -size, -size, -size ), new Vector3( size, size, size ) );
 
 			CastShadows = false;
@@ -76,7 +75,7 @@ namespace Axiom.Samples.VolumeTexture
 			Vector3 zVec = ParentNode.DerivedPosition - camera.DerivedPosition;
 			zVec.Normalize();
 
-			Vector3 fixedAxis = camera.DerivedOrientation * Vector3.UnitY;
+			Vector3 fixedAxis = camera.DerivedOrientation*Vector3.UnitY;
 
 			Vector3 xVec = fixedAxis.Cross( zVec );
 			xVec.Normalize();
@@ -88,7 +87,7 @@ namespace Axiom.Samples.VolumeTexture
 
 			fakeOrientation = oriQuat.ToRotationMatrix();
 
-			Quaternion q = ParentNode.DerivedOrientation.UnitInverse * oriQuat;
+			Quaternion q = ParentNode.DerivedOrientation.UnitInverse*oriQuat;
 			Matrix3 tempMat = q.ToRotationMatrix();
 
 			Matrix4 rotMat = Matrix4.Identity;
@@ -115,7 +114,7 @@ namespace Axiom.Samples.VolumeTexture
 			scale3x3.m11 = scale.y;
 			scale3x3.m22 = scale.z;
 
-			destMatrix = fakeOrientation * scale3x3;
+			destMatrix = fakeOrientation*scale3x3;
 			destMatrix.Translation = position;
 			matrices[ 0 ] = destMatrix;
 		}
@@ -131,7 +130,7 @@ namespace Axiom.Samples.VolumeTexture
 
 			min = box.Minimum;
 			max = box.Maximum;
-			mid = ( ( min - max ) * 0.5 ) + min;
+			mid = ( ( min - max )*0.5 ) + min;
 			dist = camera.DerivedPosition - mid;
 
 			return dist.LengthSquared;
@@ -143,27 +142,27 @@ namespace Axiom.Samples.VolumeTexture
 		protected void Initialize()
 		{
 			// Create geometry
-			int nvertices = slices * 4; // n+1 planes
-			int elemsize = 3 * 3;
-			int dsize = elemsize * nvertices;
+			int nvertices = slices*4; // n+1 planes
+			int elemsize = 3*3;
+			int dsize = elemsize*nvertices;
 			int x;
 
-			IndexData indexData = new IndexData();
-			VertexData vertexData = new VertexData();
-			float[] vertices = new float[ dsize ];
+			var indexData = new IndexData();
+			var vertexData = new VertexData();
+			var vertices = new float[dsize];
 
-			float[ , ] coords = new float[ 4,2 ]
-			                    {
-			                    	{
-			                    		0.0f, 0.0f
-			                    	}, {
-			                    	   	0.0f, 1.0f
-			                    	   }, {
-			                    	      	1.0f, 0.0f
-			                    	      }, {
-			                    	         	1.0f, 1.0f
-			                    	         }
-			                    };
+			var coords = new float[4,2]
+			             {
+			             	{
+			             		0.0f, 0.0f
+			             	}, {
+			             	   	0.0f, 1.0f
+			             	   }, {
+			             	      	1.0f, 0.0f
+			             	      }, {
+			             	         	1.0f, 1.0f
+			             	         }
+			             };
 
 			for ( x = 0; x < slices; x++ )
 			{
@@ -171,32 +170,32 @@ namespace Axiom.Samples.VolumeTexture
 				{
 					float xcoord = coords[ y, 0 ] - 0.5f;
 					float ycoord = coords[ y, 1 ] - 0.5f;
-					float zcoord = -( (float)x / (float)( slices - 1 ) - 0.5f );
+					float zcoord = -( (float)x/(float)( slices - 1 ) - 0.5f );
 					// 1.0f .. a/(a+1)
 					// coordinate
-					vertices[ x * 4 * elemsize + y * elemsize + 0 ] = xcoord * ( size / 2.0f );
-					vertices[ x * 4 * elemsize + y * elemsize + 1 ] = ycoord * ( size / 2.0f );
-					vertices[ x * 4 * elemsize + y * elemsize + 2 ] = zcoord * ( size / 2.0f );
+					vertices[ x*4*elemsize + y*elemsize + 0 ] = xcoord*( size/2.0f );
+					vertices[ x*4*elemsize + y*elemsize + 1 ] = ycoord*( size/2.0f );
+					vertices[ x*4*elemsize + y*elemsize + 2 ] = zcoord*( size/2.0f );
 					// normal
-					vertices[ x * 4 * elemsize + y * elemsize + 3 ] = 0.0f;
-					vertices[ x * 4 * elemsize + y * elemsize + 4 ] = 0.0f;
-					vertices[ x * 4 * elemsize + y * elemsize + 5 ] = 1.0f;
+					vertices[ x*4*elemsize + y*elemsize + 3 ] = 0.0f;
+					vertices[ x*4*elemsize + y*elemsize + 4 ] = 0.0f;
+					vertices[ x*4*elemsize + y*elemsize + 5 ] = 1.0f;
 					// tex
-					vertices[ x * 4 * elemsize + y * elemsize + 6 ] = xcoord * Utility.Sqrt( 3.0f );
-					vertices[ x * 4 * elemsize + y * elemsize + 7 ] = ycoord * Utility.Sqrt( 3.0f );
-					vertices[ x * 4 * elemsize + y * elemsize + 8 ] = zcoord * Utility.Sqrt( 3.0f );
+					vertices[ x*4*elemsize + y*elemsize + 6 ] = xcoord*Utility.Sqrt( 3.0f );
+					vertices[ x*4*elemsize + y*elemsize + 7 ] = ycoord*Utility.Sqrt( 3.0f );
+					vertices[ x*4*elemsize + y*elemsize + 8 ] = zcoord*Utility.Sqrt( 3.0f );
 				}
 			}
 
-			short[] faces = new short[ slices * 6 ];
+			var faces = new short[slices*6];
 			for ( x = 0; x < slices; x++ )
 			{
-				faces[ x * 6 + 0 ] = (short)( x * 4 + 0 );
-				faces[ x * 6 + 1 ] = (short)( x * 4 + 1 );
-				faces[ x * 6 + 2 ] = (short)( x * 4 + 2 );
-				faces[ x * 6 + 3 ] = (short)( x * 4 + 1 );
-				faces[ x * 6 + 4 ] = (short)( x * 4 + 2 );
-				faces[ x * 6 + 5 ] = (short)( x * 4 + 3 );
+				faces[ x*6 + 0 ] = (short)( x*4 + 0 );
+				faces[ x*6 + 1 ] = (short)( x*4 + 1 );
+				faces[ x*6 + 2 ] = (short)( x*4 + 2 );
+				faces[ x*6 + 3 ] = (short)( x*4 + 1 );
+				faces[ x*6 + 4 ] = (short)( x*4 + 2 );
+				faces[ x*6 + 5 ] = (short)( x*4 + 3 );
 			}
 
 			//setup buffers
@@ -210,14 +209,16 @@ namespace Axiom.Samples.VolumeTexture
 			offset += decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.Normal ).Size;
 			offset += decl.AddElement( 0, offset, VertexElementType.Float3, VertexElementSemantic.TexCoords ).Size;
 
-			HardwareVertexBuffer vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, nvertices, BufferUsage.StaticWriteOnly );
+			HardwareVertexBuffer vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, nvertices,
+			                                                                                       BufferUsage.StaticWriteOnly );
 
 			bind.SetBinding( 0, vertexBuffer );
 
-			HardwareIndexBuffer indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, slices * 6, BufferUsage.StaticWriteOnly );
+			HardwareIndexBuffer indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, slices*6,
+			                                                                                    BufferUsage.StaticWriteOnly );
 
 			indexData.indexBuffer = indexBuffer;
-			indexData.indexCount = slices * 6;
+			indexData.indexCount = slices*6;
 			indexData.indexStart = 0;
 
 			indexBuffer.WriteData( 0, indexBuffer.Size, faces, true );
@@ -237,7 +238,7 @@ namespace Axiom.Samples.VolumeTexture
 				ResourceGroupManager.Instance.CreateResourceGroup( "VolumeRendable" );
 			}
 
-			Material material = (Material)MaterialManager.Instance.Create( texture, "VolumeRendable" );
+			var material = (Material)MaterialManager.Instance.Create( texture, "VolumeRendable" );
 			// Remove pre-created technique from defaults
 			material.RemoveAllTechniques();
 

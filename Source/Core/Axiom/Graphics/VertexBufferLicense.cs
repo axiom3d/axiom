@@ -63,7 +63,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// 
 		/// </summary>
-		public VertexBufferLicense( HardwareVertexBuffer originalBuffer, BufferLicenseRelease licenseType, int expiredDelay, HardwareVertexBuffer buffer, IHardwareBufferLicensee licensee )
+		public VertexBufferLicense( HardwareVertexBuffer originalBuffer, BufferLicenseRelease licenseType, int expiredDelay,
+		                            HardwareVertexBuffer buffer, IHardwareBufferLicensee licensee )
 		{
 			this.originalBuffer = originalBuffer;
 			this.licenseType = licenseType;

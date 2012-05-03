@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Scripting.Compiler.AST;
@@ -57,12 +56,12 @@ namespace Axiom.Scripting.Compiler
 	{
 		#region Fields and Properties
 
-		private List<string> _scriptPatterns = new List<string>();
+		private readonly List<string> _scriptPatterns = new List<string>();
 
-		private ScriptCompiler _compiler;
+		private readonly ScriptCompiler _compiler;
 
-		private List<ScriptTranslatorManager> _translatorManagers = new List<ScriptTranslatorManager>();
-		private ScriptTranslatorManager _builtinTranslatorManager;
+		private readonly List<ScriptTranslatorManager> _translatorManagers = new List<ScriptTranslatorManager>();
+		private readonly ScriptTranslatorManager _builtinTranslatorManager;
 
 		public IList<ScriptTranslatorManager> TranslatorManagers
 		{
@@ -85,14 +84,14 @@ namespace Axiom.Scripting.Compiler
 			this._scriptPatterns.Add( "*.particle" );
 			this._scriptPatterns.Add( "*.compositor" );
 #endif
-			this._scriptPatterns.Add( "*.os" );
+			_scriptPatterns.Add( "*.os" );
 
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
 
-			this._compiler = new ScriptCompiler();
+			_compiler = new ScriptCompiler();
 
-			this._builtinTranslatorManager = new BuiltinScriptTranslatorManager();
-			this._translatorManagers.Add( this._builtinTranslatorManager );
+			_builtinTranslatorManager = new BuiltinScriptTranslatorManager();
+			_translatorManagers.Add( _builtinTranslatorManager );
 		}
 
 		#endregion Construction and Destruction
@@ -160,29 +159,29 @@ namespace Axiom.Scripting.Compiler
 		{
 			Contract.RequiresNotNull( _compiler, "_compiler" );
 
-			if ( this.OnImportFile != null )
+			if ( OnImportFile != null )
 			{
-				_compiler.OnImportFile += this.OnImportFile;
+				_compiler.OnImportFile += OnImportFile;
 			}
 
-			if ( this.OnPreConversion != null )
+			if ( OnPreConversion != null )
 			{
-				_compiler.OnPreConversion += this.OnPreConversion;
+				_compiler.OnPreConversion += OnPreConversion;
 			}
 
-			if ( this.OnPostConversion != null )
+			if ( OnPostConversion != null )
 			{
-				_compiler.OnPostConversion += this.OnPostConversion;
+				_compiler.OnPostConversion += OnPostConversion;
 			}
 
-			if ( this.OnCompileError != null )
+			if ( OnCompileError != null )
 			{
-				_compiler.OnCompileError += this.OnCompileError;
+				_compiler.OnCompileError += OnCompileError;
 			}
 
-			if ( this.OnCompilerEvent != null )
+			if ( OnCompilerEvent != null )
 			{
-				_compiler.OnCompilerEvent += this.OnCompilerEvent;
+				_compiler.OnCompilerEvent += OnCompilerEvent;
 			}
 		}
 
@@ -193,29 +192,29 @@ namespace Axiom.Scripting.Compiler
 		{
 			Contract.RequiresNotNull( _compiler, "_compiler" );
 
-			if ( this.OnImportFile != null )
+			if ( OnImportFile != null )
 			{
-				_compiler.OnImportFile -= this.OnImportFile;
+				_compiler.OnImportFile -= OnImportFile;
 			}
 
-			if ( this.OnPreConversion != null )
+			if ( OnPreConversion != null )
 			{
-				_compiler.OnPreConversion -= this.OnPreConversion;
+				_compiler.OnPreConversion -= OnPreConversion;
 			}
 
-			if ( this.OnPostConversion != null )
+			if ( OnPostConversion != null )
 			{
-				_compiler.OnPostConversion -= this.OnPostConversion;
+				_compiler.OnPostConversion -= OnPostConversion;
 			}
 
-			if ( this.OnCompileError != null )
+			if ( OnCompileError != null )
 			{
-				_compiler.OnCompileError -= this.OnCompileError;
+				_compiler.OnCompileError -= OnCompileError;
 			}
 
-			if ( this.OnCompilerEvent != null )
+			if ( OnCompilerEvent != null )
 			{
-				_compiler.OnCompilerEvent -= this.OnCompilerEvent;
+				_compiler.OnCompilerEvent -= OnCompilerEvent;
 			}
 		}
 

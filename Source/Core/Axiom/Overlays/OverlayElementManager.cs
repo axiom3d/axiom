@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Overlays.Elements;
 using Axiom.Utilities;
@@ -105,11 +104,12 @@ namespace Axiom.Overlays
 
 		#region Fields & Properties
 
-		private Dictionary<string, IOverlayElementFactory> _elementFactories = new Dictionary<string, IOverlayElementFactory>();
+		private readonly Dictionary<string, IOverlayElementFactory> _elementFactories =
+			new Dictionary<string, IOverlayElementFactory>();
 
 		#region Instances Property
 
-		private Dictionary<string, OverlayElement> _elementInstances = new Dictionary<string, OverlayElement>();
+		private readonly Dictionary<string, OverlayElement> _elementInstances = new Dictionary<string, OverlayElement>();
 
 		/// <summary>
 		/// returns all elemnt instances
@@ -126,7 +126,7 @@ namespace Axiom.Overlays
 
 		#region Templates Property
 
-		private Dictionary<string, OverlayElement> _elementTemplates = new Dictionary<string, OverlayElement>();
+		private readonly Dictionary<string, OverlayElement> _elementTemplates = new Dictionary<string, OverlayElement>();
 
 		/// <summary>
 		/// returns all element templates
@@ -229,7 +229,8 @@ namespace Axiom.Overlays
 
 		/// <summary>
 		/// </summary>
-		public OverlayElement CreateElementFromTemplate( string templateName, string typeName, string instanceName, bool isTemplate )
+		public OverlayElement CreateElementFromTemplate( string templateName, string typeName, string instanceName,
+		                                                 bool isTemplate )
 		{
 			OverlayElement element = null;
 
@@ -396,7 +397,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

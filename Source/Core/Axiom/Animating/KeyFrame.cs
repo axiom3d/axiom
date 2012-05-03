@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Math;
 using Axiom.Graphics;
 
@@ -91,7 +90,7 @@ namespace Axiom.Animating
 		/// <param name="time">Time at which this keyframe begins.</param>
 		public KeyFrame( AnimationTrack parent, float time )
 		{
-			this.parentTrack = parent;
+			parentTrack = parent;
 			this.time = time;
 		}
 
@@ -138,7 +137,9 @@ namespace Axiom.Animating
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
 		public NumericKeyFrame( AnimationTrack parent, float time )
-			: base( parent, time ) {}
+			: base( parent, time )
+		{
+		}
 
 		#endregion
 
@@ -369,7 +370,9 @@ namespace Axiom.Animating
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
 		public VertexMorphKeyFrame( AnimationTrack parent, float time )
-			: base( parent, time ) {}
+			: base( parent, time )
+		{
+		}
 
 		#endregion Constructors
 
@@ -414,7 +417,9 @@ namespace Axiom.Animating
 		/// <param name="parent">Animation track that this keyframe belongs to.</param>
 		/// <param name="time">Time at which this keyframe begins.</param>
 		public VertexPoseKeyFrame( AnimationTrack parent, float time )
-			: base( parent, time ) {}
+			: base( parent, time )
+		{
+		}
 
 		#endregion Constructors
 

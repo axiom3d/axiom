@@ -1,5 +1,4 @@
 ﻿using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -7,8 +6,11 @@ namespace Axiom.RenderSystems.OpenGL
 {
 	public class GLDefaultHardwareVertexBuffer : HardwareVertexBuffer
 	{
-		public GLDefaultHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
-			: base( manager, vertexDeclaration, numVertices, usage, useSystemMemory, useShadowBuffer ) {}
+		public GLDefaultHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration,
+		                                      int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+			: base( manager, vertexDeclaration, numVertices, usage, useSystemMemory, useShadowBuffer )
+		{
+		}
 
 		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{

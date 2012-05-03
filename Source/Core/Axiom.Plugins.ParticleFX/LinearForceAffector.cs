@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
@@ -50,11 +49,9 @@ namespace Axiom.ParticleFX
 {
 	public enum ForceApplication
 	{
-		[ScriptEnum( "average" )]
-		Average,
+		[ScriptEnum( "average" )] Average,
 
-		[ScriptEnum( "add" )]
-		Add
+		[ScriptEnum( "add" )] Add
 	}
 
 	/// <summary>
@@ -69,7 +66,7 @@ namespace Axiom.ParticleFX
 			: base( psys )
 		{
 			// HACK: See if there is better way to do this
-			this.type = "LinearForce";
+			type = "LinearForce";
 		}
 
 		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
@@ -79,13 +76,13 @@ namespace Axiom.ParticleFX
 			if ( forceApp == ForceApplication.Add )
 			{
 				// scale force by time
-				scaledVector = forceVector * timeElapsed;
+				scaledVector = forceVector*timeElapsed;
 			}
 
 			// affect each particle
 			for ( int i = 0; i < system.Particles.Count; i++ )
 			{
-				Particle p = (Particle)system.Particles[ i ];
+				var p = (Particle)system.Particles[ i ];
 
 				if ( forceApp == ForceApplication.Add )
 				{
@@ -94,7 +91,7 @@ namespace Axiom.ParticleFX
 				else
 				{
 					// Average
-					p.Direction = ( p.Direction + forceVector ) / 2;
+					p.Direction = ( p.Direction + forceVector )/2;
 				}
 			}
 		}
@@ -132,7 +129,7 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				LinearForceAffector affector = target as LinearForceAffector;
+				var affector = target as LinearForceAffector;
 
 				Vector3 vec = affector.Force;
 
@@ -142,7 +139,7 @@ namespace Axiom.ParticleFX
 
 			public void Set( object target, string val )
 			{
-				LinearForceAffector affector = target as LinearForceAffector;
+				var affector = target as LinearForceAffector;
 
 				affector.Force = StringConverter.ParseVector3( val );
 			}
@@ -157,7 +154,7 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				LinearForceAffector affector = target as LinearForceAffector;
+				var affector = target as LinearForceAffector;
 
 				// TODO: Reverse lookup the enum attribute
 				return affector.ForceApplication.ToString().ToLower();
@@ -165,7 +162,7 @@ namespace Axiom.ParticleFX
 
 			public void Set( object target, string val )
 			{
-				LinearForceAffector affector = target as LinearForceAffector;
+				var affector = target as LinearForceAffector;
 
 				// lookup the real enum equivalent to the script value
 				object enumVal = ScriptEnumAttribute.Lookup( val, typeof ( ForceApplication ) );

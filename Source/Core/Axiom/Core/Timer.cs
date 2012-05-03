@@ -54,7 +54,7 @@ namespace Axiom.Core
 	{
 		#region Private Fields
 
-		private Stopwatch _timer = new Stopwatch();
+		private readonly Stopwatch _timer = new Stopwatch();
 
 		#endregion Private Fields
 
@@ -116,7 +116,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return ( (float)1.0 / (float)Frequency );
+				return ( (float)1.0/(float)Frequency );
 			}
 		}
 
@@ -150,7 +150,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _timer.ElapsedMilliseconds / 10;
+				return _timer.ElapsedMilliseconds/10;
 			}
 		}
 

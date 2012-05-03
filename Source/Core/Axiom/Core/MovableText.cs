@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Graphics;
 using Axiom.Fonts;
 using Axiom.Math;
@@ -93,7 +92,7 @@ namespace Axiom.Core
 
 			set
 			{
-				if ( _fontName != value || this.material == null || _font == null )
+				if ( _fontName != value || material == null || _font == null )
 				{
 					_fontName = value;
 					_font = (Font)FontManager.Instance[ _fontName ];
@@ -102,21 +101,21 @@ namespace Axiom.Core
 						throw new AxiomException( String.Format( "Could not find font '{0}'.", _fontName ) );
 					}
 					_font.Load();
-					if ( this.material != null )
+					if ( material != null )
 					{
 						if ( material.Name != "BaseWhite" )
 						{
-							MaterialManager.Instance.Unload( this.material );
+							MaterialManager.Instance.Unload( material );
 						}
-						this.material = null;
+						material = null;
 					}
-					this.material = _font.Material.Clone( name + "Material", false, _font.Material.Group );
-					if ( this.material.IsLoaded == true )
+					material = _font.Material.Clone( name + "Material", false, _font.Material.Group );
+					if ( material.IsLoaded == true )
 					{
-						this.material.Load();
+						material.Load();
 					}
-					this.material.DepthCheck = !_onTop;
-					this.material.Lighting = false;
+					material.DepthCheck = !_onTop;
+					material.Lighting = false;
 					_needUpdate = true;
 				}
 			}
@@ -256,9 +255,9 @@ namespace Axiom.Core
 			set
 			{
 				_onTop = value;
-				if ( this.material != null )
+				if ( material != null )
 				{
-					this.material.DepthCheck = !_onTop;
+					material.DepthCheck = !_onTop;
 				}
 			}
 		}
@@ -268,7 +267,9 @@ namespace Axiom.Core
 		#region Construction and Destruction
 
 		public MovableText( string name, string caption, string fontName )
-			: this( name, caption, fontName, 12, ColorEx.White ) {}
+			: this( name, caption, fontName, 12, ColorEx.White )
+		{
+		}
 
 		public MovableText( string name, string caption, string fontName, int charHeight, ColorEx color )
 			: base( name )
@@ -290,15 +291,15 @@ namespace Axiom.Core
 			_onTop = true;
 			_horizontalAlignment = HorizontalAlignment.Center;
 
-			this.FontName = fontName;
-			this._setupGeometry();
+			FontName = fontName;
+			_setupGeometry();
 		}
 
 		#endregion Construction and Destruction
 
 		private Vector3 _translate3Dto2D( Camera camera, Vector3 vertex )
 		{
-			return camera.ProjectionMatrix * camera.ViewMatrix * vertex;
+			return camera.ProjectionMatrix*camera.ViewMatrix*vertex;
 		}
 
 		private void _translate3Dto2DPixels( Camera camera, Vector3 vertex, out int x, out int y )
@@ -309,13 +310,13 @@ namespace Axiom.Core
 			//RenderTarget *rt = Root.Instance.RenderTarget(in.getName());
 			//if ( !rt )
 			//    throw new AxiomException( string.Format( "Can't find '{0}' render target", mpWin.getName() ) );
-			x = (int)( ( hsc.x + 1.0f ) / 2.0f * 640.0f );
-			y = (int)( ( -hsc.y + 1.0f ) / 2.0f * 480.0f );
+			x = (int)( ( hsc.x + 1.0f )/2.0f*640.0f );
+			y = (int)( ( -hsc.y + 1.0f )/2.0f*480.0f );
 		}
 
 		private void _setupGeometry()
 		{
-			var vertexCount = _caption.Length * 6;
+			var vertexCount = _caption.Length*6;
 			if ( renderOperation.vertexData != null )
 			{
 				renderOperation.vertexData = null;
@@ -349,7 +350,9 @@ namespace Axiom.Core
 				decl.AddElement( POS_TEX_BINDING, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 			}
 
-			var vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POS_TEX_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
+			var vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POS_TEX_BINDING ),
+			                                                              renderOperation.vertexData.vertexCount,
+			                                                              BufferUsage.DynamicWriteOnly );
 			bind.SetBinding( POS_TEX_BINDING, vbuf );
 
 			// Colors - store these in a separate buffer because they change less often
@@ -357,19 +360,21 @@ namespace Axiom.Core
 			{
 				decl.AddElement( COLOR_BINDING, 0, VertexElementType.Color, VertexElementSemantic.Diffuse );
 			}
-			var cbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ), renderOperation.vertexData.vertexCount, BufferUsage.DynamicWriteOnly );
+			var cbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( COLOR_BINDING ),
+			                                                              renderOperation.vertexData.vertexCount,
+			                                                              BufferUsage.DynamicWriteOnly );
 			bind.SetBinding( COLOR_BINDING, cbuf );
 
 			var charlen = _caption.Length;
 
 			var largestWidth = 0.0f;
-			var left = 0f * 2.0f - 1.0f;
-			var top = -( ( 0f * 2.0f ) - 1.0f );
+			var left = 0f*2.0f - 1.0f;
+			var top = -( ( 0f*2.0f ) - 1.0f );
 
 			// Derive space with from a capital A
 			if ( _spaceWidth == 0 )
 			{
-				_spaceWidth = (int)( _font.GetGlyphAspectRatio( 'A' ) * _characterHeight * 2.0f );
+				_spaceWidth = (int)( _font.GetGlyphAspectRatio( 'A' )*_characterHeight*2.0f );
 			}
 
 			// for calculation of AABB
@@ -390,7 +395,7 @@ namespace Axiom.Core
 				{
 					if ( _caption[ i ] == '\n' )
 					{
-						top += _characterHeight * 2.0f;
+						top += _characterHeight*2.0f;
 					}
 				}
 			}
@@ -417,7 +422,7 @@ namespace Axiom.Core
 							}
 							else
 							{
-								len += _font.GetGlyphAspectRatio( _caption[ j ] ) * _characterHeight * 2.0f;
+								len += _font.GetGlyphAspectRatio( _caption[ j ] )*_characterHeight*2.0f;
 							}
 						}
 						newLine = false;
@@ -425,8 +430,8 @@ namespace Axiom.Core
 
 					if ( _caption[ i ] == '\n' )
 					{
-						left = 0f * 2.0f - 1.0f;
-						top -= _characterHeight * 2.0f;
+						left = 0f*2.0f - 1.0f;
+						top -= _characterHeight*2.0f;
 						newLine = true;
 						continue;
 					}
@@ -455,7 +460,7 @@ namespace Axiom.Core
 					}
 					else
 					{
-						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+						pPCBuff[ cntPos++ ] = left - ( len/2.0f );
 					}
 					pPCBuff[ cntPos++ ] = top;
 					pPCBuff[ cntPos++ ] = -1.0f;
@@ -469,7 +474,7 @@ namespace Axiom.Core
 					}
 					else
 					{
-						currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
+						currPos = new Vector3( left - ( len/2.0f ), top, -1.0f );
 					}
 
 					if ( first )
@@ -485,7 +490,7 @@ namespace Axiom.Core
 						maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 					}
 
-					top -= _characterHeight * 2.0f;
+					top -= _characterHeight*2.0f;
 
 					// Bottom left
 					if ( _horizontalAlignment == HorizontalAlignment.Left )
@@ -494,7 +499,7 @@ namespace Axiom.Core
 					}
 					else
 					{
-						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+						pPCBuff[ cntPos++ ] = left - ( len/2.0f );
 					}
 					pPCBuff[ cntPos++ ] = top;
 					pPCBuff[ cntPos++ ] = -1.0f;
@@ -508,15 +513,15 @@ namespace Axiom.Core
 					}
 					else
 					{
-						currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
+						currPos = new Vector3( left - ( len/2.0f ), top, -1.0f );
 					}
 
 					min.Floor( currPos );
 					max.Ceil( currPos );
 					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
-					top += _characterHeight * 2.0f;
-					left += horiz_height * _characterHeight * 2.0f;
+					top += _characterHeight*2.0f;
+					left += horiz_height*_characterHeight*2.0f;
 
 					// Top right
 					if ( _horizontalAlignment == HorizontalAlignment.Left )
@@ -525,7 +530,7 @@ namespace Axiom.Core
 					}
 					else
 					{
-						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+						pPCBuff[ cntPos++ ] = left - ( len/2.0f );
 					}
 					pPCBuff[ cntPos++ ] = top;
 					pPCBuff[ cntPos++ ] = -1.0f;
@@ -540,7 +545,7 @@ namespace Axiom.Core
 					}
 					else
 					{
-						currPos = new Vector3( left - ( len / 2.0f ), top, -1.0f );
+						currPos = new Vector3( left - ( len/2.0f ), top, -1.0f );
 					}
 					min.Floor( currPos );
 					max.Ceil( currPos );
@@ -556,7 +561,7 @@ namespace Axiom.Core
 					}
 					else
 					{
-						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+						pPCBuff[ cntPos++ ] = left - ( len/2.0f );
 					}
 					pPCBuff[ cntPos++ ] = top;
 					pPCBuff[ cntPos++ ] = -1.0f;
@@ -568,8 +573,8 @@ namespace Axiom.Core
 					max.Ceil( currPos );
 					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
-					top -= _characterHeight * 2.0f;
-					left -= horiz_height * _characterHeight * 2.0f;
+					top -= _characterHeight*2.0f;
+					left -= horiz_height*_characterHeight*2.0f;
 
 					// Bottom left (again)
 					if ( _horizontalAlignment == HorizontalAlignment.Left )
@@ -578,7 +583,7 @@ namespace Axiom.Core
 					}
 					else
 					{
-						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+						pPCBuff[ cntPos++ ] = left - ( len/2.0f );
 					}
 					pPCBuff[ cntPos++ ] = top;
 					pPCBuff[ cntPos++ ] = -1.0f;
@@ -590,7 +595,7 @@ namespace Axiom.Core
 					max.Ceil( currPos );
 					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
-					left += horiz_height * _characterHeight * 2.0f;
+					left += horiz_height*_characterHeight*2.0f;
 
 					// Bottom right
 					if ( _horizontalAlignment == HorizontalAlignment.Left )
@@ -599,7 +604,7 @@ namespace Axiom.Core
 					}
 					else
 					{
-						pPCBuff[ cntPos++ ] = left - ( len / 2.0f );
+						pPCBuff[ cntPos++ ] = left - ( len/2.0f );
 					}
 					pPCBuff[ cntPos++ ] = top;
 					pPCBuff[ cntPos++ ] = -1.0f;
@@ -613,9 +618,9 @@ namespace Axiom.Core
 					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
 					// Go back up with top
-					top += _characterHeight * 2.0f;
+					top += _characterHeight*2.0f;
 
-					var currentWidth = ( left + 1.0f ) / 2.0f - 0.0f;
+					var currentWidth = ( left + 1.0f )/2.0f - 0.0f;
 					if ( currentWidth > largestWidth )
 					{
 						largestWidth = currentWidth;
@@ -626,12 +631,12 @@ namespace Axiom.Core
 			vbuf.Unlock();
 
 			// update AABB/Sphere radius
-			this.box = new AxisAlignedBox( min, max );
-			this._radius = Utility.Sqrt( maxSquaredRadius );
+			box = new AxisAlignedBox( min, max );
+			_radius = Utility.Sqrt( maxSquaredRadius );
 
 			if ( _updateColor )
 			{
-				this._updateColors();
+				_updateColors();
 			}
 
 			_needUpdate = false;
@@ -665,7 +670,7 @@ namespace Axiom.Core
 
 		public override void GetWorldTransforms( Matrix4[] matrices )
 		{
-			if ( this.IsVisible && camera != null )
+			if ( IsVisible && camera != null )
 			{
 				var scale3x3 = Matrix3.Identity;
 
@@ -673,22 +678,22 @@ namespace Axiom.Core
 				var rot3x3 = camera.DerivedOrientation.ToRotationMatrix();
 
 				// parent node position
-				var ppos = ParentNode.DerivedPosition + Vector3.UnitY * _additionalHeight;
+				var ppos = ParentNode.DerivedPosition + Vector3.UnitY*_additionalHeight;
 
 				// apply scale
-				scale3x3.m00 = ParentNode.DerivedScale.x / 2.0f;
-				scale3x3.m11 = ParentNode.DerivedScale.y / 2.0f;
-				scale3x3.m22 = ParentNode.DerivedScale.z / 2.0f;
+				scale3x3.m00 = ParentNode.DerivedScale.x/2.0f;
+				scale3x3.m11 = ParentNode.DerivedScale.y/2.0f;
+				scale3x3.m22 = ParentNode.DerivedScale.z/2.0f;
 
 				// apply all transforms to matrices
-				matrices[ 0 ] = rot3x3 * scale3x3;
+				matrices[ 0 ] = rot3x3*scale3x3;
 				matrices[ 0 ].Translation = ppos;
 			}
 		}
 
 		public override Real GetSquaredViewDepth( Camera camera )
 		{
-			return ( this.ParentNode.DerivedPosition - camera.DerivedPosition ).LengthSquared;
+			return ( ParentNode.DerivedPosition - camera.DerivedPosition ).LengthSquared;
 		}
 
 		public override Real BoundingRadius
@@ -703,13 +708,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( this._needUpdate )
+				if ( _needUpdate )
 				{
-					this._setupGeometry();
+					_setupGeometry();
 				}
-				if ( this._updateColor )
+				if ( _updateColor )
 				{
-					this._updateColors();
+					_updateColors();
 				}
 				return base.RenderOperation;
 			}
@@ -757,7 +762,7 @@ namespace Axiom.Core
 			}
 
 			var text = new MovableText( name, caption, fontName );
-			text.MovableType = this.Type;
+			text.MovableType = Type;
 			return text;
 		}
 

@@ -66,7 +66,8 @@ namespace Axiom.SceneManagers.Bsp.Collections
 	///     that inserting and iterating through 100,000 items, the Inserts took ~260ms and a full
 	///     enumeration of them all (with unboxing of the value type stored in the buckets) took between 16-30ms.
 	/// </remarks>
-	public class MultiMap<TKey, TValue> : IDictionary, IDictionary<TKey, List<TValue>>, IEnumerable<TValue>, IEnumerable<List<TValue>>
+	public class MultiMap<TKey, TValue>
+		: IDictionary, IDictionary<TKey, List<TValue>>, IEnumerable<TValue>, IEnumerable<List<TValue>>
 	{
 		#region Fields
 
@@ -86,12 +87,12 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// </summary>
 		public MultiMap()
 		{
-			this.buckets = new Dictionary<TKey, List<TValue>>();
+			buckets = new Dictionary<TKey, List<TValue>>();
 		}
 
 		public MultiMap( IEqualityComparer<TKey> comparer )
 		{
-			this.buckets = new Dictionary<TKey, List<TValue>>( comparer );
+			buckets = new Dictionary<TKey, List<TValue>>( comparer );
 		}
 
 		#endregion
@@ -102,7 +103,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return this.buckets.Count;
+				return buckets.Count;
 			}
 		}
 
@@ -113,7 +114,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return this.buckets.Count;
+				return buckets.Count;
 			}
 		}
 
@@ -121,7 +122,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return this.count;
+				return count;
 			}
 		}
 
@@ -139,21 +140,21 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			List<TValue> container;
 
-			if ( !this.buckets.ContainsKey( key ) )
+			if ( !buckets.ContainsKey( key ) )
 			{
 				container = new List<TValue>();
-				this.buckets.Add( key, container );
+				buckets.Add( key, container );
 			}
 			else
 			{
-				container = this.buckets[ key ];
+				container = buckets[ key ];
 			}
 
 			// TODO: Doing the contains check is extremely slow, so for now duplicate items are allowed
 			//if (!container.Contains(value))
 			//{
 			container.Add( value );
-			this.count++;
+			count++;
 			//}
 		}
 
@@ -164,9 +165,9 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// <returns></returns>
 		public int BucketCount( TKey key )
 		{
-			if ( this.buckets.ContainsKey( key ) )
+			if ( buckets.ContainsKey( key ) )
 			{
-				return this.buckets[ key ].Count;
+				return buckets[ key ].Count;
 			}
 
 			return 0;
@@ -174,17 +175,17 @@ namespace Axiom.SceneManagers.Bsp.Collections
 
 		public void Clear()
 		{
-			this.buckets.Clear();
-			this.count = 0;
+			buckets.Clear();
+			count = 0;
 		}
 
 		public void Clear( TKey key )
 		{
-			if ( this.buckets.ContainsKey( key ) )
+			if ( buckets.ContainsKey( key ) )
 			{
-				this.count -= this.buckets[ key ].Count;
+				count -= buckets[ key ].Count;
 			}
-			this.buckets[ key ].Clear();
+			buckets[ key ].Clear();
 		}
 
 		/// <summary>
@@ -196,9 +197,9 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// <returns>IEnumerator to go through the items assigned to the key.</returns>
 		public IEnumerator<TValue> Find( TKey key )
 		{
-			if ( this.buckets.ContainsKey( key ) )
+			if ( buckets.ContainsKey( key ) )
 			{
-				return this.buckets[ key ].GetEnumerator();
+				return buckets[ key ].GetEnumerator();
 				//int length = buckets[key].Count;
 				//IList<TValue> bucket = buckets[key];
 				//for (int i = 0; i < length; i++)
@@ -211,11 +212,11 @@ namespace Axiom.SceneManagers.Bsp.Collections
 
 		public List<TValue> FindBucket( TKey key )
 		{
-			if ( !this.buckets.ContainsKey( key ) )
+			if ( !buckets.ContainsKey( key ) )
 			{
 				return null;
 			}
-			return this.buckets[ key ];
+			return buckets[ key ];
 		}
 
 		/// <summary>
@@ -225,19 +226,19 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// <param name="key">Key to look for.</param>
 		public object FindFirst( TKey key )
 		{
-			if ( !this.buckets.ContainsKey( key ) )
+			if ( !buckets.ContainsKey( key ) )
 			{
 				return null;
 			}
 			else
 			{
-				return ( this.buckets[ key ] )[ 0 ];
+				return ( buckets[ key ] )[ 0 ];
 			}
 		}
 
 		public IEnumerator<KeyValuePair<TKey, List<TValue>>> GetBucketsEnumerator()
 		{
-			foreach ( KeyValuePair<TKey, List<TValue>> item in this.buckets )
+			foreach ( var item in buckets )
 			{
 				yield return item;
 			}
@@ -247,14 +248,14 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			List<TValue> container;
 
-			if ( !this.buckets.ContainsKey( key ) )
+			if ( !buckets.ContainsKey( key ) )
 			{
 				container = new List<TValue>();
-				this.buckets.Add( key, container );
+				buckets.Add( key, container );
 			}
 			else
 			{
-				container = this.buckets[ key ];
+				container = buckets[ key ];
 			}
 
 			foreach ( TValue i in value )
@@ -263,7 +264,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 				if ( !container.Contains( i ) )
 				{
 					container.Add( i );
-					this.count++;
+					count++;
 				}
 			}
 		}
@@ -276,20 +277,20 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			if ( key is TKey & value is IList<TValue> )
 			{
-				this.Add( (TKey)key, (IList<TValue>)value );
+				Add( (TKey)key, (IList<TValue>)value );
 			}
 		}
 
 		void IDictionary.Clear()
 		{
-			this.Clear();
+			Clear();
 		}
 
 		bool IDictionary.Contains( object key )
 		{
 			if ( key is TKey )
 			{
-				return this.ContainsKey( (TKey)key );
+				return ContainsKey( (TKey)key );
 			}
 			return false;
 		}
@@ -303,7 +304,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return ( this.buckets as IDictionary ).IsFixedSize;
+				return ( buckets as IDictionary ).IsFixedSize;
 			}
 		}
 
@@ -311,7 +312,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return ( this.buckets as IDictionary ).IsReadOnly;
+				return ( buckets as IDictionary ).IsReadOnly;
 			}
 		}
 
@@ -319,7 +320,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return this.buckets.Keys;
+				return buckets.Keys;
 			}
 		}
 
@@ -327,7 +328,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			if ( key is TKey )
 			{
-				this.Remove( (TKey)key );
+				Remove( (TKey)key );
 			}
 		}
 
@@ -335,7 +336,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return this.buckets.Values;
+				return buckets.Values;
 			}
 		}
 
@@ -371,7 +372,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return this.count;
+				return count;
 			}
 		}
 
@@ -379,7 +380,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return ( this.buckets as ICollection ).IsSynchronized;
+				return ( buckets as ICollection ).IsSynchronized;
 			}
 		}
 
@@ -387,7 +388,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return ( this.buckets as ICollection ).SyncRoot;
+				return ( buckets as ICollection ).SyncRoot;
 			}
 		}
 
@@ -402,23 +403,23 @@ namespace Axiom.SceneManagers.Bsp.Collections
 
 		public bool ContainsKey( TKey key )
 		{
-			return this.buckets.ContainsKey( key );
+			return buckets.ContainsKey( key );
 		}
 
 		public ICollection<TKey> Keys
 		{
 			get
 			{
-				return this.buckets.Keys;
+				return buckets.Keys;
 			}
 		}
 
 		public bool Remove( TKey key )
 		{
-			bool removed = this.buckets.Remove( key );
+			bool removed = buckets.Remove( key );
 			if ( removed )
 			{
-				this.count--;
+				count--;
 				return true;
 			}
 			return false;
@@ -427,7 +428,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		public bool TryGetValue( TKey key, out List<TValue> value )
 		{
 			List<TValue> tvalue;
-			this.buckets.TryGetValue( key, out tvalue );
+			buckets.TryGetValue( key, out tvalue );
 			value = tvalue;
 			if ( tvalue == null )
 			{
@@ -440,7 +441,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return this.buckets.Values;
+				return buckets.Values;
 			}
 		}
 
@@ -448,17 +449,17 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return this.buckets[ key ];
+				return buckets[ key ];
 			}
 			set
 			{
-				this.buckets[ key ] = value;
+				buckets[ key ] = value;
 			}
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return this.GetEnumerator();
+			return GetEnumerator();
 		}
 
 		void ICollection<KeyValuePair<TKey, List<TValue>>>.Add( KeyValuePair<TKey, List<TValue>> item )
@@ -468,12 +469,12 @@ namespace Axiom.SceneManagers.Bsp.Collections
 
 		void ICollection<KeyValuePair<TKey, List<TValue>>>.Clear()
 		{
-			this.Clear();
+			Clear();
 		}
 
 		bool ICollection<KeyValuePair<TKey, List<TValue>>>.Contains( KeyValuePair<TKey, List<TValue>> item )
 		{
-			return this.buckets.ContainsKey( item.Key );
+			return buckets.ContainsKey( item.Key );
 		}
 
 		void ICollection<KeyValuePair<TKey, List<TValue>>>.CopyTo( KeyValuePair<TKey, List<TValue>>[] array, int arrayIndex )
@@ -485,7 +486,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return this.Count;
+				return Count;
 			}
 		}
 
@@ -493,18 +494,18 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return ( this.buckets as IDictionary ).IsReadOnly;
+				return ( buckets as IDictionary ).IsReadOnly;
 			}
 		}
 
 		bool ICollection<KeyValuePair<TKey, List<TValue>>>.Remove( KeyValuePair<TKey, List<TValue>> item )
 		{
-			return this.Remove( item.Key );
+			return Remove( item.Key );
 		}
 
 		IEnumerator<KeyValuePair<TKey, List<TValue>>> IEnumerable<KeyValuePair<TKey, List<TValue>>>.GetEnumerator()
 		{
-			return this.buckets.GetEnumerator();
+			return buckets.GetEnumerator();
 		}
 
 		#endregion
@@ -513,7 +514,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 
 		IEnumerator<List<TValue>> IEnumerable<List<TValue>>.GetEnumerator()
 		{
-			foreach ( KeyValuePair<TKey, List<TValue>> item in this.buckets )
+			foreach ( var item in buckets )
 			{
 				yield return item.Value;
 			}
@@ -525,7 +526,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 
 		public IEnumerator<TValue> GetEnumerator()
 		{
-			foreach ( IList<TValue> item in this.buckets.Values )
+			foreach ( IList<TValue> item in buckets.Values )
 			{
 				int length = item.Count;
 				for ( int i = 0; i < length; i++ )

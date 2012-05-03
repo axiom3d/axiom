@@ -25,7 +25,6 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-
 using Axiom.Core;
 using Axiom.Configuration;
 
@@ -53,21 +52,27 @@ namespace Axiom.Framework.Configuration
 		/// 
 		/// </summary>
 		public DefaultConfigurationManager()
-			: this( new DefaultConfigurationDialogFactory(), null, DefaultSectionName ) {}
+			: this( new DefaultConfigurationDialogFactory(), null, DefaultSectionName )
+		{
+		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="dialog"></param>
 		public DefaultConfigurationManager( IConfigurationDialogFactory dialog )
-			: this( dialog, null, DefaultSectionName ) {}
+			: this( dialog, null, DefaultSectionName )
+		{
+		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="configurationFile"></param>
 		public DefaultConfigurationManager( string configurationFile )
-			: this( new DefaultConfigurationDialogFactory(), configurationFile, DefaultSectionName ) {}
+			: this( new DefaultConfigurationDialogFactory(), configurationFile, DefaultSectionName )
+		{
+		}
 
 		/// <summary>
 		/// 
@@ -75,7 +80,9 @@ namespace Axiom.Framework.Configuration
 		/// <param name="dialog"></param>
 		/// <param name="configurationFile"></param>
 		public DefaultConfigurationManager( IConfigurationDialogFactory dialog, string configurationFile )
-			: this( dialog, configurationFile, DefaultSectionName ) {}
+			: this( dialog, configurationFile, DefaultSectionName )
+		{
+		}
 
 		/// <summary>
 		/// 
@@ -83,7 +90,9 @@ namespace Axiom.Framework.Configuration
 		/// <param name="configurationFile"></param>
 		/// <param name="sectionName"></param>
 		public DefaultConfigurationManager( string configurationFile, string sectionName )
-			: this( new DefaultConfigurationDialogFactory(), configurationFile, DefaultSectionName ) {}
+			: this( new DefaultConfigurationDialogFactory(), configurationFile, DefaultSectionName )
+		{
+		}
 
 		/// <summary>
 		/// 
@@ -94,28 +103,28 @@ namespace Axiom.Framework.Configuration
 		public DefaultConfigurationManager( IConfigurationDialogFactory factory, string configurationFile, string sectionName )
 			: base( configurationFile )
 		{
-			this.ConfigurationFactory = factory;
-			this.LogFilename = DefaultLogFileName;
+			ConfigurationFactory = factory;
+			LogFilename = DefaultLogFileName;
 
 			if ( !String.IsNullOrEmpty( configurationFile ) )
 			{
 				// Get current configuration file.
-				ExeConfigurationFileMap map = new ExeConfigurationFileMap();
+				var map = new ExeConfigurationFileMap();
 				map.ExeConfigFilename = configurationFile;
-				this.Configuration = ConfigurationManager.OpenMappedExeConfiguration( map, ConfigurationUserLevel.None );
+				Configuration = ConfigurationManager.OpenMappedExeConfiguration( map, ConfigurationUserLevel.None );
 			}
 			else
 			{
-				this.Configuration = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.None );
+				Configuration = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.None );
 			}
 
 			// Get the section.
-			this.ConfigurationSection = this.Configuration.GetSection( sectionName ) as AxiomConfigurationSection;
+			ConfigurationSection = Configuration.GetSection( sectionName ) as AxiomConfigurationSection;
 
 
-			if ( this.ConfigurationSection != null && !String.IsNullOrEmpty( this.ConfigurationSection.LogFilename ) )
+			if ( ConfigurationSection != null && !String.IsNullOrEmpty( ConfigurationSection.LogFilename ) )
 			{
-				this.LogFilename = this.ConfigurationSection.LogFilename;
+				LogFilename = ConfigurationSection.LogFilename;
 			}
 		}
 
@@ -137,17 +146,17 @@ namespace Axiom.Framework.Configuration
 				throw new AxiomException( "At least one RenderSystem must be loaded." );
 			}
 
-			if ( this.ConfigurationSection == null )
+			if ( ConfigurationSection == null )
 			{
 				return false;
 			}
 
-			if ( engine.RenderSystems.ContainsKey( this.ConfigurationSection.RenderSystems.DefaultRenderSystem ) )
+			if ( engine.RenderSystems.ContainsKey( ConfigurationSection.RenderSystems.DefaultRenderSystem ) )
 			{
-				engine.RenderSystem = engine.RenderSystems[ this.ConfigurationSection.RenderSystems.DefaultRenderSystem ];
+				engine.RenderSystem = engine.RenderSystems[ ConfigurationSection.RenderSystems.DefaultRenderSystem ];
 			}
 
-			foreach ( RenderSystem renderSystemConfig in this.ConfigurationSection.RenderSystems )
+			foreach ( RenderSystem renderSystemConfig in ConfigurationSection.RenderSystems )
 			{
 				if ( engine.RenderSystems.ContainsKey( renderSystemConfig.Name ) )
 				{
@@ -164,9 +173,10 @@ namespace Axiom.Framework.Configuration
 			}
 
 			// Setup Resource Locations
-			foreach ( ResourceLocationElement locationElement in this.ConfigurationSection.ResourceLocations )
+			foreach ( ResourceLocationElement locationElement in ConfigurationSection.ResourceLocations )
 			{
-				ResourceGroupManager.Instance.AddResourceLocation( locationElement.Path, locationElement.Type, locationElement.Group, bool.Parse( locationElement.Recurse ), false );
+				ResourceGroupManager.Instance.AddResourceLocation( locationElement.Path, locationElement.Type, locationElement.Group,
+				                                                   bool.Parse( locationElement.Recurse ), false );
 			}
 			return ( engine.RenderSystem != null );
 		}
@@ -187,33 +197,36 @@ namespace Axiom.Framework.Configuration
 		/// <param name="defaultRenderer"></param>
 		public override void SaveConfiguration( Root engine, string defaultRenderer )
 		{
-			for ( int index = 0; index < this.ConfigurationSection.RenderSystems.Count; index++ )
+			for ( int index = 0; index < ConfigurationSection.RenderSystems.Count; index++ )
 			{
-				this.ConfigurationSection.RenderSystems.Remove( this.ConfigurationSection.RenderSystems[ 0 ] );
+				ConfigurationSection.RenderSystems.Remove( ConfigurationSection.RenderSystems[ 0 ] );
 			}
 
 			foreach ( var key in engine.RenderSystems.Keys )
 			{
-				this.ConfigurationSection.RenderSystems.Add( new RenderSystem
-				                                             {
-				                                             	Name = key, Options = new RenderSystemOptionElementCollection()
-				                                             } );
+				ConfigurationSection.RenderSystems.Add( new RenderSystem
+				                                        {
+				                                        	Name = key,
+				                                        	Options = new RenderSystemOptionElementCollection()
+				                                        } );
 
 				foreach ( ConfigOption item in engine.RenderSystems[ key ].ConfigOptions )
 				{
-					this.ConfigurationSection.RenderSystems[ key ].Options.Add( new RenderSystemOption
-					                                                            {
-					                                                            	Name = item.Name, Value = item.Value
-					                                                            } );
+					ConfigurationSection.RenderSystems[ key ].Options.Add( new RenderSystemOption
+					                                                       {
+					                                                       	Name = item.Name,
+					                                                       	Value = item.Value
+					                                                       } );
 				}
 			}
 
-			if ( !string.IsNullOrEmpty( defaultRenderer ) && this.ConfigurationSection.RenderSystems.DefaultRenderSystem != defaultRenderer )
+			if ( !string.IsNullOrEmpty( defaultRenderer ) &&
+			     ConfigurationSection.RenderSystems.DefaultRenderSystem != defaultRenderer )
 			{
-				this.ConfigurationSection.RenderSystems.DefaultRenderSystem = defaultRenderer;
+				ConfigurationSection.RenderSystems.DefaultRenderSystem = defaultRenderer;
 			}
 
-			this.Configuration.Save( ConfigurationSaveMode.Modified );
+			Configuration.Save( ConfigurationSaveMode.Modified );
 		}
 
 		/// <summary>
@@ -223,7 +236,8 @@ namespace Axiom.Framework.Configuration
 		/// <returns></returns>
 		public override bool ShowConfigDialog( Root engine )
 		{
-			IConfigurationDialog configDialog = this.ConfigurationFactory.CreateConfigurationDialog( engine, ResourceGroupManager.Instance );
+			IConfigurationDialog configDialog = ConfigurationFactory.CreateConfigurationDialog( engine,
+			                                                                                    ResourceGroupManager.Instance );
 			DialogResult result = configDialog.Show();
 			return result == DialogResult.Ok;
 		}

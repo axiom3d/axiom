@@ -91,7 +91,7 @@ namespace Axiom.Core
 		/// <summary>
 		///		List of loaded plugins.
 		/// </summary>
-		private static List<IPlugin> _plugins = new List<IPlugin>();
+		private static readonly List<IPlugin> _plugins = new List<IPlugin>();
 
 		#endregion Fields
 
@@ -256,7 +256,8 @@ namespace Axiom.Core
 		public static string GetAssemblyTitle( Type type )
 		{
 			var assembly = type.Assembly;
-			var title = (AssemblyTitleAttribute)Attribute.GetCustomAttribute( (Assembly)assembly, typeof ( AssemblyTitleAttribute ) );
+			var title =
+				(AssemblyTitleAttribute)Attribute.GetCustomAttribute( (Assembly)assembly, typeof ( AssemblyTitleAttribute ) );
 			if ( title == null )
 			{
 				return assembly.GetName().Name;
@@ -278,8 +279,8 @@ namespace Axiom.Core
 				if ( _plugins.Count > 0 )
 				{
 					var byTypePlugins = from p in _plugins
-										where p.GetType() == creator.CreatedType
-										select p;
+					                    where p.GetType() == creator.CreatedType
+					                    select p;
 
 					if ( byTypePlugins.Count() > 0 )
 					{
@@ -317,7 +318,7 @@ namespace Axiom.Core
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

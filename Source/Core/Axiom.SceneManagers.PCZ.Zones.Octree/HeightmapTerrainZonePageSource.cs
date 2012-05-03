@@ -41,7 +41,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-
 using Axiom.Math;
 using Axiom.Media;
 using Axiom.Core;
@@ -113,22 +112,27 @@ namespace OctreeZone
 
 				// Load data
 				mRawData = null;
-				Stream stream = ResourceGroupManager.Instance.OpenResource( mSource, ResourceGroupManager.Instance.WorldResourceGroupName );
-				byte[] buffer = new byte[ stream.Length ];
+				Stream stream = ResourceGroupManager.Instance.OpenResource( mSource,
+				                                                            ResourceGroupManager.Instance.WorldResourceGroupName );
+				var buffer = new byte[stream.Length];
 				stream.Read( buffer, 0, (int)stream.Length );
 				mRawData = new MemoryStream( buffer );
 
 				// Validate size
-				int numBytes = imgSize * imgSize * mRawBpp;
+				int numBytes = imgSize*imgSize*mRawBpp;
 				if ( mRawData.Length != numBytes )
 				{
 					Shutdown();
-					throw new AxiomException( "RAW size (" + mRawData.Length + ") does not agree with configuration settings. HeightmapTerrainZonePageSource.LoadHeightmap" );
+					throw new AxiomException( "RAW size (" + mRawData.Length +
+					                          ") does not agree with configuration settings. HeightmapTerrainZonePageSource.LoadHeightmap" );
 				}
 			}
 			else
 			{
-				mImage = Image.FromStream( ResourceGroupManager.Instance.OpenResource( mSource, ResourceGroupManager.Instance.WorldResourceGroupName ), mSource.Split( '.' )[ 1 ] );
+				mImage =
+					Image.FromStream(
+						ResourceGroupManager.Instance.OpenResource( mSource, ResourceGroupManager.Instance.WorldResourceGroupName ),
+						mSource.Split( '.' )[ 1 ] );
 
 				// Must be square (dimensions checked later)
 				if ( mImage.Width != mImage.Height )
@@ -142,12 +146,14 @@ namespace OctreeZone
 			if ( imgSize != mPageSize )
 			{
 				Shutdown();
-				throw new AxiomException( "Error: Invalid heightmap size : " + imgSize + ". Should be " + mPageSize + "HeightmapTerrainZonePageSource.LoadHeightmap" );
+				throw new AxiomException( "Error: Invalid heightmap size : " + imgSize + ". Should be " + mPageSize +
+				                          "HeightmapTerrainZonePageSource.LoadHeightmap" );
 			}
 		}
 
 		//-------------------------------------------------------------------------
-		public override void Initialize( TerrainZone tsm, int tileSize, int pageSize, bool asyncLoading, TerrainZonePageSourceOptionList optionList )
+		public override void Initialize( TerrainZone tsm, int tileSize, int pageSize, bool asyncLoading,
+		                                 TerrainZonePageSourceOptionList optionList )
 		{
 			// Shutdown to clear any previous data
 			Shutdown();
@@ -160,7 +166,7 @@ namespace OctreeZone
 			mIsRaw = false;
 			bool rawSizeFound = false;
 			bool rawBppFound = false;
-			foreach ( KeyValuePair<string, string> opt in optionList )
+			foreach ( var opt in optionList )
 			{
 				string key = opt.Key;
 				key = key.Trim();
@@ -184,7 +190,8 @@ namespace OctreeZone
 					mRawBpp = Convert.ToByte( opt.Value );
 					if ( mRawBpp < 1 || mRawBpp > 2 )
 					{
-						throw new AxiomException( "Invalid value for 'Heightmap.raw.bpp', must be 1 or 2. HeightmapTerrainZonePageSource.Initialise" );
+						throw new AxiomException(
+							"Invalid value for 'Heightmap.raw.bpp', must be 1 or 2. HeightmapTerrainZonePageSource.Initialise" );
 					}
 					rawBppFound = true;
 				}
@@ -203,7 +210,8 @@ namespace OctreeZone
 			}
 			if ( mIsRaw && ( !rawSizeFound || !rawBppFound ) )
 			{
-				throw new AxiomException( "Options 'Heightmap.raw.size' and 'Heightmap.raw.bpp' must be specified for RAW heightmap sources. HeightmapTerrainZonePageSource.Initialise" );
+				throw new AxiomException(
+					"Options 'Heightmap.raw.size' and 'Heightmap.raw.bpp' must be specified for RAW heightmap sources. HeightmapTerrainZonePageSource.Initialise" );
 			}
 			// Load it!
 			LoadHeightmap();
@@ -216,8 +224,8 @@ namespace OctreeZone
 			if ( x == 0 && y == 0 && mPage == null )
 			{
 				// Convert the image data to unscaled floats
-				ulong totalPageSize = (ulong)( mPageSize * mPageSize );
-				Real[] heightData = new Real[ totalPageSize ];
+				var totalPageSize = (ulong)( mPageSize*mPageSize );
+				var heightData = new Real[totalPageSize];
 				byte[] pOrigSrc, pSrc;
 				Real[] pDest = heightData;
 				Real invScale;
@@ -243,12 +251,12 @@ namespace OctreeZone
 				ulong rowSize;
 				if ( is16bit )
 				{
-					invScale = 1.0f / 65535.0f;
-					rowSize = (ulong)mPageSize * 2;
+					invScale = 1.0f/65535.0f;
+					rowSize = (ulong)mPageSize*2;
 				}
 				else
 				{
-					invScale = 1.0f / 255.0f;
+					invScale = 1.0f/255.0f;
 					rowSize = (ulong)mPageSize;
 				}
 				// Read the data
@@ -286,7 +294,7 @@ namespace OctreeZone
 
 				for ( ulong i = 0; i < totalPageSize - 1; i++ )
 				{
-					float height = pSrc[ i ] * invScale;
+					float height = pSrc[ i ]*invScale;
 					pDest[ i ] = height;
 				}
 

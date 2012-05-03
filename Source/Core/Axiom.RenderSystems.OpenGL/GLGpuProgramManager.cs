@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Collections;
@@ -56,7 +55,9 @@ namespace Axiom.RenderSystems.OpenGL
 		protected Hashtable factories = new Hashtable();
 
 		public GLGpuProgramManager()
-			: base() {}
+			: base()
+		{
+		}
 
 		/// <summary>
 		///    Create the specified type of GpuProgram.
@@ -64,9 +65,11 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="name"></param>
 		/// <param name="type"></param>
 		/// <returns></returns>
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
-			if ( createParams == null || ( createParams.ContainsKey( "syntax" ) == false || createParams.ContainsKey( "type" ) == false ) )
+			if ( createParams == null ||
+			     ( createParams.ContainsKey( "syntax" ) == false || createParams.ContainsKey( "type" ) == false ) )
 			{
 				throw new Exception( "You must supply 'syntax' and 'type' parameters" );
 			}
@@ -91,10 +94,12 @@ namespace Axiom.RenderSystems.OpenGL
 				gpt = GpuProgramType.Fragment;
 			}
 
-			return ( (IOpenGLGpuProgramFactory)factories[ syntaxCode ] ).Create( this, name, handle, group, isManual, loader, gpt, syntaxCode );
+			return ( (IOpenGLGpuProgramFactory)factories[ syntaxCode ] ).Create( this, name, handle, group, isManual, loader, gpt,
+			                                                                     syntaxCode );
 		}
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
 		{
 			// if there is none, this syntax code must not be supported
 			// just return the base GL program since it won't be doing anything anyway
@@ -104,7 +109,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// get a reference to the factory for this syntax code
-			IOpenGLGpuProgramFactory factory = (IOpenGLGpuProgramFactory)factories[ syntaxCode ];
+			var factory = (IOpenGLGpuProgramFactory)factories[ syntaxCode ];
 
 			// create the gpu program
 			return factory.Create( this, name, handle, group, isManual, loader, type, syntaxCode );

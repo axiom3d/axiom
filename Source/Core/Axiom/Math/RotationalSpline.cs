@@ -45,10 +45,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
 using Axiom.Math.Collections;
 using Axiom.Utilities;
-
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -80,7 +78,9 @@ namespace Axiom.Math
 		///		Creates a new Rotational Spline.
 		/// </summary>
 		public RotationalSpline()
-			: base() {}
+			: base()
+		{
+		}
 
 		#endregion
 
@@ -127,7 +127,7 @@ namespace Axiom.Math
 			// This will cause a change in velocity for interpolation.
 
 			// What segment this is in?
-			var segment = t * ( pointList.Count - 1 );
+			var segment = t*( pointList.Count - 1 );
 			var segIndex = (int)segment;
 
 			// apportion t
@@ -227,15 +227,15 @@ namespace Axiom.Math
 				// special cases for first and last point in list
 				if ( i == 0 )
 				{
-					part1 = ( invp * pointList[ i + 1 ] ).Log();
+					part1 = ( invp*pointList[ i + 1 ] ).Log();
 					if ( isClosed )
 					{
 						// Use numPoints-2 since numPoints-1 is the last point and == [0]
-						part2 = ( invp * pointList[ numPoints - 2 ] ).Log();
+						part2 = ( invp*pointList[ numPoints - 2 ] ).Log();
 					}
 					else
 					{
-						part2 = ( invp * p ).Log();
+						part2 = ( invp*p ).Log();
 					}
 				}
 				else if ( i == numPoints - 1 )
@@ -243,23 +243,23 @@ namespace Axiom.Math
 					if ( isClosed )
 					{
 						// Use same tangent as already calculated for [0]
-						part1 = ( invp * pointList[ 1 ] ).Log();
+						part1 = ( invp*pointList[ 1 ] ).Log();
 					}
 					else
 					{
-						part1 = ( invp * p ).Log();
+						part1 = ( invp*p ).Log();
 					}
 
-					part2 = ( invp * pointList[ i - 1 ] ).Log();
+					part2 = ( invp*pointList[ i - 1 ] ).Log();
 				}
 				else
 				{
-					part1 = ( invp * pointList[ i + 1 ] ).Log();
-					part2 = ( invp * pointList[ i - 1 ] ).Log();
+					part1 = ( invp*pointList[ i + 1 ] ).Log();
+					part2 = ( invp*pointList[ i - 1 ] ).Log();
 				}
 
-				preExp = -0.25f * ( part1 + part2 );
-				tangentList.Add( p * preExp.Exp() );
+				preExp = -0.25f*( part1 + part2 );
+				tangentList.Add( p*preExp.Exp() );
 			}
 		}
 

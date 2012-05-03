@@ -35,7 +35,6 @@
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -55,8 +54,7 @@ namespace Axiom.Graphics
 	{
 		#region Fields and Properties
 
-		[OgreVersion( 1, 7, 2 )]
-		protected List<RenderTexture> boundSurfaces = new List<RenderTexture>();
+		[OgreVersion( 1, 7, 2 )] protected List<RenderTexture> boundSurfaces = new List<RenderTexture>();
 
 		/// <summary>
 		/// Get a list of the surfaces which have been bound

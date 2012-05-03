@@ -47,8 +47,11 @@ namespace Axiom.RenderSystems.OpenGL
 {
 	internal class GLCopyingRenderTexture : GLRenderTexture
 	{
-		public GLCopyingRenderTexture( GLCopyingRTTManager manager, string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
-			: base( name, target, writeGamma, fsaa ) {}
+		public GLCopyingRenderTexture( GLCopyingRTTManager manager, string name, GLSurfaceDesc target, bool writeGamma,
+		                               int fsaa )
+			: base( name, target, writeGamma, fsaa )
+		{
+		}
 
 		public override object this[ string attribute ]
 		{
@@ -57,8 +60,8 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( attribute.ToLower() == "target" )
 				{
 					GLSurfaceDesc desc;
-					desc.Buffer = this.pixelBuffer as GLHardwarePixelBuffer;
-					desc.ZOffset = this.zOffset;
+					desc.Buffer = pixelBuffer as GLHardwarePixelBuffer;
+					desc.ZOffset = zOffset;
 					return desc;
 				}
 

@@ -54,8 +54,8 @@ namespace Axiom.Math
 
 		public Tuple( A first, B second )
 		{
-			this.First = first;
-			this.Second = second;
+			First = first;
+			Second = second;
 		}
 
 		#endregion Construction and Destruction
@@ -71,7 +71,7 @@ namespace Axiom.Math
 		{
 			if ( other is Tuple<A, B> )
 			{
-				return this.Equals( (Tuple<A, B>)other );
+				return Equals( (Tuple<A, B>)other );
 			}
 			return false;
 		}
@@ -104,8 +104,8 @@ namespace Axiom.Math
 
 		public Tuple( A first, B second, C Third )
 		{
-			this.First = first;
-			this.Second = second;
+			First = first;
+			Second = second;
 			this.Third = Third;
 		}
 
@@ -122,7 +122,7 @@ namespace Axiom.Math
 		{
 			if ( other is Tuple<A, B, C> )
 			{
-				return this.Equals( (Tuple<A, B, C>)other );
+				return Equals( (Tuple<A, B, C>)other );
 			}
 			return false;
 		}
@@ -159,10 +159,10 @@ namespace Axiom.Math
 
 		public Tuple( A first, B second, C third, D fourth )
 		{
-			this.First = first;
-			this.Second = second;
-			this.Third = third;
-			this.Fourth = fourth;
+			First = first;
+			Second = second;
+			Third = third;
+			Fourth = fourth;
 		}
 
 		#endregion Construction and Destruction
@@ -178,7 +178,7 @@ namespace Axiom.Math
 		{
 			if ( other is Tuple<A, B, C, D> )
 			{
-				return this.Equals( (Tuple<A, B, C, D>)other );
+				return Equals( (Tuple<A, B, C, D>)other );
 			}
 			return false;
 		}

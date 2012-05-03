@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.IO;
-
 using Axiom.Collections;
 using Axiom.Core;
 
@@ -68,7 +67,7 @@ namespace Axiom.Serialization
 		/// <summary>
 		///		Lookup table holding the various mesh serializer versions.
 		/// </summary>
-		private AxiomCollection<MeshSerializerImpl> implementations = new AxiomCollection<MeshSerializerImpl>();
+		private readonly AxiomCollection<MeshSerializerImpl> implementations = new AxiomCollection<MeshSerializerImpl>();
 
 		/// <summary>
 		///		Current version string.
@@ -146,7 +145,9 @@ namespace Axiom.Serialization
 			// warn on old version of mesh
 			if ( fileVersion != currentVersion )
 			{
-				LogManager.Instance.Write( "WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.", mesh.Name, fileVersion );
+				LogManager.Instance.Write(
+					"WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.",
+					mesh.Name, fileVersion );
 			}
 		}
 
@@ -183,7 +184,9 @@ namespace Axiom.Serialization
 			// warn on old version of mesh
 			if ( fileVersion != currentVersion )
 			{
-				LogManager.Instance.Write( "WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.", mesh.Name, fileVersion );
+				LogManager.Instance.Write(
+					"WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.",
+					mesh.Name, fileVersion );
 			}
 			return rv;
 		}

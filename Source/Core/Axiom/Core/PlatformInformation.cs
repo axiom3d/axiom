@@ -43,7 +43,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Text;
-
 using Axiom.Animating;
 using Axiom.Collections;
 using Axiom.Controllers;
@@ -79,7 +78,7 @@ namespace Axiom.Core
 			Count
 		}
 
-		private static bool[] cpuFeatures = new bool[ (int)CPUFeature.Count ];
+		private static readonly bool[] cpuFeatures = new bool[(int)CPUFeature.Count];
 		private static string cpuIdentifier = "CPU Identification not available";
 
 		/// <summary>

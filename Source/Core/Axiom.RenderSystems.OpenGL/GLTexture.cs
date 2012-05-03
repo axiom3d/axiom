@@ -42,14 +42,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-
 using Tao.OpenGl;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -66,9 +63,9 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <summary>
 		/// OpenGL Support
 		/// </summary>
-		private BaseGLSupport _glSupport;
+		private readonly BaseGLSupport _glSupport;
 
-		private List<HardwarePixelBuffer> _surfaceList = new List<HardwarePixelBuffer>();
+		private readonly List<HardwarePixelBuffer> _surfaceList = new List<HardwarePixelBuffer>();
 
 		#region TextureID Property
 
@@ -159,7 +156,8 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="isManual"></param>
 		/// <param name="loader"></param>
 		/// <param name="glSupport"></param>
-		internal GLTexture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, BaseGLSupport glSupport )
+		internal GLTexture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                    IManualResourceLoader loader, BaseGLSupport glSupport )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			_glSupport = glSupport;
@@ -251,7 +249,7 @@ namespace Axiom.RenderSystems.OpenGL
 					string[] postfixes = {
 					                     	"_rt", "_lf", "_up", "_dn", "_fr", "_bk"
 					                     };
-					List<Image> images = new List<Image>();
+					var images = new List<Image>();
 
 					for ( int i = 0; i < 6; i++ )
 					{
@@ -294,49 +292,53 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			// use regular type, unless cubemap, then specify which face of the cubemap we
 			// are dealing with here
-			int type = ( TextureType == TextureType.CubeMap ) ? Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X + faceNum : this.GLTextureType;
+			int type = ( TextureType == TextureType.CubeMap ) ? Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X + faceNum : GLTextureType;
 
 			if ( useSoftware && MipmapCount > 0 )
 			{
 				if ( TextureType == TextureType.OneD )
 				{
-					Glu.gluBuild1DMipmaps( type, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, Width, this.GLFormat, Gl.GL_UNSIGNED_BYTE, data );
+					Glu.gluBuild1DMipmaps( type, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, Width, GLFormat, Gl.GL_UNSIGNED_BYTE, data );
 				}
 				else if ( TextureType == TextureType.ThreeD )
 				{
 					// TODO: Tao needs glTexImage3D
-					Gl.glTexImage3DEXT( type, 0, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, SrcWidth, SrcHeight, Depth, 0, this.GLFormat, Gl.GL_UNSIGNED_BYTE, data );
+					Gl.glTexImage3DEXT( type, 0, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, SrcWidth, SrcHeight, Depth, 0, GLFormat,
+					                    Gl.GL_UNSIGNED_BYTE, data );
 				}
 				else
 				{
 					// build the mipmaps
-					Glu.gluBuild2DMipmaps( type, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, Width, Height, this.GLFormat, Gl.GL_UNSIGNED_BYTE, data );
+					Glu.gluBuild2DMipmaps( type, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, Width, Height, GLFormat, Gl.GL_UNSIGNED_BYTE,
+					                       data );
 				}
 			}
 			else
 			{
 				if ( TextureType == TextureType.OneD )
 				{
-					Gl.glTexImage1D( type, 0, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, Width, 0, this.GLFormat, Gl.GL_UNSIGNED_BYTE, data );
+					Gl.glTexImage1D( type, 0, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, Width, 0, GLFormat, Gl.GL_UNSIGNED_BYTE, data );
 				}
 				else if ( TextureType == TextureType.ThreeD )
 				{
 					// TODO: Tao needs glTexImage3D
-					Gl.glTexImage3DEXT( type, 0, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, SrcWidth, SrcHeight, Depth, 0, this.GLFormat, Gl.GL_UNSIGNED_BYTE, data );
+					Gl.glTexImage3DEXT( type, 0, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, SrcWidth, SrcHeight, Depth, 0, GLFormat,
+					                    Gl.GL_UNSIGNED_BYTE, data );
 				}
 				else
 				{
 					if ( isCompressed && Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.TextureCompressionDXT ) )
 					{
 						int blockSize = ( Format == PixelFormat.DXT1 ) ? 8 : 16;
-						int size = ( ( Width + 3 ) / 4 ) * ( ( Height + 3 ) / 4 ) * blockSize;
+						int size = ( ( Width + 3 )/4 )*( ( Height + 3 )/4 )*blockSize;
 
 						// load compressed image data
-						Gl.glCompressedTexImage2DARB( type, 0, this.GLFormat, SrcWidth, SrcHeight, 0, size, data );
+						Gl.glCompressedTexImage2DARB( type, 0, GLFormat, SrcWidth, SrcHeight, 0, size, data );
 					}
 					else
 					{
-						Gl.glTexImage2D( type, 0, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, Width, Height, 0, this.GLFormat, Gl.GL_UNSIGNED_BYTE, data );
+						Gl.glTexImage2D( type, 0, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, Width, Height, 0, GLFormat, Gl.GL_UNSIGNED_BYTE,
+						                 data );
 					}
 				}
 			}
@@ -372,11 +374,13 @@ namespace Axiom.RenderSystems.OpenGL
 
 			if ( newWidth != SrcWidth || newHeight != SrcHeight )
 			{
-				int newImageSize = newWidth * newHeight * ( HasAlpha ? 4 : 3 );
+				int newImageSize = newWidth*newHeight*( HasAlpha ? 4 : 3 );
 
-				tempData = new byte[ newImageSize ];
+				tempData = new byte[newImageSize];
 
-				if ( Glu.gluScaleImage( this.GLFormat, SrcWidth, SrcHeight, Gl.GL_UNSIGNED_BYTE, src.Data, newWidth, newHeight, Gl.GL_UNSIGNED_BYTE, tempData ) != 0 )
+				if (
+					Glu.gluScaleImage( GLFormat, SrcWidth, SrcHeight, Gl.GL_UNSIGNED_BYTE, src.Data, newWidth, newHeight,
+					                   Gl.GL_UNSIGNED_BYTE, tempData ) != 0 )
 				{
 					throw new AxiomException( "Error while rescaling image!" );
 				}
@@ -388,7 +392,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			else
 			{
-				tempData = new byte[ src.Size ];
+				tempData = new byte[src.Size];
 				Array.Copy( src.Data, tempData, src.Size );
 				Image.ApplyGamma( tempData, Gamma, src.Size, srcBpp );
 			}
@@ -428,17 +432,21 @@ namespace Axiom.RenderSystems.OpenGL
 			// only when mipmap generation is desired.
 			bool doSoftware = wantGeneratedMips && !MipmapsHardwareGenerated && MipmapCount != 0;
 
-			for ( int face = 0; face < this.FaceCount; face++ )
+			for ( int face = 0; face < FaceCount; face++ )
 			{
 				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
-					GLHardwarePixelBuffer buf = new GLTextureBuffer( Name, GLTextureType, _glTextureID, face, mip, (BufferUsage)Usage, doSoftware && mip == 0, _glSupport, HardwareGammaEnabled, FSAA );
+					GLHardwarePixelBuffer buf = new GLTextureBuffer( Name, GLTextureType, _glTextureID, face, mip, (BufferUsage)Usage,
+					                                                 doSoftware && mip == 0, _glSupport, HardwareGammaEnabled, FSAA );
 					_surfaceList.Add( buf );
 
 					/// Check for error
 					if ( buf.Width == 0 || buf.Height == 0 || buf.Depth == 0 )
 					{
-						throw new Exception( String.Format( "Zero sized texture surface on texture {0} face {1} mipmap {2}. Probably, the GL driver refused to create the texture.", Name, face, mip ) );
+						throw new Exception(
+							String.Format(
+								"Zero sized texture surface on texture {0} face {1} mipmap {2}. Probably, the GL driver refused to create the texture.",
+								Name, face, mip ) );
 					}
 				}
 			}
@@ -480,7 +488,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// If we can do automip generation and the user desires this, do so
 			mipmapsHardwareGenerated = Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.HardwareMipMaps );
-			if ( ( ( Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap ) && requestedMipmapCount != 0 && MipmapsHardwareGenerated )
+			if ( ( ( Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap ) && requestedMipmapCount != 0 &&
+			     MipmapsHardwareGenerated )
 			{
 				Gl.glTexParameteri( GLTextureType, Gl.GL_GENERATE_MIPMAP, Gl.GL_TRUE );
 			}
@@ -507,27 +516,29 @@ namespace Axiom.RenderSystems.OpenGL
 							Gl.glTexImage2D( Gl.GL_TEXTURE_2D, mip, format, width, height, 0, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, IntPtr.Zero );
 							break;
 						case TextureType.ThreeD:
-							Gl.glTexImage3D( Gl.GL_TEXTURE_3D, mip, format, width, height, depth, 0, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, IntPtr.Zero );
+							Gl.glTexImage3D( Gl.GL_TEXTURE_3D, mip, format, width, height, depth, 0, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE,
+							                 IntPtr.Zero );
 							break;
 						case TextureType.CubeMap:
 							for ( int face = 0; face < 6; face++ )
 							{
-								Gl.glTexImage2D( Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, mip, format, width, height, 0, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE, IntPtr.Zero );
+								Gl.glTexImage2D( Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, mip, format, width, height, 0, Gl.GL_RGBA,
+								                 Gl.GL_UNSIGNED_BYTE, IntPtr.Zero );
 							}
 							break;
 					}
 					;
 					if ( width > 1 )
 					{
-						width = width / 2;
+						width = width/2;
 					}
 					if ( height > 1 )
 					{
-						height = height / 2;
+						height = height/2;
 					}
 					if ( depth > 1 )
 					{
-						depth = depth / 2;
+						depth = depth/2;
 					}
 				}
 			}
@@ -554,7 +565,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override HardwarePixelBuffer GetBuffer( int face, int mipmap )
 		{
-			if ( face >= this.FaceCount )
+			if ( face >= FaceCount )
 			{
 				throw new IndexOutOfRangeException( "Face index out of range" );
 			}
@@ -562,7 +573,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				throw new IndexOutOfRangeException( "MipMap index out of range" );
 			}
-			int idx = face * ( MipmapCount + 1 ) + mipmap;
+			int idx = face*( MipmapCount + 1 ) + mipmap;
 			Debug.Assert( idx < _surfaceList.Count );
 			return _surfaceList[ idx ];
 		}

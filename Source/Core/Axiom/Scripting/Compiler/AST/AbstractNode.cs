@@ -79,8 +79,8 @@ namespace Axiom.Scripting.Compiler.AST
 		/// <param name="parent">the parent AbstractNode in the tree</param>
 		protected AbstractNode( AbstractNode parent )
 		{
-			this.Parent = parent;
-			this.Line = 0;
+			Parent = parent;
+			Line = 0;
 		}
 
 		/// <summary>
@@ -107,7 +107,7 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public override bool Equals( object obj )
 		{
-			return this.GetHashCode() == obj.GetHashCode();
+			return GetHashCode() == obj.GetHashCode();
 		}
 
 		public override int GetHashCode()

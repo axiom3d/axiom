@@ -41,13 +41,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Graphics;
-
 using Tao.OpenGl;
-
 using Axiom.Configuration;
 
 #endregion Namespace Declarations
@@ -61,7 +58,7 @@ namespace Axiom.RenderSystems.OpenGL
 		private int _frameBuffer;
 		private GLSurfaceDesc _depth;
 		private GLSurfaceDesc _stencil;
-		private GLSurfaceDesc[] _color;
+		private readonly GLSurfaceDesc[] _color;
 
 		public int Height
 		{
@@ -130,7 +127,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glGenFramebuffersEXT( 1, out _frameBuffer );
 
 			/// Initialize state
-			_color = new GLSurfaceDesc[ Config.MaxMultipleRenderTargets ];
+			_color = new GLSurfaceDesc[Config.MaxMultipleRenderTargets];
 		}
 
 		~GLFrameBufferObject()
@@ -218,7 +215,10 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					if ( _color[ x ].Buffer.Width != width || _color[ x ].Buffer.Height != height )
 					{
-						throw new ArgumentException( String.Format( "Attachment {0} has incompatible size {1}x{2}. It must be of the same as the size of surface 0, {3}x{4}.", x, _color[ x ].Buffer.Width, _color[ x ].Buffer.Height, width, height ) );
+						throw new ArgumentException(
+							String.Format(
+								"Attachment {0} has incompatible size {1}x{2}. It must be of the same as the size of surface 0, {3}x{4}.", x,
+								_color[ x ].Buffer.Width, _color[ x ].Buffer.Height, width, height ) );
 					}
 					if ( _color[ x ].Buffer.GLFormat != glFormat )
 					{
@@ -269,7 +269,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			/// Do glDrawBuffer calls
-			int[] bufs = new int[ Config.MaxMultipleRenderTargets ];
+			var bufs = new int[Config.MaxMultipleRenderTargets];
 			int n = 0;
 			for ( int x = 0; x < Config.MaxMultipleRenderTargets; ++x )
 			{
@@ -328,22 +328,10 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region isDisposed Property
 
-		private bool _disposed = false;
-
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get; set; }
 
 		#endregion isDisposed Property
 

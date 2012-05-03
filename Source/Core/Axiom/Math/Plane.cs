@@ -98,8 +98,8 @@ namespace Axiom.Math
 
 		public Plane( Plane plane )
 		{
-			this.Normal = plane.Normal;
-			this.D = plane.D;
+			Normal = plane.Normal;
+			D = plane.D;
 		}
 
 		/// <summary>
@@ -109,14 +109,14 @@ namespace Axiom.Math
 		/// <param name="constant"></param>
 		public Plane( Vector3 normal, Real constant )
 		{
-			this.Normal = normal;
-			this.D = -constant;
+			Normal = normal;
+			D = -constant;
 		}
 
 		public Plane( Vector3 normal, Vector3 point )
 		{
-			this.Normal = normal;
-			this.D = -normal.Dot( point );
+			Normal = normal;
+			D = -normal.Dot( point );
 		}
 
 		/// <summary>
@@ -129,9 +129,9 @@ namespace Axiom.Math
 		{
 			var edge1 = point1 - point0;
 			var edge2 = point2 - point0;
-			this.Normal = edge1.Cross( edge2 );
-			this.Normal.Normalize();
-			this.D = -this.Normal.Dot( point0 );
+			Normal = edge1.Cross( edge2 );
+			Normal.Normalize();
+			D = -Normal.Dot( point0 );
 		}
 
 		#endregion
@@ -145,7 +145,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public PlaneSide GetSide( Vector3 point )
 		{
-			var distance = this.GetDistance( point );
+			var distance = GetDistance( point );
 
 			if ( distance < 0.0f )
 			{
@@ -177,7 +177,7 @@ namespace Axiom.Math
 				return PlaneSide.Both;
 			}
 
-			return this.GetSide( box.Center, box.HalfSize );
+			return GetSide( box.Center, box.HalfSize );
 		}
 
 		/// <summary>
@@ -194,11 +194,11 @@ namespace Axiom.Math
 		public PlaneSide GetSide( Vector3 centre, Vector3 halfSize )
 		{
 			// Calculate the distance between box centre and the plane
-			var dist = this.GetDistance( centre );
+			var dist = GetDistance( centre );
 
 			// Calculate the maximise allows absolute distance for
 			// the distance between box centre and plane
-			var maxAbsDist = this.Normal.AbsDot( halfSize );
+			var maxAbsDist = Normal.AbsDot( halfSize );
 
 			if ( dist < -maxAbsDist )
 			{
@@ -225,7 +225,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Real GetDistance( Vector3 point )
 		{
-			return this.Normal.Dot( point ) + this.D;
+			return Normal.Dot( point ) + D;
 		}
 
 		/// <summary>
@@ -235,8 +235,8 @@ namespace Axiom.Math
 		/// <param name="rkPoint">Point vector</param>
 		public void Redefine( Vector3 rkNormal, Vector3 rkPoint )
 		{
-			this.Normal = rkNormal;
-			this.D = -rkNormal.Dot( rkPoint );
+			Normal = rkNormal;
+			D = -rkNormal.Dot( rkPoint );
 		}
 
 		/// <summary>
@@ -249,9 +249,9 @@ namespace Axiom.Math
 		{
 			var edge1 = point1 - point0;
 			var edge2 = point2 - point0;
-			this.Normal = edge1.Cross( edge2 );
-			this.Normal.Normalize();
-			this.D = -this.Normal.Dot( point0 );
+			Normal = edge1.Cross( edge2 );
+			Normal.Normalize();
+			D = -Normal.Dot( point0 );
 		}
 
 		/// <summary>
@@ -262,17 +262,17 @@ namespace Axiom.Math
 			// We know plane normal is unit length, so use simple method
 			Matrix3 xform;
 
-			xform.m00 = 1.0f - this.Normal.x * this.Normal.x;
-			xform.m01 = -this.Normal.x * this.Normal.y;
-			xform.m02 = -this.Normal.x * this.Normal.z;
-			xform.m10 = -this.Normal.y * this.Normal.x;
-			xform.m11 = 1.0f - this.Normal.y * this.Normal.y;
-			xform.m12 = -this.Normal.y * this.Normal.z;
-			xform.m20 = -this.Normal.z * this.Normal.x;
-			xform.m21 = -this.Normal.z * this.Normal.y;
-			xform.m22 = 1.0f - this.Normal.z * this.Normal.z;
+			xform.m00 = 1.0f - Normal.x*Normal.x;
+			xform.m01 = -Normal.x*Normal.y;
+			xform.m02 = -Normal.x*Normal.z;
+			xform.m10 = -Normal.y*Normal.x;
+			xform.m11 = 1.0f - Normal.y*Normal.y;
+			xform.m12 = -Normal.y*Normal.z;
+			xform.m20 = -Normal.z*Normal.x;
+			xform.m21 = -Normal.z*Normal.y;
+			xform.m22 = 1.0f - Normal.z*Normal.z;
 
-			return xform * point;
+			return xform*point;
 		}
 
 		#endregion Methods
@@ -295,7 +295,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return this.D.GetHashCode() ^ this.Normal.GetHashCode();
+			return D.GetHashCode() ^ Normal.GetHashCode();
 		}
 
 		/// <summary>
@@ -304,7 +304,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return string.Format( "Distance: {0} Normal: {1}", this.D, this.Normal );
+			return string.Format( "Distance: {0} Normal: {1}", D, Normal );
 		}
 
 		#endregion

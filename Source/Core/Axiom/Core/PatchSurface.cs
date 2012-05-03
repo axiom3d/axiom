@@ -40,13 +40,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-
 using Axiom.Core;
-
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;
-
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -171,7 +168,9 @@ namespace Axiom.Core
 
 		#region Finalizer
 
-		~PatchSurface() {}
+		~PatchSurface()
+		{
+		}
 
 		#endregion Finalizer
 
@@ -202,7 +201,8 @@ namespace Axiom.Core
 		/// <param name="height">Specifies the height of the patch in control points.</param>
 		public void DefineSurface( Array controlPointArray, VertexDeclaration decl, int width, int height )
 		{
-			DefineSurface( controlPointArray, decl, width, height, PatchSurfaceType.Bezier, AUTO_LEVEL, AUTO_LEVEL, VisibleSide.Front );
+			DefineSurface( controlPointArray, decl, width, height, PatchSurfaceType.Bezier, AUTO_LEVEL, AUTO_LEVEL,
+			               VisibleSide.Front );
 		}
 
 		/// <summary>
@@ -238,7 +238,9 @@ namespace Axiom.Core
 		///     do it here, otherwise let the system decide.
 		/// </param>
 		/// <param name="visibleSide">Determines which side of the patch (or both) triangles are generated for.</param>
-		public void DefineSurface( Array controlPointArray, VertexDeclaration declaration, int width, int height, PatchSurfaceType type, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide )
+		public void DefineSurface( Array controlPointArray, VertexDeclaration declaration, int width, int height,
+		                           PatchSurfaceType type, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel,
+		                           VisibleSide visibleSide )
 		{
 			if ( height == 0 || width == 0 )
 			{
@@ -247,12 +249,12 @@ namespace Axiom.Core
 
 			//pin the input to have a pointer
 			Memory.UnpinObject( controlPointArray );
-			this.controlPointBuffer = Memory.PinObject( controlPointArray );
+			controlPointBuffer = Memory.PinObject( controlPointArray );
 
 			this.type = type;
-			this.controlWidth = width;
-			this.controlHeight = height;
-			this.controlCount = width * height;
+			controlWidth = width;
+			controlHeight = height;
+			controlCount = width*height;
 			this.declaration = declaration;
 
 			// Copy positions into Vector3 vector
@@ -267,11 +269,11 @@ namespace Axiom.Core
 				var pVert = controlPointBuffer;
 				for ( var i = 0; i < controlCount; i++ )
 				{
-					var pReal = ( pVert + ( ( i * vertSize ) + elem.Offset ) ).ToFloatPointer();
+					var pReal = ( pVert + ( ( i*vertSize ) + elem.Offset ) ).ToFloatPointer();
 					controlPoints.Add( new Vector3( pReal[ 0 ], pReal[ 1 ], pReal[ 2 ] ) );
 				}
 			}
-			this.side = visibleSide;
+			side = visibleSide;
 
 			// Determine max level
 			// Initialize to 100% detail
@@ -296,13 +298,13 @@ namespace Axiom.Core
 			}
 
 			// Derive mesh width / height
-			meshWidth = ( LevelWidth( maxULevel ) - 1 ) * ( ( controlWidth - 1 ) / 2 ) + 1;
-			meshHeight = ( LevelWidth( maxVLevel ) - 1 ) * ( ( controlHeight - 1 ) / 2 ) + 1;
+			meshWidth = ( LevelWidth( maxULevel ) - 1 )*( ( controlWidth - 1 )/2 ) + 1;
+			meshHeight = ( LevelWidth( maxVLevel ) - 1 )*( ( controlHeight - 1 )/2 ) + 1;
 
 			// Calculate number of required vertices / indexes at max resolution
-			requiredVertexCount = meshWidth * meshHeight;
+			requiredVertexCount = meshWidth*meshHeight;
 			var iterations = ( side == VisibleSide.Both ) ? 2 : 1;
-			requiredIndexCount = ( meshWidth - 1 ) * ( meshHeight - 1 ) * 2 * iterations * 3;
+			requiredIndexCount = ( meshWidth - 1 )*( meshHeight - 1 )*2*iterations*3;
 
 			// Calculate bounds based on control points
 			var min = Vector3.Zero;
@@ -348,7 +350,8 @@ namespace Axiom.Core
 		/// <param name="vertexStart">The offset at which to start writing vertices for this patch.</param>
 		/// <param name="destIndexBuffer">The destination index buffer in which to build the patch.</param>
 		/// <param name="indexStart">The offset at which to start writing indexes for this patch.</param>
-		public void Build( HardwareVertexBuffer destVertexBuffer, int vertexStart, HardwareIndexBuffer destIndexBuffer, int indexStart )
+		public void Build( HardwareVertexBuffer destVertexBuffer, int vertexStart, HardwareIndexBuffer destIndexBuffer,
+		                   int indexStart )
 		{
 			if ( controlPoints.Count == 0 )
 			{
@@ -361,7 +364,8 @@ namespace Axiom.Core
 			indexOffset = indexStart;
 
 			// lock just the region we are interested in
-			var lockedBuffer = vertexBuffer.Lock( vertexOffset * declaration.GetVertexSize( 0 ), requiredVertexCount * declaration.GetVertexSize( 0 ), BufferLocking.NoOverwrite );
+			var lockedBuffer = vertexBuffer.Lock( vertexOffset*declaration.GetVertexSize( 0 ),
+			                                      requiredVertexCount*declaration.GetVertexSize( 0 ), BufferLocking.NoOverwrite );
 
 			DistributeControlPoints( lockedBuffer );
 
@@ -373,13 +377,13 @@ namespace Axiom.Core
 			// subdivide this row in u
 			for ( var v = 0; v < meshHeight; v += vStep )
 			{
-				SubdivideCurve( lockedBuffer, v * meshWidth, uStep, meshWidth / uStep, uLevel );
+				SubdivideCurve( lockedBuffer, v*meshWidth, uStep, meshWidth/uStep, uLevel );
 			}
 
 			// Now subdivide in v direction, this time all the u direction points are there so no step
 			for ( var u = 0; u < meshWidth; u++ )
 			{
-				SubdivideCurve( lockedBuffer, u, vStep * meshWidth, meshHeight / vStep, vLevel );
+				SubdivideCurve( lockedBuffer, u, vStep*meshWidth, meshHeight/vStep, vLevel );
 			}
 
 			// don't forget to unlock!
@@ -405,7 +409,7 @@ namespace Axiom.Core
 			const float subdiv = 10;
 			int level;
 
-			var test = subdiv * subdiv;
+			var test = subdiv*subdiv;
 
 			var s = Vector3.Zero;
 			var t = Vector3.Zero;
@@ -459,7 +463,7 @@ namespace Axiom.Core
 				for ( var v = 0; v < meshHeight; v += vStep )
 				{
 					// set dest by v from base
-					var pDest = lockedBuffer + ( vertexSize * meshWidth * v );
+					var pDest = lockedBuffer + ( vertexSize*meshWidth*v );
 
 					for ( var u = 0; u < meshWidth; u += uStep )
 					{
@@ -511,7 +515,7 @@ namespace Axiom.Core
 						// Increment source by one vertex
 						pSrc += vertexSize;
 						// Increment dest by 1 vertex * uStep
-						pDest += vertexSize * uStep;
+						pDest += vertexSize*uStep;
 					} // u
 				} // v
 			}
@@ -531,12 +535,12 @@ namespace Axiom.Core
 			int leftIdx, rightIdx, destIdx, halfStep, maxIdx;
 			bool firstSegment;
 
-			maxIdx = startIdx + ( numSteps * stepSize );
+			maxIdx = startIdx + ( numSteps*stepSize );
 			var step = stepSize;
 
 			while ( iterations-- > 0 )
 			{
-				halfStep = step / 2;
+				halfStep = step/2;
 				leftIdx = startIdx;
 				destIdx = leftIdx + halfStep;
 				rightIdx = leftIdx + step;
@@ -586,18 +590,18 @@ namespace Axiom.Core
 				//byte* pDestChar, pLeftChar, pRightChar;
 
 				// Set up pointers & interpolate
-				var pDest = ( lockedBuffer + ( vertexSize * destIndex ) );
-				var pLeft = ( lockedBuffer + ( vertexSize * leftIndex ) );
-				var pRight = ( lockedBuffer + ( vertexSize * rightIndex ) );
+				var pDest = ( lockedBuffer + ( vertexSize*destIndex ) );
+				var pLeft = ( lockedBuffer + ( vertexSize*leftIndex ) );
+				var pRight = ( lockedBuffer + ( vertexSize*rightIndex ) );
 
 				// Position
 				var pDestReal = ( pDest + elemPos.Offset ).ToFloatPointer();
 				var pLeftReal = ( pLeft + elemPos.Offset ).ToFloatPointer();
 				var pRightReal = ( pRight + elemPos.Offset ).ToFloatPointer();
 
-				pDestReal[ 0 ] = ( pLeftReal[ 0 ] + pRightReal[ 0 ] ) * 0.5f;
-				pDestReal[ 1 ] = ( pLeftReal[ 1 ] + pRightReal[ 1 ] ) * 0.5f;
-				pDestReal[ 2 ] = ( pLeftReal[ 2 ] + pRightReal[ 2 ] ) * 0.5f;
+				pDestReal[ 0 ] = ( pLeftReal[ 0 ] + pRightReal[ 0 ] )*0.5f;
+				pDestReal[ 1 ] = ( pLeftReal[ 1 ] + pRightReal[ 1 ] )*0.5f;
+				pDestReal[ 2 ] = ( pLeftReal[ 2 ] + pRightReal[ 2 ] )*0.5f;
 
 				if ( elemNorm != null )
 				{
@@ -607,9 +611,9 @@ namespace Axiom.Core
 					pRightReal = ( pRight + elemNorm.Offset ).ToFloatPointer();
 
 					var norm = Vector3.Zero;
-					norm.x = ( pLeftReal[ 0 ] + pRightReal[ 0 ] ) * 0.5f;
-					norm.y = ( pLeftReal[ 1 ] + pRightReal[ 1 ] ) * 0.5f;
-					norm.z = ( pLeftReal[ 2 ] + pRightReal[ 2 ] ) * 0.5f;
+					norm.x = ( pLeftReal[ 0 ] + pRightReal[ 0 ] )*0.5f;
+					norm.y = ( pLeftReal[ 1 ] + pRightReal[ 1 ] )*0.5f;
+					norm.z = ( pLeftReal[ 2 ] + pRightReal[ 2 ] )*0.5f;
 					norm.Normalize();
 
 					pDestReal[ 0 ] = norm.x;
@@ -624,10 +628,10 @@ namespace Axiom.Core
 					var pRightChar = ( pRight + elemDiffuse.Offset ).ToBytePointer();
 
 					// 4 bytes to RGBA
-					pDestChar[ 0 ] = (byte)( ( pLeftChar[ 0 ] + pRightReal[ 0 ] ) * 0.5f );
-					pDestChar[ 1 ] = (byte)( ( pLeftChar[ 1 ] + pRightChar[ 1 ] ) * 0.5f );
-					pDestChar[ 2 ] = (byte)( ( pLeftChar[ 2 ] + pRightChar[ 2 ] ) * 0.5f );
-					pDestChar[ 3 ] = (byte)( ( pLeftChar[ 3 ] + pRightChar[ 3 ] ) * 0.5f );
+					pDestChar[ 0 ] = (byte)( ( pLeftChar[ 0 ] + pRightReal[ 0 ] )*0.5f );
+					pDestChar[ 1 ] = (byte)( ( pLeftChar[ 1 ] + pRightChar[ 1 ] )*0.5f );
+					pDestChar[ 2 ] = (byte)( ( pLeftChar[ 2 ] + pRightChar[ 2 ] )*0.5f );
+					pDestChar[ 3 ] = (byte)( ( pLeftChar[ 3 ] + pRightChar[ 3 ] )*0.5f );
 				}
 				if ( elemTex0 != null )
 				{
@@ -638,7 +642,7 @@ namespace Axiom.Core
 
 					for ( var dim = 0; dim < VertexElement.GetTypeCount( elemTex0.Type ); dim++ )
 					{
-						pDestReal[ dim ] = ( pLeftReal[ dim ] + pRightReal[ dim ] ) * 0.5f;
+						pDestReal[ dim ] = ( pLeftReal[ dim ] + pRightReal[ dim ] )*0.5f;
 					}
 				}
 				if ( elemTex1 != null )
@@ -650,7 +654,7 @@ namespace Axiom.Core
 
 					for ( var dim = 0; dim < VertexElement.GetTypeCount( elemTex1.Type ); dim++ )
 					{
-						pDestReal[ dim ] = ( pLeftReal[ dim ] + pRightReal[ dim ] ) * 0.5f;
+						pDestReal[ dim ] = ( pLeftReal[ dim ] + pRightReal[ dim ] )*0.5f;
 					}
 				}
 			}
@@ -667,8 +671,8 @@ namespace Axiom.Core
 			// Calculate steps
 			var vStep = 1 << ( maxVLevel - vLevel );
 			var uStep = 1 << ( maxULevel - uLevel );
-			var currentWidth = ( LevelWidth( uLevel ) - 1 ) * ( ( controlWidth - 1 ) / 2 ) + 1;
-			var currentHeight = ( LevelWidth( vLevel ) - 1 ) * ( ( controlHeight - 1 ) / 2 ) + 1;
+			var currentWidth = ( LevelWidth( uLevel ) - 1 )*( ( controlWidth - 1 )/2 ) + 1;
+			var currentHeight = ( LevelWidth( vLevel ) - 1 )*( ( controlHeight - 1 )/2 ) + 1;
 
 			var use32bitindexes = ( indexBuffer.Type == IndexType.Size32 );
 
@@ -699,7 +703,7 @@ namespace Axiom.Core
 			}
 
 			// Calc num indexes
-			currentIndexCount = ( currentWidth - 1 ) * ( currentHeight - 1 ) * 6 * iterations;
+			currentIndexCount = ( currentWidth - 1 )*( currentHeight - 1 )*6*iterations;
 
 			int v1, v2, v3;
 			var count = 0;
@@ -709,8 +713,14 @@ namespace Axiom.Core
 #endif
 			{
 				// Lock just the section of the buffer we need
-				var p32 = use32bitindexes ? indexBuffer.Lock( indexOffset * sizeof ( int ), requiredIndexCount * sizeof ( int ), BufferLocking.NoOverwrite ).ToIntPointer() : null;
-				var p16 = !use32bitindexes ? indexBuffer.Lock( indexOffset * sizeof ( short ), requiredIndexCount * sizeof ( short ), BufferLocking.NoOverwrite ).ToShortPointer() : null;
+				var p32 = use32bitindexes
+				          	? indexBuffer.Lock( indexOffset*sizeof ( int ), requiredIndexCount*sizeof ( int ),
+				          	                    BufferLocking.NoOverwrite ).ToIntPointer()
+				          	: null;
+				var p16 = !use32bitindexes
+				          	? indexBuffer.Lock( indexOffset*sizeof ( short ), requiredIndexCount*sizeof ( short ),
+				          	                    BufferLocking.NoOverwrite ).ToShortPointer()
+				          	: null;
 
 				while ( iterations-- > 0 )
 				{
@@ -727,9 +737,9 @@ namespace Axiom.Core
 						{
 							// First Tri in cell
 							// -----------------
-							v1 = ( ( v + vInc ) * meshWidth ) + u;
-							v2 = ( v * meshWidth ) + u;
-							v3 = ( ( v + vInc ) * meshWidth ) + ( u + uInc );
+							v1 = ( ( v + vInc )*meshWidth ) + u;
+							v2 = ( v*meshWidth ) + u;
+							v3 = ( ( v + vInc )*meshWidth ) + ( u + uInc );
 
 							// Output indexes
 							if ( use32bitindexes )
@@ -746,9 +756,9 @@ namespace Axiom.Core
 							}
 							// Second Tri in cell
 							// ------------------
-							v1 = ( ( v + vInc ) * meshWidth ) + ( u + uInc );
-							v2 = ( v * meshWidth ) + u;
-							v3 = ( v * meshWidth ) + ( u + uInc );
+							v1 = ( ( v + vInc )*meshWidth ) + ( u + uInc );
+							v2 = ( v*meshWidth ) + u;
+							v3 = ( v*meshWidth ) + ( u + uInc );
 
 							// Output indexes
 							if ( use32bitindexes )
@@ -806,9 +816,9 @@ namespace Axiom.Core
 			{
 				for ( var u = 0; u < controlWidth - 1; u += 2 )
 				{
-					a = controlPoints[ v * controlWidth + u + 0 ];
-					b = controlPoints[ v * controlWidth + u + 1 ];
-					c = controlPoints[ v * controlWidth + u + 2 ];
+					a = controlPoints[ v*controlWidth + u + 0 ];
+					b = controlPoints[ v*controlWidth + u + 1 ];
+					c = controlPoints[ v*controlWidth + u + 2 ];
 
 					if ( a != c )
 					{
@@ -851,9 +861,9 @@ namespace Axiom.Core
 			{
 				for ( var v = 0; v < controlHeight - 1; v += 2 )
 				{
-					a = controlPoints[ v * controlWidth + u ];
-					b = controlPoints[ ( v + 1 ) * controlWidth + u ];
-					c = controlPoints[ ( v + 2 ) * controlWidth + u ];
+					a = controlPoints[ v*controlWidth + u ];
+					b = controlPoints[ ( v + 1 )*controlWidth + u ];
+					c = controlPoints[ ( v + 2 )*controlWidth + u ];
 
 					if ( a != c )
 					{
@@ -995,8 +1005,8 @@ namespace Axiom.Core
 
 				subdivisionFactor = value;
 
-				uLevel = (int)( subdivisionFactor * maxULevel );
-				vLevel = (int)( subdivisionFactor * maxVLevel );
+				uLevel = (int)( subdivisionFactor*maxULevel );
+				vLevel = (int)( subdivisionFactor*maxVLevel );
 
 				MakeTriangles();
 			}

@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.IO;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Scripting;
@@ -168,7 +167,8 @@ namespace Axiom.Fonts
 					var glyph = parms[ 1 ][ 0 ];
 
 					// set the texcoords for this glyph
-					font.SetGlyphTexCoords( glyph, StringConverter.ParseFloat( parms[ 2 ] ), StringConverter.ParseFloat( parms[ 3 ] ), StringConverter.ParseFloat( parms[ 4 ] ), StringConverter.ParseFloat( parms[ 5 ] ) );
+					font.SetGlyphTexCoords( glyph, StringConverter.ParseFloat( parms[ 2 ] ), StringConverter.ParseFloat( parms[ 3 ] ),
+					                        StringConverter.ParseFloat( parms[ 4 ] ), StringConverter.ParseFloat( parms[ 5 ] ) );
 
 					break;
 
@@ -211,7 +211,8 @@ namespace Axiom.Fonts
 
 		#region ResourceManager Implementation
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			return new Font( this, name, handle, group, isManual, loader );
 		}
@@ -278,7 +279,7 @@ namespace Axiom.Fonts
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

@@ -46,7 +46,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
 using Axiom.Math;
 
 	#endregion Namespace Declarations
@@ -189,7 +188,7 @@ namespace Axiom.Math.Collections
 		/// </summary>
 		public QuaternionCollection()
 		{
-			m_array = new Quaternion[ DEFAULT_CAPACITY ];
+			m_array = new Quaternion[DEFAULT_CAPACITY];
 		}
 
 		/// <summary>
@@ -201,7 +200,7 @@ namespace Axiom.Math.Collections
 		///	</param>
 		public QuaternionCollection( int capacity )
 		{
-			m_array = new Quaternion[ capacity ];
+			m_array = new Quaternion[capacity];
 		}
 
 		/// <summary>
@@ -211,7 +210,7 @@ namespace Axiom.Math.Collections
 		/// <param name="c">The <c>QuaternionCollection</c> whose elements are copied to the new collection.</param>
 		public QuaternionCollection( QuaternionCollection c )
 		{
-			m_array = new Quaternion[ c.Count ];
+			m_array = new Quaternion[c.Count];
 			AddRange( c );
 		}
 
@@ -222,7 +221,7 @@ namespace Axiom.Math.Collections
 		/// <param name="a">The <see cref="Quaternion"/> array whose elements are copied to the new list.</param>
 		public QuaternionCollection( Quaternion[] a )
 		{
-			m_array = new Quaternion[ a.Length ];
+			m_array = new Quaternion[a.Length];
 			AddRange( a );
 		}
 
@@ -258,7 +257,7 @@ namespace Axiom.Math.Collections
 		/// <param name="array">The one-dimensional <see cref="Quaternion"/> array to copy to.</param>
 		public virtual void CopyTo( Quaternion[] array )
 		{
-			this.CopyTo( array, 0 );
+			CopyTo( array, 0 );
 		}
 
 		/// <summary>
@@ -352,7 +351,7 @@ namespace Axiom.Math.Collections
 		public virtual void Clear()
 		{
 			++m_version;
-			m_array = new Quaternion[ DEFAULT_CAPACITY ];
+			m_array = new Quaternion[DEFAULT_CAPACITY];
 			m_count = 0;
 		}
 
@@ -448,7 +447,8 @@ namespace Axiom.Math.Collections
 			var i = IndexOf( item );
 			if ( i < 0 )
 			{
-				throw new System.ArgumentException( "Cannot remove the specified item because it was not found in the specified Collection." );
+				throw new System.ArgumentException(
+					"Cannot remove the specified item because it was not found in the specified Collection." );
 			}
 
 			++m_version;
@@ -478,7 +478,7 @@ namespace Axiom.Math.Collections
 			// We can't set the deleted entry equal to null, because it might be a value type.
 			// Instead, we'll create an empty single-element array of the right type and copy it 
 			// over the entry we want to erase.
-			var temp = new Quaternion[ 1 ];
+			var temp = new Quaternion[1];
 			Array.Copy( temp, 0, m_array, m_count, 1 );
 			m_version++;
 		}
@@ -545,13 +545,13 @@ namespace Axiom.Math.Collections
 				{
 					if ( value > 0 )
 					{
-						var temp = new Quaternion[ value ];
+						var temp = new Quaternion[value];
 						Array.Copy( m_array, temp, m_count );
 						m_array = temp;
 					}
 					else
 					{
-						m_array = new Quaternion[ DEFAULT_CAPACITY ];
+						m_array = new Quaternion[DEFAULT_CAPACITY];
 					}
 				}
 			}
@@ -600,7 +600,7 @@ namespace Axiom.Math.Collections
 		/// </summary>
 		public virtual void TrimToSize()
 		{
-			this.Capacity = m_count;
+			Capacity = m_count;
 		}
 
 		#endregion
@@ -628,7 +628,9 @@ namespace Axiom.Math.Collections
 			if ( i < 0 || i > max )
 			{
 #if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE)
-				throw new System.ArgumentOutOfRangeException( "Index was out of range.  Must be non-negative and less than the size of the collection.", (object)i, "Specified argument was out of the range of valid values." );
+				throw new System.ArgumentOutOfRangeException(
+					"Index was out of range.  Must be non-negative and less than the size of the collection.", (object)i,
+					"Specified argument was out of the range of valid values." );
 #else
                 throw new System.ArgumentOutOfRangeException("Index was out of range.  Must be non-negative and less than the size of the collection.", "Specified argument was out of the range of valid values.");
 #endif
@@ -637,13 +639,13 @@ namespace Axiom.Math.Collections
 
 		private void EnsureCapacity( int min )
 		{
-			var newCapacity = ( ( m_array.Length == 0 ) ? DEFAULT_CAPACITY : m_array.Length * 2 );
+			var newCapacity = ( ( m_array.Length == 0 ) ? DEFAULT_CAPACITY : m_array.Length*2 );
 			if ( newCapacity < min )
 			{
 				newCapacity = min;
 			}
 
-			this.Capacity = newCapacity;
+			Capacity = newCapacity;
 		}
 
 		#endregion
@@ -673,32 +675,32 @@ namespace Axiom.Math.Collections
 
 		int IList.Add( object x )
 		{
-			return this.Add( (Quaternion)x );
+			return Add( (Quaternion)x );
 		}
 
 		bool IList.Contains( object x )
 		{
-			return this.Contains( (Quaternion)x );
+			return Contains( (Quaternion)x );
 		}
 
 		int IList.IndexOf( object x )
 		{
-			return this.IndexOf( (Quaternion)x );
+			return IndexOf( (Quaternion)x );
 		}
 
 		void IList.Insert( int pos, object x )
 		{
-			this.Insert( pos, (Quaternion)x );
+			Insert( pos, (Quaternion)x );
 		}
 
 		void IList.Remove( object x )
 		{
-			this.Remove( (Quaternion)x );
+			Remove( (Quaternion)x );
 		}
 
 		void IList.RemoveAt( int pos )
 		{
-			this.RemoveAt( pos );
+			RemoveAt( pos );
 		}
 
 		#endregion
@@ -707,7 +709,7 @@ namespace Axiom.Math.Collections
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return (IEnumerator)( this.GetEnumerator() );
+			return (IEnumerator)( GetEnumerator() );
 		}
 
 		#endregion
@@ -721,9 +723,9 @@ namespace Axiom.Math.Collections
 		{
 			#region Implementation (data)
 
-			private QuaternionCollection m_collection;
+			private readonly QuaternionCollection m_collection;
 			private int m_index;
-			private int m_version;
+			private readonly int m_version;
 
 			#endregion
 
@@ -792,7 +794,7 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					return (object)( this.Current );
+					return (object)( Current );
 				}
 			}
 
@@ -807,8 +809,8 @@ namespace Axiom.Math.Collections
 		{
 			#region Implementation (data)
 
-			private QuaternionCollection m_collection;
-			private object m_root;
+			private readonly QuaternionCollection m_collection;
+			private readonly object m_root;
 
 			#endregion
 
@@ -827,13 +829,13 @@ namespace Axiom.Math.Collections
 
 			public override void CopyTo( Quaternion[] array )
 			{
-				lock ( this.m_root )
+				lock ( m_root )
 					m_collection.CopyTo( array );
 			}
 
 			public override void CopyTo( Quaternion[] array, int start )
 			{
-				lock ( this.m_root )
+				lock ( m_root )
 					m_collection.CopyTo( array, start );
 			}
 
@@ -841,7 +843,7 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					lock ( this.m_root )
+					lock ( m_root )
 						return m_collection.Count;
 				}
 			}
@@ -858,7 +860,7 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					return this.m_root;
+					return m_root;
 				}
 			}
 
@@ -870,55 +872,55 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					lock ( this.m_root )
+					lock ( m_root )
 						return m_collection[ i ];
 				}
 				set
 				{
-					lock ( this.m_root )
+					lock ( m_root )
 						m_collection[ i ] = value;
 				}
 			}
 
 			public override int Add( Quaternion x )
 			{
-				lock ( this.m_root )
+				lock ( m_root )
 					return m_collection.Add( x );
 			}
 
 			public override void Clear()
 			{
-				lock ( this.m_root )
+				lock ( m_root )
 					m_collection.Clear();
 			}
 
 			public override bool Contains( Quaternion x )
 			{
-				lock ( this.m_root )
+				lock ( m_root )
 					return m_collection.Contains( x );
 			}
 
 			public override int IndexOf( Quaternion x )
 			{
-				lock ( this.m_root )
+				lock ( m_root )
 					return m_collection.IndexOf( x );
 			}
 
 			public override void Insert( int pos, Quaternion x )
 			{
-				lock ( this.m_root )
+				lock ( m_root )
 					m_collection.Insert( pos, x );
 			}
 
 			public override void Remove( Quaternion x )
 			{
-				lock ( this.m_root )
+				lock ( m_root )
 					m_collection.Remove( x );
 			}
 
 			public override void RemoveAt( int pos )
 			{
-				lock ( this.m_root )
+				lock ( m_root )
 					m_collection.RemoveAt( pos );
 			}
 
@@ -957,26 +959,26 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					lock ( this.m_root )
+					lock ( m_root )
 						return m_collection.Capacity;
 				}
 
 				set
 				{
-					lock ( this.m_root )
+					lock ( m_root )
 						m_collection.Capacity = value;
 				}
 			}
 
 			public override int AddRange( QuaternionCollection x )
 			{
-				lock ( this.m_root )
+				lock ( m_root )
 					return m_collection.AddRange( x );
 			}
 
 			public override int AddRange( Quaternion[] x )
 			{
-				lock ( this.m_root )
+				lock ( m_root )
 					return m_collection.AddRange( x );
 			}
 
@@ -991,7 +993,7 @@ namespace Axiom.Math.Collections
 		{
 			#region Implementation (data)
 
-			private QuaternionCollection m_collection;
+			private readonly QuaternionCollection m_collection;
 
 			#endregion
 
@@ -1037,7 +1039,7 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					return this.m_collection.SyncRoot;
+					return m_collection.SyncRoot;
 				}
 			}
 

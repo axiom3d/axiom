@@ -46,7 +46,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-
 using Axiom.Core;
 using Axiom.Configuration;
 
@@ -251,24 +250,9 @@ namespace Axiom.Graphics
 		#region ShadowsEnabled Property
 
 		/// <summary>
-		/// Shadows option
-		/// </summary>
-		private bool shadowsEnabled;
-
-		/// <summary>
 		/// Get's or Set's  whether shadows are enabled in this target pass.
 		/// </summary>
-		public bool ShadowsEnabled
-		{
-			get
-			{
-				return this.shadowsEnabled;
-			}
-			set
-			{
-				this.shadowsEnabled = value;
-			}
-		}
+		public bool ShadowsEnabled { get; set; }
 
 		#endregion ShadowsEnabled Property
 
@@ -304,7 +288,7 @@ namespace Axiom.Graphics
 			visibilityMask = 0xFFFFFFFF;
 			lodBias = 1.0f;
 			materialScheme = MaterialManager.DefaultSchemeName;
-			this.shadowsEnabled = true;
+			ShadowsEnabled = true;
 
 			if ( Root.Instance.RenderSystem != null )
 			{

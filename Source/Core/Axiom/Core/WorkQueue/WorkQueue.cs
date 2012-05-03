@@ -110,27 +110,27 @@ namespace Axiom.Core
 			/// <summary>
 			/// The request channel, as an integer
 			/// </summary>
-			private ushort _channel;
+			private readonly ushort _channel;
 
 			/// <summary>
 			/// The request type, as an integer within the channel (user can define enumerations on this)
 			/// </summary>
-			private ushort _type;
+			private readonly ushort _type;
 
 			/// <summary>
 			/// The details of the request (user defined)
 			/// </summary>
-			private object _data;
+			private readonly object _data;
 
 			/// <summary>
 			/// Retry count - set this to non-zero to have the request try again on failure
 			/// </summary>
-			private byte _retryCount;
+			private readonly byte _retryCount;
 
 			/// <summary>
 			/// Identifier (assigned by the system)
 			/// </summary>
-			private RequestID _id;
+			private readonly RequestID _id;
 
 			/// <summary>
 			/// Abort Flag
@@ -246,7 +246,8 @@ namespace Axiom.Core
 					return false;
 				}
 
-				return lr._channel == rr._channel && lr._type == rr._type && lr._data == rr._data && lr._retryCount == rr._retryCount && lr._id == rr._id && lr._aborted == rr._aborted;
+				return lr._channel == rr._channel && lr._type == rr._type && lr._data == rr._data &&
+				       lr._retryCount == rr._retryCount && lr._id == rr._id && lr._aborted == rr._aborted;
 			}
 
 			public static bool operator !=( Request lr, Request rr )
@@ -273,17 +274,17 @@ namespace Axiom.Core
 			/// <summary>
 			/// Pointer to the request that this response is in relation to
 			/// </summary>
-			private Request _request;
+			private readonly Request _request;
 
 			/// <summary>
 			/// Whether the work item succeeded or not
 			/// </summary>
-			private bool _success;
+			private readonly bool _success;
 
 			/// <summary>
 			/// Any diagnostic messages
 			/// </summary>
-			private string _messages;
+			private readonly string _messages;
 
 			/// <summary>
 			/// Data associated with the result of the process
@@ -339,7 +340,9 @@ namespace Axiom.Core
 			}
 
 			public Response( Request rq, bool success, object data )
-				: this( rq, success, data, string.Empty ) {}
+				: this( rq, success, data, string.Empty )
+			{
+			}
 
 			[OgreVersion( 1, 7, 2 )]
 			public Response( Request rq, bool success, object data, string msg )
@@ -356,7 +359,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			public void AbortRequest()
 			{
-				this.Request.AbortRequest();
+				Request.AbortRequest();
 				_data = null;
 			}
 		};
@@ -449,7 +452,7 @@ namespace Axiom.Core
 
 		public void Startup()
 		{
-			this.Startup( true );
+			Startup( true );
 		}
 #endif
 
@@ -507,16 +510,17 @@ namespace Axiom.Core
 #if NET_40
 		public abstract RequestID AddRequest( ushort channel, ushort requestType, object rData, byte retryCount = 0, bool forceSynchronous = false );
 #else
-		public abstract RequestID AddRequest( ushort channel, ushort requestType, object rData, byte retryCount, bool forceSynchronous );
+		public abstract RequestID AddRequest( ushort channel, ushort requestType, object rData, byte retryCount,
+		                                      bool forceSynchronous );
 
 		public RequestID AddRequest( ushort channel, ushort requestType, object rData )
 		{
-			return this.AddRequest( channel, requestType, rData, 0, false );
+			return AddRequest( channel, requestType, rData, 0, false );
 		}
 
 		public RequestID AddRequest( ushort channel, ushort requestType, object rData, byte retryCount )
 		{
-			return this.AddRequest( channel, requestType, rData, retryCount, false );
+			return AddRequest( channel, requestType, rData, retryCount, false );
 		}
 #endif
 

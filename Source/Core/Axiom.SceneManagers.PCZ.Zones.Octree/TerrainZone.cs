@@ -42,22 +42,23 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.SceneManagers.PortalConnected;
-
 using System.IO;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace OctreeZone
 {
-	public class TerrainZonePageRow : List<TerrainZonePage> {}
+	public class TerrainZonePageRow : List<TerrainZonePage>
+	{
+	}
 
-	public class TerrainZonePage2D : List<TerrainZonePageRow> {}
+	public class TerrainZonePage2D : List<TerrainZonePageRow>
+	{
+	}
 
 	public class TerrainZone : OctreeZone
 	{
@@ -67,7 +68,7 @@ namespace OctreeZone
 		private PCZSceneNode mTerrainRoot;
 
 		/// Terrain size, detail etc
-		private TerrainZoneOptions mOptions = new TerrainZoneOptions();
+		private readonly TerrainZoneOptions mOptions = new TerrainZoneOptions();
 
 		/// Should we use an externally-defined custom material?
 		private bool mUseCustomMaterial;
@@ -91,27 +92,28 @@ namespace OctreeZone
 		private int mLodMorphParamIndex;
 
 		/// Whether paging is enabled, or whether a single page will be used
-		private bool mPagingEnabled;
+		private readonly bool mPagingEnabled;
 
 		/// The number of pages to render outside the 'home' page
 		private ushort mLivePageMargin;
 
 		/// The number of pages to keep loaded outside the 'home' page
-		private ushort mBufferedPageMargin;
+		private readonly ushort mBufferedPageMargin;
 
 		/// Grid of buffered pages
-		private TerrainZonePage2D mTerrainZonePages = new TerrainZonePage2D();
+		private readonly TerrainZonePage2D mTerrainZonePages = new TerrainZonePage2D();
 
 		//-- attributes to share across tiles
 		/// Shared list of index buffers
-		private TerrainBufferCache mIndexCache = new TerrainBufferCache();
+		private readonly TerrainBufferCache mIndexCache = new TerrainBufferCache();
 
 		/// Shared array of IndexData (reuse indexes across tiles)
-		private System.Collections.Hashtable mLevelIndex = Hashtable.Synchronized( new Hashtable() );
+		private readonly System.Collections.Hashtable mLevelIndex = Hashtable.Synchronized( new Hashtable() );
 
 		//private List<KeyValuePair<uint, IndexData>> mLevelIndex = new List<KeyValuePair<uint, IndexData>>();
 		/// Map of source type -> TerrainZonePageSource
-		private Dictionary<string, TerrainZonePageSource> mPageSources = new Dictionary<string, TerrainZonePageSource>();
+		private readonly Dictionary<string, TerrainZonePageSource> mPageSources =
+			new Dictionary<string, TerrainZonePageSource>();
 
 		/// The currently active page source
 		private TerrainZonePageSource mActivePageSource;
@@ -196,7 +198,9 @@ namespace OctreeZone
 		}
 
 		//-------------------------------------------------------------------------
-		~TerrainZone() {}
+		~TerrainZone()
+		{
+		}
 
 		/// Validates that the size picked for the terrain is acceptable
 		protected static bool CheckSize( int s )
@@ -235,7 +239,7 @@ namespace OctreeZone
 		private void LoadConfig( Stream stream )
 		{
 			/* Set up the options */
-			ConfigFile config = new ConfigFile( "TerrainConfig" );
+			var config = new ConfigFile( "TerrainConfig" );
 			string val;
 
 			config.Load( stream );
@@ -361,7 +365,7 @@ namespace OctreeZone
 				throw new AxiomException( "Missing option 'PageSource'. LoadConfig" );
 			}
 
-			TerrainZonePageSourceOptionList optlist = new TerrainZonePageSourceOptionList();
+			var optlist = new TerrainZonePageSourceOptionList();
 
 			foreach ( string[] s in config.GetEnumerator() )
 			{
@@ -388,7 +392,8 @@ namespace OctreeZone
 				Options.terrainMaterial = (Material)MaterialManager.Instance.GetByName( s );
 				if ( null == Options.terrainMaterial )
 				{
-					Options.terrainMaterial = (Material)MaterialManager.Instance.Create( s, ResourceGroupManager.Instance.WorldResourceGroupName );
+					Options.terrainMaterial =
+						(Material)MaterialManager.Instance.Create( s, ResourceGroupManager.Instance.WorldResourceGroupName );
 				}
 				else
 				{
@@ -408,7 +413,8 @@ namespace OctreeZone
 
 				Options.terrainMaterial.Lighting = Options.lit;
 
-				if ( Options.lodMorph && mPCZSM.TargetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) && GpuProgramManager.Instance.GetByName( "Terrain/VertexMorph" ) == null )
+				if ( Options.lodMorph && mPCZSM.TargetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) &&
+				     GpuProgramManager.Instance.GetByName( "Terrain/VertexMorph" ) == null )
 				{
 					// Create & assign LOD morphing vertex program
 					String syntax;
@@ -425,7 +431,10 @@ namespace OctreeZone
 					FogMode fm = mPCZSM.FogMode;
 					string source = new TerrainVertexProgram().getProgramSource( fm, syntax, false );
 
-					GpuProgram prog = GpuProgramManager.Instance.CreateProgramFromString( "Terrain/VertexMorph", ResourceGroupManager.Instance.WorldResourceGroupName, source, GpuProgramType.Vertex, syntax );
+					GpuProgram prog = GpuProgramManager.Instance.CreateProgramFromString( "Terrain/VertexMorph",
+					                                                                      ResourceGroupManager.Instance.
+					                                                                      	WorldResourceGroupName, source,
+					                                                                      GpuProgramType.Vertex, syntax );
 
 					// Attach
 					pass.SetVertexProgram( "Terrain/VertexMorph" );
@@ -449,7 +458,9 @@ namespace OctreeZone
 					// Also set shadow receiver program
 					string source2 = new TerrainVertexProgram().getProgramSource( fm, syntax, true );
 
-					prog = GpuProgramManager.Instance.CreateProgramFromString( "Terrain/VertexMorphShadowReceive", ResourceGroupManager.Instance.WorldResourceGroupName, source2, GpuProgramType.Vertex, syntax );
+					prog = GpuProgramManager.Instance.CreateProgramFromString( "Terrain/VertexMorphShadowReceive",
+					                                                           ResourceGroupManager.Instance.WorldResourceGroupName,
+					                                                           source2, GpuProgramType.Vertex, syntax );
 					pass.SetShadowReceiverVertexProgram( "Terrain/VertexMorphShadowReceive" );
 					paras = pass.ShadowReceiverVertexProgramParameters;
 					// worldviewproj
@@ -459,7 +470,8 @@ namespace OctreeZone
 					// texture view / proj
 					paras.SetAutoConstant( 8, GpuProgramParameters.AutoConstantType.TextureViewProjMatrix );
 					// morph factor
-					paras.SetAutoConstant( 12, GpuProgramParameters.AutoConstantType.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID );
+					paras.SetAutoConstant( 12, GpuProgramParameters.AutoConstantType.Custom,
+					                       TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID );
 
 
 					// Set param index
@@ -492,7 +504,8 @@ namespace OctreeZone
 						bool found = false;
 						foreach ( GpuProgramParameters.AutoConstantEntry ace in paras.AutoConstantList )
 						{
-							if ( ace.Type == GpuProgramParameters.AutoConstantType.Custom && ace.Data == TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID )
+							if ( ace.Type == GpuProgramParameters.AutoConstantType.Custom &&
+							     ace.Data == TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID )
 							{
 								found = true;
 								break;
@@ -502,11 +515,13 @@ namespace OctreeZone
 						{
 							if ( mLodMorphParamName != "" )
 							{
-								paras.SetNamedAutoConstant( mLodMorphParamName, GpuProgramParameters.AutoConstantType.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID );
+								paras.SetNamedAutoConstant( mLodMorphParamName, GpuProgramParameters.AutoConstantType.Custom,
+								                            TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID );
 							}
 							else
 							{
-								paras.SetAutoConstant( mLodMorphParamIndex, GpuProgramParameters.AutoConstantType.Custom, TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID );
+								paras.SetAutoConstant( mLodMorphParamIndex, GpuProgramParameters.AutoConstantType.Custom,
+								                       TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID );
 							}
 						}
 					}
@@ -520,11 +535,11 @@ namespace OctreeZone
 			//create a root terrain node.
 			if ( null == mTerrainRoot )
 			{
-				mTerrainRoot = (PCZSceneNode)( parentNode.CreateChildSceneNode( this.Name + "_Node" ) );
+				mTerrainRoot = (PCZSceneNode)( parentNode.CreateChildSceneNode( Name + "_Node" ) );
 				SetEnclosureNode( mTerrainRoot );
 			}
 			//setup the page array.
-			ushort pageSlots = (ushort)( 1 + ( mBufferedPageMargin * 2 ) );
+			var pageSlots = (ushort)( 1 + ( mBufferedPageMargin*2 ) );
 			ushort i, j;
 			for ( i = 0; i < pageSlots; ++i )
 			{
@@ -552,7 +567,9 @@ namespace OctreeZone
 			{
 				fs = File.Open( filename, FileMode.Open );
 			}
-			catch {}
+			catch
+			{
+			}
 
 			if ( null != fs )
 			{
@@ -562,7 +579,8 @@ namespace OctreeZone
 			else
 			{
 				// otherwise try resource system
-				Stream stream = ResourceGroupManager.Instance.OpenResource( filename, ResourceGroupManager.Instance.WorldResourceGroupName );
+				Stream stream = ResourceGroupManager.Instance.OpenResource( filename,
+				                                                            ResourceGroupManager.Instance.WorldResourceGroupName );
 
 				SetZoneGeometry( stream, parentNode, null );
 			}
@@ -588,9 +606,9 @@ namespace OctreeZone
 			SetupTerrainZonePages( parentNode );
 
 			// Resize the octree allow for 1 page for now
-			float max_x = Options.scale.x * Options.pageSize;
+			float max_x = Options.scale.x*Options.pageSize;
 			float max_y = Options.scale.y;
-			float max_z = Options.scale.z * Options.pageSize;
+			float max_z = Options.scale.z*Options.pageSize;
 			Resize( new AxisAlignedBox( new Vector3( 0, 0, 0 ), new Vector3( max_x, max_y, max_z ) ) );
 		}
 
@@ -631,7 +649,7 @@ namespace OctreeZone
 		//-------------------------------------------------------------------------
 		public float GetHeightAt( float x, float z )
 		{
-			Vector3 pt = new Vector3( x, 0f, z );
+			var pt = new Vector3( x, 0f, z );
 
 			TerrainZoneRenderable t = GetTerrainTile( pt );
 
@@ -1109,7 +1127,7 @@ namespace OctreeZone
 
 	public class TerrainZoneFactory : PCZoneFactory
 	{
-		private List<TerrainZonePageSource> mTerrainZonePageSources = new List<TerrainZonePageSource>();
+		private readonly List<TerrainZonePageSource> mTerrainZonePageSources = new List<TerrainZonePageSource>();
 
 		public TerrainZoneFactory( string typeName )
 			: base( typeName )
@@ -1130,9 +1148,9 @@ namespace OctreeZone
 		public override PCZone CreatePCZone( PCZSceneManager pczsm, string zoneName )
 		{
 			//return new TerrainZone(pczsm, zoneName);
-			TerrainZone tz = new TerrainZone( pczsm, zoneName );
+			var tz = new TerrainZone( pczsm, zoneName );
 			// Create & register default sources (one per zone)
-			HeightmapTerrainZonePageSource ps = new HeightmapTerrainZonePageSource();
+			var ps = new HeightmapTerrainZonePageSource();
 			mTerrainZonePageSources.Add( ps );
 			tz.registerPageSource( "Heightmap", ps );
 			return tz;

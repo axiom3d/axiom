@@ -41,7 +41,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Graphics;
@@ -55,7 +54,7 @@ namespace Axiom.RenderSystems.OpenGL
 	/// </summary>
 	internal abstract class GLRTTManager : IDisposable
 	{
-		private BaseGLSupport _glSupport;
+		private readonly BaseGLSupport _glSupport;
 
 		public BaseGLSupport GLSupport
 		{
@@ -185,22 +184,10 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region isDisposed Property
 
-		private bool _disposed = false;
-
 		/// <summary>
 		/// Determines if this instance has been disposed of already.
 		/// </summary>
-		protected bool isDisposed
-		{
-			get
-			{
-				return _disposed;
-			}
-			set
-			{
-				_disposed = value;
-			}
-		}
+		protected bool isDisposed { get; set; }
 
 		#endregion isDisposed Property
 

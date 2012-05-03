@@ -19,8 +19,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Total size of the float buffer required
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int FloatBufferSize;
+			[OgreVersion( 1, 7, 2790 )] public int FloatBufferSize;
 
 			#endregion
 
@@ -29,8 +28,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Total size of the int buffer required
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int IntBufferSize;
+			[OgreVersion( 1, 7, 2790 )] public int IntBufferSize;
 
 			#endregion
 
@@ -39,8 +37,7 @@ namespace Axiom.Graphics
 			/// <summary>
 			/// Dictionary of parameter names to GpuConstantDefinition
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public GpuConstantDefinitionMap Map = new GpuConstantDefinitionMap();
+			[OgreVersion( 1, 7, 2790 )] public GpuConstantDefinitionMap Map = new GpuConstantDefinitionMap();
 
 			#endregion
 
@@ -54,8 +51,7 @@ namespace Axiom.Graphics
 			/// to save memory. Setting this value to <code>true</code> allows all of the entries
 			/// to be generated and added to the map.
 			/// </remarks>
-			[OgreVersion( 1, 7, 2790 )]
-			protected static bool GenerateAllConstantDefinitionArrayEntries;
+			[OgreVersion( 1, 7, 2790 )] protected static bool GenerateAllConstantDefinitionArrayEntries;
 
 			#endregion
 

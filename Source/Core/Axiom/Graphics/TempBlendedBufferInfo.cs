@@ -222,27 +222,31 @@ namespace Axiom.Graphics
 
 			if ( bindPositions && destPositionBuffer == null )
 			{
-				destPositionBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcPositionBuffer, BufferLicenseRelease.Automatic, this );
+				destPositionBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcPositionBuffer,
+				                                                                              BufferLicenseRelease.Automatic, this );
 			}
 
 			if ( bindNormals && !posNormalShareBuffer && srcNormalBuffer != null && destNormalBuffer == null )
 			{
-				destNormalBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcNormalBuffer, BufferLicenseRelease.Automatic, this );
+				destNormalBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcNormalBuffer,
+				                                                                            BufferLicenseRelease.Automatic, this );
 			}
 
 			if ( bindTangents && srcTangentBuffer != null )
 			{
-				if ( this.tanBindIndex != this.posBindIndex && this.tanBindIndex != this.normBindIndex )
+				if ( tanBindIndex != posBindIndex && tanBindIndex != normBindIndex )
 				{
-					destTangentBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcTangentBuffer, BufferLicenseRelease.Automatic, this );
+					destTangentBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcTangentBuffer,
+					                                                                             BufferLicenseRelease.Automatic, this );
 				}
 			}
 
 			if ( bindNormals && srcBinormalBuffer != null )
 			{
-				if ( this.binormBindIndex != this.posBindIndex && this.binormBindIndex != this.normBindIndex && this.binormBindIndex != this.tanBindIndex )
+				if ( binormBindIndex != posBindIndex && binormBindIndex != normBindIndex && binormBindIndex != tanBindIndex )
 				{
-					destBinormalBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcBinormalBuffer, BufferLicenseRelease.Automatic, this );
+					destBinormalBuffer = HardwareBufferManager.Instance.AllocateVertexBufferCopy( srcBinormalBuffer,
+					                                                                              BufferLicenseRelease.Automatic, this );
 				}
 			}
 		}

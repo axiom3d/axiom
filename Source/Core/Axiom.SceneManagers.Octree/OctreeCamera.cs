@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom;
 using Axiom.Core;
 using Axiom.Math;
@@ -92,9 +91,9 @@ namespace Axiom.SceneManagers.Octree
 		                        	red, red, red, red, red, red, red, red
 		                        };
 
-		private int[] corners = {
-		                        	0, 4, 3, 5, 2, 6, 1, 7
-		                        };
+		private readonly int[] corners = {
+		                                 	0, 4, 3, 5, 2, 6, 1, 7
+		                                 };
 
 		#endregion Fields
 
@@ -220,22 +219,25 @@ namespace Axiom.SceneManagers.Octree
 				return Vector3.Zero; //some planes are parallel.
 			}
 
-			Matrix3 mx = new Matrix3( -p1.D, p1.Normal.y, p1.Normal.z, -p2.D, p2.Normal.y, p2.Normal.z, -p3.D, p3.Normal.y, p3.Normal.z );
+			var mx = new Matrix3( -p1.D, p1.Normal.y, p1.Normal.z, -p2.D, p2.Normal.y, p2.Normal.z, -p3.D, p3.Normal.y,
+			                      p3.Normal.z );
 
 			float xdet = mx.Determinant;
 
-			Matrix3 my = new Matrix3( p1.Normal.x, -p1.D, p1.Normal.z, p2.Normal.x, -p2.D, p2.Normal.z, p3.Normal.x, -p3.D, p3.Normal.z );
+			var my = new Matrix3( p1.Normal.x, -p1.D, p1.Normal.z, p2.Normal.x, -p2.D, p2.Normal.z, p3.Normal.x, -p3.D,
+			                      p3.Normal.z );
 
 			float ydet = my.Determinant;
 
-			Matrix3 mz = new Matrix3( p1.Normal.x, p1.Normal.y, -p1.D, p2.Normal.x, p2.Normal.y, -p2.D, p3.Normal.x, p3.Normal.y, -p3.D );
+			var mz = new Matrix3( p1.Normal.x, p1.Normal.y, -p1.D, p2.Normal.x, p2.Normal.y, -p2.D, p3.Normal.x, p3.Normal.y,
+			                      -p3.D );
 
 			float zdet = mz.Determinant;
 
-			Vector3 r = new Vector3();
-			r.x = xdet / det;
-			r.y = ydet / det;
-			r.z = zdet / det;
+			var r = new Vector3();
+			r.x = xdet/det;
+			r.y = ydet/det;
+			r.z = zdet/det;
 
 			return r;
 		}

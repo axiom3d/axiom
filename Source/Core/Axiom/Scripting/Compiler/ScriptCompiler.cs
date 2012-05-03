@@ -41,7 +41,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
-
 using Axiom.Core;
 using Axiom.Scripting.Compiler.AST;
 using Axiom.Scripting.Compiler.Parser;
@@ -68,7 +67,7 @@ namespace Axiom.Scripting.Compiler
 			ID_NO = 2
 		};
 
-		private List<CompileError> _errors = new List<CompileError>();
+		private readonly List<CompileError> _errors = new List<CompileError>();
 
 		private String _resourceGroup;
 
@@ -80,7 +79,7 @@ namespace Axiom.Scripting.Compiler
 			}
 		}
 
-		private Dictionary<string, string> _environment = new Dictionary<string, string>();
+		private readonly Dictionary<string, string> _environment = new Dictionary<string, string>();
 
 		public Dictionary<string, string> Environment
 		{
@@ -90,7 +89,7 @@ namespace Axiom.Scripting.Compiler
 			}
 		}
 
-		private Dictionary<string, uint> _keywordMap = new Dictionary<string, uint>();
+		private readonly Dictionary<string, uint> _keywordMap = new Dictionary<string, uint>();
 
 		public Dictionary<string, uint> KeywordMap
 		{
@@ -103,31 +102,19 @@ namespace Axiom.Scripting.Compiler
 		/// <summary>
 		/// The set of imported scripts to avoid circular dependencies
 		/// </summary>
-		private Dictionary<string, IList<AbstractNode>> _imports = new Dictionary<string, IList<AbstractNode>>();
+		private readonly Dictionary<string, IList<AbstractNode>> _imports = new Dictionary<string, IList<AbstractNode>>();
 
 		/// <summary>
 		/// This holds the target objects for each script to be imported
 		/// </summary>
-		private Dictionary<string, string> _importRequests = new Dictionary<string, string>();
+		private readonly Dictionary<string, string> _importRequests = new Dictionary<string, string>();
 
 		/// <summary>
 		/// This stores the imports of the scripts, so they are separated and can be treated specially
 		/// </summary>
-		private List<AbstractNode> _importTable = new List<AbstractNode>();
+		private readonly List<AbstractNode> _importTable = new List<AbstractNode>();
 
-		private ScriptCompilerListener _listener;
-
-		public ScriptCompilerListener Listener
-		{
-			get
-			{
-				return _listener;
-			}
-			set
-			{
-				_listener = value;
-			}
-		}
+		public ScriptCompilerListener Listener { get; set; }
 
 		#region Events
 
@@ -151,11 +138,11 @@ namespace Axiom.Scripting.Compiler
 		public ScriptCompiler()
 		{
 			InitializeWordMap();
-			this.OnPreConversion = null;
-			this.OnPostConversion = null;
-			this.OnImportFile = null;
-			this.OnCompileError = null;
-			this.OnCompilerEvent = null;
+			OnPreConversion = null;
+			OnPostConversion = null;
+			OnImportFile = null;
+			OnCompileError = null;
+			OnCompilerEvent = null;
 		}
 
 		/// <summary>
@@ -177,19 +164,19 @@ namespace Axiom.Scripting.Compiler
 		/// <see cref="ScriptCompiler.Compile(IList&lt;AbstractNode&gt;, string, bool, bool, bool)"/>
 		public bool Compile( IList<AbstractNode> nodes, string group )
 		{
-			return this.Compile( nodes, group, true, true, true );
+			return Compile( nodes, group, true, true, true );
 		}
 
 		/// <see cref="ScriptCompiler.Compile(IList&lt;AbstractNode&gt;, string, bool, bool, bool)"/>
 		public bool Compile( IList<AbstractNode> nodes, string group, bool doImports )
 		{
-			return this.Compile( nodes, group, doImports, true, true );
+			return Compile( nodes, group, doImports, true, true );
 		}
 
 		/// <see cref="ScriptCompiler.Compile(IList&lt;AbstractNode&gt;, string, bool, bool, bool)"/>
 		public bool Compile( IList<AbstractNode> nodes, string group, bool doImports, bool doObjects )
 		{
-			return this.Compile( nodes, group, doImports, doObjects, true );
+			return Compile( nodes, group, doImports, doObjects, true );
 		}
 
 		/// <summary>
@@ -267,9 +254,9 @@ namespace Axiom.Scripting.Compiler
 			// Clear the environment
 			_environment.Clear();
 
-			if ( this.OnPreConversion != null )
+			if ( OnPreConversion != null )
 			{
-				this.OnPreConversion( this, nodes );
+				OnPreConversion( this, nodes );
 			}
 
 			// Convert our nodes to an AST
@@ -282,7 +269,7 @@ namespace Axiom.Scripting.Compiler
 			_processVariables( ref ast );
 
 			// Allows early bail-out through the listener
-			if ( this.OnPostConversion != null && !this.OnPostConversion( this, ast ) )
+			if ( OnPostConversion != null && !OnPostConversion( this, ast ) )
 			{
 				return _errors.Count == 0;
 			}
@@ -313,7 +300,7 @@ namespace Axiom.Scripting.Compiler
 
 		internal void AddError( CompileErrorCode code, string file, uint line )
 		{
-			this.AddError( code, file, line, string.Empty );
+			AddError( code, file, line, string.Empty );
 		}
 
 		/// <summary>
@@ -327,13 +314,15 @@ namespace Axiom.Scripting.Compiler
 		{
 			var error = new CompileError( code, file, line, msg );
 
-			if ( this.OnCompileError != null )
+			if ( OnCompileError != null )
 			{
-				this.OnCompileError( this, error );
+				OnCompileError( this, error );
 			}
 			else
 			{
-				var str = string.Format( "Compiler error: {0} in {1}({2})", ScriptEnumAttribute.GetScriptAttribute( (int)code, typeof ( CompileErrorCode ) ), file, line );
+				var str = string.Format( "Compiler error: {0} in {1}({2})",
+				                         ScriptEnumAttribute.GetScriptAttribute( (int)code, typeof ( CompileErrorCode ) ), file,
+				                         line );
 
 				if ( !string.IsNullOrEmpty( msg ) )
 				{
@@ -363,9 +352,9 @@ namespace Axiom.Scripting.Compiler
 		{
 			retVal = null;
 
-			if ( this.OnCompilerEvent != null )
+			if ( OnCompilerEvent != null )
 			{
-				return this.OnCompilerEvent( this, ref evt, out retVal );
+				return OnCompilerEvent( this, ref evt, out retVal );
 			}
 
 			return false;
@@ -697,9 +686,9 @@ namespace Axiom.Scripting.Compiler
 			IList<AbstractNode> retval = null;
 			IList<ConcreteNode> nodes = null;
 
-			if ( this.OnImportFile != null )
+			if ( OnImportFile != null )
 			{
-				this.OnImportFile( this, name );
+				OnImportFile( this, name );
 			}
 
 			if ( nodes != null && ResourceGroupManager.Instance != null )
@@ -824,7 +813,9 @@ namespace Axiom.Scripting.Compiler
 						{
 							var temp = (ObjectAbstractNode)overrides[ j ].Key;
 							// Consider a match a node that has a wildcard and matches an input name
-							var wildcardMatch = nodeHasWildcard && ( ( new Regex( node.Name ) ).IsMatch( temp.Name ) || ( node.Name.Length == 1 && string.IsNullOrEmpty( temp.Name ) ) );
+							var wildcardMatch = nodeHasWildcard &&
+							                    ( ( new Regex( node.Name ) ).IsMatch( temp.Name ) ||
+							                      ( node.Name.Length == 1 && string.IsNullOrEmpty( temp.Name ) ) );
 
 							if ( temp.Cls == node.Cls && !string.IsNullOrEmpty( node.Name ) && ( temp.Name == node.Name || wildcardMatch ) )
 							{
@@ -841,7 +832,8 @@ namespace Axiom.Scripting.Compiler
 										currentNode = (ObjectAbstractNode)dest.Children[ currentIterator ];
 										currentNode.Name = temp.Name; //make the regex match its matcher
 									}
-									overrides[ j ] = new KeyValuePair<AbstractNode, AbstractNode>( overrides[ j ].Key, dest.Children[ currentIterator ] );
+									overrides[ j ] = new KeyValuePair<AbstractNode, AbstractNode>( overrides[ j ].Key,
+									                                                               dest.Children[ currentIterator ] );
 									// Store the max override index for this matched pair
 									overrideIndex = j;
 									overrideIndex = maxOverrideIndex = System.Math.Max( overrideIndex, maxOverrideIndex );

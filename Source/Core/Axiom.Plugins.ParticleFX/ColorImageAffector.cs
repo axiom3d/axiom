@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.ParticleSystems;
 using Axiom.Math;
@@ -58,12 +57,12 @@ namespace Axiom.ParticleFX
 		protected String colorImageName;
 		protected bool colorImageLoaded;
 
-		private const float div_255 = 1.0f / 255.0f;
+		private const float div_255 = 1.0f/255.0f;
 
 		public ColorImageAffector( ParticleSystem psys )
 			: base( psys )
 		{
-			this.type = "ColourImage";
+			type = "ColourImage";
 		}
 
 		public String ColorImageName
@@ -103,13 +102,13 @@ namespace Axiom.ParticleFX
 			// loop through the particles
 			for ( int i = 0; i < system.Particles.Count; i++ )
 			{
-				Particle p = (Particle)system.Particles[ i ];
+				var p = (Particle)system.Particles[ i ];
 
 				// life_time, float_index, index and position are CONST in OGRE, but errors here
 
 				// We do not have the concept of a total time to live!
 				float life_time = p.totalTimeToLive;
-				float particle_time = 1.0f - ( p.timeToLive / life_time );
+				float particle_time = 1.0f - ( p.timeToLive/life_time );
 
 				if ( particle_time > 1.0f )
 				{
@@ -120,9 +119,9 @@ namespace Axiom.ParticleFX
 					particle_time = 0.0f;
 				}
 
-				float float_index = particle_time * width;
-				int index = (int)float_index;
-				int position = index * 4;
+				float float_index = particle_time*width;
+				var index = (int)float_index;
+				int position = index*4;
 
 				if ( index <= 0 )
 				{
@@ -141,10 +140,10 @@ namespace Axiom.ParticleFX
 
 					ColorEx from = colorImage.GetColorAt( index, 0, 0 ), to = colorImage.GetColorAt( index + 1, 0, 0 );
 
-					p.Color.r = ( from.r * fromColor ) + ( to.r * toColor );
-					p.Color.g = ( from.g * fromColor ) + ( to.g * toColor );
-					p.Color.b = ( from.b * fromColor ) + ( to.b * toColor );
-					p.Color.a = ( from.a * fromColor ) + ( to.a * toColor );
+					p.Color.r = ( from.r*fromColor ) + ( to.r*toColor );
+					p.Color.g = ( from.g*fromColor ) + ( to.g*toColor );
+					p.Color.b = ( from.b*fromColor ) + ( to.b*toColor );
+					p.Color.a = ( from.a*fromColor ) + ( to.a*toColor );
 				}
 			}
 		}
@@ -173,13 +172,13 @@ namespace Axiom.ParticleFX
 
 			public string Get( object target )
 			{
-				ColorImageAffector affector = target as ColorImageAffector;
+				var affector = target as ColorImageAffector;
 				return affector.ColorImageName;
 			}
 
 			public void Set( object target, string val )
 			{
-				ColorImageAffector affector = target as ColorImageAffector;
+				var affector = target as ColorImageAffector;
 				affector.ColorImageName = val;
 			}
 

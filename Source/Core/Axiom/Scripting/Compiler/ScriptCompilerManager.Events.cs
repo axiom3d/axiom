@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Scripting.Compiler.AST;
 using Axiom.Graphics;
 
@@ -120,32 +119,23 @@ namespace Axiom.Scripting.Compiler
 
 	public enum CompilerEventType
 	{
-		[ScriptEnum( "preApplyTextureAliases" )]
-		PreApplyTextureAliases,
+		[ScriptEnum( "preApplyTextureAliases" )] PreApplyTextureAliases,
 
-		[ScriptEnum( "processResourceName" )]
-		ProcessResourceName,
+		[ScriptEnum( "processResourceName" )] ProcessResourceName,
 
-		[ScriptEnum( "processNameExclusion" )]
-		ProcessNameExclusion,
+		[ScriptEnum( "processNameExclusion" )] ProcessNameExclusion,
 
-		[ScriptEnum( "createMaterial" )]
-		CreateMaterial,
+		[ScriptEnum( "createMaterial" )] CreateMaterial,
 
-		[ScriptEnum( "createGpuProgram" )]
-		CreateGpuProgram,
+		[ScriptEnum( "createGpuProgram" )] CreateGpuProgram,
 
-		[ScriptEnum( "createHighLevelGpuProgram" )]
-		CreateHighLevelGpuProgram,
+		[ScriptEnum( "createHighLevelGpuProgram" )] CreateHighLevelGpuProgram,
 
-		[ScriptEnum( "createGpuSharedParameters" )]
-		CreateGpuSharedParameters,
+		[ScriptEnum( "createGpuSharedParameters" )] CreateGpuSharedParameters,
 
-		[ScriptEnum( "createParticleSystem" )]
-		CreateParticleSystem,
+		[ScriptEnum( "createParticleSystem" )] CreateParticleSystem,
 
-		[ScriptEnum( "createCompositor" )]
-		CreateCompositor
+		[ScriptEnum( "createCompositor" )] CreateCompositor
 	}
 
 	#region ScriptCompiler Events
@@ -263,7 +253,8 @@ namespace Axiom.Scripting.Compiler
 		public string Syntax;
 		public GpuProgramType ProgramType;
 
-		public CreateGpuProgramScriptCompilerEvent( string file, string name, string resGroup, string source, string syntax, GpuProgramType prgType )
+		public CreateGpuProgramScriptCompilerEvent( string file, string name, string resGroup, string source, string syntax,
+		                                            GpuProgramType prgType )
 			: base( CompilerEventType.CreateGpuProgram )
 		{
 			File = file;
@@ -288,7 +279,8 @@ namespace Axiom.Scripting.Compiler
 		public string Language;
 		public GpuProgramType ProgramType;
 
-		public CreateHighLevelGpuProgramScriptCompilerEvent( string file, string name, string resGroup, string source, string language, GpuProgramType prgType )
+		public CreateHighLevelGpuProgramScriptCompilerEvent( string file, string name, string resGroup, string source,
+		                                                     string language, GpuProgramType prgType )
 			: base( CompilerEventType.CreateHighLevelGpuProgram )
 		{
 			File = file;

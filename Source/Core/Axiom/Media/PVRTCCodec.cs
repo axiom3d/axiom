@@ -35,9 +35,7 @@
 
 using System;
 using System.IO;
-
 using Axiom.Core;
-
 
 #endregion Namespace Declarations
 
@@ -170,7 +168,7 @@ namespace Axiom.Media
 				// Get the file type identifier
 				var pvrTag = header.pvrTag;
 
-				if ( this.PVR_MAGIC != pvrTag )
+				if ( PVR_MAGIC != pvrTag )
 				{
 					throw new AxiomException( "This is not a PVR file!" );
 				}
@@ -210,7 +208,8 @@ namespace Axiom.Media
 				}
 
 				// Calculate total size from number of mipmaps, faces and size
-				imgData.size = Image.CalculateSize( imgData.numMipMaps, numFaces, imgData.width, imgData.height, imgData.depth, imgData.format );
+				imgData.size = Image.CalculateSize( imgData.numMipMaps, numFaces, imgData.width, imgData.height, imgData.depth,
+				                                    imgData.format );
 
 				// Now deal with the data
 				var dest = br.ReadBytes( imgData.size );
@@ -262,7 +261,7 @@ namespace Axiom.Media
 					_flipEndian( data, sizeof ( int ), 1 );
 				}
 
-				if ( this.PVR_MAGIC == fileType )
+				if ( PVR_MAGIC == fileType )
 				{
 					return "pvr";
 				}

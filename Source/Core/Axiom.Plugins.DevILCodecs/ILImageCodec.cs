@@ -35,10 +35,8 @@
 
 using System;
 using System.IO;
-
 using Axiom.Core;
 using Axiom.Media;
-
 using Tao.DevIl;
 
 #endregion Namespace Declarations
@@ -61,8 +59,8 @@ namespace Axiom.Plugins.DevILCodecs
 		/// </summary>
 		protected static bool isInitialized;
 
-		private string _type;
-		private int _ilType;
+		private readonly string _type;
+		private readonly int _ilType;
 
 		#endregion Fields
 
@@ -110,7 +108,7 @@ namespace Axiom.Plugins.DevILCodecs
 			Il.ilGenImages( 1, out imageID );
 			Il.ilBindImage( imageID );
 
-			var buffer = new byte[ input.Length ];
+			var buffer = new byte[input.Length];
 			input.Read( buffer, 0, buffer.Length );
 
 			var imgData = (ImageData)codecData;
@@ -162,7 +160,7 @@ namespace Axiom.Plugins.DevILCodecs
 			Il.ilBindImage( imageID );
 
 			// create a temp buffer and write the stream into it
-			var buffer = new byte[ input.Length ];
+			var buffer = new byte[input.Length];
 			input.Read( buffer, 0, buffer.Length );
 
 			// Put it right side up
@@ -187,7 +185,8 @@ namespace Axiom.Plugins.DevILCodecs
 			var imageType = Il.ilGetInteger( Il.IL_IMAGE_TYPE );
 
 			// Convert image if imageType is incompatible with us (double or long)
-			if ( imageType != Il.IL_BYTE && imageType != Il.IL_UNSIGNED_BYTE && imageType != Il.IL_FLOAT && imageType != Il.IL_UNSIGNED_SHORT && imageType != Il.IL_SHORT )
+			if ( imageType != Il.IL_BYTE && imageType != Il.IL_UNSIGNED_BYTE && imageType != Il.IL_FLOAT &&
+			     imageType != Il.IL_UNSIGNED_SHORT && imageType != Il.IL_SHORT )
 			{
 				Il.ilConvertImage( imageFormat, Il.IL_FLOAT );
 				imageType = Il.IL_FLOAT;
@@ -228,7 +227,8 @@ namespace Axiom.Plugins.DevILCodecs
 
 			// Keep DXT data (if present at all and the GPU supports it)
 			var dxtFormat = Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT );
-			if ( dxtFormat != Il.IL_DXT_NO_COMP && Root.Instance.RenderSystem.Capabilities.HasCapability( Axiom.Graphics.Capabilities.TextureCompressionDXT ) )
+			if ( dxtFormat != Il.IL_DXT_NO_COMP &&
+			     Root.Instance.RenderSystem.Capabilities.HasCapability( Axiom.Graphics.Capabilities.TextureCompressionDXT ) )
 			{
 				imgData.format = ILUtil.Convert( dxtFormat, imageType );
 				imgData.flags |= ImageFlags.Compressed;
@@ -241,13 +241,15 @@ namespace Axiom.Plugins.DevILCodecs
 					if ( (uint)Il.ilGetInteger( Il.IL_DXTC_DATA_FORMAT ) != dxtFormat )
 					{
 						imgData.numMipMaps = 0;
-						LogManager.Instance.Write( "Warning: Custom mipmaps for compressed image were ignored because they are not loaded by this DevIL version." );
+						LogManager.Instance.Write(
+							"Warning: Custom mipmaps for compressed image were ignored because they are not loaded by this DevIL version." );
 					}
 				}
 			}
 
 			// Calculate total size from number of mipmaps, faces and size
-			imgData.size = Image.CalculateSize( imgData.numMipMaps, numFaces, imgData.width, imgData.height, imgData.depth, imgData.format );
+			imgData.size = Image.CalculateSize( imgData.numMipMaps, numFaces, imgData.width, imgData.height, imgData.depth,
+			                                    imgData.format );
 
 			// get the decoded data
 			BufferBase BufferHandle;
@@ -274,7 +276,7 @@ namespace Axiom.Plugins.DevILCodecs
 
 					// Size of this face
 					var imageSize = PixelUtil.GetMemorySize( width, height, depth, imgData.format );
-					buffer = new byte[ imageSize ];
+					buffer = new byte[imageSize];
 
 					if ( ( imgData.flags & ImageFlags.Compressed ) != 0 )
 					{
@@ -290,7 +292,8 @@ namespace Axiom.Plugins.DevILCodecs
 						}
 						else
 						{
-							LogManager.Instance.Write( "Warning: compressed image size mismatch, devilsize={0} oursize={1}", Il.ilGetDXTCData( IntPtr.Zero, 0, dxtFormat ), imageSize );
+							LogManager.Instance.Write( "Warning: compressed image size mismatch, devilsize={0} oursize={1}",
+							                           Il.ilGetDXTCData( IntPtr.Zero, 0, dxtFormat ), imageSize );
 						}
 					}
 					else

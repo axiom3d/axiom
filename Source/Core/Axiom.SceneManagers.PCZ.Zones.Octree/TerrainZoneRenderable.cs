@@ -40,14 +40,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
-
 using System.Collections;
-
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -82,10 +79,10 @@ namespace OctreeZone
 
 
 		/// Parent Zone
-		private TerrainZone mTerrainZone;
+		private readonly TerrainZone mTerrainZone;
 
 		/// Link to shared options
-		private TerrainZoneOptions mOptions;
+		private readonly TerrainZoneOptions mOptions;
 
 		private VertexData mTerrain;
 
@@ -102,13 +99,13 @@ namespace OctreeZone
 		private Real[] mMinLevelDistSqr;
 
 		/// Connection to tiles four neighbours
-		private TerrainZoneRenderable[] mNeighbors;
+		private readonly TerrainZoneRenderable[] mNeighbors;
 
 		/// Whether light list need to re-calculate
 		private bool mLightListDirty;
 
 		/// Cached light list
-		private LightList mLightList = new LightList();
+		private readonly LightList mLightList = new LightList();
 
 		/// The bounding radius of this tile
 		//Real mBoundingRadius;
@@ -129,17 +126,18 @@ namespace OctreeZone
 		private HardwareVertexBuffer mMainBuffer;
 
 		/// Optional set of delta buffers, used to morph from one LOD to the next
-		private AxiomSortedCollection<int, HardwareVertexBuffer> mDeltaBuffers = new AxiomSortedCollection<int, HardwareVertexBuffer>();
+		private AxiomSortedCollection<int, HardwareVertexBuffer> mDeltaBuffers =
+			new AxiomSortedCollection<int, HardwareVertexBuffer>();
 
 		/// System-memory buffer with just positions in it, for CPU operations
 		private float[] mPositionBuffer;
 
 		/// Forced rendering LOD level, optional
-		private int mForcedRenderLevel;
+		private readonly int mForcedRenderLevel;
 
 		/// Array of LOD indexes specifying which LOD is the next one down
 		/// (deals with clustered error metrics which cause LODs to be skipped)
-		private int[] mNextLevelDown = new int[ 10 ];
+		private readonly int[] mNextLevelDown = new int[10];
 
 		private Real boundingRadius;
 
@@ -187,14 +185,14 @@ namespace OctreeZone
 
 		public ushort Index( int x, int z )
 		{
-			return (ushort)( x + z * mOptions.tileSize );
+			return (ushort)( x + z*mOptions.tileSize );
 		}
 
 		/** Returns the  vertex coord for the given coordinates */
 
 		public float Vertex( int x, int z, int n )
 		{
-			return mPositionBuffer[ x * 3 + z * mOptions.tileSize * 3 + n ];
+			return mPositionBuffer[ x*3 + z*mOptions.tileSize*3 + n ];
 		}
 
 		public int NumNeighbors()
@@ -248,7 +246,7 @@ namespace OctreeZone
 			mInit = false;
 			mLightListDirty = true;
 			castShadows = false;
-			mNeighbors = new TerrainZoneRenderable[ 4 ];
+			mNeighbors = new TerrainZoneRenderable[4];
 
 			mOptions = mTerrainZone.Options;
 		}
@@ -272,9 +270,9 @@ namespace OctreeZone
 		}
 
 #if !AXIOM_SAFE_ONLY
-	unsafe
+		public
 #endif
-		public void Initialize(int startx, int startz, Real[] pageHeightData)
+			unsafe void Initialize( int startx, int startz, Real[] pageHeightData )
 		{
 			if ( mOptions.maxGeoMipMapLevel != 0 )
 			{
@@ -294,7 +292,7 @@ namespace OctreeZone
 
 			mTerrain = new VertexData();
 			mTerrain.vertexStart = 0;
-			mTerrain.vertexCount = mOptions.tileSize * mOptions.tileSize;
+			mTerrain.vertexCount = mOptions.tileSize*mOptions.tileSize;
 
 			renderOperation.useIndices = true;
 			renderOperation.operationType = mOptions.useTriStrips ? OperationType.TriangleStrip : OperationType.TriangleList;
@@ -325,10 +323,11 @@ namespace OctreeZone
 			}
 
 			// Create shared vertex buffer
-			mMainBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( MAIN_BINDING ), mTerrain.vertexCount, BufferUsage.StaticWriteOnly );
+			mMainBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( MAIN_BINDING ), mTerrain.vertexCount,
+			                                                                 BufferUsage.StaticWriteOnly );
 			// Create system memory copy with just positions in it, for use in simple reads
 			//mPositionBuffer = OGRE_ALLOC_T(float, mTerrain.vertexCount * 3, MEMCATEGORY_GEOMETRY);
-			mPositionBuffer = new float[ mTerrain.vertexCount * 3 ];
+			mPositionBuffer = new float[mTerrain.vertexCount*3];
 
 			bind.SetBinding( MAIN_BINDING, mMainBuffer );
 
@@ -344,7 +343,7 @@ namespace OctreeZone
 
 			mRenderLevel = 0;
 
-			mMinLevelDistSqr = new Real[ mOptions.maxGeoMipMapLevel ];
+			mMinLevelDistSqr = new Real[mOptions.maxGeoMipMapLevel];
 
 			var endx = startx + mOptions.tileSize;
 
@@ -372,22 +371,22 @@ namespace OctreeZone
 						//texelem0.baseVertexPointerToElement(pBase, &pTex0);
 						//texelem1.baseVertexPointerToElement(pBase, &pTex1);
 
-						var height = pageHeightData[ j * mOptions.pageSize + i ];
-						height = height * mOptions.scale.y; // scale height
+						var height = pageHeightData[ j*mOptions.pageSize + i ];
+						height = height*mOptions.scale.y; // scale height
 
 						//*pSysPos++ = *pPos++ = (float) i*mOptions.scale.x; //x
 						//*pSysPos++ = *pPos++ = height; // y
 						//*pSysPos++ = *pPos++ = (float) j*mOptions.scale.z; //z
 
-						mPositionBuffer[ pos++ ] = pPos[ 0 ] = (float)i * mOptions.scale.x; //x
+						mPositionBuffer[ pos++ ] = pPos[ 0 ] = (float)i*mOptions.scale.x; //x
 						mPositionBuffer[ pos++ ] = pPos[ 1 ] = height; // y
-						mPositionBuffer[ pos++ ] = pPos[ 2 ] = (float)j * mOptions.scale.z; //z
+						mPositionBuffer[ pos++ ] = pPos[ 2 ] = (float)j*mOptions.scale.z; //z
 
-						pTex0[ 0 ] = (float)i / (float)( mOptions.pageSize - 1 );
-						pTex0[ 1 ] = (float)j / (float)( mOptions.pageSize - 1 );
+						pTex0[ 0 ] = (float)i/(float)( mOptions.pageSize - 1 );
+						pTex0[ 1 ] = (float)j/(float)( mOptions.pageSize - 1 );
 
-						pTex1[ 0 ] = ( (float)i / (float)( mOptions.tileSize - 1 ) ) * mOptions.detailTile;
-						pTex1[ 1 ] = ( (float)j / (float)( mOptions.tileSize - 1 ) ) * mOptions.detailTile;
+						pTex1[ 0 ] = ( (float)i/(float)( mOptions.tileSize - 1 ) )*mOptions.detailTile;
+						pTex1[ 1 ] = ( (float)j/(float)( mOptions.tileSize - 1 ) )*mOptions.detailTile;
 
 						if ( height < min )
 						{
@@ -405,10 +404,14 @@ namespace OctreeZone
 
 				mMainBuffer.Unlock();
 				mBounds = new AxisAlignedBox();
-				mBounds.SetExtents( new Vector3( (Real)startx * mOptions.scale.x, min, (Real)startz * mOptions.scale.z ), new Vector3( (Real)( endx - 1 ) * mOptions.scale.x, max, (Real)( endz - 1 ) * mOptions.scale.z ) );
+				mBounds.SetExtents( new Vector3( (Real)startx*mOptions.scale.x, min, (Real)startz*mOptions.scale.z ),
+				                    new Vector3( (Real)( endx - 1 )*mOptions.scale.x, max, (Real)( endz - 1 )*mOptions.scale.z ) );
 
-				mCenter = new Vector3( ( startx * mOptions.scale.x + ( endx - 1 ) * mOptions.scale.x ) / 2, ( min + max ) / 2, ( startz * mOptions.scale.z + ( endz - 1 ) * mOptions.scale.z ) / 2 );
-				boundingRadius = Math.Sqrt( Utility.Sqr( max - min ) + Utility.Sqr( ( endx - 1 - startx ) * mOptions.scale.x ) + Utility.Sqr( ( endz - 1 - startz ) * mOptions.scale.z ) ) / 2;
+				mCenter = new Vector3( ( startx*mOptions.scale.x + ( endx - 1 )*mOptions.scale.x )/2, ( min + max )/2,
+				                       ( startz*mOptions.scale.z + ( endz - 1 )*mOptions.scale.z )/2 );
+				boundingRadius =
+					Math.Sqrt( Utility.Sqr( max - min ) + Utility.Sqr( ( endx - 1 - startx )*mOptions.scale.x ) +
+					           Utility.Sqr( ( endz - 1 - startz )*mOptions.scale.z ) )/2;
 
 				// Create delta buffer list if required to morph
 				if ( mOptions.lodMorph )
@@ -443,9 +446,9 @@ namespace OctreeZone
 
 			var vertRes = mOptions.primaryCamera.Viewport.ActualHeight;
 
-			T = 2 * (Real)mOptions.maxPixelError / (Real)vertRes;
+			T = 2*(Real)mOptions.maxPixelError/(Real)vertRes;
 
-			return A / T;
+			return A/T;
 		}
 
 		public float GetHeightAt( float x, float z )
@@ -514,11 +517,11 @@ namespace OctreeZone
 			}
 
 
-			float x_pct = ( x - start.x ) / ( end.x - start.x );
-			float z_pct = ( z - start.z ) / ( end.z - start.z );
+			float x_pct = ( x - start.x )/( end.x - start.x );
+			float z_pct = ( z - start.z )/( end.z - start.z );
 
-			var x_pt = x_pct * (float)( mOptions.tileSize - 1 );
-			var z_pt = z_pct * (float)( mOptions.tileSize - 1 );
+			var x_pt = x_pct*(float)( mOptions.tileSize - 1 );
+			var z_pt = z_pct*(float)( mOptions.tileSize - 1 );
 
 			var x_index = (int)x_pt;
 			var z_index = (int)z_pt;
@@ -551,7 +554,7 @@ namespace OctreeZone
 			var b1 = Vertex( x_index, z_index + 1, 1 );
 			var b2 = Vertex( x_index + 1, z_index + 1, 1 );
 
-			var midpoint = ( b1 + t2 ) / 2.0f;
+			var midpoint = ( b1 + t2 )/2.0f;
 
 			if ( x_pct + z_pct <= 1 )
 			{
@@ -562,10 +565,10 @@ namespace OctreeZone
 				t1 = midpoint + ( midpoint - b2 );
 			}
 
-			var t = ( t1 * ( 1 - x_pct ) ) + ( t2 * ( x_pct ) );
-			var b = ( b1 * ( 1 - x_pct ) ) + ( b2 * ( x_pct ) );
+			var t = ( t1*( 1 - x_pct ) ) + ( t2*( x_pct ) );
+			var b = ( b1*( 1 - x_pct ) ) + ( b2*( x_pct ) );
 
-			var h = ( t * ( 1 - z_pct ) ) + ( b * ( z_pct ) );
+			var h = ( t*( 1 - z_pct ) ) + ( b*( z_pct ) );
 
 			return h;
 		}
@@ -633,7 +636,8 @@ namespace OctreeZone
 			ray += dir;
 
 
-			while ( !( ( ray.x < box.Minimum.x ) || ( ray.x > box.Maximum.x ) || ( ray.z < box.Minimum.z ) || ( ray.z > box.Maximum.z ) ) )
+			while (
+				!( ( ray.x < box.Minimum.x ) || ( ray.x > box.Maximum.x ) || ( ray.z < box.Minimum.z ) || ( ray.z > box.Maximum.z ) ) )
 			{
 				var h = GetHeightAt( ray.x, ray.z );
 
@@ -744,14 +748,14 @@ namespace OctreeZone
 						var colour = new IntPtr( Root.Instance.ConvertColor( v ) );
 						//Check: Should be a better way...
 						var bufcolour = BufferBase.Wrap( colour );
-						vbuf.WriteData( ( Index( i, j ) * vbuf.VertexSize ) + elem.Offset, sizeof ( int ), bufcolour );
+						vbuf.WriteData( ( Index( i, j )*vbuf.VertexSize ) + elem.Offset, sizeof ( int ), bufcolour );
 					}
 
 					else
 					{
 						var colour = new IntPtr( Root.Instance.ConvertColor( ambient ) );
 						var bufcolour = BufferBase.Wrap( colour );
-						vbuf.WriteData( ( Index( i, j ) * vbuf.VertexSize ) + elem.Offset, sizeof ( int ), bufcolour );
+						vbuf.WriteData( ( Index( i, j )*vbuf.VertexSize ) + elem.Offset, sizeof ( int ), bufcolour );
 					}
 				}
 			}
@@ -806,10 +810,10 @@ namespace OctreeZone
 					var range = mMinLevelDistSqr[ nextLevel ] - mMinLevelDistSqr[ mRenderLevel ];
 					if ( range > 0 )
 					{
-						var percent = ( L - mMinLevelDistSqr[ mRenderLevel ] ) / range;
+						var percent = ( L - mMinLevelDistSqr[ mRenderLevel ] )/range;
 						// scale result so that msLODMorphStart == 0, 1 == 1, clamp to 0 below that
-						var rescale = 1.0f / ( 1.0f - mOptions.lodMorphStart );
-						mLODMorphFactor = Math.Max( ( percent - mOptions.lodMorphStart ) * rescale, 0.0 );
+						var rescale = 1.0f/( 1.0f - mOptions.lodMorphStart );
+						mLODMorphFactor = Math.Max( ( percent - mOptions.lodMorphStart )*rescale, 0.0 );
 					}
 					else
 					{
@@ -897,9 +901,9 @@ namespace OctreeZone
 		}
 
 #if !AXIOM_SAFE_ONLY
-		unsafe
+		public
 #endif
-		public void CalculateNormals()
+			unsafe void CalculateNormals()
 		{
 			var norm = Vector3.Zero;
 
@@ -929,9 +933,9 @@ namespace OctreeZone
 		}
 
 #if !AXIOM_SAFE_ONLY
-		unsafe
+		public
 #endif
-			public void CalculateMinLevelDist2( Real C )
+			unsafe void CalculateMinLevelDist2( Real C )
 		{
 			//level 0 has no delta.
 			mMinLevelDistSqr[ 0 ] = 0;
@@ -981,13 +985,14 @@ namespace OctreeZone
 						var v1 = new Vector3( Vertex( i, j, 0 ), Vertex( i, j, 1 ), Vertex( i, j, 2 ) );
 						var v2 = new Vector3( Vertex( i + step, j, 0 ), Vertex( i + step, j, 1 ), Vertex( i + step, j, 2 ) );
 						var v3 = new Vector3( Vertex( i, j + step, 0 ), Vertex( i, j + step, 1 ), Vertex( i, j + step, 2 ) );
-						var v4 = new Vector3( Vertex( i + step, j + step, 0 ), Vertex( i + step, j + step, 1 ), Vertex( i + step, j + step, 2 ) );
+						var v4 = new Vector3( Vertex( i + step, j + step, 0 ), Vertex( i + step, j + step, 1 ),
+						                      Vertex( i + step, j + step, 2 ) );
 
 						Plane t1, t2;
 						t1 = new Plane();
 						t2 = new Plane();
 						var backwardTri = false;
-						if ( !mOptions.useTriStrips || j % 2 == 0 )
+						if ( !mOptions.useTriStrips || j%2 == 0 )
 						{
 							t1.Redefine( v1, v3, v2 );
 							t2.Redefine( v2, v3, v4 );
@@ -1009,35 +1014,36 @@ namespace OctreeZone
 							{
 								var fulldetailx = i + x;
 								var fulldetailz = j + z;
-								if ( fulldetailx % step == 0 && fulldetailz % step == 0 )
+								if ( fulldetailx%step == 0 && fulldetailz%step == 0 )
 								{
 									// Skip, this one is a vertex at this level
 									continue;
 								}
 
-								var zpct = (Real)z / (Real)step;
-								var xpct = (Real)x / (Real)step;
+								var zpct = (Real)z/(Real)step;
+								var xpct = (Real)x/(Real)step;
 
 								//interpolated height
-								var actualPos = new Vector3( Vertex( fulldetailx, fulldetailz, 0 ), Vertex( fulldetailx, fulldetailz, 1 ), Vertex( fulldetailx, fulldetailz, 2 ) );
+								var actualPos = new Vector3( Vertex( fulldetailx, fulldetailz, 0 ), Vertex( fulldetailx, fulldetailz, 1 ),
+								                             Vertex( fulldetailx, fulldetailz, 2 ) );
 								Real interp_h;
 								// Determine which tri we're on
 								if ( ( xpct + zpct <= 1.0f && !backwardTri ) || ( xpct + ( 1 - zpct ) <= 1.0f && backwardTri ) )
 								{
 									// Solve for x/z
-									interp_h = ( -( t1.Normal.x * actualPos.x ) - t1.Normal.z * actualPos.z - t1.D ) / t1.Normal.y;
+									interp_h = ( -( t1.Normal.x*actualPos.x ) - t1.Normal.z*actualPos.z - t1.D )/t1.Normal.y;
 								}
 								else
 								{
 									// Second tri
-									interp_h = ( -( t2.Normal.x * actualPos.x ) - t2.Normal.z * actualPos.z - t2.D ) / t2.Normal.y;
+									interp_h = ( -( t2.Normal.x*actualPos.x ) - t2.Normal.z*actualPos.z - t2.D )/t2.Normal.y;
 								}
 
 								Real actual_h = Vertex( fulldetailx, fulldetailz, 1 );
 								//Check: not sure about fabs used here...
 								Real delta = Math.Abs( interp_h - actual_h );
 
-								var D2 = delta * delta * C * C;
+								var D2 = delta*delta*C*C;
 
 								if ( mMinLevelDistSqr[ level ] < D2 )
 								{
@@ -1046,10 +1052,11 @@ namespace OctreeZone
 
 								// Should be save height difference?
 								// Don't morph along edges
-								if ( mOptions.lodMorph && fulldetailx != 0 && fulldetailx != ( mOptions.tileSize - 1 ) && fulldetailz != 0 && fulldetailz != ( mOptions.tileSize - 1 ) )
+								if ( mOptions.lodMorph && fulldetailx != 0 && fulldetailx != ( mOptions.tileSize - 1 ) && fulldetailz != 0 &&
+								     fulldetailz != ( mOptions.tileSize - 1 ) )
 								{
 									// Save height difference
-									pDeltas[ (int)( fulldetailx + ( fulldetailz * mOptions.tileSize ) ) ] = interp_h - actual_h;
+									pDeltas[ (int)( fulldetailx + ( fulldetailz*mOptions.tileSize ) ) ] = interp_h - actual_h;
 								}
 							}
 						}
@@ -1112,10 +1119,11 @@ namespace OctreeZone
 			// Delta buffer is a 1D float buffer of height offsets
 			var decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
 			decl.AddElement( 0, 0, VertexElementType.Float1, VertexElementSemantic.Position );
-			var buf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, mOptions.tileSize * mOptions.tileSize, BufferUsage.WriteOnly );
+			var buf = HardwareBufferManager.Instance.CreateVertexBuffer( decl, mOptions.tileSize*mOptions.tileSize,
+			                                                             BufferUsage.WriteOnly );
 			// Fill the buffer with zeros, we will only fill in delta
 			var pVoid = buf.Lock( BufferLocking.Discard );
-			Memory.Set( pVoid, 0, ( mOptions.tileSize * mOptions.tileSize ) * sizeof ( float ) );
+			Memory.Set( pVoid, 0, ( mOptions.tileSize*mOptions.tileSize )*sizeof ( float ) );
 			//memset(pVoid, 0, mOptions.tileSize*mOptions.tileSize*sizeof (float));
 			buf.Unlock();
 
@@ -1155,7 +1163,8 @@ namespace OctreeZone
 			//IndexMap::iterator ii = levelIndex[ mRenderLevel ].find( stitchFlags );
 			IndexData indexData;
 
-			if ( null == levelIndex[ mRenderLevel ] || ( ( (KeyValuePair<uint, IndexData>)levelIndex[ mRenderLevel ] ).Key & stitchFlags ) == 0 )
+			if ( null == levelIndex[ mRenderLevel ] ||
+			     ( ( (KeyValuePair<uint, IndexData>)levelIndex[ mRenderLevel ] ).Key & stitchFlags ) == 0 )
 			{
 				// Create
 				if ( mOptions.useTriStrips )
@@ -1189,13 +1198,14 @@ namespace OctreeZone
 			// Calculate the number of indexes required
 			// This is the number of 'cells' at this detail level x 2
 			// plus 3 degenerates to turn corners
-			var numTrisAcross = ( ( ( mOptions.tileSize - 1 ) / step ) * 2 ) + 3;
+			var numTrisAcross = ( ( ( mOptions.tileSize - 1 )/step )*2 ) + 3;
 			// Num indexes is number of tris + 2
-			var new_length = numTrisAcross * ( ( mOptions.tileSize - 1 ) / step ) + 2;
+			var new_length = numTrisAcross*( ( mOptions.tileSize - 1 )/step ) + 2;
 			//this is the maximum for a level.  It wastes a little, but shouldn't be a problem.
 
 			var indexData = new IndexData();
-			indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, new_length, BufferUsage.StaticWriteOnly ); //, false);
+			indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, new_length,
+			                                                                          BufferUsage.StaticWriteOnly ); //, false);
 
 			mTerrainZone.IndexCache.mCache.Add( indexData );
 #if !AXIOM_SAFE_ONLY
@@ -1213,8 +1223,8 @@ namespace OctreeZone
 					// We just do the |/ here, final | done after
 					for ( i = 0; i < mOptions.tileSize - 1; i += step )
 					{
-						var x = new int[ 4 ];
-						var y = new int[ 4 ];
+						var x = new int[4];
+						var y = new int[4];
 						x[ 0 ] = x[ 1 ] = i;
 						x[ 2 ] = x[ 3 ] = i + step;
 						y[ 0 ] = y[ 2 ] = j;
@@ -1223,13 +1233,13 @@ namespace OctreeZone
 						if ( j == 0 && ( stitchFlags & STITCH_NORTH ) != 0 )
 						{
 							// North reduction means rounding x[0] and x[2]
-							if ( x[ 0 ] % lowstep != 0 )
+							if ( x[ 0 ]%lowstep != 0 )
 							{
 								// Since we know we only drop down one level of LOD,
 								// removing 1 step of higher LOD should return to lower
 								x[ 0 ] -= step;
 							}
-							if ( x[ 2 ] % lowstep != 0 )
+							if ( x[ 2 ]%lowstep != 0 )
 							{
 								x[ 2 ] -= step;
 							}
@@ -1241,11 +1251,11 @@ namespace OctreeZone
 						if ( i == 0 && ( stitchFlags & STITCH_WEST ) != 0 )
 						{
 							// West reduction means rounding y[0] / y[1]
-							if ( y[ 0 ] % lowstep != 0 )
+							if ( y[ 0 ]%lowstep != 0 )
 							{
 								y[ 0 ] -= step;
 							}
-							if ( y[ 1 ] % lowstep != 0 )
+							if ( y[ 1 ]%lowstep != 0 )
 							{
 								y[ 1 ] -= step;
 							}
@@ -1253,11 +1263,11 @@ namespace OctreeZone
 						if ( i == ( mOptions.tileSize - 1 - step ) && ( stitchFlags & STITCH_EAST ) != 0 )
 						{
 							// East tiling means rounding y[2] & y[3]
-							if ( y[ 2 ] % lowstep != 0 )
+							if ( y[ 2 ]%lowstep != 0 )
 							{
 								y[ 2 ] -= step;
 							}
-							if ( y[ 3 ] % lowstep != 0 )
+							if ( y[ 3 ]%lowstep != 0 )
 							{
 								y[ 3 ] -= step;
 							}
@@ -1295,8 +1305,8 @@ namespace OctreeZone
 					// Backward strip
 					for ( i = mOptions.tileSize - 1; i > 0; i -= step )
 					{
-						var x = new int[ 4 ];
-						var y = new int[ 4 ];
+						var x = new int[4];
+						var y = new int[4];
 						x[ 0 ] = x[ 1 ] = i;
 						x[ 2 ] = x[ 3 ] = i - step;
 						y[ 0 ] = y[ 2 ] = j;
@@ -1307,11 +1317,11 @@ namespace OctreeZone
 						if ( j == ( mOptions.tileSize - 1 - step ) && ( stitchFlags & STITCH_SOUTH ) != 0 )
 						{
 							// South reduction means rounding x[1] / x[3]
-							if ( x[ 1 ] % lowstep != 0 )
+							if ( x[ 1 ]%lowstep != 0 )
 							{
 								x[ 1 ] -= step;
 							}
-							if ( x[ 3 ] % lowstep != 0 )
+							if ( x[ 3 ]%lowstep != 0 )
 							{
 								x[ 3 ] -= step;
 							}
@@ -1320,11 +1330,11 @@ namespace OctreeZone
 						if ( i == step && ( stitchFlags & STITCH_WEST ) != 0 )
 						{
 							// West tiling on backward strip is rounding of y[2] / y[3]
-							if ( y[ 2 ] % lowstep != 0 )
+							if ( y[ 2 ]%lowstep != 0 )
 							{
 								y[ 2 ] -= step;
 							}
-							if ( y[ 3 ] % lowstep != 0 )
+							if ( y[ 3 ]%lowstep != 0 )
 							{
 								y[ 3 ] -= step;
 							}
@@ -1332,11 +1342,11 @@ namespace OctreeZone
 						if ( i == mOptions.tileSize - 1 && ( stitchFlags & STITCH_EAST ) != 0 )
 						{
 							// East tiling means rounding y[0] and y[1] on backward strip
-							if ( y[ 0 ] % lowstep != 0 )
+							if ( y[ 0 ]%lowstep != 0 )
 							{
 								y[ 0 ] -= step;
 							}
-							if ( y[ 1 ] % lowstep != 0 )
+							if ( y[ 1 ]%lowstep != 0 )
 							{
 								y[ 1 ] -= step;
 							}
@@ -1379,9 +1389,9 @@ namespace OctreeZone
 		}
 
 #if !AXIOM_SAFE_ONLY
-		unsafe
+		public
 #endif
-			public IndexData GenerateTriListIndexes( uint stitchFlags )
+			unsafe IndexData GenerateTriListIndexes( uint stitchFlags )
 		{
 			var numIndexes = 0;
 			var step = 1 << mRenderLevel;
@@ -1393,11 +1403,12 @@ namespace OctreeZone
 			var east = ( stitchFlags & STITCH_EAST ) != 0 ? step : 0;
 			var west = ( stitchFlags & STITCH_WEST ) != 0 ? step : 0;
 
-			var new_length = ( mOptions.tileSize / step ) * ( mOptions.tileSize / step ) * 2 * 2 * 2;
+			var new_length = ( mOptions.tileSize/step )*( mOptions.tileSize/step )*2*2*2;
 			//this is the maximum for a level.  It wastes a little, but shouldn't be a problem.
 
 			indexData = new IndexData();
-			indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, new_length, BufferUsage.StaticWriteOnly ); //, false);
+			indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, new_length,
+			                                                                          BufferUsage.StaticWriteOnly ); //, false);
 
 			mTerrainZone.IndexCache.mCache.Add( indexData );
 
@@ -1427,27 +1438,31 @@ namespace OctreeZone
 				}
 			}
 
-			ppIdx.Ptr += idx * sizeof ( ushort );
+			ppIdx.Ptr += idx*sizeof ( ushort );
 
 			// North stitching
 			if ( north > 0 )
 			{
-				numIndexes += StitchEdge( Neighbor.NORTH, mRenderLevel, mNeighbors[ (int)Neighbor.NORTH ].mRenderLevel, west > 0, east > 0, ppIdx );
+				numIndexes += StitchEdge( Neighbor.NORTH, mRenderLevel, mNeighbors[ (int)Neighbor.NORTH ].mRenderLevel, west > 0,
+				                          east > 0, ppIdx );
 			}
 			// East stitching
 			if ( east > 0 )
 			{
-				numIndexes += StitchEdge( Neighbor.EAST, mRenderLevel, mNeighbors[ (int)Neighbor.EAST ].mRenderLevel, north > 0, south > 0, ppIdx );
+				numIndexes += StitchEdge( Neighbor.EAST, mRenderLevel, mNeighbors[ (int)Neighbor.EAST ].mRenderLevel, north > 0,
+				                          south > 0, ppIdx );
 			}
 			// South stitching
 			if ( south > 0 )
 			{
-				numIndexes += StitchEdge( Neighbor.SOUTH, mRenderLevel, mNeighbors[ (int)Neighbor.SOUTH ].mRenderLevel, east > 0, west > 0, ppIdx );
+				numIndexes += StitchEdge( Neighbor.SOUTH, mRenderLevel, mNeighbors[ (int)Neighbor.SOUTH ].mRenderLevel, east > 0,
+				                          west > 0, ppIdx );
 			}
 			// West stitching
 			if ( west > 0 )
 			{
-				numIndexes += StitchEdge( Neighbor.WEST, mRenderLevel, mNeighbors[ (int)Neighbor.WEST ].mRenderLevel, south > 0, north > 0, ppIdx );
+				numIndexes += StitchEdge( Neighbor.WEST, mRenderLevel, mNeighbors[ (int)Neighbor.WEST ].mRenderLevel, south > 0,
+				                          north > 0, ppIdx );
 			}
 
 
@@ -1475,7 +1490,8 @@ namespace OctreeZone
 		/// </remarks>
 		/// <param name="constantEntry">The auto constant entry referring to the parameter being updated.</param>
 		/// <param name="param">The parameters object which this method should call to set the updated parameters.</param>
-		public new void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constantEntry, GpuProgramParameters param )
+		public new void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry constantEntry,
+		                                          GpuProgramParameters param )
 		{
 			if ( constantEntry.Data == MORPH_CUSTOM_PARAM_ID )
 			{
@@ -1490,9 +1506,9 @@ namespace OctreeZone
 		}
 
 #if !AXIOM_SAFE_ONLY
-		unsafe
+		public
 #endif
-			public int StitchEdge( Neighbor neighbor, int hiLOD, int loLOD, bool omitFirstTri, bool omitLastTri, BufferBase ppIdx )
+			unsafe int StitchEdge( Neighbor neighbor, int hiLOD, int loLOD, bool omitFirstTri, bool omitLastTri, BufferBase ppIdx )
 		{
 			Debug.Assert( loLOD > hiLOD, "TerrainZoneRenderable.StitchEdge" );
 			/*
@@ -1658,7 +1674,7 @@ namespace OctreeZone
 				}
 			}
 
-			ppIdx.Ptr += idx * sizeof ( ushort );
+			ppIdx.Ptr += idx*sizeof ( ushort );
 
 			return numIndexes;
 		}
@@ -1693,7 +1709,7 @@ namespace OctreeZone
 			{
 				if ( mLightListDirty )
 				{
-					ParentSceneNode.Creator.PopulateLightList( mCenter, this.BoundingRadius, mLightList );
+					ParentSceneNode.Creator.PopulateLightList( mCenter, BoundingRadius, mLightList );
 					mLightListDirty = false;
 				}
 				return mLightList;

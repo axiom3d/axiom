@@ -43,7 +43,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -306,7 +305,7 @@ namespace Axiom.Graphics
 
 		public CompositorChain( Viewport vp )
 		{
-			this.viewport = vp;
+			viewport = vp;
 			originalScene = null;
 			instances = new List<CompositorInstance>();
 			dirty = true;
@@ -320,10 +319,10 @@ namespace Axiom.Graphics
 			listener = new RQListener();
 			Debug.Assert( viewport != null );
 
-			viewport.Target.BeforeUpdate += this.BeforeRenderTargetUpdate;
-			viewport.Target.AfterUpdate += this.AfterRenderTargetUpdate;
-			viewport.Target.BeforeViewportUpdate += this.BeforeViewportUpdate;
-			viewport.Target.AfterViewportUpdate += this.AfterViewportUpdate;
+			viewport.Target.BeforeUpdate += BeforeRenderTargetUpdate;
+			viewport.Target.AfterUpdate += AfterRenderTargetUpdate;
+			viewport.Target.BeforeViewportUpdate += BeforeViewportUpdate;
+			viewport.Target.AfterViewportUpdate += AfterViewportUpdate;
 		}
 
 		#endregion Constructor
@@ -337,7 +336,7 @@ namespace Axiom.Graphics
 		{
 			originalSceneMaterial = viewport.MaterialScheme;
 			string compName = "Axiom/Scene/" + originalSceneMaterial;
-			Compositor scene = (Compositor)CompositorManager.Instance.GetByName( compName );
+			var scene = (Compositor)CompositorManager.Instance.GetByName( compName );
 			if ( scene == null )
 			{
 				scene = (Compositor)CompositorManager.Instance.Create( compName, ResourceGroupManager.InternalResourceGroupName );
@@ -449,7 +448,7 @@ namespace Axiom.Graphics
 			{
 				LogManager.Instance.DefaultLog.Write( "CompositorChain: Compositor " + filter.Name + " has no supported techniques." );
 			}
-			CompositorInstance t = new CompositorInstance( tech, this );
+			var t = new CompositorInstance( tech, this );
 
 			if ( addPosition == lastCompositor )
 			{
@@ -720,7 +719,9 @@ namespace Axiom.Graphics
 			// set original scene details from viewport
 			var pass = originalScene.Technique.OutputTarget.Passes[ 0 ];
 			var passParent = pass.Parent;
-			if ( pass.ClearBuffers != viewport.ClearBuffers || pass.ClearColor != viewport.BackgroundColor || passParent.VisibilityMask != viewport.VisibilityMask || passParent.MaterialScheme != viewport.MaterialScheme || passParent.ShadowsEnabled != viewport.ShowShadows )
+			if ( pass.ClearBuffers != viewport.ClearBuffers || pass.ClearColor != viewport.BackgroundColor ||
+			     passParent.VisibilityMask != viewport.VisibilityMask || passParent.MaterialScheme != viewport.MaterialScheme ||
+			     passParent.ShadowsEnabled != viewport.ShowShadows )
 			{
 				pass.ClearBuffers = viewport.ClearBuffers;
 				pass.ClearColor = viewport.BackgroundColor;
@@ -761,7 +762,7 @@ namespace Axiom.Graphics
 				sm.FindVisibleObjectsBool = op.FindVisibleObjects;
 				// Set LOD bias level
 				oldLodBias = cam.LodBias;
-				cam.LodBias = cam.LodBias * op.LodBias;
+				cam.LodBias = cam.LodBias*op.LodBias;
 			}
 
 
@@ -907,7 +908,7 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

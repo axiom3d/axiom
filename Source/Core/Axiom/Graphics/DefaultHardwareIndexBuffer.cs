@@ -41,9 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-
 using Axiom.Core;
-
 
 #endregion Namespace Declarations
 
@@ -56,13 +54,14 @@ namespace Axiom.Graphics
 		public DefaultHardwareIndexBuffer( IndexType idxType, int numIndexes, BufferUsage usage )
 			: base( null, idxType, numIndexes, usage, true, false )
 		{
-			_mpData = new byte[ sizeInBytes ];
+			_mpData = new byte[sizeInBytes];
 		}
 
-		public DefaultHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType idxType, int numIndexes, BufferUsage usage )
+		public DefaultHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType idxType, int numIndexes,
+		                                   BufferUsage usage )
 			: base( manager, idxType, numIndexes, usage, true, false )
 		{
-			_mpData = new byte[ sizeInBytes ];
+			_mpData = new byte[sizeInBytes];
 		}
 
 		public override void ReadData( int offset, int length, BufferBase dest )

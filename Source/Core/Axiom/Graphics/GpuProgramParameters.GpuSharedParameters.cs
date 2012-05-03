@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -74,22 +73,19 @@ namespace Axiom.Graphics
 		{
 			#region NamedConstants
 
-			[OgreVersion( 1, 7, 2790 )]
-			protected GpuNamedConstants NamedConstants = new GpuNamedConstants();
+			[OgreVersion( 1, 7, 2790 )] protected GpuNamedConstants NamedConstants = new GpuNamedConstants();
 
 			#endregion
 
 			#region FloatConstants
 
-			[OgreVersion( 1, 7, 2790 )]
-			protected internal FloatConstantList FloatConstants = new FloatConstantList();
+			[OgreVersion( 1, 7, 2790 )] protected internal FloatConstantList FloatConstants = new FloatConstantList();
 
 			#endregion
 
 			#region IntConstants
 
-			[OgreVersion( 1, 7, 2790 )]
-			protected internal IntConstantList IntConstants = new IntConstantList();
+			[OgreVersion( 1, 7, 2790 )] protected internal IntConstantList IntConstants = new IntConstantList();
 
 			#endregion
 
@@ -201,21 +197,25 @@ namespace Axiom.Graphics
 
 				var def = new GpuConstantDefinition
 				          {
-				          	ArraySize = arrraySize, ConstantType = constType, // for compatibility we do not pad values to multiples of 4
+				          	ArraySize = arrraySize,
+				          	ConstantType = constType,
+				          	// for compatibility we do not pad values to multiples of 4
 				          	// when it comes to arrays, user is responsible for creating matching defs
-				          	ElementSize = GpuConstantDefinition.GetElementSize( constType, false ), // not used
-				          	LogicalIndex = 0, Variability = GpuParamVariability.Global
+				          	ElementSize = GpuConstantDefinition.GetElementSize( constType, false ),
+				          	// not used
+				          	LogicalIndex = 0,
+				          	Variability = GpuParamVariability.Global
 				          };
 
 				if ( def.IsFloat )
 				{
 					def.PhysicalIndex = FloatConstants.Count;
-					FloatConstants.Resize( FloatConstants.Count + def.ArraySize * def.ElementSize );
+					FloatConstants.Resize( FloatConstants.Count + def.ArraySize*def.ElementSize );
 				}
 				else
 				{
 					def.PhysicalIndex = IntConstants.Count;
-					IntConstants.Resize( IntConstants.Count + def.ArraySize * def.ElementSize );
+					IntConstants.Resize( IntConstants.Count + def.ArraySize*def.ElementSize );
 				}
 				NamedConstants.Map.Add( name, def );
 
@@ -239,7 +239,7 @@ namespace Axiom.Graphics
 				}
 
 				var isFloat = def.IsFloat;
-				var numElems = def.ElementSize * def.ArraySize;
+				var numElems = def.ElementSize*def.ArraySize;
 
 				foreach ( var otherDef in NamedConstants.Map.Values )
 				{
@@ -339,7 +339,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public void SetNamedConstant( string name, Matrix4 value )
 			{
-				var floats = new float[ 16 ];
+				var floats = new float[16];
 				value.MakeFloatArray( floats );
 				SetNamedConstant( name, floats );
 			}
@@ -347,11 +347,11 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public void SetNamedConstant( string name, Matrix4[] value )
 			{
-				var size = value.Length * 16;
-				var floats = new float[ size ];
+				var size = value.Length*16;
+				var floats = new float[size];
 				for ( var i = 0; i < value.Length; i++ )
 				{
-					value[ i ].MakeFloatArray( floats, i * 16 );
+					value[ i ].MakeFloatArray( floats, i*16 );
 				}
 				SetNamedConstant( name, floats );
 			}
@@ -362,7 +362,7 @@ namespace Axiom.Graphics
 				GpuConstantDefinition def;
 				if ( NamedConstants.Map.TryGetValue( name, out def ) )
 				{
-					var count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
+					var count = Utility.Min( value.Length, def.ElementSize*def.ArraySize );
 
 					for ( var v = 0; v < count; v++ )
 					{
@@ -379,7 +379,7 @@ namespace Axiom.Graphics
 				GpuConstantDefinition def;
 				if ( NamedConstants.Map.TryGetValue( name, out def ) )
 				{
-					var count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
+					var count = Utility.Min( value.Length, def.ElementSize*def.ArraySize );
 
 					for ( var v = 0; v < count; v++ )
 					{
@@ -393,7 +393,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public void SetNamedConstant( string name, ColorEx value )
 			{
-				var floats = new float[ 4 ];
+				var floats = new float[4];
 				value.ToArrayRGBA( floats );
 				SetNamedConstant( name, floats );
 			}
@@ -404,7 +404,7 @@ namespace Axiom.Graphics
 				GpuConstantDefinition def;
 				if ( NamedConstants.Map.TryGetValue( name, out def ) )
 				{
-					var count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
+					var count = Utility.Min( value.Length, def.ElementSize*def.ArraySize );
 
 					for ( var v = 0; v < count; v++ )
 					{

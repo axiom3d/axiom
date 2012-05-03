@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -46,9 +45,13 @@ using Axiom.Math;
 
 namespace OctreeZone
 {
-	public class TerrainZoneRow : List<TerrainZoneRenderable> {}
+	public class TerrainZoneRow : List<TerrainZoneRenderable>
+	{
+	}
 
-	public class TerrainZone2D : List<TerrainZoneRow> {}
+	public class TerrainZone2D : List<TerrainZoneRow>
+	{
+	}
 
 	public class TerrainZonePage
 	{
@@ -56,7 +59,7 @@ namespace OctreeZone
 		protected internal TerrainZone2D tiles = new TerrainZone2D();
 
 		/// The number of tiles across a page
-		private ushort tilesPerPage;
+		private readonly ushort tilesPerPage;
 
 		/// The scene node to which all the tiles for this page are attached
 		protected SceneNode pageSceneNode;

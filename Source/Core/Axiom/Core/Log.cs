@@ -87,10 +87,10 @@ namespace Axiom.Core
 		public LogListenerEventArgs( string message, LogMessageLevel lml, bool maskDebug, string logName )
 			: base()
 		{
-			this.Message = message;
-			this.Level = lml;
-			this.MaskDebug = maskDebug;
-			this.LogName = logName;
+			Message = message;
+			Level = lml;
+			MaskDebug = maskDebug;
+			LogName = logName;
 		}
 	}
 
@@ -112,12 +112,12 @@ namespace Axiom.Core
 		/// <summary>
 		///     File stream used for kepping the log file open.
 		/// </summary>
-		private FileStream log;
+		private readonly FileStream log;
 
 		/// <summary>
 		///     Writer used for writing to the log file.
 		/// </summary>
-		private StreamWriter writer;
+		private readonly StreamWriter writer;
 
 		/// <summary>
 		///     Level of detail for this log.
@@ -127,14 +127,14 @@ namespace Axiom.Core
 		/// <summary>
 		///     Debug output enabled?
 		/// </summary>
-		private bool debugOutput;
+		private readonly bool debugOutput;
 
 		/// <summary>
 		///     LogMessageLevel + LoggingLevel > LOG_THRESHOLD = message logged.
 		/// </summary>
 		private const int LogThreshold = 4;
 
-		private string mLogName;
+		private readonly string mLogName;
 
 		#endregion Fields
 
@@ -147,7 +147,9 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="fileName">Name of the log file to open.</param>
 		public Log( string fileName )
-			: this( fileName, true ) {}
+			: this( fileName, true )
+		{
+		}
 
 		/// <summary>
 		///     Constructor.
@@ -157,8 +159,8 @@ namespace Axiom.Core
 		public Log( string fileName, bool debugOutput )
 			: base()
 		{
-			this.mLogName = fileName;
-			this.MessageLogged = null;
+			mLogName = fileName;
+			MessageLogged = null;
 
 			this.debugOutput = debugOutput;
 			logLevel = LoggingLevel.Normal;
@@ -182,7 +184,9 @@ namespace Axiom.Core
 					writer.AutoFlush = true; //always flush after write
 #endif
 				}
-				catch {}
+				catch
+				{
+				}
 			}
 		}
 
@@ -255,7 +259,7 @@ namespace Axiom.Core
 		/// </param>
 		public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
 		{
-			if ( this.IsDisposed )
+			if ( IsDisposed )
 			{
 				return;
 			}
@@ -303,10 +307,10 @@ namespace Axiom.Core
 		private void FireMessageLogged( LogMessageLevel level, bool maskDebug, string message )
 		{
 			// Now fire the MessageLogged event
-			if ( this.MessageLogged != null )
+			if ( MessageLogged != null )
 			{
-				var args = new LogListenerEventArgs( message, level, maskDebug, this.mLogName );
-				this.MessageLogged( this, args );
+				var args = new LogListenerEventArgs( message, level, maskDebug, mLogName );
+				MessageLogged( this, args );
 			}
 		}
 
@@ -316,7 +320,7 @@ namespace Axiom.Core
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -338,7 +342,9 @@ namespace Axiom.Core
 					file.Dispose();
 #endif
 					}
-					catch {}
+					catch
+					{
+					}
 				}
 
 				// There are no unmanaged resources to release, but

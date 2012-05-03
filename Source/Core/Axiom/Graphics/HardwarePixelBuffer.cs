@@ -40,9 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-
 using Axiom.Core;
-
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -163,7 +161,8 @@ namespace Axiom.Graphics
 		/// Should be called by HardwareBufferManager
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
-		public HardwarePixelBuffer( int width, int height, int depth, Axiom.Media.PixelFormat format, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+		public HardwarePixelBuffer( int width, int height, int depth, Axiom.Media.PixelFormat format, BufferUsage usage,
+		                            bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
 			this.width = width;
@@ -172,8 +171,8 @@ namespace Axiom.Graphics
 			this.format = format;
 			// Default
 			rowPitch = width;
-			slicePitch = height * width;
-			sizeInBytes = height * width * PixelUtil.GetNumElemBytes( format );
+			slicePitch = height*width;
+			sizeInBytes = height*width*PixelUtil.GetNumElemBytes( format );
 		}
 
 		#endregion Constructors
@@ -294,7 +293,8 @@ namespace Axiom.Graphics
 			var srclock = src.Lock( srcBox, BufferLocking.ReadOnly );
 
 			var method = BufferLocking.Normal;
-			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 && dstBox.Right == width && dstBox.Bottom == height && dstBox.Back == depth )
+			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 && dstBox.Right == width && dstBox.Bottom == height &&
+			     dstBox.Back == depth )
 			{
 				// Entire buffer -- we can discard the previous contents
 				method = BufferLocking.Discard;
@@ -385,7 +385,7 @@ namespace Axiom.Graphics
 		/// <see cref="HardwarePixelBuffer.GetRenderTarget(int)"/>
 		public RenderTexture GetRenderTarget()
 		{
-			return this.GetRenderTarget( 0 );
+			return GetRenderTarget( 0 );
 		}
 #endif
 

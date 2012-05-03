@@ -40,9 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.IO;
-
 using Axiom.Core;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -77,17 +75,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Whether the high-level program (and it's parameter defs) is loaded.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool highLevelLoaded;
+		[OgreVersion( 1, 7, 2790 )] protected bool highLevelLoaded;
 
 		/// <summary>
 		///    The underlying assembler program.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected GpuProgram assemblerProgram;
+		[OgreVersion( 1, 7, 2790 )] protected GpuProgram assemblerProgram;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool constantDefsBuilt;
+		[OgreVersion( 1, 7, 2790 )] protected bool constantDefsBuilt;
 
 		#region BindingDelegate Property
 
@@ -110,8 +105,11 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Default constructor.
 		/// </summary>
-		protected HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader ) {}
+		protected HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                               IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
+		{
+		}
 
 		#endregion Construction and Destruction
 
@@ -149,7 +147,8 @@ namespace Axiom.Graphics
 			catch ( Exception e )
 			{
 				// will already have been logged
-				LogManager.Instance.Write( "High-level program {0} encountered an error during loading and is thus not supported.\n{1}", _name, e.Message );
+				LogManager.Instance.Write(
+					"High-level program {0} encountered an error during loading and is thus not supported.\n{1}", _name, e.Message );
 				compileError = true;
 			}
 		}
@@ -412,7 +411,8 @@ namespace Axiom.Graphics
 		/// <returns>
 		///    A newly created instance of HighLevelGpuProgram.
 		/// </returns>
-		public abstract HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader );
+		public abstract HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle,
+		                                                    string group, bool isManual, IManualResourceLoader loader );
 
 		#endregion Methods
 

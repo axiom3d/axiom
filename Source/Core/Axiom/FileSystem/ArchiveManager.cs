@@ -41,7 +41,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Collections.Generic;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -62,9 +61,9 @@ namespace Axiom.FileSystem
 		/// <summary>
 		/// The list of factories
 		/// </summary>
-		private Dictionary<string, ArchiveFactory> _factories = new Dictionary<string, ArchiveFactory>();
+		private readonly Dictionary<string, ArchiveFactory> _factories = new Dictionary<string, ArchiveFactory>();
 
-		private Dictionary<string, Archive> _archives = new Dictionary<string, Archive>();
+		private readonly Dictionary<string, Archive> _archives = new Dictionary<string, Archive>();
 
 		#endregion
 
@@ -73,7 +72,9 @@ namespace Axiom.FileSystem
 		/// <summary>
 		/// Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
-		public ArchiveManager() {}
+		public ArchiveManager()
+		{
+		}
 
 		#endregion Constructor
 

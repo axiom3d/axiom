@@ -158,12 +158,12 @@ namespace Axiom.Controllers
 			{
 				// Fixed frame time
 				frameTime = frameDelay;
-				timeFactor = frameDelay / e.TimeSinceLastFrame;
+				timeFactor = frameDelay/e.TimeSinceLastFrame;
 			}
 			else
 			{
 				// Save the time value after applying time factor
-				frameTime = timeFactor * e.TimeSinceLastFrame;
+				frameTime = timeFactor*e.TimeSinceLastFrame;
 			}
 			// Accumulate the elapsed time
 			elapsedTime += frameTime;

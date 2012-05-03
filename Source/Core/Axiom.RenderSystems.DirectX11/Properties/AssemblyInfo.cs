@@ -48,4 +48,6 @@ using System.Reflection;
 //
 
 [assembly: AssemblyTitle( "Axiom DirectX9 Rendering Subsystem" )]
-[assembly: AssemblyDescription( "Rendering system implementation which implements the 3D graphics API abstraction layer using DirectX9." )]
+[assembly:
+	AssemblyDescription(
+		"Rendering system implementation which implements the 3D graphics API abstraction layer using DirectX9." )]

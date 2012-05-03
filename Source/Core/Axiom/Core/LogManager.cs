@@ -41,7 +41,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -58,7 +57,7 @@ namespace Axiom.Core
 		/// <summary>
 		///     List of logs created by the log manager.
 		/// </summary>
-		private AxiomCollection<Log> logList = new AxiomCollection<Log>();
+		private readonly AxiomCollection<Log> logList = new AxiomCollection<Log>();
 
 		/// <summary>
 		///     The default log to which output is done.

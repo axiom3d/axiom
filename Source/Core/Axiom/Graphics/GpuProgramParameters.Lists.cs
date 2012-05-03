@@ -4,7 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
 using Axiom.Core;
 using Axiom.Utilities;
 
@@ -83,12 +82,12 @@ namespace Axiom.Graphics
 			public OffsetArray()
 				: base()
 			{
-				Data = new T[ 16 ];
+				Data = new T[16];
 			}
 
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !this.IsDisposed && disposeManagedResources )
+				if ( !IsDisposed && disposeManagedResources )
 				{
 					_ptr.SafeDispose();
 				}
@@ -99,7 +98,7 @@ namespace Axiom.Graphics
 			public FixedPointer Fix( int offset )
 			{
 				_ptr.Owner = Data;
-				_ptr.Pointer = Memory.PinObject( _ptr.Owner ).Offset( _size * offset );
+				_ptr.Pointer = Memory.PinObject( _ptr.Owner ).Offset( _size*offset );
 				return _ptr;
 			}
 
@@ -209,7 +208,9 @@ namespace Axiom.Graphics
 		public class FloatConstantList : OffsetArray<float>
 		{
 			public FloatConstantList()
-				: base() {}
+				: base()
+			{
+			}
 
 			public FloatConstantList( FloatConstantList other )
 			{
@@ -229,7 +230,9 @@ namespace Axiom.Graphics
 		public class IntConstantList : OffsetArray<int>
 		{
 			public IntConstantList()
-				: base() {}
+				: base()
+			{
+			}
 
 			public IntConstantList( IntConstantList other )
 			{

@@ -37,7 +37,6 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Collections;
 
@@ -55,7 +54,9 @@ namespace Axiom.Collections
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2"/> class that is empty, has the default initial capacity, and uses the default <see cref="T:System.Collections.Generic.IComparer`1"/>.
 		/// </summary>
-		public ViewportCollection() {}
+		public ViewportCollection()
+		{
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2"/> class that is empty, has the specified initial capacity, and uses the default <see cref="T:System.Collections.Generic.IComparer`1"/>.
@@ -65,7 +66,9 @@ namespace Axiom.Collections
 		/// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is less than zero.
 		/// </exception>
 		public ViewportCollection( int capacity )
-			: base( capacity ) {}
+			: base( capacity )
+		{
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2"/> class that is empty, has the default initial capacity, and uses the specified <see cref="T:System.Collections.Generic.IComparer`1"/>.
@@ -75,7 +78,9 @@ namespace Axiom.Collections
 		/// null to use the default <see cref="T:System.Collections.Generic.Comparer`1"/> for the type of the key.
 		/// </param>
 		public ViewportCollection( IComparer<int> comparer )
-			: base( comparer ) {}
+			: base( comparer )
+		{
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2"/> class that is empty, has the specified initial capacity, and uses the specified <see cref="T:System.Collections.Generic.IComparer`1"/>.
@@ -89,7 +94,9 @@ namespace Axiom.Collections
 		/// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is less than zero.
 		/// </exception>
 		public ViewportCollection( int capacity, IComparer<int> comparer )
-			: base( capacity, comparer ) {}
+			: base( capacity, comparer )
+		{
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2"/> class that contains elements copied from the specified <see cref="T:System.Collections.Generic.IDictionary`2"/>, has sufficient capacity to accommodate the number of elements copied, and uses the default <see cref="T:System.Collections.Generic.IComparer`1"/>.
@@ -101,7 +108,9 @@ namespace Axiom.Collections
 		/// <exception cref="T:System.ArgumentException"><paramref name="dictionary"/> contains one or more duplicate keys.
 		/// </exception>
 		public ViewportCollection( IDictionary<int, Viewport> dictionary )
-			: base( dictionary ) {}
+			: base( dictionary )
+		{
+		}
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2"/> class that contains elements copied from the specified <see cref="T:System.Collections.Generic.IDictionary`2"/>, has sufficient capacity to accommodate the number of elements copied, and uses the specified <see cref="T:System.Collections.Generic.IComparer`1"/>.
@@ -116,7 +125,9 @@ namespace Axiom.Collections
 		/// <exception cref="T:System.ArgumentException"><paramref name="dictionary"/> contains one or more duplicate keys.
 		/// </exception>
 		public ViewportCollection( IDictionary<int, Viewport> dictionary, IComparer<int> comparer )
-			: base( dictionary, comparer ) {}
+			: base( dictionary, comparer )
+		{
+		}
 
 		#endregion
 

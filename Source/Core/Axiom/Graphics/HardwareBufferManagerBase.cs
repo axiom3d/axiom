@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-
 using Axiom.Core;
 using Axiom.Utilities;
 
@@ -75,12 +74,14 @@ namespace Axiom.Graphics
 		/// <summary>
 		///		Map from original buffer to list of temporary buffers.
 		/// </summary>
-		protected Dictionary<HardwareVertexBuffer, HardwareVertexBuffer> freeTempVertexBufferMap = new Dictionary<HardwareVertexBuffer, HardwareVertexBuffer>();
+		protected Dictionary<HardwareVertexBuffer, HardwareVertexBuffer> freeTempVertexBufferMap =
+			new Dictionary<HardwareVertexBuffer, HardwareVertexBuffer>();
 
 		/// <summary>
 		///		List of currently licensed temp buffers.
 		/// </summary>
-		protected Dictionary<HardwareVertexBuffer, VertexBufferLicense> tempVertexBufferLicenses = new Dictionary<HardwareVertexBuffer, VertexBufferLicense>();
+		protected Dictionary<HardwareVertexBuffer, VertexBufferLicense> tempVertexBufferLicenses =
+			new Dictionary<HardwareVertexBuffer, VertexBufferLicense>();
 
 		/// <summary>
 		///		Number of frames elapsed since temporary buffers utilization was above half the available
@@ -274,7 +275,8 @@ namespace Axiom.Graphics
 		/// </param>
 		/// <param name="copyData">If true, the current data is copied as well as the structure of the buffer.</param>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer, BufferLicenseRelease licenseType,
+		public virtual HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer,
+		                                                              BufferLicenseRelease licenseType,
 #if NET_40
  IHardwareBufferLicensee licensee, bool copyData = false )
 #else
@@ -310,7 +312,9 @@ namespace Axiom.Graphics
 						vbuf.CopyTo( sourceBuffer, 0, 0, sourceBuffer.Size, true );
 					}
 					// Insert copy into licensee list
-					tempVertexBufferLicenses.Add( vbuf, new VertexBufferLicense( sourceBuffer, licenseType, expiredDelayFrameThreshold, vbuf, licensee ) );
+					tempVertexBufferLicenses.Add( vbuf,
+					                              new VertexBufferLicense( sourceBuffer, licenseType, expiredDelayFrameThreshold, vbuf,
+					                                                       licensee ) );
 
 					return vbuf;
 				}
@@ -319,7 +323,9 @@ namespace Axiom.Graphics
 
 #if !NET_40
 		/// <see cref="HardwareBufferManager.AllocateVertexBufferCopy(HardwareVertexBuffer, BufferLicenseRelease, IHardwareBufferLicensee, bool)"/>
-		public HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer, BufferLicenseRelease licenseType, IHardwareBufferLicensee licensee )
+		public HardwareVertexBuffer AllocateVertexBufferCopy( HardwareVertexBuffer sourceBuffer,
+		                                                      BufferLicenseRelease licenseType,
+		                                                      IHardwareBufferLicensee licensee )
 		{
 			return AllocateVertexBufferCopy( sourceBuffer, licenseType, licensee, false );
 		}
@@ -400,7 +406,7 @@ namespace Axiom.Graphics
 				// Free unused temporary buffers
 				for ( var i = 1; i < freeTempVertexBufferMap.Count; ++i )
 				{
-					var keys = new HardwareVertexBuffer[ freeTempVertexBufferMap.Count ];
+					var keys = new HardwareVertexBuffer[freeTempVertexBufferMap.Count];
 					freeTempVertexBufferMap.Keys.CopyTo( keys, 0 );
 					var icur = freeTempVertexBufferMap[ keys[ i ] ];
 
@@ -444,7 +450,7 @@ namespace Axiom.Graphics
 				// Erase the copies which are automatic licensed out
 				for ( var i = 1; i < tempVertexBufferLicenses.Count; ++i )
 				{
-					var keys = new HardwareVertexBuffer[ tempVertexBufferLicenses.Count ];
+					var keys = new HardwareVertexBuffer[tempVertexBufferLicenses.Count];
 					tempVertexBufferLicenses.Keys.CopyTo( keys, 0 );
 					var vbl = tempVertexBufferLicenses[ keys[ i ] ];
 
@@ -506,7 +512,7 @@ namespace Axiom.Graphics
 				// erase the copies which are licensed out
 				for ( var i = 1; i < tempVertexBufferLicenses.Count; ++i )
 				{
-					var keys = new HardwareVertexBuffer[ tempVertexBufferLicenses.Count ];
+					var keys = new HardwareVertexBuffer[tempVertexBufferLicenses.Count];
 					tempVertexBufferLicenses.Keys.CopyTo( keys, 0 );
 					var vbl = tempVertexBufferLicenses[ keys[ i ] ];
 
@@ -615,7 +621,8 @@ namespace Axiom.Graphics
 #if NET_40
         public abstract HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer = false );
 #else
-		public abstract HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer );
+		public abstract HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts,
+		                                                         BufferUsage usage, bool useShadowBuffer );
 
 		/// <see cref="HardwareBufferManager.CreateVertexBuffer(VertexDeclaration, int, BufferUsage, bool)"/>
 		public HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage )
@@ -646,7 +653,8 @@ namespace Axiom.Graphics
 #if NET_40
         public abstract HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer = false );
 #else
-		public abstract HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer );
+		public abstract HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
+		                                                       bool useShadowBuffer );
 
 		/// <see cref="HardwareBufferManager.CreateIndexBuffer(IndexType, int, BufferUsage, bool)"/>
 		public HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
@@ -661,7 +669,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2, "~HardwareBufferManagerBase" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

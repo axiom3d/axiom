@@ -38,9 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Graphics;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -77,10 +75,14 @@ namespace Axiom.Core
 		///     As defined in <see cref="MeshManager.CreateBezierPatch" />.
 		/// </remarks>
 		public PatchMesh( ResourceManager parent, string name, ResourceHandle handle, string group )
-			: base( parent, name, handle, group, false, null ) {}
+			: base( parent, name, handle, group, false, null )
+		{
+		}
 
 
-		public void Define( Array controlPointArray, VertexDeclaration declaration, int width, int height, int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide, BufferUsage vbUsage, BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow )
+		public void Define( Array controlPointArray, VertexDeclaration declaration, int width, int height,
+		                    int uMaxSubdivisionLevel, int vMaxSubdivisionLevel, VisibleSide visibleSide, BufferUsage vbUsage,
+		                    BufferUsage ibUsage, bool vbUseShadow, bool ibUseShadow )
 		{
 			VertexBufferUsage = vbUsage;
 			UseVertexShadowBuffer = vbUseShadow;
@@ -91,7 +93,8 @@ namespace Axiom.Core
 			// define the surface
 			// NB clone the declaration to make it independent
 			vertexDeclaration = (VertexDeclaration)declaration.Clone();
-			patchSurface.DefineSurface( controlPointArray, vertexDeclaration, width, height, PatchSurfaceType.Bezier, uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
+			patchSurface.DefineSurface( controlPointArray, vertexDeclaration, width, height, PatchSurfaceType.Bezier,
+			                            uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
 		}
 
 		public float Subdivision
@@ -119,7 +122,9 @@ namespace Axiom.Core
 			sm.vertexData.vertexCount = patchSurface.RequiredVertexCount;
 			sm.vertexData.vertexDeclaration = vertexDeclaration;
 
-			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( vertexDeclaration.Clone( 0 ), sm.vertexData.vertexCount, VertexBufferUsage, UseVertexShadowBuffer );
+			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( vertexDeclaration.Clone( 0 ),
+			                                                                sm.vertexData.vertexCount, VertexBufferUsage,
+			                                                                UseVertexShadowBuffer );
 
 			// bind the vertex buffer
 			sm.vertexData.vertexBufferBinding.SetBinding( 0, buffer );
@@ -127,14 +132,16 @@ namespace Axiom.Core
 			// create the index buffer
 			sm.indexData.indexStart = 0;
 			sm.indexData.indexCount = patchSurface.RequiredIndexCount;
-			sm.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, sm.indexData.indexCount, IndexBufferUsage, UseIndexShadowBuffer );
+			sm.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16,
+			                                                                             sm.indexData.indexCount,
+			                                                                             IndexBufferUsage, UseIndexShadowBuffer );
 
 			// build the path
 			patchSurface.Build( buffer, 0, sm.indexData.indexBuffer, 0 );
 
 			// set the bounds
-			this.BoundingBox = patchSurface.Bounds;
-			this.BoundingSphereRadius = patchSurface.BoundingSphereRadius;
+			BoundingBox = patchSurface.Bounds;
+			BoundingSphereRadius = patchSurface.BoundingSphereRadius;
 		}
 	}
 }

@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.IO;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -69,11 +68,11 @@ namespace Axiom.Overlays
 	{
 		#region Fields and Properties
 
-		private List<string> _loadedScripts = new List<string>();
+		private readonly List<string> _loadedScripts = new List<string>();
 
 		#region Overlays Property
 
-		private Dictionary<string, Overlay> _overlays = new Dictionary<string, Overlay>();
+		private readonly Dictionary<string, Overlay> _overlays = new Dictionary<string, Overlay>();
 
 		/// <summary>
 		/// returns all existing overlays
@@ -148,7 +147,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return (Real)_lastViewportHeight / (Real)_lastViewportWidth;
+				return (Real)_lastViewportHeight/(Real)_lastViewportWidth;
 			}
 		}
 
@@ -336,7 +335,8 @@ namespace Axiom.Overlays
 		/// <param name="isTemplate"></param>
 		/// <param name="parent"></param>
 		/// <returns></returns>
-		private bool ParseChildren( TextReader script, string line, Overlay overlay, bool isTemplate, OverlayElementContainer parent )
+		private bool ParseChildren( TextReader script, string line, Overlay overlay, bool isTemplate,
+		                            OverlayElementContainer parent )
 		{
 			var ret = false;
 			var skipParam = 0;
@@ -346,7 +346,7 @@ namespace Axiom.Overlays
 			// split on lines with a ) will have an extra blank array element, so lets get rid of it
 			if ( parms[ parms.Length - 1 ].Length == 0 )
 			{
-				var tmp = new string[ parms.Length - 1 ];
+				var tmp = new string[parms.Length - 1];
 				Array.Copy( parms, 0, tmp, 0, parms.Length - 1 );
 				parms = tmp;
 			}
@@ -361,7 +361,8 @@ namespace Axiom.Overlays
 			}
 
 			// top level component cannot be an element, it must be a container unless it is a template
-			if ( parms[ 0 + skipParam ] == "container" || ( parms[ 0 + skipParam ] == "element" && ( isTemplate || parent != null ) ) )
+			if ( parms[ 0 + skipParam ] == "container" ||
+			     ( parms[ 0 + skipParam ] == "element" && ( isTemplate || parent != null ) ) )
 			{
 				var templateName = "";
 				ret = true;
@@ -371,13 +372,16 @@ namespace Axiom.Overlays
 				{
 					if ( parms.Length != 5 + skipParam )
 					{
-						LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting ':' templateName", line, parent.GetType().Name, parent.Name );
+						LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting ':' templateName", line,
+						                           parent.GetType().Name, parent.Name );
 						ParseHelper.SkipToNextCloseBrace( script );
 						return ret;
 					}
 					if ( parms[ 3 + skipParam ] != ":" )
 					{
-						LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting ':' for element inheritance.", line, parent.GetType().Name, parent.Name );
+						LogManager.Instance.Write(
+							"Bad element/container line: {0} in {1} - {2}, expecting ':' for element inheritance.", line,
+							parent.GetType().Name, parent.Name );
 						ParseHelper.SkipToNextCloseBrace( script );
 						return ret;
 					}
@@ -387,14 +391,16 @@ namespace Axiom.Overlays
 				}
 				else if ( parms.Length != 3 + skipParam )
 				{
-					LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting 'element type(name)'.", line, parent.GetType().Name, parent.Name );
+					LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting 'element type(name)'.", line,
+					                           parent.GetType().Name, parent.Name );
 					ParseHelper.SkipToNextCloseBrace( script );
 					return ret;
 				}
 
 				ParseHelper.SkipToNextOpenBrace( script );
 				var isContainer = ( parms[ 0 + skipParam ] == "container" );
-				ParseNewElement( script, parms[ 1 + skipParam ], parms[ 2 + skipParam ], isContainer, overlay, isTemplate, templateName, parent );
+				ParseNewElement( script, parms[ 1 + skipParam ], parms[ 2 + skipParam ], isContainer, overlay, isTemplate,
+				                 templateName, parent );
 			}
 
 			return ret;
@@ -429,7 +435,8 @@ namespace Axiom.Overlays
 		/// <param name="isContainer"></param>
 		/// <param name="overlay"></param>
 		/// <param name="isTemplate"></param>
-		private void ParseNewElement( TextReader script, string type, string name, bool isContainer, Overlay overlay, bool isTemplate )
+		private void ParseNewElement( TextReader script, string type, string name, bool isContainer, Overlay overlay,
+		                              bool isTemplate )
 		{
 			ParseNewElement( script, type, name, isContainer, overlay, isTemplate, "", null );
 		}
@@ -445,7 +452,8 @@ namespace Axiom.Overlays
 		/// <param name="isTemplate"></param>
 		/// <param name="templateName"></param>
 		/// <param name="parent"></param>
-		private void ParseNewElement( TextReader script, string type, string name, bool isContainer, Overlay overlay, bool isTemplate, string templateName, OverlayElementContainer parent )
+		private void ParseNewElement( TextReader script, string type, string name, bool isContainer, Overlay overlay,
+		                              bool isTemplate, string templateName, OverlayElementContainer parent )
 		{
 			string line;
 			var element = OverlayElementManager.Instance.CreateElementFromTemplate( templateName, type, name, isTemplate );
@@ -529,7 +537,7 @@ namespace Axiom.Overlays
 
 		#region IScriptLoader Members
 
-		private List<string> _scriptPatterns = new List<string>();
+		private readonly List<string> _scriptPatterns = new List<string>();
 
 		public List<string> ScriptPatterns
 		{
@@ -570,7 +578,7 @@ namespace Axiom.Overlays
 						// split on lines with a ) will have an extra blank array element, so lets get rid of it
 						if ( parms[ parms.Length - 1 ].Length == 0 )
 						{
-							var tmp = new string[ parms.Length - 1 ];
+							var tmp = new string[parms.Length - 1];
 							Array.Copy( parms, 0, tmp, 0, parms.Length - 1 );
 							parms = tmp;
 						}
@@ -618,7 +626,7 @@ namespace Axiom.Overlays
 						// split on lines with a ) will have an extra blank array element, so lets get rid of it
 						if ( parms[ parms.Length - 1 ].Length == 0 )
 						{
-							var tmp = new string[ parms.Length - 1 ];
+							var tmp = new string[parms.Length - 1];
 							Array.Copy( parms, 0, tmp, 0, parms.Length - 1 );
 							parms = tmp;
 						}
@@ -629,7 +637,9 @@ namespace Axiom.Overlays
 							overlay = null;
 							isTemplate = false;
 						}
-						else if ( ParseChildren( script, line, overlay, isTemplate, null ) ) {}
+						else if ( ParseChildren( script, line, overlay, isTemplate, null ) )
+						{
+						}
 						else
 						{
 							// must be an attribute

@@ -40,12 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections;
 using System.Diagnostics;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using System.Collections.Generic;
-
 using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
@@ -66,7 +63,7 @@ namespace Axiom.Graphics
 	{
 		#region Fields
 
-		private RenderQueueGroup _parent;
+		private readonly RenderQueueGroup _parent;
 
 		/// <summary>
 		/// 
@@ -108,7 +105,8 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Default constructor.
 		/// </summary>
-		internal RenderPriorityGroup( RenderQueueGroup parent, bool splitPassesByLightingType, bool splitNoShadowPasses, bool shadowCastersCannotBeReceivers )
+		internal RenderPriorityGroup( RenderQueueGroup parent, bool splitPassesByLightingType, bool splitNoShadowPasses,
+		                              bool shadowCastersCannotBeReceivers )
 		{
 			_parent = parent;
 			// sorted list, using Pass as a key (sorted based on hashcode), and IRenderable as the value
@@ -142,7 +140,8 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				if ( splitNoShadowPasses && _parent.ShadowsEnabled && ( !technique.Parent.ReceiveShadows || renderable.CastsShadows && shadowCastersCannotBeReceivers ) )
+				if ( splitNoShadowPasses && _parent.ShadowsEnabled &&
+				     ( !technique.Parent.ReceiveShadows || renderable.CastsShadows && shadowCastersCannotBeReceivers ) )
 				{
 					// Add solid renderable and add passes to no-shadow group
 					AddSolidRenderable( technique, renderable, true );
@@ -501,7 +500,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		private class TransparencySort : IComparer<RenderablePass>
 		{
-			private Camera camera;
+			private readonly Camera camera;
 
 			public TransparencySort( Camera camera )
 			{

@@ -38,10 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Graphics;
-
 using Tao.OpenGl;
 
 #endregion Namespace Declarations
@@ -57,7 +55,7 @@ namespace Axiom.RenderSystems.OpenGL
 		private const string GL_NV_occlusion_query = "GL_NV_occlusion_query";
 		private const string GL_Version_1_5 = "1.5";
 
-		private BaseGLSupport _glSupport;
+		private readonly BaseGLSupport _glSupport;
 
 		/// <summary>
 		///		Number of fragments returned from the last query.
@@ -69,22 +67,22 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		private int queryId;
 
-		private bool isSupportedARB;
-		private bool isSupportedNV;
+		private readonly bool isSupportedARB;
+		private readonly bool isSupportedNV;
 
 		internal GLHardwareOcclusionQuery( BaseGLSupport glSupport )
 		{
-			this._glSupport = glSupport;
+			_glSupport = glSupport;
 			isSupportedARB = _glSupport.CheckMinVersion( GL_Version_1_5 ) || _glSupport.CheckExtension( GL_ARB_occlusion_query );
 			isSupportedNV = _glSupport.CheckExtension( GL_NV_occlusion_query );
 
 			if ( isSupportedNV )
 			{
-				Gl.glGenOcclusionQueriesNV( 1, out this.queryId );
+				Gl.glGenOcclusionQueriesNV( 1, out queryId );
 			}
 			else if ( isSupportedARB )
 			{
-				Gl.glGenQueriesARB( 1, out this.queryId );
+				Gl.glGenQueriesARB( 1, out queryId );
 			}
 		}
 
@@ -94,11 +92,11 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			if ( isSupportedNV )
 			{
-				Gl.glBeginOcclusionQueryNV( this.queryId );
+				Gl.glBeginOcclusionQueryNV( queryId );
 			}
 			else if ( isSupportedARB )
 			{
-				Gl.glBeginQueryARB( Gl.GL_SAMPLES_PASSED_ARB, this.queryId );
+				Gl.glBeginQueryARB( Gl.GL_SAMPLES_PASSED_ARB, queryId );
 			}
 		}
 
@@ -123,12 +121,12 @@ namespace Axiom.RenderSystems.OpenGL
 
 			if ( isSupportedNV )
 			{
-				Gl.glGetOcclusionQueryivNV( this.queryId, Gl.GL_PIXEL_COUNT_NV, out NumOfFragments );
+				Gl.glGetOcclusionQueryivNV( queryId, Gl.GL_PIXEL_COUNT_NV, out NumOfFragments );
 				return true;
 			}
 			else if ( isSupportedARB )
 			{
-				Gl.glGetQueryObjectivARB( this.queryId, Gl.GL_QUERY_RESULT_ARB, out NumOfFragments );
+				Gl.glGetQueryObjectivARB( queryId, Gl.GL_QUERY_RESULT_ARB, out NumOfFragments );
 				return true;
 			}
 
@@ -141,11 +139,11 @@ namespace Axiom.RenderSystems.OpenGL
 
 			if ( isSupportedNV )
 			{
-				Gl.glGetOcclusionQueryivNV( this.queryId, Gl.GL_PIXEL_COUNT_AVAILABLE_NV, out available );
+				Gl.glGetOcclusionQueryivNV( queryId, Gl.GL_PIXEL_COUNT_AVAILABLE_NV, out available );
 			}
 			else if ( isSupportedARB )
 			{
-				Gl.glGetQueryivARB( this.queryId, Gl.GL_QUERY_RESULT_AVAILABLE_ARB, out available );
+				Gl.glGetQueryivARB( queryId, Gl.GL_QUERY_RESULT_AVAILABLE_ARB, out available );
 			}
 
 			return available == 0;
@@ -155,11 +153,11 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			if ( isSupportedNV )
 			{
-				Gl.glDeleteOcclusionQueriesNV( 1, ref this.queryId );
+				Gl.glDeleteOcclusionQueriesNV( 1, ref queryId );
 			}
 			else if ( isSupportedARB )
 			{
-				Gl.glDeleteQueriesARB( 1, ref this.queryId );
+				Gl.glDeleteQueriesARB( 1, ref queryId );
 			}
 			base.dispose( disposeManagedResources );
 		}

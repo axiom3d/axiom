@@ -39,7 +39,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -446,31 +445,34 @@ namespace Axiom.Animating
 				case AnimableType.Int:
 					var i1 = (int)k1;
 					var i2 = (int)k2;
-					return (Object)(int)( i1 + ( i2 - i1 ) * time );
+					return (Object)(int)( i1 + ( i2 - i1 )*time );
 				case AnimableType.Real:
 					var f1 = (float)k1;
 					var f2 = (float)k2;
-					return (Object)( f1 + ( f2 - f1 ) * time );
+					return (Object)( f1 + ( f2 - f1 )*time );
 				case AnimableType.Vector2:
 					var v21 = (Vector2)k1;
 					var v22 = (Vector2)k2;
-					return (Object)( v21 + ( v22 - v21 ) * time );
+					return (Object)( v21 + ( v22 - v21 )*time );
 				case AnimableType.Vector3:
 					var v31 = (Vector3)k1;
 					var v32 = (Vector3)k2;
-					return (Object)( v31 + ( v32 - v31 ) * time );
+					return (Object)( v31 + ( v32 - v31 )*time );
 				case AnimableType.Vector4:
 					var v41 = (Vector4)k1;
 					var v42 = (Vector4)k2;
-					return (Object)( v41 + ( v42 - v41 ) * time );
+					return (Object)( v41 + ( v42 - v41 )*time );
 				case AnimableType.Quaternion:
 					var q1 = (Quaternion)k1;
 					var q2 = (Quaternion)k2;
-					return (Object)( q1 + ( q2 + ( -1 * q1 ) ) * time );
+					return (Object)( q1 + ( q2 + ( -1*q1 ) )*time );
 				case AnimableType.ColorEx:
 					var c1 = (ColorEx)k1;
 					var c2 = (ColorEx)k2;
-					return (Object)( new ColorEx( c1.a + ( c2.a - c1.a ) * time, c1.r + ( c2.r - c1.r ) * time, c1.g + ( c2.g - c1.g ) * time, c1.b + ( c2.b - c1.b ) * time ) );
+					return
+						(Object)
+						( new ColorEx( c1.a + ( c2.a - c1.a )*time, c1.r + ( c2.r - c1.r )*time, c1.g + ( c2.g - c1.g )*time,
+						               c1.b + ( c2.b - c1.b )*time ) );
 			}
 			throw new AxiomException( "In AmiableValue.InterpolateValues, unknown type {0}", type );
 		}
@@ -480,25 +482,25 @@ namespace Axiom.Animating
 			switch ( type )
 			{
 				case AnimableType.Int:
-					return (Object)(int)( ( (int)k ) * v );
+					return (Object)(int)( ( (int)k )*v );
 				case AnimableType.Real:
 					var f = (Real)k;
-					return (Object)( f * v );
+					return (Object)( f*v );
 				case AnimableType.Vector2:
 					var v2 = (Vector2)k;
-					return (Object)( v2 * v );
+					return (Object)( v2*v );
 				case AnimableType.Vector3:
 					var v3 = (Vector3)k;
-					return (Object)( v3 * v );
+					return (Object)( v3*v );
 				case AnimableType.Vector4:
 					var v4 = (Vector4)k;
-					return (Object)( v4 * v );
+					return (Object)( v4*v );
 				case AnimableType.Quaternion:
 					var q = (Quaternion)k;
-					return (Object)( q * v );
+					return (Object)( q*v );
 				case AnimableType.ColorEx:
 					var c = (ColorEx)k;
-					return (Object)( new ColorEx( c.a * v, c.r * v, c.g * v, c.b * v ) );
+					return (Object)( new ColorEx( c.a*v, c.r*v, c.g*v, c.b*v ) );
 			}
 			throw new AxiomException( "In AmiableValue.InterpolateValues, unknown type {0}", type );
 		}
