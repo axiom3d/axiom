@@ -36,7 +36,6 @@
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
-
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
 using Plane = Axiom.Math.Plane;
@@ -54,29 +53,30 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Graphics.RenderSystem.MakeOrthoMatrix(Radian, Real, Real, Real, out Matrix4, bool)"/>
 		[OgreVersion( 1, 7, 2790 )]
-		public override void MakeOrthoMatrix( Radian fovy, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms )
+		public override void MakeOrthoMatrix( Radian fovy, Real aspectRatio, Real near, Real far, out Matrix4 dest,
+		                                      bool forGpuPrograms )
 		{
-			var thetaY = fovy / 2.0f;
+			var thetaY = fovy/2.0f;
 			var tanThetaY = Utility.Tan( thetaY );
-			var tanThetaX = tanThetaY * aspectRatio;
+			var tanThetaX = tanThetaY*aspectRatio;
 
-			var half_w = tanThetaX * near;
-			var half_h = tanThetaY * near;
+			var half_w = tanThetaX*near;
+			var half_h = tanThetaY*near;
 
-			var iw = 1.0f / ( half_w );
-			var ih = 1.0f / ( half_h );
+			var iw = 1.0f/( half_w );
+			var ih = 1.0f/( half_h );
 			Real q = 0.0f;
 
 			if ( far != 0 )
 			{
-				q = 1.0 / ( far - near );
+				q = 1.0/( far - near );
 			}
 
 			dest = Matrix4.Zero;
 			dest.m00 = iw;
 			dest.m11 = ih;
 			dest.m22 = q;
-			dest.m23 = -near / ( far - near );
+			dest.m23 = -near/( far - near );
 			dest.m33 = 1;
 
 			if ( forGpuPrograms )
@@ -96,10 +96,10 @@ namespace Axiom.RenderSystems.DirectX9
 			dest = mat;
 
 			// Convert depth range from [-1,+1] to [0,1]
-			dest.m20 = ( dest.m20 + dest.m30 ) / 2;
-			dest.m21 = ( dest.m21 + dest.m31 ) / 2;
-			dest.m22 = ( dest.m22 + dest.m32 ) / 2;
-			dest.m23 = ( dest.m23 + dest.m33 ) / 2;
+			dest.m20 = ( dest.m20 + dest.m30 )/2;
+			dest.m21 = ( dest.m21 + dest.m31 )/2;
+			dest.m22 = ( dest.m22 + dest.m32 )/2;
+			dest.m23 = ( dest.m23 + dest.m33 )/2;
 
 			if ( forGpuProgram )
 			{
@@ -118,22 +118,23 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Graphics.RenderSystem.MakeProjectionMatrix(Radian, Real, Real, Real, out Matrix4, bool)"/>
 		[OgreVersion( 1, 7, 2790 )]
-		public override void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram )
+		public override void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest,
+		                                           bool forGpuProgram )
 		{
-			var theta = fov * 0.5;
-			var h = 1 / Utility.Tan( theta );
-			var w = h / aspectRatio;
+			var theta = fov*0.5;
+			var h = 1/Utility.Tan( theta );
+			var w = h/aspectRatio;
 			Real q, qn;
 
 			if ( far == 0 )
 			{
 				q = 1 - Frustum.InfiniteFarPlaneAdjust;
-				qn = near * ( Frustum.InfiniteFarPlaneAdjust - 1 );
+				qn = near*( Frustum.InfiniteFarPlaneAdjust - 1 );
 			}
 			else
 			{
-				q = far / ( far - near );
-				qn = -q * near;
+				q = far/( far - near );
+				qn = -q*near;
 			}
 
 			dest = Matrix4.Zero;
@@ -157,7 +158,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Graphics.RenderSystem.MakeProjectionMatrix(Real, Real, Real, Real, Real, Real, out Matrix4, bool)"/>
 		[OgreVersion( 1, 7, 2790 )]
-		public override void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane, out Matrix4 dest, bool forGpuProgram )
+		public override void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane,
+		                                           out Matrix4 dest, bool forGpuProgram )
 		{
 			// Correct position for off-axis projection matrix
 			if ( !forGpuProgram )
@@ -177,18 +179,18 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( farPlane == 0 )
 			{
 				q = 1 - Frustum.InfiniteFarPlaneAdjust;
-				qn = nearPlane * ( Frustum.InfiniteFarPlaneAdjust - 1 );
+				qn = nearPlane*( Frustum.InfiniteFarPlaneAdjust - 1 );
 			}
 			else
 			{
-				q = farPlane / ( farPlane - nearPlane );
-				qn = -q * nearPlane;
+				q = farPlane/( farPlane - nearPlane );
+				qn = -q*nearPlane;
 			}
 			dest = Matrix4.Zero;
-			dest.m00 = 2 * nearPlane / width;
-			dest.m02 = ( right + left ) / width;
-			dest.m11 = 2 * nearPlane / height;
-			dest.m12 = ( top + bottom ) / height;
+			dest.m00 = 2*nearPlane/width;
+			dest.m02 = ( right + left )/width;
+			dest.m11 = 2*nearPlane/height;
+			dest.m12 = ( top + bottom )/height;
 			if ( forGpuProgram )
 			{
 				dest.m22 = -q;
@@ -229,8 +231,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#region ViewMatrix
 
 		/// Saved last view matrix
-		[OgreVersion( 1, 7, 2790 )]
-		private Matrix4 _viewMatrix = Matrix4.Identity;
+		[OgreVersion( 1, 7, 2790 )] private Matrix4 _viewMatrix = Matrix4.Identity;
 
 		/// <see cref="Axiom.Graphics.RenderSystem.ViewMatrix"/>
 		[OgreVersion( 1, 7, 2790 )]
@@ -323,14 +324,15 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( autoTexCoordType == TexCoordCalcMethod.EnvironmentMap )
 			{
-				if ( ( _deviceManager.ActiveDevice.D3D9DeviceCaps.VertexProcessingCaps & D3D9.VertexProcessingCaps.TexGenSphereMap ) == D3D9.VertexProcessingCaps.TexGenSphereMap )
+				if ( ( _deviceManager.ActiveDevice.D3D9DeviceCaps.VertexProcessingCaps & D3D9.VertexProcessingCaps.TexGenSphereMap ) ==
+				     D3D9.VertexProcessingCaps.TexGenSphereMap )
 				{
 					// inverts the texture for a spheremap
 					var matEnvMap = Matrix4.Identity;
 					// set env_map values
 					matEnvMap.m11 = -1.0f;
 					// concatenate
-					newMat = newMat * matEnvMap;
+					newMat = newMat*matEnvMap;
 				}
 				else
 				{
@@ -341,7 +343,7 @@ namespace Axiom.RenderSystems.DirectX9
                     but it's the best approximation we have in the absence of a proper spheremap */
 
 					// concatenate with the xform
-					newMat = newMat * Matrix4.ClipSpace2DToImageSpace;
+					newMat = newMat*Matrix4.ClipSpace2DToImageSpace;
 				}
 			}
 
@@ -372,7 +374,7 @@ namespace Axiom.RenderSystems.DirectX9
 				viewTransposed.m33 = 1.0f;
 
 				// concatenate
-				newMat = newMat * viewTransposed;
+				newMat = newMat*viewTransposed;
 			}
 
 			if ( autoTexCoordType == TexCoordCalcMethod.ProjectiveTexture )
@@ -386,15 +388,15 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					Matrix4 viewMatrix;
 					_texStageDesc[ stage ].Frustum.CalcViewMatrixRelative( texProjRelativeOrigin, out viewMatrix );
-					newMat = viewMatrix * newMat;
+					newMat = viewMatrix*newMat;
 				}
 				else
 				{
-					newMat = _texStageDesc[ stage ].Frustum.ViewMatrix * newMat;
+					newMat = _texStageDesc[ stage ].Frustum.ViewMatrix*newMat;
 				}
-				newMat = _texStageDesc[ stage ].Frustum.ProjectionMatrix * newMat;
-				newMat = Matrix4.ClipSpace2DToImageSpace * newMat;
-				newMat = xform * newMat;
+				newMat = _texStageDesc[ stage ].Frustum.ProjectionMatrix*newMat;
+				newMat = Matrix4.ClipSpace2DToImageSpace*newMat;
+				newMat = xform*newMat;
 			}
 
 			// need this if texture is a cube map, to invert D3D's z coord
@@ -528,24 +530,24 @@ namespace Axiom.RenderSystems.DirectX9
                 Vector4(Math::Sign(plane.normal.x), Math::Sign(plane.normal.y), 1.0f, 1.0f);
             */
 			var q = new Vector4();
-			q.x = System.Math.Sign( plane.Normal.x ) / matrix.m00;
-			q.y = System.Math.Sign( plane.Normal.y ) / matrix.m11;
+			q.x = System.Math.Sign( plane.Normal.x )/matrix.m00;
+			q.y = System.Math.Sign( plane.Normal.y )/matrix.m11;
 			q.z = 1.0f;
 
 			// flip the next bit from Lengyel since we're right-handed
 			if ( forGpuProgram )
 			{
-				q.w = ( 1.0f - matrix.m22 ) / matrix.m23;
+				q.w = ( 1.0f - matrix.m22 )/matrix.m23;
 			}
 			else
 			{
-				q.w = ( 1.0f + matrix.m22 ) / matrix.m23;
+				q.w = ( 1.0f + matrix.m22 )/matrix.m23;
 			}
 
 			// Calculate the scaled plane vector
 			var clipPlane4D = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
 
-			var c = clipPlane4D * ( 1.0f / ( clipPlane4D.Dot( q ) ) );
+			var c = clipPlane4D*( 1.0f/( clipPlane4D.Dot( q ) ) );
 
 			// Replace the third row of the projection matrix
 			matrix.m20 = c.x;

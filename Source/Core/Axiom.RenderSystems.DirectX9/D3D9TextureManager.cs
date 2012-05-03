@@ -37,7 +37,6 @@ using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -57,7 +56,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9TextureManager" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -70,7 +69,8 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		[OgreVersion( 1, 7, 2 )]
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			return new D3D9Texture( this, name, handle, group, isManual, loader );
 		}
@@ -109,12 +109,14 @@ namespace Axiom.RenderSystems.DirectX9
 					break;
 
 				case TextureType.ThreeD:
-					var volReqs = D3D9.VolumeTexture.CheckRequirements( curDevice, 0, 0, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
+					var volReqs = D3D9.VolumeTexture.CheckRequirements( curDevice, 0, 0, 0, 0, d3dusage,
+					                                                    D3D9Helper.ConvertEnum( format ), pool );
 					d3dPF = volReqs.Format;
 					break;
 
 				case TextureType.CubeMap:
-					var cubeReqs = D3D9.CubeTexture.CheckRequirements( curDevice, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
+					var cubeReqs = D3D9.CubeTexture.CheckRequirements( curDevice, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ),
+					                                                   pool );
 					d3dPF = cubeReqs.Format;
 					break;
 			}
@@ -124,7 +126,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		/// <see cref="Axiom.Core.TextureManager.IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>
 		[OgreVersion( 1, 7, 2 )]
-		public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly )
+		public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage,
+		                                                   bool preciseFormatOnly )
 		{
 			if ( !preciseFormatOnly )
 			{

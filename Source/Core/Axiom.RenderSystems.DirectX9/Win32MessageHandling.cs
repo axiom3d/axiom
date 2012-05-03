@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -85,19 +84,19 @@ namespace Axiom.RenderSystems.DirectX9
 		[StructLayout( LayoutKind.Sequential )]
 		private struct Msg
 		{
-			public IntPtr hWnd;
-			public uint Message;
-			public IntPtr wParam;
-			public IntPtr lParam;
-			public uint time;
-			public POINTAPI pt;
+			public readonly IntPtr hWnd;
+			public readonly uint Message;
+			public readonly IntPtr wParam;
+			public readonly IntPtr lParam;
+			public readonly uint time;
+			public readonly POINTAPI pt;
 		}
 
 		[StructLayout( LayoutKind.Sequential )]
 		private struct POINTAPI
 		{
-			public int x;
-			public int y;
+			public readonly int x;
+			public readonly int y;
 
 			// Just to get rid of Warning CS0649.
 			public POINTAPI( int x, int y )
@@ -135,7 +134,8 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <param name="removeMsg"></param>
 		[DllImport( USER_DLL )]
 		[return: MarshalAs( UnmanagedType.Bool )]
-		private static extern bool PeekMessage( out Msg msg, IntPtr handle, uint msgFilterMin, uint msgFilterMax, uint removeMsg );
+		private static extern bool PeekMessage( out Msg msg, IntPtr handle, uint msgFilterMin, uint msgFilterMax,
+		                                        uint removeMsg );
 
 		/// <summary>
 		///	The TranslateMessage function translates virtual-key messages into character messages.
@@ -159,7 +159,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Construction and Destruction
 
-		public Win32MessageHandling() {}
+		public Win32MessageHandling()
+		{
+		}
 
 		#endregion Construction and Destruction
 

@@ -34,7 +34,6 @@
 #region Namespace Declarations
 
 using Axiom.Core;
-
 using D3D9 = SharpDX.Direct3D9;
 
 #endregion Namespace Declarations
@@ -53,10 +52,13 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9Driver()
-			: base() {}
+			: base()
+		{
+		}
 
 		[OgreVersion( 1, 7, 2 )]
-		public D3D9Driver( int adapterNumber, D3D9.Capabilities deviceCaps, D3D9.AdapterDetails adapterIdentifier, D3D9.DisplayMode desktopDisplayMode )
+		public D3D9Driver( int adapterNumber, D3D9.Capabilities deviceCaps, D3D9.AdapterDetails adapterIdentifier,
+		                   D3D9.DisplayMode desktopDisplayMode )
 			: base()
 		{
 			_adapterNumber = adapterNumber;
@@ -87,7 +89,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "~D3D9Driver" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed && disposeManagedResources )
+			if ( !IsDisposed && disposeManagedResources )
 			{
 				_videoModeList.SafeDispose();
 			}
@@ -127,8 +129,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region AdapterNumber Property
 
-		[OgreVersion( 1, 7, 2790 )]
-		private readonly int _adapterNumber;
+		[OgreVersion( 1, 7, 2790 )] private readonly int _adapterNumber;
 
 		/// <summary>
 		/// Get the adapter number
@@ -146,8 +147,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region AdapterIdentifier Property
 
-		[OgreVersion( 1, 7, 2790 )]
-		private readonly D3D9.AdapterDetails _adapterIdentifier;
+		[OgreVersion( 1, 7, 2790 )] private readonly D3D9.AdapterDetails _adapterIdentifier;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public D3D9.AdapterDetails AdapterIdentifier
@@ -162,8 +162,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region DesktopMode Property
 
-		[OgreVersion( 1, 7, 2790 )]
-		private readonly D3D9.DisplayMode _desktopDisplayMode;
+		[OgreVersion( 1, 7, 2790 )] private readonly D3D9.DisplayMode _desktopDisplayMode;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public D3D9.DisplayMode DesktopMode
@@ -178,8 +177,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region VideoModes Property
 
-		[OgreVersion( 1, 7, 2790 )]
-		private D3D9VideoModeList _videoModeList;
+		[OgreVersion( 1, 7, 2790 )] private D3D9VideoModeList _videoModeList;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public D3D9VideoModeList VideoModeList
@@ -199,8 +197,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region D3D9DeviceCaps
 
-		[OgreVersion( 1, 7, 2790 )]
-		private readonly D3D9.Capabilities _d3D9DeviceCaps;
+		[OgreVersion( 1, 7, 2790 )] private readonly D3D9.Capabilities _d3D9DeviceCaps;
 
 		/// <summary>
 		/// Get device capabilities

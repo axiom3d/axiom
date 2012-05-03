@@ -34,11 +34,9 @@
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Utilities;
-
 using D3D9 = SharpDX.Direct3D9;
 using ResourceContainer = System.Collections.Generic.List<Axiom.RenderSystems.DirectX9.ID3D9Resource>;
 
@@ -54,14 +52,11 @@ namespace Axiom.RenderSystems.DirectX9
 			CreateOnAllDevices
 		};
 
-		[OgreVersion( 1, 7, 2790 )]
-		private static readonly object _resourcesMutex = new object();
+		[OgreVersion( 1, 7, 2790 )] private static readonly object _resourcesMutex = new object();
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected new ResourceContainer Resources = new ResourceContainer();
+		[OgreVersion( 1, 7, 2790 )] protected new ResourceContainer Resources = new ResourceContainer();
 
-		[OgreVersion( 1, 7, 2790 )]
-		private int _deviceAccessLockCount;
+		[OgreVersion( 1, 7, 2790 )] private int _deviceAccessLockCount;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public ResourceCreationPolicy CreationPolicy { get; set; }
@@ -80,7 +75,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#endregion Constructor
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			throw new NotImplementedException( "Base class needs update to 1.7.2790" );
 		}

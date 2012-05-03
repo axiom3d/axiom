@@ -37,16 +37,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 using Axiom.RenderSystems.DirectX9.Helpers;
-
 using Capabilities = SharpDX.Direct3D9.Capabilities;
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
-using RenderWindowToResourcesMap = System.Collections.Generic.Dictionary<Axiom.RenderSystems.DirectX9.D3D9RenderWindow, Axiom.RenderSystems.DirectX9.D3D9Device.RenderWindowResources>;
+using RenderWindowToResourcesMap =
+	System.Collections.Generic.Dictionary
+		<Axiom.RenderSystems.DirectX9.D3D9RenderWindow, Axiom.RenderSystems.DirectX9.D3D9Device.RenderWindowResources>;
 
 #endregion Namespace Declarations
 
@@ -69,49 +69,42 @@ namespace Axiom.RenderSystems.DirectX9
 			/// <summary>
 			///  Swap chain interface.
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public D3D9.SwapChain SwapChain;
+			[OgreVersion( 1, 7, 2790 )] public D3D9.SwapChain SwapChain;
 
 			/// <summary>
 			/// Relative index of the render window in the group.
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int AdapterOrdinalInGroupIndex;
+			[OgreVersion( 1, 7, 2790 )] public int AdapterOrdinalInGroupIndex;
 
 			/// <summary>
 			/// Index of present parameter in the shared array of the device.
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int PresentParametersIndex;
+			[OgreVersion( 1, 7, 2790 )] public int PresentParametersIndex;
 
 			/// <summary>
 			/// The back buffer of the render window.
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public D3D9.Surface BackBuffer;
+			[OgreVersion( 1, 7, 2790 )] public D3D9.Surface BackBuffer;
 
 			/// <summary>
 			/// The depth buffer of the render window.
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public D3D9.Surface DepthBuffer;
+			[OgreVersion( 1, 7, 2790 )] public D3D9.Surface DepthBuffer;
 
 			/// <summary>
 			/// Present parameters of the render window.
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public D3D9.PresentParameters PresentParameters = new D3D9.PresentParameters();
+			[OgreVersion( 1, 7, 2790 )] public D3D9.PresentParameters PresentParameters = new D3D9.PresentParameters();
 
 			/// <summary>
 			/// True if resources acquired.    
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public bool Acquired;
+			[OgreVersion( 1, 7, 2790 )] public bool Acquired;
 
 			[AxiomHelper( 0, 9 )]
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !this.IsDisposed )
+				if ( !IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
@@ -137,30 +130,26 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <summary>
 		/// Map between render window to resources.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		private readonly RenderWindowToResourcesMap _mapRenderWindowToResources = new RenderWindowToResourcesMap();
+		[OgreVersion( 1, 7, 2790 )] private readonly RenderWindowToResourcesMap _mapRenderWindowToResources =
+			new RenderWindowToResourcesMap();
 
 		/// <summary>
 		/// Creation parameters.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected D3D9.CreationParameters creationParams;
+		[OgreVersion( 1, 7, 2790 )] protected D3D9.CreationParameters creationParams;
 
 		/// <summary>
 		/// The behavior of this device.    
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected D3D9.CreateFlags BehaviorFlags;
+		[OgreVersion( 1, 7, 2790 )] protected D3D9.CreateFlags BehaviorFlags;
 
 		/// <summary>
 		/// Presentation parameters which the device was created with. May be
 		/// an array of presentation parameters in case of multi-head device.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790, "hides mPresentationParamsCount" )]
-		protected D3D9.PresentParameters[] PresentationParams;
+		[OgreVersion( 1, 7, 2790, "hides mPresentationParamsCount" )] protected D3D9.PresentParameters[] PresentationParams;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected D3D9.Device pDevice;
+		[OgreVersion( 1, 7, 2790 )] protected D3D9.Device pDevice;
 
 		/// <summary>
 		/// The monitor that this device belongs to.
@@ -169,23 +158,19 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Marked as private due to CA2111:
 		/// IntPtr and UIntPtr fields should be declared as private. Exposing non-private pointers can cause a security weakness.
 		/// </remarks>
-		[OgreVersion( 1, 7, 2790 )]
-		private IntPtr _monitor;
+		[OgreVersion( 1, 7, 2790 )] private readonly IntPtr _monitor;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected Capabilities d3d9DeviceCaps;
+		[OgreVersion( 1, 7, 2790 )] protected Capabilities d3d9DeviceCaps;
 
 		/// <summary>
 		/// True if device caps initialized.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool D3D9DeviceCapsValid;
+		[OgreVersion( 1, 7, 2790 )] protected bool D3D9DeviceCapsValid;
 
 		/// <summary>
 		/// The manager of this device instance.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected D3D9DeviceManager pDeviceManager;
+		[OgreVersion( 1, 7, 2790 )] protected D3D9DeviceManager pDeviceManager;
 
 		/// <summary>
 		/// The focus window this device attached to.    
@@ -194,14 +179,12 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Marked as private due to CA2111:
 		/// IntPtr and UIntPtr fields should be declared as private. Exposing non-private pointers can cause a security weakness.
 		/// </remarks>
-		[OgreVersion( 1, 7, 2790 )]
-		private IntPtr _focusWindow;
+		[OgreVersion( 1, 7, 2790 )] private IntPtr _focusWindow;
 
 		/// <summary>
 		/// True if device entered lost state.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool DeviceLost;
+		[OgreVersion( 1, 7, 2790 )] protected bool DeviceLost;
 
 		#endregion Fields
 
@@ -300,7 +283,12 @@ namespace Axiom.RenderSystems.DirectX9
 				for ( var i = 1; i < PresentationParams.Length; i++ )
 				{
 					// disable AutoDepthStencil if these parameters are not all the same.
-					if ( primaryPresentationParams.BackBufferHeight != PresentationParams[ i ].BackBufferHeight || primaryPresentationParams.BackBufferWidth != PresentationParams[ i ].BackBufferWidth || primaryPresentationParams.BackBufferFormat != PresentationParams[ i ].BackBufferFormat || primaryPresentationParams.AutoDepthStencilFormat != PresentationParams[ i ].AutoDepthStencilFormat || primaryPresentationParams.MultiSampleQuality != PresentationParams[ i ].MultiSampleQuality || primaryPresentationParams.MultiSampleType != PresentationParams[ i ].MultiSampleType )
+					if ( primaryPresentationParams.BackBufferHeight != PresentationParams[ i ].BackBufferHeight ||
+					     primaryPresentationParams.BackBufferWidth != PresentationParams[ i ].BackBufferWidth ||
+					     primaryPresentationParams.BackBufferFormat != PresentationParams[ i ].BackBufferFormat ||
+					     primaryPresentationParams.AutoDepthStencilFormat != PresentationParams[ i ].AutoDepthStencilFormat ||
+					     primaryPresentationParams.MultiSampleQuality != PresentationParams[ i ].MultiSampleQuality ||
+					     primaryPresentationParams.MultiSampleType != PresentationParams[ i ].MultiSampleType )
 					{
 						return false;
 					}
@@ -357,7 +345,8 @@ namespace Axiom.RenderSystems.DirectX9
 		#region Constructor
 
 		[OgreVersion( 1, 7, 2790 )]
-		public D3D9Device( D3D9DeviceManager d3D9DeviceManager, int adapterNumber, IntPtr hMonitor, D3D9.DeviceType devType, D3D9.CreateFlags behaviourFlags )
+		public D3D9Device( D3D9DeviceManager d3D9DeviceManager, int adapterNumber, IntPtr hMonitor, D3D9.DeviceType devType,
+		                   D3D9.CreateFlags behaviourFlags )
 		{
 			pDeviceManager = d3D9DeviceManager;
 			AdapterNumber = adapterNumber;
@@ -379,7 +368,8 @@ namespace Axiom.RenderSystems.DirectX9
 				throw new AxiomException( "Render window was not attached to this device !!" );
 			}
 
-			return new KeyValuePair<D3D9RenderWindow, RenderWindowResources>( renderWindow, _mapRenderWindowToResources[ renderWindow ] );
+			return new KeyValuePair<D3D9RenderWindow, RenderWindowResources>( renderWindow,
+			                                                                  _mapRenderWindowToResources[ renderWindow ] );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -689,7 +679,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( _mapRenderWindowToResources.Count > 0 )
 			{
-				PresentationParams = new D3D9.PresentParameters[ _mapRenderWindowToResources.Count ];
+				PresentationParams = new D3D9.PresentParameters[_mapRenderWindowToResources.Count];
 
 				foreach ( var it in _mapRenderWindowToResources )
 				{
@@ -700,7 +690,8 @@ namespace Axiom.RenderSystems.DirectX9
 					renderWindow.BuildPresentParameters( ref renderWindowResources.PresentParameters );
 
 					// Update shared focus window handle.
-					if ( renderWindow.IsFullScreen && renderWindowResources.PresentParametersIndex == 0 && SharedFocusWindow == IntPtr.Zero )
+					if ( renderWindow.IsFullScreen && renderWindowResources.PresentParametersIndex == 0 &&
+					     SharedFocusWindow == IntPtr.Zero )
 					{
 						SharedWindowHandle = renderWindow.WindowHandle;
 					}
@@ -938,7 +929,8 @@ namespace Axiom.RenderSystems.DirectX9
 		public void ValidateFocusWindow()
 		{
 			// Focus window changed -> device should be re-acquired.
-			if ( ( SharedFocusWindow != IntPtr.Zero && creationParams.HFocusWindow != SharedFocusWindow ) || ( SharedFocusWindow == IntPtr.Zero && creationParams.HFocusWindow != PrimaryWindow.WindowHandle ) )
+			if ( ( SharedFocusWindow != IntPtr.Zero && creationParams.HFocusWindow != SharedFocusWindow ) ||
+			     ( SharedFocusWindow == IntPtr.Zero && creationParams.HFocusWindow != PrimaryWindow.WindowHandle ) )
 			{
 				// Lock access to rendering device.
 				D3D9RenderSystem.ResourceManager.LockDeviceAccess();
@@ -1018,7 +1010,8 @@ namespace Axiom.RenderSystems.DirectX9
 			var renderWindowResources = _mapRenderWindowToResources[ renderWindow ];
 
 			// Case size has been changed.
-			if ( renderWindow.Width != renderWindowResources.PresentParameters.BackBufferWidth || renderWindow.Height != renderWindowResources.PresentParameters.BackBufferHeight )
+			if ( renderWindow.Width != renderWindowResources.PresentParameters.BackBufferWidth ||
+			     renderWindow.Height != renderWindowResources.PresentParameters.BackBufferHeight )
 			{
 				if ( renderWindow.Width > 0 )
 				{
@@ -1174,7 +1167,16 @@ namespace Axiom.RenderSystems.DirectX9
 						targetHeight = 1;
 					}
 
-					renderWindowResources.DepthBuffer = D3D9.Surface.CreateDepthStencil( pDevice, targetWidth, targetHeight, renderWindowResources.PresentParameters.AutoDepthStencilFormat, renderWindowResources.PresentParameters.MultiSampleType, renderWindowResources.PresentParameters.MultiSampleQuality, ( renderWindowResources.PresentParameters.PresentFlags & D3D9.PresentFlags.DiscardDepthStencil ) != 0 );
+					renderWindowResources.DepthBuffer = D3D9.Surface.CreateDepthStencil( pDevice, targetWidth, targetHeight,
+					                                                                     renderWindowResources.PresentParameters.
+					                                                                     	AutoDepthStencilFormat,
+					                                                                     renderWindowResources.PresentParameters.
+					                                                                     	MultiSampleType,
+					                                                                     renderWindowResources.PresentParameters.
+					                                                                     	MultiSampleQuality,
+					                                                                     ( renderWindowResources.PresentParameters.
+					                                                                       	PresentFlags &
+					                                                                       D3D9.PresentFlags.DiscardDepthStencil ) != 0 );
 
 					if ( IsSwapChainWindow( renderWindow ) == false )
 					{
@@ -1269,7 +1271,8 @@ namespace Axiom.RenderSystems.DirectX9
 			var resources = _mapRenderWindowToResources[ renderWindow ];
 			var swapChain = IsSwapChainWindow( renderWindow );
 
-			if ( ( dst.Left < 0 ) || ( dst.Right > renderWindow.Width ) || ( dst.Top < 0 ) || ( dst.Bottom > renderWindow.Height ) || ( dst.Front != 0 ) || ( dst.Back != 1 ) )
+			if ( ( dst.Left < 0 ) || ( dst.Right > renderWindow.Width ) || ( dst.Top < 0 ) ||
+			     ( dst.Bottom > renderWindow.Height ) || ( dst.Front != 0 ) || ( dst.Back != 1 ) )
 			{
 				throw new AxiomException( "Invalid box." );
 			}
@@ -1314,7 +1317,8 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					try
 					{
-						if ( ( dst.Left == 0 ) && ( dst.Right == renderWindow.Width ) && ( dst.Top == 0 ) && ( dst.Bottom == renderWindow.Height ) )
+						if ( ( dst.Left == 0 ) && ( dst.Right == renderWindow.Width ) && ( dst.Top == 0 ) &&
+						     ( dst.Bottom == renderWindow.Height ) )
 						{
 							lockedRect = pTempSurf.LockRectangle( D3D9.LockFlags.ReadOnly | D3D9.LockFlags.NoSystemLock );
 						}
@@ -1338,7 +1342,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 					point = System.Windows.Forms.Control.FromHandle( renderWindow.WindowHandle ).PointToScreen( point );
 
-					srcRect = new System.Drawing.Rectangle( point.X, point.Y, srcRect.Right + point.X - srcRect.Left, srcRect.Bottom + point.Y - dst.Top );
+					srcRect = new System.Drawing.Rectangle( point.X, point.Y, srcRect.Right + point.X - srcRect.Left,
+					                                        srcRect.Bottom + point.Y - dst.Top );
 
 					desc.Width = srcRect.Right - srcRect.Left;
 					desc.Height = srcRect.Bottom - srcRect.Top;
@@ -1373,7 +1378,8 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 				else
 				{
-					var pStretchSurf = D3D9.Surface.CreateRenderTarget( pDevice, desc.Width, desc.Height, desc.Format, D3D9.MultisampleType.None, 0, false );
+					var pStretchSurf = D3D9.Surface.CreateRenderTarget( pDevice, desc.Width, desc.Height, desc.Format,
+					                                                    D3D9.MultisampleType.None, 0, false );
 					var hr = pDevice.StretchRectangle( pSurf, pStretchSurf, D3D9.TextureFilter.None );
 					if ( hr.Failure )
 					{
@@ -1395,7 +1401,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 				try
 				{
-					if ( ( dst.Left == 0 ) && ( dst.Right == renderWindow.Width ) && ( dst.Top == 0 ) && ( dst.Bottom == renderWindow.Height ) )
+					if ( ( dst.Left == 0 ) && ( dst.Right == renderWindow.Width ) && ( dst.Top == 0 ) &&
+					     ( dst.Bottom == renderWindow.Height ) )
 					{
 						lockedRect = pTempSurf.LockRectangle( D3D9.LockFlags.ReadOnly | D3D9.LockFlags.NoSystemLock );
 					}
@@ -1420,11 +1427,11 @@ namespace Axiom.RenderSystems.DirectX9
 				throw new AxiomException( "Unsupported format" );
 			}
 
-			using ( var data = BufferBase.Wrap( lockedRect.DataPointer, lockedRect.Pitch * dst.Height ) )
+			using ( var data = BufferBase.Wrap( lockedRect.DataPointer, lockedRect.Pitch*dst.Height ) )
 			{
 				var src = new PixelBox( dst.Width, dst.Height, 1, format, data );
-				src.RowPitch = lockedRect.Pitch / PixelUtil.GetNumElemBytes( format );
-				src.SlicePitch = desc.Height * src.RowPitch;
+				src.RowPitch = lockedRect.Pitch/PixelUtil.GetNumElemBytes( format );
+				src.SlicePitch = desc.Height*src.RowPitch;
 
 				PixelConverter.BulkPixelConversion( src, dst );
 			}

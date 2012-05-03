@@ -34,7 +34,6 @@
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
@@ -43,7 +42,6 @@ using Axiom.Math;
 using Axiom.Media;
 using Axiom.RenderSystems.DirectX9.HLSL;
 using Axiom.Utilities;
-
 using D3D9 = SharpDX.Direct3D9;
 using DX = SharpDX;
 
@@ -109,7 +107,8 @@ namespace Axiom.RenderSystems.DirectX9
 					//TODO
 					//pSurf.Release();
 
-					if ( surfDesc.Format != D3D9.Format.D15S1 && surfDesc.Format != D3D9.Format.D24S8 && surfDesc.Format != D3D9.Format.D24X4S4 && surfDesc.Format != D3D9.Format.D24SingleS8 )
+					if ( surfDesc.Format != D3D9.Format.D15S1 && surfDesc.Format != D3D9.Format.D24S8 &&
+					     surfDesc.Format != D3D9.Format.D24X4S4 && surfDesc.Format != D3D9.Format.D24SingleS8 )
 					{
 						rsc.UnsetCapability( Graphics.Capabilities.StencilBuffer );
 					}
@@ -173,7 +172,8 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				// stencil wrap
-				if ( ( rkCurCaps.StencilCaps & D3D9.StencilCaps.Increment ) == 0 || ( rkCurCaps.StencilCaps & D3D9.StencilCaps.Decrement ) == 0 )
+				if ( ( rkCurCaps.StencilCaps & D3D9.StencilCaps.Increment ) == 0 ||
+				     ( rkCurCaps.StencilCaps & D3D9.StencilCaps.Decrement ) == 0 )
 				{
 					rsc.UnsetCapability( Graphics.Capabilities.StencilWrap );
 				}
@@ -338,7 +338,8 @@ namespace Axiom.RenderSystems.DirectX9
 			// Determine if any floating point texture format is supported
 			var floatFormats = new[]
 			                   {
-			                   	D3D9.Format.R16F, D3D9.Format.G16R16F, D3D9.Format.A16B16G16R16F, D3D9.Format.R32F, D3D9.Format.G32R32F, D3D9.Format.A32B32G32R32F
+			                   	D3D9.Format.R16F, D3D9.Format.G16R16F, D3D9.Format.A16B16G16R16F, D3D9.Format.R32F,
+			                   	D3D9.Format.G32R32F, D3D9.Format.A32B32G32R32F
 			                   };
 
 			var bbSurf = (D3D9.Surface[])renderWindow[ "DDBACKBUFFER" ];
@@ -346,7 +347,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 			for ( var i = 0; i < 6; ++i )
 			{
-				if ( !_pD3D.CheckDeviceFormat( _activeD3DDriver.AdapterNumber, D3D9.DeviceType.Hardware, bbSurfDesc.Format, 0, D3D9.ResourceType.Texture, floatFormats[ i ] ) )
+				if (
+					!_pD3D.CheckDeviceFormat( _activeD3DDriver.AdapterNumber, D3D9.DeviceType.Hardware, bbSurfDesc.Format, 0,
+					                          D3D9.ResourceType.Texture, floatFormats[ i ] ) )
 				{
 					continue;
 				}
@@ -380,7 +383,8 @@ namespace Axiom.RenderSystems.DirectX9
 				switch ( rsc.Vendor )
 				{
 					case GPUVendor.Nvidia:
-						if ( _pD3D.CheckDeviceFormat( 0, D3D9.DeviceType.Hardware, D3D9.Format.X8R8G8B8, 0, D3D9.ResourceType.Surface, (D3D9.Format)( 'A' | ( 'T' ) << 8 | ( 'O' ) << 16 | ( 'C' ) << 24 ) ) )
+						if ( _pD3D.CheckDeviceFormat( 0, D3D9.DeviceType.Hardware, D3D9.Format.X8R8G8B8, 0, D3D9.ResourceType.Surface,
+						                              (D3D9.Format)( 'A' | ( 'T' ) << 8 | ( 'O' ) << 16 | ( 'C' ) << 24 ) ) )
 						{
 							rsc.SetCapability( Graphics.Capabilities.AlphaToCoverage );
 						}
@@ -424,7 +428,9 @@ namespace Axiom.RenderSystems.DirectX9
 			for ( var pf = PixelFormat.L8; pf < PixelFormat.Count; ++pf )
 			{
 				var fmt = D3D9Helper.ConvertEnum( D3D9Helper.GetClosestSupported( pf ) );
-				if ( !_pD3D.CheckDeviceFormat( _activeD3DDriver.AdapterNumber, D3D9.DeviceType.Hardware, bbSurfDesc.Format, D3D9.Usage.QueryVertexTexture, D3D9.ResourceType.Texture, fmt ) )
+				if (
+					!_pD3D.CheckDeviceFormat( _activeD3DDriver.AdapterNumber, D3D9.DeviceType.Hardware, bbSurfDesc.Format,
+					                          D3D9.Usage.QueryVertexTexture, D3D9.ResourceType.Texture, fmt ) )
 				{
 					continue;
 				}
@@ -471,12 +477,17 @@ namespace Axiom.RenderSystems.DirectX9
 			// Special case detection for ps_2_x/a/b support
 			if ( major >= 2 )
 			{
-				if ( ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.NoTextureInstructionLimit ) != 0 && ( minPsCaps.PS20Caps.TempCount >= 32 ) )
+				if ( ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.NoTextureInstructionLimit ) != 0 &&
+				     ( minPsCaps.PS20Caps.TempCount >= 32 ) )
 				{
 					ps2b = true;
 				}
 
-				if ( ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.NoTextureInstructionLimit ) != 0 && ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.NoDependentReadLimit ) != 0 && ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.ArbitrarySwizzle ) != 0 && ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.GradientInstructions ) != 0 && ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.Predication ) != 0 && ( minPsCaps.PS20Caps.TempCount >= 22 ) )
+				if ( ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.NoTextureInstructionLimit ) != 0 &&
+				     ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.NoDependentReadLimit ) != 0 &&
+				     ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.ArbitrarySwizzle ) != 0 &&
+				     ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.GradientInstructions ) != 0 &&
+				     ( minPsCaps.PS20Caps.Caps & D3D9.PixelShaderCaps.Predication ) != 0 && ( minPsCaps.PS20Caps.TempCount >= 22 ) )
 				{
 					ps2a = true;
 				}
@@ -602,12 +613,14 @@ namespace Axiom.RenderSystems.DirectX9
 			// Special case detection for vs_2_x/a support
 			if ( major >= 2 )
 			{
-				if ( ( minVsCaps.VS20Caps.Caps & D3D9.VertexShaderCaps.Predication ) != 0 && ( minVsCaps.VS20Caps.DynamicFlowControlDepth > 0 ) && ( minVsCaps.VS20Caps.TempCount >= 12 ) )
+				if ( ( minVsCaps.VS20Caps.Caps & D3D9.VertexShaderCaps.Predication ) != 0 &&
+				     ( minVsCaps.VS20Caps.DynamicFlowControlDepth > 0 ) && ( minVsCaps.VS20Caps.TempCount >= 12 ) )
 				{
 					vs2x = true;
 				}
 
-				if ( ( minVsCaps.VS20Caps.Caps & D3D9.VertexShaderCaps.Predication ) != 0 && ( minVsCaps.VS20Caps.DynamicFlowControlDepth > 0 ) && ( minVsCaps.VS20Caps.TempCount >= 13 ) )
+				if ( ( minVsCaps.VS20Caps.Caps & D3D9.VertexShaderCaps.Predication ) != 0 &&
+				     ( minVsCaps.VS20Caps.DynamicFlowControlDepth > 0 ) && ( minVsCaps.VS20Caps.TempCount >= 13 ) )
 				{
 					vs2a = true;
 				}
@@ -722,7 +735,8 @@ namespace Axiom.RenderSystems.DirectX9
 				foreach ( var currVideoMode in _activeD3DDriver.VideoModeList )
 				{
 					var temp = currVideoMode.Description;
-					var colorDepth = int.Parse( temp.Substring( temp.IndexOf( "@" ) + 1, temp.IndexOf( "-" ) - ( temp.IndexOf( "@" ) + 1 ) ) );
+					var colorDepth =
+						int.Parse( temp.Substring( temp.IndexOf( "@" ) + 1, temp.IndexOf( "-" ) - ( temp.IndexOf( "@" ) + 1 ) ) );
 
 					// In full screen we only want to allow supported resolutions, so temp and opt->second.currentValue need to 
 					// match exactly, but in windowed mode we can allow for arbitrary window sized, so we only need
@@ -788,7 +802,8 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			if ( caps.RendersystemName != Name )
 			{
-				throw new AxiomException( "Trying to initialize D3D9RenderSystem from RenderSystemCapabilities that do not support Direct3D9" );
+				throw new AxiomException(
+					"Trying to initialize D3D9RenderSystem from RenderSystemCapabilities that do not support Direct3D9" );
 			}
 
 			if ( caps.IsShaderProfileSupported( "hlsl" ) )
