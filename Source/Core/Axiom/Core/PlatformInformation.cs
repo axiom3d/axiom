@@ -37,22 +37,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Text;
-
-using Axiom.Animating;
-using Axiom.Collections;
-using Axiom.Controllers;
-using Axiom.FileSystem;
-using Axiom.Fonts;
-using Axiom.Media;
-using Axiom.Overlays;
-using Axiom.ParticleSystems;
-using Axiom.Graphics;
 
 #if MONO_SIMD
 using Mono.Simd;
@@ -79,21 +63,12 @@ namespace Axiom.Core
 			Count
 		}
 
-		private static bool[] cpuFeatures = new bool[ (int)CPUFeature.Count ];
+		private static readonly bool[] cpuFeatures = new bool[(int)CPUFeature.Count];
 		private static string cpuIdentifier = "CPU Identification not available";
 
-		/// <summary>
-		/// Empty static constructor
-		/// DO NOT DELETE.  It needs to be here because:
-		///
-		///     # The presence of a static constructor suppresses beforeFieldInit.
-		///     # Static field variables are initialized before the static constructor is called.
-		///     # Having a static constructor is the only way to ensure that all resources are
-		///       initialized before other static functions are called.
-		///
-		/// (from "Static Constructors Demystified" by Satya Komatineni
-		///  http://www.ondotnet.com/pub/a/dotnet/2003/07/07/staticxtor.html)
-		/// </summary>
+		///<summary>
+		///  Empty static constructor DO NOT DELETE. It needs to be here because: # The presence of a static constructor suppresses beforeFieldInit. # Static field variables are initialized before the static constructor is called. # Having a static constructor is the only way to ensure that all resources are initialized before other static functions are called. (from "Static Constructors Demystified" by Satya Komatineni http://www.ondotnet.com/pub/a/dotnet/2003/07/07/staticxtor.html)
+		///</summary>
 		static PlatformInformation()
 		{
 #if MONO_SIMD

@@ -129,7 +129,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.Width == 0 || this.Height == 0;
+				return Width == 0 || Height == 0;
 			}
 			set
 			{
@@ -177,7 +177,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public Rectangle Merge( Rectangle rhs )
 		{
-			if ( this.IsNull )
+			if ( IsNull )
 			{
 				this = rhs;
 			}
@@ -198,7 +198,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		internal static Rectangle Intersect( Rectangle lhs, Rectangle rhs )
 		{
-			Rectangle ret = new Rectangle();
+			var ret = new Rectangle();
 
 			if ( lhs.IsNull || rhs.IsNull )
 			{

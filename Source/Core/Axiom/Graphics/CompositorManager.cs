@@ -41,15 +41,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Media;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -57,25 +53,14 @@ using ResourceHandle = System.UInt64;
 namespace Axiom.Graphics
 {
 	///<summary>
-	///    Class for managing Compositor settings for Ogre. Compositors provide the means
-	///    to flexibly "composite" the final rendering result from multiple scene renders
-	///    and intermediate operations like rendering fullscreen quads. This makes
-	///    it possible to apply postfilter effects, HDRI postprocessing, and shadow
-	///    effects to a Viewport.
-	///
-	///    When loaded from a script, a Compositor is in an 'unloaded' state and only stores the settings
-	///    required. It does not at that stage load any textures. This is because the material settings may be
-	///    loaded 'en masse' from bulk material script files, but only a subset will actually be required.
-	///
-	///    Because this is a subclass of ResourceManager, any files loaded will be searched for in any path or
-	///    archive added to the resource paths/archives. See ResourceManager for details.
+	///  Class for managing Compositor settings for Ogre. Compositors provide the means to flexibly "composite" the final rendering result from multiple scene renders and intermediate operations like rendering fullscreen quads. This makes it possible to apply postfilter effects, HDRI postprocessing, and shadow effects to a Viewport. When loaded from a script, a Compositor is in an 'unloaded' state and only stores the settings required. It does not at that stage load any textures. This is because the material settings may be loaded 'en masse' from bulk material script files, but only a subset will actually be required. Because this is a subclass of ResourceManager, any files loaded will be searched for in any path or archive added to the resource paths/archives. See ResourceManager for details.
 	///</summary>
 	public class CompositorManager : ResourceManager, ISingleton<CompositorManager>
 	{
 		#region ISingleton<CompositorManager> Implementation
 
 		/// <summary>
-		///     Gets the singleton instance of this class.
+		///   Gets the singleton instance of this class.
 		/// </summary>
 		public static CompositorManager Instance
 		{
@@ -86,10 +71,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Initializes the Compositor Manager
+		///   Initializes the Compositor Manager
 		/// </summary>
-		/// <param name="args"></param>
-		/// <returns></returns>
+		/// <param name="args"> </param>
+		/// <returns> </returns>
 		public bool Initialize( params object[] args )
 		{
 			var scene = (Compositor)Create( "Axiom/Scene", ResourceGroupManager.InternalResourceGroupName );
@@ -118,7 +103,7 @@ namespace Axiom.Graphics
 		#region Construction and Destruction
 
 		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
+		///   Internal constructor. This class cannot be instantiated externally.
 		/// </summary>
 		public CompositorManager()
 			: base()
@@ -143,50 +128,42 @@ namespace Axiom.Graphics
 
 		#region TextureDefinition
 
-		/// <summary>
-		///
-		/// </summary>
+		///<summary>
+		///</summary>
 		public struct TextureDefinition
 		{
-			/// <summary>
-			///
-			/// </summary>
+			///<summary>
+			///</summary>
 			public int Width;
 
-			/// <summary>
-			///
-			/// </summary>
+			///<summary>
+			///</summary>
 			public int Height;
 
-			/// <summary>
-			///
-			/// </summary>
+			///<summary>
+			///</summary>
 			public PixelFormat Format;
 
-			/// <summary>
-			///
-			/// </summary>
+			///<summary>
+			///</summary>
 			public int FSAA;
 
-			/// <summary>
-			///
-			/// </summary>
+			///<summary>
+			///</summary>
 			public string FSAAHint;
 
-			/// <summary>
-			///
-			/// </summary>
+			///<summary>
+			///</summary>
 			public bool SRGBWrite;
 
-			/// <summary>
-			///
-			/// </summary>
-			/// <param name="width"></param>
-			/// <param name="height"></param>
-			/// <param name="format"></param>
-			/// <param name="aa"></param>
-			/// <param name="aaHint"></param>
-			/// <param name="srgb"></param>
+			///<summary>
+			///</summary>
+			///<param name="width"> </param>
+			///<param name="height"> </param>
+			///<param name="format"> </param>
+			///<param name="aa"> </param>
+			///<param name="aaHint"> </param>
+			///<param name="srgb"> </param>
 			public TextureDefinition( int width, int height, PixelFormat format, int aa, string aaHint, bool srgb )
 			{
 				Width = width;
@@ -198,9 +175,8 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+		///<summary>
+		///</summary>
 		public struct TextureDefLess : IComparer<TextureDefinition>
 		{
 			public int Compare( TextureDefinition x, TextureDefinition y )
@@ -247,33 +223,33 @@ namespace Axiom.Graphics
 		#region Fields and Properties
 
 		///<summary>
-		///    Mapping from viewport to compositor chain
+		///  Mapping from viewport to compositor chain
 		///</summary>
 		protected Dictionary<Viewport, CompositorChain> chains;
 
-		/// <summary>
-		///
-		/// </summary>
-		private Dictionary<TextureDefinition, List<Texture>> texturesByDef = new Dictionary<TextureDefinition, List<Texture>>();
+		///<summary>
+		///</summary>
+		private readonly Dictionary<TextureDefinition, List<Texture>> texturesByDef =
+			new Dictionary<TextureDefinition, List<Texture>>();
 
-		/// <summary>
-		///
-		/// </summary>
-		private Dictionary<Pair<string>, SortedList<TextureDefinition, Texture>> chainTexturesByRef = new Dictionary<Pair<string>, SortedList<TextureDefinition, Texture>>();
+		///<summary>
+		///</summary>
+		private readonly Dictionary<Pair<string>, SortedList<TextureDefinition, Texture>> chainTexturesByRef =
+			new Dictionary<Pair<string>, SortedList<TextureDefinition, Texture>>();
 
 		///<summary>
 		///</summary>
 		protected Rectangle2D rectangle = null;
 
 		/// <summary>
-		/// List of registered compositor logics
+		///   List of registered compositor logics
 		/// </summary>
-		private Dictionary<string, ICompositorLogic> compositorLogics = new Dictionary<string, ICompositorLogic>();
+		private readonly Dictionary<string, ICompositorLogic> compositorLogics = new Dictionary<string, ICompositorLogic>();
 
-		private ReadOnlyDictionary<string, ICompositorLogic> compositorLogicIndex;
+		private readonly ReadOnlyDictionary<string, ICompositorLogic> compositorLogicIndex;
 
 		/// <summary>
-		/// List of registered compositor logics
+		///   List of registered compositor logics
 		/// </summary>
 		public ReadOnlyDictionary<string, ICompositorLogic> CompositorLogics
 		{
@@ -284,14 +260,15 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// List of registered custom composition passes
+		///   List of registered custom composition passes
 		/// </summary>
-		private Dictionary<string, ICustomCompositionPass> customCompositionPasses = new Dictionary<string, ICustomCompositionPass>();
+		private readonly Dictionary<string, ICustomCompositionPass> customCompositionPasses =
+			new Dictionary<string, ICustomCompositionPass>();
 
-		private ReadOnlyDictionary<string, ICustomCompositionPass> customCompositionPassesIndex;
+		private readonly ReadOnlyDictionary<string, ICustomCompositionPass> customCompositionPassesIndex;
 
 		/// <summary>
-		/// List of registered custom composition passes
+		///   List of registered custom composition passes
 		/// </summary>
 		public ReadOnlyDictionary<string, ICustomCompositionPass> CustomCompositionPasses
 		{
@@ -302,7 +279,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Get a textured fullscreen 2D rectangle, for internal use.
+		///  Get a textured fullscreen 2D rectangle, for internal use.
 		///</summary>
 		internal IRenderable TexturedRectangle2D
 		{
@@ -315,8 +292,8 @@ namespace Axiom.Graphics
 
 				var rs = Root.Instance.RenderSystem;
 				var vp = rs.Viewport;
-				float hOffset = rs.HorizontalTexelOffset / ( 0.5f * vp.ActualWidth );
-				float vOffset = rs.VerticalTexelOffset / ( 0.5f * vp.ActualHeight );
+				float hOffset = rs.HorizontalTexelOffset/( 0.5f*vp.ActualWidth );
+				float vOffset = rs.VerticalTexelOffset/( 0.5f*vp.ActualHeight );
 				rectangle.SetCorners( -1f + hOffset, 1f - vOffset, 1f + hOffset, -1f - vOffset );
 				return rectangle;
 			}
@@ -327,10 +304,7 @@ namespace Axiom.Graphics
 		#region Methods
 
 		///<summary>
-		///    Get the compositor chain for a Viewport. If there is none yet, a new
-		///    compositor chain is registered.
-		///    XXX We need a _notifyViewportRemoved to find out when this viewport disappears,
-		///    so we can destroy its chain as well.
+		///  Get the compositor chain for a Viewport. If there is none yet, a new compositor chain is registered. XXX We need a _notifyViewportRemoved to find out when this viewport disappears, so we can destroy its chain as well.
 		///</summary>
 		public CompositorChain GetCompositorChain( Viewport vp )
 		{
@@ -351,7 +325,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Returns whether exists compositor chain for a viewport.
+		///  Returns whether exists compositor chain for a viewport.
 		///</summary>
 		public bool HasCompositorChain( Viewport vp )
 		{
@@ -359,7 +333,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Remove the compositor chain from a viewport if exists.
+		///  Remove the compositor chain from a viewport if exists.
 		///</summary>
 		public void RemoveCompositorChain( Viewport vp )
 		{
@@ -367,7 +341,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Overridden from ResourceManager since we have to clean up chains too.
+		///  Overridden from ResourceManager since we have to clean up chains too.
 		///</summary>
 		public override void RemoveAll()
 		{
@@ -376,7 +350,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Clear composition chains for all viewports
+		///  Clear composition chains for all viewports
 		///</summary>
 		protected void FreeChains()
 		{
@@ -389,13 +363,12 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Add a compositor to a viewport. By default, it is added to end of the chain,
-		///    after the other compositors.
+		///  Add a compositor to a viewport. By default, it is added to end of the chain, after the other compositors.
 		///</summary>
-		///<param name="vp">Viewport to modify</param>
-		///<param name="compositor">The name of the compositor to apply</param>
-		///<param name="addPosition">At which position to add, defaults to the end (-1).</param>
-		///<returns>pointer to instance, or null if it failed.</returns>
+		///<param name="vp"> Viewport to modify </param>
+		///<param name="compositor"> The name of the compositor to apply </param>
+		///<param name="addPosition"> At which position to add, defaults to the end (-1). </param>
+		///<returns> pointer to instance, or null if it failed. </returns>
 		public CompositorInstance AddCompositor( Viewport vp, string compositor, int addPosition )
 		{
 			var comp = (Compositor)this[ compositor ];
@@ -413,7 +386,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Remove a compositor from a viewport
+		///  Remove a compositor from a viewport
 		///</summary>
 		public void RemoveCompositor( Viewport vp, string compositor )
 		{
@@ -430,9 +403,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// another overload to remove a compositor instance from its chain
+		///   another overload to remove a compositor instance from its chain
 		/// </summary>
-		/// <param name="remInstance"></param>
+		/// <param name="remInstance"> </param>
 		public void RemoveCompositor( CompositorInstance remInstance )
 		{
 			var chain = remInstance.Chain;
@@ -449,10 +422,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Set the state of a compositor on a viewport to enabled or disabled.
-		///    Disabling a compositor stops it from rendering but does not free any resources.
-		///    This can be more efficient than using removeCompositor and addCompositor in cases
-		///    the filter is switched on and off a lot.
+		///  Set the state of a compositor on a viewport to enabled or disabled. Disabling a compositor stops it from rendering but does not free any resources. This can be more efficient than using removeCompositor and addCompositor in cases the filter is switched on and off a lot.
 		///</summary>
 		public void SetCompositorEnabled( Viewport vp, string compositor, bool value )
 		{
@@ -493,27 +463,28 @@ namespace Axiom.Graphics
 				throw new AxiomException( "Pass '" + name + "' already exists." );
 			}
 
-			this.customCompositionPasses.Add( name, compositionPass );
+			customCompositionPasses.Add( name, compositionPass );
 		}
 
 		#region Pooled Textures
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="localName"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="format"></param>
-		/// <param name="aa"></param>
-		/// <param name="aaHint"></param>
-		/// <param name="srgb"></param>
-		/// <param name="textureAllreadyAssigned"></param>
-		/// <param name="instance"></param>
-		/// <param name="scope"></param>
-		/// <returns></returns>
-		public Texture GetPooledTexture( string name, string localName, int width, int height, PixelFormat format, int aa, string aaHint, bool srgb, List<Texture> textureAllreadyAssigned, CompositorInstance instance, CompositionTechnique.TextureScope scope )
+		///<summary>
+		///</summary>
+		///<param name="name"> </param>
+		///<param name="localName"> </param>
+		///<param name="width"> </param>
+		///<param name="height"> </param>
+		///<param name="format"> </param>
+		///<param name="aa"> </param>
+		///<param name="aaHint"> </param>
+		///<param name="srgb"> </param>
+		///<param name="textureAllreadyAssigned"> </param>
+		///<param name="instance"> </param>
+		///<param name="scope"> </param>
+		///<returns> </returns>
+		public Texture GetPooledTexture( string name, string localName, int width, int height, PixelFormat format, int aa,
+		                                 string aaHint, bool srgb, List<Texture> textureAllreadyAssigned,
+		                                 CompositorInstance instance, CompositionTechnique.TextureScope scope )
 		{
 			if ( scope == CompositionTechnique.TextureScope.Global )
 			{
@@ -539,7 +510,9 @@ namespace Axiom.Graphics
 					defMap = new SortedList<TextureDefinition, Texture>( new TextureDefLess() );
 				}
 
-				var newTex = TextureManager.Instance.CreateManual( name, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, width, height, 0, format, TextureUsage.RenderTarget, null, srgb, aa, aaHint );
+				var newTex = TextureManager.Instance.CreateManual( name, ResourceGroupManager.InternalResourceGroupName,
+				                                                   TextureType.TwoD, width, height, 0, format,
+				                                                   TextureUsage.RenderTarget, null, srgb, aa, aaHint );
 
 				defMap.Add( def, newTex );
 
@@ -608,7 +581,9 @@ namespace Axiom.Graphics
 			if ( ret == null )
 			{
 				// ok, we need to create a new one
-				ret = TextureManager.Instance.CreateManual( name, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD, width, height, 0, format, TextureUsage.RenderTarget, null, srgb, aa, aaHint );
+				ret = TextureManager.Instance.CreateManual( name, ResourceGroupManager.InternalResourceGroupName, TextureType.TwoD,
+				                                            width, height, 0, format, TextureUsage.RenderTarget, null, srgb, aa,
+				                                            aaHint );
 				i.Add( ret );
 				texturesByDef[ def ] = i;
 			}
@@ -619,18 +594,16 @@ namespace Axiom.Graphics
 			return ret;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+		///<summary>
+		///</summary>
 		public void FreePooledTextures()
 		{
 			FreePooledTextures( true );
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="onlyIfUnreferenced"></param>
+		///<summary>
+		///</summary>
+		///<param name="onlyIfUnreferenced"> </param>
 		public void FreePooledTextures( bool onlyIfUnreferenced )
 		{
 			if ( onlyIfUnreferenced )
@@ -681,12 +654,11 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="instance"></param>
-		/// <param name="localName"></param>
-		/// <returns></returns>
+		///<summary>
+		///</summary>
+		///<param name="instance"> </param>
+		///<param name="localName"> </param>
+		///<returns> </returns>
 		private bool IsInputPreviousTarget( CompositorInstance instance, string localName )
 		{
 			foreach ( var tp in instance.Technique.TargetPasses )
@@ -699,12 +671,11 @@ namespace Axiom.Graphics
 			return false;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="instance"></param>
-		/// <param name="texture"></param>
-		/// <returns></returns>
+		///<summary>
+		///</summary>
+		///<param name="instance"> </param>
+		///<param name="texture"> </param>
+		///<returns> </returns>
 		private bool IsInputPreviousTarget( CompositorInstance instance, Texture texture )
 		{
 			foreach ( var tp in instance.Technique.TargetPasses )
@@ -722,12 +693,11 @@ namespace Axiom.Graphics
 			return false;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="instance"></param>
-		/// <param name="localName"></param>
-		/// <returns></returns>
+		///<summary>
+		///</summary>
+		///<param name="instance"> </param>
+		///<param name="localName"> </param>
+		///<returns> </returns>
 		private bool IsInputToOutputTarget( CompositorInstance instance, string localName )
 		{
 			var tp = instance.Technique.OutputTarget;
@@ -744,12 +714,11 @@ namespace Axiom.Graphics
 			return false;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="instance"></param>
-		/// <param name="texture"></param>
-		/// <returns></returns>
+		///<summary>
+		///</summary>
+		///<param name="instance"> </param>
+		///<param name="texture"> </param>
+		///<returns> </returns>
 		private bool IsInputToOutputTarget( CompositorInstance instance, Texture texture )
 		{
 			var tp = instance.Technique.OutputTarget;
@@ -773,14 +742,15 @@ namespace Axiom.Graphics
 
 		#region ResourceManager Implementation
 
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
 		{
 			return new Compositor( this, name, handle, group, isManual, loader );
 		}
 
-		/// <summary>
-		///		Starts parsing an individual script file.
-		/// </summary>
+		///<summary>
+		///  Starts parsing an individual script file.
+		///</summary>
 		public override void ParseScript( Stream data, string groupName, string fileName )
 		{
 #if AXIOM_USENEWCOMPILERS
@@ -792,7 +762,7 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

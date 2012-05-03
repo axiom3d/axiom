@@ -35,7 +35,6 @@
 
 #region Namespace Declarations
 
-using Axiom.Animating;
 using Axiom.Collections;
 
 #endregion
@@ -43,7 +42,9 @@ using Axiom.Collections;
 namespace Axiom.Animating.Collections
 {
 	/// <summary>
-	/// Represents a collection of <see cref="Animation">Animations</see> that are sorted by name.
+	///   Represents a collection of <see cref="Animation">Animations</see> that are sorted by name.
 	/// </summary>
-	public class AnimationCollection : AxiomCollection<Animation> {}
+	public class AnimationCollection : AxiomCollection<Animation>
+	{
+	}
 }

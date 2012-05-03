@@ -38,8 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Runtime.InteropServices;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -47,35 +45,34 @@ using Axiom.Core;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	/// 	This class declares the usage of a single vertex buffer as a component
-	/// 	of a complete <see cref="VertexDeclaration"/>. 
+	///   This class declares the usage of a single vertex buffer as a component of a complete <see cref="VertexDeclaration" /> .
 	/// </summary>
 	public class VertexElement : ICloneable
 	{
 		#region Fields
 
 		/// <summary>
-		///     The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.
+		///   The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding" /> .
 		/// </summary>
 		protected short source;
 
 		/// <summary>
-		///     The offset in the buffer that this element starts at.
+		///   The offset in the buffer that this element starts at.
 		/// </summary>
 		protected int offset;
 
 		/// <summary>
-		///     The type of element.
+		///   The type of element.
 		/// </summary>
 		protected VertexElementType type;
 
 		/// <summary>
-		///     The meaning of the element.
+		///   The meaning of the element.
 		/// </summary>
 		protected VertexElementSemantic semantic;
 
 		/// <summary>
-		///     Index of the item, only applicable for some elements like texture coords.
+		///   Index of the item, only applicable for some elements like texture coords.
 		/// </summary>
 		protected int index;
 
@@ -84,23 +81,25 @@ namespace Axiom.Graphics
 		#region Constructors
 
 		/// <summary>
-		///     Constructor.
+		///   Constructor.
 		/// </summary>
-		/// <param name="source">The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.</param>
-		/// <param name="offset">The offset in the buffer that this element starts at.</param>
-		/// <param name="type">The type of element.</param>
-		/// <param name="semantic">The meaning of the element.</param>
+		/// <param name="source"> The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding" /> . </param>
+		/// <param name="offset"> The offset in the buffer that this element starts at. </param>
+		/// <param name="type"> The type of element. </param>
+		/// <param name="semantic"> The meaning of the element. </param>
 		public VertexElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic )
-			: this( source, offset, type, semantic, 0 ) {}
+			: this( source, offset, type, semantic, 0 )
+		{
+		}
 
 		/// <summary>
-		///     Constructor.
+		///   Constructor.
 		/// </summary>
-		/// <param name="source">The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.</param>
-		/// <param name="offset">The offset in the buffer that this element starts at.</param>
-		/// <param name="type">The type of element.</param>
-		/// <param name="semantic">The meaning of the element.</param>
-		/// <param name="index">Index of the item, only applicable for some elements like texture coords.</param>
+		/// <param name="source"> The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding" /> . </param>
+		/// <param name="offset"> The offset in the buffer that this element starts at. </param>
+		/// <param name="type"> The type of element. </param>
+		/// <param name="semantic"> The meaning of the element. </param>
+		/// <param name="index"> Index of the item, only applicable for some elements like texture coords. </param>
 		public VertexElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			this.source = source;
@@ -115,7 +114,7 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		///     Utility method for helping to calculate offsets.
+		///   Utility method for helping to calculate offsets.
 		/// </summary>
 		public static int GetTypeSize( VertexElementType type )
 		{
@@ -130,28 +129,28 @@ namespace Axiom.Graphics
 					return Memory.SizeOf( typeof ( float ) );
 
 				case VertexElementType.Float2:
-					return Memory.SizeOf( typeof ( float ) ) * 2;
+					return Memory.SizeOf( typeof ( float ) )*2;
 
 				case VertexElementType.Float3:
-					return Memory.SizeOf( typeof ( float ) ) * 3;
+					return Memory.SizeOf( typeof ( float ) )*3;
 
 				case VertexElementType.Float4:
-					return Memory.SizeOf( typeof ( float ) ) * 4;
+					return Memory.SizeOf( typeof ( float ) )*4;
 
 				case VertexElementType.Short1:
 					return Memory.SizeOf( typeof ( short ) );
 
 				case VertexElementType.Short2:
-					return Memory.SizeOf( typeof ( short ) ) * 2;
+					return Memory.SizeOf( typeof ( short ) )*2;
 
 				case VertexElementType.Short3:
-					return Memory.SizeOf( typeof ( short ) ) * 3;
+					return Memory.SizeOf( typeof ( short ) )*3;
 
 				case VertexElementType.Short4:
-					return Memory.SizeOf( typeof ( short ) ) * 4;
+					return Memory.SizeOf( typeof ( short ) )*4;
 
 				case VertexElementType.UByte4:
-					return Memory.SizeOf( typeof ( byte ) ) * 4;
+					return Memory.SizeOf( typeof ( byte ) )*4;
 			} // end switch
 
 			// keep the compiler happy
@@ -159,7 +158,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Utility method which returns the count of values in a given type.
+		///   Utility method which returns the count of values in a given type.
 		/// </summary>
 		public static int GetTypeCount( VertexElementType type )
 		{
@@ -202,20 +201,15 @@ namespace Axiom.Graphics
 			return 0;
 		}
 
-		/// <summary>
-		///		Returns proper enum for a base type multiplied by a value.  This is helpful
-		///		when working with tex coords especially since you might not know the number
-		///		of texture dimensions at runtime, and when creating the VertexBuffer you will
-		///		have to get a VertexElementType based on that amount to creating the VertexElement.
-		/// </summary>
-		/// <param name="type">Data type.</param>
-		/// <param name="count">Multiplier.</param>
-		/// <returns>
-		///     A <see cref="VertexElementType"/> that represents the requested type and count.
-		/// </returns>
-		/// <example>
-		///     MultiplyTypeCount(VertexElementType.Float1, 3) returns VertexElementType.Float3.
-		/// </example>
+		///<summary>
+		///  Returns proper enum for a base type multiplied by a value. This is helpful when working with tex coords especially since you might not know the number of texture dimensions at runtime, and when creating the VertexBuffer you will have to get a VertexElementType based on that amount to creating the VertexElement.
+		///</summary>
+		///<param name="type"> Data type. </param>
+		///<param name="count"> Multiplier. </param>
+		///<returns> A <see cref="VertexElementType" /> that represents the requested type and count. </returns>
+		///<example>
+		///  MultiplyTypeCount(VertexElementType.Float1, 3) returns VertexElementType.Float3.
+		///</example>
 		public static VertexElementType MultiplyTypeCount( VertexElementType type, int count )
 		{
 			switch ( type )
@@ -257,7 +251,6 @@ namespace Axiom.Graphics
 		#region Properties
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public short Source
 		{
@@ -268,7 +261,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Gets the offset into the buffer where this element starts.
+		///   Gets the offset into the buffer where this element starts.
 		/// </summary>
 		public int Offset
 		{
@@ -279,7 +272,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Gets the data format of this element.
+		///   Gets the data format of this element.
 		/// </summary>
 		public VertexElementType Type
 		{
@@ -290,7 +283,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Gets the meaning of this element.
+		///   Gets the meaning of this element.
 		/// </summary>
 		public VertexElementSemantic Semantic
 		{
@@ -301,7 +294,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Gets the index of this element, only applicable for repeating elements (like texcoords).
+		///   Gets the index of this element, only applicable for repeating elements (like texcoords).
 		/// </summary>
 		public int Index
 		{
@@ -312,7 +305,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Gets the size of this element in bytes.
+		///   Gets the size of this element in bytes.
 		/// </summary>
 		public int Size
 		{
@@ -327,12 +320,12 @@ namespace Axiom.Graphics
 		#region ICloneable Members
 
 		/// <summary>
-		///     Simple memberwise clone since all local fields are value types.
+		///   Simple memberwise clone since all local fields are value types.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		public object Clone()
 		{
-			return this.MemberwiseClone();
+			return MemberwiseClone();
 		}
 
 		#endregion

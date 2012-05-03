@@ -35,10 +35,6 @@
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-
-using Axiom.Animating;
 using Axiom.Collections;
 
 #endregion
@@ -46,7 +42,9 @@ using Axiom.Collections;
 namespace Axiom.Animating.Collections
 {
 	/// <summary>
-	/// Represents a collection of <see cref="Bone">Bones</see> that are sorted by key.
+	///   Represents a collection of <see cref="Bone">Bones</see> that are sorted by key.
 	/// </summary>
-	public class BoneCollection : AxiomSortedCollection<ushort, Bone> {}
+	public class BoneCollection : AxiomSortedCollection<ushort, Bone>
+	{
+	}
 }

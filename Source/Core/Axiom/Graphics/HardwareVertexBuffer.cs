@@ -38,21 +38,17 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
-using Axiom.Math;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-	/// <summary>
-	///		Describes the graphics API independent functionality required by a hardware
-	///		vertex buffer.  
-	/// </summary>
-	/// <remarks>
-	///		
-	/// </remarks>
+	///<summary>
+	///  Describes the graphics API independent functionality required by a hardware vertex buffer.
+	///</summary>
+	///<remarks>
+	///</remarks>
 	public abstract class HardwareVertexBuffer : HardwareBuffer
 	{
 		#region Member variables
@@ -67,15 +63,16 @@ namespace Axiom.Graphics
 		#region Construction and destruction
 
 		[OgreVersion( 1, 7, 2 )]
-		public HardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+		public HardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices,
+		                             BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
 			this.vertexDeclaration = vertexDeclaration;
 			this.numVertices = numVertices;
-			this.Manager = manager;
+			Manager = manager;
 
 			// calculate the size in bytes of this buffer
-			sizeInBytes = vertexDeclaration.GetVertexSize() * numVertices;
+			sizeInBytes = vertexDeclaration.GetVertexSize()*numVertices;
 
 			// create a shadow buffer if required
 			if ( useShadowBuffer )
@@ -89,13 +86,13 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2, "~HardwareVertexBuffer" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.Manager != null )
+					if ( Manager != null )
 					{
-						this.Manager.NotifyVertexBufferDestroyed( this );
+						Manager.NotifyVertexBufferDestroyed( this );
 					}
 
 					shadowBuffer.SafeDispose();
@@ -144,8 +141,7 @@ namespace Axiom.Graphics
 
 		#region IsInstanceData
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool isInstanceData;
+		[OgreVersion( 1, 7, 2790 )] protected bool isInstanceData;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public bool IsInstanceData
@@ -171,8 +167,7 @@ namespace Axiom.Graphics
 
 		#region InstanceDataStepRate
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected int instanceDataStepRate;
+		[OgreVersion( 1, 7, 2790 )] protected int instanceDataStepRate;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public int InstanceDataStepRate
@@ -201,9 +196,9 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		/// Checks if vertex instance data is supported by the render system
+		///   Checks if vertex instance data is supported by the render system
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		protected virtual bool CheckIfVertexInstanceDataIsSupported()
 		{
 			// Use the current render system

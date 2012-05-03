@@ -37,33 +37,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///     Interface representing a 'licensee' of a hardware buffer copy.
+	///   Interface representing a 'licensee' of a hardware buffer copy.
 	/// </summary>
 	/// <remarks>
-	///     Often it's useful to have temporary buffers which are used for working
-	///     but are not necessarily needed permanently. However, creating and 
-	///     destroying buffers is expensive, so we need a way to share these 
-	///     working areas, especially those based on existing fixed buffers. 
-	///     Classes implementing this interface represent a licensee of one of those 
-	///     temporary buffers, and must be implemented by any user of a temporary buffer 
-	///     if they wish to be notified when the license is expired. 
+	///   Often it's useful to have temporary buffers which are used for working but are not necessarily needed permanently. However, creating and destroying buffers is expensive, so we need a way to share these working areas, especially those based on existing fixed buffers. Classes implementing this interface represent a licensee of one of those temporary buffers, and must be implemented by any user of a temporary buffer if they wish to be notified when the license is expired.
 	/// </remarks>
 	public interface IHardwareBufferLicensee
 	{
 		#region Methods
 
 		/// <summary>
-		///     This method is called when the buffer license is expired and is about
-		///     to be returned to the shared pool.
+		///   This method is called when the buffer license is expired and is about to be returned to the shared pool.
 		/// </summary>
-		/// <param name="buffer"></param>
+		/// <param name="buffer"> </param>
 		void LicenseExpired( HardwareBuffer buffer );
 
 		#endregion Methods

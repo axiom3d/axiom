@@ -42,14 +42,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using System.IO;
-
-using Axiom.Graphics;
-using Axiom.Math;
-using Axiom.Collections;
-using Axiom.Graphics.Collections;
 using Axiom.Core.Collections;
+using Axiom.Graphics;
+using Axiom.Graphics.Collections;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -58,14 +54,10 @@ namespace Axiom.Core
 	public partial class StaticGeometry
 	{
 		/// <summary>
-		/// The details of a topological region which is the highest level of
-		/// partitioning for this class.
+		///   The details of a topological region which is the highest level of partitioning for this class.
 		/// </summary>
 		/// <remarks>
-		/// The size &amp; shape of regions entirely depends on the SceneManager
-		/// specific implementation. It is a MovableObject since it will be
-		/// attached to a node based on the local centre - in practice it
-		/// won't actually move (although in theory it could).
+		///   The size &amp; shape of regions entirely depends on the SceneManager specific implementation. It is a MovableObject since it will be attached to a node based on the local centre - in practice it won't actually move (although in theory it could).
 		/// </remarks>
 		public class Region : MovableObject, IDisposable
 		{
@@ -77,13 +69,17 @@ namespace Axiom.Core
 				protected HardwareVertexBuffer positionBuffer;
 				protected HardwareVertexBuffer wBuffer;
 
-				public RegionShadowRenderable( Region parent, HardwareIndexBuffer indexBuffer, VertexData vertexData, bool createSeparateLightCap, bool isLightCap )
+				public RegionShadowRenderable( Region parent, HardwareIndexBuffer indexBuffer, VertexData vertexData,
+				                               bool createSeparateLightCap, bool isLightCap )
 				{
 					throw new NotImplementedException();
 				}
 
-				public RegionShadowRenderable( Region parent, HardwareIndexBuffer indexBuffer, VertexData vertexData, bool createSeparateLightCap )
-					: this( parent, indexBuffer, vertexData, createSeparateLightCap, false ) {}
+				public RegionShadowRenderable( Region parent, HardwareIndexBuffer indexBuffer, VertexData vertexData,
+				                               bool createSeparateLightCap )
+					: this( parent, indexBuffer, vertexData, createSeparateLightCap, false )
+				{
+				}
 
 				public HardwareVertexBuffer PositionBuffer
 				{
@@ -232,9 +228,9 @@ namespace Axiom.Core
 			public Region( StaticGeometry parent, string name, SceneManager mgr, UInt32 regionID, Vector3 center )
 				: base( name )
 			{
-				this.MovableType = "StaticGeometry";
+				MovableType = "StaticGeometry";
 				this.parent = parent;
-				this.sceneMgr = mgr;
+				sceneMgr = mgr;
 				this.regionID = regionID;
 				this.center = center;
 				queuedSubMeshes = new List<QueuedSubMesh>();
@@ -259,7 +255,7 @@ namespace Axiom.Core
 				{
 					this.lodStrategy = lodStrategy;
 					// First LOD mandatory, and always from base lod value
-					this.lodValues.Add( this.lodStrategy.BaseValue );
+					lodValues.Add( this.lodStrategy.BaseValue );
 				}
 				else
 				{
@@ -272,7 +268,8 @@ namespace Axiom.Core
 				var lodLevels = mesh.LodLevelCount;
 				if ( qsm.geometryLodList.Count != lodLevels )
 				{
-					var msg = string.Format( "QueuedSubMesh '{0}' lod count of {1} does not match parent count of {2}", qsm.submesh.Name, qsm.geometryLodList.Count, lodLevels );
+					var msg = string.Format( "QueuedSubMesh '{0}' lod count of {1} does not match parent count of {2}",
+					                         qsm.submesh.Name, qsm.geometryLodList.Count, lodLevels );
 					throw new AxiomException( msg );
 				}
 
@@ -367,7 +364,7 @@ namespace Axiom.Core
 				// Determine active lod
 				var diff = cam.DerivedPosition - center;
 				// Distance from the edge of the bounding sphere
-				camDistanceSquared = diff.LengthSquared - boundingRadius * boundingRadius;
+				camDistanceSquared = diff.LengthSquared - boundingRadius*boundingRadius;
 				// Clamp to 0
 				camDistanceSquared = Utility.Max( 0.0f, camDistanceSquared );
 
@@ -406,7 +403,9 @@ namespace Axiom.Core
 				}
 			}
 
-			public IEnumerator GetShadowVolumeRenderableIterator( ShadowTechnique shadowTechnique, Light light, HardwareIndexBuffer indexBuffer, bool extrudeVertices, float extrusionDistance, ulong flags )
+			public IEnumerator GetShadowVolumeRenderableIterator( ShadowTechnique shadowTechnique, Light light,
+			                                                      HardwareIndexBuffer indexBuffer, bool extrudeVertices,
+			                                                      float extrusionDistance, ulong flags )
 			{
 				Debug.Assert( indexBuffer != null, "Only external index buffers are supported right now" );
 				Debug.Assert( indexBuffer.Type == IndexType.Size16, "Only 16-bit indexes supported for now" );
@@ -414,12 +413,13 @@ namespace Axiom.Core
 				// Calculate the object space light details
 				var lightPos = light.GetAs4DVector();
 				var world2Obj = parentNode.FullTransform.Inverse();
-				lightPos = world2Obj * lightPos;
+				lightPos = world2Obj*lightPos;
 
 				// We need to search the edge list for silhouette edges
 				if ( edgeList == null )
 				{
-					throw new Exception( "You enabled stencil shadows after the buid process!  In " + "Region.GetShadowVolumeRenderableIterator" );
+					throw new Exception( "You enabled stencil shadows after the buid process!  In " +
+					                     "Region.GetShadowVolumeRenderableIterator" );
 				}
 
 				// Init shadow renderable list if required
@@ -470,7 +470,7 @@ namespace Axiom.Core
 			#endregion
 
 			/// <summary>
-			///     Remove the region from the scene graph
+			///   Remove the region from the scene graph
 			/// </summary>
 			protected override void dispose( bool disposeManagedResources )
 			{
@@ -497,9 +497,9 @@ namespace Axiom.Core
 			#region MovableObject Implementation
 
 			/// <summary>
-			/// Get the 'type flags' for this <see cref="Region"/>.
+			///   Get the 'type flags' for this <see cref="Region" /> .
 			/// </summary>
-			/// <seealso cref="MovableObject.TypeFlags"/>
+			/// <seealso cref="MovableObject.TypeFlags" />
 			public override uint TypeFlags
 			{
 				get

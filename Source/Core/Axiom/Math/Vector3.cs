@@ -54,30 +54,34 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.Math
 {
-	/// <summary>
-	///    Standard 3-dimensional vector.
-	/// </summary>
-	/// <remarks>
-	///	    A direction in 3D space represented as distances along the 3
-	///	    orthoganal axes (x, y, z). Note that positions, directions and
-	///	    scaling factors can be represented by a vector, depending on how
-	///	    you interpret the values.
-	/// </remarks>
+	///<summary>
+	///  Standard 3-dimensional vector.
+	///</summary>
+	///<remarks>
+	///  A direction in 3D space represented as distances along the 3 orthoganal axes (x, y, z). Note that positions, directions and scaling factors can be represented by a vector, depending on how you interpret the values.
+	///</remarks>
 	[StructLayout( LayoutKind.Sequential )]
 	public struct Vector3
 	{
 		#region Fields
 
-		/// <summary>X component.</summary>
+		/// <summary>
+		///   X component.
+		/// </summary>
 		public Real x;
 
-		/// <summary>Y component.</summary>
+		/// <summary>
+		///   Y component.
+		/// </summary>
 		public Real y;
 
-		/// <summary>Z component.</summary>
+		/// <summary>
+		///   Z component.
+		/// </summary>
 		public Real z;
 
-		private static readonly Vector3 positiveInfinityVector = new Vector3( Real.PositiveInfinity, Real.PositiveInfinity, Real.PositiveInfinity );
+		private static readonly Vector3 positiveInfinityVector = new Vector3( Real.PositiveInfinity, Real.PositiveInfinity,
+		                                                                      Real.PositiveInfinity );
 
 		public static Vector3 PositiveInfinity
 		{
@@ -87,7 +91,8 @@ namespace Axiom.Math
 			}
 		}
 
-		private static readonly Vector3 negativeInfinityVector = new Vector3( Real.NegativeInfinity, Real.NegativeInfinity, Real.NegativeInfinity );
+		private static readonly Vector3 negativeInfinityVector = new Vector3( Real.NegativeInfinity, Real.NegativeInfinity,
+		                                                                      Real.NegativeInfinity );
 
 		public static Vector3 NegativeInfinity
 		{
@@ -120,9 +125,9 @@ namespace Axiom.Math
 
 		#region Constructors
 
-		/// <summary>
-		///		Creates a new 3 dimensional Vector.
-		/// </summary>
+		///<summary>
+		///  Creates a new 3 dimensional Vector.
+		///</summary>
 		public Vector3( Real x, Real y, Real z )
 		{
 			this.x = x;
@@ -130,36 +135,38 @@ namespace Axiom.Math
 			this.z = z;
 		}
 
-		/// <summary>
-		///		Creates a new 3 dimensional Vector.
-		/// </summary>
+		///<summary>
+		///  Creates a new 3 dimensional Vector.
+		///</summary>
 		public Vector3( Real unitDimension )
-			: this( unitDimension, unitDimension, unitDimension ) {}
+			: this( unitDimension, unitDimension, unitDimension )
+		{
+		}
 
-		/// <summary>
-		///		Creates a new 3 dimensional Vector.
-		/// </summary>
+		///<summary>
+		///  Creates a new 3 dimensional Vector.
+		///</summary>
 		public Vector3( Real[] coordinates )
 		{
 			if ( coordinates.Length != 3 )
 			{
 				throw new ArgumentException( "The coordinates array must be of length 3 to specify the x, y, and z coordinates." );
 			}
-			this.x = coordinates[ 0 ];
-			this.y = coordinates[ 1 ];
-			this.z = coordinates[ 2 ];
+			x = coordinates[ 0 ];
+			y = coordinates[ 1 ];
+			z = coordinates[ 2 ];
 		}
 
 		#endregion
 
 		#region Overloaded operators + CLS compliant method equivalents
 
-		/// <summary>
-		///		User to compare two Vector3 instances for equality.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns>true or false</returns>
+		///<summary>
+		///  User to compare two Vector3 instances for equality.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> true or false </returns>
 		public static bool operator ==( Vector3 left, Vector3 right )
 		{
 			if ( left.IsInvalid && right.IsInvalid )
@@ -173,12 +180,12 @@ namespace Axiom.Math
 			return ( left.x == right.x && left.y == right.y && left.z == right.z );
 		}
 
-		/// <summary>
-		///		User to compare two Vector3 instances for inequality.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns>true or false</returns>
+		///<summary>
+		///  User to compare two Vector3 instances for inequality.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> true or false </returns>
 		public static bool operator !=( Vector3 left, Vector3 right )
 		{
 			if ( left.IsInvalid && right.IsInvalid )
@@ -192,78 +199,78 @@ namespace Axiom.Math
 			return ( left.x != right.x || left.y != right.y || left.z != right.z );
 		}
 
-		/// <summary>
-		///		Used when a Vector3 is multiplied by another vector.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used when a Vector3 is multiplied by another vector.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Vector3 Multiply( Vector3 left, Vector3 right )
 		{
-			return left * right;
+			return left*right;
 		}
 
-		/// <summary>
-		///		Used when a Vector3 is multiplied by another vector.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used when a Vector3 is multiplied by another vector.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Vector3 operator *( Vector3 left, Vector3 right )
 		{
 			//return new Vector3( left.x * right.x, left.y * right.y, left.z * right.z );
 			Vector3 retVal;
-			retVal.x = left.x * right.x;
-			retVal.y = left.y * right.y;
-			retVal.z = left.z * right.z;
+			retVal.x = left.x*right.x;
+			retVal.y = left.y*right.y;
+			retVal.z = left.z*right.z;
 			return retVal;
 		}
 
 		/// <summary>
-		/// Used to divide a vector by a scalar value.
+		///   Used to divide a vector by a scalar value.
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="scalar"></param>
-		/// <returns></returns>
+		/// <param name="left"> </param>
+		/// <param name="scalar"> </param>
+		/// <returns> </returns>
 		public static Vector3 Divide( Vector3 left, Real scalar )
 		{
-			return left / scalar;
+			return left/scalar;
 		}
 
-		/// <summary>
-		///		Used when a Vector3 is divided by another vector.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used when a Vector3 is divided by another vector.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Vector3 operator /( Vector3 left, Vector3 right )
 		{
 			Vector3 vector;
 
-			vector.x = left.x / right.x;
-			vector.y = left.y / right.y;
-			vector.z = left.z / right.z;
+			vector.x = left.x/right.x;
+			vector.y = left.y/right.y;
+			vector.z = left.z/right.z;
 
 			return vector;
 		}
 
-		/// <summary>
-		///		Used when a Vector3 is divided by another vector.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used when a Vector3 is divided by another vector.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Vector3 Divide( Vector3 left, Vector3 right )
 		{
-			return left / right;
+			return left/right;
 		}
 
 		/// <summary>
-		/// Used to divide a vector by a scalar value.
+		///   Used to divide a vector by a scalar value.
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="scalar"></param>
-		/// <returns></returns>
+		/// <param name="left"> </param>
+		/// <param name="scalar"> </param>
+		/// <returns> </returns>
 		public static Vector3 operator /( Vector3 left, Real scalar )
 		{
 			Debug.Assert( scalar != 0.0f, "Cannot divide a Vector3 by zero." );
@@ -271,41 +278,41 @@ namespace Axiom.Math
 			Vector3 vector;
 
 			// get the inverse of the scalar up front to avoid doing multiple divides later
-			var inverse = 1.0f / scalar;
+			var inverse = 1.0f/scalar;
 
-			vector.x = left.x * inverse;
-			vector.y = left.y * inverse;
-			vector.z = left.z * inverse;
+			vector.x = left.x*inverse;
+			vector.y = left.y*inverse;
+			vector.z = left.z*inverse;
 
 			return vector;
 		}
 
 
-		/// <summary>
-		///		Used when a Vector3 is added to another Vector3.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used when a Vector3 is added to another Vector3.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Vector3 Add( Vector3 left, Vector3 right )
 		{
 			return left + right;
 		}
 
 		/// <summary>
-		/// Add a scalar to a Vector3
+		///   Add a scalar to a Vector3
 		/// </summary>
 		public static Vector3 Add( Vector3 v, Real fScalar )
 		{
 			return new Vector3( v.x + fScalar, v.y + fScalar, v.z + fScalar );
 		}
 
-		/// <summary>
-		///		Used when a Vector3 is added to another Vector3.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used when a Vector3 is added to another Vector3.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Vector3 operator +( Vector3 left, Vector3 right )
 		{
 			return new Vector3( left.x + right.x, left.y + right.y, left.z + right.z );
@@ -316,110 +323,109 @@ namespace Axiom.Math
 			return new Vector3( v.x + fScalar, v.y + fScalar, v.z + fScalar );
 		}
 
-		/// <summary>
-		///		Used when a Vector3 is multiplied by a scalar value.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="scalar"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used when a Vector3 is multiplied by a scalar value.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="scalar"> </param>
+		///<returns> </returns>
 		public static Vector3 Multiply( Vector3 left, Real scalar )
 		{
-			return left * scalar;
+			return left*scalar;
 		}
 
-		/// <summary>
-		///		Used when a Vector3 is multiplied by a scalar value.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="scalar"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used when a Vector3 is multiplied by a scalar value.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="scalar"> </param>
+		///<returns> </returns>
 		public static Vector3 operator *( Vector3 left, Real scalar )
 		{
 			//return new Vector3( left.x * scalar, left.y * scalar, left.z * scalar );
 			Vector3 retVal;
-			retVal.x = left.x * scalar;
-			retVal.y = left.y * scalar;
-			retVal.z = left.z * scalar;
+			retVal.x = left.x*scalar;
+			retVal.y = left.y*scalar;
+			retVal.z = left.z*scalar;
 			return retVal;
 		}
 
-		/// <summary>
-		///		Used when a scalar value is multiplied by a Vector3.
-		/// </summary>
-		/// <param name="scalar"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used when a scalar value is multiplied by a Vector3.
+		///</summary>
+		///<param name="scalar"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Vector3 Multiply( Real scalar, Vector3 right )
 		{
-			return scalar * right;
+			return scalar*right;
 		}
 
-		/// <summary>
-		///		Used when a scalar value is multiplied by a Vector3.
-		/// </summary>
-		/// <param name="scalar"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used when a scalar value is multiplied by a Vector3.
+		///</summary>
+		///<param name="scalar"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Vector3 operator *( Real scalar, Vector3 right )
 		{
 			//return new Vector3( right.x * scalar, right.y * scalar, right.z * scalar );
 			Vector3 retVal;
-			retVal.x = right.x * scalar;
-			retVal.y = right.y * scalar;
-			retVal.z = right.z * scalar;
+			retVal.x = right.x*scalar;
+			retVal.y = right.y*scalar;
+			retVal.z = right.z*scalar;
 			return retVal;
 		}
 
-		/// <summary>
-		///		Used to subtract a Vector3 from another Vector3.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used to subtract a Vector3 from another Vector3.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Vector3 Subtract( Vector3 left, Vector3 right )
 		{
 			return left - right;
 		}
 
-		/// <summary>
-		///		Used to subtract a Vector3 from another Vector3.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used to subtract a Vector3 from another Vector3.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Vector3 operator -( Vector3 left, Vector3 right )
 		{
 			return new Vector3( left.x - right.x, left.y - right.y, left.z - right.z );
 		}
 
 
-		/// <summary>
-		///		Used to negate the elements of a vector.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used to negate the elements of a vector.
+		///</summary>
+		///<param name="left"> </param>
+		///<returns> </returns>
 		public static Vector3 Negate( Vector3 left )
 		{
 			return -left;
 		}
 
-		/// <summary>
-		///		Used to negate the elements of a vector.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used to negate the elements of a vector.
+		///</summary>
+		///<param name="left"> </param>
+		///<returns> </returns>
 		public static Vector3 operator -( Vector3 left )
 		{
 			return new Vector3( -left.x, -left.y, -left.z );
 		}
 
 		/// <summary>
-		///    Returns true if the vector's scalar components are all smaller
-		///    that the ones of the vector it is compared against.
+		///   Returns true if the vector's scalar components are all smaller that the ones of the vector it is compared against.
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		/// <param name="left"> </param>
+		/// <param name="right"> </param>
+		/// <returns> </returns>
 		public static bool operator >( Vector3 left, Vector3 right )
 		{
 			if ( left.x > right.x && left.y > right.y && left.z > right.z )
@@ -431,12 +437,11 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		///    Returns true if the vector's scalar components are all greater
-		///    that the ones of the vector it is compared against.
+		///   Returns true if the vector's scalar components are all greater that the ones of the vector it is compared against.
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		/// <param name="left"> </param>
+		/// <param name="right"> </param>
+		/// <returns> </returns>
 		public static bool operator <( Vector3 left, Vector3 right )
 		{
 			if ( left.x < right.x && left.y < right.y && left.z < right.z )
@@ -452,12 +457,12 @@ namespace Axiom.Math
 			return new Vector4( vec3.x, vec3.y, vec3.z, 1.0f );
 		}
 
-		/// <summary>
-		///		Used to access a Vector by index 0 = x, 1 = y, 2 = z.  
-		/// </summary>
-		/// <remarks>
-		///		Uses unsafe pointer arithmetic to reduce the code required.
-		///	</remarks>
+		///<summary>
+		///  Used to access a Vector by index 0 = x, 1 = y, 2 = z.
+		///</summary>
+		///<remarks>
+		///  Uses unsafe pointer arithmetic to reduce the code required.
+		///</remarks>
 		public Real this[ int index ]
 		{
 			get
@@ -512,29 +517,23 @@ namespace Axiom.Math
 		#region Public methods
 
 		/// <summary>
-		/// Returns the distance to another vector.
+		///   Returns the distance to another vector.
 		/// </summary>
-		/// <param name="second"></param>
-		/// <returns></returns>
+		/// <param name="second"> </param>
+		/// <returns> </returns>
 		public Real Distance( Vector3 second )
 		{
 			return ( this - second ).Length;
 		}
 
 		/// <summary>
-		///     Returns the square of the distance to another vector.
-		/// <remarks>
-		///     This method is for efficiency - calculating the actual
-		///     distance to another vector requires a square root, which is
-		///     expensive in terms of the operations required. This method
-		///     returns the square of the distance to another vector, i.e.
-		///     the same as the distance but before the square root is taken.
-		///     Use this if you want to find the longest / shortest distance
-		///     without incurring the square root.
-		/// </remarks>
+		///   Returns the square of the distance to another vector.
+		///   <remarks>
+		///     This method is for efficiency - calculating the actual distance to another vector requires a square root, which is expensive in terms of the operations required. This method returns the square of the distance to another vector, i.e. the same as the distance but before the square root is taken. Use this if you want to find the longest / shortest distance without incurring the square root.
+		///   </remarks>
 		/// </summary>
-		/// <param name="second"></param>
-		/// <returns></returns>
+		/// <param name="second"> </param>
+		/// <returns> </returns>
 		public Real DistanceSquared( Vector3 second )
 		{
 			return ( this - second ).LengthSquared;
@@ -558,22 +557,22 @@ namespace Axiom.Math
 
 		public bool IsAnyComponentGreaterThan( Vector3 vector )
 		{
-			return ( this.x > vector.x || this.y > vector.y || this.z > vector.z );
+			return ( x > vector.x || y > vector.y || z > vector.z );
 		}
 
 		public bool IsAnyComponentGreaterThanOrEqualTo( Vector3 vector )
 		{
-			return ( this.x >= vector.x || this.y >= vector.y || this.z >= vector.z );
+			return ( x >= vector.x || y >= vector.y || z >= vector.z );
 		}
 
 		public bool IsAnyComponentLessThan( Vector3 vector )
 		{
-			return ( this.x < vector.x || this.y < vector.y || this.z < vector.z );
+			return ( x < vector.x || y < vector.y || z < vector.z );
 		}
 
 		public bool IsAnyComponentLessThanOrEqualTo( Vector3 vector )
 		{
-			return ( this.x <= vector.x || this.y <= vector.y || this.z <= vector.z );
+			return ( x <= vector.x || y <= vector.y || z <= vector.z );
 		}
 
 		public Vector3 Offset( Real x, Real y, Real z )
@@ -582,65 +581,54 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		/// Performs a Dot Product operation on 2 vectors.
+		///   Performs a Dot Product operation on 2 vectors.
 		/// </summary>
 		/// <remarks>
-		/// A dot product of two vectors v1 and v2 equals to |v1|*|v2|*cos(fi)
-		/// where fi is the angle between the vectors and |v1| and |v2| are the vector lengths.
-		/// For unit vectors (whose length is one) the dot product will obviously be just cos(fi).
-		/// For example, if the unit vectors are parallel the result is cos(0) = 1.0f,
-		/// if they are perpendicular the result is cos(PI/2) = 0.0f.
-		/// The dot product may be calculated on vectors with any length however.
-		/// A zero vector is treated as perpendicular to any vector (result is 0.0f).
+		///   A dot product of two vectors v1 and v2 equals to |v1|*|v2|*cos(fi) where fi is the angle between the vectors and |v1| and |v2| are the vector lengths. For unit vectors (whose length is one) the dot product will obviously be just cos(fi). For example, if the unit vectors are parallel the result is cos(0) = 1.0f, if they are perpendicular the result is cos(PI/2) = 0.0f. The dot product may be calculated on vectors with any length however. A zero vector is treated as perpendicular to any vector (result is 0.0f).
 		/// </remarks>
-		/// <param name="vector">The vector to perform the Dot Product against.</param>
-		/// <returns>Products of vector lengths and cosine of the angle between them. </returns>
+		/// <param name="vector"> The vector to perform the Dot Product against. </param>
+		/// <returns> Products of vector lengths and cosine of the angle between them. </returns>
 		public Real Dot( Vector3 vector )
 		{
-			return x * vector.x + y * vector.y + z * vector.z;
+			return x*vector.x + y*vector.y + z*vector.z;
 		}
 
 		/// <summary>
-		///     Calculates the absolute dot (scalar) product of this vector with another.
+		///   Calculates the absolute dot (scalar) product of this vector with another.
 		/// </summary>
 		/// <remarks>
-		///     This function work similar dotProduct, except it use absolute value
-		///     of each component of the vector to computing.
+		///   This function work similar dotProduct, except it use absolute value of each component of the vector to computing.
 		/// </remarks>
-		/// <param name="vec">
-		///     vec Vector with which to calculate the absolute dot product (together
-		///     with this one).
-		/// </param>
-		/// <returns>A float representing the absolute dot product value.</returns>
+		/// <param name="vec"> vec Vector with which to calculate the absolute dot product (together with this one). </param>
+		/// <returns> A float representing the absolute dot product value. </returns>
 		public Real AbsDot( Vector3 vec )
 		{
-			return System.Math.Abs( x * vec.x ) + System.Math.Abs( y * vec.y ) + System.Math.Abs( z * vec.z );
+			return System.Math.Abs( x*vec.x ) + System.Math.Abs( y*vec.y ) + System.Math.Abs( z*vec.z );
 		}
 
-		/// <summary>
-		///		Performs a Cross Product operation on 2 vectors, which returns a vector that is perpendicular
-		///		to the intersection of the 2 vectors.  Useful for finding face normals.
-		/// </summary>
-		/// <param name="vector">A vector to perform the Cross Product against.</param>
-		/// <returns>A new Vector3 perpedicular to the 2 original vectors.</returns>
+		///<summary>
+		///  Performs a Cross Product operation on 2 vectors, which returns a vector that is perpendicular to the intersection of the 2 vectors. Useful for finding face normals.
+		///</summary>
+		///<param name="vector"> A vector to perform the Cross Product against. </param>
+		///<returns> A new Vector3 perpedicular to the 2 original vectors. </returns>
 		public Vector3 Cross( Vector3 vector )
 		{
-			return new Vector3( ( this.y * vector.z ) - ( this.z * vector.y ), ( this.z * vector.x ) - ( this.x * vector.z ), ( this.x * vector.y ) - ( this.y * vector.x ) );
+			return new Vector3( ( y*vector.z ) - ( z*vector.y ), ( z*vector.x ) - ( x*vector.z ), ( x*vector.y ) - ( y*vector.x ) );
 		}
 
-		/// <summary>
-		///		Finds a vector perpendicular to this one.
-		/// </summary>
-		/// <returns></returns>
+		///<summary>
+		///  Finds a vector perpendicular to this one.
+		///</summary>
+		///<returns> </returns>
 		public Vector3 Perpendicular()
 		{
-			var result = this.Cross( Vector3.UnitX );
+			var result = Cross( Vector3.UnitX );
 
 			// check length
 			if ( result.LengthSquared < Real.Epsilon )
 			{
 				// This vector is the Y axis multiplied by a scalar, so we have to use another axis
-				result = this.Cross( Vector3.UnitY );
+				result = Cross( Vector3.UnitY );
 			}
 
 			return result;
@@ -663,60 +651,66 @@ namespace Axiom.Math
 
 		public static Vector3 SymmetricRandom( Real xMult, Real yMult, Real zMult )
 		{
-			return new Vector3( ( xMult == 0 ) ? 0 : xMult * Utility.SymmetricRandom(), ( yMult == 0 ) ? 0 : yMult * Utility.SymmetricRandom(), ( zMult == 0 ) ? 0 : zMult * Utility.SymmetricRandom() );
+			return new Vector3( ( xMult == 0 ) ? 0 : xMult*Utility.SymmetricRandom(),
+			                    ( yMult == 0 ) ? 0 : yMult*Utility.SymmetricRandom(),
+			                    ( zMult == 0 ) ? 0 : zMult*Utility.SymmetricRandom() );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="angle"></param>
-		/// <param name="up"></param>
-		/// <returns></returns>
+		/// <param name="angle"> </param>
+		/// <param name="up"> </param>
+		/// <returns> </returns>
 		public Vector3 RandomDeviant( Real angle, Vector3 up )
 		{
-			var newUp = ( up == Vector3.Zero ) ? this.Perpendicular() : up;
+			var newUp = ( up == Vector3.Zero ) ? Perpendicular() : up;
 
 			// rotate up vector by random amount around this
-			var q = Quaternion.FromAngleAxis( Utility.UnitRandom() * Utility.TWO_PI, this );
-			newUp = q * newUp;
+			var q = Quaternion.FromAngleAxis( Utility.UnitRandom()*Utility.TWO_PI, this );
+			newUp = q*newUp;
 
 			// finally, rotate this by given angle around randomized up vector
 			q = Quaternion.FromAngleAxis( angle, newUp );
 
-			return q * this;
+			return q*this;
 		}
 
 		///<overloads>
-		///<summary>Returns wether this vector is within a positional tolerance of another vector</summary>
-		///<param name="right">The vector to compare with</param>
+		///  <summary>
+		///    Returns wether this vector is within a positional tolerance of another vector
+		///  </summary>
+		///  <param name="right"> The vector to compare with </param>
 		///</overloads>
-		///<remarks>Uses a defalut tolerance of 1E-03</remarks>
+		///<remarks>
+		///  Uses a defalut tolerance of 1E-03
+		///</remarks>
 		public bool PositionEquals( Vector3 right )
 		{
 			return PositionEquals( right, 1e-03f );
 		}
 
-		///<param name="right">The vector to compare with</param>
-		/// <param name="tolerance">The amount that each element of the vector may vary by and still be considered equal.</param>
+		///<param name="right"> The vector to compare with </param>
+		///<param name="tolerance"> The amount that each element of the vector may vary by and still be considered equal. </param>
 		public bool PositionEquals( Vector3 right, Real tolerance )
 		{
-			return Utility.RealEqual( x, right.x, tolerance ) && Utility.RealEqual( y, right.y, tolerance ) && Utility.RealEqual( z, right.z, tolerance );
+			return Utility.RealEqual( x, right.x, tolerance ) && Utility.RealEqual( y, right.y, tolerance ) &&
+			       Utility.RealEqual( z, right.z, tolerance );
 		}
 
-		/// <summary>
-		///		Finds the midpoint between the supplied Vector and this vector.
-		/// </summary>
-		/// <param name="vector"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Finds the midpoint between the supplied Vector and this vector.
+		///</summary>
+		///<param name="vector"> </param>
+		///<returns> </returns>
 		public Vector3 MidPoint( Vector3 vector )
 		{
-			return new Vector3( ( this.x + vector.x ) * 0.5f, ( this.y + vector.y ) * 0.5f, ( this.z + vector.z ) * 0.5f );
+			return new Vector3( ( x + vector.x )*0.5f, ( y + vector.y )*0.5f, ( z + vector.z )*0.5f );
 		}
 
-		/// <summary>
-		///		Compares the supplied vector and updates it's x/y/z components of they are higher in value.
-		/// </summary>
-		/// <param name="compare"></param>
+		///<summary>
+		///  Compares the supplied vector and updates it's x/y/z components of they are higher in value.
+		///</summary>
+		///<param name="compare"> </param>
 		public void Ceil( Vector3 compare )
 		{
 			if ( compare.x > x )
@@ -733,11 +727,11 @@ namespace Axiom.Math
 			}
 		}
 
-		/// <summary>
-		///		Compares the supplied vector and updates it's x/y/z components of they are lower in value.
-		/// </summary>
-		/// <param name="compare"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Compares the supplied vector and updates it's x/y/z components of they are lower in value.
+		///</summary>
+		///<param name="compare"> </param>
+		///<returns> </returns>
 		public void Floor( Vector3 compare )
 		{
 			if ( compare.x < x )
@@ -764,35 +758,33 @@ namespace Axiom.Math
 			return Utility.Abs( x - other.x ) < limit && Utility.Abs( y - other.y ) < limit && Utility.Abs( z - other.z ) < limit;
 		}
 
-		/// <summary>
-		///		Gets the shortest arc quaternion to rotate this vector to the destination vector. 
-		/// </summary>
-		/// <remarks>
-		///		Don't call this if you think the dest vector can be close to the inverse
-		///		of this vector, since then ANY axis of rotation is ok.
-		///	</remarks>
+		///<summary>
+		///  Gets the shortest arc quaternion to rotate this vector to the destination vector.
+		///</summary>
+		///<remarks>
+		///  Don't call this if you think the dest vector can be close to the inverse of this vector, since then ANY axis of rotation is ok.
+		///</remarks>
 		public Quaternion GetRotationTo( Vector3 destination )
 		{
 			return GetRotationTo( destination, Vector3.Zero );
 		}
 
-		/// <summary>
-		/// Gets the shortest arc quaternion to rotate this vector to the destination vector. 
-		/// </summary>
-		/// <param name="destination"></param>
-		/// <param name="fallbackAxis"></param>
-		/// <returns></returns>
-		/// <remarks>
-		///		Don't call this if you think the dest vector can be close to the inverse
-		///		of this vector, since then ANY axis of rotation is ok.
-		///	</remarks>
+		///<summary>
+		///  Gets the shortest arc quaternion to rotate this vector to the destination vector.
+		///</summary>
+		///<param name="destination"> </param>
+		///<param name="fallbackAxis"> </param>
+		///<returns> </returns>
+		///<remarks>
+		///  Don't call this if you think the dest vector can be close to the inverse of this vector, since then ANY axis of rotation is ok.
+		///</remarks>
 		public Quaternion GetRotationTo( Vector3 destination, Vector3 fallbackAxis )
 		{
 			// Based on Stan Melax's article in Game Programming Gems
 			Quaternion q;
 
 			// Copy, since cannot modify local
-			var v0 = new Vector3( this.x, this.y, this.z );
+			var v0 = new Vector3( x, y, z );
 			var v1 = destination;
 
 			// normalize both vectors 
@@ -831,13 +823,13 @@ namespace Axiom.Math
 			}
 			else
 			{
-				var s = Utility.Sqrt( ( 1 + d ) * 2 );
-				var inverse = 1 / s;
+				var s = Utility.Sqrt( ( 1 + d )*2 );
+				var inverse = 1/s;
 
-				q.x = c.x * inverse;
-				q.y = c.y * inverse;
-				q.z = c.z * inverse;
-				q.w = s * 0.5f;
+				q.x = c.x*inverse;
+				q.y = c.y*inverse;
+				q.z = c.z*inverse;
+				q.w = s*0.5f;
 			}
 			return q;
 		}
@@ -849,45 +841,41 @@ namespace Axiom.Math
 			return vec;
 		}
 
-		/// <summary>
-		///		Normalizes the vector.
-		/// </summary>
-		/// <remarks>
-		///		This method normalises the vector such that it's
-		///		length / magnitude is 1. The result is called a unit vector.
-		///		<p/>
-		///		This function will not crash for zero-sized vectors, but there
-		///		will be no changes made to their components.
-		///	</remarks>
-		///	<returns>The previous length of the vector.</returns>
+		///<summary>
+		///  Normalizes the vector.
+		///</summary>
+		///<remarks>
+		///  This method normalises the vector such that it's length / magnitude is 1. The result is called a unit vector. <p /> This function will not crash for zero-sized vectors, but there will be no changes made to their components.
+		///</remarks>
+		///<returns> The previous length of the vector. </returns>
 		public Real Normalize()
 		{
-			var length = Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
+			var length = Utility.Sqrt( x*x + y*y + z*z );
 
 			// Will also work for zero-sized vectors, but will change nothing
 			if ( length > Real.Epsilon )
 			{
-				var inverseLength = 1.0f / length;
+				var inverseLength = 1.0f/length;
 
-				this.x *= inverseLength;
-				this.y *= inverseLength;
-				this.z *= inverseLength;
+				x *= inverseLength;
+				y *= inverseLength;
+				z *= inverseLength;
 			}
 
 			return length;
 		}
 
 		/// <summary>
-		///    Calculates a reflection vector to the plane with the given normal.
+		///   Calculates a reflection vector to the plane with the given normal.
 		/// </summary>
 		/// <remarks>
-		///    Assumes this vector is pointing AWAY from the plane, invert if not.
+		///   Assumes this vector is pointing AWAY from the plane, invert if not.
 		/// </remarks>
-		/// <param name="normal">Normal vector on which this vector will be reflected.</param>
-		/// <returns></returns>
+		/// <param name="normal"> Normal vector on which this vector will be reflected. </param>
+		/// <returns> </returns>
 		public Vector3 Reflect( Vector3 normal )
 		{
-			return this - ( 2 * this.Dot( normal ) * normal );
+			return this - ( 2*Dot( normal )*normal );
 		}
 
 		#endregion
@@ -898,19 +886,19 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return this.x == 0f && this.y == 0f && this.z == 0f;
+				return x == 0f && y == 0f && z == 0f;
 			}
 		}
 
 		/// <summary>
-		/// Returns true if this vector is zero length.
+		///   Returns true if this vector is zero length.
 		/// </summary>
 		public bool IsZeroLength
 		{
 			get
 			{
-				var sqlen = ( x * x ) + ( y * y ) + ( z * z );
-				return ( sqlen < ( 1e-06f * 1e-06f ) );
+				var sqlen = ( x*x ) + ( y*y ) + ( z*z );
+				return ( sqlen < ( 1e-06f*1e-06f ) );
 			}
 		}
 
@@ -918,40 +906,32 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return Real.IsNaN( this.x ) || Real.IsNaN( this.y ) || Real.IsNaN( this.z );
+				return Real.IsNaN( x ) || Real.IsNaN( y ) || Real.IsNaN( z );
 			}
 		}
 
 		/// <summary>
-		///    Gets the length (magnitude) of this Vector3.  The Sqrt operation is expensive, so 
-		///    only use this if you need the exact length of the Vector.  If vector lengths are only going
-		///    to be compared, use LengthSquared instead.
+		///   Gets the length (magnitude) of this Vector3. The Sqrt operation is expensive, so only use this if you need the exact length of the Vector. If vector lengths are only going to be compared, use LengthSquared instead.
 		/// </summary>
 		public Real Length
 		{
 			get
 			{
-				return Utility.Sqrt( this.x * this.x + this.y * this.y + this.z * this.z );
+				return Utility.Sqrt( x*x + y*y + z*z );
 			}
 		}
 
 		/// <summary>
-		///    Returns the length (magnitude) of the vector squared.
+		///   Returns the length (magnitude) of the vector squared.
 		/// </summary>
 		/// <remarks>
-		///     This  property is for efficiency - calculating the actual
-		///     length of a vector requires a square root, which is expensive
-		///     in terms of the operations required. This method returns the
-		///     square of the length of the vector, i.e. the same as the
-		///     length but before the square root is taken. Use this if you
-		///     want to find the longest / shortest vector without incurring
-		///     the square root.
+		///   This property is for efficiency - calculating the actual length of a vector requires a square root, which is expensive in terms of the operations required. This method returns the square of the length of the vector, i.e. the same as the length but before the square root is taken. Use this if you want to find the longest / shortest vector without incurring the square root.
 		/// </remarks>
 		public Real LengthSquared
 		{
 			get
 			{
-				return ( this.x * this.x + this.y * this.y + this.z * this.z );
+				return ( x*x + y*y + z*z );
 			}
 		}
 
@@ -959,9 +939,9 @@ namespace Axiom.Math
 
 		#region Static Constant Properties
 
-		/// <summary>
-		///		Gets a Vector3 with all components set to 0.
-		/// </summary>
+		///<summary>
+		///  Gets a Vector3 with all components set to 0.
+		///</summary>
 		public static Vector3 Zero
 		{
 			get
@@ -970,9 +950,9 @@ namespace Axiom.Math
 			}
 		}
 
-		/// <summary>
-		///		Gets a Vector3 with all components set to 1.
-		/// </summary>
+		///<summary>
+		///  Gets a Vector3 with all components set to 1.
+		///</summary>
 		public static Vector3 UnitScale
 		{
 			get
@@ -981,9 +961,9 @@ namespace Axiom.Math
 			}
 		}
 
-		/// <summary>
-		///		Gets a Vector3 with the X set to 1, and the others set to 0.
-		/// </summary>
+		///<summary>
+		///  Gets a Vector3 with the X set to 1, and the others set to 0.
+		///</summary>
 		public static Vector3 UnitX
 		{
 			get
@@ -992,9 +972,9 @@ namespace Axiom.Math
 			}
 		}
 
-		/// <summary>
-		///		Gets a Vector3 with the Y set to 1, and the others set to 0.
-		/// </summary>
+		///<summary>
+		///  Gets a Vector3 with the Y set to 1, and the others set to 0.
+		///</summary>
 		public static Vector3 UnitY
 		{
 			get
@@ -1003,9 +983,9 @@ namespace Axiom.Math
 			}
 		}
 
-		/// <summary>
-		///		Gets a Vector3 with the Z set to 1, and the others set to 0.
-		/// </summary>
+		///<summary>
+		///  Gets a Vector3 with the Z set to 1, and the others set to 0.
+		///</summary>
 		public static Vector3 UnitZ
 		{
 			get
@@ -1014,9 +994,9 @@ namespace Axiom.Math
 			}
 		}
 
-		/// <summary>
-		///		Gets a Vector3 with the X set to -1, and the others set to 0.
-		/// </summary>
+		///<summary>
+		///  Gets a Vector3 with the X set to -1, and the others set to 0.
+		///</summary>
 		public static Vector3 NegativeUnitX
 		{
 			get
@@ -1025,9 +1005,9 @@ namespace Axiom.Math
 			}
 		}
 
-		/// <summary>
-		///		Gets a Vector3 with the Y set to -1, and the others set to 0.
-		/// </summary>
+		///<summary>
+		///  Gets a Vector3 with the Y set to -1, and the others set to 0.
+		///</summary>
 		public static Vector3 NegativeUnitY
 		{
 			get
@@ -1036,9 +1016,9 @@ namespace Axiom.Math
 			}
 		}
 
-		/// <summary>
-		///		Gets a Vector3 with the Z set to -1, and the others set to 0.
-		/// </summary>
+		///<summary>
+		///  Gets a Vector3 with the Z set to -1, and the others set to 0.
+		///</summary>
 		public static Vector3 NegativeUnitZ
 		{
 			get
@@ -1051,36 +1031,29 @@ namespace Axiom.Math
 
 		#region Object overloads
 
-		/// <summary>
-		///		Overrides the Object.ToString() method to provide a text representation of 
-		///		a Vector3.
-		/// </summary>
-		/// <returns>A string representation of a vector3.</returns>
+		///<summary>
+		///  Overrides the Object.ToString() method to provide a text representation of a Vector3.
+		///</summary>
+		///<returns> A string representation of a vector3. </returns>
 		public override string ToString()
 		{
-			return string.Format( CultureInfo.InvariantCulture, "Vector3({0}, {1}, {2})", this.x, this.y, this.z );
+			return string.Format( CultureInfo.InvariantCulture, "Vector3({0}, {1}, {2})", x, y, z );
 		}
 
-		/// <summary>
-		///		Provides a unique hash code based on the member variables of this
-		///		class.  This should be done because the equality operators (==, !=)
-		///		have been overriden by this class.
-		///		<p/>
-		///		The standard implementation is a simple XOR operation between all local
-		///		member variables.
-		/// </summary>
-		/// <returns></returns>
+		///<summary>
+		///  Provides a unique hash code based on the member variables of this class. This should be done because the equality operators (==, !=) have been overriden by this class. <p /> The standard implementation is a simple XOR operation between all local member variables.
+		///</summary>
+		///<returns> </returns>
 		public override int GetHashCode()
 		{
 			return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
 		}
 
-		/// <summary>
-		///		Compares this Vector to another object.  This should be done because the 
-		///		equality operators (==, !=) have been overriden by this class.
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Compares this Vector to another object. This should be done because the equality operators (==, !=) have been overriden by this class.
+		///</summary>
+		///<param name="obj"> </param>
+		///<returns> </returns>
 		public override bool Equals( object obj )
 		{
 			return ( obj is Vector3 ) && ( this == (Vector3)obj );
@@ -1090,15 +1063,11 @@ namespace Axiom.Math
 
 		#region Parse method, implemented for factories
 
-		/// <summary>
-		///		Parses a string and returns Vector3.
-		/// </summary>
-		/// <param name="vector">
-		///     A string representation of a Vector3 as it's returned from Vector3.ToString()
-		/// </param>
-		/// <returns>
-		///     A new Vector3.
-		/// </returns>
+		///<summary>
+		///  Parses a string and returns Vector3.
+		///</summary>
+		///<param name="vector"> A string representation of a Vector3 as it's returned from Vector3.ToString() </param>
+		///<returns> A new Vector3. </returns>
 		public static Vector3 Parse( string vector )
 		{
 			// the format is "Vector3(x, y, z)"
@@ -1109,7 +1078,9 @@ namespace Axiom.Math
 
 			var vals = vector.Substring( 8 ).TrimEnd( ')' ).Split( ',' );
 
-			return new Vector3( Real.Parse( vals[ 0 ].Trim(), CultureInfo.InvariantCulture ), Real.Parse( vals[ 1 ].Trim(), CultureInfo.InvariantCulture ), Real.Parse( vals[ 2 ].Trim(), CultureInfo.InvariantCulture ) );
+			return new Vector3( Real.Parse( vals[ 0 ].Trim(), CultureInfo.InvariantCulture ),
+			                    Real.Parse( vals[ 1 ].Trim(), CultureInfo.InvariantCulture ),
+			                    Real.Parse( vals[ 2 ].Trim(), CultureInfo.InvariantCulture ) );
 		}
 
 		#endregion

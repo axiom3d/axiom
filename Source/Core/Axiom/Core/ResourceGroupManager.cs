@@ -42,324 +42,274 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-
 using Axiom.Collections;
 using Axiom.FileSystem;
-using Axiom.Math;
 using Axiom.Scripting;
-
-using IO = System.IO;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-	/// <summary>
-	/// This defines an interface which is called back during
-	/// resource group loading to indicate the progress of the load.
-	/// </summary>
-	/// <remarks>
-	/// Resource group loading is in 2 phases - creating resources from
-	/// declarations (which includes parsing scripts), and loading
-	/// resources. Note that you don't necessarily have to have both; it
-	/// is quite possible to just parse all the scripts for a group (see
-	/// ResourceGroupManager.InitialiseResourceGroup, but not to
-	/// load the resource group.
-	/// The sequence of events is (* signifies a repeating item):
-	/// <ul>
-	///     <li>resourceGroupScriptingStarted</li>
-	///     <li>scriptParseStarted (*)</li>
-	///     <li>scriptParseEnded (*)</li>
-	///     <li>resourceGroupScriptingEnded</li>
-	///     <li>resourceGroupLoadStarted</li>
-	///     <li>resourceLoadStarted (*)</li>
-	///     <li>resourceLoadEnded (*)</li>
-	///     <li>worldGeometryStageStarted (*)</li>
-	///     <li>worldGeometryStageEnded (*)</li>
-	///     <li>resourceGroupLoadEnded</li>
-	/// 	<li>resourceGroupPrepareStarted</li>
-	///	    <li>resourcePrepareStarted (*)</li>
-	///     <li>resourcePrepareEnded (*)</li>
-	///	    <li>resourceGroupPrepareEnded</li>
-	/// </ul>
-	/// </remarks>
+	///<summary>
+	///  This defines an interface which is called back during resource group loading to indicate the progress of the load.
+	///</summary>
+	///<remarks>
+	///  Resource group loading is in 2 phases - creating resources from declarations (which includes parsing scripts), and loading resources. Note that you don't necessarily have to have both; it is quite possible to just parse all the scripts for a group (see ResourceGroupManager.InitialiseResourceGroup, but not to load the resource group. The sequence of events is (* signifies a repeating item): <ul>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>resourceGroupScriptingStarted</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>scriptParseStarted (*)</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>scriptParseEnded (*)</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>resourceGroupScriptingEnded</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>resourceGroupLoadStarted</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>resourceLoadStarted (*)</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>resourceLoadEnded (*)</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>worldGeometryStageStarted (*)</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>worldGeometryStageEnded (*)</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>resourceGroupLoadEnded</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>resourceGroupPrepareStarted</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>resourcePrepareStarted (*)</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>resourcePrepareEnded (*)</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                             <li>resourceGroupPrepareEnded</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                           </ul>
+	///</remarks>
 	public interface IResourceGroupListener
 	{
 		/// <summary>
-		/// This event is fired when a resource group begins parsing scripts.
+		///   This event is fired when a resource group begins parsing scripts.
 		/// </summary>
-		/// <param name="groupName">The name of the group</param>
-		/// <param name="scriptCount">The number of scripts which will be parsed</param>
+		/// <param name="groupName"> The name of the group </param>
+		/// <param name="scriptCount"> The number of scripts which will be parsed </param>
 		void ResourceGroupScriptingStarted( string groupName, int scriptCount );
 
-		/// <summary>
-		/// This event is fired when a script is about to be parsed.
-		/// </summary>
-		/// <param name="scriptName">Name of the to be parsed</param>
-		/// <param name="skipThisScript">A boolean passed by reference which is by default set to 
-		///	false. If the event sets this to true, the script will be skipped and not
-		///	parsed. Note that in this case the scriptParseEnded event will not be raised
-		///	for this script.</param>
+		///<summary>
+		///  This event is fired when a script is about to be parsed.
+		///</summary>
+		///<param name="scriptName"> Name of the to be parsed </param>
+		///<param name="skipThisScript"> A boolean passed by reference which is by default set to false. If the event sets this to true, the script will be skipped and not parsed. Note that in this case the scriptParseEnded event will not be raised for this script. </param>
 		void ScriptParseStarted( string scriptName, ref bool skipThisScript );
 
 		/// <summary>
-		/// This event is fired when the script has been fully parsed.
+		///   This event is fired when the script has been fully parsed.
 		/// </summary>
-		/// <param name="scriptName"></param>
-		/// <param name="skipped"></param>
+		/// <param name="scriptName"> </param>
+		/// <param name="skipped"> </param>
 		void ScriptParseEnded( string scriptName, bool skipped );
 
 		/// <summary>
-		/// This event is fired when a resource group finished parsing scripts.
+		///   This event is fired when a resource group finished parsing scripts.
 		/// </summary>
-		/// <param name="groupName">The name of the group</param>
+		/// <param name="groupName"> The name of the group </param>
 		void ResourceGroupScriptingEnded( string groupName );
 
 		/// <summary>
-		/// This event is fired  when a resource group begins preparing.
+		///   This event is fired when a resource group begins preparing.
 		/// </summary>
-		/// <param name="groupName">The name of the group being prepared</param>
-		/// <param name="resourceCount">The number of resources which will be prepared, including
-		/// a number of stages required to prepare any linked world geometry.
-		/// </param>
+		/// <param name="groupName"> The name of the group being prepared </param>
+		/// <param name="resourceCount"> The number of resources which will be prepared, including a number of stages required to prepare any linked world geometry. </param>
 		void ResourceGroupPrepareStarted( string groupName, int resourceCount );
 
 		/// <summary>
-		/// This event is fired when a declared resource is about to be prepared. 
+		///   This event is fired when a declared resource is about to be prepared.
 		/// </summary>
-		/// <param name="resource">Weak reference to the resource prepared.</param>
+		/// <param name="resource"> Weak reference to the resource prepared. </param>
 		void ResourcePrepareStarted( Resource resource );
 
 		/// <summary>
-		/// This event is fired when the resource has been prepared. 
+		///   This event is fired when the resource has been prepared.
 		/// </summary>
 		void ResourcePrepareEnded();
 
 		/// <summary>
-		/// This event is fired when a resource group finished preparing.
+		///   This event is fired when a resource group finished preparing.
 		/// </summary>
-		/// <param name="groupName">The name of the group has been prepared.</param>
+		/// <param name="groupName"> The name of the group has been prepared. </param>
 		void ResourceGroupPrepareEnded( string groupName );
 
 		/// <summary>
-		/// This event is fired  when a resource group begins loading.
+		///   This event is fired when a resource group begins loading.
 		/// </summary>
-		/// <param name="groupName">The name of the group being loaded</param>
-		/// <param name="resourceCount">
-		/// The number of resources which will be loaded,
-		/// including a number of stages required to load any linked world geometry
-		/// </param>
+		/// <param name="groupName"> The name of the group being loaded </param>
+		/// <param name="resourceCount"> The number of resources which will be loaded, including a number of stages required to load any linked world geometry </param>
 		void ResourceGroupLoadStarted( string groupName, int resourceCount );
 
 		/// <summary>
-		/// This event is fired when a declared resource is about to be loaded.
+		///   This event is fired when a declared resource is about to be loaded.
 		/// </summary>
-		/// <param name="resource">Weak reference to the resource loaded</param>
+		/// <param name="resource"> Weak reference to the resource loaded </param>
 		void ResourceLoadStarted( Resource resource );
 
 		/// <summary>
-		/// This event is fired when the resource has been loaded.
+		///   This event is fired when the resource has been loaded.
 		/// </summary>
 		void ResourceLoadEnded();
 
 		/// <summary>
-		/// This event is fired when a stage of loading linked world geometry
-		/// is about to start. The number of stages required will have been
-		/// included in the resourceCount passed in resourceGroupLoadStarted.
+		///   This event is fired when a stage of loading linked world geometry is about to start. The number of stages required will have been included in the resourceCount passed in resourceGroupLoadStarted.
 		/// </summary>
-		/// <param name="description">Text description of what was just loaded</param>
+		/// <param name="description"> Text description of what was just loaded </param>
 		void WorldGeometryStageStarted( string description );
 
 		/// <summary>
-		/// This event is fired when a stage of loading linked world geometry
-		/// has been completed. The number of stages required will have been
-		/// included in the resourceCount passed in resourceGroupLoadStarted.
+		///   This event is fired when a stage of loading linked world geometry has been completed. The number of stages required will have been included in the resourceCount passed in resourceGroupLoadStarted.
 		/// </summary>
 		void WorldGeometryStageEnded();
 
 		/// <summary>
-		/// This event is fired when a resource group finished loading.
+		///   This event is fired when a resource group finished loading.
 		/// </summary>
-		/// <param name="groupName">The name of the group has been loaded.</param>
+		/// <param name="groupName"> The name of the group has been loaded. </param>
 		void ResourceGroupLoadEnded( string groupName );
 	}
 
-	/// <summary>
-	/// This singleton class manages the list of resource groups, and notifying
-	/// the various resource managers of their obligations to load / unload
-	/// resources in a group. It also provides facilities to monitor resource
-	/// loading per group (to do progress bars etc), provided the resources
-	/// that are required are pre-registered.
-	/// <para />
-	/// Defining new resource groups,  and declaring the resources you intend to
-	/// use in advance is optional, however it is a very useful feature. In addition,
-	/// if a ResourceManager supports the definition of resources through scripts,
-	///	then this is the class which drives the locating of the scripts and telling
-	///	the ResourceManager to parse them.
-	/// @par
-	///	There are several states that a resource can be in (the concept, not the
-	///	object instance in this case):
-	///	<ol>
-	///	<li><b>Undefined</b>. Nobody knows about this resource yet. It might be
-	///	in the filesystem, but Ogre is oblivious to it at the moment - there
-	///	is no Resource instance. This might be because it's never been declared
-	///	(either in a script, or using ResourceGroupManager::declareResource), or
-	///	it may have previously been a valid Resource instance but has been
-	///	removed, either individually through ResourceManager::remove or as a group
-	///	through ResourceGroupManager::clearResourceGroup.</li>
-	///	<li><b>Declared</b>. Ogre has some forewarning of this resource, either
-	///	through calling ResourceGroupManager::declareResource, or by declaring
-	///	the resource in a script file which is on one of the resource locations
-	///	which has been defined for a group. There is still no instance of Resource,
-	///	but Ogre will know to create this resource when
-	///	ResourceGroupManager.InitializeResourceGroup is called (which is automatic
-	///	if you declare the resource group before Root.Initialize).</li>
-	///	<li><b>Unloaded</b>. There is now a Resource instance for this resource,
-	///	although it is not loaded. This means that code which looks for this
-	///	named resource will find it, but the Resource is not using a lot of memory
-	///	because it is in an unloaded state. A Resource can get into this state
-	///	by having just been created by ResourceGroupManager.InitializeResourceGroup
-	///	(either from a script, or from a call to declareResource), by
-	///	being created directly from code (ResourceManager.Create), or it may
-	///	have previously been loaded and has been unloaded, either individually
-	///	through Resource::unload, or as a group through ResourceGroupManager.UnloadResourceGroup.</li>
-	///	<li><b>Loaded</b>The Resource instance is fully loaded. This may have
-	///	happened implicitly because something used it, or it may have been
-	///	loaded as part of a group.</li>
-	///	</ol>
-	///	<see>ResourceGroupManager.DeclareResource</see>
-	///	<see>ResourceGroupManager.InitializeResourceGroup</see>
-	///	<see>ResourceGroupManager.LoadResourceGroup</see>
-	///	<see>ResourceGroupManager.UnloadResourceGroup</see>
-	///	<see>ResourceGroupManager.ClearResourceGroup</see>
-	///	</summary>
+	///<summary>
+	///  This singleton class manages the list of resource groups, and notifying the various resource managers of their obligations to load / unload resources in a group. It also provides facilities to monitor resource loading per group (to do progress bars etc), provided the resources that are required are pre-registered. <para /> Defining new resource groups, and declaring the resources you intend to use in advance is optional, however it is a very useful feature. In addition, if a ResourceManager supports the definition of resources through scripts, then this is the class which drives the locating of the scripts and telling the ResourceManager to parse them. @par There are several states that a resource can be in (the concept, not the object instance in this case): <ol>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <b>Undefined</b>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        . Nobody knows about this resource yet. It might be
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        in the filesystem, but Ogre is oblivious to it at the moment - there
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        is no Resource instance. This might be because it's never been declared
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        (either in a script, or using ResourceGroupManager::declareResource), or
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        it may have previously been a valid Resource instance but has been
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        removed, either individually through ResourceManager::remove or as a group
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        through ResourceGroupManager::clearResourceGroup.</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <b>Declared</b>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        . Ogre has some forewarning of this resource, either
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        through calling ResourceGroupManager::declareResource, or by declaring
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        the resource in a script file which is on one of the resource locations
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        which has been defined for a group. There is still no instance of Resource,
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        but Ogre will know to create this resource when
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ResourceGroupManager.InitializeResourceGroup is called (which is automatic
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        if you declare the resource group before Root.Initialize).</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <b>Unloaded</b>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        . There is now a Resource instance for this resource,
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        although it is not loaded. This means that code which looks for this
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        named resource will find it, but the Resource is not using a lot of memory
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        because it is in an unloaded state. A Resource can get into this state
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        by having just been created by ResourceGroupManager.InitializeResourceGroup
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        (either from a script, or from a call to declareResource), by
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        being created directly from code (ResourceManager.Create), or it may
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        have previously been loaded and has been unloaded, either individually
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        through Resource::unload, or as a group through ResourceGroupManager.UnloadResourceGroup.</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      <li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <b>Loaded</b>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        The Resource instance is fully loaded. This may have
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        happened implicitly because something used it, or it may have been
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        loaded as part of a group.</li>
+	///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    </ol> <see>ResourceGroupManager.DeclareResource</see> <see>ResourceGroupManager.InitializeResourceGroup</see> <see>ResourceGroupManager.LoadResourceGroup</see> <see>ResourceGroupManager.UnloadResourceGroup</see> <see>ResourceGroupManager.ClearResourceGroup</see>
+	///</summary>
 	public class ResourceGroupManager : DisposableObject, ISingleton<ResourceGroupManager>
 	{
 		#region Delegates
 
 		/// <summary>
-		/// This event is fired when a resource group begins parsing scripts.
+		///   This event is fired when a resource group begins parsing scripts.
 		/// </summary>
-		/// <param name="groupName">The name of the group</param>
-		/// <param name="scriptCount">The number of scripts which will be parsed</param>
+		/// <param name="groupName"> The name of the group </param>
+		/// <param name="scriptCount"> The number of scripts which will be parsed </param>
 		private delegate void ResourceGroupScriptingStarted( string groupName, int scriptCount );
 
 		/// <summary>
-		/// 
 		/// </summary>
 		private ResourceGroupScriptingStarted _resourceGroupScriptingStarted;
 
-		/// <summary>
-		/// This event is fired when a script is about to be parsed.
-		/// </summary>
-		/// <param name="scriptName">Name of the to be parsed</param>
-		/// <param name="skipThisScript">A boolean passed by reference which is by default set to 
-		///	false. If the event sets this to true, the script will be skipped and not
-		///	parsed. Note that in this case the scriptParseEnded event will not be raised
-		///	for this script.</param>
+		///<summary>
+		///  This event is fired when a script is about to be parsed.
+		///</summary>
+		///<param name="scriptName"> Name of the to be parsed </param>
+		///<param name="skipThisScript"> A boolean passed by reference which is by default set to false. If the event sets this to true, the script will be skipped and not parsed. Note that in this case the scriptParseEnded event will not be raised for this script. </param>
 		private delegate void ScriptParseStarted( string scriptName, ref bool skipThisScript );
 
 		private ScriptParseStarted _scriptParseStarted;
 
 		/// <summary>
-		/// This event is fired when the script has been fully parsed.
+		///   This event is fired when the script has been fully parsed.
 		/// </summary>
 		private delegate void ScriptParseEnded( string scriptName, bool skipped );
 
 		private ScriptParseEnded _scriptParseEnded;
 
 		/// <summary>
-		/// This event is fired when a resource group finished parsing scripts.
+		///   This event is fired when a resource group finished parsing scripts.
 		/// </summary>
-		/// <param name="groupName">The name of the group</param>
+		/// <param name="groupName"> The name of the group </param>
 		private delegate void ResourceGroupScriptingEnded( string groupName );
 
 		private ResourceGroupScriptingEnded _resourceGroupScriptingEnded;
 
 		/// <summary>
-		/// This event is fired  when a resource group begins loading.
+		///   This event is fired when a resource group begins loading.
 		/// </summary>
-		/// <param name="groupName">The name of the group being loaded</param>
-		/// <param name="resourceCount">
-		/// The number of resources which will be loaded,
-		/// including a number of stages required to load any linked world geometry
-		/// </param>
+		/// <param name="groupName"> The name of the group being loaded </param>
+		/// <param name="resourceCount"> The number of resources which will be loaded, including a number of stages required to load any linked world geometry </param>
 		private delegate void ResourceGroupLoadStarted( string groupName, int resourceCount );
 
 		private ResourceGroupLoadStarted _resourceGroupLoadStarted;
 
 		/// <summary>
-		/// This event is fired when a declared resource is about to be loaded.
+		///   This event is fired when a declared resource is about to be loaded.
 		/// </summary>
-		/// <param name="resource">Weak reference to the resource loaded</param>
+		/// <param name="resource"> Weak reference to the resource loaded </param>
 		private delegate void ResourceLoadStarted( Resource resource );
 
 		private ResourceLoadStarted _resourceLoadStarted;
 
 		/// <summary>
-		/// This event is fired when the resource has been loaded.
+		///   This event is fired when the resource has been loaded.
 		/// </summary>
 		private delegate void ResourceLoadEnded();
 
 		private ResourceLoadEnded _resourceLoadEnded;
 
 		/// <summary>
-		/// This event is fired when a stage of loading linked world geometry
-		/// is about to start. The number of stages required will have been
-		/// included in the resourceCount passed in resourceGroupLoadStarted.
+		///   This event is fired when a stage of loading linked world geometry is about to start. The number of stages required will have been included in the resourceCount passed in resourceGroupLoadStarted.
 		/// </summary>
-		/// <param name="description">Text description of what was just loaded</param>
+		/// <param name="description"> Text description of what was just loaded </param>
 		private delegate void WorldGeometryStageStarted( string description );
 
 		private WorldGeometryStageStarted _worldGeometryStageStarted;
 
 		/// <summary>
-		/// This event is fired when a stage of loading linked world geometry
-		/// has been completed. The number of stages required will have been
-		/// included in the resourceCount passed in resourceGroupLoadStarted.
+		///   This event is fired when a stage of loading linked world geometry has been completed. The number of stages required will have been included in the resourceCount passed in resourceGroupLoadStarted.
 		/// </summary>
 		private delegate void WorldGeometryStageEnded();
 
 		private WorldGeometryStageEnded _worldGeometryStageEnded;
 
 		/// <summary>
-		/// This event is fired when a resource group finished loading.
+		///   This event is fired when a resource group finished loading.
 		/// </summary>
 		private delegate void ResourceGroupLoadEnded( string groupName );
 
 		private ResourceGroupLoadEnded _resourceGroupLoadEnded;
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="groupName"></param>
-		/// <param name="resourceCount"></param>
+		/// <param name="groupName"> </param>
+		/// <param name="resourceCount"> </param>
 		private delegate void ResourceGroupPrepareStarted( string groupName, int resourceCount );
 
-		// private ResourceGroupPrepareStarted _resourceGroupPrepareStarted;
+		private ResourceGroupPrepareStarted _resourceGroupPrepareStarted;
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="resource"></param>
+		/// <param name="resource"> </param>
 		private delegate void ResourcePrepareStarted( Resource resource );
 
-		// private ResourcePrepareStarted _resourcePrepareStarted;
+		private ResourcePrepareStarted _resourcePrepareStarted;
 
 		/// <summary>
-		/// 
 		/// </summary>
 		private delegate void ResourcePrepareEnded();
 
-		//private ResourcePrepareEnded _resourcePrepareEnded;
+		private ResourcePrepareEnded _resourcePrepareEnded;
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="groupName"></param>
+		/// <param name="groupName"> </param>
 		private delegate void ResourceGroupPrepareEnded( string groupName );
 
-		// private ResourceGroupPrepareEnded _resourceGroupPrepareEnded;
+		private ResourceGroupPrepareEnded _resourceGroupPrepareEnded;
 
 		#endregion Delegates
 
@@ -367,43 +317,76 @@ namespace Axiom.Core
 
 		/// List of resource declarations
 		//         typedef std::list<ResourceDeclaration> ResourceDeclarationList;
-		public class ResourceDeclarationList : List<ResourceDeclaration> {};
+		public class ResourceDeclarationList : List<ResourceDeclaration>
+		{
+		};
 
-		/// <summary>Map of resource types (strings) to ResourceManagers, used to notify them to load / unload group contents</summary>
+		/// <summary>
+		///   Map of resource types (strings) to ResourceManagers, used to notify them to load / unload group contents
+		/// </summary>
 		//          typedef std::map<String, ResourceManager*> ResourceManagerMap;
-		public class ResourceManagerMap : Dictionary<String, ResourceManager> {};
+		public class ResourceManagerMap : Dictionary<String, ResourceManager>
+		{
+		};
 
-		/// <summary>Map of loading order (Real) to ScriptLoader, used to order script parsing</summary>
+		/// <summary>
+		///   Map of loading order (Real) to ScriptLoader, used to order script parsing
+		/// </summary>
 		//          typedef std::multimap<Real, ScriptLoader*> ScriptLoaderOrderMap;
-		public class ScriptLoaderOrderMap : AxiomSortedCollection<float, List<IScriptLoader>> {};
+		public class ScriptLoaderOrderMap : AxiomSortedCollection<float, List<IScriptLoader>>
+		{
+		};
 
-		/// <summary></summary>
+		/// <summary>
+		/// </summary>
 		//          typedef std::vector<ResourceGroupListener*> ResourceGroupListenerList;
-		public class ResourceGroupListenerList : List<IResourceGroupListener> {};
+		public class ResourceGroupListenerList : List<IResourceGroupListener>
+		{
+		};
 
-		/// <summary>Resource index entry, resourcename->location </summary>
+		/// <summary>
+		///   Resource index entry, resourcename->location
+		/// </summary>
 		//          typedef std::map<String, Archive*> ResourceLocationIndex;
-		public class ResourceLocationIndex : Dictionary<String, Archive> {};
+		public class ResourceLocationIndex : Dictionary<String, Archive>
+		{
+		};
 
-		/// <summary>List of possible file locations</summary>
+		/// <summary>
+		///   List of possible file locations
+		/// </summary>
 		//          typedef std::list<ResourceLocation*> LocationList;
-		public class LocationList : List<ResourceLocation> {};
+		public class LocationList : List<ResourceLocation>
+		{
+		};
 
-		/// <summary>List of resources which can be loaded / unloaded </summary>
+		/// <summary>
+		///   List of resources which can be loaded / unloaded
+		/// </summary>
 		//          typedef std::list<ResourcePtr> LoadUnloadResourceList;
-		public class LoadUnloadResourceList : List<Resource> {};
+		public class LoadUnloadResourceList : List<Resource>
+		{
+		};
 
-		/// <summary>Map from resource group names to groups </summary>
+		/// <summary>
+		///   Map from resource group names to groups
+		/// </summary>
 		//          typedef std::map<String, ResourceGroup*> ResourceGroupMap;
 		public class ResourceGroupMap : Dictionary<String, ResourceGroup>
 		{
 			public ResourceGroupMap()
-				: base( new CaseInsensitiveStringComparer() ) {}
+				: base( new CaseInsensitiveStringComparer() )
+			{
+			}
 		};
 
 		//          typedef std::map<Real, LoadUnloadResourceList*> LoadResourceOrderMap;
-		/// <summary>Map of loading order (float) to LoadUnLoadResourceList  used to order resource loading</summary>
-		public class LoadResourceOrderMap : Dictionary<float, LoadUnloadResourceList> {};
+		/// <summary>
+		///   Map of loading order (float) to LoadUnLoadResourceList used to order resource loading
+		/// </summary>
+		public class LoadResourceOrderMap : Dictionary<float, LoadUnloadResourceList>
+		{
+		};
 
 		#endregion Collection Declarations
 
@@ -418,19 +401,29 @@ namespace Axiom.Core
 			public NameValuePairList Parameters;
 		};
 
-		/// <summary>Resource location entry</summary>
+		/// <summary>
+		///   Resource location entry
+		/// </summary>
 		public struct ResourceLocation
 		{
-			/// <summary>Pointer to the archive which is the destination</summary>
+			/// <summary>
+			///   Pointer to the archive which is the destination
+			/// </summary>
 			public Archive Archive;
 
-			/// <summary>Pointer to the watcher which is monitoring the archive location</summary>
+			/// <summary>
+			///   Pointer to the watcher which is monitoring the archive location
+			/// </summary>
 			public Watcher Watcher;
 
-			/// <summary>Whether this location and it's children are searched for files</summary>
+			/// <summary>
+			///   Whether this location and it's children are searched for files
+			/// </summary>
 			public bool Recursive;
 
-			/// <summary>Whether this location is be monitored for new files</summary>
+			/// <summary>
+			///   Whether this location is be monitored for new files
+			/// </summary>
 			public bool Monitor;
 		};
 
@@ -438,62 +431,76 @@ namespace Axiom.Core
 		public class ResourceGroup : DisposableObject
 		{
 			//OGRE_AUTO_MUTEX
-			/// <summary>Group name </summary>
+			/// <summary>
+			///   Group name
+			/// </summary>
 			public string Name;
 
-			/// <summary>Whether group has been initialised </summary>
+			/// <summary>
+			///   Whether group has been initialised
+			/// </summary>
 			public bool Initialized;
 
-			/// <summary>List of possible locations to search </summary>
+			/// <summary>
+			///   List of possible locations to search
+			/// </summary>
 			public LocationList LocationList = new LocationList();
 
-			/// <summary>Index of resource names to locations, built for speedy access (case sensitive archives) </summary>
+			/// <summary>
+			///   Index of resource names to locations, built for speedy access (case sensitive archives)
+			/// </summary>
 			public ResourceLocationIndex ResourceIndexCaseSensitive = new ResourceLocationIndex();
 
-			/// <summary>Index of resource names to locations, built for speedy access (case insensitive archives) </summary>
+			/// <summary>
+			///   Index of resource names to locations, built for speedy access (case insensitive archives)
+			/// </summary>
 			public ResourceLocationIndex ResourceIndexCaseInsensitive = new ResourceLocationIndex();
 
-			/// <summary>Pre-declared resources, ready to be created </summary>
+			/// <summary>
+			///   Pre-declared resources, ready to be created
+			/// </summary>
 			public ResourceDeclarationList ResourceDeclarations = new ResourceDeclarationList();
 
 			/// <summary>
-			/// Created resources which are ready to be loaded / unloaded
-			/// Group by loading order of the type (defined by ResourceManager)
-			/// (e.g. skeletons and materials before meshes)
+			///   Created resources which are ready to be loaded / unloaded Group by loading order of the type (defined by ResourceManager) (e.g. skeletons and materials before meshes)
 			/// </summary>
 			public LoadResourceOrderMap LoadResourceOrders = new LoadResourceOrderMap();
 
-			/// <summary>Linked world geometry, as passed to setWorldGeometry </summary>
+			/// <summary>
+			///   Linked world geometry, as passed to setWorldGeometry
+			/// </summary>
 			public string WorldGeometry;
 
-			/// <summary>Scene manager to use with linked world geometry </summary>
+			/// <summary>
+			///   Scene manager to use with linked world geometry
+			/// </summary>
 			public SceneManager WorldGeometrySceneManager;
 
 			public void Add( string filename, Archive arch )
 			{
 				// internal, assumes mutex lock has already been obtained
-				this.ResourceIndexCaseSensitive[ filename ] = arch;
+				ResourceIndexCaseSensitive[ filename ] = arch;
 
 				if ( !arch.IsCaseSensitive )
 				{
-					this.ResourceIndexCaseInsensitive[ filename.ToLower() ] = arch;
+					ResourceIndexCaseInsensitive[ filename.ToLower() ] = arch;
 				}
 			}
 
 			public void Remove( string filename, Archive arch )
 			{
 				// internal, assumes mutex lock has already been obtained
-				if ( this.ResourceIndexCaseSensitive.ContainsKey( filename ) )
+				if ( ResourceIndexCaseSensitive.ContainsKey( filename ) )
 				{
-					this.ResourceIndexCaseSensitive.Remove( filename );
+					ResourceIndexCaseSensitive.Remove( filename );
 				}
 
 				if ( !arch.IsCaseSensitive )
 				{
 					var lcase = filename.ToLower();
-					if ( this.ResourceIndexCaseInsensitive.ContainsKey( filename ) )
+					if ( ResourceIndexCaseInsensitive.ContainsKey( filename ) )
 					{
-						this.ResourceIndexCaseInsensitive.Remove( filename );
+						ResourceIndexCaseInsensitive.Remove( filename );
 					}
 				}
 			}
@@ -502,7 +509,7 @@ namespace Axiom.Core
 			{
 				var keys = new List<string>();
 				// Delete indexes
-				foreach ( var kvp in this.ResourceIndexCaseSensitive )
+				foreach ( var kvp in ResourceIndexCaseSensitive )
 				{
 					if ( kvp.Value == arch )
 					{
@@ -511,11 +518,11 @@ namespace Axiom.Core
 				}
 				foreach ( var key in keys )
 				{
-					this.ResourceIndexCaseSensitive.Remove( key );
+					ResourceIndexCaseSensitive.Remove( key );
 				}
 
 				keys.Clear();
-				foreach ( var kvp in this.ResourceIndexCaseInsensitive )
+				foreach ( var kvp in ResourceIndexCaseInsensitive )
 				{
 					if ( kvp.Value == arch )
 					{
@@ -524,7 +531,7 @@ namespace Axiom.Core
 				}
 				foreach ( var key in keys )
 				{
-					this.ResourceIndexCaseInsensitive.Remove( key );
+					ResourceIndexCaseInsensitive.Remove( key );
 				}
 			}
 
@@ -532,7 +539,7 @@ namespace Axiom.Core
 
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !this.IsDisposed )
+				if ( !IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{
@@ -559,27 +566,27 @@ namespace Axiom.Core
 		#region Constants
 
 		/// <summary>
-		/// Default resource group name
+		///   Default resource group name
 		/// </summary>
 		public const string DefaultResourceGroupName = "General";
 
 		/// <summary>
-		/// Internal resource group name (should be used by Axiom internal only)
+		///   Internal resource group name (should be used by Axiom internal only)
 		/// </summary>
 		public const string InternalResourceGroupName = "Internal";
 
 		/// <summary>
-		/// Bootstrap resource group name (min Axiom resources)
+		///   Bootstrap resource group name (min Axiom resources)
 		/// </summary>
 		public const string BootstrapResourceGroupName = "Bootstrap";
 
 		/// <summary>
-		///  Special resource group name which causes resource group to be automatically determined based on searching for the resource in all groups.
+		///   Special resource group name which causes resource group to be automatically determined based on searching for the resource in all groups.
 		/// </summary>
 		public const string AutoDetectResourceGroupName = "AutoDetect";
 
 		/// <summary>
-		/// The number of reference counts held per resource by the resource system
+		///   The number of reference counts held per resource by the resource system
 		/// </summary>
 		public const int ResourceSystemNumReferenceCount = 3;
 
@@ -589,7 +596,7 @@ namespace Axiom.Core
 
 		#region ResourceManagers Property
 
-		private ResourceManagerMap _resourceManagers = new ResourceManagerMap();
+		private readonly ResourceManagerMap _resourceManagers = new ResourceManagerMap();
 
 		public ResourceManagerMap ResourceManagers
 		{
@@ -603,7 +610,7 @@ namespace Axiom.Core
 
 		#region scriptLoaders Property
 
-		private ScriptLoaderOrderMap _scriptLoaderOrders = new ScriptLoaderOrderMap();
+		private readonly ScriptLoaderOrderMap _scriptLoaderOrders = new ScriptLoaderOrderMap();
 
 		protected ScriptLoaderOrderMap scriptLoaderOrders
 		{
@@ -617,7 +624,7 @@ namespace Axiom.Core
 
 		#region resourceGroupListeners Property
 
-		private ResourceGroupListenerList _resourceGroupListeners = new ResourceGroupListenerList();
+		private readonly ResourceGroupListenerList _resourceGroupListeners = new ResourceGroupListenerList();
 
 		protected ResourceGroupListenerList resourceGroupListeners
 		{
@@ -631,7 +638,7 @@ namespace Axiom.Core
 
 		#region resourceGroups Property
 
-		private ResourceGroupMap _resourceGroups = new ResourceGroupMap();
+		private readonly ResourceGroupMap _resourceGroups = new ResourceGroupMap();
 
 		protected ResourceGroupMap resourceGroups
 		{
@@ -645,28 +652,13 @@ namespace Axiom.Core
 
 		#region WorldResourceGroupName Property
 
-		/// <summary>Group name for world resources</summary>
-		private String _worldGroupName;
-
 		/// <summary>
-		/// Gets/Sets the resource group that 'world' resources will use.
+		///   Gets/Sets the resource group that 'world' resources will use.
 		/// </summary>
 		/// <remarks>
-		///    This is the group which should be used by SceneManagers implementing
-		///    world geometry when looking for their resources. Defaults to the
-		///    DefaultResourceGroupName but this can be altered.
+		///   This is the group which should be used by SceneManagers implementing world geometry when looking for their resources. Defaults to the DefaultResourceGroupName but this can be altered.
 		/// </remarks>
-		public String WorldResourceGroupName
-		{
-			get
-			{
-				return _worldGroupName;
-			}
-			set
-			{
-				_worldGroupName = value;
-			}
-		}
+		public String WorldResourceGroupName { get; set; }
 
 		#endregion WorldResourceGroupName Property
 
@@ -676,7 +668,7 @@ namespace Axiom.Core
 		private ResourceGroup _currentGroup = null;
 
 		/// <summary>
-		/// Stored current group - optimization for when bulk loading a group
+		///   Stored current group - optimization for when bulk loading a group
 		/// </summary>
 		protected ResourceGroup currentGroup
 		{
@@ -697,7 +689,7 @@ namespace Axiom.Core
 		#region Constructors and Destructor
 
 		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
+		///   Internal constructor. This class cannot be instantiated externally.
 		/// </summary>
 		public ResourceGroupManager()
 		{
@@ -707,7 +699,7 @@ namespace Axiom.Core
 			}
 
 			// default world group to the default group
-			_worldGroupName = DefaultResourceGroupName;
+			WorldResourceGroupName = DefaultResourceGroupName;
 		}
 
 		~ResourceGroupManager()
@@ -719,9 +711,11 @@ namespace Axiom.Core
 
 		#region Event Firing Methods
 
-		/// <summary>Internal event firing method </summary>
-		/// <param name="groupName"></param>
-		/// <param name="scriptCount"></param>
+		/// <summary>
+		///   Internal event firing method
+		/// </summary>
+		/// <param name="groupName"> </param>
+		/// <param name="scriptCount"> </param>
 		private void _fireResourceGroupScriptingStarted( string groupName, int scriptCount )
 		{
 			if ( _resourceGroupScriptingStarted != null )
@@ -731,10 +725,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Internal event firing method 
+		///   Internal event firing method
 		/// </summary>
-		/// <param name="scriptName"></param>
-		/// <param name="skipThisScript"></param>
+		/// <param name="scriptName"> </param>
+		/// <param name="skipThisScript"> </param>
 		private void _fireScriptStarted( string scriptName, ref bool skipThisScript )
 		{
 			if ( _scriptParseStarted != null )
@@ -744,10 +738,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Internal event firing method 
+		///   Internal event firing method
 		/// </summary>
-		/// <param name="scriptName"></param>
-		/// <param name="skipped"></param>
+		/// <param name="scriptName"> </param>
+		/// <param name="skipped"> </param>
 		private void _fireScriptEnded( string scriptName, bool skipped )
 		{
 			if ( _scriptParseEnded != null )
@@ -757,9 +751,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Internal event firing method 
+		///   Internal event firing method
 		/// </summary>
-		/// <param name="groupName"></param>
+		/// <param name="groupName"> </param>
 		private void _fireResourceGroupScriptingEnded( string groupName )
 		{
 			if ( _resourceGroupScriptingEnded != null )
@@ -768,9 +762,11 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>Internal event firing method </summary>
-		/// <param name="groupName"></param>
-		/// <param name="resourceCount"></param>
+		/// <summary>
+		///   Internal event firing method
+		/// </summary>
+		/// <param name="groupName"> </param>
+		/// <param name="resourceCount"> </param>
 		private void _fireResourceGroupLoadStarted( string groupName, int resourceCount )
 		{
 			if ( _resourceGroupLoadStarted != null )
@@ -780,9 +776,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Internal event firing method 
+		///   Internal event firing method
 		/// </summary>
-		/// <param name="resource"></param>
+		/// <param name="resource"> </param>
 		private void _fireResourceStarted( Resource resource )
 		{
 			if ( _resourceLoadStarted != null )
@@ -792,7 +788,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Internal event firing method 
+		///   Internal event firing method
 		/// </summary>
 		private void _fireResourceEnded()
 		{
@@ -803,9 +799,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Internal event firing method 
+		///   Internal event firing method
 		/// </summary>
-		/// <param name="groupName"></param>
+		/// <param name="groupName"> </param>
 		private void _fireResourceGroupLoadEnded( string groupName )
 		{
 			if ( _resourceGroupLoadEnded != null )
@@ -815,95 +811,78 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Internal event firing method 
+		///   Internal event firing method
 		/// </summary>
-		/// <param name="groupName"></param>
-		/// <param name="resourceCount"></param>
+		/// <param name="groupName"> </param>
+		/// <param name="resourceCount"> </param>
 		private void _fireResourceGroupPrepareStarted( string groupName, int resourceCount )
 		{
-			/*
 			if ( _resourceGroupPrepareStarted != null )
 			{
 				_resourceGroupPrepareStarted( groupName, resourceCount );
 			}
-			 */
 		}
 
 		/// <summary>
-		/// Internal event firing method 
+		///   Internal event firing method
 		/// </summary>
-		/// <param name="resource"></param>
+		/// <param name="resource"> </param>
 		private void _fireResourcePrepareStarted( Resource resource )
 		{
-			/*
 			if ( _resourcePrepareStarted != null )
 			{
 				_resourcePrepareStarted( resource );
 			}
-			 */
 		}
 
 		/// <summary>
-		/// Internal event firing method 
+		///   Internal event firing method
 		/// </summary>
 		private void _fireResourcePrepareEnded()
 		{
-			/*
 			if ( _resourcePrepareEnded != null )
 			{
 				_resourcePrepareEnded();
 			}
-			 */
 		}
 
 		/// <summary>
-		/// Internal event firing method 
+		///   Internal event firing method
 		/// </summary>
-		/// <param name="groupName"></param>
+		/// <param name="groupName"> </param>
 		private void _fireResourceGroupPrepareEnded( string groupName )
 		{
-			/*
 			if ( _resourceGroupPrepareEnded != null )
 			{
 				_resourceGroupPrepareEnded( groupName );
 			}
-			 */
 		}
 
 		#endregion Event Firing Methods
 
 		#region Public Methods
 
-		/// <summary>
+		///<summary>
 		///  Create a resource group.
-		/// </summary>
-		/// <remarks>
-		///    A resource group allows you to define a set of resources that can
-		///    be loaded / unloaded as a unit. For example, it might be all the
-		///    resources used for the level of a game. There is always one predefined
-		///    resource group called ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		///	which is typically used to hold all resources which do not need to
-		///	be unloaded until shutdown. You can create additional ones so that
-		///	you can control the life of your resources in whichever way you wish.
-		/// <para>
-		///    Once you have defined a resource group, resources which will be loaded
-		///	as part of it are defined in one of 3 ways:
-		///	<ol>
-		///	<li>Manually through declareResource(); this is useful for scripted
-		///		declarations since it is entirely generalised, and does not
-		///		create Resource instances right away</li>
-		///	<li>Through the use of scripts; some ResourceManager subtypes have
-		///		script formats (e.g. .material, .overlay) which can be used
-		///		to declare resources</li>
-		///	<li>By calling ResourceManager::create to create a resource manually.
-		///	This resource will go on the list for it's group and will be loaded
-		///	and unloaded with that group</li>
-		///	</ol>
-		///	You must remember to call initialiseResourceGroup if you intend to use
-		///	the first 2 types.
-		/// </para>
-		/// </remarks>
-		/// <param name="name">The name to give the resource group.</param>
+		///</summary>
+		///<remarks>
+		///  A resource group allows you to define a set of resources that can be loaded / unloaded as a unit. For example, it might be all the resources used for the level of a game. There is always one predefined resource group called ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, which is typically used to hold all resources which do not need to be unloaded until shutdown. You can create additional ones so that you can control the life of your resources in whichever way you wish. <para>Once you have defined a resource group, resources which will be loaded
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   as part of it are defined in one of 3 ways:
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <ol>
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <li>Manually through declareResource(); this is useful for scripted
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       declarations since it is entirely generalised, and does not
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       create Resource instances right away</li>
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <li>Through the use of scripts; some ResourceManager subtypes have
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       script formats (e.g. .material, .overlay) which can be used
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       to declare resources</li>
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <li>By calling ResourceManager::create to create a resource manually.
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       This resource will go on the list for it's group and will be loaded
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       and unloaded with that group</li>
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   </ol>
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   You must remember to call initialiseResourceGroup if you intend to use
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   the first 2 types.</para>
+		///</remarks>
+		///<param name="name"> The name to give the resource group. </param>
 		public void CreateResourceGroup( string name )
 		{
 			LogManager.Instance.Write( "Creating resource group " + name );
@@ -918,48 +897,41 @@ namespace Axiom.Core
 			resourceGroups.Add( name, grp );
 		}
 
-		/// <summary>
-		/// Initializes a resource group.
-		/// </summary>
-		/// <remarks>
-		///	After creating a resource group, adding some resource locations, and
-		///	perhaps pre-declaring some resources using <see cref="DeclareResource(string, string)"/> , but
-		///	before you need to use the resources in the group, you
-		///	should call this method to initialise the group. By calling this,
-		///	you are triggering the following processes:
-		///	<ol>
-		///	<li>Scripts for all resource types which support scripting are
-		///		parsed from the resource locations, and resources within them are
-		///		created (but not loaded yet).</li>
-		///	<li>Creates all the resources which have just pre-declared using
-		///	<see cref="DeclareResource(string, string)"/> (again, these are not loaded yet)</li>
-		///	</ol>
-		///	So what this essentially does is create a bunch of unloaded <see cref="Resource"/>  entries
-		///	in the respective ResourceManagers based on scripts, and resources
-		///	you've pre-declared. That means that code looking for these resources
-		///	will find them, but they won't be taking up much memory yet, until
-		///	they are either used, or they are loaded in bulk using <see cref="LoadResourceGroup(string)"/>.
-		///	Loading the resource group in bulk is entirely optional, but has the
-		///	advantage of coming with progress reporting as resources are loaded.
-		/// <para>
-		///	Failure to call this method means that <see cref="LoadResourceGroup(string)"/>  will do
-		///	nothing, and any resources you define in scripts will not be found.
-		///	Similarly, once you have called this method you won't be able to
-		///	pick up any new scripts or pre-declared resources, unless you
-		///	call <see cref="ClearResourceGroup"/> , set up declared resources, and call this
-		///	method again.
-		/// </para>
-		/// <para>
-		///	When you call <see cref="Root.Initialize(bool)"/> , all resource groups that have already been
-		///	created are automatically initialised too. Therefore you do not need to
-		///	call this method for groups you define and set up before you call
-		///	<see cref="Root.Initialize(bool)"/>. However, since one of the most useful features of
-		///	resource groups is to set them up after the main system initialization
-		///	has occurred (e.g. a group per game level), you must remember to call this
-		///	method for the groups you create after this.
-		/// </para>
-		/// </remarks>
-		/// <param name="groupName">The name of the resource group to initialise</param>
+		///<summary>
+		///  Initializes a resource group.
+		///</summary>
+		///<remarks>
+		///  After creating a resource group, adding some resource locations, and perhaps pre-declaring some resources using <see
+		///   cref="DeclareResource(string, string)" /> , but before you need to use the resources in the group, you should call this method to initialise the group. By calling this, you are triggering the following processes: <ol>
+		///                                                                                                                                                                                                                          <li>Scripts for all resource types which support scripting are
+		///                                                                                                                                                                                                                            parsed from the resource locations, and resources within them are
+		///                                                                                                                                                                                                                            created (but not loaded yet).</li>
+		///                                                                                                                                                                                                                          <li>Creates all the resources which have just pre-declared using
+		///                                                                                                                                                                                                                            <see cref="DeclareResource(string, string)" />
+		///                                                                                                                                                                                                                            (again, these are not loaded yet)</li>
+		///                                                                                                                                                                                                                        </ol> So what this essentially does is create a bunch of unloaded <see
+		///   cref="Resource" /> entries in the respective ResourceManagers based on scripts, and resources you've pre-declared. That means that code looking for these resources will find them, but they won't be taking up much memory yet, until they are either used, or they are loaded in bulk using <see
+		///   cref="LoadResourceGroup(string)" /> . Loading the resource group in bulk is entirely optional, but has the advantage of coming with progress reporting as resources are loaded. <para>Failure to call this method means that
+		///                                                                                                                                                                                     <see cref="LoadResourceGroup(string)" />
+		///                                                                                                                                                                                     will do
+		///                                                                                                                                                                                     nothing, and any resources you define in scripts will not be found.
+		///                                                                                                                                                                                     Similarly, once you have called this method you won't be able to
+		///                                                                                                                                                                                     pick up any new scripts or pre-declared resources, unless you
+		///                                                                                                                                                                                     call
+		///                                                                                                                                                                                     <see cref="ClearResourceGroup" />
+		///                                                                                                                                                                                     , set up declared resources, and call this
+		///                                                                                                                                                                                     method again.</para> <para>When you call
+		///                                                                                                                                                                                                            <see cref="Root.Initialize(bool)" />
+		///                                                                                                                                                                                                            , all resource groups that have already been
+		///                                                                                                                                                                                                            created are automatically initialised too. Therefore you do not need to
+		///                                                                                                                                                                                                            call this method for groups you define and set up before you call
+		///                                                                                                                                                                                                            <see cref="Root.Initialize(bool)" />
+		///                                                                                                                                                                                                            . However, since one of the most useful features of
+		///                                                                                                                                                                                                            resource groups is to set them up after the main system initialization
+		///                                                                                                                                                                                                            has occurred (e.g. a group per game level), you must remember to call this
+		///                                                                                                                                                                                                            method for the groups you create after this.</para>
+		///</remarks>
+		///<param name="groupName"> The name of the resource group to initialise </param>
 		public void InitializeResourceGroup( string groupName )
 		{
 			LogManager.Instance.Write( "Initializing resource group {0}.", groupName );
@@ -984,9 +956,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Initialize all resource groups which are yet to be initialised.
+		///   Initialize all resource groups which are yet to be initialised.
 		/// </summary>
-		/// <see cref="ResourceGroupManager.InitializeResourceGroup"/>
+		/// <see cref="ResourceGroupManager.InitializeResourceGroup" />
 		public void InitializeAllResourceGroups()
 		{
 			LogManager.Instance.Write( "Initializing all resource groups:" );
@@ -1022,54 +994,47 @@ namespace Axiom.Core
 		#region PrepareResourceGroup
 
 		/// <summary>
-		/// Prepares a resource group.
+		///   Prepares a resource group.
 		/// </summary>
-		/// <see cref="ResourceGroupManager.PrepareResourceGroup(string, bool, bool)"/>
+		/// <see cref="ResourceGroupManager.PrepareResourceGroup(string, bool, bool)" />
 		public void PrepareResourceGroup( string name )
 		{
-			this.PrepareResourceGroup( name, true, true );
+			PrepareResourceGroup( name, true, true );
 		}
 
 		/// <summary>
-		/// Prepares a resource group.
+		///   Prepares a resource group.
 		/// </summary>
-		/// <see cref="ResourceGroupManager.PrepareResourceGroup(string, bool, bool)"/>
+		/// <see cref="ResourceGroupManager.PrepareResourceGroup(string, bool, bool)" />
 		public void PrepareResourceGroup( string name, bool prepareMainResources )
 		{
-			this.PrepareResourceGroup( name, prepareMainResources, true );
+			PrepareResourceGroup( name, prepareMainResources, true );
 		}
 
-		/// <summary>
-		/// Prepares a resource group.
-		/// </summary>
-		/// <remarks>Prepares any created resources which are part of the named group.
-		///	Note that resources must have already been created by calling
-		///	ResourceManager::create, or declared using declareResource() or
-		///	in a script (such as .material and .overlay). The latter requires
-		///	that initialiseResourceGroup has been called. 
-		///
-		///	When this method is called, this class will callback any ResourceGroupListeners
-		///	which have been registered to update them on progress.
-		///	</remarks>
-		/// <param name="name">The name of the resource group to prepare.</param>
-		/// <param name="prepareMainResources">If true, prepares normal resources associated 
-		///	with the group (you might want to set this to false if you wanted
-		///	to just prepare world geometry in bulk)</param>
-		/// <param name="prepareWorldGeom">If true, prepares any linked world geometry
-		///	<see cref="ResourceGroupManager.LinkWorldGeometryToResourceGroup"/></param>
+		///<summary>
+		///  Prepares a resource group.
+		///</summary>
+		///<remarks>
+		///  Prepares any created resources which are part of the named group. Note that resources must have already been created by calling ResourceManager::create, or declared using declareResource() or in a script (such as .material and .overlay). The latter requires that initialiseResourceGroup has been called. When this method is called, this class will callback any ResourceGroupListeners which have been registered to update them on progress.
+		///</remarks>
+		///<param name="name"> The name of the resource group to prepare. </param>
+		///<param name="prepareMainResources"> If true, prepares normal resources associated with the group (you might want to set this to false if you wanted to just prepare world geometry in bulk) </param>
+		///<param name="prepareWorldGeom"> If true, prepares any linked world geometry <see
+		///   cref="ResourceGroupManager.LinkWorldGeometryToResourceGroup" /> </param>
 		public void PrepareResourceGroup( string name, bool prepareMainResources, bool prepareWorldGeom )
 		{
-			LogManager.Instance.Write( "Preparing resource group '{0}' - Resources: {1}, World Geometry: {2}", name, prepareMainResources, prepareWorldGeom );
+			LogManager.Instance.Write( "Preparing resource group '{0}' - Resources: {1}, World Geometry: {2}", name,
+			                           prepareMainResources, prepareWorldGeom );
 
 			// load all created resources
-			var grp = this.getResourceGroup( name );
+			var grp = getResourceGroup( name );
 			if ( grp == null )
 			{
 				throw new AxiomException( "Cannot find a group named {0}", name );
 			}
 
 			// Set current group
-			this._currentGroup = grp;
+			_currentGroup = grp;
 
 			// Count up resources for starting event
 			var resourceCount = 0;
@@ -1092,7 +1057,7 @@ namespace Axiom.Core
 			// Now load for real
 			if ( prepareMainResources )
 			{
-				var keys = new float[ grp.LoadResourceOrders.Count ];
+				var keys = new float[grp.LoadResourceOrders.Count];
 				grp.LoadResourceOrders.Keys.CopyTo( keys, 0 );
 
 				for ( ushort i = 0; i < keys.Length; i++ )
@@ -1123,7 +1088,7 @@ namespace Axiom.Core
 			_fireResourceGroupPrepareEnded( name );
 
 			// reset current group
-			this._currentGroup = null;
+			_currentGroup = null;
 
 			LogManager.Instance.Write( "Finished preparing resource group " + name );
 		}
@@ -1132,35 +1097,29 @@ namespace Axiom.Core
 
 		#region LoadResourceGroup Method
 
-		/// <overloads>
-		/// <summary>Loads a resource group.</summary>
-		/// <remarks>
-		/// Loads any created resources which are part of the named group.
-		/// Note that resources must have already been created by calling
-		/// ResourceManager::create, or declared using declareResource() or
-		/// in a script (such as .material and .overlay). The latter requires
-		/// that initialiseResourceGroup has been called.
-		///
-		/// When this method is called, this class will callback any ResourceGroupListeners
-		/// which have been registered to update them on progress.
-		/// </remarks>
-		/// <param name="name">The name to of the resource group to load.</param>
-		/// </overloads>
+		///<overloads>
+		///  <summary>
+		///    Loads a resource group.
+		///  </summary>
+		///  <remarks>
+		///    Loads any created resources which are part of the named group. Note that resources must have already been created by calling ResourceManager::create, or declared using declareResource() or in a script (such as .material and .overlay). The latter requires that initialiseResourceGroup has been called. When this method is called, this class will callback any ResourceGroupListeners which have been registered to update them on progress.
+		///  </remarks>
+		///  <param name="name"> The name to of the resource group to load. </param>
+		///</overloads>
 		public void LoadResourceGroup( string name )
 		{
 			LoadResourceGroup( name, true, true );
 		}
 
-		/// <param name="loadMainResources">If true, loads normal resources associated
-		/// with the group (you might want to set this to false if you wanted
-		/// to just load world geometry in bulk)</param>
-		/// <param name="name"></param>
-		/// <param name="loadWorldGeom">If true, loads any linked world geometry <see>ResourceGroupManager.LinkWorldGeometryToResourceGroup</see></param>
+		/// <param name="loadMainResources"> If true, loads normal resources associated with the group (you might want to set this to false if you wanted to just load world geometry in bulk) </param>
+		/// <param name="name"> </param>
+		/// <param name="loadWorldGeom"> If true, loads any linked world geometry <see>ResourceGroupManager.LinkWorldGeometryToResourceGroup</see> </param>
 		public void LoadResourceGroup( string name, bool loadMainResources, bool loadWorldGeom )
 		{
 			// Can only bulk-load one group at a time (reasonable limitation I think)
 			//OGRE_LOCK_AUTO_MUTEX
-			LogManager.Instance.Write( "Loading resource group '{0}' - Resources: {1} World Geometry: {2}", name, loadMainResources, loadWorldGeom );
+			LogManager.Instance.Write( "Loading resource group '{0}' - Resources: {1} World Geometry: {2}", name,
+			                           loadMainResources, loadWorldGeom );
 			// load all created resources
 			var grp = getResourceGroup( name );
 			if ( grp == null )
@@ -1192,7 +1151,7 @@ namespace Axiom.Core
 			// Now load for real
 			if ( loadMainResources )
 			{
-				var keys = new float[ grp.LoadResourceOrders.Count ];
+				var keys = new float[grp.LoadResourceOrders.Count];
 				grp.LoadResourceOrders.Keys.CopyTo( keys, 0 );
 
 				for ( ushort i = 0; i < keys.Length; i++ )
@@ -1234,30 +1193,26 @@ namespace Axiom.Core
 
 		#endregion LoadResourceGroup Method
 
-		/// <summary>Unloads a resource group.</summary>
+		/// <summary>
+		///   Unloads a resource group.
+		/// </summary>
 		/// <remarks>
-		/// This method unloads all the resources that have been declared as
-		/// being part of the named resource group. Note that these resources
-		/// will still exist in their respective ResourceManager classes, but
-		/// will be in an unloaded state. If you want to remove them entirely,
-		/// you should use ClearResourceGroup or DestroyResourceGroup.
+		///   This method unloads all the resources that have been declared as being part of the named resource group. Note that these resources will still exist in their respective ResourceManager classes, but will be in an unloaded state. If you want to remove them entirely, you should use ClearResourceGroup or DestroyResourceGroup.
 		/// </remarks>
-		/// <param name="groupName">The name to of the resource group to unload.</param>
+		/// <param name="groupName"> The name to of the resource group to unload. </param>
 		public void UnloadResourceGroup( string groupName )
 		{
 			UnloadResourceGroup( groupName, true );
 		}
 
-		/// <summary>Unloads a resource group.</summary>
+		/// <summary>
+		///   Unloads a resource group.
+		/// </summary>
 		/// <remarks>
-		/// This method unloads all the resources that have been declared as
-		/// being part of the named resource group. Note that these resources
-		/// will still exist in their respective ResourceManager classes, but
-		/// will be in an unloaded state. If you want to remove them entirely,
-		/// you should use ClearResourceGroup or DestroyResourceGroup.
+		///   This method unloads all the resources that have been declared as being part of the named resource group. Note that these resources will still exist in their respective ResourceManager classes, but will be in an unloaded state. If you want to remove them entirely, you should use ClearResourceGroup or DestroyResourceGroup.
 		/// </remarks>
-		/// <param name="groupName">The name to of the resource group to unload.</param>
-		/// <param name="reloadableOnly"></param>
+		/// <param name="groupName"> The name to of the resource group to unload. </param>
+		/// <param name="reloadableOnly"> </param>
 		public void UnloadResourceGroup( string groupName, bool reloadableOnly )
 		{
 			LogManager.Instance.Write( "Unloading resource group {0}.", groupName );
@@ -1269,7 +1224,7 @@ namespace Axiom.Core
 			// Set current group
 			_currentGroup = grp;
 
-			var grpKeys = new float[ grp.LoadResourceOrders.Count ];
+			var grpKeys = new float[grp.LoadResourceOrders.Count];
 			grp.LoadResourceOrders.Keys.CopyTo( grpKeys, 0 );
 
 			for ( var i = grp.LoadResourceOrders.Count - 1; i >= 0; i-- )
@@ -1291,48 +1246,37 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Unload all resources which are not referenced by any other object.
+		///   Unload all resources which are not referenced by any other object.
 		/// </summary>
 		/// <remarks>
-		/// This method behaves like unloadResourceGroup, except that it only
-		/// unloads resources in the group which are not in use, ie not referenced
-		/// by other objects. This allows you to free up some memory selectively
-		/// whilst still keeping the group around (and the resources present,
-		/// just not using much memory).
+		///   This method behaves like unloadResourceGroup, except that it only unloads resources in the group which are not in use, ie not referenced by other objects. This allows you to free up some memory selectively whilst still keeping the group around (and the resources present, just not using much memory).
 		/// </remarks>
-		/// <param name="groupName">The name of the group to check for unreferenced resources</param>
+		/// <param name="groupName"> The name of the group to check for unreferenced resources </param>
 		public void UnloadUnreferencedResourcesInGroup( string groupName )
 		{
 			UnloadUnreferencedResourcesInGroup( groupName, true );
 		}
 
 		/// <summary>
-		/// Unload all resources which are not referenced by any other object.
+		///   Unload all resources which are not referenced by any other object.
 		/// </summary>
 		/// <remarks>
-		/// This method behaves like unloadResourceGroup, except that it only
-		/// unloads resources in the group which are not in use, ie not referenced
-		/// by other objects. This allows you to free up some memory selectively
-		/// whilst still keeping the group around (and the resources present,
-		/// just not using much memory).
+		///   This method behaves like unloadResourceGroup, except that it only unloads resources in the group which are not in use, ie not referenced by other objects. This allows you to free up some memory selectively whilst still keeping the group around (and the resources present, just not using much memory).
 		/// </remarks>
-		/// <param name="groupName">The name of the group to check for unreferenced resources</param>
-		/// <param name="reloadableOnly">If true (the default), only unloads resources
-		/// which can be subsequently automatically reloaded</param>
+		/// <param name="groupName"> The name of the group to check for unreferenced resources </param>
+		/// <param name="reloadableOnly"> If true (the default), only unloads resources which can be subsequently automatically reloaded </param>
 		public void UnloadUnreferencedResourcesInGroup( string groupName, bool reloadableOnly )
 		{
 			throw new NotImplementedException();
 		}
 
-		/// <summary>Clears a resource group.</summary>
+		/// <summary>
+		///   Clears a resource group.
+		/// </summary>
 		/// <remarks>
-		/// This method unloads all resources in the group, but in addition it
-		/// removes all those resources from their ResourceManagers, and then
-		/// clears all the members from the list. That means after calling this
-		/// method, there are no resources declared as part of the named group
-		/// any more. Resource locations still persist though.
+		///   This method unloads all resources in the group, but in addition it removes all those resources from their ResourceManagers, and then clears all the members from the list. That means after calling this method, there are no resources declared as part of the named group any more. Resource locations still persist though.
 		/// </remarks>
-		/// <param name="groupName">The name to of the resource group to clear.</param>
+		/// <param name="groupName"> The name to of the resource group to clear. </param>
 		public void ClearResourceGroup( string groupName )
 		{
 			LogManager.Instance.Write( "Clearing resource group {0}", groupName );
@@ -1352,11 +1296,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Destroys a resource group, clearing it first, destroying the resources
-		/// which are part of it, and then removing it from
-		/// the list of resource groups.
+		///   Destroys a resource group, clearing it first, destroying the resources which are part of it, and then removing it from the list of resource groups.
 		/// </summary>
-		/// <param name="groupName">The name of the resource group to destroy.</param>
+		/// <param name="groupName"> The name of the resource group to destroy. </param>
 		public void DestroyResourceGroup( string groupName )
 		{
 			LogManager.Instance.Write( "Destroying resource group " + groupName );
@@ -1378,72 +1320,41 @@ namespace Axiom.Core
 		#region AddResourceLocation Method
 
 		/// <overloads>
-		/// <summary>Method to add a resource location to for a given resource group.</summary>
-		/// <remarks>
-		/// Resource locations are places which are searched to load resource files.
-		/// When you choose to load a file, or to search for valid files to load,
-		/// the resource locations are used.
-		/// </remarks>
-		/// <param name="name">The name of the resource location; probably a directory, zip file, URL etc.</param>
-		/// <param name="locType">
-		/// The codename for the resource type, which must correspond to the
-		/// Archive factory which is providing the implementation.
-		/// </param>
+		///   <summary>
+		///     Method to add a resource location to for a given resource group.
+		///   </summary>
+		///   <remarks>
+		///     Resource locations are places which are searched to load resource files. When you choose to load a file, or to search for valid files to load, the resource locations are used.
+		///   </remarks>
+		///   <param name="name"> The name of the resource location; probably a directory, zip file, URL etc. </param>
+		///   <param name="locType"> The codename for the resource type, which must correspond to the Archive factory which is providing the implementation. </param>
 		/// </overloads>
 		public void AddResourceLocation( string name, string locType )
 		{
 			AddResourceLocation( name, locType, DefaultResourceGroupName, false, false );
 		}
 
-		/// <param name="locType"></param>
-		/// <param name="resGroup">
-		/// The name of the resource group for which this location is
-		/// to apply. ResourceGroupManager.DefaultResourceGroupName is the
-		/// default group which always exists, and can
-		/// be used for resources which are unlikely to be unloaded until application
-		/// shutdown. Otherwise it must be the name of a group; if it
-		/// has not already been created with createResourceGroup then it is created
-		/// automatically.
-		/// </param>
-		/// <param name="name"></param>
+		/// <param name="locType"> </param>
+		/// <param name="resGroup"> The name of the resource group for which this location is to apply. ResourceGroupManager.DefaultResourceGroupName is the default group which always exists, and can be used for resources which are unlikely to be unloaded until application shutdown. Otherwise it must be the name of a group; if it has not already been created with createResourceGroup then it is created automatically. </param>
+		/// <param name="name"> </param>
 		public void AddResourceLocation( string name, string locType, string resGroup )
 		{
 			AddResourceLocation( name, locType, resGroup, false, false );
 		}
 
-		/// <param name="locType"></param>
-		/// <param name="recursive">
-		/// Whether subdirectories will be searched for files when using
-		/// a pattern match (such as *.material), and whether subdirectories will be
-		/// indexed. This can slow down initial loading of the archive and searches.
-		/// When opening a resource you still need to use the fully qualified name,
-		/// this allows duplicate names in alternate paths.
-		/// </param>
-		/// <param name="name"></param>
+		/// <param name="locType"> </param>
+		/// <param name="recursive"> Whether subdirectories will be searched for files when using a pattern match (such as *.material), and whether subdirectories will be indexed. This can slow down initial loading of the archive and searches. When opening a resource you still need to use the fully qualified name, this allows duplicate names in alternate paths. </param>
+		/// <param name="name"> </param>
 		public void AddResourceLocation( string name, string locType, bool recursive )
 		{
 			AddResourceLocation( name, locType, DefaultResourceGroupName, recursive, false );
 		}
 
-		/// <param name="locType"></param>
-		/// <param name="resGroup">
-		/// The name of the resource group for which this location is
-		/// to apply. ResourceGroupManager.DefaultResourceGroupName is the
-		/// default group which always exists, and can
-		/// be used for resources which are unlikely to be unloaded until application
-		/// shutdown. Otherwise it must be the name of a group; if it
-		/// has not already been created with createResourceGroup then it is created
-		/// automatically.
-		/// </param>
-		/// <param name="recursive">
-		/// Whether subdirectories will be searched for files when using
-		/// a pattern match (such as *.material), and whether subdirectories will be
-		/// indexed. This can slow down initial loading of the archive and searches.
-		/// When opening a resource you still need to use the fully qualified name,
-		/// this allows duplicate names in alternate paths.
-		/// </param>
-		/// <param name="name"></param>
-		/// <param name="monitor"></param>
+		/// <param name="locType"> </param>
+		/// <param name="resGroup"> The name of the resource group for which this location is to apply. ResourceGroupManager.DefaultResourceGroupName is the default group which always exists, and can be used for resources which are unlikely to be unloaded until application shutdown. Otherwise it must be the name of a group; if it has not already been created with createResourceGroup then it is created automatically. </param>
+		/// <param name="recursive"> Whether subdirectories will be searched for files when using a pattern match (such as *.material), and whether subdirectories will be indexed. This can slow down initial loading of the archive and searches. When opening a resource you still need to use the fully qualified name, this allows duplicate names in alternate paths. </param>
+		/// <param name="name"> </param>
+		/// <param name="monitor"> </param>
 		public void AddResourceLocation( string name, string locType, string resGroup, bool recursive, bool monitor )
 		{
 			var grp = getResourceGroup( resGroup );
@@ -1472,7 +1383,8 @@ namespace Axiom.Core
 				loc.Watcher = new Watcher( name, recursive );
 			}
 
-			LogManager.Instance.Write( "Added resource location '{0}' of type '{1}' to resource group '{2}'{3}", name, locType, resGroup, recursive ? " with recursive option" : "" );
+			LogManager.Instance.Write( "Added resource location '{0}' of type '{1}' to resource group '{2}'{3}", name, locType,
+			                           resGroup, recursive ? " with recursive option" : "" );
 		}
 
 		#endregion AddResourceLocation Method
@@ -1480,18 +1392,18 @@ namespace Axiom.Core
 		#region RemoveResourceLocation Method
 
 		/// <overloads>
-		/// <summary>
-		/// Removes a resource location from the search path.
-		/// </summary>
-		/// <param name="locationName">the name of the ResourceLocation</param>
+		///   <summary>
+		///     Removes a resource location from the search path.
+		///   </summary>
+		///   <param name="locationName"> the name of the ResourceLocation </param>
 		/// </overloads>
 		public void RemoveResourceLocation( string locationName )
 		{
 			RemoveResourceLocation( locationName, DefaultResourceGroupName );
 		}
 
-		/// <param name="locationName"></param>
-		/// <param name="groupName">the name of the ResourceGroup</param>
+		/// <param name="locationName"> </param>
+		/// <param name="groupName"> the name of the ResourceGroup </param>
 		public void RemoveResourceLocation( string locationName, string groupName )
 		{
 			LogManager.Instance.Write( "Remove Resource Location " + groupName );
@@ -1522,74 +1434,56 @@ namespace Axiom.Core
 		#region DeclareResource Method
 
 		/// <overloads>
-		/// <summary>
-		/// Declares a resource to be a part of a resource group, allowing you to load and unload it as part of the group.
-		/// </summary>
-		/// <remarks>
-		/// By declaring resources before you attempt to use them, you can
-		/// more easily control the loading and unloading of those resources
-		/// by their group. Declaring them also allows them to be enumerated,
-		/// which means events can be raised to indicate the loading progress
-		/// <see>ResourceGroupListener</see>. Note that another way of declaring
-		/// resources is to use a script specific to the resource type, if
-		/// available (e.g. .material).
-		/// <para>
-		/// Declared resources are not created as Resource instances (and thus
-		/// are not available through their ResourceManager) until <see cref="InitializeResourceGroup"/>
-		/// is called, at which point all declared resources will become created
-		/// (but unloaded) Resource instances, along with any resources declared
-		/// in scripts in resource locations associated with the group.
-		/// </para>
-		/// </remarks>
-		/// <param name="name">The resource name. </param>
-		/// <param name="resourceType">
-		/// The type of the resource. Axiom comes preconfigured with
-		/// a number of resource types:
-		/// <ul>
-		/// <li>Font</li>
-		/// <li>Material</li>
-		/// <li>Mesh</li>
-		/// <li>Overlay</li>
-		/// <li>Skeleton</li>
-		/// </ul>
-		/// .. but more can be added by plugin ResourceManager classes.</param>
+		///   <summary>
+		///     Declares a resource to be a part of a resource group, allowing you to load and unload it as part of the group.
+		///   </summary>
+		///   <remarks>
+		///     By declaring resources before you attempt to use them, you can more easily control the loading and unloading of those resources by their group. Declaring them also allows them to be enumerated, which means events can be raised to indicate the loading progress <see>ResourceGroupListener</see> . Note that another way of declaring resources is to use a script specific to the resource type, if available (e.g. .material). <para>Declared resources are not created as Resource instances (and thus
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                            are not available through their ResourceManager) until
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                            <see cref="InitializeResourceGroup" />
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                            is called, at which point all declared resources will become created
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                            (but unloaded) Resource instances, along with any resources declared
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                            in scripts in resource locations associated with the group.</para>
+		///   </remarks>
+		///   <param name="name"> The resource name. </param>
+		///   <param name="resourceType"> The type of the resource. Axiom comes preconfigured with a number of resource types: <ul>
+		///                                                                                                                      <li>Font</li>
+		///                                                                                                                      <li>Material</li>
+		///                                                                                                                      <li>Mesh</li>
+		///                                                                                                                      <li>Overlay</li>
+		///                                                                                                                      <li>Skeleton</li>
+		///                                                                                                                    </ul> .. but more can be added by plugin ResourceManager classes. </param>
 		/// </overloads>
 		public void DeclareResource( string name, string resourceType )
 		{
 			DeclareResource( name, resourceType, DefaultResourceGroupName, null, new NameValuePairList() );
 		}
 
-		/// <param name="resourceType"></param>
-		/// <param name="groupName">The name of the group to which it will belong.</param>
-		/// <param name="name"></param>
+		/// <param name="resourceType"> </param>
+		/// <param name="groupName"> The name of the group to which it will belong. </param>
+		/// <param name="name"> </param>
 		public void DeclareResource( string name, string resourceType, string groupName )
 		{
 			DeclareResource( name, resourceType, groupName, null, new NameValuePairList() );
 		}
 
-		/// <param name="loader"></param>
-		/// <param name="loadParameters">
-		/// A list of name / value pairs which supply custom
-		/// parameters to the resource which will be required before it can
-		/// be loaded. These are specific to the resource type.
-		/// </param>
-		/// <param name="name"></param>
-		/// <param name="resourceType"></param>
-		public void DeclareResource( string name, string resourceType, IManualResourceLoader loader, NameValuePairList loadParameters )
+		/// <param name="loader"> </param>
+		/// <param name="loadParameters"> A list of name / value pairs which supply custom parameters to the resource which will be required before it can be loaded. These are specific to the resource type. </param>
+		/// <param name="name"> </param>
+		/// <param name="resourceType"> </param>
+		public void DeclareResource( string name, string resourceType, IManualResourceLoader loader,
+		                             NameValuePairList loadParameters )
 		{
 			DeclareResource( name, resourceType, DefaultResourceGroupName, loader, loadParameters );
 		}
 
-		/// <param name="resourceType"></param>
-		/// <param name="groupName">The name of the group to which it will belong.</param>
-		/// <param name="loader"></param>
-		/// <param name="loadParameters">
-		/// A list of name / value pairs which supply custom
-		/// parameters to the resource which will be required before it can
-		/// be loaded. These are specific to the resource type.
-		/// </param>
-		/// <param name="name"></param>
-		public void DeclareResource( string name, string resourceType, string groupName, IManualResourceLoader loader, NameValuePairList loadParameters )
+		/// <param name="resourceType"> </param>
+		/// <param name="groupName"> The name of the group to which it will belong. </param>
+		/// <param name="loader"> </param>
+		/// <param name="loadParameters"> A list of name / value pairs which supply custom parameters to the resource which will be required before it can be loaded. These are specific to the resource type. </param>
+		/// <param name="name"> </param>
+		public void DeclareResource( string name, string resourceType, string groupName, IManualResourceLoader loader,
+		                             NameValuePairList loadParameters )
 		{
 			var grp = getResourceGroup( groupName );
 			if ( grp == null )
@@ -1607,16 +1501,14 @@ namespace Axiom.Core
 
 		#endregion DeclareResource Method
 
-		/// <summary>Undeclare a resource.</summary>
+		/// <summary>
+		///   Undeclare a resource.
+		/// </summary>
 		/// <remarks>
-		/// Note that this will not cause it to be unloaded
-		/// if it is already loaded, nor will it destroy a resource which has
-		/// already been created if InitialiseResourceGroup has been called already.
-		/// Only UnloadResourceGroup / ClearResourceGroup / DestroyResourceGroup
-		/// will do that.
+		///   Note that this will not cause it to be unloaded if it is already loaded, nor will it destroy a resource which has already been created if InitialiseResourceGroup has been called already. Only UnloadResourceGroup / ClearResourceGroup / DestroyResourceGroup will do that.
 		/// </remarks>
-		/// <param name="name">The name of the resource. </param>
-		/// <param name="groupName">The name of the group this resource was declared in.</param>
+		/// <param name="name"> The name of the resource. </param>
+		/// <param name="groupName"> The name of the group this resource was declared in. </param>
 		public void UndeclareResource( string name, string groupName )
 		{
 			var grp = getResourceGroup( groupName );
@@ -1650,22 +1542,23 @@ namespace Axiom.Core
 			destroyed automatically when no longer referenced
 		*/
 
-		public IO.Stream OpenResource( string resourceName )
+		public System.IO.Stream OpenResource( string resourceName )
 		{
 			return OpenResource( resourceName, DefaultResourceGroupName );
 		}
 
-		public IO.Stream OpenResource( string resourceName, string groupName )
+		public System.IO.Stream OpenResource( string resourceName, string groupName )
 		{
 			return OpenResource( resourceName, groupName, true );
 		}
 
-		public IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound )
+		public System.IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound )
 		{
 			return OpenResource( resourceName, groupName, searchGroupsIfNotFound, null );
 		}
 
-		public virtual IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound, Resource resourceBeingLoaded )
+		public virtual System.IO.Stream OpenResource( string resourceName, string groupName, bool searchGroupsIfNotFound,
+		                                              Resource resourceBeingLoaded )
 		{
 			// Try to find in resource index first
 			var grp = getResourceGroup( groupName );
@@ -1738,10 +1631,12 @@ namespace Axiom.Core
 				}
 				else
 				{
-					throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName + " or any other group." );
+					throw new System.IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " +
+					                                           groupName + " or any other group." );
 				}
 			}
-			throw new IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " + groupName + "." );
+			throw new System.IO.FileNotFoundException( "Cannot locate resource " + resourceName + " in resource group " +
+			                                           groupName + "." );
 		}
 
 		#endregion OpenResource Method
@@ -1749,28 +1644,20 @@ namespace Axiom.Core
 		#region OpenResources Method
 
 		/// <overloads>
-		/// <summary>
-		/// Open all resources matching a given pattern (which can contain
-		/// the character '*' as a wildcard), and return a collection of
-		/// DataStream objects on them.
-		/// </summary>
-		/// <param name="pattern">
-		/// The pattern to look for. If resource locations have been
-		/// added recursively, subdirectories will be searched too so this
-		/// does not need to be fully qualified.
-		/// </param>
-		/// <returns>A list of Stream objects.</returns>
+		///   <summary>
+		///     Open all resources matching a given pattern (which can contain the character '*' as a wildcard), and return a collection of DataStream objects on them.
+		///   </summary>
+		///   <param name="pattern"> The pattern to look for. If resource locations have been added recursively, subdirectories will be searched too so this does not need to be fully qualified. </param>
+		///   <returns> A list of Stream objects. </returns>
 		/// </overloads>
-		public List<IO.Stream> OpenResources( string pattern )
+		public List<System.IO.Stream> OpenResources( string pattern )
 		{
 			return OpenResources( pattern, DefaultResourceGroupName );
 		}
 
-		/// <param name="pattern"></param>
-		/// <param name="groupName">
-		/// The resource group; this determines which locations are searched.
-		/// </param>
-		public List<IO.Stream> OpenResources( string pattern, string groupName )
+		/// <param name="pattern"> </param>
+		/// <param name="groupName"> The resource group; this determines which locations are searched. </param>
+		public List<System.IO.Stream> OpenResources( string pattern, string groupName )
 		{
 			var grp = getResourceGroup( groupName );
 			if ( grp == null )
@@ -1780,7 +1667,7 @@ namespace Axiom.Core
 
 			// Iterate through all the archives and build up a combined list of
 			// streams
-			var ret = new List<IO.Stream>();
+			var ret = new List<System.IO.Stream>();
 
 			foreach ( var li in grp.LocationList )
 			{
@@ -1806,57 +1693,60 @@ namespace Axiom.Core
 		#region CreateResource Method
 
 		/// <summary>
-		/// Create a new resource file in a given group.
+		///   Create a new resource file in a given group.
 		/// </summary>
-		/// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
-		/// <param name="filename">The name of the file to create</param>
-		/// <returns>An open Stream</returns>
-		public IO.Stream CreateResource( string filename )
+		/// <remarks>
+		///   This method creates a new file in a resource group and passes you back a writeable stream
+		/// </remarks>
+		/// <param name="filename"> The name of the file to create </param>
+		/// <returns> An open Stream </returns>
+		public System.IO.Stream CreateResource( string filename )
 		{
 			return CreateResource( filename, ResourceGroupManager.DefaultResourceGroupName, false, String.Empty );
 		}
 
 		/// <summary>
-		/// Create a new resource file in a given group.
+		///   Create a new resource file in a given group.
 		/// </summary>
-		/// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
-		/// <param name="filename">The name of the file to create</param>
-		/// <param name="groupName">The name of the group in which to create the file</param>
-		/// <returns>An open Stream</returns>
-		public IO.Stream CreateResource( string filename, string groupName )
+		/// <remarks>
+		///   This method creates a new file in a resource group and passes you back a writeable stream
+		/// </remarks>
+		/// <param name="filename"> The name of the file to create </param>
+		/// <param name="groupName"> The name of the group in which to create the file </param>
+		/// <returns> An open Stream </returns>
+		public System.IO.Stream CreateResource( string filename, string groupName )
 		{
 			return CreateResource( filename, groupName, false, String.Empty );
 		}
 
 		/// <summary>
-		/// Create a new resource file in a given group.
+		///   Create a new resource file in a given group.
 		/// </summary>
-		/// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
-		/// <param name="filename">The name of the file to create</param>
-		/// <param name="groupName">The name of the group in which to create the file</param>
-		/// <param name="overwrite">If true, an existing file will be overwritten, if false
-		/// an error will occur if the file already exists</param>
-		/// <returns>An open Stream</returns>
-		public IO.Stream CreateResource( string filename, string groupName, bool overwrite )
+		/// <remarks>
+		///   This method creates a new file in a resource group and passes you back a writeable stream
+		/// </remarks>
+		/// <param name="filename"> The name of the file to create </param>
+		/// <param name="groupName"> The name of the group in which to create the file </param>
+		/// <param name="overwrite"> If true, an existing file will be overwritten, if false an error will occur if the file already exists </param>
+		/// <returns> An open Stream </returns>
+		public System.IO.Stream CreateResource( string filename, string groupName, bool overwrite )
 		{
 			return CreateResource( filename, groupName, overwrite, String.Empty );
 		}
 
 		/// <summary>
-		/// Create a new resource file in a given group.
+		///   Create a new resource file in a given group.
 		/// </summary>
-		/// <remarks>This method creates a new file in a resource group and passes you back a writeable stream</remarks>
-		/// <param name="filename">The name of the file to create</param>
-		/// <param name="groupName">The name of the group in which to create the file</param>
-		/// <param name="overwrite">If true, an existing file will be overwritten, if false
-		/// an error will occur if the file already exists</param>
-		/// <param name="locationPattern">If the resource group contains multiple locations,
-		/// then usually the file will be created in the first writable location. If you
-		/// want to be more specific, you can include a location pattern here and
-		/// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
-		/// will be considered candidates for creation.</param>
-		/// <returns>An open Stream</returns>
-		public IO.Stream CreateResource( string filename, string groupName, bool overwrite, string locationPattern )
+		/// <remarks>
+		///   This method creates a new file in a resource group and passes you back a writeable stream
+		/// </remarks>
+		/// <param name="filename"> The name of the file to create </param>
+		/// <param name="groupName"> The name of the group in which to create the file </param>
+		/// <param name="overwrite"> If true, an existing file will be overwritten, if false an error will occur if the file already exists </param>
+		/// <param name="locationPattern"> If the resource group contains multiple locations, then usually the file will be created in the first writable location. If you want to be more specific, you can include a location pattern here and only locations which match that pattern (as determined by <seealso
+		///    cref="Regex.IsMatch(string)" /> ) will be considered candidates for creation. </param>
+		/// <returns> An open Stream </returns>
+		public System.IO.Stream CreateResource( string filename, string groupName, bool overwrite, string locationPattern )
 		{
 			//OGRE_LOCK_AUTO_MUTEX
 			var grp = getResourceGroup( groupName );
@@ -1871,7 +1761,8 @@ namespace Axiom.Core
 			{
 				var arch = rl.Archive;
 
-				if ( !arch.IsReadOnly && ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
+				if ( !arch.IsReadOnly &&
+				     ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
 				{
 					if ( !overwrite && arch.Exists( filename ) )
 					{
@@ -1893,34 +1784,31 @@ namespace Axiom.Core
 		#region DeleteResource Method
 
 		/// <summary>
-		/// Delete a single resource file.
+		///   Delete a single resource file.
 		/// </summary>
-		/// <param name="filename">The name of the file to delete</param>
+		/// <param name="filename"> The name of the file to delete </param>
 		public void DeleteResource( string filename )
 		{
 			DeleteResource( filename, ResourceGroupManager.DefaultResourceGroupName, String.Empty );
 		}
 
 		/// <summary>
-		/// Delete a single resource file.
+		///   Delete a single resource file.
 		/// </summary>
-		/// <param name="filename">The name of the file to delete</param>
-		/// <param name="groupName">The name of the group in which to search</param>
+		/// <param name="filename"> The name of the file to delete </param>
+		/// <param name="groupName"> The name of the group in which to search </param>
 		public void DeleteResource( string filename, string groupName )
 		{
 			DeleteResource( filename, groupName, String.Empty );
 		}
 
 		/// <summary>
-		/// Delete a single resource file.
+		///   Delete a single resource file.
 		/// </summary>
-		/// <param name="filename">The name of the file to delete</param>
-		/// <param name="groupName">The name of the group in which to search</param>
-		/// <param name="locationPattern">If the resource group contains multiple locations,
-		/// then usually first matching file found in any location will be deleted. If you
-		/// want to be more specific, you can include a location pattern here and
-		/// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
-		/// will be considered candidates for deletion.</param>
+		/// <param name="filename"> The name of the file to delete </param>
+		/// <param name="groupName"> The name of the group in which to search </param>
+		/// <param name="locationPattern"> If the resource group contains multiple locations, then usually first matching file found in any location will be deleted. If you want to be more specific, you can include a location pattern here and only locations which match that pattern (as determined by <seealso
+		///    cref="Regex.IsMatch(string)" /> ) will be considered candidates for deletion. </param>
 		public void DeleteResource( string filename, string groupName, string locationPattern )
 		{
 			//OGRE_LOCK_AUTO_MUTEX
@@ -1936,7 +1824,8 @@ namespace Axiom.Core
 			{
 				var arch = rl.Archive;
 
-				if ( !arch.IsReadOnly && ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
+				if ( !arch.IsReadOnly &&
+				     ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
 				{
 					if ( arch.Exists( filename ) )
 					{
@@ -1955,34 +1844,31 @@ namespace Axiom.Core
 		#region DeleteMatchingResources Method
 
 		/// <summary>
-		/// Delete all matching resource files.
+		///   Delete all matching resource files.
 		/// </summary>
-		/// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
+		/// <param name="filePattern"> The pattern (see <seealso cref="Regex.IsMatch(string)" /> ) of the files to delete. </param>
 		public void DeleteMatchingResources( string filePattern )
 		{
 			DeleteMatchingResources( filePattern, ResourceGroupManager.DefaultResourceGroupName, String.Empty );
 		}
 
 		/// <summary>
-		/// Delete all matching resource files.
+		///   Delete all matching resource files.
 		/// </summary>
-		/// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
-		/// <param name="groupName">The name of the group in which to search</param>
+		/// <param name="filePattern"> The pattern (see <seealso cref="Regex.IsMatch(string)" /> ) of the files to delete. </param>
+		/// <param name="groupName"> The name of the group in which to search </param>
 		public void DeleteMatchingResources( string filePattern, string groupName )
 		{
 			DeleteMatchingResources( filePattern, groupName, String.Empty );
 		}
 
 		/// <summary>
-		/// Delete all matching resource files.
+		///   Delete all matching resource files.
 		/// </summary>
-		/// <param name="filePattern">The pattern (see <seealso cref="Regex.IsMatch(string)"/>) of the files to delete. </param>
-		/// <param name="groupName">The name of the group in which to search</param>
-		/// <param name="locationPattern">If the resource group contains multiple locations,
-		/// then usually all matching files in any location will be deleted. If you
-		/// want to be more specific, you can include a location pattern here and
-		/// only locations which match that pattern (as determined by <seealso cref="Regex.IsMatch(string)"/>)
-		/// will be considered candidates for deletion.</param>
+		/// <param name="filePattern"> The pattern (see <seealso cref="Regex.IsMatch(string)" /> ) of the files to delete. </param>
+		/// <param name="groupName"> The name of the group in which to search </param>
+		/// <param name="locationPattern"> If the resource group contains multiple locations, then usually all matching files in any location will be deleted. If you want to be more specific, you can include a location pattern here and only locations which match that pattern (as determined by <seealso
+		///    cref="Regex.IsMatch(string)" /> ) will be considered candidates for deletion. </param>
 		public void DeleteMatchingResources( string filePattern, string groupName, string locationPattern )
 		{
 			//OGRE_LOCK_AUTO_MUTEX
@@ -1998,7 +1884,8 @@ namespace Axiom.Core
 			{
 				var arch = rl.Archive;
 
-				if ( !arch.IsReadOnly && ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
+				if ( !arch.IsReadOnly &&
+				     ( String.IsNullOrEmpty( locationPattern ) || ( new Regex( locationPattern ) ).IsMatch( arch.Name ) ) )
 				{
 					foreach ( var f in arch.Find( filePattern ) )
 					{
@@ -2011,12 +1898,14 @@ namespace Axiom.Core
 
 		#endregion DeleteMatchingResources Method
 
-		/// <summary>List all file names in a resource group.</summary>
+		/// <summary>
+		///   List all file names in a resource group.
+		/// </summary>
 		/// <remarks>
-		/// This method only returns filenames, you can also retrieve other information using listFileInfo.
+		///   This method only returns filenames, you can also retrieve other information using listFileInfo.
 		/// </remarks>
-		/// <param name="groupName">The name of the group</param>
-		/// <returns>A list of filenames matching the criteria, all are fully qualified</returns>
+		/// <param name="groupName"> The name of the group </param>
+		/// <returns> A list of filenames matching the criteria, all are fully qualified </returns>
 		public List<string> ListResourceNames( string groupName )
 		{
 			var vec = new List<string>();
@@ -2037,9 +1926,11 @@ namespace Axiom.Core
 			return vec;
 		}
 
-		/// <summary>List all files in a resource group with accompanying information.</summary>
-		/// <param name="groupName">The name of the group</param>
-		/// <returns>A list of structures detailing quite a lot of information about all the files in the archive.</returns>
+		/// <summary>
+		///   List all files in a resource group with accompanying information.
+		/// </summary>
+		/// <param name="groupName"> The name of the group </param>
+		/// <returns> A list of structures detailing quite a lot of information about all the files in the archive. </returns>
 		public FileInfoList ListResourceFileInfo( string groupName )
 		{
 			var vec = new FileInfoList();
@@ -2061,27 +1952,27 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Retrieve the modification time of a given file
+		///   Retrieve the modification time of a given file
 		/// </summary>
-		/// <see cref="ResourceGroupManager.ResourceModifiedTime(ResourceGroup, string)"/>
+		/// <see cref="ResourceGroupManager.ResourceModifiedTime(ResourceGroup, string)" />
 		public DateTime ResourceModifiedTime( string groupName, string resourceName )
 		{
 			// Try to find in resource index first
-			var grp = this.getResourceGroup( groupName );
+			var grp = getResourceGroup( groupName );
 			if ( grp == null )
 			{
 				throw new AxiomException( "Cannot find a group named {0}", groupName );
 			}
 
-			return this.ResourceModifiedTime( grp, resourceName );
+			return ResourceModifiedTime( grp, resourceName );
 		}
 
 		/// <summary>
-		/// Retrieve the modification time of a given file
+		///   Retrieve the modification time of a given file
 		/// </summary>
-		/// <param name="group"></param>
-		/// <param name="resourceName"></param>
-		/// <returns></returns>
+		/// <param name="group"> </param>
+		/// <param name="resourceName"> </param>
+		/// <returns> </returns>
 		public DateTime ResourceModifiedTime( ResourceGroup group, string resourceName )
 		{
 			if ( group.ResourceIndexCaseSensitive.ContainsKey( resourceName ) )
@@ -2116,15 +2007,14 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Find all file names matching a given pattern in a resource group.
+		///   Find all file names matching a given pattern in a resource group.
 		/// </summary>
 		/// <remarks>
-		/// This method only returns filenames, you can also retrieve other
-		/// information using findFileInfo.
+		///   This method only returns filenames, you can also retrieve other information using findFileInfo.
 		/// </remarks>
-		/// <param name="groupName">The name of the group</param>
-		/// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
-		/// <returns>A list of filenames matching the criteria, all are fully qualified</returns>
+		/// <param name="groupName"> The name of the group </param>
+		/// <param name="pattern"> The pattern to search for; wildcards (*) are allowed </param>
+		/// <returns> A list of filenames matching the criteria, all are fully qualified </returns>
 		public List<string> FindResourceNames( string groupName, string pattern )
 		{
 			var vec = new List<string>();
@@ -2146,9 +2036,11 @@ namespace Axiom.Core
 			return vec;
 		}
 
-		/// <summary>Find out if the named file exists in a group. </summary>
-		/// <param name="group">The name of the resource group</param>
-		/// <param name="filename">Fully qualified name of the file to test for</param>
+		/// <summary>
+		///   Find out if the named file exists in a group.
+		/// </summary>
+		/// <param name="group"> The name of the resource group </param>
+		/// <param name="filename"> Fully qualified name of the file to test for </param>
 		public bool ResourceExists( string group, string filename )
 		{
 			// Try to find in resource index first
@@ -2161,9 +2053,11 @@ namespace Axiom.Core
 			return ResourceExists( grp, filename );
 		}
 
-		/// <summary>Find out if the named file exists in a group. </summary>
-		/// <param name="group">the resource group</param>
-		/// <param name="filename">Fully qualified name of the file to test for</param>
+		/// <summary>
+		///   Find out if the named file exists in a group.
+		/// </summary>
+		/// <param name="group"> the resource group </param>
+		/// <param name="filename"> Fully qualified name of the file to test for </param>
 		public bool ResourceExists( ResourceGroup group, string filename )
 		{
 			if ( group.ResourceIndexCaseSensitive.ContainsKey( filename ) )
@@ -2194,12 +2088,11 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Find all files matching a given pattern in a group and get
-		/// some detailed information about them.
+		///   Find all files matching a given pattern in a group and get some detailed information about them.
 		/// </summary>
-		/// <param name="groupName">The name of the resource group</param>
-		/// <param name="pattern">The pattern to search for; wildcards (*) are allowed</param>
-		/// <returns>A list of file information structures for all files matching the criteria.</returns>
+		/// <param name="groupName"> The name of the resource group </param>
+		/// <param name="pattern"> The pattern to search for; wildcards (*) are allowed </param>
+		/// <returns> A list of file information structures for all files matching the criteria. </returns>
 		public FileInfoList FindResourceFileInfo( string groupName, string pattern )
 		{
 			var vec = new FileInfoList();
@@ -2221,82 +2114,79 @@ namespace Axiom.Core
 			return vec;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="filename"></param>
-		/// <returns></returns>
+		///<summary>
+		///</summary>
+		///<param name="filename"> </param>
+		///<returns> </returns>
 		public string FindGroupContainingResource( string filename )
 		{
 			var grp = _findGroupContainingResourceImpl( filename );
 
 			if ( grp == null )
 			{
-				throw new Exception( "Unable to derive resource group for " + filename + " automatically since the resource was not found." );
+				throw new Exception( "Unable to derive resource group for " + filename +
+				                     " automatically since the resource was not found." );
 			}
 			return grp.Name;
 		}
 
 		/// <summary>
-		/// Adds a ResourceGroupListener which will be called back during
-		/// resource loading events.
+		///   Adds a ResourceGroupListener which will be called back during resource loading events.
 		/// </summary>
-		/// <param name="rgl"></param>
+		/// <param name="rgl"> </param>
 		public void AddResourceGroupListener( IResourceGroupListener rgl )
 		{
 			if ( rgl != null )
 			{
 				_resourceGroupListeners.Add( rgl );
-				this._resourceGroupScriptingStarted += new ResourceGroupScriptingStarted( rgl.ResourceGroupScriptingStarted );
-				this._resourceGroupScriptingEnded += new ResourceGroupScriptingEnded( rgl.ResourceGroupScriptingEnded );
-				this._resourceGroupLoadStarted += new ResourceGroupLoadStarted( rgl.ResourceGroupLoadStarted );
-				this._resourceGroupLoadEnded += new ResourceGroupLoadEnded( rgl.ResourceGroupLoadEnded );
-				this._resourceLoadStarted += new ResourceLoadStarted( rgl.ResourceLoadStarted );
-				this._resourceLoadEnded += new ResourceLoadEnded( rgl.ResourceLoadEnded );
-				this._scriptParseStarted += new ScriptParseStarted( rgl.ScriptParseStarted );
-				this._scriptParseEnded += new ScriptParseEnded( rgl.ScriptParseEnded );
-				this._worldGeometryStageStarted += new WorldGeometryStageStarted( rgl.WorldGeometryStageStarted );
-				this._worldGeometryStageEnded += new WorldGeometryStageEnded( rgl.WorldGeometryStageEnded );
+				_resourceGroupScriptingStarted += new ResourceGroupScriptingStarted( rgl.ResourceGroupScriptingStarted );
+				_resourceGroupScriptingEnded += new ResourceGroupScriptingEnded( rgl.ResourceGroupScriptingEnded );
+				_resourceGroupLoadStarted += new ResourceGroupLoadStarted( rgl.ResourceGroupLoadStarted );
+				_resourceGroupLoadEnded += new ResourceGroupLoadEnded( rgl.ResourceGroupLoadEnded );
+				_resourceLoadStarted += new ResourceLoadStarted( rgl.ResourceLoadStarted );
+				_resourceLoadEnded += new ResourceLoadEnded( rgl.ResourceLoadEnded );
+				_scriptParseStarted += new ScriptParseStarted( rgl.ScriptParseStarted );
+				_scriptParseEnded += new ScriptParseEnded( rgl.ScriptParseEnded );
+				_worldGeometryStageStarted += new WorldGeometryStageStarted( rgl.WorldGeometryStageStarted );
+				_worldGeometryStageEnded += new WorldGeometryStageEnded( rgl.WorldGeometryStageEnded );
+				_resourceGroupPrepareStarted += new ResourceGroupPrepareStarted( rgl.ResourceGroupPrepareStarted );
+				_resourceGroupPrepareEnded += new ResourceGroupPrepareEnded( rgl.ResourceGroupPrepareEnded );
 			}
 		}
 
 		/// <summary>
-		/// Removes a ResourceGroupListener
+		///   Removes a ResourceGroupListener
 		/// </summary>
-		/// <param name="rgl"></param>
+		/// <param name="rgl"> </param>
 		public void RemoveResourceGroupListener( IResourceGroupListener rgl )
 		{
-			if ( rgl != null )
+			if ( rgl != null && _resourceGroupListeners.Contains( rgl ) )
 			{
 				_resourceGroupListeners.Remove( rgl );
-				this._resourceGroupScriptingStarted -= new ResourceGroupScriptingStarted( rgl.ResourceGroupScriptingStarted );
-				this._resourceGroupScriptingEnded -= new ResourceGroupScriptingEnded( rgl.ResourceGroupScriptingEnded );
-				this._resourceGroupLoadStarted -= new ResourceGroupLoadStarted( rgl.ResourceGroupLoadStarted );
-				this._resourceGroupLoadEnded -= new ResourceGroupLoadEnded( rgl.ResourceGroupLoadEnded );
-				this._resourceLoadStarted -= new ResourceLoadStarted( rgl.ResourceLoadStarted );
-				this._resourceLoadEnded -= new ResourceLoadEnded( rgl.ResourceLoadEnded );
-				this._scriptParseStarted -= new ScriptParseStarted( rgl.ScriptParseStarted );
-				this._scriptParseEnded -= new ScriptParseEnded( rgl.ScriptParseEnded );
-				this._worldGeometryStageStarted -= new WorldGeometryStageStarted( rgl.WorldGeometryStageStarted );
-				this._worldGeometryStageEnded -= new WorldGeometryStageEnded( rgl.WorldGeometryStageEnded );
+				_resourceGroupScriptingStarted -= new ResourceGroupScriptingStarted( rgl.ResourceGroupScriptingStarted );
+				_resourceGroupScriptingEnded -= new ResourceGroupScriptingEnded( rgl.ResourceGroupScriptingEnded );
+				_resourceGroupLoadStarted -= new ResourceGroupLoadStarted( rgl.ResourceGroupLoadStarted );
+				_resourceGroupLoadEnded -= new ResourceGroupLoadEnded( rgl.ResourceGroupLoadEnded );
+				_resourceLoadStarted -= new ResourceLoadStarted( rgl.ResourceLoadStarted );
+				_resourceLoadEnded -= new ResourceLoadEnded( rgl.ResourceLoadEnded );
+				_scriptParseStarted -= new ScriptParseStarted( rgl.ScriptParseStarted );
+				_scriptParseEnded -= new ScriptParseEnded( rgl.ScriptParseEnded );
+				_worldGeometryStageStarted -= new WorldGeometryStageStarted( rgl.WorldGeometryStageStarted );
+				_worldGeometryStageEnded -= new WorldGeometryStageEnded( rgl.WorldGeometryStageEnded );
+				_resourceGroupPrepareStarted -= new ResourceGroupPrepareStarted( rgl.ResourceGroupPrepareStarted );
+				_resourceGroupPrepareEnded -= new ResourceGroupPrepareEnded( rgl.ResourceGroupPrepareEnded );
 			}
 		}
 
 		/// <summary>
-		/// Associates some world geometry with a resource group, causing it to
-		/// be loaded / unloaded with the resource group.
+		///   Associates some world geometry with a resource group, causing it to be loaded / unloaded with the resource group.
 		/// </summary>
 		/// <remarks>
-		/// You would use this method to essentially defer a call to
-		/// SceneManager::setWorldGeometry to the time when the resource group
-		/// is loaded. The advantage of this is that compatible scene managers
-		/// will include the estimate of the number of loading stages for that
-		/// world geometry when the resource group begins loading, allowing you
-		/// to include that in a loading progress report.
+		///   You would use this method to essentially defer a call to SceneManager::setWorldGeometry to the time when the resource group is loaded. The advantage of this is that compatible scene managers will include the estimate of the number of loading stages for that world geometry when the resource group begins loading, allowing you to include that in a loading progress report.
 		/// </remarks>
-		/// <param name="groupName">The name of the resource group</param>
-		/// <param name="worldGeometry">The parameter which should be passed to setWorldGeometry</param>
-		/// <param name="sceneManager">The SceneManager which should be called</param>
+		/// <param name="groupName"> The name of the resource group </param>
+		/// <param name="worldGeometry"> The parameter which should be passed to setWorldGeometry </param>
+		/// <param name="sceneManager"> The SceneManager which should be called </param>
 		public void LinkWorldGeometryToResourceGroup( string groupName, string worldGeometry, SceneManager sceneManager )
 		{
 			// Try to find in resource index first
@@ -2311,10 +2201,12 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Clear any link to world geometry from a resource group.
+		///   Clear any link to world geometry from a resource group.
 		/// </summary>
-		/// <remarks>Basically undoes a previous call to linkWorldGeometryToResourceGroup.</remarks>
-		/// <param name="groupName">The name of the resource group</param>
+		/// <remarks>
+		///   Basically undoes a previous call to linkWorldGeometryToResourceGroup.
+		/// </remarks>
+		/// <param name="groupName"> The name of the resource group </param>
 		public void UnlinkWorldGeometryFromResourceGroup( string groupName )
 		{
 			// Try to find in resource index first
@@ -2329,7 +2221,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Shutdown all ResourceManagers, performed as part of clean-up.
+		///   Shutdown all ResourceManagers, performed as part of clean-up.
 		/// </summary>
 		public void ShutdownAll()
 		{
@@ -2341,12 +2233,13 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>Get a list of the currently defined resource groups.</summary>
+		/// <summary>
+		///   Get a list of the currently defined resource groups.
+		/// </summary>
 		/// <remarks>
-		/// This method intentionally returns a copy rather than a reference in
-		/// order to avoid any contention issues in multithreaded applications.
+		///   This method intentionally returns a copy rather than a reference in order to avoid any contention issues in multithreaded applications.
 		/// </remarks>
-		/// <returns>A copy of list of currently defined groups.</returns>
+		/// <returns> A copy of list of currently defined groups. </returns>
 		public List<string> GetResourceGroups()
 		{
 			var vec = new List<string>();
@@ -2360,13 +2253,15 @@ namespace Axiom.Core
 			return vec;
 		}
 
-		/// <summary>Get the list of resource declarations for the specified group name.</summary>
+		/// <summary>
+		///   Get the list of resource declarations for the specified group name.
+		/// </summary>
 		/// <remarks>
-		/// This method intentionally returns a copy rather than a reference in
-		/// order to avoid any contention issues in multithreaded applications.
+		///   This method intentionally returns a copy rather than a reference in order to avoid any contention issues in multithreaded applications.
 		/// </remarks>
-		/// /// <param name="groupName">The name of the group</param>
-		/// <returns>A copy of list of currently defined resources.</returns>
+		/// ///
+		/// <param name="groupName"> The name of the group </param>
+		/// <returns> A copy of list of currently defined resources. </returns>
 		public ResourceDeclaration[] getResourceDeclarationList( string groupName )
 		{
 			// Try to find in resource index first
@@ -2383,10 +2278,10 @@ namespace Axiom.Core
 		#region Internal Methods
 
 		/// <summary>
-		/// Get resource group
+		///   Get resource group
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
+		/// <param name="name"> </param>
+		/// <returns> </returns>
 		protected ResourceGroup getResourceGroup( string name )
 		{
 			if ( _resourceGroups.ContainsKey( name ) )
@@ -2397,11 +2292,10 @@ namespace Axiom.Core
 			return null;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="resource"></param>
-		/// <param name="group"></param>
+		///<summary>
+		///</summary>
+		///<param name="resource"> </param>
+		///<param name="group"> </param>
 		protected void addCreatedResource( Resource resource, ResourceGroup group )
 		{
 			//OGRE_LOCK_MUTEX(grp.OGRE_AUTO_MUTEX_NAME)
@@ -2417,15 +2311,13 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Internal method for registering a ResourceManager (which should be
-		/// a singleton). Creators of plugins can register new ResourceManagers
-		/// this way if they wish.
+		///   Internal method for registering a ResourceManager (which should be a singleton). Creators of plugins can register new ResourceManagers this way if they wish.
 		/// </summary>
 		/// <remarks>
-		/// ResourceManagers that wish to parse scripts must also call registerScriptLoader.
+		///   ResourceManagers that wish to parse scripts must also call registerScriptLoader.
 		/// </remarks>
-		/// <param name="resourceType">String identifying the resource type, must be unique.</param>
-		/// <param name="rm">the ResourceManager instance.</param>
+		/// <param name="resourceType"> String identifying the resource type, must be unique. </param>
+		/// <param name="rm"> the ResourceManager instance. </param>
 		public void RegisterResourceManager( string resourceType, ResourceManager rm )
 		{
 			LogManager.Instance.Write( "Registering ResourceManager for type {0}", resourceType );
@@ -2433,12 +2325,12 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Internal method for unregistering a ResourceManager.
+		///   Internal method for unregistering a ResourceManager.
 		/// </summary>
 		/// <remarks>
-		/// ResourceManagers that wish to parse scripts must also call unregisterScriptLoader.
+		///   ResourceManagers that wish to parse scripts must also call unregisterScriptLoader.
 		/// </remarks>
-		/// <param name="resourceType">String identifying the resource type.</param>
+		/// <param name="resourceType"> String identifying the resource type. </param>
 		public void UnregisterResourceManager( string resourceType )
 		{
 			LogManager.Instance.Write( "Unregistering ResourceManager for type {0}", resourceType );
@@ -2449,9 +2341,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Internal method for registering a ScriptLoader. ScriptLoaders parse scripts when resource groups are initialised.
+		///   Internal method for registering a ScriptLoader. ScriptLoaders parse scripts when resource groups are initialised.
 		/// </summary>
-		/// <param name="su">ScriptLoader instance.</param>
+		/// <param name="su"> ScriptLoader instance. </param>
 		public void RegisterScriptLoader( IScriptLoader su )
 		{
 			var patterns = new StringBuilder();
@@ -2469,9 +2361,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Internal method for unregistering a ScriptLoader.
+		///   Internal method for unregistering a ScriptLoader.
 		/// </summary>
-		/// <param name="su">ScriptLoader instance.</param>
+		/// <param name="su"> ScriptLoader instance. </param>
 		public void UnregisterScriptLoader( IScriptLoader su )
 		{
 			var patterns = new StringBuilder();
@@ -2486,8 +2378,10 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>Internal method called by ResourceManager when a resource is created.</summary>
-		/// <param name="res">reference to resource</param>
+		/// <summary>
+		///   Internal method called by ResourceManager when a resource is created.
+		/// </summary>
+		/// <param name="res"> reference to resource </param>
 		public void notifyResourceCreated( Resource res )
 		{
 			if ( _currentGroup != null )
@@ -2506,8 +2400,10 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>Internal method called by ResourceManager when a resource is removed.</summary>
-		/// <param name="res">reference to resource</param>
+		/// <summary>
+		///   Internal method called by ResourceManager when a resource is removed.
+		/// </summary>
+		/// <param name="res"> reference to resource </param>
 		public void notifyResourceRemoved( Resource res )
 		{
 			if ( _currentGroup != null )
@@ -2564,8 +2460,10 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>Internal method called by ResourceManager when all resources for that manager are removed.</summary>
-		/// <param name="manager">the manager for which all resources are being removed</param>
+		/// <summary>
+		///   Internal method called by ResourceManager when all resources for that manager are removed.
+		/// </summary>
+		/// <param name="manager"> the manager for which all resources are being removed </param>
 		public void notifyAllResourcesRemoved( ResourceManager manager )
 		{
 			int index;
@@ -2597,13 +2495,13 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>Notify this manager that one stage of world geometry loading has been started.</summary>
+		/// <summary>
+		///   Notify this manager that one stage of world geometry loading has been started.
+		/// </summary>
 		/// <remarks>
-		/// Custom SceneManagers which load custom world geometry should call this
-		/// method the number of times equal to the value they return from
-		/// SceneManager.estimateWorldGeometry while loading their geometry.
+		///   Custom SceneManagers which load custom world geometry should call this method the number of times equal to the value they return from SceneManager.estimateWorldGeometry while loading their geometry.
 		/// </remarks>
-		/// <param name="description"></param>
+		/// <param name="description"> </param>
 		public void notifyWorldGeometryStageStarted( string description )
 		{
 			if ( _worldGeometryStageStarted != null )
@@ -2612,11 +2510,11 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>Notify this manager that one stage of world geometry loading has been completed.</summary>
+		/// <summary>
+		///   Notify this manager that one stage of world geometry loading has been completed.
+		/// </summary>
 		/// <remarks>
-		/// Custom SceneManagers which load custom world geometry should call this
-		/// method the number of times equal to the value they return from
-		/// SceneManager.estimateWorldGeometry while loading their geometry.
+		///   Custom SceneManagers which load custom world geometry should call this method the number of times equal to the value they return from SceneManager.estimateWorldGeometry while loading their geometry.
 		/// </remarks>
 		public void notifyWorldGeometryStageEnded()
 		{
@@ -2630,13 +2528,12 @@ namespace Axiom.Core
 
 		#region Private Methods
 
-		/// <summary>
-		/// Parses all the available scripts found in the resource locations
-		/// for the given group, for all ResourceManagers.
-		/// </summary>
-		/// <remarks>
-		///	Called as part of initializeResourceGroup
-		/// </remarks>
+		///<summary>
+		///  Parses all the available scripts found in the resource locations for the given group, for all ResourceManagers.
+		///</summary>
+		///<remarks>
+		///  Called as part of initializeResourceGroup
+		///</remarks>
 		private void _parseResourceGroupScripts( ResourceGroup grp )
 		{
 			LogManager.Instance.Write( "Parsing scripts for resource group " + grp.Name );
@@ -2705,8 +2602,12 @@ namespace Axiom.Core
 			LogManager.Instance.Write( "Finished parsing scripts for resource group " + grp.Name );
 		}
 
-		/// <summary>Create all the pre-declared resources.</summary>
-		/// <remarks>Called as part of initializeResourceGroup</remarks>
+		/// <summary>
+		///   Create all the pre-declared resources.
+		/// </summary>
+		/// <remarks>
+		///   Called as part of initializeResourceGroup
+		/// </remarks>
 		private void _createDeclaredResources( ResourceGroup grp )
 		{
 			foreach ( var dcl in grp.ResourceDeclarations )
@@ -2751,9 +2652,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///  Drops contents of a group, leave group there, notify ResourceManagers.
+		///   Drops contents of a group, leave group there, notify ResourceManagers.
 		/// </summary>
-		/// <param name="grp"></param>
+		/// <param name="grp"> </param>
 		private void _dropGroupContents( ResourceGroup grp )
 		{
 			var groupSet = false;
@@ -2781,9 +2682,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Delete a group for shutdown - don't notify ResourceManagers.
+		///   Delete a group for shutdown - don't notify ResourceManagers.
 		/// </summary>
-		/// <param name="grp"></param>
+		/// <param name="grp"> </param>
 		private void _deleteGroup( ResourceGroup grp )
 		{
 			// delete all the load list entries
@@ -2803,18 +2704,18 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Internal method for getting a registered ResourceManager.
+		///   Internal method for getting a registered ResourceManager.
 		/// </summary>
-		/// <param name="resourceType">identifies the resource type.</param>
-		/// <returns></returns>
+		/// <param name="resourceType"> identifies the resource type. </param>
+		/// <returns> </returns>
 		private ResourceManager _getResourceManager( string resourceType )
 		{
 			//OGRE_LOCK_AUTO_MUTEX
-			if ( !this.ResourceManagers.ContainsKey( resourceType ) )
+			if ( !ResourceManagers.ContainsKey( resourceType ) )
 			{
 				throw new Exception( "Cannot locate resource manager for resource type '" + resourceType + "'." );
 			}
-			return this.ResourceManagers[ resourceType ];
+			return ResourceManagers[ resourceType ];
 		}
 
 		private ResourceGroup _findGroupContainingResourceImpl( string filename )
@@ -2840,12 +2741,12 @@ namespace Axiom.Core
 		#region ISingleton<ResourceGroupManager> implementation
 
 		/// <summary>
-		///     Singleton instance of this class.
+		///   Singleton instance of this class.
 		/// </summary>
 		protected static ResourceGroupManager instance = new Lazy<ResourceGroupManager>().Value;
 
 		/// <summary>
-		///     Gets the singleton instance of this class.
+		///   Gets the singleton instance of this class.
 		/// </summary>
 		public static ResourceGroupManager Instance
 		{

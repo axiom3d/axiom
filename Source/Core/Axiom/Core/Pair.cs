@@ -40,17 +40,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
-using Axiom.Math;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
 	/// <summary>
-	/// 	A simple container class for returning a pair of objects from a method call
-	/// 	(similar to std::pair).
+	///   A simple container class for returning a pair of objects from a method call (similar to std::pair).
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	/// <typeparam name="T"> </typeparam>
 	public class Pair<T> : IEquatable<Pair<T>>
 	{
 		private Axiom.Math.Tuple<T, T> data;
@@ -88,7 +85,7 @@ namespace Axiom.Core
 
 		public bool Equals( Pair<T> other )
 		{
-			return this.data.Equals( other.data );
+			return data.Equals( other.data );
 		}
 
 
@@ -96,7 +93,7 @@ namespace Axiom.Core
 		{
 			if ( other is Pair<T> )
 			{
-				return this.Equals( (Pair<T>)other );
+				return Equals( (Pair<T>)other );
 			}
 			return false;
 		}
@@ -107,7 +104,7 @@ namespace Axiom.Core
 
 		public override int GetHashCode()
 		{
-			return this.First.GetHashCode() ^ this.Second.GetHashCode();
+			return First.GetHashCode() ^ Second.GetHashCode();
 		}
 
 		#endregion System.Object Implementation

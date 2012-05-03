@@ -37,16 +37,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Controllers
 {
-	/// <summary>
-	///		Classes that will be controlled by any type of Controller should implement
-	///		this interface to define how the controller will modifiy it's local data.
-	/// </summary>
+	///<summary>
+	///  Classes that will be controlled by any type of Controller should implement this interface to define how the controller will modifiy it's local data.
+	///</summary>
 	public interface IControllerValue<T>
 	{
 		T Value { get; set; }

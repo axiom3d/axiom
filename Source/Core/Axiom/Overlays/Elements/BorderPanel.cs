@@ -38,15 +38,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
 using Axiom.Core;
+using Axiom.Core.Collections;
+using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting;
-using Axiom.Graphics;
-using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
@@ -62,19 +59,10 @@ using Axiom.Core.Collections;
 namespace Axiom.Overlays.Elements
 {
 	/// <summary>
-	/// 	A specialization of the Panel element to provide a panel with a border with a seperate material.
+	///   A specialization of the Panel element to provide a panel with a border with a seperate material.
 	/// </summary>
 	/// <remarks>
-	/// 	Whilst the standard panel can use a single tiled material, this class allows
-	/// 	panels with a tileable backdrop plus a border texture. This is handy for large
-	/// 	panels that are too big to use a single large texture with a border, or
-	/// 	for multiple different size panels where you want the border a constant width
-	/// 	but the center to repeat.
-	/// 	<p/>
-	/// 	In addition to the usual PanelGuiElement properties, this class has a 'border
-	/// 	material', which specifies the material used for the edges of the panel,
-	/// 	a border width (which can either be constant all the way around, or specified
-	/// 	per edge), and the texture coordinates for each of the border sections.
+	///   Whilst the standard panel can use a single tiled material, this class allows panels with a tileable backdrop plus a border texture. This is handy for large panels that are too big to use a single large texture with a border, or for multiple different size panels where you want the border a constant width but the center to repeat. <p /> In addition to the usual PanelGuiElement properties, this class has a 'border material', which specifies the material used for the edges of the panel, a border width (which can either be constant all the way around, or specified per edge), and the texture coordinates for each of the border sections.
 	/// </remarks>
 	public class BorderPanel : Panel
 	{
@@ -85,7 +73,7 @@ namespace Axiom.Overlays.Elements
 		protected float topBorderSize;
 		protected float bottomBorderSize;
 
-		protected CellUV[] borderUV = new CellUV[ 8 ];
+		protected CellUV[] borderUV = new CellUV[8];
 
 		protected short pixelLeftBorderSize;
 		protected short pixelRightBorderSize;
@@ -105,19 +93,19 @@ namespace Axiom.Overlays.Elements
 		private const int TEXCOORDS = 1;
 
 		// temp array for use during position updates, prevents constant memory allocation
-		private float[] lefts = new float[ 8 ];
-		private float[] rights = new float[ 8 ];
-		private float[] tops = new float[ 8 ];
-		private float[] bottoms = new float[ 8 ];
+		private readonly float[] lefts = new float[8];
+		private readonly float[] rights = new float[8];
+		private readonly float[] tops = new float[8];
+		private readonly float[] bottoms = new float[8];
 
 		#endregion Member variables
 
 		#region Constructors
 
 		/// <summary>
-		///    Internal constructor, used when objects create by the factory.
+		///   Internal constructor, used when objects create by the factory.
 		/// </summary>
-		/// <param name="name"></param>
+		/// <param name="name"> </param>
 		internal BorderPanel( string name )
 			: base( name )
 		{
@@ -132,23 +120,22 @@ namespace Axiom.Overlays.Elements
 		#region Methods
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="disposeManagedResources"></param>
+		/// <param name="disposeManagedResources"> </param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.renderOp2 != null )
+					if ( renderOp2 != null )
 					{
-						if ( !this.renderOp2.IsDisposed )
+						if ( !renderOp2.IsDisposed )
 						{
-							this.renderOp2.Dispose();
+							renderOp2.Dispose();
 						}
 
-						this.renderOp2 = null;
+						renderOp2 = null;
 					}
 				}
 			}
@@ -340,7 +327,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Override from Panel.
+		///   Override from Panel.
 		/// </summary>
 		public override void Initialize()
 		{
@@ -364,14 +351,18 @@ namespace Axiom.Overlays.Elements
 				decl.AddElement( TEXCOORDS, 0, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
 
 				// position buffer
-				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
+				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ),
+				                                                                renderOp2.vertexData.vertexCount,
+				                                                                BufferUsage.StaticWriteOnly );
 
 				// bind position
 				var binding = renderOp2.vertexData.vertexBufferBinding;
 				binding.SetBinding( POSITION, buffer );
 
 				// texcoord buffer
-				buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORDS ), renderOp2.vertexData.vertexCount, BufferUsage.StaticWriteOnly, true );
+				buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXCOORDS ),
+				                                                            renderOp2.vertexData.vertexCount,
+				                                                            BufferUsage.StaticWriteOnly, true );
 
 				// bind texcoords
 				binding = renderOp2.vertexData.vertexBufferBinding;
@@ -395,7 +386,9 @@ namespace Axiom.Overlays.Elements
 				*/
 
 				// create a new index buffer
-				renderOp2.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, renderOp2.indexData.indexCount, BufferUsage.StaticWriteOnly );
+				renderOp2.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16,
+				                                                                                    renderOp2.indexData.indexCount,
+				                                                                                    BufferUsage.StaticWriteOnly );
 
 				// lock this bad boy
 				var data = renderOp2.indexData.indexBuffer.Lock( BufferLocking.Discard );
@@ -408,7 +401,7 @@ namespace Axiom.Overlays.Elements
 
 					for ( short cell = 0; cell < 8; cell++ )
 					{
-						var val = (short)( cell * 4 );
+						var val = (short)( cell*4 );
 						idxPtr[ index++ ] = val;
 						idxPtr[ index++ ] = (short)( val + 1 );
 						idxPtr[ index++ ] = (short)( val + 2 );
@@ -429,19 +422,12 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Sets the size of the border.
+		///   Sets the size of the border.
 		/// </summary>
 		/// <remarks>
-		///    This method sets a constant size for all borders. There are also alternative
-		///    methods which allow you to set border widths for individual edges separately.
-		///    Remember that the dimensions specified here are in relation to the size of
-		///    the screen, so 0.1 is 1/10th of the screen width or height. Also note that because
-		///    most screen resolutions are 1.333:1 width:height ratio that using the same
-		///    border size will look slightly bigger across than up.
+		///   This method sets a constant size for all borders. There are also alternative methods which allow you to set border widths for individual edges separately. Remember that the dimensions specified here are in relation to the size of the screen, so 0.1 is 1/10th of the screen width or height. Also note that because most screen resolutions are 1.333:1 width:height ratio that using the same border size will look slightly bigger across than up.
 		/// </remarks>
-		/// <param name="size">The size of the border as a factor of the screen dimensions ie 0.2 is one-fifth
-		///    of the screen size.
-		/// </param>
+		/// <param name="size"> The size of the border as a factor of the screen dimensions ie 0.2 is one-fifth of the screen size. </param>
 		public void SetBorderSize( float size )
 		{
 			if ( metricsMode != MetricsMode.Pixels )
@@ -456,18 +442,13 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Sets the size of the border, with different sizes for vertical and horizontal borders.
+		///   Sets the size of the border, with different sizes for vertical and horizontal borders.
 		/// </summary>
 		/// <remarks>
-		///    This method sets a size for the side and top / bottom borders separately.
-		///    Remember that the dimensions specified here are in relation to the size of
-		///    the screen, so 0.1 is 1/10th of the screen width or height. Also note that because
-		///    most screen resolutions are 1.333:1 width:height ratio that using the same
-		///    border size will look slightly bigger across than up.
+		///   This method sets a size for the side and top / bottom borders separately. Remember that the dimensions specified here are in relation to the size of the screen, so 0.1 is 1/10th of the screen width or height. Also note that because most screen resolutions are 1.333:1 width:height ratio that using the same border size will look slightly bigger across than up.
 		/// </remarks>
-		/// <param name="sides">The size of the side borders as a factor of the screen dimensions ie 0.2 is one-fifth
-		///    of the screen size.</param>
-		/// <param name="topAndBottom">The size of the top and bottom borders as a factor of the screen dimensions.</param>
+		/// <param name="sides"> The size of the side borders as a factor of the screen dimensions ie 0.2 is one-fifth of the screen size. </param>
+		/// <param name="topAndBottom"> The size of the top and bottom borders as a factor of the screen dimensions. </param>
 		public void SetBorderSize( float sides, float topAndBottom )
 		{
 			if ( metricsMode != MetricsMode.Relative )
@@ -484,20 +465,15 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Sets the size of the border separately for all borders.
+		///   Sets the size of the border separately for all borders.
 		/// </summary>
 		/// <remarks>
-		///    This method sets a size all borders separately.
-		///    Remember that the dimensions specified here are in relation to the size of
-		///    the screen, so 0.1 is 1/10th of the screen width or height. Also note that because
-		///    most screen resolutions are 1.333:1 width:height ratio that using the same
-		///    border size will look slightly bigger across than up.
+		///   This method sets a size all borders separately. Remember that the dimensions specified here are in relation to the size of the screen, so 0.1 is 1/10th of the screen width or height. Also note that because most screen resolutions are 1.333:1 width:height ratio that using the same border size will look slightly bigger across than up.
 		/// </remarks>
-		/// <param name="left">The size of the left border as a factor of the screen dimensions ie 0.2 is one-fifth
-		/// of the screen size.</param>
-		/// <param name="right">The size of the right border as a factor of the screen dimensions.</param>
-		/// <param name="top">The size of the top border as a factor of the screen dimensions.</param>
-		/// <param name="bottom">The size of the bottom border as a factor of the screen dimensions.</param>
+		/// <param name="left"> The size of the left border as a factor of the screen dimensions ie 0.2 is one-fifth of the screen size. </param>
+		/// <param name="right"> The size of the right border as a factor of the screen dimensions. </param>
+		/// <param name="top"> The size of the top border as a factor of the screen dimensions. </param>
+		/// <param name="bottom"> The size of the bottom border as a factor of the screen dimensions. </param>
 		public void SetBorderSize( float left, float right, float top, float bottom )
 		{
 			if ( metricsMode != MetricsMode.Relative )
@@ -518,22 +494,16 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Sets the texture coordinates for the left edge of the border.
+		///   Sets the texture coordinates for the left edge of the border.
 		/// </summary>
 		/// <remarks>
-		///    The border panel uses 8 panels for the border (9 including the center).
-		///    Imagine a table with 3 rows and 3 columns. The corners are always the same size,
-		///    but the edges stretch depending on how big the panel is. Those who have done
-		///    resizable HTML tables will be familiar with this approach.
-		///    <p/>
-		///    We only require 2 sets of uv coordinates, one for the top-left and one for the
-		///    bottom-right of the panel, since it is assumed the sections are aligned on the texture.
+		///   The border panel uses 8 panels for the border (9 including the center). Imagine a table with 3 rows and 3 columns. The corners are always the same size, but the edges stretch depending on how big the panel is. Those who have done resizable HTML tables will be familiar with this approach. <p /> We only require 2 sets of uv coordinates, one for the top-left and one for the bottom-right of the panel, since it is assumed the sections are aligned on the texture.
 		/// </remarks>
-		/// <param name="cell">Index of the cell to update.</param>
-		/// <param name="u1">Top left u.</param>
-		/// <param name="v1">Top left v.</param>
-		/// <param name="u2">Bottom right u.</param>
-		/// <param name="v2">Bottom right v.</param>
+		/// <param name="cell"> Index of the cell to update. </param>
+		/// <param name="u1"> Top left u. </param>
+		/// <param name="v1"> Top left v. </param>
+		/// <param name="u2"> Bottom right u. </param>
+		/// <param name="v2"> Bottom right v. </param>
 		public void SetCellUV( BorderCell cell, float u1, float v1, float u2, float v2 )
 		{
 			var cellIndex = (int)cell;
@@ -542,7 +512,8 @@ namespace Axiom.Overlays.Elements
 			var buffer = renderOp2.vertexData.vertexBufferBinding.GetBuffer( TEXCOORDS );
 
 			// can't use discard, or it will discard the whole buffer, wiping out the positions too
-			var data = buffer.Lock( cellIndex * 8 * Memory.SizeOf( typeof ( float ) ), Memory.SizeOf( typeof ( float ) ) * 8, BufferLocking.Normal );
+			var data = buffer.Lock( cellIndex*8*Memory.SizeOf( typeof ( float ) ), Memory.SizeOf( typeof ( float ) )*8,
+			                        BufferLocking.Normal );
 
 			var index = 0;
 
@@ -566,23 +537,24 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Overriden from Panel.
+		///   Overriden from Panel.
 		/// </summary>
 		public override void Update()
 		{
-			if ( metricsMode != MetricsMode.Relative && ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
+			if ( metricsMode != MetricsMode.Relative &&
+			     ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
 			{
-				leftBorderSize = pixelLeftBorderSize * pixelScaleX;
-				rightBorderSize = pixelRightBorderSize * pixelScaleX;
-				topBorderSize = pixelTopBorderSize * pixelScaleY;
-				bottomBorderSize = pixelBottomBorderSize * pixelScaleY;
+				leftBorderSize = pixelLeftBorderSize*pixelScaleX;
+				rightBorderSize = pixelRightBorderSize*pixelScaleX;
+				topBorderSize = pixelTopBorderSize*pixelScaleY;
+				bottomBorderSize = pixelBottomBorderSize*pixelScaleY;
 				isGeomPositionsOutOfDate = true;
 			}
 			base.Update();
 		}
 
 		/// <summary>
-		///    Override from Panel.
+		///   Override from Panel.
 		/// </summary>
 		protected override void UpdatePositionGeometry()
 		{
@@ -603,15 +575,15 @@ namespace Axiom.Overlays.Elements
 			// Top / bottom also need inverting since y is upside down
 
 			// Horizontal
-			lefts[ 0 ] = lefts[ 3 ] = lefts[ 5 ] = this.DerivedLeft * 2 - 1;
-			lefts[ 1 ] = lefts[ 6 ] = rights[ 0 ] = rights[ 3 ] = rights[ 5 ] = lefts[ 0 ] + ( leftBorderSize * 2 );
-			rights[ 2 ] = rights[ 4 ] = rights[ 7 ] = lefts[ 0 ] + ( width * 2 );
-			lefts[ 2 ] = lefts[ 4 ] = lefts[ 7 ] = rights[ 1 ] = rights[ 6 ] = rights[ 2 ] - ( rightBorderSize * 2 );
+			lefts[ 0 ] = lefts[ 3 ] = lefts[ 5 ] = DerivedLeft*2 - 1;
+			lefts[ 1 ] = lefts[ 6 ] = rights[ 0 ] = rights[ 3 ] = rights[ 5 ] = lefts[ 0 ] + ( leftBorderSize*2 );
+			rights[ 2 ] = rights[ 4 ] = rights[ 7 ] = lefts[ 0 ] + ( width*2 );
+			lefts[ 2 ] = lefts[ 4 ] = lefts[ 7 ] = rights[ 1 ] = rights[ 6 ] = rights[ 2 ] - ( rightBorderSize*2 );
 			// Vertical
-			tops[ 0 ] = tops[ 1 ] = tops[ 2 ] = -( ( this.DerivedTop * 2 ) - 1 );
-			tops[ 3 ] = tops[ 4 ] = bottoms[ 0 ] = bottoms[ 1 ] = bottoms[ 2 ] = tops[ 0 ] - ( topBorderSize * 2 );
-			bottoms[ 5 ] = bottoms[ 6 ] = bottoms[ 7 ] = tops[ 0 ] - ( height * 2 );
-			tops[ 5 ] = tops[ 6 ] = tops[ 7 ] = bottoms[ 3 ] = bottoms[ 4 ] = bottoms[ 5 ] + ( bottomBorderSize * 2 );
+			tops[ 0 ] = tops[ 1 ] = tops[ 2 ] = -( ( DerivedTop*2 ) - 1 );
+			tops[ 3 ] = tops[ 4 ] = bottoms[ 0 ] = bottoms[ 1 ] = bottoms[ 2 ] = tops[ 0 ] - ( topBorderSize*2 );
+			bottoms[ 5 ] = bottoms[ 6 ] = bottoms[ 7 ] = tops[ 0 ] - ( height*2 );
+			tops[ 5 ] = tops[ 6 ] = tops[ 7 ] = bottoms[ 3 ] = bottoms[ 4 ] = bottoms[ 5 ] + ( bottomBorderSize*2 );
 
 			// get a reference to the buffer
 			var buffer = renderOp2.vertexData.vertexBufferBinding.GetBuffer( POSITION );
@@ -685,9 +657,9 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Overriden from Panel.
+		///   Overriden from Panel.
 		/// </summary>
-		/// <param name="queue"></param>
+		/// <param name="queue"> </param>
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
 			// Add self twice to the queue
@@ -708,7 +680,7 @@ namespace Axiom.Overlays.Elements
 		#region Properties
 
 		/// <summary>
-		///    Gets the size of the left border.
+		///   Gets the size of the left border.
 		/// </summary>
 		public float LeftBorderSize
 		{
@@ -726,7 +698,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Gets the size of the right border.
+		///   Gets the size of the right border.
 		/// </summary>
 		public float RightBorderSize
 		{
@@ -744,7 +716,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Gets the size of the top border.
+		///   Gets the size of the top border.
 		/// </summary>
 		public float TopBorderSize
 		{
@@ -762,7 +734,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Gets the size of the bottom border.
+		///   Gets the size of the bottom border.
 		/// </summary>
 		public float BottomBorderSize
 		{
@@ -780,7 +752,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Gets/Sets the name of the material to use for just the borders.
+		///   Gets/Sets the name of the material to use for just the borders.
 		/// </summary>
 		public string BorderMaterialName
 		{
@@ -805,7 +777,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Override of Panel.
+		///   Override of Panel.
 		/// </summary>
 		public override MetricsMode MetricsMode
 		{
@@ -837,16 +809,17 @@ namespace Axiom.Overlays.Elements
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///    Gets the value for this command from the target object.
+			///   Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
+			/// <param name="target"> </param>
+			/// <returns> </returns>
 			public string Get( object target )
 			{
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
-					return String.Format( "{0} {1} {2} {3}", element.LeftBorderSize, element.RightBorderSize, element.TopBorderSize, element.BottomBorderSize );
+					return String.Format( "{0} {1} {2} {3}", element.LeftBorderSize, element.RightBorderSize, element.TopBorderSize,
+					                      element.BottomBorderSize );
 				}
 				else
 				{
@@ -855,17 +828,20 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///    Sets the value for this command on the target object.
+			///   Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
+			/// <param name="target"> </param>
+			/// <param name="val"> </param>
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
 				var parms = val.Split( ' ' );
 				if ( element != null )
 				{
-					Real left = StringConverter.ParseFloat( parms[ 0 ] ), right = StringConverter.ParseFloat( parms[ 1 ] ), top = StringConverter.ParseFloat( parms[ 2 ] ), bottom = StringConverter.ParseFloat( parms[ 3 ] );
+					Real left = StringConverter.ParseFloat( parms[ 0 ] ),
+					     right = StringConverter.ParseFloat( parms[ 1 ] ),
+					     top = StringConverter.ParseFloat( parms[ 2 ] ),
+					     bottom = StringConverter.ParseFloat( parms[ 3 ] );
 					element.SetBorderSize( left, right, top, bottom );
 				}
 			}
@@ -879,10 +855,10 @@ namespace Axiom.Overlays.Elements
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///    Gets the value for this command from the target object.
+			///   Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
+			/// <param name="target"> </param>
+			/// <returns> </returns>
 			public string Get( object target )
 			{
 				var element = target as BorderPanel;
@@ -897,10 +873,10 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///    Sets the value for this command on the target object.
+			///   Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
+			/// <param name="target"> </param>
+			/// <param name="val"> </param>
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
@@ -919,10 +895,10 @@ namespace Axiom.Overlays.Elements
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///    Gets the value for this command from the target object.
+			///   Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
+			/// <param name="target"> </param>
+			/// <returns> </returns>
 			public string Get( object target )
 			{
 				var element = target as BorderPanel;
@@ -939,17 +915,20 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///    Sets the value for this command on the target object.
+			///   Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
+			/// <param name="target"> </param>
+			/// <param name="val"> </param>
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetTopLeftBorderUV( u1, v1, u2, v2 );
 				}
@@ -964,10 +943,10 @@ namespace Axiom.Overlays.Elements
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///    Gets the value for this command from the target object.
+			///   Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
+			/// <param name="target"> </param>
+			/// <returns> </returns>
 			public string Get( object target )
 			{
 				var element = target as BorderPanel;
@@ -984,17 +963,20 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///    Sets the value for this command on the target object.
+			///   Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
+			/// <param name="target"> </param>
+			/// <param name="val"> </param>
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetTopRightBorderUV( u1, v1, u2, v2 );
 				}
@@ -1009,10 +991,10 @@ namespace Axiom.Overlays.Elements
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///    Gets the value for this command from the target object.
+			///   Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
+			/// <param name="target"> </param>
+			/// <returns> </returns>
 			public string Get( object target )
 			{
 				var element = target as BorderPanel;
@@ -1029,17 +1011,20 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///    Sets the value for this command on the target object.
+			///   Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
+			/// <param name="target"> </param>
+			/// <param name="val"> </param>
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetBottomLeftBorderUV( u1, v1, u2, v2 );
 				}
@@ -1054,10 +1039,10 @@ namespace Axiom.Overlays.Elements
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///    Gets the value for this command from the target object.
+			///   Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
+			/// <param name="target"> </param>
+			/// <returns> </returns>
 			public string Get( object target )
 			{
 				var element = target as BorderPanel;
@@ -1074,17 +1059,20 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///    Sets the value for this command on the target object.
+			///   Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
+			/// <param name="target"> </param>
+			/// <param name="val"> </param>
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetBottomRightBorderUV( u1, v1, u2, v2 );
 				}
@@ -1099,10 +1087,10 @@ namespace Axiom.Overlays.Elements
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///    Gets the value for this command from the target object.
+			///   Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
+			/// <param name="target"> </param>
+			/// <returns> </returns>
 			public string Get( object target )
 			{
 				var element = target as BorderPanel;
@@ -1119,17 +1107,20 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///    Sets the value for this command on the target object.
+			///   Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
+			/// <param name="target"> </param>
+			/// <param name="val"> </param>
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetLeftBorderUV( u1, v1, u2, v2 );
 				}
@@ -1144,10 +1135,10 @@ namespace Axiom.Overlays.Elements
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///    Gets the value for this command from the target object.
+			///   Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
+			/// <param name="target"> </param>
+			/// <returns> </returns>
 			public string Get( object target )
 			{
 				var element = target as BorderPanel;
@@ -1164,17 +1155,20 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///    Sets the value for this command on the target object.
+			///   Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
+			/// <param name="target"> </param>
+			/// <param name="val"> </param>
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetTopBorderUV( u1, v1, u2, v2 );
 				}
@@ -1189,10 +1183,10 @@ namespace Axiom.Overlays.Elements
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///    Gets the value for this command from the target object.
+			///   Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
+			/// <param name="target"> </param>
+			/// <returns> </returns>
 			public string Get( object target )
 			{
 				var element = target as BorderPanel;
@@ -1209,17 +1203,20 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///    Sets the value for this command on the target object.
+			///   Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
+			/// <param name="target"> </param>
+			/// <param name="val"> </param>
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetRightBorderUV( u1, v1, u2, v2 );
 				}
@@ -1234,10 +1231,10 @@ namespace Axiom.Overlays.Elements
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///    Gets the value for this command from the target object.
+			///   Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
+			/// <param name="target"> </param>
+			/// <returns> </returns>
 			public string Get( object target )
 			{
 				var element = target as BorderPanel;
@@ -1254,17 +1251,20 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///    Sets the value for this command on the target object.
+			///   Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
+			/// <param name="target"> </param>
+			/// <param name="val"> </param>
 			public void Set( object target, string val )
 			{
 				var element = target as BorderPanel;
 				if ( element != null )
 				{
 					var parms = val.Split( ' ' );
-					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ), v1 = StringConverter.ParseFloat( parms[ 1 ] ), u2 = StringConverter.ParseFloat( parms[ 2 ] ), v2 = StringConverter.ParseFloat( parms[ 3 ] );
+					Real u1 = StringConverter.ParseFloat( parms[ 0 ] ),
+					     v1 = StringConverter.ParseFloat( parms[ 1 ] ),
+					     u2 = StringConverter.ParseFloat( parms[ 2 ] ),
+					     v2 = StringConverter.ParseFloat( parms[ 3 ] );
 
 					element.SetBottomBorderUV( u1, v1, u2, v2 );
 				}
@@ -1281,11 +1281,10 @@ namespace Axiom.Overlays.Elements
 		};
 
 		/// <summary>
-		///    Class for rendering the border of a BorderPanel.
+		///   Class for rendering the border of a BorderPanel.
 		/// </summary>
 		/// <remarks>
-		///    We need this because we have to render twice, once with the inner panel's repeating
-		///    material (handled by superclass) and once for the border's separate meterial.
+		///   We need this because we have to render twice, once with the inner panel's repeating material (handled by superclass) and once for the border's separate meterial.
 		/// </remarks>
 		public class BorderRenderable : IRenderable
 		{
@@ -1293,7 +1292,7 @@ namespace Axiom.Overlays.Elements
 
 			protected BorderPanel parent;
 
-			private LightList emptyLightList = new LightList();
+			private readonly LightList emptyLightList = new LightList();
 
 			protected List<Vector4> customParams = new List<Vector4>();
 
@@ -1301,10 +1300,9 @@ namespace Axiom.Overlays.Elements
 
 			#region Constructors
 
-			/// <summary>
-			///
-			/// </summary>
-			/// <param name="parent"></param>
+			///<summary>
+			///</summary>
+			///<param name="parent"> </param>
 			public BorderRenderable( BorderPanel parent )
 			{
 				this.parent = parent;
@@ -1355,7 +1353,7 @@ namespace Axiom.Overlays.Elements
 			{
 				get
 				{
-					return this.parent.renderOp2;
+					return parent.renderOp2;
 				}
 			}
 
@@ -1384,7 +1382,7 @@ namespace Axiom.Overlays.Elements
 			{
 				get
 				{
-					return this.Material.GetBestTechnique();
+					return Material.GetBestTechnique();
 				}
 			}
 
@@ -1455,49 +1453,20 @@ namespace Axiom.Overlays.Elements
 
 			#region isDisposed Property
 
-			private bool _disposed = false;
-
 			/// <summary>
-			/// Determines if this instance has been disposed of already.
+			///   Determines if this instance has been disposed of already.
 			/// </summary>
-			protected bool isDisposed
-			{
-				get
-				{
-					return _disposed;
-				}
-				set
-				{
-					_disposed = value;
-				}
-			}
+			protected bool isDisposed { get; set; }
 
 			#endregion isDisposed Property
 
-			/// <summary>
-			/// Class level dispose method
-			/// </summary>
-			/// <remarks>
-			/// When implementing this method in an inherited class the following template should be used;
-			/// protected override void dispose( bool disposeManagedResources )
-			/// {
-			/// 	if ( !isDisposed )
-			/// 	{
-			/// 		if ( disposeManagedResources )
-			/// 		{
-			/// 			// Dispose managed resources.
-			/// 		}
-			///
-			/// 		// There are no unmanaged resources to release, but
-			/// 		// if we add them, they need to be released here.
-			/// 	}
-			///
-			/// 	// If it is available, make the call to the
-			/// 	// base class's Dispose(Boolean) method
-			/// 	base.dispose( disposeManagedResources );
-			/// }
-			/// </remarks>
-			/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+			///<summary>
+			///  Class level dispose method
+			///</summary>
+			///<remarks>
+			///  When implementing this method in an inherited class the following template should be used; protected override void dispose( bool disposeManagedResources ) { if ( !isDisposed ) { if ( disposeManagedResources ) { // Dispose managed resources. } // There are no unmanaged resources to release, but // if we add them, they need to be released here. } // If it is available, make the call to the // base class's Dispose(Boolean) method base.dispose( disposeManagedResources ); }
+			///</remarks>
+			///<param name="disposeManagedResources"> True if Unmanaged resources should be released. </param>
 			protected virtual void dispose( bool disposeManagedResources )
 			{
 				if ( !isDisposed )
@@ -1523,7 +1492,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///    Enum for border cells.
+		///   Enum for border cells.
 		/// </summary>
 		public enum BorderCell
 		{

@@ -35,7 +35,6 @@
 
 using System.Collections.Generic;
 using System.Text;
-
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -43,7 +42,7 @@ using Axiom.Collections;
 namespace Axiom.Core
 {
 	/// <summary>
-	/// Base for a general purpose request / response style background work queue.
+	///   Base for a general purpose request / response style background work queue.
 	/// </summary>
 	public abstract class DefaultWorkQueueBase : WorkQueue
 	{
@@ -57,18 +56,15 @@ namespace Axiom.Core
 		protected Deque<Response> responseQueue = new Deque<Response>();
 
 		/// <summary>
-		/// Intermediate structure to hold a pointer to a request handler which 
-		/// provides insurance against the handler itself being disconnected
-		/// while the list remains unchanged.
+		///   Intermediate structure to hold a pointer to a request handler which provides insurance against the handler itself being disconnected while the list remains unchanged.
 		/// </summary>
 		protected class RequestHandlerHolder
 		{
-			private object _mutex = new object();
+			private readonly object _mutex = new object();
 			private IRequestHandler _handler;
 
 			/// <summary>
-			/// Get handler pointer - note, only use this for == comparison or similar,
-			/// do not attempt to call it as it is not thread safe.
+			///   Get handler pointer - note, only use this for == comparison or similar, do not attempt to call it as it is not thread safe.
 			/// </summary>
 			[OgreVersion( 1, 7, 2 )]
 			public IRequestHandler Handler
@@ -86,7 +82,7 @@ namespace Axiom.Core
 			}
 
 			/// <summary>
-			/// Disconnect the handler to allow it to be destroyed
+			///   Disconnect the handler to allow it to be destroyed
 			/// </summary>
 			[OgreVersion( 1, 7, 2 )]
 			public void DisconnectHandler()
@@ -99,9 +95,9 @@ namespace Axiom.Core
 			}
 
 			/// <summary>
-			/// Process a request if possible.
+			///   Process a request if possible.
 			/// </summary>
-			/// <returns>Valid response if processed, null otherwise</returns>
+			/// <returns> Valid response if processed, null otherwise </returns>
 			[OgreVersion( 1, 7, 2 )]
 			public Response HandleRequest( Request req, WorkQueue srcQ )
 			{
@@ -123,8 +119,12 @@ namespace Axiom.Core
 			}
 		};
 
-		protected Dictionary<ushort, List<RequestHandlerHolder>> requestHandlers = new Dictionary<ushort, List<RequestHandlerHolder>>();
-		protected Dictionary<ushort, List<IResponseHandler>> responseHandlers = new Dictionary<ushort, List<IResponseHandler>>();
+		protected Dictionary<ushort, List<RequestHandlerHolder>> requestHandlers =
+			new Dictionary<ushort, List<RequestHandlerHolder>>();
+
+		protected Dictionary<ushort, List<IResponseHandler>> responseHandlers =
+			new Dictionary<ushort, List<IResponseHandler>>();
+
 		protected uint requestCount;
 		protected bool paused;
 		protected bool acceptRequests;
@@ -137,7 +137,7 @@ namespace Axiom.Core
 		protected static readonly object requestHandlerMutex = new object();
 
 		/// <summary>
-		/// Get the name of the work queue
+		///   Get the name of the work queue
 		/// </summary>
 		public string Name
 		{
@@ -149,11 +149,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Get the number of worker threads that this queue will start when 
-		/// startup() is called (default 1).
+		///   Get the number of worker threads that this queue will start when startup() is called (default 1).
 		/// </summary>
 		/// <remarks>
-		/// Calling the setter of this will have no effect unless the queue is shut down and restarted.
+		///   Calling the setter of this will have no effect unless the queue is shut down and restarted.
 		/// </remarks>
 		public virtual int WorkerThreadCount
 		{
@@ -175,17 +174,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Get/Set whether worker threads will be allowed to access render system
-		/// resources. 
-		/// Accessing render system resources from a separate thread can require that
-		/// a context is maintained for that thread. Also, it requires that the
-		/// render system is running in threadsafe mode, which only happens
-		/// when AXIOM_THREAD_SUPPORT=1. This option defaults to false, which means
-		/// that threads can not use GPU resources, and the render system can 
-		/// work in non-threadsafe mode, which is more efficient.
+		///   Get/Set whether worker threads will be allowed to access render system resources. Accessing render system resources from a separate thread can require that a context is maintained for that thread. Also, it requires that the render system is running in threadsafe mode, which only happens when AXIOM_THREAD_SUPPORT=1. This option defaults to false, which means that threads can not use GPU resources, and the render system can work in non-threadsafe mode, which is more efficient.
 		/// </summary>
 		/// <remarks>
-		/// Calling the setter of this will have no effect unless the queue is shut down and restarted.
+		///   Calling the setter of this will have no effect unless the queue is shut down and restarted.
 		/// </remarks>
 		public virtual bool WorkersCanAccessRenderSystem
 		{
@@ -202,7 +194,7 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <see cref="Axiom.Core.WorkQueue.IsPaused"/>
+		/// <see cref="Axiom.Core.WorkQueue.IsPaused" />
 		public override bool IsPaused
 		{
 			[OgreVersion( 1, 7, 2 )]
@@ -219,7 +211,7 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <see cref="Axiom.Core.WorkQueue.AreRequestsAccepted"/>
+		/// <see cref="Axiom.Core.WorkQueue.AreRequestsAccepted" />
 		public override bool AreRequestsAccepted
 		{
 			[OgreVersion( 1, 7, 2 )]
@@ -236,7 +228,7 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <see cref="Axiom.Core.WorkQueue.ResponseProcessingTimeLimit"/>
+		/// <see cref="Axiom.Core.WorkQueue.ResponseProcessingTimeLimit" />
 		public override long ResponseProcessingTimeLimit
 		{
 			[OgreVersion( 1, 7, 2 )]
@@ -253,7 +245,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Returns whether the queue is trying to shut down.
+		///   Returns whether the queue is trying to shut down.
 		/// </summary>
 		public virtual bool IsShuttingDown
 		{
@@ -274,13 +266,14 @@ namespace Axiom.Core
 		public DefaultWorkQueueBase( string name = "" )
 #else
 		public DefaultWorkQueueBase()
-			: this( string.Empty ) {}
+			: this( string.Empty )
+		{
+		}
 
 		/// <summary>
-		/// Contructor
-		/// Call startup() to initialise.
+		///   Contructor Call startup() to initialise.
 		/// </summary>
-		/// <param name="name">Optional name, just helps to identify logging output</param>
+		/// <param name="name"> Optional name, just helps to identify logging output </param>
 		[OgreVersion( 1, 7, 2 )]
 		public DefaultWorkQueueBase( string name )
 #endif
@@ -295,7 +288,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2, "~DefaultWorkQueueBase" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -309,7 +302,7 @@ namespace Axiom.Core
 			base.dispose( disposeManagedResources );
 		}
 
-		/// <see cref="Axiom.Core.WorkQueue.AddRequestHandler"/>
+		/// <see cref="Axiom.Core.WorkQueue.AddRequestHandler" />
 		[OgreVersion( 1, 7, 2 )]
 		public override void AddRequestHandler( ushort channel, WorkQueue.IRequestHandler rh )
 		{
@@ -336,7 +329,7 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <see cref="Axiom.Core.WorkQueue.RemoveRequestHandler"/>
+		/// <see cref="Axiom.Core.WorkQueue.RemoveRequestHandler" />
 		[OgreVersion( 1, 7, 2 )]
 		public override void RemoveRequestHandler( ushort channel, WorkQueue.IRequestHandler rh )
 		{
@@ -359,7 +352,7 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <see cref="Axiom.Core.WorkQueue.AddResponseHandler"/>
+		/// <see cref="Axiom.Core.WorkQueue.AddResponseHandler" />
 		[OgreVersion( 1, 7, 2 )]
 		public override void AddResponseHandler( ushort channel, WorkQueue.IResponseHandler rh )
 		{
@@ -374,7 +367,7 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <see cref="WorkQueue.RemoveResponseHandler"/>
+		/// <see cref="WorkQueue.RemoveResponseHandler" />
 		[OgreVersion( 1, 7, 2 )]
 		public override void RemoveResponseHandler( ushort channel, WorkQueue.IResponseHandler rh )
 		{
@@ -398,12 +391,13 @@ namespace Axiom.Core
 #endif
 		}
 
-		/// <see cref="Axiom.Core.WorkQueue.AddRequest(ushort, ushort, object, byte, bool)"/>
+		/// <see cref="Axiom.Core.WorkQueue.AddRequest(ushort, ushort, object, byte, bool)" />
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public override RequestID AddRequest( ushort channel, ushort requestType, object rData, byte retryCount = 0, bool forceSynchronous = false )
 #else
-		public override RequestID AddRequest( ushort channel, ushort requestType, object rData, byte retryCount, bool forceSynchronous )
+		public override RequestID AddRequest( ushort channel, ushort requestType, object rData, byte retryCount,
+		                                      bool forceSynchronous )
 #endif
 		{
 			Request req;
@@ -419,7 +413,9 @@ namespace Axiom.Core
 				rid = ++requestCount;
 				req = new Request( channel, requestType, rData, retryCount, rid );
 
-				LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - QUEUED(thread:{1}): ID={2} channel={3} requestType={4}", name, GetThreadName(), rid, channel, requestType );
+				LogManager.Instance.Write( LogMessageLevel.Trivial, false,
+				                           "DefaultWorkQueueBase('{0}') - QUEUED(thread:{1}): ID={2} channel={3} requestType={4}",
+				                           name, GetThreadName(), rid, channel, requestType );
 
 #if AXIOM_THREAD_SUPPORT
 				if ( !forceSynchronous )
@@ -435,13 +431,13 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Notify workers about a new request.
+		///   Notify workers about a new request.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		protected abstract void NotifyWorkers();
 
 		/// <summary>
-		/// Put a Request on the queue with a specific RequestID.
+		///   Put a Request on the queue with a specific RequestID.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		protected void AddRequestWithRID( RequestID rid, ushort channel, ushort requestType, object rData, byte retryCount )
@@ -454,9 +450,11 @@ namespace Axiom.Core
 					return;
 				}
 
-				Request req = new Request( channel, requestType, rData, retryCount, rid );
+				var req = new Request( channel, requestType, rData, retryCount, rid );
 
-				LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - REQUEUED(thread:{1}): ID={2} channel={3} requestType={4}", name, GetThreadName(), rid, channel, requestType );
+				LogManager.Instance.Write( LogMessageLevel.Trivial, false,
+				                           "DefaultWorkQueueBase('{0}') - REQUEUED(thread:{1}): ID={2} channel={3} requestType={4}",
+				                           name, GetThreadName(), rid, channel, requestType );
 
 #if AXIOM_THREAD_SUPPORT
 				requestQueue.Add( req );
@@ -467,7 +465,7 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <see cref="WorkQueue.AbortRequest"/>
+		/// <see cref="WorkQueue.AbortRequest" />
 		[OgreVersion( 1, 7, 2 )]
 		public override void AbortRequest( RequestID id )
 		{
@@ -511,7 +509,7 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <see cref="WorkQueue.AbortRequestByChannel"/>
+		/// <see cref="WorkQueue.AbortRequestByChannel" />
 		[OgreVersion( 1, 7, 2 )]
 		public override void AbortRequestByChannel( ushort channel )
 		{
@@ -549,7 +547,7 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <see cref="WorkQueue.AbortAllRequests"/>
+		/// <see cref="WorkQueue.AbortAllRequests" />
 		[OgreVersion( 1, 7, 2 )]
 		public override void AbortAllRequests()
 		{
@@ -579,13 +577,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Process the next request on the queue.
+		///   Process the next request on the queue.
 		/// </summary>
 		/// <remarks>
-		/// This method is public, but only intended for advanced users to call. 
-		/// The only reason you would call this, is if you were using your 
-		/// own thread to drive the worker processing. The thread calling this
-		/// method will be the thread used to call the RequestHandler.
+		///   This method is public, but only intended for advanced users to call. The only reason you would call this, is if you were using your own thread to drive the worker processing. The thread calling this method will be the thread used to call the RequestHandler.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		internal virtual void ProcessNextRequest()
@@ -611,7 +606,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Main function for each thread spawned.
+		///   Main function for each thread spawned.
 		/// </summary>
 		internal abstract void ThreadMain();
 
@@ -667,7 +662,9 @@ namespace Axiom.Core
 				else
 				{
 					// no response, delete request
-					LogManager.Instance.Write( "DefaultWorkQueueBase('{0}') warning: no handler processed request {1}, channel {2}, type {3}", name, r.ID, r.Channel, r.Type );
+					LogManager.Instance.Write(
+						"DefaultWorkQueueBase('{0}') warning: no handler processed request {1}, channel {2}, type {3}", name, r.ID,
+						r.Channel, r.Type );
 					//OGRE_DELETE r;
 				}
 			}
@@ -726,7 +723,8 @@ namespace Axiom.Core
 			var dbgMsg = new StringBuilder();
 			dbgMsg.AppendFormat( "{0}): ID={1} channel={2} requestType={3}", GetThreadName(), r.ID, r.Channel, r.Type );
 
-			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_REQUEST_START({1}", name, dbgMsg.ToString() );
+			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_REQUEST_START({1}",
+			                           name, dbgMsg.ToString() );
 			if ( handlerListCopy.ContainsKey( r.Channel ) )
 			{
 				List<RequestHandlerHolder> handlers = handlerListCopy[ r.Channel ];
@@ -742,7 +740,9 @@ namespace Axiom.Core
 				}
 			}
 
-			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_REQUEST_END({1} processed={2}", name, dbgMsg.ToString(), response != null );
+			LogManager.Instance.Write( LogMessageLevel.Trivial, false,
+			                           "DefaultWorkQueueBase('{0}') - PROCESS_REQUEST_END({1} processed={2}", name,
+			                           dbgMsg.ToString(), response != null );
 
 			return response;
 		}
@@ -751,9 +751,11 @@ namespace Axiom.Core
 		protected void ProcessResponse( Response r )
 		{
 			var dbgMsg = new StringBuilder();
-			dbgMsg.AppendFormat( "thread:{0}): ID={1} success={2} messages=[{3}] channel={4} requestType={5}", GetThreadName(), r.Request.ID, r.Succeeded, r.Messages, r.Request.Channel, r.Request.Type );
+			dbgMsg.AppendFormat( "thread:{0}): ID={1} success={2} messages=[{3}] channel={4} requestType={5}", GetThreadName(),
+			                     r.Request.ID, r.Succeeded, r.Messages, r.Request.Channel, r.Request.Type );
 
-			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_RESPONSE_START({1}", name, dbgMsg.ToString() );
+			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_RESPONSE_START({1}",
+			                           name, dbgMsg.ToString() );
 			ushort channel = r.Request.Channel;
 			if ( responseHandlers.ContainsKey( channel ) )
 			{
@@ -766,7 +768,8 @@ namespace Axiom.Core
 				}
 			}
 
-			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_RESPONSE_END({1}", name, dbgMsg.ToString() );
+			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_RESPONSE_END({1}",
+			                           name, dbgMsg.ToString() );
 		}
 	};
 }

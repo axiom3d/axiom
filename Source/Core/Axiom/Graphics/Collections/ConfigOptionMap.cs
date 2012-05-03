@@ -35,8 +35,6 @@
 
 #region Namespace Declarations
 
-using System.Collections.Generic;
-
 using Axiom.Collections;
 using Axiom.Configuration;
 
@@ -45,7 +43,7 @@ using Axiom.Configuration;
 namespace Axiom.Graphics.Collections
 {
 	/// <summary>
-	/// Represents a collection of <see cref="ConfigOption">ConfigOptions</see> that are sorted by key.
+	///   Represents a collection of <see cref="ConfigOption">ConfigOptions</see> that are sorted by key.
 	/// </summary>
 	public class ConfigOptionMap : AxiomCollection<ConfigOption> //Dictionary<string, ConfigOption>
 	{

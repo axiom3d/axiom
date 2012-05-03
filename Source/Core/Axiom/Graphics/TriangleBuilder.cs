@@ -38,12 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-
-using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Math;
 
@@ -52,8 +48,7 @@ using Axiom.Math;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///     General utility class for collecting the set of all
-	///     triangles in a mesh; used for picking
+	///   General utility class for collecting the set of all triangles in a mesh; used for picking
 	/// </summary>
 	public class TriangleListBuilder : AnyBuilder
 	{
@@ -76,7 +71,7 @@ namespace Axiom.Graphics
 				switch ( opType )
 				{
 					case OperationType.TriangleList:
-						iterations = indexData.indexCount / 3;
+						iterations = indexData.indexCount/3;
 						break;
 
 					case OperationType.TriangleFan:
@@ -115,7 +110,7 @@ namespace Axiom.Graphics
 							// iterate over all the groups of 3 indices
 							for ( var t = 0; t < iterations; t++ )
 							{
-								var v = new Vector3[ 3 ]; //vertices of a single triangle, new instance needed each iteration
+								var v = new Vector3[3]; //vertices of a single triangle, new instance needed each iteration
 
 								//assemble a triangle
 								for ( var i = 0; i < 3; i++ )
@@ -153,14 +148,14 @@ namespace Axiom.Graphics
 									}
 
 									//retrieve vertex position
-									var pReal = ( pVertexPos + ( index * vertexBuffer.VertexSize ) ).ToFloatPointer();
+									var pReal = ( pVertexPos + ( index*vertexBuffer.VertexSize ) ).ToFloatPointer();
 									v[ i ].x = pReal[ 0 ];
 									v[ i ].y = pReal[ 1 ];
 									v[ i ].z = pReal[ 2 ];
 								}
 
 								// Put the points in in counter-clockwise order
-								if ( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) - ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) < 0 )
+								if ( ( ( v[ 0 ].x - v[ 2 ].x )*( v[ 1 ].y - v[ 2 ].y ) - ( v[ 1 ].x - v[ 2 ].x )*( v[ 0 ].y - v[ 2 ].y ) ) < 0 )
 								{
 									// Clockwise, so reverse points 1 and 2
 									var tmp = v[ 1 ];
@@ -168,7 +163,9 @@ namespace Axiom.Graphics
 									v[ 2 ] = tmp;
 								}
 
-								Debug.Assert( ( ( v[ 0 ].x - v[ 2 ].x ) * ( v[ 1 ].y - v[ 2 ].y ) - ( v[ 1 ].x - v[ 2 ].x ) * ( v[ 0 ].y - v[ 2 ].y ) ) >= 0, "Failed to arrange triangle points counter-clockwise." );
+								Debug.Assert(
+									( ( v[ 0 ].x - v[ 2 ].x )*( v[ 1 ].y - v[ 2 ].y ) - ( v[ 1 ].x - v[ 2 ].x )*( v[ 0 ].y - v[ 2 ].y ) ) >= 0,
+									"Failed to arrange triangle points counter-clockwise." );
 
 								// Add to the list of triangles
 								triangles.Add( new TriangleVertices( v ) );
@@ -239,7 +236,7 @@ namespace Axiom.Graphics
 			var intersects = false;
 			intersection = Vector3.Zero;
 			var minDistSquared = float.MaxValue;
-			var ignoreDistanceSquared = ignoreDistance * ignoreDistance;
+			var ignoreDistanceSquared = ignoreDistance*ignoreDistance;
 			var where = Vector3.Zero;
 
 			// Iterate over the triangles
@@ -265,7 +262,7 @@ namespace Axiom.Graphics
 			var intersects = false;
 			intersection = Vector3.Zero;
 			var minDistSquared = float.MaxValue;
-			var ignoreDistanceSquared = ignoreDistance * ignoreDistance;
+			var ignoreDistanceSquared = ignoreDistance*ignoreDistance;
 			var where = Vector3.Zero;
 
 			// Iterate over the triangles
@@ -295,7 +292,7 @@ namespace Axiom.Graphics
 			var b = modelBase + Vertices[ 1 ];
 			var c = modelBase + Vertices[ 2 ];
 			var start = ray.Origin;
-			var end = start + ray.Direction * 1000000f;
+			var end = start + ray.Direction*1000000f;
 			var pq = end - start;
 			var pa = a - start;
 			var pb = b - start;
@@ -318,9 +315,9 @@ namespace Axiom.Graphics
 			{
 				return false;
 			}
-			var denom = 1.0f / ( u + v + w );
+			var denom = 1.0f/( u + v + w );
 			// Finally fill in the intersection point
-			where = ( u * a + v * b + w * c ) * denom;
+			where = ( u*a + v*b + w*c )*denom;
 			return true;
 		}
 
@@ -329,11 +326,11 @@ namespace Axiom.Graphics
 		protected bool RayIntersectsTriangle( Ray ray, Vector3[] Vertices, ref Matrix4 transform, ref Vector3 where )
 		{
 			// Place the end beyond any conceivable triangle, 1000 meters away
-			var a = transform * Vertices[ 0 ];
-			var b = transform * Vertices[ 1 ];
-			var c = transform * Vertices[ 2 ];
+			var a = transform*Vertices[ 0 ];
+			var b = transform*Vertices[ 1 ];
+			var c = transform*Vertices[ 2 ];
 			var start = ray.Origin;
-			var end = start + ray.Direction * 1000000f;
+			var end = start + ray.Direction*1000000f;
 			var pq = end - start;
 			var pa = a - start;
 			var pb = b - start;
@@ -356,9 +353,9 @@ namespace Axiom.Graphics
 			{
 				return false;
 			}
-			var denom = 1.0f / ( u + v + w );
+			var denom = 1.0f/( u + v + w );
 			// Finally fill in the intersection point
-			where = ( u * a + v * b + w * c ) * denom;
+			where = ( u*a + v*b + w*c )*denom;
 			return true;
 		}
 

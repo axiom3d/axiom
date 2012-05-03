@@ -38,25 +38,26 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 #if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
-using Numeric = System.Single;
-#else
-using Numeric = System.Double;
-#endif
+
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
+using Numeric = System.Single;
+
+#else
+using Numeric = System.Double;
+#endif
 
 #endregion Namespace Declarations
 
 namespace Axiom.Math
 {
 	/// <summary>
-	/// Wrapper class which indicates a given angle value is in Radians.
+	///   Wrapper class which indicates a given angle value is in Radians.
 	/// </summary>
 	/// <remarks>
-	/// Radian values are interchangeable with Degree values, and conversions
-	/// will be done automatically between them.
+	///   Radian values are interchangeable with Degree values, and conversions will be done automatically between them.
 	/// </remarks>
 	[StructLayout( LayoutKind.Sequential )]
 #if !( XBOX || XBOX360 )
@@ -66,7 +67,7 @@ namespace Axiom.Math
 	public struct Radian : IComparable<Radian>, IComparable<Degree>, IComparable<Real>
 #endif
 	{
-		private static readonly Real _radiansToDegrees = 180.0f / Utility.PI;
+		private static readonly Real _radiansToDegrees = 180.0f/Utility.PI;
 
 		public static readonly Radian Zero = (Radian)Real.Zero;
 
@@ -91,7 +92,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return _value * _radiansToDegrees;
+				return _value*_radiansToDegrees;
 			}
 		}
 
@@ -170,27 +171,27 @@ namespace Axiom.Math
 
 		public static Radian operator *( Radian left, Real right )
 		{
-			return left._value * right;
+			return left._value*right;
 		}
 
 		public static Radian operator *( Real left, Radian right )
 		{
-			return left * right._value;
+			return left*right._value;
 		}
 
 		public static Radian operator *( Radian left, Radian right )
 		{
-			return left._value * right._value;
+			return left._value*right._value;
 		}
 
 		public static Radian operator *( Radian left, Degree right )
 		{
-			return left._value * right.InRadians;
+			return left._value*right.InRadians;
 		}
 
 		public static Radian operator /( Radian left, Real right )
 		{
-			return left._value / right;
+			return left._value/right;
 		}
 
 		public static bool operator <( Radian left, Radian right )
@@ -246,17 +247,17 @@ namespace Axiom.Math
 
 		public int CompareTo( Radian other )
 		{
-			return this._value.CompareTo( other._value );
+			return _value.CompareTo( other._value );
 		}
 
 		public int CompareTo( Degree other )
 		{
-			return this._value.CompareTo( other.InRadians );
+			return _value.CompareTo( other.InRadians );
 		}
 
 		public int CompareTo( Real other )
 		{
-			return this._value.CompareTo( other );
+			return _value.CompareTo( other );
 		}
 
 		#endregion

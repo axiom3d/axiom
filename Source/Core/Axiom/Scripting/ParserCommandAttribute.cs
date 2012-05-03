@@ -38,25 +38,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Reflection;
-using System.Text;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Scripting
 {
-	/// <summary>
-	///		Custom attribute to mark methods as handling the parsing for a material script attribute.
-	/// </summary>
+	///<summary>
+	///  Custom attribute to mark methods as handling the parsing for a material script attribute.
+	///</summary>
 	[AttributeUsage( AttributeTargets.Method, AllowMultiple = true )]
 	public sealed class ParserCommandAttribute : Attribute
 	{
-		private string attributeName;
-		private string parserType;
+		private readonly string attributeName;
+		private readonly string parserType;
 
 		public ParserCommandAttribute( string name, string parserType )
 		{
-			this.attributeName = name;
+			attributeName = name;
 			this.parserType = parserType;
 		}
 

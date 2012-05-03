@@ -37,8 +37,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -52,9 +50,9 @@ namespace Axiom.ParticleSystems
 		Visual
 	}
 
-	/// <summary>
-	///		Class representing a single particle instance.
-	/// </summary>
+	///<summary>
+	///  Class representing a single particle instance.
+	///</summary>
 	public class Particle
 	{
 		#region Member variables
@@ -76,20 +74,21 @@ namespace Axiom.ParticleSystems
 		/// World position
 		public Vector3 Position = Vector3.Zero;
 
-		/// Direction (and speed) 
+		/// Direction (and speed)
 		public Vector3 Direction = Vector3.Zero;
 
 		/// Current colour
 		public ColorEx Color = ColorEx.White;
 
-		/// <summary>Time (in seconds) before this particle is destroyed.</summary>
+		/// <summary>
+		///   Time (in seconds) before this particle is destroyed.
+		/// </summary>
 		public float timeToLive;
 
-		/// <summary>Total Time to live, number of seconds of particles natural life</summary>
+		/// <summary>
+		///   Total Time to live, number of seconds of particles natural life
+		/// </summary>
 		public float totalTimeToLive;
-
-		/// <summary>Speed of rotation in radians</summary>
-		private float rotationSpeed;
 
 		/// Parent ParticleSystem
 		protected ParticleSystem parentSystem;
@@ -103,17 +102,7 @@ namespace Axiom.ParticleSystems
 
 		#region Properties
 
-		public float RotationSpeed
-		{
-			get
-			{
-				return rotationSpeed;
-			}
-			set
-			{
-				rotationSpeed = value;
-			}
-		}
+		public float RotationSpeed { get; set; }
 
 		public ParticleType ParticleType
 		{
@@ -129,14 +118,14 @@ namespace Axiom.ParticleSystems
 
 		#endregion
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
+		///<summary>
+		///  Default constructor.
+		///</summary>
 		public Particle()
 		{
 			timeToLive = 10;
 			totalTimeToLive = 10;
-			rotationSpeed = 0;
+			RotationSpeed = 0;
 		}
 
 
@@ -147,7 +136,7 @@ namespace Axiom.ParticleSystems
 
 		public void NotifyOwner( ParticleSystem owner )
 		{
-			this.parentSystem = owner;
+			parentSystem = owner;
 		}
 
 		public void SetDimensions( float width, float height )
@@ -179,11 +168,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return rotationInRadians * Utility.DEGREES_PER_RADIAN;
+				return rotationInRadians*Utility.DEGREES_PER_RADIAN;
 			}
 			set
 			{
-				rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
+				rotationInRadians = value*Utility.RADIANS_PER_DEGREE;
 				if ( rotationInRadians != 0 )
 				{
 					parentSystem.NotifyParticleRotated();

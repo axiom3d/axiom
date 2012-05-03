@@ -39,10 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
-
 using Axiom.Core;
-
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -50,43 +47,41 @@ using Axiom.Math;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///     This class is intended to allow a clean stream interface for writing to hardware buffers.
-	///     An instance of this would be returned by one of the HardwareBuffer.Lock methods, which would
-	///     allow easily and safely writing to a hardware buffer without having to use unsafe code.
+	///   This class is intended to allow a clean stream interface for writing to hardware buffers. An instance of this would be returned by one of the HardwareBuffer.Lock methods, which would allow easily and safely writing to a hardware buffer without having to use unsafe code.
 	/// </summary>
 	public class BufferStream
 	{
 		#region Fields
 
-		/// <summary>
-		///		Current position (as a byte offset) into the stream.
-		/// </summary>
+		///<summary>
+		///  Current position (as a byte offset) into the stream.
+		///</summary>
 		protected long position;
 
 		/// <summary>
-		///     Pointer to the raw data we will be writing to.
+		///   Pointer to the raw data we will be writing to.
 		/// </summary>
 		protected BufferBase data;
 
 		/// <summary>
-		///     Reference to the hardware buffer who owns this stream.
+		///   Reference to the hardware buffer who owns this stream.
 		/// </summary>
 		protected HardwareBuffer owner;
 
 		/// <summary>
-		///     Temp array.
+		///   Temp array.
 		/// </summary>
-		protected ValueType[] tmp = new ValueType[ 1 ];
+		protected ValueType[] tmp = new ValueType[1];
 
 		#endregion Fields
 
 		#region Constructor
 
 		/// <summary>
-		///     Constructor.
+		///   Constructor.
 		/// </summary>
-		/// <param name="owner">Reference to the hardware buffer who owns this stream.</param>
-		/// <param name="data">Pointer to the raw data we will be writing to.</param>
+		/// <param name="owner"> Reference to the hardware buffer who owns this stream. </param>
+		/// <param name="data"> Pointer to the raw data we will be writing to. </param>
 		internal BufferStream( HardwareBuffer owner, BufferBase data )
 		{
 			this.data = data;
@@ -98,7 +93,7 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		///     Length (in bytes) of this stream.
+		///   Length (in bytes) of this stream.
 		/// </summary>
 		public long Length
 		{
@@ -109,7 +104,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Current position of the stream.
+		///   Current position of the stream.
 		/// </summary>
 		public long Position
 		{
@@ -119,7 +114,7 @@ namespace Axiom.Graphics
 			}
 			set
 			{
-				if ( value > this.Length )
+				if ( value > Length )
 				{
 					throw new ArgumentException( "Position of the buffer may not exceed the length." );
 				}
@@ -129,12 +124,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="buffer"></param>
-		/// <param name="offset"></param>
-		/// <param name="count"></param>
-		/// <returns></returns>
+		/// <param name="buffer"> </param>
+		/// <param name="offset"> </param>
+		/// <param name="count"> </param>
+		/// <returns> </returns>
 		public int Read( byte[] buffer, int offset, int count )
 		{
 			// TODO:  Add BufferStream.Read implementation
@@ -183,17 +177,16 @@ namespace Axiom.Graphics
 
 		public void Write( System.Array val, int offset )
 		{
-			var count = Memory.SizeOf( val.GetType().GetElementType() ) * val.Length;
+			var count = Memory.SizeOf( val.GetType().GetElementType() )*val.Length;
 
 			Write( val, offset, count );
 		}
 
 		/// <summary>
-		///     
 		/// </summary>
-		/// <param name="val"></param>
-		/// <param name="offset"></param>
-		/// <param name="count"></param>
+		/// <param name="val"> </param>
+		/// <param name="offset"> </param>
+		/// <param name="count"> </param>
 		public void Write( System.Array val, int offset, int count )
 		{
 			// can't write to unlocked buffers
@@ -205,7 +198,7 @@ namespace Axiom.Graphics
 			var newOffset = position + offset;
 
 			// ensure we won't go past the end of the stream
-			if ( newOffset + count > this.Length )
+			if ( newOffset + count > Length )
 			{
 				throw new AxiomException( "Unable to write data past the end of a BufferStream" );
 			}
@@ -232,21 +225,21 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Moves the "cursor" position within the buffer.
+		///   Moves the "cursor" position within the buffer.
 		/// </summary>
-		/// <param name="offset">Offset (in bytes) to move from the current position.</param>
-		/// <returns></returns>
+		/// <param name="offset"> Offset (in bytes) to move from the current position. </param>
+		/// <returns> </returns>
 		public long Seek( long offset )
 		{
 			return Seek( offset, SeekOrigin.Current );
 		}
 
 		/// <summary>
-		///     Moves the "cursor" position within the buffer.
+		///   Moves the "cursor" position within the buffer.
 		/// </summary>
-		/// <param name="offset">Number of bytes to move.</param>
-		/// <param name="origin">How to treat the offset amount.</param>
-		/// <returns></returns>
+		/// <param name="offset"> Number of bytes to move. </param>
+		/// <param name="origin"> How to treat the offset amount. </param>
+		/// <returns> </returns>
 		public long Seek( long offset, SeekOrigin origin )
 		{
 			switch ( origin )
@@ -258,7 +251,7 @@ namespace Axiom.Graphics
 
 					// offset is from the current stream position
 				case SeekOrigin.Current:
-					if ( position + offset > this.Length )
+					if ( position + offset > Length )
 					{
 						throw new ArgumentException( "Cannot seek past the end of the stream." );
 					}
@@ -268,12 +261,12 @@ namespace Axiom.Graphics
 
 					// seeks backwards from the end of the stream
 				case SeekOrigin.End:
-					if ( this.Length - offset < 0 )
+					if ( Length - offset < 0 )
 					{
 						throw new ArgumentException( "Cannot seek past the beginning of the stream." );
 					}
 
-					position = this.Length - offset;
+					position = Length - offset;
 					break;
 			}
 

@@ -38,11 +38,11 @@
 namespace Axiom.Core
 {
 	/// <summary>
-	/// Numeric identifier for a workqueue request
+	///   Numeric identifier for a workqueue request
 	/// </summary>
 	public struct RequestID
 	{
-		private uint mValue;
+		private readonly uint mValue;
 
 		public uint Value
 		{

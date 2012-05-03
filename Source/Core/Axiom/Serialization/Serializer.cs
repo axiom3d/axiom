@@ -40,9 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.IO;
 using System.Text;
-
 using Axiom.Core;
-
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -50,34 +48,34 @@ using Axiom.Math;
 namespace Axiom.Serialization
 {
 	/// <summary>
-	/// Summary description for Serializer.
+	///   Summary description for Serializer.
 	/// </summary>
 	public class Serializer
 	{
 		#region Fields
 
-		/// <summary>
-		///		Version string of this serializer.
-		/// </summary>
+		///<summary>
+		///  Version string of this serializer.
+		///</summary>
 		protected string version;
 
-		/// <summary>
-		///		Length of the chunk that is currently being processed.
-		/// </summary>
+		///<summary>
+		///  Length of the chunk that is currently being processed.
+		///</summary>
 		protected int currentChunkLength;
 
-		/// <summary>
-		///		Chunk ID + size (short + long).
-		/// </summary>
+		///<summary>
+		///  Chunk ID + size (short + long).
+		///</summary>
 		public const int ChunkOverheadSize = 6;
 
 		#endregion Fields
 
 		#region Constructor
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
+		///<summary>
+		///  Default constructor.
+		///</summary>
 		public Serializer()
 		{
 			// default binary file version
@@ -88,23 +86,23 @@ namespace Axiom.Serialization
 
 		#region Methods
 
-		/// <summary>
-		///		Skips past a particular chunk.
-		/// </summary>
-		/// <remarks>
-		///		Only really used during development, when logic for handling particular chunks is not yet complete.
-		/// </remarks>
+		///<summary>
+		///  Skips past a particular chunk.
+		///</summary>
+		///<remarks>
+		///  Only really used during development, when logic for handling particular chunks is not yet complete.
+		///</remarks>
 		protected void IgnoreCurrentChunk( BinaryReader reader )
 		{
 			Seek( reader, currentChunkLength - ChunkOverheadSize );
 		}
 
-		/// <summary>
-		///		Reads a specified number of floats and copies them into the destination pointer.
-		/// </summary>
-		/// <param name="reader"></param>
-		/// <param name="count">Number of values to read.</param>
-		/// <param name="dest">Pointer to copy the values into.</param>
+		///<summary>
+		///  Reads a specified number of floats and copies them into the destination pointer.
+		///</summary>
+		///<param name="reader"> </param>
+		///<param name="count"> Number of values to read. </param>
+		///<param name="dest"> Pointer to copy the values into. </param>
 		protected void ReadBytes( BinaryReader reader, int count, BufferBase dest )
 		{
 			// blast the data into the buffer
@@ -130,12 +128,12 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Writes a specified number of bytes.
-		/// </summary>
-		/// <param name="writer"></param>
-		/// <param name="count">Number of values to write.</param>
-		/// <param name="src">Pointer that holds the values.</param>
+		///<summary>
+		///  Writes a specified number of bytes.
+		///</summary>
+		///<param name="writer"> </param>
+		///<param name="count"> Number of values to write. </param>
+		///<param name="src"> Pointer that holds the values. </param>
 		protected void WriteBytes( BinaryWriter writer, int count, BufferBase src )
 		{
 #if !AXIOM_SAFE_ONLY
@@ -151,12 +149,12 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Reads a specified number of floats and copies them into the destination pointer.
-		/// </summary>
-		/// <param name="reader"></param>
-		/// <param name="count">Number of values to read.</param>
-		/// <param name="dest">Pointer to copy the values into.</param>
+		///<summary>
+		///  Reads a specified number of floats and copies them into the destination pointer.
+		///</summary>
+		///<param name="reader"> </param>
+		///<param name="count"> Number of values to read. </param>
+		///<param name="dest"> Pointer to copy the values into. </param>
 		protected void ReadFloats( BinaryReader reader, int count, BufferBase dest )
 		{
 			// blast the data into the buffer
@@ -173,12 +171,12 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Writes a specified number of floats.
-		/// </summary>
-		/// <param name="writer"></param>
-		/// <param name="count">Number of values to write.</param>
-		/// <param name="src">Pointer that holds the values.</param>
+		///<summary>
+		///  Writes a specified number of floats.
+		///</summary>
+		///<param name="writer"> </param>
+		///<param name="count"> Number of values to write. </param>
+		///<param name="src"> Pointer that holds the values. </param>
 		protected void WriteFloats( BinaryWriter writer, int count, BufferBase src )
 		{
 #if !AXIOM_SAFE_ONLY
@@ -194,14 +192,16 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Reads a specified number of floats and copies them into the destination pointer.
-		/// </summary>
-		/// <remarks>This overload will also copy the values into the specified destination array.</remarks>
-		/// <param name="reader"></param>
-		/// <param name="count">Number of values to read.</param>
-		/// <param name="dest">Pointer to copy the values into.</param>
-		/// <param name="destArray">A float array that is to have the values copied into it at the same time as 'dest'.</param>
+		///<summary>
+		///  Reads a specified number of floats and copies them into the destination pointer.
+		///</summary>
+		///<remarks>
+		///  This overload will also copy the values into the specified destination array.
+		///</remarks>
+		///<param name="reader"> </param>
+		///<param name="count"> Number of values to read. </param>
+		///<param name="dest"> Pointer to copy the values into. </param>
+		///<param name="destArray"> A float array that is to have the values copied into it at the same time as 'dest'. </param>
 		protected void ReadFloats( BinaryReader reader, int count, BufferBase dest, float[] destArray )
 		{
 			// blast the data into the buffer
@@ -232,7 +232,7 @@ namespace Axiom.Serialization
 
 		protected float ReadFloat( BinaryReader reader )
 		{
-			var inputdata = new byte[ 4 ];
+			var inputdata = new byte[4];
 			reader.Read( inputdata, 0, 4 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -250,7 +250,7 @@ namespace Axiom.Serialization
 
 		protected int ReadInt( BinaryReader reader )
 		{
-			var inputdata = new byte[ 4 ];
+			var inputdata = new byte[4];
 			reader.Read( inputdata, 0, 4 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -268,7 +268,7 @@ namespace Axiom.Serialization
 
 		protected uint ReadUInt( BinaryReader reader )
 		{
-			var inputdata = new byte[ 4 ];
+			var inputdata = new byte[4];
 			reader.Read( inputdata, 0, 4 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -287,7 +287,7 @@ namespace Axiom.Serialization
 
 		protected long ReadLong( BinaryReader reader )
 		{
-			var inputdata = new byte[ 8 ];
+			var inputdata = new byte[8];
 			reader.Read( inputdata, 0, 8 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -306,7 +306,7 @@ namespace Axiom.Serialization
 
 		protected ulong ReadULong( BinaryReader reader )
 		{
-			var inputdata = new byte[ 8 ];
+			var inputdata = new byte[8];
 			reader.Read( inputdata, 0, 8 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -325,7 +325,7 @@ namespace Axiom.Serialization
 
 		protected short ReadShort( BinaryReader reader )
 		{
-			var inputdata = new byte[ 2 ];
+			var inputdata = new byte[2];
 			reader.Read( inputdata, 0, 2 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -344,7 +344,7 @@ namespace Axiom.Serialization
 
 		protected ushort ReadUShort( BinaryReader reader )
 		{
-			var inputdata = new byte[ 2 ];
+			var inputdata = new byte[2];
 			reader.Read( inputdata, 0, 2 );
 			// The file format store integral types in little endian order
 			if ( !BitConverter.IsLittleEndian )
@@ -361,12 +361,12 @@ namespace Axiom.Serialization
 			writer.Write( val );
 		}
 
-		/// <summary>
-		///		Reads a specified number of integers and copies them into the destination pointer.
-		/// </summary>
-		/// <param name="reader"></param>
-		/// <param name="count">Number of values to read.</param>
-		/// <param name="dest">Pointer to copy the values into.</param>
+		///<summary>
+		///  Reads a specified number of integers and copies them into the destination pointer.
+		///</summary>
+		///<param name="reader"> </param>
+		///<param name="count"> Number of values to read. </param>
+		///<param name="dest"> Pointer to copy the values into. </param>
 		protected void ReadInts( BinaryReader reader, int count, BufferBase dest )
 		{
 			// blast the data into the buffer
@@ -383,12 +383,12 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Writes a specified number of integers.
-		/// </summary>
-		/// <param name="writer"></param>
-		/// <param name="count">Number of values to write.</param>
-		/// <param name="src">Pointer that holds the values.</param>
+		///<summary>
+		///  Writes a specified number of integers.
+		///</summary>
+		///<param name="writer"> </param>
+		///<param name="count"> Number of values to write. </param>
+		///<param name="src"> Pointer that holds the values. </param>
 		protected void WriteInts( BinaryWriter writer, int count, BufferBase src )
 		{
 			// blast the data into the buffer
@@ -405,12 +405,12 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Reads a specified number of shorts and copies them into the destination pointer.
-		/// </summary>
-		/// <param name="reader"></param>
-		/// <param name="count">Number of values to read.</param>
-		/// <param name="dest">Pointer to copy the values into.</param>
+		///<summary>
+		///  Reads a specified number of shorts and copies them into the destination pointer.
+		///</summary>
+		///<param name="reader"> </param>
+		///<param name="count"> Number of values to read. </param>
+		///<param name="dest"> Pointer to copy the values into. </param>
 		protected void ReadShorts( BinaryReader reader, int count, BufferBase dest )
 		{
 			// blast the data into the buffer
@@ -426,12 +426,12 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Writes a specified number of shorts.
-		/// </summary>
-		/// <param name="writer"></param>
-		/// <param name="count">Number of values to write.</param>
-		/// <param name="src">Pointer that holds the values.</param>
+		///<summary>
+		///  Writes a specified number of shorts.
+		///</summary>
+		///<param name="writer"> </param>
+		///<param name="count"> Number of values to write. </param>
+		///<param name="src"> Pointer that holds the values. </param>
 		protected void WriteShorts( BinaryWriter writer, int count, BufferBase src )
 		{
 			// blast the data into the buffer
@@ -448,10 +448,10 @@ namespace Axiom.Serialization
 			}
 		}
 
-		/// <summary>
-		///		Reads from the stream up to the first endline character.
-		/// </summary>
-		/// <returns>A string formed from characters up to the first '\n' character.</returns>
+		///<summary>
+		///  Reads from the stream up to the first endline character.
+		///</summary>
+		///<returns> A string formed from characters up to the first '\n' character. </returns>
 		protected string ReadString( BinaryReader reader )
 		{
 			// note: Not using Environment.NewLine here, this character is specifically used in Ogre files.
@@ -459,20 +459,20 @@ namespace Axiom.Serialization
 		}
 
 
-		/// <summary>
-		///		Writes the string to the stream including the endline character.
-		/// </summary>
+		///<summary>
+		///  Writes the string to the stream including the endline character.
+		///</summary>
 		protected void WriteString( BinaryWriter writer, string str )
 		{
 			WriteString( writer, str, '\n' );
 		}
 
-		/// <summary>
-		///		Reads from the stream up to the specified delimiter character.
-		/// </summary>
-		/// <param name="reader"></param>
-		/// <param name="delimiter">The character that signals the end of the string.</param>
-		/// <returns>A string formed from characters up to the first instance of the specified delimeter.</returns>
+		///<summary>
+		///  Reads from the stream up to the specified delimiter character.
+		///</summary>
+		///<param name="reader"> </param>
+		///<param name="delimiter"> The character that signals the end of the string. </param>
+		///<returns> A string formed from characters up to the first instance of the specified delimeter. </returns>
 		protected string ReadString( BinaryReader reader, char delimiter )
 		{
 			var sb = new StringBuilder();
@@ -489,12 +489,12 @@ namespace Axiom.Serialization
 			return sb.ToString();
 		}
 
-		/// <summary>
-		///		Writes the string to the stream including the specified delimiter character.
-		/// </summary>
-		/// <param name="str"></param>
-		/// <param name="delimiter">The character that signals the end of the string.</param>
-		/// <param name="writer"></param>
+		///<summary>
+		///  Writes the string to the stream including the specified delimiter character.
+		///</summary>
+		///<param name="str"> </param>
+		///<param name="delimiter"> The character that signals the end of the string. </param>
+		///<param name="writer"> </param>
 		protected void WriteString( BinaryWriter writer, string str, char delimiter )
 		{
 			var sb = new StringBuilder( str );
@@ -503,9 +503,9 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///    Reads and returns a Quaternion.
+		///   Reads and returns a Quaternion.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		protected Quaternion ReadQuat( BinaryReader reader )
 		{
 			var quat = new Quaternion();
@@ -519,7 +519,7 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///    Reads and returns a Quaternion.
+		///   Reads and returns a Quaternion.
 		/// </summary>
 		protected void WriteQuat( BinaryWriter writer, Quaternion quat )
 		{
@@ -530,9 +530,9 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///    Reads and returns a Vector3 structure.
+		///   Reads and returns a Vector3 structure.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		protected Vector3 ReadVector3( BinaryReader reader )
 		{
 			var vector = new Vector3();
@@ -545,7 +545,7 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///    Writes a Vector3 structure.
+		///   Writes a Vector3 structure.
 		/// </summary>
 		protected void WriteVector3( BinaryWriter writer, Vector3 vector )
 		{
@@ -555,9 +555,9 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///    Reads and returns a Vector4 structure.
+		///   Reads and returns a Vector4 structure.
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		protected Vector4 ReadVector4( BinaryReader reader )
 		{
 			var vector = new Vector4();
@@ -571,7 +571,7 @@ namespace Axiom.Serialization
 		}
 
 		/// <summary>
-		///    Writes a Vector4 structure.
+		///   Writes a Vector4 structure.
 		/// </summary>
 		protected void WriteVector4( BinaryWriter writer, Vector4 vector )
 		{
@@ -581,10 +581,10 @@ namespace Axiom.Serialization
 			WriteFloat( writer, vector.w );
 		}
 
-		/// <summary>
-		///		Reads a chunk ID and chunk size.
-		/// </summary>
-		/// <returns>The chunk ID at the current location.</returns>
+		///<summary>
+		///  Reads a chunk ID and chunk size.
+		///</summary>
+		///<returns> The chunk ID at the current location. </returns>
 		protected short ReadFileChunk( BinaryReader reader )
 		{
 			// get the chunk id
@@ -602,29 +602,27 @@ namespace Axiom.Serialization
 			return id;
 		}
 
-		/// <summary>
-		///		Writes a chunk ID and chunk size.  This would be more accurately named
-		///     WriteChunkHeader, but this name is the counter of ReadChunk.
-		/// </summary>
+		///<summary>
+		///  Writes a chunk ID and chunk size. This would be more accurately named WriteChunkHeader, but this name is the counter of ReadChunk.
+		///</summary>
 		protected void WriteChunk( BinaryWriter writer, MeshChunkID id, int chunkLength )
 		{
 			writer.Write( (short)id );
 			writer.Write( chunkLength );
 		}
 
-		/// <summary>
-		///		Writes a chunk ID and chunk size.  This would be more accurately named
-		///     WriteChunkHeader, but this name is the counter of ReadChunk.
-		/// </summary>
+		///<summary>
+		///  Writes a chunk ID and chunk size. This would be more accurately named WriteChunkHeader, but this name is the counter of ReadChunk.
+		///</summary>
 		protected void WriteChunk( BinaryWriter writer, SkeletonChunkID id, int chunkLength )
 		{
 			writer.Write( (short)id );
 			writer.Write( chunkLength );
 		}
 
-		/// <summary>
-		///		Reads a file header and checks the version string.
-		/// </summary>
+		///<summary>
+		///  Reads a file header and checks the version string.
+		///</summary>
 		protected void ReadFileHeader( BinaryReader reader )
 		{
 			short headerID = 0;
@@ -640,7 +638,8 @@ namespace Axiom.Serialization
 				// read the version string
 				if ( version != fileVersion )
 				{
-					throw new AxiomException( "Invalid file: version incompatible, file reports {0}, Serializer is version {1}", fileVersion, version );
+					throw new AxiomException( "Invalid file: version incompatible, file reports {0}, Serializer is version {1}",
+					                          fileVersion, version );
 				}
 			}
 			else
@@ -650,9 +649,9 @@ namespace Axiom.Serialization
 		}
 
 
-		/// <summary>
-		///		Writes a file header and version string.
-		/// </summary>
+		///<summary>
+		///  Writes a file header and version string.
+		///</summary>
 		protected void WriteFileHeader( BinaryWriter writer, string fileVersion )
 		{
 			writer.Write( (short)MeshChunkID.Header );
@@ -664,12 +663,12 @@ namespace Axiom.Serialization
 			Seek( reader, length, SeekOrigin.Current );
 		}
 
-		/// <summary>
-		///		Skips to a particular part of the binary stream.
-		/// </summary>
-		/// <param name="reader"></param>
-		/// <param name="length">Number of bytes to skip.</param>
-		/// <param name="origin"></param>
+		///<summary>
+		///  Skips to a particular part of the binary stream.
+		///</summary>
+		///<param name="reader"> </param>
+		///<param name="length"> Number of bytes to skip. </param>
+		///<param name="origin"> </param>
 		protected void Seek( BinaryReader reader, long length, SeekOrigin origin )
 		{
 			if ( reader.BaseStream.CanSeek )

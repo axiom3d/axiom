@@ -37,18 +37,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
 	/// <summary>
-	/// Summary description for PluginException.
+	///   Summary description for PluginException.
 	/// </summary>
 	public class PluginException : AxiomException
 	{
 		public PluginException( string message, params object[] args )
-			: base( string.Format( message, args ) ) {}
+			: base( string.Format( message, args ) )
+		{
+		}
 	}
 }

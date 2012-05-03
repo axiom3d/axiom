@@ -42,7 +42,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.IsolatedStorage;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -67,12 +66,14 @@ namespace Axiom.FileSystem
 			return File.Create( RootDirectoryGet( isolatedStorage ) + fileName );
 		}
 
-		public static FileStream OpenFile( this IsolatedStorageFile isolatedStorage, string fileName, FileMode mode, FileAccess access )
+		public static FileStream OpenFile( this IsolatedStorageFile isolatedStorage, string fileName, FileMode mode,
+		                                   FileAccess access )
 		{
 			return File.Open( RootDirectoryGet( isolatedStorage ) + fileName, mode, access );
 		}
 
-		private static readonly Class<IsolatedStorage>.Getter<String> RootDirectoryGet = Class<IsolatedStorage>.FieldGet<String>( "m_RootDir" );
+		private static readonly Class<IsolatedStorage>.Getter<String> RootDirectoryGet =
+			Class<IsolatedStorage>.FieldGet<String>( "m_RootDir" );
 #endif
 	}
 
@@ -208,7 +209,8 @@ namespace Axiom.FileSystem
 			                                {
 			                                	if ( isolatedStorage.FileExists( _basePath + filename ) )
 			                                	{
-			                                		strm = isolatedStorage.OpenFile( _basePath + filename, FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
+			                                		strm = isolatedStorage.OpenFile( _basePath + filename, FileMode.Open,
+			                                		                                 readOnly ? FileAccess.Read : FileAccess.ReadWrite );
 			                                	}
 			                                } );
 			return strm;
@@ -223,7 +225,7 @@ namespace Axiom.FileSystem
 	}
 
 	/// <summary>
-	/// Specialization of IArchiveFactory for IsolatedStorage files.
+	///   Specialization of IArchiveFactory for IsolatedStorage files.
 	/// </summary>
 	public class IsolatedStorageArchiveFactory : ArchiveFactory
 	{

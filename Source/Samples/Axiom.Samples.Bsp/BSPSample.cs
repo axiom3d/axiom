@@ -29,6 +29,8 @@ namespace Axiom.Samples.Bsp
 {
 	public class BSPSample : SdkSample
 	{
+		private const string pathToBsp = "../../Media/Archives/chiropteraDM.pk3";
+
 		public BSPSample()
 		{
 			Metadata[ "Title" ] = "Untitled";
@@ -42,10 +44,8 @@ namespace Axiom.Samples.Bsp
 
 		protected override void LocateResources()
 		{
-			//string bspPath = "./Media/Archives/chiropteraDM.zip";
-			string bspPath = "../../Media/Archives/chiropteraDM.pk3";
 			ResourceGroupManager.Instance.CreateResourceGroup( "BSPSAMPLE" );
-			ResourceGroupManager.Instance.AddResourceLocation( bspPath, "ZipFile", ResourceGroupManager.Instance.WorldResourceGroupName, true, false );
+			ResourceGroupManager.Instance.AddResourceLocation( pathToBsp, "ZipFile", ResourceGroupManager.Instance.WorldResourceGroupName, true, false );
 		}
 
 		protected override void CreateSceneManager()
@@ -59,7 +59,6 @@ namespace Axiom.Samples.Bsp
 			If you're not compiling this sample for use with the browser, then leave the init proportion at 0.7. */
 			TrayManager.ShowLoadingBar( 1, 1, 0 );
 			// associate the world geometry with the world resource group, and then load the group
-			//ResourceGroupManager.Instance.LinkWorldGeometryToResourceGroup( "BSPSAMPLE", "maps/chiropteradm.bsp", SceneManager );
 			ResourceGroupManager.Instance.LinkWorldGeometryToResourceGroup( "BSPSAMPLE", "maps/chiropteradm.bsp", SceneManager );
 			ResourceGroupManager.Instance.InitializeResourceGroup( "BSPSAMPLE" );
 			ResourceGroupManager.Instance.LoadResourceGroup( "BSPSAMPLE", false, true );
@@ -71,7 +70,7 @@ namespace Axiom.Samples.Bsp
 		{
 			// unload the map so we don't interfere with subsequent samples
 			ResourceGroupManager.Instance.UnloadResourceGroup( "BSPSAMPLE" );
-			ResourceGroupManager.Instance.RemoveResourceLocation( "Media/Archives/chiropteraDM.zip", ResourceGroupManager.Instance.WorldResourceGroupName );
+			ResourceGroupManager.Instance.RemoveResourceLocation( pathToBsp, ResourceGroupManager.Instance.WorldResourceGroupName );
 		}
 
 		protected override void SetupView()

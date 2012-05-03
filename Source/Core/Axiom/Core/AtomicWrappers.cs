@@ -43,7 +43,7 @@ namespace Axiom.Core
 	{
 		#region Fields
 
-		private int _size;
+		private readonly int _size;
 		private const string ERROR_MESSAGE = "Only 16, 32, and 64 bit scalars supported in win32.";
 
 #if WINDOWS_PHONE
@@ -69,13 +69,13 @@ namespace Axiom.Core
 		public AtomicScalar( T initial )
 			: this()
 		{
-			this.Value = initial;
+			Value = initial;
 		}
 
 		public AtomicScalar( AtomicScalar<T> cousin )
 			: this()
 		{
-			this.Value = cousin.Value;
+			Value = cousin.Value;
 		}
 
 		#endregion Constructors
@@ -86,7 +86,7 @@ namespace Axiom.Core
 		{
 			if ( _size == 2 || _size == 4 || _size == 8 )
 			{
-				var f = Convert.ToInt64( this.Value );
+				var f = Convert.ToInt64( Value );
 				var o = Convert.ToInt64( old );
 				var n = Convert.ToInt64( nu );
 
@@ -103,7 +103,7 @@ namespace Axiom.Core
                     result = oldValue.Equals( o );
                 }
 #endif
-				this.Value = _changeType( f );
+				Value = _changeType( f );
 
 				return result;
 			}

@@ -42,18 +42,20 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 namespace Axiom.Scripting.Compiler.AST
 {
 	/// <summary>
-	/// This abstract node represents a variable assignment
+	///   This abstract node represents a variable assignment
 	/// </summary>
 	internal class VariableSetAbstractNode : AbstractNode
 	{
 		public string Name;
 
 		public VariableSetAbstractNode( AbstractNode parent )
-			: base( parent ) {}
+			: base( parent )
+		{
+		}
 
 		#region AbstractNode Implementation
 
-		/// <see cref="AbstractNode.Clone"/>
+		/// <see cref="AbstractNode.Clone" />
 		public override AbstractNode Clone()
 		{
 			var node = new VariableSetAbstractNode( Parent );
@@ -63,7 +65,7 @@ namespace Axiom.Scripting.Compiler.AST
 			return node;
 		}
 
-		/// <see cref="AbstractNode.Value"/>
+		/// <see cref="AbstractNode.Value" />
 		public override string Value
 		{
 			get

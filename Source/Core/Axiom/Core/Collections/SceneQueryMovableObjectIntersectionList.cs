@@ -35,26 +35,25 @@
 
 #region Namespace Declarations
 
-using Axiom.Core;
-
 using System.Collections.Generic;
+using Axiom.Core;
 
 #endregion
 
 namespace Axiom.Collections
 {
 	/// <summary>
-	/// Represents a pair of two <see cref="MovableObject">MovableObjects</see>.
+	///   Represents a pair of two <see cref="MovableObject">MovableObjects</see> .
 	/// </summary>
 	public class SceneQueryMovableObjectPair
 	{
 		#region Constructors
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="SceneQueryMovableObjectPair"/> class.
+		///   Initializes a new instance of the <see cref="SceneQueryMovableObjectPair" /> class.
 		/// </summary>
-		/// <param name="first">The first <see cref="MovableObject"/>.</param>
-		/// <param name="second">The second <see cref="MovableObject"/>.</param>
+		/// <param name="first"> The first <see cref="MovableObject" /> . </param>
+		/// <param name="second"> The second <see cref="MovableObject" /> . </param>
 		public SceneQueryMovableObjectPair( MovableObject first, MovableObject second )
 		{
 			this.first = first;
@@ -66,22 +65,24 @@ namespace Axiom.Collections
 		#region Instance Properties
 
 		/// <summary>
-		/// Gets or sets the first <see cref="MovableObject"/>.
+		///   Gets or sets the first <see cref="MovableObject" /> .
 		/// </summary>
-		/// <value>A <see cref="MovableObject"/>.</value>
+		/// <value> A <see cref="MovableObject" /> . </value>
 		public MovableObject first { get; set; }
 
 		/// <summary>
-		/// Gets or sets the second <see cref="MovableObject"/>.
+		///   Gets or sets the second <see cref="MovableObject" /> .
 		/// </summary>
-		/// <value>A <see cref="MovableObject"/>.</value>
+		/// <value> A <see cref="MovableObject" /> . </value>
 		public MovableObject second { get; set; }
 
 		#endregion
 	}
 
 	/// <summary>
-	/// Represents a collection of <see cref="SceneQueryMovableObjectPair">SceneQueryMovableObjectPairs</see>
+	///   Represents a collection of <see cref="SceneQueryMovableObjectPair">SceneQueryMovableObjectPairs</see>
 	/// </summary>
-	public class SceneQueryMovableObjectIntersectionList : List<SceneQueryMovableObjectPair> {}
+	public class SceneQueryMovableObjectIntersectionList : List<SceneQueryMovableObjectPair>
+	{
+	}
 }

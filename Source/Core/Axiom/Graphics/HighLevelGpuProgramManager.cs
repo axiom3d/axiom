@@ -38,11 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Linq;
-
 using Axiom.Collections;
 using Axiom.Core;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -50,20 +47,11 @@ using ResourceHandle = System.UInt64;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	/// 	This ResourceManager manages high-level vertex and fragment programs.
+	///   This ResourceManager manages high-level vertex and fragment programs.
 	/// </summary>
 	/// <remarks>
-	///    High-level vertex and fragment programs can be used instead of assembler programs
-	///    as managed by <see cref="GpuProgramManager"/>; however they typically result in a
-	///    <see cref="GpuProgram"/> being created as a derivative of the high-level program.
-	///    High-level programs are easier to write, and can often be API-independent,
-	///    unlike assembler programs.
-	///    <p/>
-	///    This class not only manages the programs themselves, it also manages the factory
-	///    classes which allow the creation of high-level programs using a variety of high-level
-	///    syntaxes. Plugins can be created which register themselves as high-level program
-	///    factories and as such the engine can be extended to accept virtually any kind of
-	///    program provided a plugin is written.
+	///   High-level vertex and fragment programs can be used instead of assembler programs as managed by <see
+	///    cref="GpuProgramManager" /> ; however they typically result in a <see cref="GpuProgram" /> being created as a derivative of the high-level program. High-level programs are easier to write, and can often be API-independent, unlike assembler programs. <p /> This class not only manages the programs themselves, it also manages the factory classes which allow the creation of high-level programs using a variety of high-level syntaxes. Plugins can be created which register themselves as high-level program factories and as such the engine can be extended to accept virtually any kind of program provided a plugin is written.
 	/// </remarks>
 	public class HighLevelGpuProgramManager : ResourceManager
 	{
@@ -72,12 +60,12 @@ namespace Axiom.Graphics
 		public const string NullLang = "null";
 
 		/// <summary>
-		///     Singleton instance of this class.
+		///   Singleton instance of this class.
 		/// </summary>
 		private static HighLevelGpuProgramManager _instance;
 
 		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
+		///   Internal constructor. This class cannot be instantiated externally.
 		/// </summary>
 		internal HighLevelGpuProgramManager()
 			: base()
@@ -95,7 +83,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Gets the singleton instance of this class.
+		///   Gets the singleton instance of this class.
 		/// </summary>
 		public static HighLevelGpuProgramManager Instance
 		{
@@ -110,7 +98,7 @@ namespace Axiom.Graphics
 		#region Fields
 
 		/// <summary>
-		///    Lookup table for list of registered factories.
+		///   Lookup table for list of registered factories.
 		/// </summary>
 		protected AxiomCollection<HighLevelGpuProgramFactory> factories = new AxiomCollection<HighLevelGpuProgramFactory>();
 
@@ -119,18 +107,16 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		///    Add a new factory object for high-level programs of a given language.
+		///   Add a new factory object for high-level programs of a given language.
 		/// </summary>
-		/// <param name="factory">
-		///    The factory instance to register.
-		/// </param>
+		/// <param name="factory"> The factory instance to register. </param>
 		public void AddFactory( HighLevelGpuProgramFactory factory )
 		{
 			factories.Add( factory.Language, factory );
 		}
 
 		/// <summary>
-		///     Unregisters a factory
+		///   Unregisters a factory
 		/// </summary>
 		public void RemoveFactory( HighLevelGpuProgramFactory factory )
 		{
@@ -138,18 +124,16 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Creates a new, unloaded HighLevelGpuProgram instance.
+		///   Creates a new, unloaded HighLevelGpuProgram instance.
 		/// </summary>
 		/// <remarks>
-		///    This method creates a new program of the type specified as the second and third parameters.
-		///    You will have to call further methods on the returned program in order to
-		///    define the program fully before you can load it.
+		///   This method creates a new program of the type specified as the second and third parameters. You will have to call further methods on the returned program in order to define the program fully before you can load it.
 		/// </remarks>
-		/// <param name="name">Name of the program to create.</param>
-		/// <param name="group"></param>
-		/// <param name="language">HLSL language to use.</param>
-		/// <param name="type">Type of program, i.e. vertex or fragment.</param>
-		/// <returns>An unloaded instance of HighLevelGpuProgram.</returns>
+		/// <param name="name"> Name of the program to create. </param>
+		/// <param name="group"> </param>
+		/// <param name="language"> HLSL language to use. </param>
+		/// <param name="type"> Type of program, i.e. vertex or fragment. </param>
+		/// <returns> An unloaded instance of HighLevelGpuProgram. </returns>
 		public HighLevelGpuProgram CreateProgram( string name, string group, string language, GpuProgramType type )
 		{
 			// lookup the factory for the requested program language
@@ -157,7 +141,8 @@ namespace Axiom.Graphics
 
 			if ( factory == null )
 			{
-				throw new AxiomException( "Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'", language );
+				throw new AxiomException( "Could not find HighLevelGpuProgramManager that can compile programs of type '{0}'",
+				                          language );
 			}
 
 			// create the high level program using the factory
@@ -170,11 +155,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Retreives a factory instance capable of producing HighLevelGpuPrograms of the
-		///    specified language.
+		///   Retreives a factory instance capable of producing HighLevelGpuPrograms of the specified language.
 		/// </summary>
-		/// <param name="language">HLSL language.</param>
-		/// <returns>A factory capable of creating a HighLevelGpuProgram of the specified language.</returns>
+		/// <param name="language"> HLSL language. </param>
+		/// <returns> A factory capable of creating a HighLevelGpuProgram of the specified language. </returns>
 		public HighLevelGpuProgramFactory GetFactory( string language )
 		{
 			if ( !factories.ContainsKey( language ) )
@@ -207,7 +191,8 @@ namespace Axiom.Graphics
 
 		#region ResourceManager Implementation
 
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			if ( createParams == null || !createParams.ContainsKey( "language" ) )
 			{
@@ -217,10 +202,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Gets a HighLevelGpuProgram with the specified name.
+		///   Gets a HighLevelGpuProgram with the specified name.
 		/// </summary>
-		/// <param name="name">Name of the program to retrieve.</param>
-		/// <returns>The high level gpu program with the specified name.</returns>
+		/// <param name="name"> Name of the program to retrieve. </param>
+		/// <returns> The high level gpu program with the specified name. </returns>
 		public new HighLevelGpuProgram this[ string name ]
 		{
 			get
@@ -230,10 +215,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Gets a HighLevelGpuProgram with the specified handle.
+		///   Gets a HighLevelGpuProgram with the specified handle.
 		/// </summary>
-		/// <param name="handle">Handle of the program to retrieve.</param>
-		/// <returns>The high level gpu program with the specified handle.</returns>
+		/// <param name="handle"> Handle of the program to retrieve. </param>
+		/// <returns> The high level gpu program with the specified handle. </returns>
 		public new HighLevelGpuProgram this[ ResourceHandle handle ]
 		{
 			get
@@ -243,14 +228,14 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Called when the engine is shutting down.
+		///   Called when the engine is shutting down.
 		/// </summary>
 		/// <summary>
-		///     Called when the engine is shutting down.
+		///   Called when the engine is shutting down.
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

@@ -37,11 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Core;
 using Axiom.Collections;
-
+using Axiom.Core;
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -49,14 +46,14 @@ using ResourceHandle = System.UInt64;
 namespace Axiom.Animating
 {
 	/// <summary>
-	/// Summary description for SkeletonManager.
+	///   Summary description for SkeletonManager.
 	/// </summary>
 	public sealed class SkeletonManager : ResourceManager, ISingleton<SkeletonManager>
 	{
 		#region ISingleton<SkeletonManager> Implementation
 
 		/// <summary>
-		///     Gets the singleton instance of this class.
+		///   Gets the singleton instance of this class.
 		/// </summary>
 		public static SkeletonManager Instance
 		{
@@ -67,10 +64,10 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		/// Initializes the Skeleton Manager
+		///   Initializes the Skeleton Manager
 		/// </summary>
-		/// <param name="args"></param>
-		/// <returns></returns>
+		/// <param name="args"> </param>
+		/// <returns> </returns>
 		public bool Initialize( params object[] args )
 		{
 			return true;
@@ -81,7 +78,7 @@ namespace Axiom.Animating
 		#region Construction and Destruction
 
 		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
+		///   Internal constructor. This class cannot be instantiated externally.
 		/// </summary>
 		public SkeletonManager()
 			: base()
@@ -97,16 +94,17 @@ namespace Axiom.Animating
 		#region ResourceManager Implementation
 
 		/// <summary>
-		///    Creates a new skeleton object.
+		///   Creates a new skeleton object.
 		/// </summary>
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
+		                                     IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			return new Skeleton( this, name, handle, group, isManual, loader );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

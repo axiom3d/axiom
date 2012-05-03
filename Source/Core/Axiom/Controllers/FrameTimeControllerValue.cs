@@ -45,20 +45,20 @@ using Axiom.Math;
 namespace Axiom.Controllers
 {
 	/// <summary>
-	/// Summary description for FrameTimeControllerValue.
+	///   Summary description for FrameTimeControllerValue.
 	/// </summary>
 	public sealed class FrameTimeControllerValue : IControllerValue<Real>
 	{
-		/// <summary>
-		///		Stores the value of the time elapsed since the last frame.
-		/// </summary>
+		///<summary>
+		///  Stores the value of the time elapsed since the last frame.
+		///</summary>
 		private Real frameTime;
 
 		private float frameDelay;
 
-		/// <summary>
-		///		Float value that should be used to scale controller time.
-		/// </summary>
+		///<summary>
+		///  Float value that should be used to scale controller time.
+		///</summary>
 		private float timeFactor;
 
 		private Real elapsedTime;
@@ -78,9 +78,9 @@ namespace Axiom.Controllers
 
 		#region IControllerValue Members
 
-		/// <summary>
-		///		Gets a time scaled value to use for controller functions.
-		/// </summary>
+		///<summary>
+		///  Gets a time scaled value to use for controller functions.
+		///</summary>
 		Real IControllerValue<Real>.Value
 		{
 			get
@@ -97,11 +97,9 @@ namespace Axiom.Controllers
 
 		#region Properties
 
-		/// <summary>
-		///		Float value that should be used to scale controller time.  This could be used
-		///		to either speed up or slow down controller functions independent of slowing
-		///		down the render loop.
-		/// </summary>
+		///<summary>
+		///  Float value that should be used to scale controller time. This could be used to either speed up or slow down controller functions independent of slowing down the render loop.
+		///</summary>
 		public float TimeFactor
 		{
 			get
@@ -145,25 +143,24 @@ namespace Axiom.Controllers
 
 		#endregion
 
-		/// <summary>
-		///		Event handler to the Frame Started event so that we can capture the
-		///		time since last frame to use for controller functions.
-		/// </summary>
-		/// <param name="source"></param>
-		/// <param name="e"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Event handler to the Frame Started event so that we can capture the time since last frame to use for controller functions.
+		///</summary>
+		///<param name="source"> </param>
+		///<param name="e"> </param>
+		///<returns> </returns>
 		private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
 		{
 			if ( frameDelay != 0 )
 			{
 				// Fixed frame time
 				frameTime = frameDelay;
-				timeFactor = frameDelay / e.TimeSinceLastFrame;
+				timeFactor = frameDelay/e.TimeSinceLastFrame;
 			}
 			else
 			{
 				// Save the time value after applying time factor
-				frameTime = timeFactor * e.TimeSinceLastFrame;
+				frameTime = timeFactor*e.TimeSinceLastFrame;
 			}
 			// Accumulate the elapsed time
 			elapsedTime += frameTime;

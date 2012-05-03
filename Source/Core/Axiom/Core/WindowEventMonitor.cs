@@ -38,9 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-
 using Axiom.Graphics;
 using Axiom.Utilities;
 
@@ -51,33 +49,35 @@ namespace Axiom.Core
 	public interface IWindowEventListener
 	{
 		/// <summary>
-		/// Window has moved position
+		///   Window has moved position
 		/// </summary>
-		/// <param name="rw">The RenderWindow which created this event</param>
+		/// <param name="rw"> The RenderWindow which created this event </param>
 		void WindowMoved( RenderWindow rw );
 
 		/// <summary>
-		/// Window has resized
+		///   Window has resized
 		/// </summary>
-		/// <param name="rw">The RenderWindow which created this event</param>
+		/// <param name="rw"> The RenderWindow which created this event </param>
 		void WindowResized( RenderWindow rw );
 
 		/// <summary>
-		/// Window has closed
+		///   Window has closed
 		/// </summary>
-		/// <param name="rw">The RenderWindow which created this event</param>
+		/// <param name="rw"> The RenderWindow which created this event </param>
 		void WindowClosed( RenderWindow rw );
 
 		/// <summary>
-		/// Window lost/regained the focus
+		///   Window lost/regained the focus
 		/// </summary>
-		/// <param name="rw">The RenderWindow which created this event</param>
+		/// <param name="rw"> The RenderWindow which created this event </param>
 		void WindowFocusChange( RenderWindow rw );
 	}
 
 	public class WindowEventMonitor : DisposableObject // Singleton<WindowMonitor>
 	{
-		private Dictionary<RenderWindow, List<IWindowEventListener>> _listeners = new Dictionary<RenderWindow, List<IWindowEventListener>>();
+		private Dictionary<RenderWindow, List<IWindowEventListener>> _listeners =
+			new Dictionary<RenderWindow, List<IWindowEventListener>>();
+
 		private List<RenderWindow> _windows = new List<RenderWindow>();
 
 		public IEnumerable<RenderWindow> Windows
@@ -89,12 +89,14 @@ namespace Axiom.Core
 		}
 
 		private WindowEventMonitor()
-			: base() {}
+			: base()
+		{
+		}
 
 		private static readonly WindowEventMonitor _instance = new WindowEventMonitor();
 
 		/// <summary>
-		/// Singleton Instance of the class
+		///   Singleton Instance of the class
 		/// </summary>
 		public static WindowEventMonitor Instance
 		{
@@ -104,20 +106,17 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+		///<summary>
+		///</summary>
 		public delegate void MessagePumpDelegate();
 
 		public MessagePumpDelegate MessagePump;
 
 		/// <summary>
-		/// Add a listener to listen to renderwindow events (multiple listener's per renderwindow is fine)
-		/// The same listener can listen to multiple windows, as the Window Pointer is sent along with
-		/// any messages.
+		///   Add a listener to listen to renderwindow events (multiple listener's per renderwindow is fine) The same listener can listen to multiple windows, as the Window Pointer is sent along with any messages.
 		/// </summary>
-		/// <param name="window">The RenderWindow you are interested in monitoring</param>
-		/// <param name="listener">Your callback listener</param>
+		/// <param name="window"> The RenderWindow you are interested in monitoring </param>
+		/// <param name="listener"> Your callback listener </param>
 		public void RegisterListener( RenderWindow window, IWindowEventListener listener )
 		{
 			Contract.RequiresNotNull( window, "window" );
@@ -131,10 +130,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Remove previously added listener
+		///   Remove previously added listener
 		/// </summary>
-		/// <param name="window">The RenderWindow you registered with</param>
-		/// <param name="listener">The listener registered</param>
+		/// <param name="window"> The RenderWindow you registered with </param>
+		/// <param name="listener"> The listener registered </param>
 		public void UnregisterListener( RenderWindow window, IWindowEventListener listener )
 		{
 			Contract.RequiresNotNull( window, "window" );
@@ -147,10 +146,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Called by RenderWindows upon creation for Ogre generated windows. You are free to add your
-		/// external windows here too if needed.
+		///   Called by RenderWindows upon creation for Ogre generated windows. You are free to add your external windows here too if needed.
 		/// </summary>
-		/// <param name="window">The RenderWindow to monitor</param>
+		/// <param name="window"> The RenderWindow to monitor </param>
 		public void RegisterWindow( RenderWindow window )
 		{
 			Contract.RequiresNotNull( window, "window" );
@@ -160,10 +158,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Called by RenderWindows upon destruction for Ogre generated windows. You are free to remove your
-		/// external windows here too if needed.
+		///   Called by RenderWindows upon destruction for Ogre generated windows. You are free to remove your external windows here too if needed.
 		/// </summary>
-		/// <param name="window">The RenderWindow to remove from list</param>
+		/// <param name="window"> The RenderWindow to remove from list </param>
 		public void UnregisterWindow( RenderWindow window )
 		{
 			Contract.RequiresNotNull( window, "window" );
@@ -181,10 +178,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Window has either gained or lost the focus
+		///   Window has either gained or lost the focus
 		/// </summary>
-		/// <param name="window">RenderWindow that caused the event</param>
-		/// <param name="hasFocus">True if window has focus</param>
+		/// <param name="window"> RenderWindow that caused the event </param>
+		/// <param name="hasFocus"> True if window has focus </param>
 		public void WindowFocusChange( RenderWindow window, bool hasFocus )
 		{
 			Contract.RequiresNotNull( window, "window" );
@@ -205,9 +202,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Window has moved position
+		///   Window has moved position
 		/// </summary>
-		/// <param name="window">RenderWindow that caused the event</param>
+		/// <param name="window"> RenderWindow that caused the event </param>
 		public void WindowMoved( RenderWindow window )
 		{
 			Contract.RequiresNotNull( window, "window" );
@@ -227,9 +224,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Window has changed size
+		///   Window has changed size
 		/// </summary>
-		/// <param name="window">RenderWindow that caused the event</param>
+		/// <param name="window"> RenderWindow that caused the event </param>
 		public void WindowResized( RenderWindow window )
 		{
 			Contract.RequiresNotNull( window, "window" );
@@ -249,9 +246,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Window has closed
+		///   Window has closed
 		/// </summary>
-		/// <param name="window">RenderWindow that caused the event</param>
+		/// <param name="window"> RenderWindow that caused the event </param>
 		public void WindowClosed( RenderWindow window )
 		{
 			Contract.RequiresNotNull( window, "window" );
@@ -275,7 +272,7 @@ namespace Axiom.Core
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

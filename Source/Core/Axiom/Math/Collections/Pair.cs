@@ -43,15 +43,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Math.Collections
 {
 	/// <summary>
-	/// 	A simple container class for returning a pair of objects from a method call 
-	/// 	(similar to std::pair, minus the templates).
+	///   A simple container class for returning a pair of objects from a method call (similar to std::pair, minus the templates).
 	/// </summary>
 	/// <remarks>
 	/// </remarks>

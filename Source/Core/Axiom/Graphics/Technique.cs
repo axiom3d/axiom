@@ -41,7 +41,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Scripting;
@@ -51,18 +50,17 @@ using Axiom.Scripting;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	/// 	Class representing an approach to rendering a particular Material. 
+	///   Class representing an approach to rendering a particular Material.
 	/// </summary>
 	/// <remarks>
-	///    The engine will attempt to use the best technique supported by the active hardware, 
-	///    unless you specifically request a lower detail technique (say for distant rendering)
+	///   The engine will attempt to use the best technique supported by the active hardware, unless you specifically request a lower detail technique (say for distant rendering)
 	/// </remarks>
 	public class Technique
 	{
 		#region Constants and Enumerations
 
 		/// <summary>
-		/// illumination pass state type
+		///   illumination pass state type
 		/// </summary>
 		protected enum IlluminationPassesCompilationPhase
 		{
@@ -72,7 +70,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Rule controlling whether technique is deemed supported based on GPU vendor
+		///   Rule controlling whether technique is deemed supported based on GPU vendor
 		/// </summary>
 		public struct GPUVendorRule
 		{
@@ -129,7 +127,7 @@ namespace Axiom.Graphics
 		};
 
 		/// <summary>
-		/// Rule controlling whether technique is deemed supported based on GPU device name
+		///   Rule controlling whether technique is deemed supported based on GPU device name
 		/// </summary>
 		public struct GPUDeviceNameRule
 		{
@@ -185,7 +183,8 @@ namespace Axiom.Graphics
 					return true;
 				}
 
-				return ( a.DevicePattern == b.DevicePattern ) && ( a.Include == b.Include ) && ( a.CaseSensitive == b.CaseSensitive );
+				return ( a.DevicePattern == b.DevicePattern ) && ( a.Include == b.Include ) &&
+				       ( a.CaseSensitive == b.CaseSensitive );
 			}
 
 			public static bool operator !=( GPUDeviceNameRule a, GPUDeviceNameRule b )
@@ -199,21 +198,22 @@ namespace Axiom.Graphics
 		#region Fields and Properties
 
 		/// <summary>
-		///    The list of passes (fixed function or programmable) contained in this technique.
+		///   The list of passes (fixed function or programmable) contained in this technique.
 		/// </summary>
-		private List<Pass> _passes = new List<Pass>();
+		private readonly List<Pass> _passes = new List<Pass>();
 
 		protected List<GPUVendorRule> _GPUVendorRules = new List<GPUVendorRule>();
 		protected List<GPUDeviceNameRule> _GPUDeviceNameRules = new List<GPUDeviceNameRule>();
 
 		#region IlluminationPasses Property
 
-		private IlluminationPassesCompilationPhase _illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
+		private IlluminationPassesCompilationPhase _illuminationPassesCompilationPhase =
+			IlluminationPassesCompilationPhase.NotCompiled;
 
-		/// <summary>
-		///		List of derived passes, categorized (and ordered) into illumination stages.
-		/// </summary>
-		private List<IlluminationPass> _illuminationPasses = new List<IlluminationPass>();
+		///<summary>
+		///  List of derived passes, categorized (and ordered) into illumination stages.
+		///</summary>
+		private readonly List<IlluminationPass> _illuminationPasses = new List<IlluminationPass>();
 
 		public IEnumerable<IlluminationPass> IlluminationPasses
 		{
@@ -239,12 +239,12 @@ namespace Axiom.Graphics
 		#region Parent Property
 
 		/// <summary>
-		///    The material that owns this technique.
+		///   The material that owns this technique.
 		/// </summary>
 		private Material _parent;
 
 		/// <summary>
-		///    Gets a reference to the Material that owns this Technique.
+		///   Gets a reference to the Material that owns this Technique.
 		/// </summary>
 		public Material Parent
 		{
@@ -263,16 +263,15 @@ namespace Axiom.Graphics
 		#region IsSupported Property
 
 		/// <summary>
-		///    Flag that states whether or not this technique is supported on the current hardware.
+		///   Flag that states whether or not this technique is supported on the current hardware.
 		/// </summary>
 		private bool _isSupported;
 
 		/// <summary>
-		///    Flag that states whether or not this technique is supported on the current hardware.
+		///   Flag that states whether or not this technique is supported on the current hardware.
 		/// </summary>
 		/// <remarks>
-		///    This will only be correct after the Technique has been compiled, which is
-		///    usually triggered in Material.Compile.
+		///   This will only be correct after the Technique has been compiled, which is usually triggered in Material.Compile.
 		/// </remarks>
 		public bool IsSupported
 		{
@@ -291,52 +290,25 @@ namespace Axiom.Graphics
 		#region Name Property
 
 		/// <summary>
-		///    Name of this technique.
+		///   Gets/Sets the name of this technique.
 		/// </summary>
-		private string _name;
-
-		/// <summary>
-		///    Gets/Sets the name of this technique.
-		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return _name;
-			}
-			set
-			{
-				_name = value;
-			}
-		}
+		public string Name { get; set; }
 
 		#endregion Name Property
 
 		#region LodIndex Property
 
-		/// <summary>
-		///		Level of detail index for this technique.
-		/// </summary>
+		///<summary>
+		///  Level of detail index for this technique.
+		///</summary>
 		private int _lodIndex;
 
-		/// <summary>
-		///		Assigns a level-of-detail (LOD) index to this Technique.
-		/// </summary>
-		/// <remarks>
-		///		As noted previously, as well as providing fallback support for various
-		///		graphics cards, multiple Technique objects can also be used to implement
-		///		material LOD, where the detail of the material diminishes with distance to 
-		///		save rendering power.
-		///		<p/>
-		///		By default, all Techniques have a LOD index of 0, which means they are the highest
-		///		level of detail. Increasing LOD indexes are lower levels of detail. You can 
-		///		assign more than one Technique to the same LOD index, meaning that the best 
-		///		Technique that is supported at that LOD index is used. 
-		///		<p/>
-		///		You should not leave gaps in the LOD sequence; the engine will allow you to do this
-		///		and will continue to function as if the LODs were sequential, but it will 
-		///		confuse matters.
-		/// </remarks>
+		///<summary>
+		///  Assigns a level-of-detail (LOD) index to this Technique.
+		///</summary>
+		///<remarks>
+		///  As noted previously, as well as providing fallback support for various graphics cards, multiple Technique objects can also be used to implement material LOD, where the detail of the material diminishes with distance to save rendering power. <p /> By default, all Techniques have a LOD index of 0, which means they are the highest level of detail. Increasing LOD indexes are lower levels of detail. You can assign more than one Technique to the same LOD index, meaning that the best Technique that is supported at that LOD index is used. <p /> You should not leave gaps in the LOD sequence; the engine will allow you to do this and will continue to function as if the LODs were sequential, but it will confuse matters.
+		///</remarks>
 		public int LodIndex
 		{
 			get
@@ -372,9 +344,9 @@ namespace Axiom.Graphics
 
 		#region IlluminationPassCount Property
 
-		/// <summary>
-		///		Gets the number of illumination passes compiled from this technique.
-		/// </summary>
+		///<summary>
+		///  Gets the number of illumination passes compiled from this technique.
+		///</summary>
 		public int IlluminationPassCount
 		{
 			get
@@ -392,14 +364,11 @@ namespace Axiom.Graphics
 		#region Pass Convienence Properties
 
 		/// <summary>
-		/// Sets the point size properties for every Pass in this Technique.
+		///   Sets the point size properties for every Pass in this Technique.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see cref="Pass.PointSize"/>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    cref="Pass.PointSize" />
 		/// </remarks>
 		public Real PointSize
 		{
@@ -413,14 +382,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the ambient size properties for every Pass in this Technique.
+		///   Sets the ambient size properties for every Pass in this Technique.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see cref="Pass.Ambient"/>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    cref="Pass.Ambient" />
 		/// </remarks>
 		public ColorEx Ambient
 		{
@@ -434,14 +400,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the Diffuse property for every Pass in this Technique.
+		///   Sets the Diffuse property for every Pass in this Technique.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see cref="Pass.Diffuse"/>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    cref="Pass.Diffuse" />
 		/// </remarks>
 		public ColorEx Diffuse
 		{
@@ -455,14 +418,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the Specular property for every Pass in this Technique.
+		///   Sets the Specular property for every Pass in this Technique.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see cref="Pass.Specular"/>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    cref="Pass.Specular" />
 		/// </remarks>
 		public ColorEx Specular
 		{
@@ -476,14 +436,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the Shininess property for every Pass in this Technique.
+		///   Sets the Shininess property for every Pass in this Technique.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see cref="Pass.Shininess"/>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    cref="Pass.Shininess" />
 		/// </remarks>
 		public Real Shininess
 		{
@@ -497,14 +454,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the SelfIllumination property for every Pass in this Technique.
+		///   Sets the SelfIllumination property for every Pass in this Technique.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see cref="Pass.SelfIllumination"/>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    cref="Pass.SelfIllumination" />
 		/// </remarks>
 		public ColorEx SelfIllumination
 		{
@@ -518,14 +472,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the Emissive property for every Pass in this Technique.
+		///   Sets the Emissive property for every Pass in this Technique.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see cref="Pass.Emissive"/>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    cref="Pass.Emissive" />
 		/// </remarks>
 		public ColorEx Emissive
 		{
@@ -539,14 +490,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the CullingMode property for every Pass in this Technique.
+		///   Sets the CullingMode property for every Pass in this Technique.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see cref="Pass.CullingMode"/>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    cref="Pass.CullingMode" />
 		/// </remarks>
 		public CullingMode CullingMode
 		{
@@ -560,14 +508,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the ManualCullingMode property for every Pass in this Technique.
+		///   Sets the ManualCullingMode property for every Pass in this Technique.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see cref="Pass.ManualCullingMode"/>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    cref="Pass.ManualCullingMode" />
 		/// </remarks>
 		public ManualCullingMode ManualCullingMode
 		{
@@ -581,14 +526,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets whether or not dynamic lighting is enabled for every Pass.
+		///   Sets whether or not dynamic lighting is enabled for every Pass.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see ref="Pass.LightingEnabled"></see>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    ref="Pass.LightingEnabled"></see>
 		/// </remarks>
 		public bool LightingEnabled
 		{
@@ -602,14 +544,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the depth bias to be used for each Pass.
+		///   Sets the depth bias to be used for each Pass.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see ref="Pass.DepthBias"></see>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    ref="Pass.DepthBias"></see>
 		/// </remarks>
 		public int DepthBias
 		{
@@ -623,14 +562,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the type of light shading required
+		///   Sets the type of light shading required
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see ref="Pass.ShadingMode"></see>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    ref="Pass.ShadingMode"></see>
 		/// </remarks>
 		public Shading ShadingMode
 		{
@@ -650,14 +586,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the fogging mode applied to each pass.
+		///   Sets the fogging mode applied to each pass.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see ref="Pass.SetFog"></see>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    ref="Pass.SetFog"></see>
 		/// </remarks>
 		public void SetFog( bool overrideScene, FogMode mode, ColorEx color, Real expDensity, Real linearStart, Real linearEnd )
 		{
@@ -669,14 +602,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the DepthCheck property for every Pass in this Technique.
+		///   Sets the DepthCheck property for every Pass in this Technique.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see cref="Pass.DepthCheck"/>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    cref="Pass.DepthCheck" />
 		/// </remarks>
 		public bool DepthCheck
 		{
@@ -702,14 +632,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the function used to compare depth values when depth checking is on.
+		///   Sets the function used to compare depth values when depth checking is on.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see ref="Pass.DepthFunction"></see>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    ref="Pass.DepthFunction"></see>
 		/// </remarks>
 		public CompareFunction DepthFunction
 		{
@@ -723,14 +650,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the DepthWrite property for every Pass in this Technique.
+		///   Sets the DepthWrite property for every Pass in this Technique.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see cref="Pass.DepthWrite"/>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    cref="Pass.DepthWrite" />
 		/// </remarks>
 		public bool DepthWrite
 		{
@@ -756,14 +680,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets whether or not colour buffer writing is enabled for each Pass.
+		///   Sets whether or not colour buffer writing is enabled for each Pass.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see ref="Pass.ColorWriteEnabled"></see>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    ref="Pass.ColorWriteEnabled"></see>
 		/// </remarks>
 		public bool ColorWriteEnabled
 		{
@@ -788,14 +709,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the anisotropy level to be used for all textures.
+		///   Sets the anisotropy level to be used for all textures.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see ref="Pass.TextureAnisotropy"></see>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    ref="Pass.TextureAnisotropy"></see>
 		/// </remarks>
 		public int TextureAnisotropy
 		{
@@ -809,14 +727,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the TextureFiltering property for every Pass in this Technique.
+		///   Sets the TextureFiltering property for every Pass in this Technique.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
-		/// <see cref="Pass.TextureFiltering"/>
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there. <see
+		///    cref="Pass.TextureFiltering" />
 		/// </remarks>
 		public TextureFiltering TextureFiltering
 		{
@@ -853,7 +768,7 @@ namespace Axiom.Graphics
 		#endregion Scheme Property
 
 		/// <summary>
-		///    Returns true if this Technique has already been loaded.
+		///   Returns true if this Technique has already been loaded.
 		/// </summary>
 		public bool IsLoaded
 		{
@@ -864,14 +779,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Returns true if this Technique involves transparency.
+		///   Returns true if this Technique involves transparency.
 		/// </summary>
 		/// <remarks>
-		///    This basically boils down to whether the first pass
-		///    has a scene blending factor. Even if the other passes 
-		///    do not, the base color, including parts of the original 
-		///    scene, may be used for blending, therefore we have to treat
-		///    the whole Technique as transparent.
+		///   This basically boils down to whether the first pass has a scene blending factor. Even if the other passes do not, the base color, including parts of the original scene, may be used for blending, therefore we have to treat the whole Technique as transparent.
 		/// </remarks>
 		public bool IsTransparent
 		{
@@ -890,7 +801,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Gets the number of passes within this Technique.
+		///   Gets the number of passes within this Technique.
 		/// </summary>
 		public int PassCount
 		{
@@ -906,17 +817,17 @@ namespace Axiom.Graphics
 
 		public Technique( Material parent )
 		{
-			this._parent = parent;
-			this._compiledIlluminationPasses = false;
+			_parent = parent;
+			_compiledIlluminationPasses = false;
 		}
 
 		#endregion
 
 		#region Methods
 
-		/// <summary>
-		///		Internal method for clearing the illumination pass list.
-		/// </summary>
+		///<summary>
+		///  Internal method for clearing the illumination pass list.
+		///</summary>
 		protected void ClearIlluminationPasses()
 		{
 			for ( var i = 0; i < _illuminationPasses.Count; i++ )
@@ -933,10 +844,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Clones this Technique.
+		///   Clones this Technique.
 		/// </summary>
-		/// <param name="parent">Material that will own this technique.</param>
-		/// <returns></returns>
+		/// <param name="parent"> Material that will own this technique. </param>
+		/// <returns> </returns>
 		public Technique Clone( Material parent )
 		{
 			var newTechnique = new Technique( parent );
@@ -946,10 +857,10 @@ namespace Axiom.Graphics
 			return newTechnique;
 		}
 
-		/// <summary>
-		///		Copy the details of this Technique to another.
-		/// </summary>
-		/// <param name="target"></param>
+		///<summary>
+		///  Copy the details of this Technique to another.
+		///</summary>
+		///<param name="target"> </param>
 		public void CopyTo( Technique target )
 		{
 			target._isSupported = _isSupported;
@@ -972,12 +883,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Compilation method for Techniques.  See <see cref="Axiom.Graphics.Material"/>
+		///   Compilation method for Techniques. See <see cref="Axiom.Graphics.Material" />
 		/// </summary>
-		/// <param name="autoManageTextureUnits">
-		///    Determines whether or not the engine should split up extra texture unit requests
-		///    into extra passes if the hardware does not have enough available units.
-		/// </param>
+		/// <param name="autoManageTextureUnits"> Determines whether or not the engine should split up extra texture unit requests into extra passes if the hardware does not have enough available units. </param>
 		[OgreVersion( 1, 7, 2 )]
 		internal String Compile( bool autoManageTextureUnits )
 		{
@@ -997,7 +905,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Internal method for checking hardware support
+		///   Internal method for checking hardware support
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		internal bool CheckHardwareSupport( bool autoManageTextureUnits, ref StringBuilder compileErrors )
@@ -1012,7 +920,9 @@ namespace Axiom.Graphics
 				_passes[ i ].Index = passNum;
 
 				//Check for advanced blending operation support
-				if ( ( _passes[ i ].SceneBlendingOperation != SceneBlendOperation.Add || _passes[ i ].SceneBlendingOperationAlpha != SceneBlendOperation.Add ) && !caps.HasCapability( Capabilities.AdvancedBlendOperations ) )
+				if ( ( _passes[ i ].SceneBlendingOperation != SceneBlendOperation.Add ||
+				       _passes[ i ].SceneBlendingOperationAlpha != SceneBlendOperation.Add ) &&
+				     !caps.HasCapability( Capabilities.AdvancedBlendOperations ) )
 				{
 					return false;
 				}
@@ -1031,13 +941,15 @@ namespace Axiom.Graphics
 						if ( !autoManageTextureUnits )
 						{
 							// The user disabled auto pass split
-							compileErrors.AppendLine( "Pass " + passNum + ": Too many texture units for the current hardware and no splitting allowed." );
+							compileErrors.AppendLine( "Pass " + passNum +
+							                          ": Too many texture units for the current hardware and no splitting allowed." );
 							return false;
 						}
 						else if ( _passes[ i ].HasVertexProgram )
 						{
 							// Can't do this one, and can't split a programmable pass
-							compileErrors.AppendLine( "Pass " + passNum + ": Too many texture units for the current hardware and cannot split programmable passes." );
+							compileErrors.AppendLine( "Pass " + passNum +
+							                          ": Too many texture units for the current hardware and cannot split programmable passes." );
 							return false;
 						}
 					}
@@ -1049,7 +961,8 @@ namespace Axiom.Graphics
 					if ( !_passes[ i ].VertexProgram.IsSupported )
 					{
 						// Can't do this one
-						compileErrors.Append( "Pass " + passNum + ": Vertex program " + _passes[ i ].VertexProgram.Name + " cannot be used - " );
+						compileErrors.Append( "Pass " + passNum + ": Vertex program " + _passes[ i ].VertexProgram.Name +
+						                      " cannot be used - " );
 
 						if ( _passes[ i ].VertexProgram.HasCompileError )
 						{
@@ -1071,7 +984,8 @@ namespace Axiom.Graphics
 					if ( !_passes[ i ].GeometryProgram.IsSupported )
 					{
 						// Can't do this one
-						compileErrors.Append( "Pass " + passNum + ": Geometry program " + _passes[ i ].GeometryProgram.Name + " cannot be used - " );
+						compileErrors.Append( "Pass " + passNum + ": Geometry program " + _passes[ i ].GeometryProgram.Name +
+						                      " cannot be used - " );
 						if ( _passes[ i ].GeometryProgram.HasCompileError )
 						{
 							compileErrors.Append( "compile error." );
@@ -1092,7 +1006,8 @@ namespace Axiom.Graphics
 					if ( !_passes[ i ].FragmentProgram.IsSupported )
 					{
 						// Can't do this one
-						compileErrors.Append( "Pass " + passNum + ": Fragment program " + _passes[ i ].FragmentProgram.Name + " cannot be used - " );
+						compileErrors.Append( "Pass " + passNum + ": Fragment program " + _passes[ i ].FragmentProgram.Name +
+						                      " cannot be used - " );
 						if ( _passes[ i ].FragmentProgram.HasCompileError )
 						{
 							compileErrors.Append( "compile error." );
@@ -1120,7 +1035,8 @@ namespace Axiom.Graphics
 						if ( tex.Is3D && !caps.HasCapability( Capabilities.CubeMapping ) )
 						{
 							// Fail
-							compileErrors.AppendLine( "Pass " + passNum + " Tex " + texUnit + ": Cube maps not supported by current environment." );
+							compileErrors.AppendLine( "Pass " + passNum + " Tex " + texUnit +
+							                          ": Cube maps not supported by current environment." );
 							return false;
 						}
 						// Any 3D textures? NB we make the assumption that any
@@ -1129,14 +1045,16 @@ namespace Axiom.Graphics
 						if ( tex.TextureType == TextureType.ThreeD && !caps.HasCapability( Capabilities.Texture3D ) )
 						{
 							// Fail
-							compileErrors.AppendLine( "Pass " + passNum + " Tex " + texUnit + ": Volume textures not supported by current environment." );
+							compileErrors.AppendLine( "Pass " + passNum + " Tex " + texUnit +
+							                          ": Volume textures not supported by current environment." );
 							return false;
 						}
 						// Any Dot3 blending?
 						if ( tex.ColorBlendMode.operation == LayerBlendOperationEx.DotProduct && !caps.HasCapability( Capabilities.Dot3 ) )
 						{
 							// Fail
-							compileErrors.AppendLine( "Pass " + passNum + " Tex " + texUnit + ": DOT3 blending not supported by current environment." );
+							compileErrors.AppendLine( "Pass " + passNum + " Tex " + texUnit +
+							                          ": DOT3 blending not supported by current environment." );
 							return false;
 						}
 						++texUnit;
@@ -1179,7 +1097,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Internal method for checking GPU vendor / device rules
+		///   Internal method for checking GPU vendor / device rules
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		internal bool CheckGPURules( ref StringBuilder errors )
@@ -1228,7 +1146,9 @@ namespace Axiom.Graphics
 			foreach ( var i in _GPUDeviceNameRules )
 			{
 				//StringUtil::match(caps->getDeviceName(), i->devicePattern, i->caseSensitive)
-				bool checkCondition = i.CaseSensitive ? i.DevicePattern.Contains( caps.DeviceName ) : i.DevicePattern.ToLower().Contains( caps.DeviceName.ToLower() );
+				bool checkCondition = i.CaseSensitive
+				                      	? i.DevicePattern.Contains( caps.DeviceName )
+				                      	: i.DevicePattern.ToLower().Contains( caps.DeviceName.ToLower() );
 
 				if ( i.Include )
 				{
@@ -1259,15 +1179,15 @@ namespace Axiom.Graphics
 			return true;
 		}
 
-		/// <summary>
-		///		Internal method for splitting the passes into illumination passes.
-		/// </summary>
+		///<summary>
+		///  Internal method for splitting the passes into illumination passes.
+		///</summary>
 		public void CompileIlluminationPasses()
 		{
 			ClearIlluminationPasses();
 
 			// don't need to split transparent passes since they are rendered seperately
-			if ( this.IsTransparent )
+			if ( IsTransparent )
 			{
 				return;
 			}
@@ -1378,7 +1298,8 @@ namespace Axiom.Graphics
 						else
 						{
 							// split off per-light details (can only be done for one)
-							if ( pass.LightingEnabled && ( pass.Diffuse.CompareTo( ColorEx.Black ) != 0 || pass.Specular.CompareTo( ColorEx.Black ) != 0 ) )
+							if ( pass.LightingEnabled &&
+							     ( pass.Diffuse.CompareTo( ColorEx.Black ) != 0 || pass.Specular.CompareTo( ColorEx.Black ) != 0 ) )
 							{
 								// copy existing pass
 								var newPass = new Pass( this, pass.Index );
@@ -1466,18 +1387,12 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Creates a new Pass for this technique.
+		///   Creates a new Pass for this technique.
 		/// </summary>
 		/// <remarks>
-		///    A Pass is a single rendering pass, ie a single draw of the given material.
-		///    Note that if you create a non-programmable pass, during compilation of the
-		///    material the pass may be split into multiple passes if the graphics card cannot
-		///    handle the number of texture units requested. For programmable passes, however, 
-		///    the number of passes you create will never be altered, so you have to make sure 
-		///    that you create an alternative fallback Technique for if a card does not have 
-		///    enough facilities for what you're asking for.
+		///   A Pass is a single rendering pass, ie a single draw of the given material. Note that if you create a non-programmable pass, during compilation of the material the pass may be split into multiple passes if the graphics card cannot handle the number of texture units requested. For programmable passes, however, the number of passes you create will never be altered, so you have to make sure that you create an alternative fallback Technique for if a card does not have enough facilities for what you're asking for.
 		/// </remarks>
-		/// <returns>A new Pass object reference.</returns>
+		/// <returns> A new Pass object reference. </returns>
 		public Pass CreatePass()
 		{
 			var pass = new Pass( this, _passes.Count );
@@ -1486,9 +1401,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Retreives the Pass by name.
+		///   Retreives the Pass by name.
 		/// </summary>
-		/// <param name="passName">Name of the Pass to retreive.</param>
+		/// <param name="passName"> Name of the Pass to retreive. </param>
 		public Pass GetPass( string passName )
 		{
 			foreach ( var pass in _passes )
@@ -1502,9 +1417,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Retreives the Pass at the specified index.
+		///   Retreives the Pass at the specified index.
 		/// </summary>
-		/// <param name="index">Index of the Pass to retreive.</param>
+		/// <param name="index"> Index of the Pass to retreive. </param>
 		public Pass GetPass( int index )
 		{
 			Debug.Assert( index < _passes.Count, "index < passes.Count" );
@@ -1513,9 +1428,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Retreives the IlluminationPass at the specified index.
+		///   Retreives the IlluminationPass at the specified index.
 		/// </summary>
-		/// <param name="index">Index of the IlluminationPass to retreive.</param>
+		/// <param name="index"> Index of the IlluminationPass to retreive. </param>
 		public IlluminationPass GetIlluminationPass( int index )
 		{
 			if ( !_compiledIlluminationPasses )
@@ -1529,9 +1444,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Preloads resources required by this Technique.  This is the 
-		///    portion that is safe to do from a thread other than the 
-		///    main render thread.
+		///   Preloads resources required by this Technique. This is the portion that is safe to do from a thread other than the main render thread.
 		/// </summary>
 		public void Preload()
 		{
@@ -1545,7 +1458,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Loads resources required by this Technique.
+		///   Loads resources required by this Technique.
 		/// </summary>
 		public void Load()
 		{
@@ -1559,10 +1472,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Forces this Technique to recompile.
+		///   Forces this Technique to recompile.
 		/// </summary>
 		/// <remarks>
-		///    The parent Material is asked to recompile to accomplish this.
+		///   The parent Material is asked to recompile to accomplish this.
 		/// </remarks>
 		internal void NotifyNeedsRecompile()
 		{
@@ -1573,9 +1486,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Removes the specified Pass from this Technique.
+		///   Removes the specified Pass from this Technique.
 		/// </summary>
-		/// <param name="pass">A reference to the Pass to be removed.</param>
+		/// <param name="pass"> A reference to the Pass to be removed. </param>
 		public void RemovePass( Pass pass )
 		{
 			Debug.Assert( pass != null, "pass != null" );
@@ -1585,9 +1498,9 @@ namespace Axiom.Graphics
 			_passes.Remove( pass );
 		}
 
-		/// <summary>
-		///		Removes all passes from this technique and queues them for deletion.
-		/// </summary>
+		///<summary>
+		///  Removes all passes from this technique and queues them for deletion.
+		///</summary>
 		public void RemoveAllPasses()
 		{
 			// load each pass
@@ -1601,15 +1514,12 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the kind of blending every pass has with the existing contents of the scene.
+		///   Sets the kind of blending every pass has with the existing contents of the scene.
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there.
 		/// </remarks>
-		/// <see cref="Pass.SetSceneBlending"/>
+		/// <see cref="Pass.SetSceneBlending" />
 		[OgreVersion( 1, 7, 2 )]
 		public void SetSceneBlending( SceneBlendType blendType )
 		{
@@ -1621,15 +1531,12 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the kind of blending every pass has with the existing contents of the scene, using individual factors both color and alpha channels
+		///   Sets the kind of blending every pass has with the existing contents of the scene, using individual factors both color and alpha channels
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there.
 		/// </remarks>
-		/// <see cref="Pass.SetSeparateSceneBlending"/>
+		/// <see cref="Pass.SetSeparateSceneBlending" />
 		[OgreVersion( 1, 7, 2 )]
 		public void SetSeparateSceneBlending( SceneBlendType sbt, SceneBlendType sbta )
 		{
@@ -1639,16 +1546,13 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		/// Allows very fine control of blending every Pass with the existing contents of the scene.
-		/// </summary>
-		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
+		///<summary>
+		///  Allows very fine control of blending every Pass with the existing contents of the scene.
+		///</summary>
+		///<remarks>
+		///  This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there.
 		///</remarks>
-		/// <see cref="Pass.SetSceneBlending"/>
+		///<see cref="Pass.SetSceneBlending" />
 		[OgreVersion( 1, 7, 2 )]
 		public void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
@@ -1660,17 +1564,15 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Allows very fine control of blending every Pass with the existing contents of the scene, using individual factors both color and alpha channels
+		///   Allows very fine control of blending every Pass with the existing contents of the scene, using individual factors both color and alpha channels
 		/// </summary>
 		/// <remarks>
-		/// This property actually exists on the Pass class. For simplicity, this method allows 
-		/// you to set these properties for every current Pass within this Technique. If 
-		/// you need more precision, retrieve the Pass instance and set the
-		/// property there.
+		///   This property actually exists on the Pass class. For simplicity, this method allows you to set these properties for every current Pass within this Technique. If you need more precision, retrieve the Pass instance and set the property there.
 		/// </remarks>
-		/// <see cref="Pass.SetSeparateSceneBlending"/>
+		/// <see cref="Pass.SetSeparateSceneBlending" />
 		[OgreVersion( 1, 7, 2 )]
-		public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
+		public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
+		                                      SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
 		{
 			for ( var i = 0; i < _passes.Count; i++ )
 			{
@@ -1695,7 +1597,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Unloads resources used by this Technique.
+		///   Unloads resources used by this Technique.
 		/// </summary>
 		public void Unload()
 		{
@@ -1711,24 +1613,18 @@ namespace Axiom.Graphics
 		#region Material Schemes
 
 		/// <summary>
-		/// Get/Set the 'scheme name' for this technique. 
+		///   Get/Set the 'scheme name' for this technique.
 		/// </summary>
 		/// <remarks>
-		/// Material schemes are used to control top-level switching from one
-		/// set of techniques to another. For example, you might use this to 
-		/// define 'high', 'medium' and 'low' complexity levels on materials
-		/// to allow a user to pick a performance / quality ratio. Another
-		/// possibility is that you have a fully HDR-enabled pipeline for top
-		/// machines, rendering all objects using unclamped shaders, and a 
-		/// simpler pipeline for others; this can be implemented using 
-		/// schemes.
-		/// <para>
-		/// Every technique belongs to a scheme - if you don't specify one, the
-		/// Technique belongs to the scheme called 'Default', which is also the
-		/// scheme used to render by default. The active scheme is set one of
-		/// two ways - either by calling <see ref="Viewport.MaterialScheme" />, or
-		/// by manually calling <see ref="MaterialManager.ActiveScheme" />.
-		/// </para>
+		///   Material schemes are used to control top-level switching from one set of techniques to another. For example, you might use this to define 'high', 'medium' and 'low' complexity levels on materials to allow a user to pick a performance / quality ratio. Another possibility is that you have a fully HDR-enabled pipeline for top machines, rendering all objects using unclamped shaders, and a simpler pipeline for others; this can be implemented using schemes. <para>Every technique belongs to a scheme - if you don't specify one, the
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                             Technique belongs to the scheme called 'Default', which is also the
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                             scheme used to render by default. The active scheme is set one of
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                             two ways - either by calling
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <see ref="Viewport.MaterialScheme" />
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                             , or
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                             by manually calling
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                             <see ref="MaterialManager.ActiveScheme" />
+		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                             .</para>
 		/// </remarks>
 		public String SchemeName
 		{
@@ -1739,12 +1635,12 @@ namespace Axiom.Graphics
 			set
 			{
 				SchemeIndex = MaterialManager.Instance.GetSchemeIndex( value );
-				this.NotifyNeedsRecompile();
+				NotifyNeedsRecompile();
 			}
 		}
 
 		/// <summary>
-		/// The material scheme index
+		///   The material scheme index
 		/// </summary>
 		public ushort SchemeIndex { get; protected set; }
 
@@ -1815,21 +1711,13 @@ namespace Axiom.Graphics
 
 		#endregion
 
-		/// <summary>
-		/// Add a rule which manually influences the support for this technique based
-		/// on a GPU vendor.
-		/// </summary>
-		/// <remarks>
-		/// You can use this facility to manually control whether a technique is
-		/// considered supported, based on a GPU vendor. You can add inclusive
-		/// or exclusive rules, and you can add as many of each as you like. If
-		///	at least one inclusive rule is added, a	technique is considered 
-		///	unsupported if it does not match any of those inclusive rules. If exclusive rules are
-		///	added, the technique is considered unsupported if it matches any of
-		///	those inclusive rules.
-		///	Note that any rule for the same vendor will be removed before adding this one.
-		///	/// </remarks>
-		/// <param name="rule"></param>
+		///<summary>
+		///  Add a rule which manually influences the support for this technique based on a GPU vendor.
+		///</summary>
+		///<remarks>
+		///  You can use this facility to manually control whether a technique is considered supported, based on a GPU vendor. You can add inclusive or exclusive rules, and you can add as many of each as you like. If at least one inclusive rule is added, a technique is considered unsupported if it does not match any of those inclusive rules. If exclusive rules are added, the technique is considered unsupported if it matches any of those inclusive rules. Note that any rule for the same vendor will be removed before adding this one. ///
+		///</remarks>
+		///<param name="rule"> </param>
 		internal void AddGPUVenderRule( GPUVendorRule rule )
 		{
 			// remove duplicates
@@ -1838,10 +1726,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Removes a matching vendor rule.
+		///   Removes a matching vendor rule.
 		/// </summary>
-		/// <see cref="AddGPUVenderRule"/>
-		/// <param name="rule"></param>
+		/// <see cref="AddGPUVenderRule" />
+		/// <param name="rule"> </param>
 		internal void RemoveGPUVendorRule( GPUVendorRule rule )
 		{
 			if ( _GPUVendorRules.Contains( rule ) )
@@ -1850,22 +1738,13 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		/// Add a rule which manually influences the support for this technique based
-		///	on a pattern that matches a GPU device name (e.g. '*8800*').
-		/// </summary>
-		/// <remarks>
-		/// You can use this facility to manually control whether a technique is
-		///	considered supported, based on a GPU device name pattern. You can add inclusive
-		///	or exclusive rules, and you can add as many of each as you like. If
-		///	at least one inclusive rule is added, a	technique is considered 
-		///	unsupported if it does not match any of those inclusive rules. If exclusive rules are
-		///	added, the technique is considered unsupported if it matches any of
-		///	those inclusive rules. The pattern you supply can include wildcard
-		///	characters ('*') if you only want to match part of the device name.
-		///	Note that any rule for the same device pattern will be removed before adding this one.
-		/// </remarks>
-		/// <param name="rule"></param>
+		///<summary>
+		///  Add a rule which manually influences the support for this technique based on a pattern that matches a GPU device name (e.g. '*8800*').
+		///</summary>
+		///<remarks>
+		///  You can use this facility to manually control whether a technique is considered supported, based on a GPU device name pattern. You can add inclusive or exclusive rules, and you can add as many of each as you like. If at least one inclusive rule is added, a technique is considered unsupported if it does not match any of those inclusive rules. If exclusive rules are added, the technique is considered unsupported if it matches any of those inclusive rules. The pattern you supply can include wildcard characters ('*') if you only want to match part of the device name. Note that any rule for the same device pattern will be removed before adding this one.
+		///</remarks>
+		///<param name="rule"> </param>
 		internal void AddGPUDeviceNameRule( GPUDeviceNameRule rule )
 		{
 			// remove duplicates
@@ -1874,10 +1753,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Removes a matching device name rule.
+		///   Removes a matching device name rule.
 		/// </summary>
-		/// <see cref="AddGPUDeviceNameRule"/>
-		/// <param name="rule"></param>
+		/// <see cref="AddGPUDeviceNameRule" />
+		/// <param name="rule"> </param>
 		internal void RemoveGPUDeviceNameRule( GPUDeviceNameRule rule )
 		{
 			if ( _GPUDeviceNameRules.Contains( rule ) )

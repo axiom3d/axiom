@@ -36,7 +36,6 @@
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
 using Axiom.Animating;
 
 #endregion Namespace Declarations
@@ -44,7 +43,9 @@ using Axiom.Animating;
 namespace Axiom.Collections
 {
 	/// <summary>
-	/// Represents a collection of <see cref="KeyFrame">KeyFrames</see>.
+	///   Represents a collection of <see cref="KeyFrame">KeyFrames</see> .
 	/// </summary>
-	public class KeyFrameCollection : List<KeyFrame> {}
+	public class KeyFrameCollection : List<KeyFrame>
+	{
+	}
 }

@@ -40,12 +40,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
-using Axiom.Math;
-using Axiom.Core;
-using Axiom.Collections;
-using Axiom.Graphics;
 using Axiom.Animating.Collections;
+using Axiom.Core;
+using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -60,55 +58,43 @@ using Axiom.Animating.Collections;
 
 namespace Axiom.Animating
 {
-	/// <summary>
-	///		A 'track' in an animation sequence, ie a sequence of keyframes which affect a
-	///		certain type of object that can be animated.
-	/// </summary>
-	/// <remarks>
-	///		This class is intended as a base for more complete classes which will actually
-	///		animate specific types of object, e.g. a bone in a skeleton to affect
-	///		skeletal animation. An animation will likely include multiple tracks each of which
-	///		can be made up of many KeyFrame instances. Note that the use of tracks allows each animable
-	///		object to have it's own number of keyframes, i.e. you do not have to have the
-	///		maximum number of keyframes for all animable objects just to cope with the most
-	///		animated one.
-	///		<p/>
-	///		Since the most common animable object is a Node, there are options in this class for associating
-	///		the track with a Node which will receive keyframe updates automatically when the 'apply' method
-	///		is called.
-	/// </remarks>
+	///<summary>
+	///  A 'track' in an animation sequence, ie a sequence of keyframes which affect a certain type of object that can be animated.
+	///</summary>
+	///<remarks>
+	///  This class is intended as a base for more complete classes which will actually animate specific types of object, e.g. a bone in a skeleton to affect skeletal animation. An animation will likely include multiple tracks each of which can be made up of many KeyFrame instances. Note that the use of tracks allows each animable object to have it's own number of keyframes, i.e. you do not have to have the maximum number of keyframes for all animable objects just to cope with the most animated one. <p /> Since the most common animable object is a Node, there are options in this class for associating the track with a Node which will receive keyframe updates automatically when the 'apply' method is called.
+	///</remarks>
 	public abstract class AnimationTrack
 	{
 		#region Fields
 
-		/// <summary>
-		///		Handle of this animation track.
-		///	</summary>
+		///<summary>
+		///  Handle of this animation track.
+		///</summary>
 		protected ushort handle;
 
-		/// <summary>
-		///		Animation that owns this track.
-		///	</summary>
+		///<summary>
+		///  Animation that owns this track.
+		///</summary>
 		protected Animation parent;
 
-		/// <summary>
-		///		Maximum keyframe time.
-		///	</summary>
+		///<summary>
+		///  Maximum keyframe time.
+		///</summary>
 		protected float maxKeyFrameTime;
 
-		/// <summary>
-		///		Collection of key frames in this track.
-		///	</summary>
+		///<summary>
+		///  Collection of key frames in this track.
+		///</summary>
 		protected KeyFrameList keyFrameList = new KeyFrameList();
 
 		#endregion Fields
 
 		#region Constructors
 
-		/// <summary>
-		///		Internal constructor, to prevent direction instantiation.  Should be created
-		///		via a call to the CreateTrack method of an Animation.
-		/// </summary>
+		///<summary>
+		///  Internal constructor, to prevent direction instantiation. Should be created via a call to the CreateTrack method of an Animation.
+		///</summary>
 		internal AnimationTrack( Animation parent )
 		{
 			this.parent = parent;
@@ -126,9 +112,9 @@ namespace Axiom.Animating
 
 		#region Properties
 
-		/// <summary>
-		///		The name of this animation track.
-		/// </summary>
+		///<summary>
+		///  The name of this animation track.
+		///</summary>
 		public ushort Handle
 		{
 			get
@@ -141,9 +127,9 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///		Collection of the KeyFrames present in this AnimationTrack.
-		/// </summary>
+		///<summary>
+		///  Collection of the KeyFrames present in this AnimationTrack.
+		///</summary>
 		public KeyFrameList KeyFrames
 		{
 			get
@@ -156,57 +142,45 @@ namespace Axiom.Animating
 
 		#region Abstract methods
 
-		/// <summary>
-		///     Gets a KeyFrame object which contains the interpolated transforms at the time index specified.
-		/// </summary>
-		/// <remarks>
-		///    The KeyFrame objects held by this class are transformation snapshots at 
-		///    discrete points in time. Normally however, you want to interpolate between these
-		///    keyframes to produce smooth movement, and this method allows you to do this easily.
-		///    In animation terminology this is called 'tweening'. 
-		/// </remarks>
-		/// <param name="time">The time (in relation to the whole animation sequence)</param>
-		///	<param name="kf">Keyframe object to store results </param>
+		///<summary>
+		///  Gets a KeyFrame object which contains the interpolated transforms at the time index specified.
+		///</summary>
+		///<remarks>
+		///  The KeyFrame objects held by this class are transformation snapshots at discrete points in time. Normally however, you want to interpolate between these keyframes to produce smooth movement, and this method allows you to do this easily. In animation terminology this is called 'tweening'.
+		///</remarks>
+		///<param name="time"> The time (in relation to the whole animation sequence) </param>
+		///<param name="kf"> Keyframe object to store results </param>
 		public abstract KeyFrame GetInterpolatedKeyFrame( float time, KeyFrame kf );
 
-		/// <summary>
-		///		Applies an animation track to the designated target.
-		/// </summary>
-		/// <param name="time">The time position in the animation to apply.</param>
-		/// <param name="weight">The influence to give to this track, 1.0 for full influence, 
-		///	   less to blend with other animations.</param>
-		/// <param name="accumulate">Don't make weights relative to overall weights applied,
-		///    make them absolute and just add. </param>          
-		/// <param name="scale">The scale to apply to translations and scalings, useful for 
-		///	   adapting an animation to a different size target.</param>
+		///<summary>
+		///  Applies an animation track to the designated target.
+		///</summary>
+		///<param name="time"> The time position in the animation to apply. </param>
+		///<param name="weight"> The influence to give to this track, 1.0 for full influence, less to blend with other animations. </param>
+		///<param name="accumulate"> Don't make weights relative to overall weights applied, make them absolute and just add. </param>
+		///<param name="scale"> The scale to apply to translations and scalings, useful for adapting an animation to a different size target. </param>
 		public abstract void Apply( float time, float weight, bool accumulate, float scale );
 
-		/// <summary>
-		///		Create a keyframe implementation - must be overridden
-		/// </summary>
+		///<summary>
+		///  Create a keyframe implementation - must be overridden
+		///</summary>
 		public abstract KeyFrame CreateKeyFrameImpl( float time );
 
 		#endregion Abstract methods
 
 		#region Public methods
 
-		/// <summary>
-		///		Gets the 2 KeyFrame objects which are active at the time given, and the blend value between them.
-		/// </summary>
-		/// <remarks>
-		///		At any point in time  in an animation, there are either 1 or 2 keyframes which are 'active',
-		///		1 if the time index is exactly on a keyframe, 2 at all other times i.e. the keyframe before
-		///		and the keyframe after.
-		/// </remarks>
-		/// <param name="time">The time index in seconds.</param>
-		/// <param name="keyFrame1">Receive the keyframe just before or at this time index.</param>
-		/// <param name="keyFrame2">Receive the keyframe just after this time index.</param>
-		/// <param name="firstKeyIndex">If supplied, will receive the index of the 'from' keyframe incase the caller needs it.</param>
-		/// <returns>
-		///		Parametric value indicating how far along the gap between the 2 keyframes the time
-		///    value is, e.g. 0.0 for exactly at 1, 0.25 for a quarter etc. By definition the range of this 
-		///    value is:  0.0 &lt;= returnValue &lt; 1.0 .
-		///</returns>
+		///<summary>
+		///  Gets the 2 KeyFrame objects which are active at the time given, and the blend value between them.
+		///</summary>
+		///<remarks>
+		///  At any point in time in an animation, there are either 1 or 2 keyframes which are 'active', 1 if the time index is exactly on a keyframe, 2 at all other times i.e. the keyframe before and the keyframe after.
+		///</remarks>
+		///<param name="time"> The time index in seconds. </param>
+		///<param name="keyFrame1"> Receive the keyframe just before or at this time index. </param>
+		///<param name="keyFrame2"> Receive the keyframe just after this time index. </param>
+		///<param name="firstKeyIndex"> If supplied, will receive the index of the 'from' keyframe incase the caller needs it. </param>
+		///<returns> Parametric value indicating how far along the gap between the 2 keyframes the time value is, e.g. 0.0 for exactly at 1, 0.25 for a quarter etc. By definition the range of this value is: 0.0 &lt;= returnValue &lt; 1.0 . </returns>
 		public float GetKeyFramesAtTime( float time, out KeyFrame keyFrame1, out KeyFrame keyFrame2, out short firstKeyIndex )
 		{
 			short firstIndex = -1;
@@ -277,28 +251,26 @@ namespace Axiom.Animating
 			}
 			else
 			{
-				return ( time - t1 ) / ( t2 - t1 );
+				return ( time - t1 )/( t2 - t1 );
 			}
 		}
 
-		/// <summary>
-		///		Creates a new KeyFrame and adds it to this animation at the given time index.
-		/// </summary>
+		///<summary>
+		///  Creates a new KeyFrame and adds it to this animation at the given time index.
+		///</summary>
 		public TransformKeyFrame GetTransformKeyFrame( int index )
 		{
 			return (TransformKeyFrame)KeyFrames[ index ];
 		}
 
-		/// <summary>
-		///		Creates a new KeyFrame and adds it to this animation at the given time index.
-		/// </summary>
-		/// <remarks>
-		///		It is better to create KeyFrames in time order. Creating them out of order can result 
-		///		in expensive reordering processing. Note that a KeyFrame at time index 0.0 is always created
-		///		for you, so you don't need to create this one, just access it using KeyFrames[0];
-		/// </remarks>
-		/// <param name="time">Time within the animation at which this keyframe will lie.</param>
-		/// <returns>A new KeyFrame.</returns>
+		///<summary>
+		///  Creates a new KeyFrame and adds it to this animation at the given time index.
+		///</summary>
+		///<remarks>
+		///  It is better to create KeyFrames in time order. Creating them out of order can result in expensive reordering processing. Note that a KeyFrame at time index 0.0 is always created for you, so you don't need to create this one, just access it using KeyFrames[0];
+		///</remarks>
+		///<param name="time"> Time within the animation at which this keyframe will lie. </param>
+		///<returns> A new KeyFrame. </returns>
 		public KeyFrame CreateKeyFrame( float time )
 		{
 			var keyFrame = CreateKeyFrameImpl( time );
@@ -327,10 +299,10 @@ namespace Axiom.Animating
 			return keyFrame;
 		}
 
-		/// <summary>
-		///		Removes the keyframe at the specified index.
-		/// </summary>
-		/// <param name="index">Index of the keyframe to remove from this track.</param>
+		///<summary>
+		///  Removes the keyframe at the specified index.
+		///</summary>
+		///<param name="index"> Index of the keyframe to remove from this track. </param>
 		public void RemoveKeyFrame( int index )
 		{
 			Debug.Assert( index < keyFrameList.Count, "Index out of bounds when removing a key frame." );
@@ -341,9 +313,9 @@ namespace Axiom.Animating
 			OnKeyFrameDataChanged();
 		}
 
-		/// <summary>
-		///		Removes all key frames from this animation track.
-		/// </summary>
+		///<summary>
+		///  Removes all key frames from this animation track.
+		///</summary>
 		public void RemoveAllKeyFrames()
 		{
 			keyFrameList.Clear();
@@ -352,25 +324,24 @@ namespace Axiom.Animating
 			OnKeyFrameDataChanged();
 		}
 
-		/// <summary>
-		///		Overloaded Apply method.  
-		/// </summary>
-		/// <param name="time"></param>
+		///<summary>
+		///  Overloaded Apply method.
+		///</summary>
+		///<param name="time"> </param>
 		public void Apply( float time )
 		{
 			// call overloaded method
 			Apply( time, 1.0f, false, 1.0f );
 		}
 
-		/// <summary>
-		///		Called internally when keyframes belonging to this track are changed, in order to
-		///		trigger a rebuild of the animation splines.
-		/// </summary>
+		///<summary>
+		///  Called internally when keyframes belonging to this track are changed, in order to trigger a rebuild of the animation splines.
+		///</summary>
 		public virtual void OnKeyFrameDataChanged()
 		{
 			// we also need to rebuild the maxKeyFrameTime
 			maxKeyFrameTime = -1;
-			foreach ( var keyFrame in this.KeyFrames )
+			foreach ( var keyFrame in KeyFrames )
 			{
 				if ( keyFrame.Time > maxKeyFrameTime )
 				{
@@ -379,20 +350,20 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///		Method to determine if this track has any KeyFrames which are
-		///		doing anything useful - can be used to determine if this track
-		///		can be optimised out.
-		/// </summary>
+		///<summary>
+		///  Method to determine if this track has any KeyFrames which are doing anything useful - can be used to determine if this track can be optimised out.
+		///</summary>
 		public virtual bool HasNonZeroKeyFrames()
 		{
 			return true;
 		}
 
-		/// <summary>
-		///		Optimise the current track by removing any duplicate keyframes.
-		/// </summary>
-		public virtual void Optimise() {}
+		///<summary>
+		///  Optimise the current track by removing any duplicate keyframes.
+		///</summary>
+		public virtual void Optimise()
+		{
+		}
 
 		#endregion Public methods
 	}
@@ -404,10 +375,14 @@ namespace Axiom.Animating
 		#region Constructor
 
 		public NumericAnimationTrack( Animation parent )
-			: base( parent ) {}
+			: base( parent )
+		{
+		}
 
 		public NumericAnimationTrack( Animation parent, ushort handle )
-			: base( parent, handle ) {}
+			: base( parent, handle )
+		{
+		}
 
 		public NumericAnimationTrack( Animation parent, AnimableValue targetAnimable )
 			: base( parent )
@@ -419,9 +394,9 @@ namespace Axiom.Animating
 
 		#region Properties
 
-		/// <summary>
-		///		The aniable value with which this track is associated.
-		/// </summary>
+		///<summary>
+		///  The aniable value with which this track is associated.
+		///</summary>
 		public AnimableValue TargetAnimable
 		{
 			get
@@ -474,13 +449,13 @@ namespace Axiom.Animating
 			ApplyToAnimable( targetAnimable, timePos, weight, scale );
 		}
 
-		/// <summary> Applies an animation track to a given animable value. </summary>
-		/// <param name="anim">The AnimableValue to which to apply the animation </param>
-		/// <param name="time">The time position in the animation to apply. </param>
-		/// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
-		///        other animations. </param>
-		/// <param name="scale">The scale to apply to translations and scalings, useful for 
-		///        adapting an animation to a different size target. </param>
+		/// <summary>
+		///   Applies an animation track to a given animable value.
+		/// </summary>
+		/// <param name="anim"> The AnimableValue to which to apply the animation </param>
+		/// <param name="time"> The time position in the animation to apply. </param>
+		/// <param name="weight"> The influence to give to this track, 1.0 for full influence, less to blend with other animations. </param>
+		/// <param name="scale"> The scale to apply to translations and scalings, useful for adapting an animation to a different size target. </param>
 		private void ApplyToAnimable( AnimableValue anim, float time, float weight, float scale )
 		{
 			// Nothing to do if no keyframes
@@ -493,7 +468,7 @@ namespace Axiom.Animating
 			GetInterpolatedKeyFrame( time, kf );
 			// add to existing. Weights are not relative, but treated as
 			// absolute multipliers for the animation
-			var v = weight * scale;
+			var v = weight*scale;
 			var val = AnimableValue.MultiplyFloat( anim.Type, v, kf.NumericValue );
 
 			anim.ApplyDeltaValue( val );
@@ -516,44 +491,43 @@ namespace Axiom.Animating
 	{
 		#region Fields
 
-		/// <summary>
-		///		Target node to be animated.
-		///	</summary>
+		///<summary>
+		///  Target node to be animated.
+		///</summary>
 		protected Node target;
 
-		/// <summary>
-		///		Flag indicating we need to rebuild the splines next time.
-		///	</summary>
+		///<summary>
+		///  Flag indicating we need to rebuild the splines next time.
+		///</summary>
 		protected bool isSplineRebuildNeeded = false;
 
-		/// <summary>
-		///		Spline for position interpolation.
-		///	</summary>
+		///<summary>
+		///  Spline for position interpolation.
+		///</summary>
 		protected PositionalSpline positionSpline = new PositionalSpline();
 
-		/// <summary>
-		///		Spline for scale interpolation.
-		///	</summary>
+		///<summary>
+		///  Spline for scale interpolation.
+		///</summary>
 		protected PositionalSpline scaleSpline = new PositionalSpline();
 
-		/// <summary>
-		///		Spline for rotation interpolation.
-		///	</summary>
+		///<summary>
+		///  Spline for rotation interpolation.
+		///</summary>
 		protected RotationalSpline rotationSpline = new RotationalSpline();
 
-		/// <summary>
-		///		Defines if rotation is done using shortest path
-		/// </summary>
+		///<summary>
+		///  Defines if rotation is done using shortest path
+		///</summary>
 		protected bool useShortestPath = true;
 
 		#endregion Fields
 
 		#region Constructors
 
-		/// <summary>
-		///		Internal constructor, to prevent direction instantiation.  Should be created
-		///		via a call to the CreateTrack method of an Animation.
-		/// </summary>
+		///<summary>
+		///  Internal constructor, to prevent direction instantiation. Should be created via a call to the CreateTrack method of an Animation.
+		///</summary>
 		public NodeAnimationTrack( Animation parent, Node target )
 			: base( parent )
 		{
@@ -561,21 +535,23 @@ namespace Axiom.Animating
 		}
 
 		public NodeAnimationTrack( Animation parent, ushort handle )
-			: base( parent, handle ) {}
+			: base( parent, handle )
+		{
+		}
 
 		public NodeAnimationTrack( Animation parent )
 			: base( parent )
 		{
-			this.target = null;
+			target = null;
 		}
 
 		#endregion Constructors
 
 		#region Properties
 
-		/// <summary>
-		///		Gets/Sets the target node that this track is associated with.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets the target node that this track is associated with.
+		///</summary>
 		public Node TargetNode
 		{
 			get
@@ -592,22 +568,15 @@ namespace Axiom.Animating
 
 		#region Public methods
 
-		/// <summary>
-		///		Gets a KeyFrame object which contains the interpolated transforms at the time index specified.
-		/// </summary>
-		/// <remarks>
-		///		The KeyFrame objects held by this class are transformation snapshots at 
-		///		discrete points in time. Normally however, you want to interpolate between these
-		///		keyframes to produce smooth movement, and this method allows you to do this easily.
-		///		In animation terminology this is called 'tweening'. 
-		/// </remarks>
-		/// <param name="time">The time (in relation to the whole animation sequence).</param>
-		///<param name="kf"></param>
-		///<returns>
-		///		A new keyframe object containing the interpolated transforms. Note that the
-		///		position and scaling transforms are linearly interpolated (lerp), whilst the rotation is
-		///		spherically linearly interpolated (slerp) for the most natural result.
-		/// </returns>
+		///<summary>
+		///  Gets a KeyFrame object which contains the interpolated transforms at the time index specified.
+		///</summary>
+		///<remarks>
+		///  The KeyFrame objects held by this class are transformation snapshots at discrete points in time. Normally however, you want to interpolate between these keyframes to produce smooth movement, and this method allows you to do this easily. In animation terminology this is called 'tweening'.
+		///</remarks>
+		///<param name="time"> The time (in relation to the whole animation sequence). </param>
+		///<param name="kf"> </param>
+		///<returns> A new keyframe object containing the interpolated transforms. Note that the position and scaling transforms are linearly interpolated (lerp), whilst the rotation is spherically linearly interpolated (slerp) for the most natural result. </returns>
 		public override KeyFrame GetInterpolatedKeyFrame( float time, KeyFrame kf )
 		{
 			// note: this is an un-attached keyframe
@@ -651,8 +620,8 @@ namespace Axiom.Animating
 						{
 							result.Rotation = Quaternion.Slerp( t, k1.Rotation, k2.Rotation, useShortestPath );
 						}
-						result.Translate = k1.Translate + ( ( k2.Translate - k1.Translate ) * t );
-						result.Scale = k1.Scale + ( ( k2.Scale - k1.Scale ) * t );
+						result.Translate = k1.Translate + ( ( k2.Translate - k1.Translate )*t );
+						result.Scale = k1.Scale + ( ( k2.Scale - k1.Scale )*t );
 					}
 						break;
 					case InterpolationMode.Spline:
@@ -675,37 +644,35 @@ namespace Axiom.Animating
 			return result;
 		}
 
-		/// <summary>
-		///		Applies an animation track at a certain position to the target node.
-		/// </summary>
-		/// <remarks>
-		///		When a track has bee associated with a target node, you can eaisly apply the animation
-		///		to the target by calling this method.
-		/// </remarks>
-		/// <param name="time">The time position in the animation to apply.</param>
-		/// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
-		///		other animations.</param>
-		/// <param name="accumulate"></param>
-		///<param name="scale"></param>
+		///<summary>
+		///  Applies an animation track at a certain position to the target node.
+		///</summary>
+		///<remarks>
+		///  When a track has bee associated with a target node, you can eaisly apply the animation to the target by calling this method.
+		///</remarks>
+		///<param name="time"> The time position in the animation to apply. </param>
+		///<param name="weight"> The influence to give to this track, 1.0 for full influence, less to blend with other animations. </param>
+		///<param name="accumulate"> </param>
+		///<param name="scale"> </param>
 		public override void Apply( float time, float weight, bool accumulate, float scale )
 		{
 			// call ApplyToNode with our target node
 			ApplyToNode( target, time, weight, accumulate, scale );
 		}
 
-		private TransformKeyFrame kf = new TransformKeyFrame( null, 0.0f );
+		private readonly TransformKeyFrame kf = new TransformKeyFrame( null, 0.0f );
 
-		/// <summary>
-		///		Same as the Apply method, but applies to a specified Node instead of it's associated node.
-		/// </summary>
+		///<summary>
+		///  Same as the Apply method, but applies to a specified Node instead of it's associated node.
+		///</summary>
 		public void ApplyToNode( Node node, float time, float weight, bool accumulate, float scale )
 		{
-			this.GetInterpolatedKeyFrame( time, kf );
+			GetInterpolatedKeyFrame( time, kf );
 
 			if ( accumulate )
 			{
 				// add to existing. Weights are not relative, but treated as absolute multipliers for the animation
-				var translate = kf.Translate * weight * scale;
+				var translate = kf.Translate*weight*scale;
 				node.Translate( translate );
 
 				// interpolate between not rotation and full rotation, to point weight, so 0 = no rotate, and 1 = full rotation
@@ -718,7 +685,7 @@ namespace Axiom.Animating
 				//scaleVector = ((Vector3::UNIT_SCALE - kf.getScale()) * weight) + Vector3::UNIT_SCALE;
 				if ( scale != 1.0f && scaleVector != Vector3.UnitScale )
 				{
-					scaleVector = Vector3.UnitScale + ( scaleVector - Vector3.UnitScale ) * scale;
+					scaleVector = Vector3.UnitScale + ( scaleVector - Vector3.UnitScale )*scale;
 				}
 				node.ScaleBy( scaleVector );
 			}
@@ -733,17 +700,18 @@ namespace Axiom.Animating
 
 		#region Protected/Internal methods
 
-		/// <summary>
-		///		Called internally when keyframes belonging to this track are changed, in order to
-		///		trigger a rebuild of the animation splines.
-		/// </summary>
+		///<summary>
+		///  Called internally when keyframes belonging to this track are changed, in order to trigger a rebuild of the animation splines.
+		///</summary>
 		public override void OnKeyFrameDataChanged()
 		{
 			isSplineRebuildNeeded = true;
 			base.OnKeyFrameDataChanged();
 		}
 
-		/// <summary>Used to rebuild the internal interpolation splines for translations, rotations, and scaling.</summary>
+		/// <summary>
+		///   Used to rebuild the internal interpolation splines for translations, rotations, and scaling.
+		/// </summary>
 		protected void BuildInterpolationSplines()
 		{
 			// dont calculate on the fly, wait till the end when we do it manually
@@ -774,9 +742,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///     Method to determine if this track has any KeyFrames which are
-		///     doing anything useful - can be used to determine if this track
-		///     can be optimised out.
+		///   Method to determine if this track has any KeyFrames which are doing anything useful - can be used to determine if this track can be optimised out.
 		/// </summary>
 		public override bool HasNonZeroKeyFrames()
 		{
@@ -793,7 +759,8 @@ namespace Axiom.Animating
 				Real angle = 0f;
 				kf.Rotation.ToAngleAxis( ref angle, ref axis );
 				var tolerance = 1e-3f;
-				if ( trans.Length > tolerance || ( scale - Vector3.UnitScale ).Length > tolerance || !Utility.RealEqual( Utility.DegreesToRadians( angle ), 0.0f, tolerance ) )
+				if ( trans.Length > tolerance || ( scale - Vector3.UnitScale ).Length > tolerance ||
+				     !Utility.RealEqual( Utility.DegreesToRadians( angle ), 0.0f, tolerance ) )
 				{
 					return true;
 				}
@@ -802,7 +769,9 @@ namespace Axiom.Animating
 			return false;
 		}
 
-		/// <summary> Optimise the current track by removing any duplicate keyframes. </summary>
+		/// <summary>
+		///   Optimise the current track by removing any duplicate keyframes.
+		/// </summary>
 		public override void Optimise()
 		{
 			// Eliminate duplicate keyframes from 2nd to penultimate keyframe
@@ -826,7 +795,8 @@ namespace Axiom.Animating
 				var neworientation = kf.Rotation;
 				// Ignore first keyframe; now include the last keyframe as we eliminate
 				// only k-2 in a group of 5 to ensure we only eliminate middle keys
-				if ( i != 0 && newtrans.DifferenceLessThan( lasttrans, tolerance ) && newscale.DifferenceLessThan( lastscale, tolerance ) && neworientation.Equals( lastorientation, quatTolerance ) )
+				if ( i != 0 && newtrans.DifferenceLessThan( lasttrans, tolerance ) &&
+				     newscale.DifferenceLessThan( lastscale, tolerance ) && neworientation.Equals( lastorientation, quatTolerance ) )
 				{
 					++dupKfCount;
 
@@ -855,19 +825,19 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary> Specialised keyframe creation </summary>
+		/// <summary>
+		///   Specialised keyframe creation
+		/// </summary>
 		public override KeyFrame CreateKeyFrameImpl( float time )
 		{
 			return new TransformKeyFrame( this, time );
 		}
 
-		/// <summary> 
-		///     Creates a new KeyFrame and adds it to this animation at the given time index.
+		/// <summary>
+		///   Creates a new KeyFrame and adds it to this animation at the given time index.
 		/// </summary>
 		/// <remarks>
-		///    It is better to create KeyFrames in time order. Creating them out of order can result 
-		///    in expensive reordering processing. Note that a KeyFrame at time index 0.0 is always created
-		///    for you, so you don't need to create this one, just access it using getKeyFrame(0);
+		///   It is better to create KeyFrames in time order. Creating them out of order can result in expensive reordering processing. Note that a KeyFrame at time index 0.0 is always created for you, so you don't need to create this one, just access it using getKeyFrame(0);
 		/// </remarks>
 		/// <param> name="timePos">The time from which this KeyFrame will apply. </param>
 		public virtual TransformKeyFrame CreateNodeKeyFrame( float time )
@@ -875,7 +845,9 @@ namespace Axiom.Animating
 			return (TransformKeyFrame)CreateKeyFrame( time );
 		}
 
-		/// <summary> Returns the KeyFrame at the specified index. </summary>
+		/// <summary>
+		///   Returns the KeyFrame at the specified index.
+		/// </summary>
 		public virtual TransformKeyFrame GetNodeKeyFrame( ushort index )
 		{
 			return (TransformKeyFrame)keyFrameList[ index ];
@@ -909,7 +881,9 @@ namespace Axiom.Animating
 		}
 
 		public VertexAnimationTrack( Animation parent, ushort handle )
-			: base( parent, handle ) {}
+			: base( parent, handle )
+		{
+		}
 
 		public VertexAnimationTrack( Animation parent, ushort handle, VertexAnimationType animationType )
 			: base( parent, handle )
@@ -918,7 +892,8 @@ namespace Axiom.Animating
 		}
 
 		/// Constructor, associates with target VertexData and temp buffer (for software)
-		public VertexAnimationTrack( Animation parent, VertexAnimationType animationType, VertexData targetVertexData, VertexAnimationTargetMode targetMode )
+		public VertexAnimationTrack( Animation parent, VertexAnimationType animationType, VertexData targetVertexData,
+		                             VertexAnimationTargetMode targetMode )
 			: base( parent )
 		{
 			this.animationType = animationType;
@@ -930,9 +905,9 @@ namespace Axiom.Animating
 
 		#region Properties
 
-		/// <summary>
-		///		Gets/Sets the vertex animation type that this track is associated with.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets the vertex animation type that this track is associated with.
+		///</summary>
 		public VertexAnimationType AnimationType
 		{
 			get
@@ -945,9 +920,9 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets the target vertex data that this track is associated with.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets the target vertex data that this track is associated with.
+		///</summary>
 		public VertexData TargetVertexData
 		{
 			get
@@ -960,9 +935,9 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets the target node that this track is associated with.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets the target node that this track is associated with.
+		///</summary>
 		public VertexAnimationTargetMode TargetMode
 		{
 			get
@@ -979,18 +954,19 @@ namespace Axiom.Animating
 
 		#region Public Methods
 
-		/// <summary> Creates a new morph KeyFrame and adds it to this animation at the given time index. </summary>
+		/// <summary>
+		///   Creates a new morph KeyFrame and adds it to this animation at the given time index.
+		/// </summary>
 		/// <remarks>
-		///     It is better to create KeyFrames in time order. Creating them out of order can result 
-		///     in expensive reordering processing. Note that a KeyFrame at time index 0.0 is always created
-		///     for you, so you don't need to create this one, just access it using getKeyFrame(0);
+		///   It is better to create KeyFrames in time order. Creating them out of order can result in expensive reordering processing. Note that a KeyFrame at time index 0.0 is always created for you, so you don't need to create this one, just access it using getKeyFrame(0);
 		/// </remarks>
-		/// <param name="time">The time from which this KeyFrame will apply.</param>
+		/// <param name="time"> The time from which this KeyFrame will apply. </param>
 		public VertexMorphKeyFrame CreateVertexMorphKeyFrame( float time )
 		{
 			if ( animationType != VertexAnimationType.Morph )
 			{
-				throw new Exception( "Morph keyframes can only be created on vertex tracks of type morph; in VertexAnimationTrack::createVertexMorphKeyFrame" );
+				throw new Exception(
+					"Morph keyframes can only be created on vertex tracks of type morph; in VertexAnimationTrack::createVertexMorphKeyFrame" );
 			}
 			return (VertexMorphKeyFrame)CreateKeyFrame( time );
 		}
@@ -1000,10 +976,9 @@ namespace Axiom.Animating
 			ApplyToVertexData( targetVertexData, time, weight, null );
 		}
 
-		/// <summary>
-		///     As the 'apply' method but applies to specified VertexData instead of 
-		///	    associated data.
-		/// </summary>
+		///<summary>
+		///  As the 'apply' method but applies to specified VertexData instead of associated data.
+		///</summary>
 		public void ApplyToVertexData( VertexData data, float time, float weight, List<Pose> poseList )
 		{
 			// Nothing to do if no keyframes
@@ -1071,9 +1046,9 @@ namespace Axiom.Animating
 						}
 					}
 					// Interpolate influence
-					var influence = startInfluence + t * ( endInfluence - startInfluence );
+					var influence = startInfluence + t*( endInfluence - startInfluence );
 					// Scale by animation weight
-					influence = weight * influence;
+					influence = weight*influence;
 					// Get pose
 					Debug.Assert( p1.PoseIndex <= poseList.Count );
 					var pose = poseList[ p1.PoseIndex ];
@@ -1095,9 +1070,9 @@ namespace Axiom.Animating
 					if ( !found )
 					{
 						// Need to apply this pose too, scaled from 0 start
-						var influence = t * p2.Influence;
+						var influence = t*p2.Influence;
 						// Scale by animation weight
-						influence = weight * influence;
+						influence = weight*influence;
 						// Get pose
 						Debug.Assert( p2.PoseIndex <= poseList.Count );
 						var pose = poseList[ p2.PoseIndex ];
@@ -1108,26 +1083,30 @@ namespace Axiom.Animating
 			} // morph or pose animation
 		}
 
-		/// <summary> Creates the single pose KeyFrame and adds it to this animation. </summary>
+		/// <summary>
+		///   Creates the single pose KeyFrame and adds it to this animation.
+		/// </summary>
 		public VertexPoseKeyFrame CreateVertexPoseKeyFrame( float time )
 		{
 			if ( animationType != VertexAnimationType.Pose )
 			{
-				throw new Exception( "Pose keyframes can only be created on vertex tracks of type pose; in VertexAnimationTrack::createVertexPoseKeyFrame" );
+				throw new Exception(
+					"Pose keyframes can only be created on vertex tracks of type pose; in VertexAnimationTrack::createVertexPoseKeyFrame" );
 			}
 			return (VertexPoseKeyFrame)CreateKeyFrame( time );
 		}
 
 		/// <summary>
-		///     This method in fact does nothing, since interpolation is not performed
-		///  	inside the keyframes for this type of track. 
+		///   This method in fact does nothing, since interpolation is not performed inside the keyframes for this type of track.
 		/// </summary>
 		public override KeyFrame GetInterpolatedKeyFrame( float time, KeyFrame kf )
 		{
 			return kf;
 		}
 
-		/// <summary> Utility method for applying pose animation </summary>
+		/// <summary>
+		///   Utility method for applying pose animation
+		/// </summary>
 		public void ApplyPoseToVertexData( Pose pose, VertexData data, float influence )
 		{
 			if ( targetMode == VertexAnimationTargetMode.Hardware )
@@ -1143,7 +1122,8 @@ namespace Axiom.Animating
 				if ( hwIndex < data.HWAnimationDataList.Count )
 				{
 					var animData = data.HWAnimationDataList[ hwIndex ];
-					data.vertexBufferBinding.SetBinding( animData.TargetVertexElement.Source, pose.GetHardwareVertexBuffer( data.vertexCount ) );
+					data.vertexBufferBinding.SetBinding( animData.TargetVertexElement.Source,
+					                                     pose.GetHardwareVertexBuffer( data.vertexCount ) );
 					// save final influence in parametric
 					animData.Parametric = influence;
 				}
@@ -1155,22 +1135,28 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary> Returns the morph KeyFrame at the specified index. </summary>
+		/// <summary>
+		///   Returns the morph KeyFrame at the specified index.
+		/// </summary>
 		public VertexMorphKeyFrame GetVertexMorphKeyFrame( ushort index )
 		{
 			if ( animationType != VertexAnimationType.Morph )
 			{
-				throw new Exception( "Morph keyframes can only be created on vertex tracks of type morph, in VertexAnimationTrack::getVertexMorphKeyFrame" );
+				throw new Exception(
+					"Morph keyframes can only be created on vertex tracks of type morph, in VertexAnimationTrack::getVertexMorphKeyFrame" );
 			}
 			return (VertexMorphKeyFrame)keyFrameList[ index ];
 		}
 
-		/// <summary> Returns the pose KeyFrame at the specified index. </summary>
+		/// <summary>
+		///   Returns the pose KeyFrame at the specified index.
+		/// </summary>
 		public VertexPoseKeyFrame GetVertexPoseKeyFrame( ushort index )
 		{
 			if ( animationType != VertexAnimationType.Pose )
 			{
-				throw new Exception( "Pose keyframes can only be created on vertex tracks of type pose, in VertexAnimationTrack::getVertexPoseKeyFrame" );
+				throw new Exception(
+					"Pose keyframes can only be created on vertex tracks of type pose, in VertexAnimationTrack::getVertexPoseKeyFrame" );
 			}
 			return (VertexPoseKeyFrame)keyFrameList[ index ];
 		}
@@ -1188,9 +1174,7 @@ namespace Axiom.Animating
 		}
 
 		/// <summary>
-		///     Method to determine if this track has any KeyFrames which are
-		///     doing anything useful - can be used to determine if this track
-		///     can be optimised out.
+		///   Method to determine if this track has any KeyFrames which are doing anything useful - can be used to determine if this track can be optimised out.
 		/// </summary>
 		public override bool HasNonZeroKeyFrames()
 		{
@@ -1216,7 +1200,9 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary> Optimise the current track by removing any duplicate keyframes. </summary>
+		/// <summary>
+		///   Optimise the current track by removing any duplicate keyframes.
+		/// </summary>
 		public override void Optimise()
 		{
 			// TODO - remove sequences of duplicate pose references?

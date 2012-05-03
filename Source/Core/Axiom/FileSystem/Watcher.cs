@@ -37,12 +37,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.IO;
-
-using Axiom.Core;
-using Axiom.Graphics;
-
 #endregion Namespace Declarations
 
 namespace Axiom.FileSystem
@@ -63,22 +57,22 @@ namespace Axiom.FileSystem
 		{
 #if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IOS || SILVERLIGHT)
 			// Initialize FileSystemWatcher
-			this._monitor = new FileSystemWatcher();
-			this._monitor.Path = path;
+			_monitor = new FileSystemWatcher();
+			_monitor.Path = path;
 			// Watch for changes in LastAccess and LastWrite times, and the renaming of files or directories.
-			this._monitor.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+			_monitor.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 			// Watch all files.
-			this._monitor.Filter = "*.*";
-			this._monitor.IncludeSubdirectories = recurse;
+			_monitor.Filter = "*.*";
+			_monitor.IncludeSubdirectories = recurse;
 
 			// Add event handlers.
-			this._monitor.Changed += new FileSystemEventHandler( OnChanged );
-			this._monitor.Created += new FileSystemEventHandler( OnChanged );
-			this._monitor.Deleted += new FileSystemEventHandler( OnChanged );
-			this._monitor.Renamed += new RenamedEventHandler( OnRenamed );
+			_monitor.Changed += new FileSystemEventHandler( OnChanged );
+			_monitor.Created += new FileSystemEventHandler( OnChanged );
+			_monitor.Deleted += new FileSystemEventHandler( OnChanged );
+			_monitor.Renamed += new RenamedEventHandler( OnRenamed );
 
 			// Begin watching.
-			this._monitor.EnableRaisingEvents = true;
+			_monitor.EnableRaisingEvents = true;
 			LogManager.Instance.Write( "File monitor created for {0}.", path );
 #endif
 		}

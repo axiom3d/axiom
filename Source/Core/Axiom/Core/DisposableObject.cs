@@ -34,7 +34,6 @@
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
@@ -42,11 +41,8 @@ namespace Axiom.Core
 {
 #if DEBUG
 	/// <summary>
-	/// Monitors the object lifetime of objects that are in control of unmanaged resources.
-	/// 
-	/// WARNING: AXIOM_ENABLE_LOG_STACKTRACE may have significant impact on overall engine performances,
-	/// due to the large amount of <see cref="DisposableObject"/>s created during Axiom's lifecycle, so
-	/// please consider to enable it ONLY if really necessary.
+	///   Monitors the object lifetime of objects that are in control of unmanaged resources. WARNING: AXIOM_ENABLE_LOG_STACKTRACE may have significant impact on overall engine performances, due to the large amount of <see
+	///    cref="DisposableObject" /> s created during Axiom's lifecycle, so please consider to enable it ONLY if really necessary.
 	/// </summary>
 	internal class ObjectManager : Singleton<ObjectManager>
 	{
@@ -59,12 +55,10 @@ namespace Axiom.Core
 		private readonly Dictionary<Type, List<ObjectEntry>> _objects = new Dictionary<Type, List<ObjectEntry>>();
 
 		/// <summary>
-		/// Add an object to be monitored
+		///   Add an object to be monitored
 		/// </summary>
-		/// <param name="instance">
-		/// A <see cref="DisposableObject"/> to monitor for proper disposal
-		/// </param>
-		/// <param name="stackTrace">Creation stacktrace of the <see cref="DisposableObject"/> being tracked.</param>
+		/// <param name="instance"> A <see cref="DisposableObject" /> to monitor for proper disposal </param>
+		/// <param name="stackTrace"> Creation stacktrace of the <see cref="DisposableObject" /> being tracked. </param>
 		[AxiomHelper( 0, 9 )]
 		public void Add( DisposableObject instance, string stackTrace )
 		{
@@ -72,7 +66,8 @@ namespace Axiom.Core
 
 			objectList.Add( new ObjectEntry
 			                {
-			                	Instance = new WeakReference( instance ), ConstructionStack = stackTrace
+			                	Instance = new WeakReference( instance ),
+			                	ConstructionStack = stackTrace
 			                } );
 		}
 
@@ -149,7 +144,8 @@ namespace Axiom.Core
 #else
 						report.Write( string.Empty ); // new line
 						report.Write( "Cannot get stacktrace informations about undisposed objects." );
-						report.Write( "Maybe AXIOM_ENABLE_LOG_STACKTRACE directive is not defined or your current platfrom doesn't allow to retrieve them." );
+						report.Write(
+							"Maybe AXIOM_ENABLE_LOG_STACKTRACE directive is not defined or your current platfrom doesn't allow to retrieve them." );
 #endif
 					}
 					else
@@ -196,35 +192,18 @@ namespace Axiom.Core
 		#region IDisposable Implementation
 
 		/// <summary>
-		/// Determines if this instance has been disposed of already.
+		///   Determines if this instance has been disposed of already.
 		/// </summary>
 		[AxiomHelper( 0, 9 )]
 		public bool IsDisposed { get; set; }
 
-		/// <summary>
-		/// Class level dispose method
-		/// </summary>
-		/// <remarks>
-		/// When implementing this method in an inherited class the following template should be used;
-		/// protected override void dispose( bool disposeManagedResources )
-		/// {
-		/// 	if ( !IsDisposed )
-		/// 	{
-		/// 		if ( disposeManagedResources )
-		/// 		{
-		/// 			// Dispose managed resources.
-		/// 		}
-		///
-		/// 		// There are no unmanaged resources to release, but
-		/// 		// if we add them, they need to be released here.
-		/// 	}
-		///
-		/// 	// If it is available, make the call to the
-		/// 	// base class's Dispose(Boolean) method
-		/// 	base.dispose( disposeManagedResources );
-		/// }
-		/// </remarks>
-		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		///<summary>
+		///  Class level dispose method
+		///</summary>
+		///<remarks>
+		///  When implementing this method in an inherited class the following template should be used; protected override void dispose( bool disposeManagedResources ) { if ( !IsDisposed ) { if ( disposeManagedResources ) { // Dispose managed resources. } // There are no unmanaged resources to release, but // if we add them, they need to be released here. } // If it is available, make the call to the // base class's Dispose(Boolean) method base.dispose( disposeManagedResources ); }
+		///</remarks>
+		///<param name="disposeManagedResources"> True if Unmanaged resources should be released. </param>
 		[AxiomHelper( 0, 9 )]
 		protected virtual void dispose( bool disposeManagedResources )
 		{
