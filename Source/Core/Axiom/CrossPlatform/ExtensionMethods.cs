@@ -2,20 +2,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-#if !(XBOX || XBOX360)
 using System.Linq.Expressions;
-
-using Expression = System.Linq.Expressions.Expression;
-#endif
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.Diagnostics;
+
+#if !(XBOX || XBOX360)
+#endif
+
 #if SILVERLIGHT
 using System.Windows;
 #endif
@@ -66,7 +62,7 @@ namespace Axiom.Core
 			var loc = folder ?? Assembly.GetExecutingAssembly().Location;
 			loc = loc.Substring( 0, loc.LastIndexOf( Path.DirectorySeparatorChar ) );
 			return Neighbors( from file in Directory.GetFiles( loc, filter ?? "*.dll" )
-							  select file );
+			                  select file );
 #endif
 		}
 
@@ -121,7 +117,7 @@ namespace Axiom.Core
 	public static class ExtensionMethods
 	{
 #if XBOX || XBOX360
-		/*
+	/*
 		public static int RemoveAll<T>(this List<T> list, Predicate<T> match)
 		{
 			var count = list.Count;
@@ -261,9 +257,10 @@ namespace Axiom.Core
 				{
 					var name = fields[ i ].Name;
 					delegates.Add( new Field
-								   {
-									Get = type.FieldGet( name ), Set = type.FieldSet( name )
-								   } );
+					               {
+					               	Get = type.FieldGet( name ),
+					               	Set = type.FieldSet( name )
+					               } );
 				}
 				fastFields.Add( type, reflectors = delegates.ToArray() );
 			}
@@ -534,7 +531,9 @@ namespace Axiom.Core
 		public delegate void Setter<TS>( T type, TS value );
 
 #if !NET_40 || WINDOWS_PHONE
-		internal static readonly MethodInfo MethodInfoAssign = typeof ( Class<T> ).GetMethod( "Assign", BindingFlags.NonPublic | BindingFlags.Static );
+		internal static readonly MethodInfo MethodInfoAssign = typeof ( Class<T> ).GetMethod( "Assign",
+		                                                                                      BindingFlags.NonPublic |
+		                                                                                      BindingFlags.Static );
 
 		internal static T Assign( ref T target, T value )
 		{
@@ -582,19 +581,19 @@ namespace Axiom.Core
 
 		public Lazy()
 		{
-			this.newT = New;
+			newT = New;
 		}
 
 		public Lazy( Func<T> newFunc )
 		{
-			this.newT = newFunc;
+			newT = newFunc;
 		}
 
 		public T Value
 		{
 			get
 			{
-				return Interlocked.CompareExchange( ref this.instance, this.newT(), null );
+				return Interlocked.CompareExchange( ref instance, newT(), null );
 			}
 		}
 	}

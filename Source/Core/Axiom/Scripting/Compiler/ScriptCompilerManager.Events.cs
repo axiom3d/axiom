@@ -39,9 +39,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System.Collections.Generic;
-
-using Axiom.Scripting.Compiler.AST;
 using Axiom.Graphics;
+using Axiom.Scripting.Compiler.AST;
 
 #endregion Namespace Declarations
 
@@ -62,29 +61,21 @@ namespace Axiom.Scripting.Compiler
 		public event PreConversionHandler OnPreConversion;
 
 		/// <summary>
-		/// Allows vetoing of continued compilation after the entire AST conversion process finishes
+		///   Allows vetoing of continued compilation after the entire AST conversion process finishes
 		/// </summary>
 		/// <remarks>
-		/// Once the script is turned completely into an AST, including import
-		/// and override handling, this function allows a listener to exit
-		/// the compilation process.
+		///   Once the script is turned completely into an AST, including import and override handling, this function allows a listener to exit the compilation process.
 		/// </remarks>
-		/// <returns>
-		/// True continues compilation, false aborts
-		/// </returns>
+		/// <returns> True continues compilation, false aborts </returns>
 		public delegate bool PostConversionHandler( ScriptCompiler compiler, IList<AbstractNode> nodes );
 
 		/// <summary>
-		/// Allows vetoing of continued compilation after the entire AST conversion process finishes
+		///   Allows vetoing of continued compilation after the entire AST conversion process finishes
 		/// </summary>
 		/// <remarks>
-		/// Once the script is turned completely into an AST, including import
-		/// and override handling, this function allows a listener to exit
-		/// the compilation process.
+		///   Once the script is turned completely into an AST, including import and override handling, this function allows a listener to exit the compilation process.
 		/// </remarks>
-		/// <returns>
-		/// True continues compilation, false aborts
-		/// </returns>
+		/// <returns> True continues compilation, false aborts </returns>
 		public event PostConversionHandler OnPostConversion;
 
 		/// Called when an error occurred
@@ -94,58 +85,45 @@ namespace Axiom.Scripting.Compiler
 		public event CompilerErrorHandler OnCompileError;
 
 		/// <summary>
-		/// Called when an event occurs during translation, return true if handled
+		///   Called when an event occurs during translation, return true if handled
 		/// </summary>
 		/// <remarks>
-		/// This function is called from the translators when an event occurs that
-		/// that can be responded to. Often this is overriding names, or it can be a request for
-		/// custom resource creation.
+		///   This function is called from the translators when an event occurs that that can be responded to. Often this is overriding names, or it can be a request for custom resource creation.
 		/// </remarks>
-		/// <param name="compiler">A reference to the compiler</param>
-		/// <param name="evt">The event object holding information about the event to be processed</param>
-		/// <param name="retval">A possible return value from handlers</param>
-		/// <returns>True if the handler processed the event</returns>
+		/// <param name="compiler"> A reference to the compiler </param>
+		/// <param name="evt"> The event object holding information about the event to be processed </param>
+		/// <param name="retval"> A possible return value from handlers </param>
+		/// <returns> True if the handler processed the event </returns>
 		public delegate bool TransationEventHandler( ScriptCompiler compiler, ref ScriptCompilerEvent evt, out object retval );
 
 		/// <summary>
-		/// Called when an event occurs during translation, return true if handled
+		///   Called when an event occurs during translation, return true if handled
 		/// </summary>
 		/// <remarks>
-		/// This function is called from the translators when an event occurs that
-		/// that can be responded to. Often this is overriding names, or it can be a request for
-		/// custom resource creation.
+		///   This function is called from the translators when an event occurs that that can be responded to. Often this is overriding names, or it can be a request for custom resource creation.
 		/// </remarks>
 		public event TransationEventHandler OnCompilerEvent;
 	}
 
 	public enum CompilerEventType
 	{
-		[ScriptEnum( "preApplyTextureAliases" )]
-		PreApplyTextureAliases,
+		[ScriptEnum( "preApplyTextureAliases" )] PreApplyTextureAliases,
 
-		[ScriptEnum( "processResourceName" )]
-		ProcessResourceName,
+		[ScriptEnum( "processResourceName" )] ProcessResourceName,
 
-		[ScriptEnum( "processNameExclusion" )]
-		ProcessNameExclusion,
+		[ScriptEnum( "processNameExclusion" )] ProcessNameExclusion,
 
-		[ScriptEnum( "createMaterial" )]
-		CreateMaterial,
+		[ScriptEnum( "createMaterial" )] CreateMaterial,
 
-		[ScriptEnum( "createGpuProgram" )]
-		CreateGpuProgram,
+		[ScriptEnum( "createGpuProgram" )] CreateGpuProgram,
 
-		[ScriptEnum( "createHighLevelGpuProgram" )]
-		CreateHighLevelGpuProgram,
+		[ScriptEnum( "createHighLevelGpuProgram" )] CreateHighLevelGpuProgram,
 
-		[ScriptEnum( "createGpuSharedParameters" )]
-		CreateGpuSharedParameters,
+		[ScriptEnum( "createGpuSharedParameters" )] CreateGpuSharedParameters,
 
-		[ScriptEnum( "createParticleSystem" )]
-		CreateParticleSystem,
+		[ScriptEnum( "createParticleSystem" )] CreateParticleSystem,
 
-		[ScriptEnum( "createCompositor" )]
-		CreateCompositor
+		[ScriptEnum( "createCompositor" )] CreateCompositor
 	}
 
 	#region ScriptCompiler Events
@@ -153,14 +131,12 @@ namespace Axiom.Scripting.Compiler
 	#region ScriptCompilerEvent
 
 	/// <summary>
-	/// This struct is a base class for events which can be thrown by the compilers and caught by
-	/// subscribers. There are a set number of standard events which are used by Ogre's core.
-	/// New event types may be derived for more custom compiler processing.
+	///   This struct is a base class for events which can be thrown by the compilers and caught by subscribers. There are a set number of standard events which are used by Ogre's core. New event types may be derived for more custom compiler processing.
 	/// </summary>
 	public abstract class ScriptCompilerEvent
 	{
 		/// <summary>
-		/// Return the type of this ScriptCompilerEvent
+		///   Return the type of this ScriptCompilerEvent
 		/// </summary>
 		public CompilerEventType Type { get; private set; }
 
@@ -263,7 +239,8 @@ namespace Axiom.Scripting.Compiler
 		public string Syntax;
 		public GpuProgramType ProgramType;
 
-		public CreateGpuProgramScriptCompilerEvent( string file, string name, string resGroup, string source, string syntax, GpuProgramType prgType )
+		public CreateGpuProgramScriptCompilerEvent( string file, string name, string resGroup, string source, string syntax,
+		                                            GpuProgramType prgType )
 			: base( CompilerEventType.CreateGpuProgram )
 		{
 			File = file;
@@ -288,7 +265,8 @@ namespace Axiom.Scripting.Compiler
 		public string Language;
 		public GpuProgramType ProgramType;
 
-		public CreateHighLevelGpuProgramScriptCompilerEvent( string file, string name, string resGroup, string source, string language, GpuProgramType prgType )
+		public CreateHighLevelGpuProgramScriptCompilerEvent( string file, string name, string resGroup, string source,
+		                                                     string language, GpuProgramType prgType )
 			: base( CompilerEventType.CreateHighLevelGpuProgram )
 		{
 			File = file;

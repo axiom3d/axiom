@@ -38,9 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-
 using Axiom.Graphics;
 using Axiom.Math;
 
@@ -51,11 +49,10 @@ namespace Axiom.Core
 	public partial class StaticGeometry
 	{
 		/// <summary>
-		/// A LODBucket is a collection of smaller buckets with the same LOD.
+		///   A LODBucket is a collection of smaller buckets with the same LOD.
 		/// </summary>
 		/// <remarks>
-		/// LOD refers to Mesh LOD here. Material LOD can change separately
-		/// at the next bucket down from this.
+		///   LOD refers to Mesh LOD here. Material LOD can change separately at the next bucket down from this.
 		/// </remarks>
 		public class LODBucket : DisposableObject
 		{
@@ -108,7 +105,7 @@ namespace Axiom.Core
 			{
 				this.parent = parent;
 				this.lod = lod;
-				this.squaredDistance = lodDist;
+				squaredDistance = lodDist;
 				materialBucketMap = new Dictionary<string, MaterialBucket>();
 				queuedGeometryList = new List<QueuedGeometry>();
 			}
@@ -180,11 +177,11 @@ namespace Axiom.Core
 			}
 
 			/// <summary>
-			///     Dispose the material buckets
+			///   Dispose the material buckets
 			/// </summary>
 			protected override void dispose( bool disposeManagedResources )
 			{
-				if ( !this.IsDisposed )
+				if ( !IsDisposed )
 				{
 					if ( disposeManagedResources )
 					{

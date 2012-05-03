@@ -37,9 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Scripting;
 
@@ -48,319 +46,146 @@ using Axiom.Scripting;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	/// Enumeration of GPU vendors.
+	///   Enumeration of GPU vendors.
 	/// </summary>
 	public enum GPUVendor
 	{
-		[ScriptEnum( "Unknown" )]
-		Unknown = 0,
+		[ScriptEnum( "Unknown" )] Unknown = 0,
 
-		[ScriptEnum( "Nvidia" )]
-		Nvidia = 1,
+		[ScriptEnum( "Nvidia" )] Nvidia = 1,
 
-		[ScriptEnum( "Ati" )]
-		Ati = 2,
+		[ScriptEnum( "Ati" )] Ati = 2,
 
-		[ScriptEnum( "Intel" )]
-		Intel = 3,
+		[ScriptEnum( "Intel" )] Intel = 3,
 
-		[ScriptEnum( "S3" )]
-		S3 = 4,
+		[ScriptEnum( "S3" )] S3 = 4,
 
-		[ScriptEnum( "Matrox" )]
-		Matrox = 5,
+		[ScriptEnum( "Matrox" )] Matrox = 5,
 
-		[ScriptEnum( "3DLabs" )]
-		_3DLabs = 6,
+		[ScriptEnum( "3DLabs" )] _3DLabs = 6,
 
-		[ScriptEnum( "Sis" )]
-		Sis = 7,
+		[ScriptEnum( "Sis" )] Sis = 7,
 
-		[ScriptEnum( "Imagination Technologies" )]
-		ImaginationTechnologies = 8,
+		[ScriptEnum( "Imagination Technologies" )] ImaginationTechnologies = 8,
 
 		// Apple Software Renderer
-		[ScriptEnum( "Apple" )]
-		Apple = 9,
+		[ScriptEnum( "Apple" )] Apple = 9,
 
-		[ScriptEnum( "Nokia" )]
-		Nokia = 10,
+		[ScriptEnum( "Nokia" )] Nokia = 10,
 	};
 
-	public class ShaderProfiles : List<string> {}
+	public class ShaderProfiles : List<string>
+	{
+	}
 
 	/// <summary>
-	/// 	This serves as a way to query information about the capabilies of a 3D API and the
-	/// 	users hardware configuration.  A RenderSystem should create and initialize an instance
-	/// 	of this class during startup so that it will be available for use ASAP for checking caps.
+	///   This serves as a way to query information about the capabilies of a 3D API and the users hardware configuration. A RenderSystem should create and initialize an instance of this class during startup so that it will be available for use ASAP for checking caps.
 	/// </summary>
 	public class RenderSystemCapabilities
 	{
 		#region Fields and Properties
 
 		/// <summary>
-		///    Flag enum holding the bits that identify each supported feature.
+		///   Flag enum holding the bits that identify each supported feature.
 		/// </summary>
 		private Capabilities _caps;
 
 		#region RendersystemName
 
-		private string _rendersystemName;
-
 		/// <summary>
-		/// Gets or sets the current rendersystem name.
+		///   Gets or sets the current rendersystem name.
 		/// </summary>
-		public string RendersystemName
-		{
-			get
-			{
-				return _rendersystemName;
-			}
-			set
-			{
-				_rendersystemName = value;
-			}
-		}
+		public string RendersystemName { get; set; }
 
 		#endregion
 
 		#region TextureUnitCount Property
 
-		/// <summary>
-		///    Max number of texture units available on the current hardware.
-		/// </summary>
-		private int _textureUnitCount;
-
-		/// <summary>
-		///		Reports on the number of texture units the graphics hardware has available.
-		/// </summary>
-		public int TextureUnitCount
-		{
-			get
-			{
-				return _textureUnitCount;
-			}
-			set
-			{
-				_textureUnitCount = value;
-			}
-		}
+		///<summary>
+		///  Reports on the number of texture units the graphics hardware has available.
+		///</summary>
+		public int TextureUnitCount { get; set; }
 
 		#endregion TextureUnitCount Property
 
 		#region WorlMatrixCount Property
 
 		/// <summary>
-		///    Max number of world matrices supported.
+		///   Max number of world matrices supported by the hardware.
 		/// </summary>
-		private int _worldMatrixCount;
-
-		/// <summary>
-		///    Max number of world matrices supported by the hardware.
-		/// </summary>
-		public int WorldMatrixCount
-		{
-			get
-			{
-				return _worldMatrixCount;
-			}
-			set
-			{
-				_worldMatrixCount = value;
-			}
-		}
+		public int WorldMatrixCount { get; set; }
 
 		#endregion WorlMatrixCount Property
 
 		#region MaxVertexProgramVersion Property
 
 		/// <summary>
-		///    The best vertex program version supported by the hardware.
+		///   Best vertex program version supported by the hardware.
 		/// </summary>
-		private string _maxVertexProgramVersion;
-
-		/// <summary>
-		///    Best vertex program version supported by the hardware.
-		/// </summary>
-		public string MaxVertexProgramVersion
-		{
-			get
-			{
-				return _maxVertexProgramVersion;
-			}
-			set
-			{
-				_maxVertexProgramVersion = value;
-			}
-		}
+		public string MaxVertexProgramVersion { get; set; }
 
 		#endregion MaxVertexProgramVersion Property
 
 		#region VertexProgramConstantFloatCount Property
 
 		/// <summary>
-		///    The number of floating point constants the current hardware supports for vertex programs.
+		///   Max number of floating point constants supported by the hardware for vertex programs.
 		/// </summary>
-		private int _vertexProgramConstantFloatCount;
-
-		/// <summary>
-		///    Max number of floating point constants supported by the hardware for vertex programs.
-		/// </summary>
-		public int VertexProgramConstantFloatCount
-		{
-			get
-			{
-				return _vertexProgramConstantFloatCount;
-			}
-			set
-			{
-				_vertexProgramConstantFloatCount = value;
-			}
-		}
+		public int VertexProgramConstantFloatCount { get; set; }
 
 		#endregion VertexProgramConstantFloatCount Property
 
 		#region VertexProgramConstantIntCount Property
 
 		/// <summary>
-		///    The number of integer constants the current hardware supports for vertex programs.
+		///   Max number of integer constants supported by the hardware for vertex programs.
 		/// </summary>
-		private int _vertexProgramConstantIntCount;
-
-		/// <summary>
-		///    Max number of integer constants supported by the hardware for vertex programs.
-		/// </summary>
-		public int VertexProgramConstantIntCount
-		{
-			get
-			{
-				return _vertexProgramConstantIntCount;
-			}
-			set
-			{
-				_vertexProgramConstantIntCount = value;
-			}
-		}
+		public int VertexProgramConstantIntCount { get; set; }
 
 		#endregion VertexProgramConstantIntCount Property
 
 		#region VertexProgramConstantBoolCount Property
 
 		/// <summary>
-		///    The number of boolean constants the current hardware supports for vertex programs.
+		///   Max number of boolean constants supported by the hardware for vertex programs.
 		/// </summary>
-		private int _vertexProgramConstantBoolCount;
-
-		/// <summary>
-		///    Max number of boolean constants supported by the hardware for vertex programs.
-		/// </summary>
-		public int VertexProgramConstantBoolCount
-		{
-			get
-			{
-				return _vertexProgramConstantBoolCount;
-			}
-			set
-			{
-				_vertexProgramConstantBoolCount = value;
-			}
-		}
+		public int VertexProgramConstantBoolCount { get; set; }
 
 		#endregion VertexProgramConstantBoolCount Property
 
 		#region MaxFragmentProgramVersion Property
 
 		/// <summary>
-		///    The best fragment program version supported by the hardware.
+		///   Best fragment program version supported by the hardware.
 		/// </summary>
-		private string _maxFragmentProgramVersion;
-
-		/// <summary>
-		///    Best fragment program version supported by the hardware.
-		/// </summary>
-		public string MaxFragmentProgramVersion
-		{
-			get
-			{
-				return _maxFragmentProgramVersion;
-			}
-			set
-			{
-				_maxFragmentProgramVersion = value;
-			}
-		}
+		public string MaxFragmentProgramVersion { get; set; }
 
 		#endregion MaxFragmentProgramVersion Property
 
 		#region FragmentProgramConstantFloatCount Property
 
 		/// <summary>
-		///    The number of floating point constants the current hardware supports for fragment programs.
+		///   Max number of floating point constants supported by the hardware for fragment programs.
 		/// </summary>
-		private int _fragmentProgramConstantFloatCount;
-
-		/// <summary>
-		///    Max number of floating point constants supported by the hardware for fragment programs.
-		/// </summary>
-		public int FragmentProgramConstantFloatCount
-		{
-			get
-			{
-				return _fragmentProgramConstantFloatCount;
-			}
-			set
-			{
-				_fragmentProgramConstantFloatCount = value;
-			}
-		}
+		public int FragmentProgramConstantFloatCount { get; set; }
 
 		#endregion FragmentProgramConstantFloatCount Property
 
 		#region FragmentProgramConstantIntCount Property
 
 		/// <summary>
-		///    The number of integer constants the current hardware supports for fragment programs.
+		///   Max number of integer constants supported by the hardware for fragment programs.
 		/// </summary>
-		private int _fragmentProgramConstantIntCount;
-
-		/// <summary>
-		///    Max number of integer constants supported by the hardware for fragment programs.
-		/// </summary>
-		public int FragmentProgramConstantIntCount
-		{
-			get
-			{
-				return _fragmentProgramConstantIntCount;
-			}
-			set
-			{
-				_fragmentProgramConstantIntCount = value;
-			}
-		}
+		public int FragmentProgramConstantIntCount { get; set; }
 
 		#endregion FragmentProgramConstantIntCount Property
 
 		#region FragmentProgramConstantBoolCount Property
 
 		/// <summary>
-		///    The number of boolean constants the current hardware supports for fragment programs.
+		///   Max number of boolean constants supported by the hardware for fragment programs.
 		/// </summary>
-		private int _fragmentProgramConstantBoolCount;
-
-		/// <summary>
-		///    Max number of boolean constants supported by the hardware for fragment programs.
-		/// </summary>
-		public int FragmentProgramConstantBoolCount
-		{
-			get
-			{
-				return _fragmentProgramConstantBoolCount;
-			}
-			set
-			{
-				_fragmentProgramConstantBoolCount = value;
-			}
-		}
+		public int FragmentProgramConstantBoolCount { get; set; }
 
 		#endregion FragmentProgramConstantBoolCount Property
 
@@ -375,37 +200,22 @@ namespace Axiom.Graphics
 		#region MultiRenderTargetCount Property
 
 		/// <summary>
-		/// The number of simultaneous render targets supported
+		///   The number of simultaneous render targets supported
 		/// </summary>
-		private int _multiRenderTargetCount;
-
-		/// <summary>
-		/// The number of simultaneous render targets supported
-		/// </summary>
-		public int MultiRenderTargetCount
-		{
-			get
-			{
-				return _multiRenderTargetCount;
-			}
-			set
-			{
-				_multiRenderTargetCount = value;
-			}
-		}
+		public int MultiRenderTargetCount { get; set; }
 
 		#endregion MultiRenderTargetCount Property
 
 		#region StencilBufferBitCount Property
 
 		/// <summary>
-		///    Stencil buffer bits available.
+		///   Stencil buffer bits available.
 		/// </summary>
 		private int _stencilBufferBitCount;
 
-		/// <summary>
-		///		Number of stencil buffer bits suppported by the hardware.
-		/// </summary>
+		///<summary>
+		///  Number of stencil buffer bits suppported by the hardware.
+		///</summary>
 		public int StencilBufferBitCount
 		{
 			get
@@ -422,25 +232,10 @@ namespace Axiom.Graphics
 
 		#region MaxLights Property
 
-		/// <summary>
-		///    Maximum number of lights that can be active in the scene at any given time.
-		/// </summary>
-		private int _maxLights;
-
-		/// <summary>
-		///		Maximum number of lights that can be active in the scene at any given time.
-		/// </summary>
-		public int MaxLights
-		{
-			get
-			{
-				return _maxLights;
-			}
-			set
-			{
-				_maxLights = value;
-			}
-		}
+		///<summary>
+		///  Maximum number of lights that can be active in the scene at any given time.
+		///</summary>
+		public int MaxLights { get; set; }
 
 		#endregion MaxLights Property
 
@@ -465,12 +260,12 @@ namespace Axiom.Graphics
 		#region DeviceName Property
 
 		/// <summary>
-		/// name of the adapter
+		///   name of the adapter
 		/// </summary>
 		private string _deviceName = "";
 
 		/// <summary>
-		/// Name of the display adapter
+		///   Name of the display adapter
 		/// </summary>
 		public string DeviceName
 		{
@@ -489,14 +284,12 @@ namespace Axiom.Graphics
 		#region DeviceVersion Property
 
 		/// <summary>
-		/// This is used to build a database of RSC's
-		/// if a RSC with same name, but newer version is introduced, the older one 
-		/// will be removed
+		///   This is used to build a database of RSC's if a RSC with same name, but newer version is introduced, the older one will be removed
 		/// </summary>
 		private DriverVersion _driverVersion = new DriverVersion();
 
 		/// <summary>
-		/// The driver version string
+		///   The driver version string
 		/// </summary>
 		public DriverVersion DriverVersion
 		{
@@ -515,96 +308,36 @@ namespace Axiom.Graphics
 		#region MaxPointSize Property
 
 		/// <summary>
-		/// The maximum point size
+		///   The maximum point size
 		/// </summary>
-		private float _maxPointSize;
-
-		/// <summary>
-		/// The maximum point size
-		/// </summary>
-		public float MaxPointSize
-		{
-			get
-			{
-				return _maxPointSize;
-			}
-			set
-			{
-				_maxPointSize = value;
-			}
-		}
+		public float MaxPointSize { get; set; }
 
 		#endregion MaxPointSize Property
 
 		#region NonPOW2TexturesLimited Property
 
 		/// <summary>
-		/// Are non-POW2 textures feature-limited?
+		///   Are non-POW2 textures feature-limited?
 		/// </summary>
-		private bool _nonPOW2TexturesLimited;
-
-		/// <summary>
-		/// Are non-POW2 textures feature-limited?
-		/// </summary>
-		public bool NonPOW2TexturesLimited
-		{
-			get
-			{
-				return _nonPOW2TexturesLimited;
-			}
-			set
-			{
-				_nonPOW2TexturesLimited = value;
-			}
-		}
+		public bool NonPOW2TexturesLimited { get; set; }
 
 		#endregion NonPOW2TexturesLimited Property
 
 		#region VertexTextureUnitCount Property
 
 		/// <summary>
-		/// The number of vertex texture units supported
+		///   The number of vertex texture units supported
 		/// </summary>
-		private int _vertexTextureUnitCount;
-
-		/// <summary>
-		/// The number of vertex texture units supported
-		/// </summary>
-		public int VertexTextureUnitCount
-		{
-			get
-			{
-				return _vertexTextureUnitCount;
-			}
-			set
-			{
-				_vertexTextureUnitCount = value;
-			}
-		}
+		public int VertexTextureUnitCount { get; set; }
 
 		#endregion VertexTextureUnitCount Property
 
 		#region VertexTextureUnitsShared Property
 
 		/// <summary>
-		/// Are vertex texture units shared with fragment processor?
+		///   Are vertex texture units shared with fragment processor?
 		/// </summary>
-		private bool _vertexTextureUnitsShared;
-
-		/// <summary>
-		/// Are vertex texture units shared with fragment processor?
-		/// </summary>
-		public bool VertexTextureUnitsShared
-		{
-			get
-			{
-				return _vertexTextureUnitsShared;
-			}
-			set
-			{
-				_vertexTextureUnitsShared = value;
-			}
-		}
+		public bool VertexTextureUnitsShared { get; set; }
 
 		#endregion VertexTextureUnitsShared Property
 
@@ -613,7 +346,7 @@ namespace Axiom.Graphics
 		#region Construction and Destruction
 
 		/// <summary>
-		///    Default constructor.
+		///   Default constructor.
 		/// </summary>
 		public RenderSystemCapabilities()
 		{
@@ -625,26 +358,26 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		///    Returns true if the current hardware supports the requested feature.
+		///   Returns true if the current hardware supports the requested feature.
 		/// </summary>
-		/// <param name="cap">Feature to query (i.e. Dot3 bump mapping)</param>
-		/// <returns></returns>
+		/// <param name="cap"> Feature to query (i.e. Dot3 bump mapping) </param>
+		/// <returns> </returns>
 		public bool HasCapability( Capabilities cap )
 		{
 			return ( _caps & cap ) > 0;
 		}
 
 		/// <summary>
-		///    Sets a flag stating the specified feature is supported.
+		///   Sets a flag stating the specified feature is supported.
 		/// </summary>
-		/// <param name="cap"></param>
+		/// <param name="cap"> </param>
 		public void SetCapability( Capabilities cap )
 		{
 			_caps |= cap;
 		}
 
 		/// <summary>
-		///    Write all hardware capability information to registered listeners.
+		///   Write all hardware capability information to registered listeners.
 		/// </summary>
 		public void Log()
 		{
@@ -652,7 +385,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Write all hardware capability information to registered listeners.
+		///   Write all hardware capability information to registered listeners.
 		/// </summary>
 		public void Log( Log logMgr )
 		{
@@ -660,11 +393,12 @@ namespace Axiom.Graphics
 			logMgr.Write( "\t-GPU Vendor: {0}", VendorToString( Vendor ) );
 			logMgr.Write( "\t-Device Name: {0}", _deviceName );
 			logMgr.Write( "\t-Driver Version: {0}", _driverVersion.ToString() );
-			logMgr.Write( "\t-Available texture units: {0}", this.TextureUnitCount );
-			logMgr.Write( "\t-Maximum lights available: {0}", this.MaxLights );
+			logMgr.Write( "\t-Available texture units: {0}", TextureUnitCount );
+			logMgr.Write( "\t-Maximum lights available: {0}", MaxLights );
 			logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( HasCapability( Capabilities.HardwareMipMaps ) ) );
 			logMgr.Write( "\t-Texture blending: {0}", ConvertBool( HasCapability( Capabilities.Blending ) ) );
-			logMgr.Write( "\t-Anisotropic texture filtering: {0}", ConvertBool( HasCapability( Capabilities.AnisotropicFiltering ) ) );
+			logMgr.Write( "\t-Anisotropic texture filtering: {0}",
+			              ConvertBool( HasCapability( Capabilities.AnisotropicFiltering ) ) );
 			logMgr.Write( "\t-Dot product texture operation: {0}", ConvertBool( HasCapability( Capabilities.Dot3 ) ) );
 			logMgr.Write( "\t-Cube Mapping: {0}", ConvertBool( HasCapability( Capabilities.CubeMapping ) ) );
 
@@ -683,14 +417,14 @@ namespace Axiom.Graphics
 
 			if ( HasCapability( Capabilities.VertexPrograms ) )
 			{
-				logMgr.Write( "\t\t-Max vertex program version: {0}", this.MaxVertexProgramVersion );
+				logMgr.Write( "\t\t-Max vertex program version: {0}", MaxVertexProgramVersion );
 			}
 
 			logMgr.Write( "\t-Fragment programs: {0}", ConvertBool( HasCapability( Capabilities.FragmentPrograms ) ) );
 
 			if ( HasCapability( Capabilities.FragmentPrograms ) )
 			{
-				logMgr.Write( "\t\t-Max fragment program version: {0}", this.MaxFragmentProgramVersion );
+				logMgr.Write( "\t\t-Max fragment program version: {0}", MaxFragmentProgramVersion );
 			}
 
 			logMgr.Write( "\t-Texture compression: {0}", ConvertBool( HasCapability( Capabilities.TextureCompression ) ) );
@@ -717,20 +451,19 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///     Helper method to convert true/false to yes/no.
+		///   Helper method to convert true/false to yes/no.
 		/// </summary>
-		/// <param name="val">Bool bal.</param>
-		/// <returns>"yes" if true, else "no".</returns>
+		/// <param name="val"> Bool bal. </param>
+		/// <returns> "yes" if true, else "no". </returns>
 		private string ConvertBool( bool val )
 		{
 			return val ? "yes" : "no";
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="vendorString"></param>
-		/// <returns></returns>
+		/// <param name="vendorString"> </param>
+		/// <returns> </returns>
 		internal static GPUVendor VendorFromString( string vendorString )
 		{
 			var ret = GPUVendor.Unknown;
@@ -745,10 +478,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="v"></param>
-		/// <returns></returns>
+		/// <param name="v"> </param>
+		/// <returns> </returns>
 		internal static string VendorToString( GPUVendor v )
 		{
 			return ScriptEnumAttribute.GetScriptAttribute( (int)v, typeof ( GPUVendor ) );
@@ -759,12 +491,12 @@ namespace Axiom.Graphics
 		#region ShaderProfiles
 
 		/// <summary>
-		/// Returns a set of all supported shader profiles
+		///   Returns a set of all supported shader profiles
 		/// </summary>
 		public readonly ShaderProfiles ShaderProfiles = new ShaderProfiles();
 
 		/// <summary>
-		///  Adds the profile to the list of supported profiles
+		///   Adds the profile to the list of supported profiles
 		/// </summary>
 		public void AddShaderProfile( string profile )
 		{
@@ -772,7 +504,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Remove a given shader profile, if present.
+		///   Remove a given shader profile, if present.
 		/// </summary>
 		public void RemoveShaderProfile( string profile )
 		{
@@ -780,7 +512,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Returns true if profile is in the list of supported profiles
+		///   Returns true if profile is in the list of supported profiles
 		/// </summary>
 		public bool IsShaderProfileSupported( string profile )
 		{

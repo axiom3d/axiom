@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Reflection;
 using System.Text;
 
 #endregion Namespace Declarations
@@ -52,36 +51,23 @@ namespace Axiom.Scripting
 
 	#endregion Delegates
 
-	/// <summary>
-	///		This attribute is intended to be used on enum fields for enums that can be used
-	///		in script files (.material, .overlay, etc).  Placing this attribute on the field will
-	///		allow the script parsers to look up a real enum value based on the value as it is
-	///		used in the script.
-	/// </summary>
-	/// <remarks>
-	///		For example, texturing addressing mode can base used in .material scripts, and
-	///		the values in the script are 'wrap', 'clamp', and 'mirror'.
-	///		<p/>
-	///		The TextureAddress enum fields are defined with attributes to create the mapping
-	///		between the scriptable values and their real enum values.
-	///		<p/>
-	///		...
-	///		[ScriptEnum("wrap")]
-	///		Wrap
-	///		...
-	/// </remarks>
+	///<summary>
+	///  This attribute is intended to be used on enum fields for enums that can be used in script files (.material, .overlay, etc). Placing this attribute on the field will allow the script parsers to look up a real enum value based on the value as it is used in the script.
+	///</summary>
+	///<remarks>
+	///  For example, texturing addressing mode can base used in .material scripts, and the values in the script are 'wrap', 'clamp', and 'mirror'. <p /> The TextureAddress enum fields are defined with attributes to create the mapping between the scriptable values and their real enum values. <p /> ... [ScriptEnum("wrap")] Wrap ...
+	///</remarks>
 	[AttributeUsage( AttributeTargets.Field, AllowMultiple = true )]
 	public sealed class ScriptEnumAttribute : Attribute
 	{
-		private string scriptValue;
+		private readonly string scriptValue;
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="val">The value as it will appear when used in script files (.material, .overlay, etc).</param>
+		///<summary>
+		///</summary>
+		///<param name="val"> The value as it will appear when used in script files (.material, .overlay, etc). </param>
 		public ScriptEnumAttribute( string val )
 		{
-			this.scriptValue = val;
+			scriptValue = val;
 		}
 
 		public string ScriptValue
@@ -92,12 +78,12 @@ namespace Axiom.Scripting
 			}
 		}
 
-		/// <summary>
-		///		Returns an actual enum value for a enum that can be used in script files.
-		/// </summary>
-		/// <param name="val"></param>
-		/// <param name="type"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Returns an actual enum value for a enum that can be used in script files.
+		///</summary>
+		///<param name="val"> </param>
+		///<param name="type"> </param>
+		///<returns> </returns>
 		public static object Lookup( string val, Type type )
 		{
 			// get the list of fields in the enum
@@ -134,11 +120,11 @@ namespace Axiom.Scripting
 		}
 
 		/// <summary>
-		/// Looks up the script attibute for the enumeration value
+		///   Looks up the script attibute for the enumeration value
 		/// </summary>
-		/// <param name="enumValue">The enumeration value</param>
-		/// <param name="type">The Enumeration</param>
-		/// <returns>The first script attribute found to match the enumeration value</returns>
+		/// <param name="enumValue"> The enumeration value </param>
+		/// <param name="type"> The Enumeration </param>
+		/// <returns> The first script attribute found to match the enumeration value </returns>
 		public static string GetScriptAttribute( int enumValue, Type type )
 		{
 			// get the list of fields in the enum
@@ -169,14 +155,11 @@ namespace Axiom.Scripting
 			return null;
 		}
 
-		/// <summary>
-		///		Returns a string describing the legal values for a particular enum.
-		/// </summary>
-		/// <param name="type"></param>
-		/// <returns>
-		///		A string containing legal values for script file.
-		///		i.e. "'none', 'clockwise', 'anticlockwise'"
-		/// </returns>
+		///<summary>
+		///  Returns a string describing the legal values for a particular enum.
+		///</summary>
+		///<param name="type"> </param>
+		///<returns> A string containing legal values for script file. i.e. "'none', 'clockwise', 'anticlockwise'" </returns>
 		public static string GetLegalValues( Type type )
 		{
 			var legalValues = new StringBuilder();

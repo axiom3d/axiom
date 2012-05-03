@@ -37,34 +37,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Core;
 using Axiom.Math;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-	/// <summary>
-	///		A billboard is a primitive which always faces the camera in every frame.
-	/// </summary>
-	/// <remarks>
-	///		Billboards can be used for special effects or some other trickery which requires the
-	///		triangles to always facing the camera no matter where it is. The engine groups billboards into
-	///		sets for efficiency, so you should never create a billboard on it's own (it's ok to have a
-	///		set of one if you need it).
-	///		<p/>
-	///		Billboards have their geometry generated every frame depending on where the camera is. It is most
-	///		beneficial for all billboards in a set to be identically sized since the engine can take advantage of this and
-	///		save some calculations - useful when you have sets of hundreds of billboards as is possible with special
-	///		effects. You can deviate from this if you wish (example: a smoke effect would probably have smoke puffs
-	///		expanding as they rise, so each billboard will legitimately have it's own size) but be aware the extra
-	///		overhead this brings and try to avoid it if you can.
-	///		<p/>
-	///		Billboards are just the mechanism for rendering a range of effects such as particles. It is other classes
-	///		which use billboards to create their individual effects, so the methods here are quite generic.
-	/// </remarks>
+	///<summary>
+	///  A billboard is a primitive which always faces the camera in every frame.
+	///</summary>
+	///<remarks>
+	///  Billboards can be used for special effects or some other trickery which requires the triangles to always facing the camera no matter where it is. The engine groups billboards into sets for efficiency, so you should never create a billboard on it's own (it's ok to have a set of one if you need it). <p /> Billboards have their geometry generated every frame depending on where the camera is. It is most beneficial for all billboards in a set to be identically sized since the engine can take advantage of this and save some calculations - useful when you have sets of hundreds of billboards as is possible with special effects. You can deviate from this if you wish (example: a smoke effect would probably have smoke puffs expanding as they rise, so each billboard will legitimately have it's own size) but be aware the extra overhead this brings and try to avoid it if you can. <p /> Billboards are just the mechanism for rendering a range of effects such as particles. It is other classes which use billboards to create their individual effects, so the methods here are quite generic.
+	///</remarks>
 	public class Billboard
 	{
 		#region Member variables
@@ -82,52 +66,52 @@ namespace Axiom.Core
 		public BillboardSet ParentSet;
 		public ColorEx Color = ColorEx.White;
 
-		/// <summary>
-		///		Needed for particle systems
-		/// </summary>
+		///<summary>
+		///  Needed for particle systems
+		///</summary>
 		public float rotationInRadians = 0;
 
 		#endregion Member variables
 
 		#region Constructor
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public Billboard() {}
-
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="position"></param>
-		/// <param name="owner"></param>
-		public Billboard( Vector3 position, BillboardSet owner )
+		///<summary>
+		///  Default constructor.
+		///</summary>
+		public Billboard()
 		{
-			this.Position = position;
-			this.ParentSet = owner;
-			this.Color = ColorEx.White;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="position"></param>
-		/// <param name="owner"></param>
-		/// <param name="color"></param>
+		///<summary>
+		///</summary>
+		///<param name="position"> </param>
+		///<param name="owner"> </param>
+		public Billboard( Vector3 position, BillboardSet owner )
+		{
+			Position = position;
+			ParentSet = owner;
+			Color = ColorEx.White;
+		}
+
+		///<summary>
+		///</summary>
+		///<param name="position"> </param>
+		///<param name="owner"> </param>
+		///<param name="color"> </param>
 		public Billboard( Vector3 position, BillboardSet owner, ColorEx color )
 		{
-			this.Color = color;
-			this.Position = position;
-			this.ParentSet = owner;
+			Color = color;
+			Position = position;
+			ParentSet = owner;
 		}
 
 		#endregion Constructor
 
 		#region Properties
 
-		/// <summary>
-		///		Width and height of this billboard, if it has it's own.
-		/// </summary>
+		///<summary>
+		///  Width and height of this billboard, if it has it's own.
+		///</summary>
 		public float Width
 		{
 			get
@@ -142,9 +126,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		Width and height of this billboard, if it has it's own.
-		/// </summary>
+		///<summary>
+		///  Width and height of this billboard, if it has it's own.
+		///</summary>
 		public float Height
 		{
 			get
@@ -159,9 +143,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		Specifies whether or not this billboard has different dimensions than the rest in the set.
-		/// </summary>
+		///<summary>
+		///  Specifies whether or not this billboard has different dimensions than the rest in the set.
+		///</summary>
 		public bool HasOwnDimensions
 		{
 			get
@@ -178,19 +162,19 @@ namespace Axiom.Core
 
 		#region Methods
 
-		/// <summary>
-		///		Resets this billboard to use the parent BillboardSet's dimensions instead of it's own.
-		/// </summary>
+		///<summary>
+		///  Resets this billboard to use the parent BillboardSet's dimensions instead of it's own.
+		///</summary>
 		public virtual void ResetDimensions()
 		{
 			hasOwnDimensions = false;
 		}
 
-		/// <summary>
-		///		Sets the width and height for this billboard.
-		/// </summary>
-		/// <param name="width">Width of the billboard.</param>
-		/// <param name="height">Height of the billboard.</param>
+		///<summary>
+		///  Sets the width and height for this billboard.
+		///</summary>
+		///<param name="width"> Width of the billboard. </param>
+		///<param name="height"> Height of the billboard. </param>
 		public virtual void SetDimensions( float width, float height )
 		{
 			hasOwnDimensions = true;
@@ -199,27 +183,27 @@ namespace Axiom.Core
 			ParentSet.NotifyBillboardResized();
 		}
 
-		/// <summary>
-		///		Internal method for notifying a billboard of it's owner.
-		/// </summary>
-		/// <param name="owner"></param>
+		///<summary>
+		///  Internal method for notifying a billboard of it's owner.
+		///</summary>
+		///<param name="owner"> </param>
 		internal void NotifyOwner( BillboardSet owner )
 		{
 			ParentSet = owner;
 		}
 
-		/// <summary>
-		///		Gets/Sets the rotation in degrees.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets the rotation in degrees.
+		///</summary>
 		public float Rotation
 		{
 			get
 			{
-				return rotationInRadians * Utility.DEGREES_PER_RADIAN;
+				return rotationInRadians*Utility.DEGREES_PER_RADIAN;
 			}
 			set
 			{
-				rotationInRadians = value * Utility.RADIANS_PER_DEGREE;
+				rotationInRadians = value*Utility.RADIANS_PER_DEGREE;
 				if ( rotationInRadians != 0 )
 				{
 					ParentSet.NotifyBillboardRotated();

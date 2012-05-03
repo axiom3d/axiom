@@ -35,25 +35,24 @@
 
 #region Namespace Declarations
 
-using Axiom.Animating;
-using Axiom.Core;
 using Axiom.Collections;
+using Axiom.Core;
 
 #endregion
 
 namespace Axiom.Animating.Collections
 {
 	/// <summary>
-	/// Represents a collection of <see cref="SceneNode">SceneNodes</see> that are sorted by key.
+	///   Represents a collection of <see cref="SceneNode">SceneNodes</see> that are sorted by key.
 	/// </summary>
 	public class AnimationTrackCollection : AxiomSortedCollection<ushort, AnimationTrack>
 	{
 		#region Instance Methods
 
-		/// <summary>
-		///	Adds an <see cref="AnimationTrack"/> to the collection and uses its handle automatically as the key.
-		/// </summary>
-		/// <param name="item"></param>
+		///<summary>
+		///  Adds an <see cref="AnimationTrack" /> to the collection and uses its handle automatically as the key.
+		///</summary>
+		///<param name="item"> </param>
 		public void Add( AnimationTrack item )
 		{
 			Add( item.Handle, item );

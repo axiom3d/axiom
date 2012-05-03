@@ -36,14 +36,13 @@
 #region Namespace Declarations
 
 using Axiom.Core;
-using Axiom.Collections;
 
 #endregion
 
 namespace Axiom.Collections
 {
 	/// <summary>
-	/// Represents a collection of <see cref="SceneNode">SceneNodes</see> that are sorted by name.
+	///   Represents a collection of <see cref="SceneNode">SceneNodes</see> that are sorted by name.
 	/// </summary>
 	public class SceneNodeCollection : AxiomCollection<SceneNode>
 	{

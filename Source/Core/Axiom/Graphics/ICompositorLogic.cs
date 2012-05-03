@@ -41,71 +41,65 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
 	/// <summary>
-	/// Interface for compositor logics, which can be automatically bound to compositors,
-	/// allowing per-compositor logic (such as attaching a relevant listener) to happen
-	/// automatically.
+	///   Interface for compositor logics, which can be automatically bound to compositors, allowing per-compositor logic (such as attaching a relevant listener) to happen automatically.
 	/// </summary>
 	public interface ICompositorLogic
 	{
 		/// <summary>
-		/// Called when a compositor instance has been created.
+		///   Called when a compositor instance has been created.
 		/// </summary>
 		/// <remarks>
-		/// This happens after its setup was finished, so the chain is also accessible.
-		/// This is an ideal method to automatically attach a compositor listener.
+		///   This happens after its setup was finished, so the chain is also accessible. This is an ideal method to automatically attach a compositor listener.
 		/// </remarks>
-		/// <param name="newInstance"></param>
+		/// <param name="newInstance"> </param>
 		void CompositorInstanceCreated( CompositorInstance newInstance );
 
 		/// <summary>
-		/// Called when a compositor instance has been destroyed
+		///   Called when a compositor instance has been destroyed
 		/// </summary>
 		/// <remarks>
-		/// The chain that contained the compositor is still alive during this call.
+		///   The chain that contained the compositor is still alive during this call.
 		/// </remarks>
-		/// <param name="destroyedInstance"></param>
+		/// <param name="destroyedInstance"> </param>
 		void CompositorInstanceDestroyed( CompositorInstance destroyedInstance );
 	}
 
 	/// <summary>
-	/// Implementation base class for compositor logics, which can be automatically bound to compositors,
-	/// allowing per-compositor logic (such as attaching a relevant listener) to happen
-	/// automatically.
+	///   Implementation base class for compositor logics, which can be automatically bound to compositors, allowing per-compositor logic (such as attaching a relevant listener) to happen automatically.
 	/// </summary>
 	/// <remarks>
-	/// All methods have empty implementations to not force an implementer into
-	/// extending all of them.
+	///   All methods have empty implementations to not force an implementer into extending all of them.
 	/// </remarks>
 	public class CompositorLogic : ICompositorLogic
 	{
 		#region Implementation of ICompositorLogic
 
 		/// <summary>
-		/// Called when a compositor instance has been created.
+		///   Called when a compositor instance has been created.
 		/// </summary>
 		/// <remarks>
-		/// This happens after its setup was finished, so the chain is also accessible.
-		/// This is an ideal method to automatically attach a compositor listener.
+		///   This happens after its setup was finished, so the chain is also accessible. This is an ideal method to automatically attach a compositor listener.
 		/// </remarks>
-		/// <param name="newInstance"></param>
-		public virtual void CompositorInstanceCreated( CompositorInstance newInstance ) {}
+		/// <param name="newInstance"> </param>
+		public virtual void CompositorInstanceCreated( CompositorInstance newInstance )
+		{
+		}
 
 		/// <summary>
-		/// Called when a compositor instance has been destroyed
+		///   Called when a compositor instance has been destroyed
 		/// </summary>
 		/// <remarks>
-		/// The chain that contained the compositor is still alive during this call.
+		///   The chain that contained the compositor is still alive during this call.
 		/// </remarks>
-		/// <param name="destroyedInstance"></param>
-		public virtual void CompositorInstanceDestroyed( CompositorInstance destroyedInstance ) {}
+		/// <param name="destroyedInstance"> </param>
+		public virtual void CompositorInstanceDestroyed( CompositorInstance destroyedInstance )
+		{
+		}
 
 		#endregion
 	}

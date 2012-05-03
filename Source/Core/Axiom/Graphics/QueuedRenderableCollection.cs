@@ -38,86 +38,70 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
-using Axiom.Core;
-using Axiom.Graphics;
-
 using System.Collections.Generic;
-
 using Axiom.Collections;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
 	/// <summary>
-	/// Visitor interface for items in a QueuedRenderableCollection.
+	///   Visitor interface for items in a QueuedRenderableCollection.
 	/// </summary>
 	/// <remarks>
-	/// Those wishing to iterate over the items in a 
-	/// QueuedRenderableCollection should implement this visitor pattern,
-	/// since internal organization of the collection depends on the 
-	/// sorting method in use.
+	///   Those wishing to iterate over the items in a QueuedRenderableCollection should implement this visitor pattern, since internal organization of the collection depends on the sorting method in use.
 	/// </remarks>
 	public interface IQueuedRenderableVisitor
 	{
 		/// <summary>
-		/// Called when visiting a RenderablePass, ie items in a
-		/// sorted collection where items are not grouped by pass.
+		///   Called when visiting a RenderablePass, ie items in a sorted collection where items are not grouped by pass.
 		/// </summary>
 		/// <remarks>
-		/// If this is called, neither of the other 2 visit methods	will be called.
+		///   If this is called, neither of the other 2 visit methods will be called.
 		/// </remarks>
-		/// <param name="renderablePass"></param>
+		/// <param name="renderablePass"> </param>
 		void Visit( RenderablePass renderablePass );
 
 		/// <summary>
-		/// When visiting a collection grouped by pass, this is	called when the grouping pass changes.
+		///   When visiting a collection grouped by pass, this is called when the grouping pass changes.
 		/// </summary>
 		/// <remarks>
-		/// If this method is called, the RenderablePass visit 
-		/// method will not be called for this collection. The 
-		/// Renderable visit method will be called for each item
-		/// underneath the pass grouping level.
+		///   If this method is called, the RenderablePass visit method will not be called for this collection. The Renderable visit method will be called for each item underneath the pass grouping level.
 		/// </remarks>
-		/// <param name="pass"></param>
-		/// <returns>True to continue, false to skip the Renderables underneath</returns>
+		/// <param name="pass"> </param>
+		/// <returns> True to continue, false to skip the Renderables underneath </returns>
 		bool Visit( Pass pass );
 
 		/// <summary>
-		/// Visit method called once per Renderable on a grouped collection.
+		///   Visit method called once per Renderable on a grouped collection.
 		/// </summary>
 		/// <remarks>
-		/// If this method is called, the RenderablePass visit 
-		/// method will not be called for this collection.
+		///   If this method is called, the RenderablePass visit method will not be called for this collection.
 		/// </remarks>
-		/// <param name="renderable"></param>
+		/// <param name="renderable"> </param>
 		void Visit( IRenderable renderable );
 	};
 
 
-	///<summary>Lowest level collection of renderables.</summary>
+	///<summary>
+	///  Lowest level collection of renderables.
+	///</summary>
 	///<remarks>
-	///To iterate over items in this collection, you must call
-	///the accept method and supply a <see cref="IQueuedRenderableVisitor"/>,
-	///the order of the iteration, and whether that iteration is
-	///over a <see cref="RenderablePass"/> list or a 2-level grouped list which 
-	///causes a visit call at the <see cref="Pass"/> level, and a call for each
-	///<see cref="IRenderable"/> underneath.
+	///  To iterate over items in this collection, you must call the accept method and supply a <see
+	///   cref="IQueuedRenderableVisitor" /> , the order of the iteration, and whether that iteration is over a <see
+	///   cref="RenderablePass" /> list or a 2-level grouped list which causes a visit call at the <see cref="Pass" /> level, and a call for each <see
+	///   cref="IRenderable" /> underneath.
 	///</remarks>
 	public class QueuedRenderableCollection
 	{
 		#region Constants and Enumerations
 
 		/// <summary>
-		/// Organization modes required for this collection.
+		///   Organization modes required for this collection.
 		/// </summary>
 		/// <remarks>
-		/// This affects the internal placement of the items added to this collection;
-		/// if only one type of sorting / grouping is to be required, then renderables
-		/// can be stored only once, whilst if multiple types are going to be needed
-		/// then internally there will be multiple organizations. Changing the organization
-		/// needs to be done when the collection is empty.
+		///   This affects the internal placement of the items added to this collection; if only one type of sorting / grouping is to be required, then renderables can be stored only once, whilst if multiple types are going to be needed then internally there will be multiple organizations. Changing the organization needs to be done when the collection is empty.
 		/// </remarks>
 		[Flags()]
 		public enum OrganizationMode
@@ -129,10 +113,10 @@ namespace Axiom.Graphics
 			Descending = 2,
 
 			/// <summary>
-			/// Sort ascending camera distance 
+			///   Sort ascending camera distance
 			/// </summary>
 			/// <remarks>
-			/// Note value overlaps with descending since both use same sort
+			///   Note value overlaps with descending since both use same sort
 			/// </remarks>
 			Ascending = 6
 		};
@@ -173,7 +157,9 @@ namespace Axiom.Graphics
 
 			#region Construction and Destruction
 
-			public DepthSortDescendingComparer() {}
+			public DepthSortDescendingComparer()
+			{
+			}
 
 			#endregion Construction and Destruction
 
@@ -214,34 +200,39 @@ namespace Axiom.Graphics
 		#region Fields and Properties
 
 		/// Radix sorter for accessing sort value 1 (Pass)
-		private static RadixSortUInt32<List<RenderablePass>, RenderablePass> _radixSorter1 = new RadixSortUInt32<List<RenderablePass>, RenderablePass>();
+		private static readonly RadixSortUInt32<List<RenderablePass>, RenderablePass> _radixSorter1 =
+			new RadixSortUInt32<List<RenderablePass>, RenderablePass>();
 
 		/// Radix sorter for sort value 2 (distance)
-		private static RadixSortSingle<List<RenderablePass>, RenderablePass> _radixSorter2 = new RadixSortSingle<List<RenderablePass>, RenderablePass>();
+		private static readonly RadixSortSingle<List<RenderablePass>, RenderablePass> _radixSorter2 =
+			new RadixSortSingle<List<RenderablePass>, RenderablePass>();
 
 		/// Bitmask of the organization modes requested
 		private OrganizationMode _organizationMode;
 
-		/// Grouped 
-		private AxiomSortedCollection<Pass, List<IRenderable>> _grouped = new AxiomSortedCollection<Pass, List<IRenderable>>( new PassGroupComparer() );
+		/// Grouped
+		private readonly AxiomSortedCollection<Pass, List<IRenderable>> _grouped =
+			new AxiomSortedCollection<Pass, List<IRenderable>>( new PassGroupComparer() );
 
 		/// Sorted descending (can iterate backwards to get ascending)
-		private List<RenderablePass> _sortedDescending = new List<RenderablePass>();
+		private readonly List<RenderablePass> _sortedDescending = new List<RenderablePass>();
 
-		private DepthSortDescendingComparer _defaultDepthSortComparer = new DepthSortDescendingComparer();
+		private readonly DepthSortDescendingComparer _defaultDepthSortComparer = new DepthSortDescendingComparer();
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
-		public QueuedRenderableCollection() {}
+		public QueuedRenderableCollection()
+		{
+		}
 
 		#endregion Construction and Destruction
 
 		#region Methods
 
 		/// <summary>
-		/// Empty the collection
+		///   Empty the collection
 		/// </summary>
 		public void Clear()
 		{
@@ -255,13 +246,12 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Remove the group entry (if any) for a given Pass.
+		///   Remove the group entry (if any) for a given Pass.
 		/// </summary>
 		/// <remarks>
-		/// To be used when a pass is destroyed, such that any
-		/// grouping level for it becomes useless.
+		///   To be used when a pass is destroyed, such that any grouping level for it becomes useless.
 		/// </remarks>
-		/// <param name="pass"></param>
+		/// <param name="pass"> </param>
 		public void RemovePassGroup( Pass pass )
 		{
 			if ( _grouped.ContainsKey( pass ) )
@@ -272,32 +262,32 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Reset the organisation modes required for this collection.
+		///   Reset the organisation modes required for this collection.
 		/// </summary>
 		/// <remarks>
-		/// You can only do this when the collection is empty.
+		///   You can only do this when the collection is empty.
 		/// </remarks>
-		/// <see cref="OrganizationMode"/>
+		/// <see cref="OrganizationMode" />
 		public void ResetOrganizationModes()
 		{
 			_organizationMode = 0;
 		}
 
 		/// <summary>
-		/// Add a required sorting / grouping mode to this collection when next used.
+		///   Add a required sorting / grouping mode to this collection when next used.
 		/// </summary>
 		/// <remarks>
-		/// You can only do this when the collection is empty.
+		///   You can only do this when the collection is empty.
 		/// </remarks>
-		/// <see cref="OrganizationMode"/>
-		/// <param name="om"></param>
+		/// <see cref="OrganizationMode" />
+		/// <param name="om"> </param>
 		public void AddOrganizationMode( OrganizationMode om )
 		{
 			_organizationMode |= om;
 		}
 
 		/// <summary>
-		/// Add a renderable to the collection using a given pass
+		///   Add a renderable to the collection using a given pass
 		/// </summary>
 		public void AddRenderable( Pass pass, IRenderable rend )
 		{
@@ -322,9 +312,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Perform any sorting that is required on this collection.
+		///   Perform any sorting that is required on this collection.
 		/// </summary>
-		/// <param name="camera"></param>
+		/// <param name="camera"> </param>
 		public void Sort( Camera camera )
 		{
 			// ascending and descending sort both set bit 1
@@ -363,19 +353,17 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Accept a visitor over the collection contents.
+		///   Accept a visitor over the collection contents.
 		/// </summary>
-		/// <param name="visitor">Visitor class which should be called back</param>
-		/// <param name="organizationMode">
-		/// The organization mode which you want to iterate over.
-		/// Note that this must have been included in an AddOrganizationMode
-		/// call before any renderables were added.
-		/// </param>
+		/// <param name="visitor"> Visitor class which should be called back </param>
+		/// <param name="organizationMode"> The organization mode which you want to iterate over. Note that this must have been included in an AddOrganizationMode call before any renderables were added. </param>
 		public void AcceptVisitor( IQueuedRenderableVisitor visitor, OrganizationMode organizationMode )
 		{
 			if ( (int)( organizationMode & _organizationMode ) == 0 )
 			{
-				throw new ArgumentException( "Organization mode requested in AcceptVistor was not notified " + "to this class ahead of time, therefore may not be supported.", "organizationMode" );
+				throw new ArgumentException(
+					"Organization mode requested in AcceptVistor was not notified " +
+					"to this class ahead of time, therefore may not be supported.", "organizationMode" );
 			}
 
 			switch ( organizationMode )

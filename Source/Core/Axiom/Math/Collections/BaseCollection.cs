@@ -43,22 +43,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Math.Collections
 {
-	/// <summary>
-	///		Serves as a basis for strongly typed collections in the math lib.
-	/// </summary>
-	/// <remarks>
-	///		Can't wait for Generics in .Net Framework 2.0!   
-	/// </remarks>
+	///<summary>
+	///  Serves as a basis for strongly typed collections in the math lib.
+	///</summary>
+	///<remarks>
+	///  Can't wait for Generics in .Net Framework 2.0!
+	///</remarks>
 	public abstract class BaseCollection : ICollection, IEnumerable, IEnumerator
 	{
-		/// <summary></summary>
+		/// <summary>
+		/// </summary>
 		protected ArrayList objectList;
 
 		//		protected int nextUniqueKeyCounter;
@@ -67,9 +67,8 @@ namespace Axiom.Math.Collections
 
 		#region Constructors
 
-		/// <summary>
-		///		
-		/// </summary>
+		///<summary>
+		///</summary>
 		public BaseCollection()
 		{
 			objectList = new ArrayList( INITIAL_CAPACITY );
@@ -77,9 +76,8 @@ namespace Axiom.Math.Collections
 
 		#endregion
 
-		/// <summary>
-		///		
-		/// </summary>
+		///<summary>
+		///</summary>
 		public object this[ int index ]
 		{
 			get
@@ -92,27 +90,27 @@ namespace Axiom.Math.Collections
 			}
 		}
 
-		/// <summary>
-		///		Adds an item to the collection.
-		/// </summary>
-		/// <param name="item"></param>
+		///<summary>
+		///  Adds an item to the collection.
+		///</summary>
+		///<param name="item"> </param>
 		protected void Add( object item )
 		{
 			objectList.Add( item );
 		}
 
-		/// <summary>
-		///		Clears all objects from the collection.
-		/// </summary>
+		///<summary>
+		///  Clears all objects from the collection.
+		///</summary>
 		public void Clear()
 		{
 			objectList.Clear();
 		}
 
-		/// <summary>
-		///		Removes the item from the collection.
-		/// </summary>
-		/// <param name="item"></param>
+		///<summary>
+		///  Removes the item from the collection.
+		///</summary>
+		///<param name="item"> </param>
 		public void Remove( object item )
 		{
 			var index = objectList.IndexOf( item );
@@ -126,17 +124,15 @@ namespace Axiom.Math.Collections
 		#region Implementation of ICollection
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="array"></param>
-		/// <param name="index"></param>
+		/// <param name="array"> </param>
+		/// <param name="index"> </param>
 		public void CopyTo( System.Array array, int index )
 		{
 			objectList.CopyTo( array, index );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public bool IsSynchronized
 		{
@@ -147,7 +143,6 @@ namespace Axiom.Math.Collections
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public int Count
 		{
@@ -158,7 +153,6 @@ namespace Axiom.Math.Collections
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public object SyncRoot
 		{
@@ -183,19 +177,19 @@ namespace Axiom.Math.Collections
 
 		private int position = -1;
 
-		/// <summary>
-		///		Resets the in progress enumerator.
-		/// </summary>
+		///<summary>
+		///  Resets the in progress enumerator.
+		///</summary>
 		public void Reset()
 		{
 			// reset the enumerator position
 			position = -1;
 		}
 
-		/// <summary>
-		///		Moves to the next item in the enumeration if there is one.
-		/// </summary>
-		/// <returns></returns>
+		///<summary>
+		///  Moves to the next item in the enumeration if there is one.
+		///</summary>
+		///<returns> </returns>
 		public bool MoveNext()
 		{
 			position += 1;
@@ -210,9 +204,9 @@ namespace Axiom.Math.Collections
 			}
 		}
 
-		/// <summary>
-		///		Returns the current object in the enumeration.
-		/// </summary>
+		///<summary>
+		///  Returns the current object in the enumeration.
+		///</summary>
 		public object Current
 		{
 			get

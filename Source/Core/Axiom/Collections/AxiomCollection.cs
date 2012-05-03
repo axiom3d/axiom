@@ -36,10 +36,10 @@
 #region Namespace Declarations
 
 using System;
-using System.Linq;
-#if !USE_CUSTOM_SORTEDLIST
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+
+#if !USE_CUSTOM_SORTEDLIST
 
 #endif
 
@@ -47,9 +47,9 @@ using System.Collections.Generic;
 
 namespace Axiom.Collections
 {
-	/// <summary>
-	///	Serves as a basis for strongly typed collections in the engine.
-	/// </summary>
+	///<summary>
+	///  Serves as a basis for strongly typed collections in the engine.
+	///</summary>
 #if NET_40 && !(WINDOWS_PHONE || XBOX || XBOX360)
     public class AxiomCollection<T> : System.Collections.Concurrent.ConcurrentDictionary<string, T>
 #else
@@ -81,8 +81,8 @@ namespace Axiom.Collections
 		public AxiomCollection()
 			: base()
 		{
-			this.parent = null;
-			this.typeName = typeof ( T ).Name;
+			parent = null;
+			typeName = typeof ( T ).Name;
 		}
 
 		protected AxiomCollection( Object parent )
@@ -93,11 +93,13 @@ namespace Axiom.Collections
 #endif
 		{
 			this.parent = parent;
-			this.typeName = typeof ( T ).Name;
+			typeName = typeof ( T ).Name;
 		}
 
 		public AxiomCollection( AxiomCollection<int> copy )
-			: base( (IDictionary<string, T>)copy ) {}
+			: base( (IDictionary<string, T>)copy )
+		{
+		}
 
 		#endregion Constructors
 
@@ -112,17 +114,19 @@ namespace Axiom.Collections
 		{
 			( this as IDictionary<string, T> ).Remove( key );
 		}
-        public virtual bool TryGetValue(string key, out T val)
-        {
-            val = default(T);
-            if (this.ContainsKey(key))
-            {
-                val = this[key];
-                return true;
-            }
 
-            return false;
-        }
+		public virtual bool TryGetValue( string key, out T val )
+		{
+			val = default( T );
+			if ( ContainsKey( key ) )
+			{
+				val = this[ key ];
+				return true;
+			}
+
+			return false;
+		}
+
 		public virtual bool TryRemove( string key )
 		{
 #if NET_40 && !(WINDOWS_PHONE || XBOX || XBOX360)
@@ -139,30 +143,30 @@ namespace Axiom.Collections
 #endif
 		}
 
-		/// <summary>
-		///	Adds an unnamed object to the <see cref="AxiomCollection{T}"/> and names it manually.
-		/// </summary>
-		/// <param name="item">The object to add.</param>
+		///<summary>
+		///  Adds an unnamed object to the <see cref="AxiomCollection{T}" /> and names it manually.
+		///</summary>
+		///<param name="item"> The object to add. </param>
 		public virtual void Add( T item )
 		{
 			Add( typeName + ( nextUniqueKeyCounter++ ), item );
 		}
 
 		/// <summary>
-		/// Adds multiple items from a specified source collection
+		///   Adds multiple items from a specified source collection
 		/// </summary>
 		public virtual void AddRange( IDictionary<string, T> source )
 		{
 			foreach ( var entry in source )
 			{
-				this.Add( entry.Key, entry.Value );
+				Add( entry.Key, entry.Value );
 			}
 		}
 
 		/// <summary>
-		/// Returns an enumerator that iterates through the <see cref="AxiomCollection{T}"/>.
+		///   Returns an enumerator that iterates through the <see cref="AxiomCollection{T}" /> .
 		/// </summary>
-		/// <returns>An <see cref="IEnumerator{T}"/> for the <see cref="AxiomCollection{T}"/> values.</returns>
+		/// <returns> An <see cref="IEnumerator{T}" /> for the <see cref="AxiomCollection{T}" /> values. </returns>
 		public new virtual IEnumerator<T> GetEnumerator()
 		{
 			return Values.GetEnumerator();
@@ -184,13 +188,13 @@ namespace Axiom.Collections
 			}
 			set
 			{
-				if ( this.ContainsKey( key ) )
+				if ( ContainsKey( key ) )
 				{
 					base[ key ] = value;
 				}
 				else
 				{
-					this.Add( key, value );
+					Add( key, value );
 				}
 			}
 		}
@@ -199,9 +203,9 @@ namespace Axiom.Collections
 	}
 
 
-	/// <summary>
-	///	Serves as a basis for strongly typed collections in the engine.
-	/// </summary>
+	///<summary>
+	///  Serves as a basis for strongly typed collections in the engine.
+	///</summary>
 	public class AxiomSortedCollection<TKey, TValue> : SortedList<TKey, TValue>
 	{
 		#region Constants
@@ -218,19 +222,17 @@ namespace Axiom.Collections
 
 		#region Constructors
 
-		/// <summary>
-		///
-		/// </summary>
+		///<summary>
+		///</summary>
 		public AxiomSortedCollection()
 			: base( InitialCapacity )
 		{
-			this.parent = null;
+			parent = null;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="parent"></param>
+		///<summary>
+		///</summary>
+		///<param name="parent"> </param>
 		public AxiomSortedCollection( Object parent )
 			: base( InitialCapacity )
 		{
@@ -238,33 +240,39 @@ namespace Axiom.Collections
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2"/> class that is empty, has the specified initial capacity, and uses the specified <see cref="T:System.Collections.Generic.IComparer`1"/>.
+		///   Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2" /> class that is empty, has the specified initial capacity, and uses the specified <see
+		///    cref="T:System.Collections.Generic.IComparer`1" /> .
 		/// </summary>
-		/// <param name="capacity">The initial number of elements that the <see cref="T:System.Collections.Generic.SortedList`2"/> can contain.
-		/// </param>
-		/// <param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1"/> implementation to use when comparing keys.
-		/// -or-
-		/// null to use the default <see cref="T:System.Collections.Generic.Comparer`1"/> for the type of the key.
-		/// </param>
-		/// <exception cref="T:System.ArgumentOutOfRangeException"><paramref name="capacity"/> is less than zero.
-		/// </exception>
+		/// <param name="capacity"> The initial number of elements that the <see cref="T:System.Collections.Generic.SortedList`2" /> can contain. </param>
+		/// <param name="comparer"> The <see cref="T:System.Collections.Generic.IComparer`1" /> implementation to use when comparing keys. -or- null to use the default <see
+		///    cref="T:System.Collections.Generic.Comparer`1" /> for the type of the key. </param>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">
+		///   <paramref name="capacity" />
+		///   is less than zero.</exception>
 		public AxiomSortedCollection( int capacity, IComparer<TKey> comparer )
-			: base( capacity, comparer ) {}
+			: base( capacity, comparer )
+		{
+		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2"/> class that contains elements copied from the specified <see cref="T:System.Collections.Generic.IDictionary`2"/>, has sufficient capacity to accommodate the number of elements copied, and uses the specified <see cref="T:System.Collections.Generic.IComparer`1"/>.
+		///   Initializes a new instance of the <see cref="T:System.Collections.Generic.SortedList`2" /> class that contains elements copied from the specified <see
+		///    cref="T:System.Collections.Generic.IDictionary`2" /> , has sufficient capacity to accommodate the number of elements copied, and uses the specified <see
+		///    cref="T:System.Collections.Generic.IComparer`1" /> .
 		/// </summary>
-		/// <param name="dictionary">The <see cref="T:System.Collections.Generic.IDictionary`2"/> whose elements are copied to the new <see cref="T:System.Collections.Generic.SortedList`2"/>.
-		/// </param><param name="comparer">The <see cref="T:System.Collections.Generic.IComparer`1"/> implementation to use when comparing keys.
-		/// -or-
-		/// null to use the default <see cref="T:System.Collections.Generic.Comparer`1"/> for the type of the key.
-		/// </param>
-		/// <exception cref="T:System.ArgumentNullException"><paramref name="dictionary"/> is null.
-		/// </exception>
-		/// <exception cref="T:System.ArgumentException"><paramref name="dictionary"/> contains one or more duplicate keys.
-		/// </exception>
+		/// <param name="dictionary"> The <see cref="T:System.Collections.Generic.IDictionary`2" /> whose elements are copied to the new <see
+		///    cref="T:System.Collections.Generic.SortedList`2" /> . </param>
+		/// <param name="comparer"> The <see cref="T:System.Collections.Generic.IComparer`1" /> implementation to use when comparing keys. -or- null to use the default <see
+		///    cref="T:System.Collections.Generic.Comparer`1" /> for the type of the key. </param>
+		/// <exception cref="T:System.ArgumentNullException">
+		///   <paramref name="dictionary" />
+		///   is null.</exception>
+		/// <exception cref="T:System.ArgumentException">
+		///   <paramref name="dictionary" />
+		///   contains one or more duplicate keys.</exception>
 		public AxiomSortedCollection( IDictionary<TKey, TValue> dictionary, IComparer<TKey> comparer )
-			: base( dictionary, comparer ) {}
+			: base( dictionary, comparer )
+		{
+		}
 
 		#endregion Constructors
 	}

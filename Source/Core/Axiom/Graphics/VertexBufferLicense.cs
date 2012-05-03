@@ -37,15 +37,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-	/// <summary>
-	///		Structure holding details of a license to use a temporary shared buffer.
-	/// </summary>
+	///<summary>
+	///  Structure holding details of a license to use a temporary shared buffer.
+	///</summary>
 	public class VertexBufferLicense
 	{
 		#region Fields
@@ -61,9 +59,9 @@ namespace Axiom.Graphics
 		#region Constructor
 
 		/// <summary>
-		/// 
 		/// </summary>
-		public VertexBufferLicense( HardwareVertexBuffer originalBuffer, BufferLicenseRelease licenseType, int expiredDelay, HardwareVertexBuffer buffer, IHardwareBufferLicensee licensee )
+		public VertexBufferLicense( HardwareVertexBuffer originalBuffer, BufferLicenseRelease licenseType, int expiredDelay,
+		                            HardwareVertexBuffer buffer, IHardwareBufferLicensee licensee )
 		{
 			this.originalBuffer = originalBuffer;
 			this.licenseType = licenseType;

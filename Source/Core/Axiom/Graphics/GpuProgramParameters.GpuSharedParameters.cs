@@ -38,9 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-
 using Axiom.Core;
 using Axiom.Math;
 
@@ -51,52 +48,40 @@ namespace Axiom.Graphics
 	public partial class GpuProgramParameters
 	{
 		/// <summary>
-		/// A group of manually updated parameters that are shared between many parameter sets.
+		///   A group of manually updated parameters that are shared between many parameter sets.
 		/// </summary>
 		/// <remarks>
-		/// Sometimes you want to set some common parameters across many otherwise
-		/// different parameter sets, and keep them all in sync together. This class
-		/// allows you to define a set of parameters that you can share across many
-		/// parameter sets and have the parameters that match automatically be pulled
-		/// from the shared set, rather than you having to set them on all the parameter
-		/// sets individually.
+		///   Sometimes you want to set some common parameters across many otherwise different parameter sets, and keep them all in sync together. This class allows you to define a set of parameters that you can share across many parameter sets and have the parameters that match automatically be pulled from the shared set, rather than you having to set them on all the parameter sets individually.
 		/// </remarks>
-		/// <par>
-		/// Parameters in a shared set are matched up with instances in a GpuProgramParameters
-		/// structure by matching names. It is up to you to define the named parameters
-		/// that a shared set contains, and ensuring the definition matches.
-		/// </par>
-		/// <note>
-		/// Shared parameter sets can be named, and looked up using the GpuProgramManager.
-		/// </note>
+		/// <par>Parameters in a shared set are matched up with instances in a GpuProgramParameters
+		///   structure by matching names. It is up to you to define the named parameters
+		///   that a shared set contains, and ensuring the definition matches.</par>
+		/// <note>Shared parameter sets can be named, and looked up using the GpuProgramManager.</note>
 		[OgreVersion( 1, 7, 2790 )]
 		public class GpuSharedParameters
 		{
 			#region NamedConstants
 
-			[OgreVersion( 1, 7, 2790 )]
-			protected GpuNamedConstants NamedConstants = new GpuNamedConstants();
+			[OgreVersion( 1, 7, 2790 )] protected GpuNamedConstants NamedConstants = new GpuNamedConstants();
 
 			#endregion
 
 			#region FloatConstants
 
-			[OgreVersion( 1, 7, 2790 )]
-			protected internal FloatConstantList FloatConstants = new FloatConstantList();
+			[OgreVersion( 1, 7, 2790 )] protected internal FloatConstantList FloatConstants = new FloatConstantList();
 
 			#endregion
 
 			#region IntConstants
 
-			[OgreVersion( 1, 7, 2790 )]
-			protected internal IntConstantList IntConstants = new IntConstantList();
+			[OgreVersion( 1, 7, 2790 )] protected internal IntConstantList IntConstants = new IntConstantList();
 
 			#endregion
 
 			#region Name
 
 			/// <summary>
-			/// Get the name of this shared parameter set
+			///   Get the name of this shared parameter set
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public string Name { get; protected set; }
@@ -119,8 +104,7 @@ namespace Axiom.Graphics
 			#region Version
 
 			/// <summary>
-			/// Get the version number of this shared parameter set, can be used to identify when
-			/// changes have occurred.
+			///   Get the version number of this shared parameter set, can be used to identify when changes have occurred.
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public uint Version { get; protected set; }
@@ -130,8 +114,7 @@ namespace Axiom.Graphics
 			#region FrameLastUpdated
 
 			/// <summary>
-			///  Not used when copying data, but might be useful to RS using shared buffers
-			///  Get the frame in which this shared parameter set was last updated
+			///   Not used when copying data, but might be useful to RS using shared buffers Get the frame in which this shared parameter set was last updated
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public int FrameLastUpdated { get; protected set; }
@@ -141,7 +124,7 @@ namespace Axiom.Graphics
 			#region RenderSystemData
 
 			/// <summary>
-			///  Internal method that the RenderSystem might use to store optional data.
+			///   Internal method that the RenderSystem might use to store optional data.
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public object RenderSystemData { get; protected set; }
@@ -163,15 +146,12 @@ namespace Axiom.Graphics
 			#region AddConstantDefinition
 
 			/// <summary>
-			/// Add a new constant definition to this shared set of parameters.
+			///   Add a new constant definition to this shared set of parameters.
 			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="constType"></param>
+			/// <param name="name"> </param>
+			/// <param name="constType"> </param>
 			/// <remarks>
-			/// Unlike GpuProgramParameters, where the parameter list is defined by the
-			/// program being compiled, this shared parameter set is defined by the
-			/// user. Only parameters which have been predefined here may be later
-			/// updated.
+			///   Unlike GpuProgramParameters, where the parameter list is defined by the program being compiled, this shared parameter set is defined by the user. Only parameters which have been predefined here may be later updated.
 			/// </remarks>
 			[OgreVersion( 1, 7, 2790, "will not expose ConstantDefinitionIterator" )]
 			public void AddConstantDefinition( string name, GpuConstantType constType )
@@ -180,16 +160,13 @@ namespace Axiom.Graphics
 			}
 
 			/// <summary>
-			/// Add a new constant definition to this shared set of parameters.
+			///   Add a new constant definition to this shared set of parameters.
 			/// </summary>
-			/// <param name="name"></param>
-			/// <param name="constType"></param>
-			/// <param name="arrraySize"></param>
+			/// <param name="name"> </param>
+			/// <param name="constType"> </param>
+			/// <param name="arrraySize"> </param>
 			/// <remarks>
-			/// Unlike GpuProgramParameters, where the parameter list is defined by the
-			/// program being compiled, this shared parameter set is defined by the
-			/// user. Only parameters which have been predefined here may be later
-			/// updated.
+			///   Unlike GpuProgramParameters, where the parameter list is defined by the program being compiled, this shared parameter set is defined by the user. Only parameters which have been predefined here may be later updated.
 			/// </remarks>
 			[OgreVersion( 1, 7, 2790, "will not expose ConstantDefinitionIterator" )]
 			public void AddConstantDefinition( string name, GpuConstantType constType, int arrraySize )
@@ -201,21 +178,25 @@ namespace Axiom.Graphics
 
 				var def = new GpuConstantDefinition
 				          {
-				          	ArraySize = arrraySize, ConstantType = constType, // for compatibility we do not pad values to multiples of 4
+				          	ArraySize = arrraySize,
+				          	ConstantType = constType,
+				          	// for compatibility we do not pad values to multiples of 4
 				          	// when it comes to arrays, user is responsible for creating matching defs
-				          	ElementSize = GpuConstantDefinition.GetElementSize( constType, false ), // not used
-				          	LogicalIndex = 0, Variability = GpuParamVariability.Global
+				          	ElementSize = GpuConstantDefinition.GetElementSize( constType, false ),
+				          	// not used
+				          	LogicalIndex = 0,
+				          	Variability = GpuParamVariability.Global
 				          };
 
 				if ( def.IsFloat )
 				{
 					def.PhysicalIndex = FloatConstants.Count;
-					FloatConstants.Resize( FloatConstants.Count + def.ArraySize * def.ElementSize );
+					FloatConstants.Resize( FloatConstants.Count + def.ArraySize*def.ElementSize );
 				}
 				else
 				{
 					def.PhysicalIndex = IntConstants.Count;
-					IntConstants.Resize( IntConstants.Count + def.ArraySize * def.ElementSize );
+					IntConstants.Resize( IntConstants.Count + def.ArraySize*def.ElementSize );
 				}
 				NamedConstants.Map.Add( name, def );
 
@@ -227,7 +208,7 @@ namespace Axiom.Graphics
 			#region RemoveConstantDefinition
 
 			/// <summary>
-			/// Remove a constant definition from this shared set of parameters.
+			///   Remove a constant definition from this shared set of parameters.
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public virtual void RemoveConstantDefinition( string name )
@@ -239,7 +220,7 @@ namespace Axiom.Graphics
 				}
 
 				var isFloat = def.IsFloat;
-				var numElems = def.ElementSize * def.ArraySize;
+				var numElems = def.ElementSize*def.ArraySize;
 
 				foreach ( var otherDef in NamedConstants.Map.Values )
 				{
@@ -271,7 +252,7 @@ namespace Axiom.Graphics
 			#region RemoveAllConstantDefinitions
 
 			/// <summary>
-			/// Remove a constant definition from this shared set of parameters.
+			///   Remove a constant definition from this shared set of parameters.
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public void RemoveAllConstantDefinitions()
@@ -288,7 +269,7 @@ namespace Axiom.Graphics
 			#region GetConstantDefinition
 
 			/// <summary>
-			/// Get a specific GpuConstantDefinition for a named parameter.
+			///   Get a specific GpuConstantDefinition for a named parameter.
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public GpuConstantDefinition GetConstantDefinition( string name )
@@ -339,7 +320,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public void SetNamedConstant( string name, Matrix4 value )
 			{
-				var floats = new float[ 16 ];
+				var floats = new float[16];
 				value.MakeFloatArray( floats );
 				SetNamedConstant( name, floats );
 			}
@@ -347,11 +328,11 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public void SetNamedConstant( string name, Matrix4[] value )
 			{
-				var size = value.Length * 16;
-				var floats = new float[ size ];
+				var size = value.Length*16;
+				var floats = new float[size];
 				for ( var i = 0; i < value.Length; i++ )
 				{
-					value[ i ].MakeFloatArray( floats, i * 16 );
+					value[ i ].MakeFloatArray( floats, i*16 );
 				}
 				SetNamedConstant( name, floats );
 			}
@@ -362,7 +343,7 @@ namespace Axiom.Graphics
 				GpuConstantDefinition def;
 				if ( NamedConstants.Map.TryGetValue( name, out def ) )
 				{
-					var count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
+					var count = Utility.Min( value.Length, def.ElementSize*def.ArraySize );
 
 					for ( var v = 0; v < count; v++ )
 					{
@@ -379,7 +360,7 @@ namespace Axiom.Graphics
 				GpuConstantDefinition def;
 				if ( NamedConstants.Map.TryGetValue( name, out def ) )
 				{
-					var count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
+					var count = Utility.Min( value.Length, def.ElementSize*def.ArraySize );
 
 					for ( var v = 0; v < count; v++ )
 					{
@@ -393,7 +374,7 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public void SetNamedConstant( string name, ColorEx value )
 			{
-				var floats = new float[ 4 ];
+				var floats = new float[4];
 				value.ToArrayRGBA( floats );
 				SetNamedConstant( name, floats );
 			}
@@ -404,7 +385,7 @@ namespace Axiom.Graphics
 				GpuConstantDefinition def;
 				if ( NamedConstants.Map.TryGetValue( name, out def ) )
 				{
-					var count = Utility.Min( value.Length, def.ElementSize * def.ArraySize );
+					var count = Utility.Min( value.Length, def.ElementSize*def.ArraySize );
 
 					for ( var v = 0; v < count; v++ )
 					{
@@ -420,11 +401,10 @@ namespace Axiom.Graphics
 			#region MarkDirty
 
 			/// <summary>
-			/// Mark the shared set as being dirty (values modified).
+			///   Mark the shared set as being dirty (values modified).
 			/// </summary>
 			/// <remarks>
-			/// You do not need to call this yourself, set is marked as dirty whenever
-			/// setNamedConstant or (non const) getFloatPointer et al are called.
+			///   You do not need to call this yourself, set is marked as dirty whenever setNamedConstant or (non const) getFloatPointer et al are called.
 			/// </remarks>
 			[OgreVersion( 1, 7, 2790 )]
 			public virtual void MarkDirty()
@@ -437,7 +417,7 @@ namespace Axiom.Graphics
 			#region GetFloatPointer
 
 			/// <summary>
-			/// Get a pointer to the 'nth' item in the float buffer
+			///   Get a pointer to the 'nth' item in the float buffer
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public OffsetArray<float>.FixedPointer GetFloatPointer( int pos )
@@ -450,7 +430,7 @@ namespace Axiom.Graphics
 			#region GetIntPointer
 
 			/// <summary>
-			/// Get a pointer to the 'nth' item in the int buffer
+			///   Get a pointer to the 'nth' item in the int buffer
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public OffsetArray<int>.FixedPointer GetIntPointer( int pos )

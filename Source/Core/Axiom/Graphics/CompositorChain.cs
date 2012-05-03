@@ -43,7 +43,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System.Collections.Generic;
 using System.Diagnostics;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -51,29 +50,29 @@ using Axiom.Core;
 namespace Axiom.Graphics
 {
 	///<summary>
-	///    Chain of compositor effects applying to one viewport.
+	///  Chain of compositor effects applying to one viewport.
 	///</summary>
 	public class CompositorChain : DisposableObject
 	{
 		public class RQListener
 		{
 			///<summary>
-			/// Fields that are treated as temps by queue started/ended events
+			///  Fields that are treated as temps by queue started/ended events
 			///</summary>
 			private CompositeTargetOperation operation;
 
 			///<summary>
-			///    The scene manager instance
+			///  The scene manager instance
 			///</summary>
 			private SceneManager sceneManager;
 
 			///<summary>
-			///    The render system
+			///  The render system
 			///</summary>
 			private RenderSystem renderSystem;
 
 			///<summary>
-			///    The view port
+			///  The view port
 			///</summary>
 			private Viewport viewport;
 
@@ -86,17 +85,17 @@ namespace Axiom.Graphics
 			}
 
 			///<summary>
-			///    The number of the first render system op to be processed by the event
+			///  The number of the first render system op to be processed by the event
 			///</summary>
 			private int currentOp;
 
 			///<summary>
-			///    The number of the last render system op to be processed by the event
+			///  The number of the last render system op to be processed by the event
 			///</summary>
 			private int lastOp;
 
 			///<summary>
-			///    Set current operation and target */
+			///  Set current operation and target */
 			///</summary>
 			public void SetOperation( CompositeTargetOperation op, SceneManager sm, RenderSystem rs )
 			{
@@ -108,7 +107,7 @@ namespace Axiom.Graphics
 			}
 
 			///<summary>
-			/// <see>RenderQueueListener.RenderQueueStarted</see>
+			///  <see>RenderQueueListener.RenderQueueStarted</see>
 			///</summary>
 			public void OnRenderQueueStarted( object sender, SceneManager.BeginRenderQueueEventArgs e )
 			{
@@ -129,7 +128,7 @@ namespace Axiom.Graphics
 			}
 
 			///<summary>
-			/// <see>RenderQueueListener.RenderQueueEnded</see>
+			///  <see>RenderQueueListener.RenderQueueEnded</see>
 			///</summary>
 			public void OnRenderQueueEnded( object sender, SceneManager.EndRenderQueueEventArgs e )
 			{
@@ -137,7 +136,7 @@ namespace Axiom.Graphics
 			}
 
 			///<summary>
-			///    Flush remaining render system operations
+			///  Flush remaining render system operations
 			///</summary>
 			public void FlushUpTo( RenderQueueGroupID id )
 			{
@@ -155,7 +154,7 @@ namespace Axiom.Graphics
 		#region Fields and Properties
 
 		///<summary>
-		///    Viewport affected by this CompositorChain
+		///  Viewport affected by this CompositorChain
 		///</summary>
 		protected Viewport viewport;
 
@@ -172,7 +171,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Plainly renders the scene; implicit first compositor in the chain.
+		///  Plainly renders the scene; implicit first compositor in the chain.
 		///</summary>
 		protected CompositorInstance originalScene;
 
@@ -185,7 +184,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Postfilter instances in this chain
+		///  Postfilter instances in this chain
 		///</summary>
 		protected List<CompositorInstance> instances;
 
@@ -198,7 +197,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    State needs recompile
+		///  State needs recompile
 		///</summary>
 		protected bool dirty;
 
@@ -215,21 +214,19 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Any compositors enabled?
+		///  Any compositors enabled?
 		///</summary>
 		protected bool anyCompositorsEnabled;
 
 		///<summary>
-		///    Compiled state (updated with _compile)
+		///  Compiled state (updated with _compile)
 		///</summary>
 		protected List<CompositeTargetOperation> compiledState;
 
 		protected CompositeTargetOperation outputOperation;
 
 		/// <summary>
-		///    Render System operations queued by last compile, these are created by this
-		///    instance thus managed and deleted by it. The list is cleared with
-		///    ClearCompilationState()
+		///   Render System operations queued by last compile, these are created by this instance thus managed and deleted by it. The list is cleared with ClearCompilationState()
 		/// </summary>
 		protected List<CompositeRenderSystemOperation> renderSystemOperations;
 
@@ -242,27 +239,27 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Old viewport settings
+		///  Old viewport settings
 		///</summary>
 		protected FrameBufferType oldClearEveryFrameBuffers;
 
 		///<summary>
-		///    Store old scene visibility mask
+		///  Store old scene visibility mask
 		///</summary>
 		protected ulong oldVisibilityMask;
 
 		///<summary>
-		///    Store old find visible objects
+		///  Store old find visible objects
 		///</summary>
 		protected bool oldFindVisibleObjects;
 
 		///<summary>
-		///    Store old camera LOD bias
+		///  Store old camera LOD bias
 		///</summary>
 		protected float oldLodBias;
 
 		///<summary>
-		///    Store old viewport material scheme
+		///  Store old viewport material scheme
 		///</summary>
 		protected string oldMaterialScheme;
 
@@ -275,7 +272,7 @@ namespace Axiom.Graphics
 		protected RQListener listener;
 
 		///<summary>
-		///    Identifier for "last" compositor in chain
+		///  Identifier for "last" compositor in chain
 		///</summary>
 		protected static int lastCompositor = int.MaxValue;
 
@@ -288,7 +285,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Identifier for best technique
+		///  Identifier for best technique
 		///</summary>
 		protected static int bestCompositor = 0;
 
@@ -306,7 +303,7 @@ namespace Axiom.Graphics
 
 		public CompositorChain( Viewport vp )
 		{
-			this.viewport = vp;
+			viewport = vp;
 			originalScene = null;
 			instances = new List<CompositorInstance>();
 			dirty = true;
@@ -320,10 +317,10 @@ namespace Axiom.Graphics
 			listener = new RQListener();
 			Debug.Assert( viewport != null );
 
-			viewport.Target.BeforeUpdate += this.BeforeRenderTargetUpdate;
-			viewport.Target.AfterUpdate += this.AfterRenderTargetUpdate;
-			viewport.Target.BeforeViewportUpdate += this.BeforeViewportUpdate;
-			viewport.Target.AfterViewportUpdate += this.AfterViewportUpdate;
+			viewport.Target.BeforeUpdate += BeforeRenderTargetUpdate;
+			viewport.Target.AfterUpdate += AfterRenderTargetUpdate;
+			viewport.Target.BeforeViewportUpdate += BeforeViewportUpdate;
+			viewport.Target.AfterViewportUpdate += AfterViewportUpdate;
 		}
 
 		#endregion Constructor
@@ -331,13 +328,13 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		/// Create "default compositor"
+		///   Create "default compositor"
 		/// </summary>
 		protected void CreateOriginalScene()
 		{
 			originalSceneMaterial = viewport.MaterialScheme;
 			string compName = "Axiom/Scene/" + originalSceneMaterial;
-			Compositor scene = (Compositor)CompositorManager.Instance.GetByName( compName );
+			var scene = (Compositor)CompositorManager.Instance.GetByName( compName );
 			if ( scene == null )
 			{
 				scene = (Compositor)CompositorManager.Instance.Create( compName, ResourceGroupManager.InternalResourceGroupName );
@@ -366,7 +363,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Destroy default compositor
+		///   Destroy default compositor
 		/// </summary>
 		protected void DestroyOriginalScene()
 		{
@@ -378,7 +375,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    destroy internal resources
+		///  destroy internal resources
 		///</summary>
 		protected void DestroyResources()
 		{
@@ -401,46 +398,42 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Apply a compositor. Initially, the filter is enabled.
+		///  Apply a compositor. Initially, the filter is enabled.
 		///</summary>
-		///<param name="filter">Filter to apply</param>
+		///<param name="filter"> Filter to apply </param>
 		public CompositorInstance AddCompositor( Compositor filter )
 		{
 			return AddCompositor( filter, lastCompositor, bestCompositor, string.Empty );
 		}
 
 		///<summary>
-		///    Apply a compositor. Initially, the filter is enabled.
+		///  Apply a compositor. Initially, the filter is enabled.
 		///</summary>
-		///<param name="filter">Filter to apply</param>
-		///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
+		///<param name="filter"> Filter to apply </param>
+		///<param name="addPosition"> Position in filter chain to insert this filter at; defaults to the end (last applied filter) </param>
 		public CompositorInstance AddCompositor( Compositor filter, int addPosition )
 		{
 			return AddCompositor( filter, addPosition, bestCompositor, string.Empty );
 		}
 
 		///<summary>
-		///    Apply a compositor. Initially, the filter is enabled.
+		///  Apply a compositor. Initially, the filter is enabled.
 		///</summary>
-		///<param name="filter">Filter to apply</param>
-		///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
-		///<param name="technique">Technique to use; CompositorChain::BEST (default) chooses to the best one
-		///                        available (first technique supported)
-		///</param>
+		///<param name="filter"> Filter to apply </param>
+		///<param name="addPosition"> Position in filter chain to insert this filter at; defaults to the end (last applied filter) </param>
+		///<param name="technique"> Technique to use; CompositorChain::BEST (default) chooses to the best one available (first technique supported) </param>
 		private CompositorInstance AddCompositor( Compositor filter, int addPosition, int technique )
 		{
 			return AddCompositor( filter, addPosition, technique, string.Empty );
 		}
 
 		///<summary>
-		///    Apply a compositor. Initially, the filter is enabled.
+		///  Apply a compositor. Initially, the filter is enabled.
 		///</summary>
-		///<param name="filter">Filter to apply</param>
-		///<param name="addPosition">Position in filter chain to insert this filter at; defaults to the end (last applied filter)</param>
-		///<param name="technique">Technique to use; CompositorChain::BEST (default) chooses to the best one
-		///                        available (first technique supported)
-		///</param>
-		///<param name="scheme"></param>
+		///<param name="filter"> Filter to apply </param>
+		///<param name="addPosition"> Position in filter chain to insert this filter at; defaults to the end (last applied filter) </param>
+		///<param name="technique"> Technique to use; CompositorChain::BEST (default) chooses to the best one available (first technique supported) </param>
+		///<param name="scheme"> </param>
 		private CompositorInstance AddCompositor( Compositor filter, int addPosition, int technique, string scheme )
 		{
 			filter.Touch();
@@ -449,7 +442,7 @@ namespace Axiom.Graphics
 			{
 				LogManager.Instance.DefaultLog.Write( "CompositorChain: Compositor " + filter.Name + " has no supported techniques." );
 			}
-			CompositorInstance t = new CompositorInstance( tech, this );
+			var t = new CompositorInstance( tech, this );
 
 			if ( addPosition == lastCompositor )
 			{
@@ -469,7 +462,7 @@ namespace Axiom.Graphics
 
 
 		///<summary>
-		/// Removes the last compositor in the chain.
+		///  Removes the last compositor in the chain.
 		///</summary>
 		public void RemoveCompositor()
 		{
@@ -477,9 +470,9 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		/// Remove a compositor.
+		///  Remove a compositor.
 		///</summary>
-		///<param name="position">Position in filter chain of filter to remove</param>
+		///<param name="position"> Position in filter chain of filter to remove </param>
 		public void RemoveCompositor( int position )
 		{
 			Debug.Assert( position < instances.Count, "Index out of bounds." );
@@ -490,7 +483,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Remove all compositors.
+		///  Remove all compositors.
 		///</summary>
 		public void RemoveAllCompositors()
 		{
@@ -503,8 +496,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Remove a compositor by pointer. This is internally used by CompositionTechnique to
-		///    "weak" remove any instanced of a deleted technique.
+		///  Remove a compositor by pointer. This is internally used by CompositionTechnique to "weak" remove any instanced of a deleted technique.
 		///</summary>
 		public void RemoveInstance( CompositorInstance instance )
 		{
@@ -515,7 +507,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Get compositor instance by position.
+		///  Get compositor instance by position.
 		///</summary>
 		public CompositorInstance GetCompositor( int index )
 		{
@@ -523,9 +515,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Get Compositor instance by name
+		///   Get Compositor instance by name
 		/// </summary>
-		/// <returns>Returns instance with matching name, null if none found.</returns>
+		/// <returns> Returns instance with matching name, null if none found. </returns>
 		public CompositorInstance GetCompositor( string name )
 		{
 			foreach ( CompositorInstance item in instances )
@@ -540,21 +532,21 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Get the previous instance in this chain to the one specified.
+		///   Get the previous instance in this chain to the one specified.
 		/// </summary>
-		/// <param name="curr"></param>
-		/// <returns></returns>
+		/// <param name="curr"> </param>
+		/// <returns> </returns>
 		public CompositorInstance GetPreviousInstance( CompositorInstance curr )
 		{
 			return GetPreviousInstance( curr, true );
 		}
 
 		/// <summary>
-		/// Get the previous instance in this chain to the one specified.
+		///   Get the previous instance in this chain to the one specified.
 		/// </summary>
-		/// <param name="curr"></param>
-		/// <param name="activeOnly"></param>
-		/// <returns></returns>
+		/// <param name="curr"> </param>
+		/// <param name="activeOnly"> </param>
+		/// <returns> </returns>
 		public CompositorInstance GetPreviousInstance( CompositorInstance curr, bool activeOnly )
 		{
 			var found = false;
@@ -578,21 +570,21 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Get the next instance in this chain to the one specified.
+		///   Get the next instance in this chain to the one specified.
 		/// </summary>
-		/// <param name="curr"></param>
-		/// <returns></returns>
+		/// <param name="curr"> </param>
+		/// <returns> </returns>
 		public CompositorInstance GetNextInstance( CompositorInstance curr )
 		{
 			return GetNextInstance( curr, true );
 		}
 
 		/// <summary>
-		/// Get the next instance in this chain to the one specified.
+		///   Get the next instance in this chain to the one specified.
 		/// </summary>
-		/// <param name="curr"></param>
-		/// <param name="activeOnly"></param>
-		/// <returns></returns>
+		/// <param name="curr"> </param>
+		/// <param name="activeOnly"> </param>
+		/// <returns> </returns>
 		public CompositorInstance GetNextInstance( CompositorInstance curr, bool activeOnly )
 		{
 			var found = false;
@@ -615,12 +607,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Enable or disable a compositor, by position. Disabling a compositor stops it from rendering
-		///    but does not free any resources. This can be more efficient than using removeCompositor and
-		///    addCompositor in cases the filter is switched on and off a lot.
+		///   Enable or disable a compositor, by position. Disabling a compositor stops it from rendering but does not free any resources. This can be more efficient than using removeCompositor and addCompositor in cases the filter is switched on and off a lot.
 		/// </summary>
-		/// <param name="position">Position in filter chain of filter</param>
-		/// <param name="state"></param>
+		/// <param name="position"> Position in filter chain of filter </param>
+		/// <param name="state"> </param>
 		public void SetCompositorEnabled( int position, bool state )
 		{
 			var instance = GetCompositor( position );
@@ -650,7 +640,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    @see RenderTargetListener.PreRenderTargetUpdate
+		///  @see RenderTargetListener.PreRenderTargetUpdate
 		///</summary>
 		public void BeforeRenderTargetUpdate( RenderTargetEventArgs evt )
 		{
@@ -695,7 +685,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    @see RenderTargetListener.PreRenderTargetUpdate
+		///  @see RenderTargetListener.PreRenderTargetUpdate
 		///</summary>
 		public void AfterRenderTargetUpdate( RenderTargetEventArgs evt )
 		{
@@ -707,7 +697,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    @see RenderTargetListener.PreViewportUpdate
+		///  @see RenderTargetListener.PreViewportUpdate
 		///</summary>
 		public virtual void BeforeViewportUpdate( RenderTargetViewportEventArgs evt )
 		{
@@ -720,7 +710,9 @@ namespace Axiom.Graphics
 			// set original scene details from viewport
 			var pass = originalScene.Technique.OutputTarget.Passes[ 0 ];
 			var passParent = pass.Parent;
-			if ( pass.ClearBuffers != viewport.ClearBuffers || pass.ClearColor != viewport.BackgroundColor || passParent.VisibilityMask != viewport.VisibilityMask || passParent.MaterialScheme != viewport.MaterialScheme || passParent.ShadowsEnabled != viewport.ShowShadows )
+			if ( pass.ClearBuffers != viewport.ClearBuffers || pass.ClearColor != viewport.BackgroundColor ||
+			     passParent.VisibilityMask != viewport.VisibilityMask || passParent.MaterialScheme != viewport.MaterialScheme ||
+			     passParent.ShadowsEnabled != viewport.ShowShadows )
 			{
 				pass.ClearBuffers = viewport.ClearBuffers;
 				pass.ClearColor = viewport.BackgroundColor;
@@ -740,7 +732,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Prepare a viewport, the camera and the scene for a rendering operation
+		///  Prepare a viewport, the camera and the scene for a rendering operation
 		///</summary>
 		protected void PreTargetOperation( CompositeTargetOperation op, Viewport vp, Camera cam )
 		{
@@ -761,7 +753,7 @@ namespace Axiom.Graphics
 				sm.FindVisibleObjectsBool = op.FindVisibleObjects;
 				// Set LOD bias level
 				oldLodBias = cam.LodBias;
-				cam.LodBias = cam.LodBias * op.LodBias;
+				cam.LodBias = cam.LodBias*op.LodBias;
 			}
 
 
@@ -778,7 +770,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Restore a viewport, the camera and the scene after a rendering operation
+		///  Restore a viewport, the camera and the scene after a rendering operation
 		///</summary>
 		protected void PostTargetOperation( CompositeTargetOperation op, Viewport vp, Camera cam )
 		{
@@ -799,7 +791,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    @see RenderTargetListener.PostViewportUpdate
+		///  @see RenderTargetListener.PostViewportUpdate
 		///</summary>
 		public virtual void AfterViewportUpdate( RenderTargetViewportEventArgs evt )
 		{
@@ -817,7 +809,7 @@ namespace Axiom.Graphics
 
 
 		///<summary>
-		///    @see RenderTargetListener.ViewportRemoved
+		///  @see RenderTargetListener.ViewportRemoved
 		///</summary>
 		public virtual void OnViewportRemoved( RenderTargetViewportEventArgs evt )
 		{
@@ -831,7 +823,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Compile this Composition chain into a series of RenderTarget operations.
+		///  Compile this Composition chain into a series of RenderTarget operations.
 		///</summary>
 		protected void Compile()
 		{
@@ -907,7 +899,7 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

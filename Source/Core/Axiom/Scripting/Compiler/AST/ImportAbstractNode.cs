@@ -44,7 +44,7 @@ using System;
 namespace Axiom.Scripting.Compiler.AST
 {
 	/// <summary>
-	/// This abstract node represents an import statement
+	///   This abstract node represents an import statement
 	/// </summary>
 	internal class ImportAbstractNode : AbstractNode
 	{
@@ -53,11 +53,13 @@ namespace Axiom.Scripting.Compiler.AST
 		public string Target;
 
 		public ImportAbstractNode()
-			: base( null ) {}
+			: base( null )
+		{
+		}
 
 		#region AbstractNode Implementation
 
-		/// <see cref="AbstractNode.Clone"/>
+		/// <see cref="AbstractNode.Clone" />
 		public override AbstractNode Clone()
 		{
 			var node = new ImportAbstractNode();
@@ -68,7 +70,7 @@ namespace Axiom.Scripting.Compiler.AST
 			return node;
 		}
 
-		/// <see cref="AbstractNode.Value"/>
+		/// <see cref="AbstractNode.Value" />
 		public override string Value
 		{
 			get

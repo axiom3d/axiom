@@ -39,11 +39,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
+using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting.Compiler.AST;
-using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -54,24 +53,24 @@ namespace Axiom.Scripting.Compiler
 		public abstract class Translator
 		{
 			/// <summary>
-			/// Internal method that checks if this Translator is the right translator for the node
-			/// supplied by the <see cref="ScriptTranslatorManager"/>.
+			///   Internal method that checks if this Translator is the right translator for the node supplied by the <see
+			///    cref="ScriptTranslatorManager" /> .
 			/// </summary>
-			/// <param name="nodeId">The Id of the node</param>
-			/// <param name="parentId">The Id of the node's parent (if any)</param>
+			/// <param name="nodeId"> The Id of the node </param>
+			/// <param name="parentId"> The Id of the node's parent (if any) </param>
 			[AxiomHelper( 0, 9 )]
 			public abstract bool CheckFor( Keywords nodeId, Keywords parentId );
 
 			/// <summary>
-			/// This function translates the given node into Ogre resource(s).
+			///   This function translates the given node into Ogre resource(s).
 			/// </summary>
-			/// <param name="compiler">The compiler invoking this translator</param>
-			/// <param name="node">The current AST node to be translated</param>
+			/// <param name="compiler"> The compiler invoking this translator </param>
+			/// <param name="node"> The current AST node to be translated </param>
 			[OgreVersion( 1, 7, 2 )]
 			public abstract void Translate( ScriptCompiler compiler, AbstractNode node );
 
 			/// <summary>
-			/// Retrieves a new translator from the factories and uses it to process the give node
+			///   Retrieves a new translator from the factories and uses it to process the give node
 			/// </summary>
 			[OgreVersion( 1, 7, 2 )]
 			protected void processNode( ScriptCompiler compiler, AbstractNode node )
@@ -104,7 +103,7 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Retrieves the node iterator at the given index
+			///   Retrieves the node iterator at the given index
 			/// </summary>
 			[OgreVersion( 1, 7, 2 )]
 			protected static AbstractNode getNodeAt( IList<AbstractNode> nodes, int index )
@@ -123,9 +122,9 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Converts the node to a boolean and returns true if successful
+			///   Converts the node to a boolean and returns true if successful
 			/// </summary>
-			/// <returns>true if successful</returns>
+			/// <returns> true if successful </returns>
 			[OgreVersion( 1, 7, 2 )]
 			protected static bool getBoolean( AbstractNode node, out bool result )
 			{
@@ -152,9 +151,9 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Converts the node to a string and returns true if successful
+			///   Converts the node to a string and returns true if successful
 			/// </summary>
-			/// <returns>true if successful</returns>
+			/// <returns> true if successful </returns>
 			[OgreVersion( 1, 7, 2 )]
 			protected static bool getString( AbstractNode node, out String result )
 			{
@@ -176,11 +175,11 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Converts the node to a Real and returns true if successful
+			///   Converts the node to a Real and returns true if successful
 			/// </summary>
-			/// <param name="node"></param>
-			/// <param name="result"></param>
-			/// <returns>true if successful</returns>
+			/// <param name="node"> </param>
+			/// <param name="result"> </param>
+			/// <returns> true if successful </returns>
 			protected static bool getReal( AbstractNode node, out Real result )
 			{
 				result = 0.0f;
@@ -206,11 +205,11 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Converts the node to a float and returns true if successful
+			///   Converts the node to a float and returns true if successful
 			/// </summary>
-			/// <param name="node"></param>
-			/// <param name="result"></param>
-			/// <returns>true if successful</returns>
+			/// <param name="node"> </param>
+			/// <param name="result"> </param>
+			/// <returns> true if successful </returns>
 			protected static bool getFloat( AbstractNode node, out float result )
 			{
 				result = 0f;
@@ -231,11 +230,11 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Converts the node to an int and returns true if successful
+			///   Converts the node to an int and returns true if successful
 			/// </summary>
-			/// <param name="node"></param>
-			/// <param name="result"></param>
-			/// <returns>true if successful</returns>
+			/// <param name="node"> </param>
+			/// <param name="result"> </param>
+			/// <returns> true if successful </returns>
 			protected static bool getInt( AbstractNode node, out int result )
 			{
 				result = 0;
@@ -256,11 +255,11 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Converts the node to a uint and returns true if successful
+			///   Converts the node to a uint and returns true if successful
 			/// </summary>
-			/// <param name="node"></param>
-			/// <param name="result"></param>
-			/// <returns>true if successful</returns>
+			/// <param name="node"> </param>
+			/// <param name="result"> </param>
+			/// <returns> true if successful </returns>
 			protected static bool getUInt( AbstractNode node, out uint result )
 			{
 				result = 0;
@@ -286,16 +285,16 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Converts the range of nodes to a ColourValue and returns true if successful
+			///   Converts the range of nodes to a ColourValue and returns true if successful
 			/// </summary>
-			/// <param name="nodes"></param>
-			/// <param name="i"></param>
-			/// <param name="result"></param>
-			/// <param name="maxEntries"></param>
-			/// <returns>true if successful</returns>
+			/// <param name="nodes"> </param>
+			/// <param name="i"> </param>
+			/// <param name="result"> </param>
+			/// <param name="maxEntries"> </param>
+			/// <returns> true if successful </returns>
 			protected static bool getColor( IList<AbstractNode> nodes, int i, out ColorEx result, int maxEntries )
 			{
-				var vals = new Real[ 4 ]
+				var vals = new Real[4]
 				           {
 				           	0, 0, 0, 0
 				           };
@@ -327,12 +326,12 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Converts the range of nodes to a Matrix4 and returns true if successful
+			///   Converts the range of nodes to a Matrix4 and returns true if successful
 			/// </summary>
-			/// <param name="nodes"></param>
-			/// <param name="i"></param>
-			/// <param name="m"></param>
-			/// <returns>true if successful</returns>
+			/// <param name="nodes"> </param>
+			/// <param name="i"> </param>
+			/// <param name="m"> </param>
+			/// <returns> true if successful </returns>
 			protected static bool getMatrix4( IList<AbstractNode> nodes, int i, out Matrix4 m )
 			{
 				m = new Matrix4();
@@ -349,7 +348,7 @@ namespace Axiom.Scripting.Compiler
 					{
 						if ( nodes[ i ] is AtomAbstractNode && ( (AtomAbstractNode)nodes[ i ] ).IsNumber )
 						{
-							m[ n / 4, n % 4 ] = ( (AtomAbstractNode)nodes[ i ] ).Number;
+							m[ n/4, n%4 ] = ( (AtomAbstractNode)nodes[ i ] ).Number;
 						}
 						else
 						{
@@ -365,17 +364,17 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Converts the range of nodes to an array of ints and returns true if successful
+			///   Converts the range of nodes to an array of ints and returns true if successful
 			/// </summary>
-			/// <param name="nodes"></param>
-			/// <param name="i"></param>
-			/// <param name="vals"></param>
-			/// <param name="count"></param>
-			/// <returns>true if successful</returns>
+			/// <param name="nodes"> </param>
+			/// <param name="i"> </param>
+			/// <param name="vals"> </param>
+			/// <param name="count"> </param>
+			/// <returns> true if successful </returns>
 			protected static bool getInts( IList<AbstractNode> nodes, int i, out int[] vals, int count )
 			{
 				var success = true;
-				vals = new int[ count ];
+				vals = new int[count];
 
 				if ( nodes == null )
 				{
@@ -413,17 +412,17 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Converts the range of nodes to an array of floats and returns true if successful
+			///   Converts the range of nodes to an array of floats and returns true if successful
 			/// </summary>
-			/// <param name="nodes"></param>
-			/// <param name="i"></param>
-			/// <param name="vals"></param>
-			/// <param name="count"></param>
-			/// <returns>true if successful</returns>
+			/// <param name="nodes"> </param>
+			/// <param name="i"> </param>
+			/// <param name="vals"> </param>
+			/// <param name="count"> </param>
+			/// <returns> true if successful </returns>
 			protected static bool getFloats( IList<AbstractNode> nodes, int i, out float[] vals, int count )
 			{
 				var success = true;
-				vals = new float[ count ];
+				vals = new float[count];
 
 				if ( nodes == null )
 				{
@@ -461,7 +460,7 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Converts the node to a GpuConstantType enum and returns true if successful
+			///   Converts the node to a GpuConstantType enum and returns true if successful
 			/// </summary>
 			[OgreVersion( 1, 7, 2 )]
 			protected static bool getConstantType( AbstractNode i, out GpuProgramParameters.GpuConstantType op )
@@ -548,13 +547,13 @@ namespace Axiom.Scripting.Compiler
 			}
 
 			/// <summary>
-			/// Converts the node to an enum of type T and returns true if successful
+			///   Converts the node to an enum of type T and returns true if successful
 			/// </summary>
-			/// <typeparam name="T"></typeparam>
-			/// <param name="node"></param>
-			/// <param name="compiler"></param>
-			/// <param name="property"></param>
-			/// <returns>true if successful</returns>
+			/// <typeparam name="T"> </typeparam>
+			/// <param name="node"> </param>
+			/// <param name="compiler"> </param>
+			/// <param name="property"> </param>
+			/// <returns> true if successful </returns>
 			protected bool getEnumeration<T>( AbstractNode node, ScriptCompiler compiler, out T property )
 			{
 				// Set default

@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-	//using System.Security.AccessControl;
-using System.Text;
-
 using Axiom.Serialization;
+
+//using System.Security.AccessControl;
 
 namespace Axiom.Graphics
 {
 	public partial class GpuProgramParameters
 	{
 		/// <summary>
-		/// Simple class for loading / saving GpuNamedConstants
+		///   Simple class for loading / saving GpuNamedConstants
 		/// </summary>
 		public class GpuNamedConstantsSerializer : Serializer
 		{
@@ -39,7 +36,9 @@ namespace Axiom.Graphics
 
 			private void ExportNamedConstants( GpuNamedConstants pConsts, Stream stream, Endian endianMode )
 			{
-				using ( var w = new BinaryWriter( stream ) ) {}
+				using ( var w = new BinaryWriter( stream ) )
+				{
+				}
 
 				throw new NotImplementedException();
 			}

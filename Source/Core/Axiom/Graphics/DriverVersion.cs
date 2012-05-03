@@ -38,7 +38,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -46,8 +45,7 @@ using Axiom.Core;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	/// DriverVersion is used by RenderSystemCapabilities and both GL and D3D9
-	/// to store the version of the current GPU driver
+	///   DriverVersion is used by RenderSystemCapabilities and both GL and D3D9 to store the version of the current GPU driver
 	/// </summary>
 	public struct DriverVersion
 	{
@@ -57,7 +55,6 @@ namespace Axiom.Graphics
 		public int Build { get; set; }
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public DriverVersion( int major, int minor, int release, int build )
 			: this()
@@ -71,19 +68,17 @@ namespace Axiom.Graphics
 		#region System.Object overrides
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		public override string ToString()
 		{
 			return string.Format( "{0}.{1}.{2}.{3}", Major, Minor, Release, Build );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns></returns>
+		/// <param name="obj"> </param>
+		/// <returns> </returns>
 		public override bool Equals( object obj )
 		{
 			if ( obj == null )
@@ -102,9 +97,8 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		public override int GetHashCode()
 		{
 			return Major ^ Minor ^ Release ^ Build;
@@ -113,9 +107,8 @@ namespace Axiom.Graphics
 		#endregion System.Object overrides
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="versionString"></param>
+		/// <param name="versionString"> </param>
 		public void FromString( string versionString )
 		{
 			var tokens = versionString.Split( '.' );

@@ -37,9 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Scripting.Compiler.AST;
@@ -50,19 +48,18 @@ using Axiom.Utilities;
 namespace Axiom.Scripting.Compiler
 {
 	/// <summary>
-	/// Manages threaded compilation of scripts. This script loader forwards
-	/// scripts compilations to a specific compiler instance.
+	///   Manages threaded compilation of scripts. This script loader forwards scripts compilations to a specific compiler instance.
 	/// </summary>
 	public partial class ScriptCompilerManager : Singleton<ScriptCompilerManager>, IScriptLoader
 	{
 		#region Fields and Properties
 
-		private List<string> _scriptPatterns = new List<string>();
+		private readonly List<string> _scriptPatterns = new List<string>();
 
-		private ScriptCompiler _compiler;
+		private readonly ScriptCompiler _compiler;
 
-		private List<ScriptTranslatorManager> _translatorManagers = new List<ScriptTranslatorManager>();
-		private ScriptTranslatorManager _builtinTranslatorManager;
+		private readonly List<ScriptTranslatorManager> _translatorManagers = new List<ScriptTranslatorManager>();
+		private readonly ScriptTranslatorManager _builtinTranslatorManager;
 
 		public IList<ScriptTranslatorManager> TranslatorManagers
 		{
@@ -85,14 +82,14 @@ namespace Axiom.Scripting.Compiler
 			this._scriptPatterns.Add( "*.particle" );
 			this._scriptPatterns.Add( "*.compositor" );
 #endif
-			this._scriptPatterns.Add( "*.os" );
+			_scriptPatterns.Add( "*.os" );
 
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
 
-			this._compiler = new ScriptCompiler();
+			_compiler = new ScriptCompiler();
 
-			this._builtinTranslatorManager = new BuiltinScriptTranslatorManager();
-			this._translatorManagers.Add( this._builtinTranslatorManager );
+			_builtinTranslatorManager = new BuiltinScriptTranslatorManager();
+			_translatorManagers.Add( _builtinTranslatorManager );
 		}
 
 		#endregion Construction and Destruction
@@ -100,10 +97,10 @@ namespace Axiom.Scripting.Compiler
 		#region Methods
 
 		/// <summary>
-		/// Retrieves a ScriptTranslator from the supported managers
+		///   Retrieves a ScriptTranslator from the supported managers
 		/// </summary>
-		/// <param name="node"></param>
-		/// <returns></returns>
+		/// <param name="node"> </param>
+		/// <returns> </returns>
 		public ScriptCompiler.Translator GetTranslator( AbstractNode node )
 		{
 			ScriptCompiler.Translator translator = null;
@@ -129,7 +126,7 @@ namespace Axiom.Scripting.Compiler
 		#region IScriptLoader Implementation
 
 		/// <summary>
-		/// A list of patterns loaded by this compiler manager
+		///   A list of patterns loaded by this compiler manager
 		/// </summary>
 		public List<string> ScriptPatterns
 		{
@@ -154,68 +151,68 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		/// <summary>
-		/// Set events of this manager's compiler
+		///   Set events of this manager's compiler
 		/// </summary>
 		private void _setCompilerEvents()
 		{
 			Contract.RequiresNotNull( _compiler, "_compiler" );
 
-			if ( this.OnImportFile != null )
+			if ( OnImportFile != null )
 			{
-				_compiler.OnImportFile += this.OnImportFile;
+				_compiler.OnImportFile += OnImportFile;
 			}
 
-			if ( this.OnPreConversion != null )
+			if ( OnPreConversion != null )
 			{
-				_compiler.OnPreConversion += this.OnPreConversion;
+				_compiler.OnPreConversion += OnPreConversion;
 			}
 
-			if ( this.OnPostConversion != null )
+			if ( OnPostConversion != null )
 			{
-				_compiler.OnPostConversion += this.OnPostConversion;
+				_compiler.OnPostConversion += OnPostConversion;
 			}
 
-			if ( this.OnCompileError != null )
+			if ( OnCompileError != null )
 			{
-				_compiler.OnCompileError += this.OnCompileError;
+				_compiler.OnCompileError += OnCompileError;
 			}
 
-			if ( this.OnCompilerEvent != null )
+			if ( OnCompilerEvent != null )
 			{
-				_compiler.OnCompilerEvent += this.OnCompilerEvent;
+				_compiler.OnCompilerEvent += OnCompilerEvent;
 			}
 		}
 
 		/// <summary>
-		/// Unset events of this manager's compiler
+		///   Unset events of this manager's compiler
 		/// </summary>
 		private void _unsetCompilerEvents()
 		{
 			Contract.RequiresNotNull( _compiler, "_compiler" );
 
-			if ( this.OnImportFile != null )
+			if ( OnImportFile != null )
 			{
-				_compiler.OnImportFile -= this.OnImportFile;
+				_compiler.OnImportFile -= OnImportFile;
 			}
 
-			if ( this.OnPreConversion != null )
+			if ( OnPreConversion != null )
 			{
-				_compiler.OnPreConversion -= this.OnPreConversion;
+				_compiler.OnPreConversion -= OnPreConversion;
 			}
 
-			if ( this.OnPostConversion != null )
+			if ( OnPostConversion != null )
 			{
-				_compiler.OnPostConversion -= this.OnPostConversion;
+				_compiler.OnPostConversion -= OnPostConversion;
 			}
 
-			if ( this.OnCompileError != null )
+			if ( OnCompileError != null )
 			{
-				_compiler.OnCompileError -= this.OnCompileError;
+				_compiler.OnCompileError -= OnCompileError;
 			}
 
-			if ( this.OnCompilerEvent != null )
+			if ( OnCompilerEvent != null )
 			{
-				_compiler.OnCompilerEvent -= this.OnCompilerEvent;
+				_compiler.OnCompilerEvent -= OnCompilerEvent;
 			}
 		}
 
@@ -232,17 +229,14 @@ namespace Axiom.Scripting.Compiler
 	}
 
 	/// <summary>
-	/// The ScriptTranslatorManager manages the lifetime and access to
-	/// script translators. You register these managers with the
-	/// ScriptCompilerManager tied to specific object types.
-	/// Each manager may manage multiple types.
+	///   The ScriptTranslatorManager manages the lifetime and access to script translators. You register these managers with the ScriptCompilerManager tied to specific object types. Each manager may manage multiple types.
 	/// </summary>
 	public abstract class ScriptTranslatorManager
 	{
 		protected List<ScriptCompiler.Translator> _translators = new List<ScriptCompiler.Translator>();
 
 		/// <summary>
-		/// Returns the number of translators being managed
+		///   Returns the number of translators being managed
 		/// </summary>
 		public int TranslatorsCount
 		{
@@ -253,10 +247,10 @@ namespace Axiom.Scripting.Compiler
 		}
 
 		/// <summary>
-		/// Returns a manager for the given object abstract node, or null if it is not supported
+		///   Returns a manager for the given object abstract node, or null if it is not supported
 		/// </summary>
-		/// <param name="node"></param>
-		/// <returns>Returns a manager for the given object abstract node, or null if it is not supported</returns>
+		/// <param name="node"> </param>
+		/// <returns> Returns a manager for the given object abstract node, or null if it is not supported </returns>
 		public ScriptCompiler.Translator GetTranslator( AbstractNode node )
 		{
 			if ( node is ObjectAbstractNode )
@@ -279,7 +273,7 @@ namespace Axiom.Scripting.Compiler
 	}
 
 	/// <summary>
-	/// This class manages the builtin translators
+	///   This class manages the builtin translators
 	/// </summary>
 	public class BuiltinScriptTranslatorManager : ScriptTranslatorManager
 	{

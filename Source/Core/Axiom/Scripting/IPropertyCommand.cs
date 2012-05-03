@@ -42,28 +42,30 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 namespace Axiom.Scripting
 {
 	/// <summary>
-	/// Specialization of the IPropertyCommand using object
+	///   Specialization of the IPropertyCommand using object
 	/// </summary>
-	public interface IPropertyCommand : IPropertyCommand<object> {};
+	public interface IPropertyCommand : IPropertyCommand<object>
+	{
+	};
 
 	/// <summary>
-	/// Provides an interface for setting object properties via a Command Pattern.
+	///   Provides an interface for setting object properties via a Command Pattern.
 	/// </summary>
-	/// <typeparam name="TObjectType">Type of the object to operate on.</typeparam>
+	/// <typeparam name="TObjectType"> Type of the object to operate on. </typeparam>
 	public interface IPropertyCommand<TObjectType>
 	{
 		/// <summary>
-		///    Gets the value for this command from the target object.
+		///   Gets the value for this command from the target object.
 		/// </summary>
-		/// <param name="target"></param>
-		/// <returns></returns>
+		/// <param name="target"> </param>
+		/// <returns> </returns>
 		string Get( TObjectType target );
 
 		/// <summary>
-		///    Sets the value for this command on the target object.
+		///   Sets the value for this command on the target object.
 		/// </summary>
-		/// <param name="target"></param>
-		/// <param name="val"></param>
+		/// <param name="target"> </param>
+		/// <param name="val"> </param>
 		void Set( TObjectType target, string val );
 	};
 }

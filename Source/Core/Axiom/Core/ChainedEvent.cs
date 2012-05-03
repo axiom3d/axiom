@@ -38,29 +38,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-	/// <summary>
-	///
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
+	///<summary>
+	///</summary>
+	///<typeparam name="T"> </typeparam>
 	public class ChainedEvent<T>
 		where T : EventArgs
 	{
 		public EventHandler<T> EventSinks;
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="arg"></param>
-		/// <param name="compare"></param>
-		/// <returns></returns>
+		///<summary>
+		///</summary>
+		///<param name="sender"> </param>
+		///<param name="arg"> </param>
+		///<param name="compare"> </param>
+		///<returns> </returns>
 		public virtual bool Fire( object sender, T arg, Predicate<T> compare )
 		{
 			var continueChain = true;

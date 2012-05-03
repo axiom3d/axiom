@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Axiom.Graphics
 {
@@ -13,30 +10,27 @@ namespace Axiom.Graphics
 			#region PhysicalIndex
 
 			/// <summary>
-			/// Physical buffer index
+			///   Physical buffer index
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int PhysicalIndex;
+			[OgreVersion( 1, 7, 2790 )] public int PhysicalIndex;
 
 			#endregion
 
 			#region CurrentSize
 
 			/// <summary>
-			/// Current physical size allocation
+			///   Current physical size allocation
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public int CurrentSize;
+			[OgreVersion( 1, 7, 2790 )] public int CurrentSize;
 
 			#endregion
 
 			#region Variability
 
 			/// <summary>
-			/// How the contents of this slot vary
+			///   How the contents of this slot vary
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public GpuParamVariability Variability;
+			[OgreVersion( 1, 7, 2790 )] public GpuParamVariability Variability;
 
 			#endregion
 
@@ -72,6 +66,8 @@ namespace Axiom.Graphics
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
-		public class GpuLogicalIndexUseMap : Dictionary<int, GpuLogicalIndexUse> {}
+		public class GpuLogicalIndexUseMap : Dictionary<int, GpuLogicalIndexUse>
+		{
+		}
 	}
 }

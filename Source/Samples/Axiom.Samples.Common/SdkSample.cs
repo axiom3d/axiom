@@ -24,18 +24,16 @@
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
-
 using SIS = SharpInputSystem;
 
 namespace Axiom.Samples
 {
 	/// <summary>
-	/// Base SDK sample class. Includes default player camera and SDK trays.
+	///   Base SDK sample class. Includes default player camera and SDK trays.
 	/// </summary>
 	public class SdkSample : Sample
 	{
@@ -44,7 +42,7 @@ namespace Axiom.Samples
 		private bool dragLook;
 
 		/// <summary>
-		/// click and drag to free-look
+		///   click and drag to free-look
 		/// </summary>
 		protected virtual bool DragLook
 		{
@@ -72,32 +70,32 @@ namespace Axiom.Samples
 		}
 
 		/// <summary>
-		/// Main Viewport
+		///   Main Viewport
 		/// </summary>
 		protected Viewport Viewport;
 
 		/// <summary>
-		/// Main Camera
+		///   Main Camera
 		/// </summary>
 		protected Camera Camera;
 
 		/// <summary>
-		/// Tray Interface Manager
+		///   Tray Interface Manager
 		/// </summary>
 		protected SdkTrayManager TrayManager;
 
 		/// <summary>
-		/// Basic Camera Manager
+		///   Basic Camera Manager
 		/// </summary>
 		protected SdkCameraManager CameraManager;
 
 		/// <summary>
-		/// Simple Details Panel
+		///   Simple Details Panel
 		/// </summary>
 		protected ParamsPanel DetailsPanel;
 
 		/// <summary>
-		/// Was the cursor visible before dialog appeared
+		///   Was the cursor visible before dialog appeared
 		/// </summary>
 		protected bool CursorWasVisible;
 
@@ -114,75 +112,76 @@ namespace Axiom.Samples
 			Metadata[ "Thumbnail" ] = String.Empty;
 			Metadata[ "Help" ] = String.Empty;
 
-			this.TrayManager = null;
-			this.CameraManager = null;
+			TrayManager = null;
+			CameraManager = null;
 		}
 
-		~SdkSample() {}
+		~SdkSample()
+		{
+		}
 
 		#endregion Construction and Destruction
 
 		#region Sample Implementation
 
 		/// <summary>
-		/// Manually update the cursor position after being unpaused.
+		///   Manually update the cursor position after being unpaused.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public override void Unpaused()
 		{
-			this.TrayManager.RefreshCursor();
+			TrayManager.RefreshCursor();
 		}
 
 		/// <summary>
-		/// Automatically saves position and orientation for free-look cameras.
+		///   Automatically saves position and orientation for free-look cameras.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public override void SaveState( NameValuePairList state )
 		{
-			if ( this.CameraManager.getStyle() == CameraStyle.FreeLook )
+			if ( CameraManager.getStyle() == CameraStyle.FreeLook )
 			{
-				state[ "CameraPosition" ] = this.Camera.Position.ToString();
-				state[ "CameraOrientation" ] = this.Camera.Orientation.ToString();
+				state[ "CameraPosition" ] = Camera.Position.ToString();
+				state[ "CameraOrientation" ] = Camera.Orientation.ToString();
 			}
 		}
 
 		/// <summary>
-		/// Automatically restores position and orientation for free-look cameras.
+		///   Automatically restores position and orientation for free-look cameras.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public override void RestoreState( NameValuePairList state )
 		{
 			if ( state.ContainsKey( "CameraPosition" ) && state.ContainsKey( "CameraOrientation" ) )
 			{
-				this.CameraManager.setStyle( CameraStyle.FreeLook );
-				this.Camera.Position = StringConverter.ParseVector3( state[ "CameraPosition" ] );
-				this.Camera.Orientation = StringConverter.ParseQuaternion( state[ "CameraOrientation" ] );
+				CameraManager.setStyle( CameraStyle.FreeLook );
+				Camera.Position = StringConverter.ParseVector3( state[ "CameraPosition" ] );
+				Camera.Orientation = StringConverter.ParseQuaternion( state[ "CameraOrientation" ] );
 			}
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="evt"></param>
-		/// <returns>true if we should stop rendering!</returns>
+		/// <param name="evt"> </param>
+		/// <returns> true if we should stop rendering! </returns>
 		[OgreVersion( 1, 7, 2 )]
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			this.TrayManager.FrameRenderingQueued( evt );
+			TrayManager.FrameRenderingQueued( evt );
 
-			if ( !this.TrayManager.IsDialogVisible )
+			if ( !TrayManager.IsDialogVisible )
 			{
-				this.CameraManager.frameRenderingQueued( evt ); // if dialog isn't up, then update the camera
+				CameraManager.frameRenderingQueued( evt ); // if dialog isn't up, then update the camera
 
-				if ( this.DetailsPanel.IsVisible ) // if details panel is visible, then update its contents
+				if ( DetailsPanel.IsVisible ) // if details panel is visible, then update its contents
 				{
-					this.DetailsPanel.SetParamValue( 0, this.Camera.DerivedPosition.x.ToString() );
-					this.DetailsPanel.SetParamValue( 1, this.Camera.DerivedPosition.y.ToString() );
-					this.DetailsPanel.SetParamValue( 2, this.Camera.DerivedPosition.z.ToString() );
-					this.DetailsPanel.SetParamValue( 4, this.Camera.DerivedOrientation.w.ToString() );
-					this.DetailsPanel.SetParamValue( 5, this.Camera.DerivedOrientation.x.ToString() );
-					this.DetailsPanel.SetParamValue( 6, this.Camera.DerivedOrientation.y.ToString() );
-					this.DetailsPanel.SetParamValue( 7, this.Camera.DerivedOrientation.z.ToString() );
+					DetailsPanel.SetParamValue( 0, Camera.DerivedPosition.x.ToString() );
+					DetailsPanel.SetParamValue( 1, Camera.DerivedPosition.y.ToString() );
+					DetailsPanel.SetParamValue( 2, Camera.DerivedPosition.z.ToString() );
+					DetailsPanel.SetParamValue( 4, Camera.DerivedOrientation.w.ToString() );
+					DetailsPanel.SetParamValue( 5, Camera.DerivedOrientation.x.ToString() );
+					DetailsPanel.SetParamValue( 6, Camera.DerivedOrientation.y.ToString() );
+					DetailsPanel.SetParamValue( 7, Camera.DerivedOrientation.z.ToString() );
 				}
 			}
 
@@ -192,48 +191,47 @@ namespace Axiom.Samples
 		[OgreVersion( 1, 7, 2 )]
 		public override void WindowResized( RenderWindow rw )
 		{
-			this.Camera.AspectRatio = (Real)this.Viewport.ActualWidth / (Real)this.Viewport.ActualHeight;
+			Camera.AspectRatio = (Real)Viewport.ActualWidth/(Real)Viewport.ActualHeight;
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="evt"></param>
-		/// <returns></returns>
+		/// <param name="evt"> </param>
+		/// <returns> </returns>
 		public override bool KeyPressed( SIS.KeyEventArgs evt )
 		{
 			if ( evt.Key == SIS.KeyCode.Key_H || evt.Key == SIS.KeyCode.Key_F1 ) // toggle visibility of help dialog
 			{
-				if ( !this.TrayManager.IsDialogVisible && Metadata[ "Help" ] != "" )
+				if ( !TrayManager.IsDialogVisible && Metadata[ "Help" ] != "" )
 				{
-					this.TrayManager.ShowOkDialog( "Help", Metadata[ "Help" ] );
+					TrayManager.ShowOkDialog( "Help", Metadata[ "Help" ] );
 				}
 				else
 				{
-					this.TrayManager.CloseDialog();
+					TrayManager.CloseDialog();
 				}
 			}
 
-			if ( this.TrayManager.IsDialogVisible )
+			if ( TrayManager.IsDialogVisible )
 			{
 				return true; // don't process any more keys if dialog is up
 			}
 
 			if ( evt.Key == SIS.KeyCode.Key_F ) // toggle visibility of advanced frame stats
 			{
-				this.TrayManager.ToggleAdvancedFrameStats();
+				TrayManager.ToggleAdvancedFrameStats();
 			}
 			else if ( evt.Key == SIS.KeyCode.Key_G ) // toggle visibility of even rarer debugging details
 			{
-				if ( this.DetailsPanel.TrayLocation == TrayLocation.None )
+				if ( DetailsPanel.TrayLocation == TrayLocation.None )
 				{
-					this.TrayManager.MoveWidgetToTray( this.DetailsPanel, TrayLocation.TopRight, 0 );
-					this.DetailsPanel.Show();
+					TrayManager.MoveWidgetToTray( DetailsPanel, TrayLocation.TopRight, 0 );
+					DetailsPanel.Show();
 				}
 				else
 				{
-					this.TrayManager.RemoveWidgetFromTray( this.DetailsPanel );
-					this.DetailsPanel.Hide();
+					TrayManager.RemoveWidgetFromTray( DetailsPanel );
+					DetailsPanel.Hide();
 				}
 			}
 			else if ( evt.Key == SIS.KeyCode.Key_T ) // cycle polygon rendering mode
@@ -242,7 +240,7 @@ namespace Axiom.Samples
 				TextureFiltering tfo;
 				int aniso;
 
-				switch ( this.DetailsPanel.GetParamValue( 9 )[ 0 ] )
+				switch ( DetailsPanel.GetParamValue( 9 )[ 0 ] )
 				{
 					case 'B':
 						newVal = "Trilinear";
@@ -268,14 +266,14 @@ namespace Axiom.Samples
 
 				MaterialManager.Instance.SetDefaultTextureFiltering( tfo );
 				MaterialManager.Instance.DefaultAnisotropy = aniso;
-				this.DetailsPanel.SetParamValue( 9, newVal );
+				DetailsPanel.SetParamValue( 9, newVal );
 			}
 			else if ( evt.Key == SIS.KeyCode.Key_R ) // cycle polygon rendering mode
 			{
 				String newVal;
 				PolygonMode pm;
 
-				switch ( this.Camera.PolygonMode )
+				switch ( Camera.PolygonMode )
 				{
 					case PolygonMode.Solid:
 						newVal = "Wireframe";
@@ -291,8 +289,8 @@ namespace Axiom.Samples
 						break;
 				}
 
-				this.Camera.PolygonMode = pm;
-				this.DetailsPanel.SetParamValue( 10, newVal );
+				Camera.PolygonMode = pm;
+				DetailsPanel.SetParamValue( 10, newVal );
 			}
 			else if ( evt.Key == SIS.KeyCode.Key_F5 ) // refresh all textures
 			{
@@ -303,7 +301,7 @@ namespace Axiom.Samples
 				Window.WriteContentsToTimestampedFile( "screenshot", ".png" );
 			}
 
-			this.CameraManager.injectKeyDown( evt );
+			CameraManager.injectKeyDown( evt );
 
 			return true;
 		}
@@ -311,47 +309,41 @@ namespace Axiom.Samples
 		[OgreVersion( 1, 7, 2 )]
 		public override bool KeyReleased( SIS.KeyEventArgs evt )
 		{
-			this.CameraManager.injectKeyUp( evt );
+			CameraManager.injectKeyUp( evt );
 
 			return true;
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <remarks>
-		/// IMPORTANT: When overriding this handler, remember to allow the tray manager
-		/// to filter out any interface-related mouse events before processing them in your scene.
-		/// If the tray manager handler returns true, the event was meant for the trays, not you.
+		///   IMPORTANT: When overriding this handler, remember to allow the tray manager to filter out any interface-related mouse events before processing them in your scene. If the tray manager handler returns true, the event was meant for the trays, not you.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public override bool MouseMoved( SIS.MouseEventArgs evt )
 		{
-			if ( this.TrayManager.InjectMouseMove( evt ) )
+			if ( TrayManager.InjectMouseMove( evt ) )
 			{
 				return true;
 			}
 
-			this.CameraManager.injectMouseMove( evt );
+			CameraManager.injectMouseMove( evt );
 
 			return true;
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <remarks>
-		/// IMPORTANT: When overriding this handler, remember to allow the tray manager
-		/// to filter out any interface-related mouse events before processing them in your scene.
-		/// If the tray manager handler returns true, the event was meant for the trays, not you.
+		///   IMPORTANT: When overriding this handler, remember to allow the tray manager to filter out any interface-related mouse events before processing them in your scene. If the tray manager handler returns true, the event was meant for the trays, not you.
 		/// </remarks>
-		/// <param name="evt"></param>
-		/// <param name="id"></param>
-		/// <returns></returns>
+		/// <param name="evt"> </param>
+		/// <param name="id"> </param>
+		/// <returns> </returns>
 		[OgreVersion( 1, 7, 2 )]
 		public override bool MousePressed( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
 		{
-			if ( this.TrayManager.InjectMouseDown( evt, id ) )
+			if ( TrayManager.InjectMouseDown( evt, id ) )
 			{
 				return true;
 			}
@@ -362,26 +354,23 @@ namespace Axiom.Samples
 				TrayManager.HideCursor();
 			}
 
-			this.CameraManager.injectMouseDown( evt, id );
+			CameraManager.injectMouseDown( evt, id );
 
 			return true;
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <remarks>
-		/// IMPORTANT: When overriding this handler, remember to allow the tray manager
-		/// to filter out any interface-related mouse events before processing them in your scene.
-		/// If the tray manager handler returns true, the event was meant for the trays, not you.
+		///   IMPORTANT: When overriding this handler, remember to allow the tray manager to filter out any interface-related mouse events before processing them in your scene. If the tray manager handler returns true, the event was meant for the trays, not you.
 		/// </remarks>
-		/// <param name="evt"></param>
-		/// <param name="id"></param>
-		/// <returns></returns>
+		/// <param name="evt"> </param>
+		/// <param name="id"> </param>
+		/// <returns> </returns>
 		[OgreVersion( 1, 7, 2 )]
 		public override bool MouseReleased( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
 		{
-			if ( this.TrayManager.InjectMouseUp( evt, id ) )
+			if ( TrayManager.InjectMouseUp( evt, id ) )
 			{
 				return true;
 			}
@@ -392,17 +381,17 @@ namespace Axiom.Samples
 				TrayManager.ShowCursor();
 			}
 
-			this.CameraManager.injectMouseUp( evt, id );
+			CameraManager.injectMouseUp( evt, id );
 
 			return true;
 		}
 
 		/// <summary>
-		/// Extendeded to setup a default tray interface and camera controller.
+		///   Extendeded to setup a default tray interface and camera controller.
 		/// </summary>
-		/// <param name="window"></param>
-		/// <param name="keyboard"></param>
-		/// <param name="mouse"></param>
+		/// <param name="window"> </param>
+		/// <param name="keyboard"> </param>
+		/// <param name="mouse"> </param>
 		protected internal override void Setup( RenderWindow window, SIS.Keyboard keyboard, SIS.Mouse mouse )
 		{
 			Window = window;
@@ -413,25 +402,36 @@ namespace Axiom.Samples
 			CreateSceneManager();
 			SetupView();
 
-			this.TrayManager = new SdkTrayManager( "SampleControls", window, mouse, this as ISdkTrayListener ); // create a tray interface
+			TrayManager = new SdkTrayManager( "SampleControls", window, mouse, this as ISdkTrayListener );
+				// create a tray interface
 
 			LoadResources();
 			ResourcesLoaded = true;
 
 			// Show stats and logo and Hide the cursor
-			this.TrayManager.ShowFrameStats( TrayLocation.BottomLeft );
-			this.TrayManager.ShowLogo( TrayLocation.BottomRight );
-			this.TrayManager.HideCursor();
+			TrayManager.ShowFrameStats( TrayLocation.BottomLeft );
+			TrayManager.ShowLogo( TrayLocation.BottomRight );
+			TrayManager.HideCursor();
 
 			// create a params panel for displaying sample details
-			List<string> items = new List<string>
-			                     {
-			                     	"cam.pX", "cam.pY", "cam.pZ", String.Empty, "cam.oW", "cam.oX", "cam.oY", "cam.oZ", String.Empty, "Filtering", "Poly Mode"
-			                     };
-			this.DetailsPanel = this.TrayManager.CreateParamsPanel( TrayLocation.None, "DetailsPanel", 180, items );
-			this.DetailsPanel.SetParamValue( 9, "Bilinear" );
-			this.DetailsPanel.SetParamValue( 10, "Solid" );
-			this.DetailsPanel.Hide();
+			var items = new List<string>
+			            {
+			            	"cam.pX",
+			            	"cam.pY",
+			            	"cam.pZ",
+			            	String.Empty,
+			            	"cam.oW",
+			            	"cam.oX",
+			            	"cam.oY",
+			            	"cam.oZ",
+			            	String.Empty,
+			            	"Filtering",
+			            	"Poly Mode"
+			            };
+			DetailsPanel = TrayManager.CreateParamsPanel( TrayLocation.None, "DetailsPanel", 180, items );
+			DetailsPanel.SetParamValue( 9, "Bilinear" );
+			DetailsPanel.SetParamValue( 10, "Solid" );
+			DetailsPanel.Hide();
 
 			SetupContent();
 			ContentSetup = true;
@@ -440,19 +440,18 @@ namespace Axiom.Samples
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public override void Shutdown()
 		{
 			base.Shutdown();
 
-			if ( this.TrayManager != null )
+			if ( TrayManager != null )
 			{
-				this.TrayManager.Dispose();
+				TrayManager.Dispose();
 			}
-			if ( this.CameraManager != null )
+			if ( CameraManager != null )
 			{
-				this.CameraManager = null;
+				CameraManager = null;
 			}
 
 			// restore settings we may have changed, so as not to affect other samples
@@ -461,17 +460,16 @@ namespace Axiom.Samples
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected override void SetupView()
 		{
 			// setup default viewport layout and camera
-			this.Camera = SceneManager.CreateCamera( "MainCamera" );
-			this.Viewport = Window.AddViewport( this.Camera );
-			this.Camera.AspectRatio = (Real)this.Viewport.ActualWidth / (Real)this.Viewport.ActualHeight;
-			this.Camera.Near = 5;
+			Camera = SceneManager.CreateCamera( "MainCamera" );
+			Viewport = Window.AddViewport( Camera );
+			Camera.AspectRatio = (Real)Viewport.ActualWidth/(Real)Viewport.ActualHeight;
+			Camera.Near = 5;
 
-			this.CameraManager = new SdkCameraManager( this.Camera ); // create a default camera controller
+			CameraManager = new SdkCameraManager( Camera ); // create a default camera controller
 		}
 
 		#endregion Sample Implementation

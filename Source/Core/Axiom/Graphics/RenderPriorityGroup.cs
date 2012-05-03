@@ -37,65 +37,55 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections;
-using System.Diagnostics;
-
-using Axiom.Core;
-using Axiom.Graphics;
-
 using System.Collections.Generic;
-
+using System.Diagnostics;
+using Axiom.Core;
 using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-	/// <summary>
-	///		IRenderables in the queue grouped by priority.
-	/// </summary>
-	/// <remarks>
-	///		This class simply groups renderables for rendering. All the 
-	///		renderables contained in this class are destined for the same
-	///		RenderQueueGroup (coarse groupings like those between the main
-	///		scene and overlays) and have the same priority (fine groupings
-	///		for detailed overlap control).
-	/// </remarks>
+	///<summary>
+	///  IRenderables in the queue grouped by priority.
+	///</summary>
+	///<remarks>
+	///  This class simply groups renderables for rendering. All the renderables contained in this class are destined for the same RenderQueueGroup (coarse groupings like those between the main scene and overlays) and have the same priority (fine groupings for detailed overlap control).
+	///</remarks>
 	public class RenderPriorityGroup
 	{
 		#region Fields
 
-		private RenderQueueGroup _parent;
+		private readonly RenderQueueGroup _parent;
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected internal List<RenderablePass> transparentPasses = new List<RenderablePass>();
 
-		/// <summary>
-		///		Solid pass list, used when no shadows, modulative shadows, or ambient passes for additive.
-		/// </summary>
+		///<summary>
+		///  Solid pass list, used when no shadows, modulative shadows, or ambient passes for additive.
+		///</summary>
 		protected internal SortedList solidPasses;
 
-		/// <summary>
-		///		Solid per-light pass list, used with additive shadows.
-		/// </summary>
+		///<summary>
+		///  Solid per-light pass list, used with additive shadows.
+		///</summary>
 		protected internal SortedList solidPassesDiffuseSpecular;
 
-		/// <summary>
-		///		Solid decal (texture) pass list, used with additive shadows.
-		/// </summary>
+		///<summary>
+		///  Solid decal (texture) pass list, used with additive shadows.
+		///</summary>
 		protected internal SortedList solidPassesDecal;
 
-		/// <summary>
-		///		Solid pass list, used when shadows are enabled but shadow receive is turned off for these passes.
-		/// </summary>
+		///<summary>
+		///  Solid pass list, used when shadows are enabled but shadow receive is turned off for these passes.
+		///</summary>
 		protected internal SortedList solidPassesNoShadow;
 
-		/// <summary>
-		///		Should passes be split by their lighting stage?
-		/// </summary>
+		///<summary>
+		///  Should passes be split by their lighting stage?
+		///</summary>
 		protected bool splitPassesByLightingType;
 
 		protected bool splitNoShadowPasses;
@@ -106,9 +96,10 @@ namespace Axiom.Graphics
 		#region Constructor
 
 		/// <summary>
-		///    Default constructor.
+		///   Default constructor.
 		/// </summary>
-		internal RenderPriorityGroup( RenderQueueGroup parent, bool splitPassesByLightingType, bool splitNoShadowPasses, bool shadowCastersCannotBeReceivers )
+		internal RenderPriorityGroup( RenderQueueGroup parent, bool splitPassesByLightingType, bool splitNoShadowPasses,
+		                              bool shadowCastersCannotBeReceivers )
 		{
 			_parent = parent;
 			// sorted list, using Pass as a key (sorted based on hashcode), and IRenderable as the value
@@ -125,11 +116,11 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-		/// <summary>
-		///		Add a renderable to this group.
-		/// </summary>
-		/// <param name="renderable">Renderable to add to the queue.</param>
-		/// <param name="technique"></param>
+		///<summary>
+		///  Add a renderable to this group.
+		///</summary>
+		///<param name="renderable"> Renderable to add to the queue. </param>
+		///<param name="technique"> </param>
 		public void AddRenderable( IRenderable renderable, Technique technique )
 		{
 			// Transparent and depth/colour settings mean depth sorting is required?
@@ -142,7 +133,8 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				if ( splitNoShadowPasses && _parent.ShadowsEnabled && ( !technique.Parent.ReceiveShadows || renderable.CastsShadows && shadowCastersCannotBeReceivers ) )
+				if ( splitNoShadowPasses && _parent.ShadowsEnabled &&
+				     ( !technique.Parent.ReceiveShadows || renderable.CastsShadows && shadowCastersCannotBeReceivers ) )
 				{
 					// Add solid renderable and add passes to no-shadow group
 					AddSolidRenderable( technique, renderable, true );
@@ -161,12 +153,12 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///		Internal method for adding a solid renderable
-		/// </summary>
-		/// <param name="technique">Technique to use for this renderable.</param>
-		/// <param name="renderable">Renderable to add to the queue.</param>
-		/// <param name="noShadows">True to add to the no shadow group, false otherwise.</param>
+		///<summary>
+		///  Internal method for adding a solid renderable
+		///</summary>
+		///<param name="technique"> Technique to use for this renderable. </param>
+		///<param name="renderable"> Renderable to add to the queue. </param>
+		///<param name="noShadows"> True to add to the no shadow group, false otherwise. </param>
 		protected void AddSolidRenderable( Technique technique, IRenderable renderable, bool noShadows )
 		{
 			SortedList passMap = null;
@@ -197,11 +189,11 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///		Internal method for adding a solid renderable ot the group based on lighting stage.
-		/// </summary>
-		/// <param name="technique">Technique to use for this renderable.</param>
-		/// <param name="renderable">Renderable to add to the queue.</param>
+		///<summary>
+		///  Internal method for adding a solid renderable ot the group based on lighting stage.
+		///</summary>
+		///<param name="technique"> Technique to use for this renderable. </param>
+		///<param name="renderable"> Renderable to add to the queue. </param>
 		protected void AddSolidRenderableSplitByLightType( Technique technique, IRenderable renderable )
 		{
 			// Divide the passes into the 3 categories
@@ -237,11 +229,11 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///		Internal method for adding a transparent renderable.
-		/// </summary>
-		/// <param name="technique">Technique to use for this renderable.</param>
-		/// <param name="renderable">Renderable to add to the queue.</param>
+		///<summary>
+		///  Internal method for adding a transparent renderable.
+		///</summary>
+		///<param name="technique"> Technique to use for this renderable. </param>
+		///<param name="renderable"> Renderable to add to the queue. </param>
 		protected void AddTransparentRenderable( Technique technique, IRenderable renderable )
 		{
 			for ( var i = 0; i < technique.PassCount; i++ )
@@ -251,9 +243,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///		Clears all the internal lists.
-		/// </summary>
+		///<summary>
+		///  Clears all the internal lists.
+		///</summary>
 		public void Clear()
 		{
 			var graveyardList = Pass.GraveyardList;
@@ -304,10 +296,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
+		/// <param name="index"> </param>
+		/// <returns> </returns>
 		public Pass GetSolidPass( int index )
 		{
 			Debug.Assert( index < solidPasses.Count, "index < solidPasses.Count" );
@@ -315,10 +306,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
+		/// <param name="index"> </param>
+		/// <returns> </returns>
 		public RenderableList GetSolidPassRenderables( int index )
 		{
 			Debug.Assert( index < solidPasses.Count, "index < solidPasses.Count" );
@@ -326,10 +316,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
+		/// <param name="index"> </param>
+		/// <returns> </returns>
 		public RenderablePass GetTransparentPass( int index )
 		{
 			Debug.Assert( index < transparentPasses.Count, "index < transparentPasses.Count" );
@@ -337,24 +326,22 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Sorts the objects which have been added to the queue; transparent objects by their 
-		///    depth in relation to the passed in Camera, solid objects in order to minimize
-		///    render state changes.
+		///   Sorts the objects which have been added to the queue; transparent objects by their depth in relation to the passed in Camera, solid objects in order to minimize render state changes.
 		/// </summary>
 		/// <remarks>
-		///    Solid passes are already stored in a sorted structure, so nothing extra needed here.
+		///   Solid passes are already stored in a sorted structure, so nothing extra needed here.
 		/// </remarks>
-		/// <param name="camera">Current camera to use for depth sorting.</param>
+		/// <param name="camera"> Current camera to use for depth sorting. </param>
 		public void Sort( Camera camera )
 		{
 			// sort the transparent objects using the custom IComparer
 			transparentPasses.Sort( new TransparencySort( camera ) );
 		}
 
-		/// <summary>
-		///		Remove a pass entry from all solid pass maps
-		/// </summary>
-		/// <param name="pass">Reference to the pass to remove.</param>
+		///<summary>
+		///  Remove a pass entry from all solid pass maps
+		///</summary>
+		///<param name="pass"> Reference to the pass to remove. </param>
 		public void RemoveSolidPassEntry( Pass pass )
 		{
 			if ( solidPasses[ pass ] != null )
@@ -383,7 +370,7 @@ namespace Axiom.Graphics
 		#region Properties
 
 		/// <summary>
-		///    Gets the number of non-transparent passes for this priority group.
+		///   Gets the number of non-transparent passes for this priority group.
 		/// </summary>
 		public int NumSolidPasses
 		{
@@ -394,7 +381,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///    Gets the number of transparent passes for this priority group.
+		///   Gets the number of transparent passes for this priority group.
 		/// </summary>
 		public int NumTransparentPasses
 		{
@@ -404,10 +391,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets whether or not the queue will split passes by their lighting type,
-		///		ie ambient, per-light and decal. 
-		/// </summary>
+		///<summary>
+		///  Gets/Sets whether or not the queue will split passes by their lighting type, ie ambient, per-light and decal.
+		///</summary>
 		public bool SplitPassesByLightingType
 		{
 			get
@@ -420,11 +406,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets whether or not the queue will split passes which have shadow receive
-		///		turned off (in their parent material), which is needed when certain shadow
-		///		techniques are used.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets whether or not the queue will split passes which have shadow receive turned off (in their parent material), which is needed when certain shadow techniques are used.
+		///</summary>
 		public bool SplitNoShadowPasses
 		{
 			get
@@ -437,10 +421,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets whether or not the queue will disallow receivers when certain shadow
-		///		techniques are used.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets whether or not the queue will disallow receivers when certain shadow techniques are used.
+		///</summary>
 		public bool ShadowCastersCannotBeReceivers
 		{
 			get
@@ -458,7 +441,6 @@ namespace Axiom.Graphics
 		#region Internal classes
 
 		/// <summary>
-		/// 
 		/// </summary>
 		private class SolidSort : IComparer
 		{
@@ -496,12 +478,12 @@ namespace Axiom.Graphics
 			#endregion
 		}
 
-		/// <summary>
-		///		Nested class that implements IComparer for transparency sorting.
-		/// </summary>
+		///<summary>
+		///  Nested class that implements IComparer for transparency sorting.
+		///</summary>
 		private class TransparencySort : IComparer<RenderablePass>
 		{
-			private Camera camera;
+			private readonly Camera camera;
 
 			public TransparencySort( Camera camera )
 			{

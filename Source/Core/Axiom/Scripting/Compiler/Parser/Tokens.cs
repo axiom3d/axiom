@@ -38,18 +38,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Scripting.Compiler.Parser
 {
 	/// <summary>
-	/// These codes represent token IDs which are numerical translations of
-	/// specific lexemes. Specific compilers using the lexer can register their
-	/// own token IDs which are given precedence over these built-in ones
+	///   These codes represent token IDs which are numerical translations of specific lexemes. Specific compilers using the lexer can register their own token IDs which are given precedence over these built-in ones
 	/// </summary>
 	public enum Tokens
 	{

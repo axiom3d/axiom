@@ -37,15 +37,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-
 #endregion
 
 namespace Axiom.Animating
 {
-	/// <summary>
-	///		Types of vertex animations
-	/// </summary>
+	///<summary>
+	///  Types of vertex animations
+	///</summary>
 	public enum VertexAnimationType
 	{
 		/// No animation
@@ -58,9 +56,9 @@ namespace Axiom.Animating
 		Pose
 	}
 
-	/// <summary>
-	///		Identify which vertex data we should be sending to the renderer
-	/// </summary>
+	///<summary>
+	///  Identify which vertex data we should be sending to the renderer
+	///</summary>
 	public enum VertexDataBindChoice
 	{
 		Original,
@@ -69,9 +67,9 @@ namespace Axiom.Animating
 		HardwareMorph
 	}
 
-	/// <summary>
-	///		Do we do vertex animation in hardware or software?
-	/// </summary>
+	///<summary>
+	///  Do we do vertex animation in hardware or software?
+	///</summary>
 	public enum VertexAnimationTargetMode
 	{
 		/// In software
@@ -81,19 +79,19 @@ namespace Axiom.Animating
 		Hardware
 	}
 
-	/// <summary>
-	///		Used to specify how animations are applied to a skeleton.
-	/// </summary>
+	///<summary>
+	///  Used to specify how animations are applied to a skeleton.
+	///</summary>
 	public enum SkeletalAnimBlendMode
 	{
-		/// <summary>
-		///		Animations are applied by calculating a weighted average of all animations.
-		///	 </summary>
+		///<summary>
+		///  Animations are applied by calculating a weighted average of all animations.
+		///</summary>
 		Average,
 
-		/// <summary>
-		///		Animations are applied by calculating a weighted cumulative total.
-		/// </summary>
+		///<summary>
+		///  Animations are applied by calculating a weighted cumulative total.
+		///</summary>
 		Cumulative
 	}
 }

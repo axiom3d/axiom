@@ -37,19 +37,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-
-using Axiom.Collections;
-using Axiom.Core;
-using Axiom.Math;
-using Axiom.Controllers;
-using Axiom.Graphics;
-
 using System.Reflection;
-
+using Axiom.Controllers;
+using Axiom.Core;
+using Axiom.Graphics;
+using Axiom.Math;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -57,36 +51,27 @@ using Axiom.Scripting;
 namespace Axiom.ParticleSystems
 {
 	/// <summary>
-	///     Particle system attribute method definition.
+	///   Particle system attribute method definition.
 	/// </summary>
-	/// <param name="values">Attribute values.</param>
-	/// <param name="system">Target particle system.</param>
+	/// <param name="values"> Attribute values. </param>
+	/// <param name="system"> Target particle system. </param>
 	internal delegate void ParticleSystemAttributeParser( string[] values, ParticleSystem system );
 
-	/// <summary>
-	///		Class defining particle system based special effects.
-	/// </summary>
-	/// <remarks>
-	///     Particle systems are special effects generators which are based on a 
-	///     number of moving points to create the impression of things like like 
-	///     sparkles, smoke, blood spurts, dust etc.
-	///		<p/>
-	///		This class simply manages a single collection of particles in world space
-	///     with a shared local origin for emission. The visual aspect of the 
-	///     particles is handled by a ParticleSystemRenderer instance.
-	///		<p/>
-	///     Particle systems are created using the SceneManager, never directly.
-	///     In addition, like all subclasses of MovableObject, the ParticleSystem 
-	/// 	will only be considered for rendering once it has been attached to a 
-	/// 	SceneNode. 
-	/// </remarks>
+	///<summary>
+	///  Class defining particle system based special effects.
+	///</summary>
+	///<remarks>
+	///  Particle systems are special effects generators which are based on a number of moving points to create the impression of things like like sparkles, smoke, blood spurts, dust etc. <p /> This class simply manages a single collection of particles in world space with a shared local origin for emission. The visual aspect of the particles is handled by a ParticleSystemRenderer instance. <p /> Particle systems are created using the SceneManager, never directly. In addition, like all subclasses of MovableObject, the ParticleSystem will only be considered for rendering once it has been attached to a SceneNode.
+	///</remarks>
 	public class ParticleSystem : MovableObject
 	{
 		#region Fields and Properties
 
 		private const string PARTICLE = "Particle";
 
-		/// <summary>List of emitters for this system.</summary>
+		/// <summary>
+		///   List of emitters for this system.
+		/// </summary>
 		protected List<ParticleEmitter> emitterList = new List<ParticleEmitter>();
 
 		public List<ParticleEmitter> Emitters
@@ -97,7 +82,9 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		/// <summary>List of affectors for this system.</summary>
+		/// <summary>
+		///   List of affectors for this system.
+		/// </summary>
 		protected List<ParticleAffector> affectorList = new List<ParticleAffector>();
 
 		public List<ParticleAffector> Affectors
@@ -109,7 +96,7 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// <summary>
-		/// Return the resource group to be used to load dependent resources
+		///   Return the resource group to be used to load dependent resources
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public string ResourceGroupName
@@ -120,7 +107,9 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		/// <summary>Cached for less memory usage during emitter processing.</summary>
+		/// <summary>
+		///   Cached for less memory usage during emitter processing.
+		/// </summary>
 		/// <note>EmitterList is a list of _counts_, not a list of emitters</note>
 		protected Dictionary<ParticleEmitter, int> requested = new Dictionary<ParticleEmitter, int>();
 
@@ -233,30 +222,32 @@ namespace Axiom.ParticleSystems
 		protected static float defaultNonvisibleTimeout;
 
 		/// <summary>
-		///     List of available attibute parsers for script attributes.
+		///   List of available attibute parsers for script attributes.
 		/// </summary>
-		private Dictionary<int, MethodInfo> attribParsers = new Dictionary<int, MethodInfo>();
+		private readonly Dictionary<int, MethodInfo> attribParsers = new Dictionary<int, MethodInfo>();
 
 		#endregion
 
 		#region Constructors
 
-		/// <summary>
-		///		Creates a particle system with no emitters or affectors.
-		/// </summary>
-		/// <remarks>
-		///		You should use the ParticleSystemManager to create systems, rather than doing it directly.
-		/// </remarks>
-		/// <param name="name"></param>
+		///<summary>
+		///  Creates a particle system with no emitters or affectors.
+		///</summary>
+		///<remarks>
+		///  You should use the ParticleSystemManager to create systems, rather than doing it directly.
+		///</remarks>
+		///<param name="name"> </param>
 		internal ParticleSystem( string name )
-			: this( name, ResourceGroupManager.DefaultResourceGroupName ) {}
+			: this( name, ResourceGroupManager.DefaultResourceGroupName )
+		{
+		}
 
-		/// <summary>
-		///		Creates a particle system with no emitters or affectors.
-		/// </summary>
-		/// <remarks>
-		///		You should use the ParticleSystemManager to create systems, rather than doing it directly.
-		/// </remarks>
+		///<summary>
+		///  Creates a particle system with no emitters or affectors.
+		///</summary>
+		///<remarks>
+		///  You should use the ParticleSystemManager to create systems, rather than doing it directly.
+		///</remarks>
 		internal ParticleSystem( string name, string resourceGroup )
 			: base( name )
 		{
@@ -270,9 +261,8 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="disposeManagedResources"></param>
+		/// <param name="disposeManagedResources"> </param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
@@ -304,19 +294,14 @@ namespace Axiom.ParticleSystems
 			base.dispose( disposeManagedResources );
 		}
 
-		/// <summary>
-		///		Adds an emitter to this particle system.
-		///	 </summary>
-		///	 <remarks>	
-		///		Particles are created in a particle system by emitters - see the ParticleEmitter
-		///		class for more details.
-		/// </remarks>
-		/// <param name="emitterType">
-		///		string identifying the emitter type to create. Emitter types are defined
-		///		by registering new factories with the manager - see ParticleEmitterFactory for more details.
-		///		Emitter types can be extended by plugin authors.
-		/// </param>
-		/// <returns></returns>
+		///<summary>
+		///  Adds an emitter to this particle system.
+		///</summary>
+		///<remarks>
+		///  Particles are created in a particle system by emitters - see the ParticleEmitter class for more details.
+		///</remarks>
+		///<param name="emitterType"> string identifying the emitter type to create. Emitter types are defined by registering new factories with the manager - see ParticleEmitterFactory for more details. Emitter types can be extended by plugin authors. </param>
+		///<returns> </returns>
 		public ParticleEmitter AddEmitter( string emitterType )
 		{
 			var emitter = ParticleSystemManager.Instance.CreateEmitter( emitterType, this );
@@ -339,19 +324,14 @@ namespace Axiom.ParticleSystems
 			emitterList.Clear();
 		}
 
-		/// <summary>
-		///		Adds an affector to this particle system.
-		///	 </summary>
-		///	 <remarks>	
-		///		Particles are modified over time in a particle system by affectors - see the ParticleAffector
-		///		class for more details.
-		/// </remarks>
-		/// <param name="affectorType">
-		///		string identifying the affector type to create. Affector types are defined
-		///		by registering new factories with the manager - see ParticleAffectorFactory for more details.
-		///		Affector types can be extended by plugin authors.
-		/// </param>
-		/// <returns></returns>
+		///<summary>
+		///  Adds an affector to this particle system.
+		///</summary>
+		///<remarks>
+		///  Particles are modified over time in a particle system by affectors - see the ParticleAffector class for more details.
+		///</remarks>
+		///<param name="affectorType"> string identifying the affector type to create. Affector types are defined by registering new factories with the manager - see ParticleAffectorFactory for more details. Affector types can be extended by plugin authors. </param>
+		///<returns> </returns>
 		[OgreVersion( 1, 7, 2 )]
 		public ParticleAffector AddAffector( string affectorType )
 		{
@@ -376,10 +356,10 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// <summary>
-		///    Get a particle affector assigned to this particle system by index.
+		///   Get a particle affector assigned to this particle system by index.
 		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
+		/// <param name="index"> </param>
+		/// <returns> </returns>
 		public ParticleAffector GetAffector( int index )
 		{
 			Debug.Assert( index < affectorList.Count, "index < affectorList.Count" );
@@ -387,10 +367,10 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// <summary>
-		///    Get a particle emitter assigned to this particle system by index.
+		///   Get a particle emitter assigned to this particle system by index.
 		/// </summary>
-		/// <param name="index"></param>
-		/// <returns></returns>
+		/// <param name="index"> </param>
+		/// <returns> </returns>
 		public ParticleEmitter GetEmitter( int index )
 		{
 			Debug.Assert( index < emitterList.Count, "index < emitterList.Count" );
@@ -402,10 +382,10 @@ namespace Axiom.ParticleSystems
 
 		#region Methods
 
-		/// <summary>
-		///		Used to expire dead particles.
-		/// </summary>
-		/// <param name="timeElapsed"></param>
+		///<summary>
+		///  Used to expire dead particles.
+		///</summary>
+		///<param name="timeElapsed"> </param>
 		protected void Expire( float timeElapsed )
 		{
 			var expiredList = new List<Particle>();
@@ -460,10 +440,10 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		/// <summary>
-		///		Spawn new particles based on free quota and emitter requirements.
-		/// </summary>
-		/// <param name="timeElapsed"></param>
+		///<summary>
+		///  Spawn new particles based on free quota and emitter requirements.
+		///</summary>
+		///<param name="timeElapsed"> </param>
 		protected void TriggerEmitters( float timeElapsed )
 		{
 			int index;
@@ -504,10 +484,10 @@ namespace Axiom.ParticleSystems
 			if ( totalRequested > emissionAllowed )
 			{
 				// Apportion down requested values to allotted values
-				ratio = (float)emissionAllowed / (float)totalRequested;
+				ratio = (float)emissionAllowed/(float)totalRequested;
 				foreach ( var emitter in emitterList )
 				{
-					requested[ emitter ] = (int)( requested[ emitter ] * ratio );
+					requested[ emitter ] = (int)( requested[ emitter ]*ratio );
 				}
 			}
 
@@ -531,14 +511,15 @@ namespace Axiom.ParticleSystems
 			for ( index = 0; index < activeEmittedEmitters.Count; index++ )
 			{
 				var activeEmitter = activeEmittedEmitters[ index ];
-				executeTriggerEmitters( activeEmitter, (int)( (float)activeEmitter.GetEmissionCount( timeElapsed ) * ratio ), timeElapsed );
+				executeTriggerEmitters( activeEmitter, (int)( (float)activeEmitter.GetEmissionCount( timeElapsed )*ratio ),
+				                        timeElapsed );
 			}
 		}
 
 		private void executeTriggerEmitters( ParticleEmitter emitter, int requested, float timeElapsed )
 		{
 			var timePoint = 0.0f;
-			var timeInc = timeElapsed / requested;
+			var timeInc = timeElapsed/requested;
 
 			for ( var j = 0; j < requested; ++j )
 			{
@@ -563,12 +544,12 @@ namespace Axiom.ParticleSystems
 
 				if ( !localSpace )
 				{
-					p.Position = ( parentNode.DerivedOrientation * ( parentNode.DerivedScale * p.Position ) ) + parentNode.DerivedPosition;
-					p.Direction = ( parentNode.DerivedOrientation * p.Direction );
+					p.Position = ( parentNode.DerivedOrientation*( parentNode.DerivedScale*p.Position ) ) + parentNode.DerivedPosition;
+					p.Direction = ( parentNode.DerivedOrientation*p.Direction );
 				}
 
 				// apply partial frame motion to this particle
-				p.Position += ( p.Direction * timePoint );
+				p.Position += ( p.Direction*timePoint );
 
 				// apply particle initialization by the affectors
 				foreach ( var affector in affectorList )
@@ -594,15 +575,15 @@ namespace Axiom.ParticleSystems
 		}
 
 
-		/// <summary>
-		///		Updates existing particles based on their momentum.
-		/// </summary>
-		/// <param name="timeElapsed"></param>
+		///<summary>
+		///  Updates existing particles based on their momentum.
+		///</summary>
+		///<param name="timeElapsed"> </param>
 		protected void ApplyMotion( float timeElapsed )
 		{
 			foreach ( var p in activeParticles )
 			{
-				p.Position += p.Direction * timeElapsed;
+				p.Position += p.Direction*timeElapsed;
 
 				if ( p.ParticleType == ParticleType.Emitter )
 				{
@@ -618,10 +599,10 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		/// <summary>
-		///		Applies the effects of particle affectors.
-		/// </summary>
-		/// <param name="timeElapsed"></param>
+		///<summary>
+		///  Applies the effects of particle affectors.
+		///</summary>
+		///<param name="timeElapsed"> </param>
 		protected void TriggerAffectors( float timeElapsed )
 		{
 			foreach ( var affector in affectorList )
@@ -630,10 +611,10 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		/// <summary>
-		///		Overriden from BillboardSet to create Particles instead of Billboards.
-		///	 </summary>
-		/// <param name="size"></param>
+		///<summary>
+		///  Overriden from BillboardSet to create Particles instead of Billboards.
+		///</summary>
+		///<param name="size"> </param>
 		protected void IncreasePool( int size )
 		{
 			var oldSize = particlePool.Count;
@@ -741,13 +722,13 @@ namespace Axiom.ParticleSystems
 					min.x = min.y = min.z = float.PositiveInfinity;
 					max.x = max.y = max.z = float.NegativeInfinity;
 				}
-				var halfScale = Vector3.UnitScale * 0.5f;
-				var defaultPadding = halfScale * (float)Utility.Max( defaultHeight, defaultWidth );
+				var halfScale = Vector3.UnitScale*0.5f;
+				var defaultPadding = halfScale*(float)Utility.Max( defaultHeight, defaultWidth );
 				foreach ( var p in activeParticles )
 				{
 					if ( p.HasOwnDimensions )
 					{
-						var padding = halfScale * (float)Utility.Max( p.Width, p.Height );
+						var padding = halfScale*(float)Utility.Max( p.Width, p.Height );
 						min.Floor( p.Position - padding );
 						max.Ceil( p.Position + padding );
 					}
@@ -782,29 +763,23 @@ namespace Axiom.ParticleSystems
 		}
 
 
-		/// <summary>
-		///		Overloaded method.
-		/// </summary>
-		/// <param name="time"></param>
+		///<summary>
+		///  Overloaded method.
+		///</summary>
+		///<param name="time"> </param>
 		public void FastForward( float time )
 		{
 			FastForward( time, 0.1f );
 		}
 
-		/// <summary>
-		///		Fast-forwards this system by the required number of seconds.
-		///	 </summary>
-		///	 <remarks>
-		///		This method allows you to fast-forward a system so that it effectively looks like
-		///		it has already been running for the time you specify. This is useful to avoid the
-		///		'startup sequence' of a system, when you want the system to be fully populated right
-		///		from the start.
-		/// </remarks>
-		/// <param name="time">The number of seconds to fast-forward by.</param>
-		/// <param name="interval">
-		///		The sampling interval used to generate particles, apply affectors etc. The lower this
-		///		is the more realistic the fast-forward, but it takes more iterations to do it.
-		/// </param>
+		///<summary>
+		///  Fast-forwards this system by the required number of seconds.
+		///</summary>
+		///<remarks>
+		///  This method allows you to fast-forward a system so that it effectively looks like it has already been running for the time you specify. This is useful to avoid the 'startup sequence' of a system, when you want the system to be fully populated right from the start.
+		///</remarks>
+		///<param name="time"> The number of seconds to fast-forward by. </param>
+		///<param name="interval"> The sampling interval used to generate particles, apply affectors etc. The lower this is the more realistic the fast-forward, but it takes more iterations to do it. </param>
 		public void FastForward( float time, float interval )
 		{
 			for ( var t = 0.0f; t < time; t += interval )
@@ -1009,7 +984,7 @@ namespace Axiom.ParticleSystems
 			var id = attr.ToLower().GetHashCode();
 			if ( attribParsers.ContainsKey( id ) )
 			{
-				var args = new object[ 2 ];
+				var args = new object[2];
 				args[ 0 ] = val.Split( ' ' );
 				args[ 1 ] = this;
 				attribParsers[ id ].Invoke( null, args );
@@ -1028,15 +1003,15 @@ namespace Axiom.ParticleSystems
 
 		#region Script parser methods
 
-		/// <summary>
-		///		Registers all attribute names with their respective parser.
-		/// </summary>
-		/// <remarks>
-		///		Methods meant to serve as attribute parsers should use a method attribute to 
-		/// </remarks>
+		///<summary>
+		///  Registers all attribute names with their respective parser.
+		///</summary>
+		///<remarks>
+		///  Methods meant to serve as attribute parsers should use a method attribute to
+		///</remarks>
 		private void RegisterParsers()
 		{
-			var methods = this.GetType().GetMethods();
+			var methods = GetType().GetMethods();
 
 			// loop through all methods and look for ones marked with attributes
 			for ( var i = 0; i < methods.Length; i++ )
@@ -1208,7 +1183,7 @@ namespace Axiom.ParticleSystems
 			}
 			set
 			{
-				this.localSpace = value;
+				localSpace = value;
 			}
 		}
 
@@ -1244,9 +1219,9 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		/// <summary>
-		///		Gets the count of active particles currently in the system.
-		/// </summary>
+		///<summary>
+		///  Gets the count of active particles currently in the system.
+		///</summary>
 		public int ParticleCount
 		{
 			get
@@ -1255,17 +1230,12 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		/// <summary>
-		///		Returns the maximum number of particles this system is allowed to have active at once.
-		/// </summary>
-		/// <remarks>
-		///		Particle systems all have a particle quota, i.e. a maximum number of particles they are 
-		///		allowed to have active at a time. This allows the application to set a keep particle systems
-		///		under control should they be affected by complex parameters which alter their emission rates
-		///		etc. If a particle system reaches it's particle quota, none of the emitters will be able to 
-		///		emit any more particles. As existing particles die, the spare capacity will be allocated
-		///		equally across all emitters to be as consistent to the origina particle system style as possible.
-		/// </remarks>
+		///<summary>
+		///  Returns the maximum number of particles this system is allowed to have active at once.
+		///</summary>
+		///<remarks>
+		///  Particle systems all have a particle quota, i.e. a maximum number of particles they are allowed to have active at a time. This allows the application to set a keep particle systems under control should they be affected by complex parameters which alter their emission rates etc. If a particle system reaches it's particle quota, none of the emitters will be able to emit any more particles. As existing particles die, the spare capacity will be allocated equally across all emitters to be as consistent to the origina particle system style as possible.
+		///</remarks>
 		public int ParticleQuota
 		{
 			get
@@ -1282,7 +1252,6 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public List<Particle> Particles
 		{
@@ -1437,11 +1406,10 @@ namespace Axiom.ParticleSystems
 
 		#endregion
 
-		/// <summary>
-		///		Cloning will deep copy all particle emitters and effectors, but not particles. The
-		///		system's name is also not copied.
-		/// </summary>
-		/// <returns></returns>
+		///<summary>
+		///  Cloning will deep copy all particle emitters and effectors, but not particles. The system's name is also not copied.
+		///</summary>
+		///<returns> </returns>
 		public void CopyTo( ParticleSystem system )
 		{
 			// remove the target's emitters and affectors
@@ -1460,18 +1428,18 @@ namespace Axiom.ParticleSystems
 				var newAffector = system.AddAffector( affector.Type );
 				affector.CopyTo( newAffector );
 			}
-			system.ParticleQuota = this.ParticleQuota;
-			system.MaterialName = this.MaterialName;
-			system.SetDefaultDimensions( this.defaultWidth, this.defaultHeight );
-			system.cullIndividual = this.cullIndividual;
-			system.sorted = this.sorted;
-			system.localSpace = this.localSpace;
-			system.iterationInterval = this.iterationInterval;
-			system.iterationIntervalSet = this.iterationIntervalSet;
-			system.nonvisibleTimeout = this.nonvisibleTimeout;
-			system.nonvisibleTimeoutSet = this.nonvisibleTimeoutSet;
+			system.ParticleQuota = ParticleQuota;
+			system.MaterialName = MaterialName;
+			system.SetDefaultDimensions( defaultWidth, defaultHeight );
+			system.cullIndividual = cullIndividual;
+			system.sorted = sorted;
+			system.localSpace = localSpace;
+			system.iterationInterval = iterationInterval;
+			system.iterationIntervalSet = iterationIntervalSet;
+			system.nonvisibleTimeout = nonvisibleTimeout;
+			system.nonvisibleTimeoutSet = nonvisibleTimeoutSet;
 			// last frame visible and time since last visible should be left default
-			system.RendererName = this.RendererName;
+			system.RendererName = RendererName;
 			// FIXME
 			if ( system.renderer != null && renderer != null )
 			{
@@ -1479,13 +1447,13 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		/// <summary>
-		///		Updates the particles in the system based on time elapsed.
-		///	 </summary>
-		///	 <remarks>	
-		///		This is called automatically every frame by the engine.
-		/// </remarks>
-		/// <param name="timeElapsed">The amount of time (in seconds) since the last frame.</param>
+		///<summary>
+		///  Updates the particles in the system based on time elapsed.
+		///</summary>
+		///<remarks>
+		///  This is called automatically every frame by the engine.
+		///</remarks>
+		///<param name="timeElapsed"> The amount of time (in seconds) since the last frame. </param>
 		internal void Update( float timeElapsed )
 		{
 			// Only update if attached to a node
@@ -1616,7 +1584,8 @@ namespace Axiom.ParticleSystems
 				// Determine whether the emitter itself will be emitted and set the 'IsEmitted' attribute
 				foreach ( var emitterInner in emitterList )
 				{
-					if ( emitter != null && emitterInner != null && emitter.Name != string.Empty && emitter.Name == emitterInner.EmittedEmitter )
+					if ( emitter != null && emitterInner != null && emitter.Name != string.Empty &&
+					     emitter.Name == emitterInner.EmittedEmitter )
 					{
 						emitter.IsEmitted = true;
 						break;
@@ -1642,7 +1611,8 @@ namespace Axiom.ParticleSystems
 
 			ParticleEmitter clonedEmitter = null;
 			List<ParticleEmitter> e = null;
-			var maxNumberOfEmitters = size / emittedEmitterPool.Count; // equally distribute the number for each emitted emitter list
+			var maxNumberOfEmitters = size/emittedEmitterPool.Count;
+				// equally distribute the number for each emitted emitter list
 			var oldSize = 0;
 
 			// Run through mEmittedEmitterPool and search for every key (=name) its corresponding emitter in mEmitters
@@ -1664,7 +1634,9 @@ namespace Axiom.ParticleSystems
 							clonedEmitter.IsEmitted = emitter.IsEmitted; // is always 'true' by the way, but just in case
 
 							// Initially deactivate the emitted emitter if duration/repeat_delay are set
-							if ( clonedEmitter.Duration > 0.0f && ( clonedEmitter.RepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f ) )
+							if ( clonedEmitter.Duration > 0.0f &&
+							     ( clonedEmitter.RepeatDelay > 0.0f || clonedEmitter.MinRepeatDelay > 0.0f ||
+							       clonedEmitter.MinRepeatDelay > 0.0f ) )
 							{
 								clonedEmitter.IsEnabled = false;
 							}
@@ -1734,9 +1706,9 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// <summary>
-		/// Get the 'type flags' for this <see cref="ParticleSystem"/>.
+		///   Get the 'type flags' for this <see cref="ParticleSystem" /> .
 		/// </summary>
-		/// <seealso cref="MovableObject.TypeFlags"/>
+		/// <seealso cref="MovableObject.TypeFlags" />
 		public override uint TypeFlags
 		{
 			get

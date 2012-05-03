@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Axiom.Graphics
+﻿namespace Axiom.Graphics
 {
 	partial class GpuProgramParameters
 	{
 		/// <summary>
-		/// Container struct to allow params to safely & update shared list of logical buffer assignments
+		///   Container struct to allow params to safely & update shared list of logical buffer assignments
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public class GpuLogicalBufferStruct
@@ -29,18 +24,16 @@ namespace Axiom.Graphics
 			#region Map
 
 			/// <summary>
-			/// Map from logical index to physical buffer location
+			///   Map from logical index to physical buffer location
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )]
-			public readonly GpuLogicalIndexUseMap Map = new GpuLogicalIndexUseMap();
+			[OgreVersion( 1, 7, 2790 )] public readonly GpuLogicalIndexUseMap Map = new GpuLogicalIndexUseMap();
 
 			#endregion
 
 			#region BufferSize
 
 			/// Shortcut to know the buffer size needs
-			[OgreVersion( 1, 7, 2790 )]
-			public int BufferSize;
+			[OgreVersion( 1, 7, 2790 )] public int BufferSize;
 
 			#endregion
 

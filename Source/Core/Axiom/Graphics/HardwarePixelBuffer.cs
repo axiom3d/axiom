@@ -38,11 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Diagnostics;
-
 using Axiom.Core;
-
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -50,23 +47,19 @@ using Axiom.Media;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	/// Specialization of HardwareBuffer for a pixel buffer. The
-	/// HardwarePixelbuffer abstracts an 1D, 2D or 3D quantity of pixels
-	/// stored by the rendering API. The buffer can be located on the card
-	/// or in main memory depending on its usage. One mipmap level of a
-	/// texture is an example of a HardwarePixelBuffer.
+	///   Specialization of HardwareBuffer for a pixel buffer. The HardwarePixelbuffer abstracts an 1D, 2D or 3D quantity of pixels stored by the rendering API. The buffer can be located on the card or in main memory depending on its usage. One mipmap level of a texture is an example of a HardwarePixelBuffer.
 	/// </summary>
 	public abstract class HardwarePixelBuffer : HardwareBuffer
 	{
 		#region Fields and Properties
 
 		/// <summary>
-		/// The current locked box of this surface (entire surface coords)
+		///   The current locked box of this surface (entire surface coords)
 		/// </summary>
 		protected BasicBox lockedBox;
 
 		///<summary>
-		///    Extents
+		///  Extents
 		///</summary>
 		protected int width;
 
@@ -100,7 +93,7 @@ namespace Axiom.Graphics
 
 
 		///<summary>
-		/// Pitches (offsets between rows and slices)
+		///  Pitches (offsets between rows and slices)
 		///</summary>
 		protected int rowPitch;
 
@@ -123,7 +116,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Internal format
+		///  Internal format
 		///</summary>
 		protected Axiom.Media.PixelFormat format;
 
@@ -136,15 +129,14 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Currently locked region
+		///  Currently locked region
 		///</summary>
 		protected PixelBox currentLock;
 
 		///<summary>
-		///    Get the current locked region. This is the same value as returned
-		///    by Lock(BasicBox, BufferLocking)
+		///  Get the current locked region. This is the same value as returned by Lock(BasicBox, BufferLocking)
 		///</summary>
-		///<returns>PixelBox containing the locked region</returns>
+		///<returns> PixelBox containing the locked region </returns>
 		public PixelBox CurrentLock
 		{
 			[OgreVersion( 1, 7, 2 )]
@@ -160,10 +152,11 @@ namespace Axiom.Graphics
 		#region Constructors
 
 		///<summary>
-		/// Should be called by HardwareBufferManager
+		///  Should be called by HardwareBufferManager
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
-		public HardwarePixelBuffer( int width, int height, int depth, Axiom.Media.PixelFormat format, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+		public HardwarePixelBuffer( int width, int height, int depth, Axiom.Media.PixelFormat format, BufferUsage usage,
+		                            bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
 			this.width = width;
@@ -172,8 +165,8 @@ namespace Axiom.Graphics
 			this.format = format;
 			// Default
 			rowPitch = width;
-			slicePitch = height * width;
-			sizeInBytes = height * width * PixelUtil.GetNumElemBytes( format );
+			slicePitch = height*width;
+			sizeInBytes = height*width*PixelUtil.GetNumElemBytes( format );
 		}
 
 		#endregion Constructors
@@ -181,35 +174,29 @@ namespace Axiom.Graphics
 		#region Abstract Methods
 
 		///<summary>
-		/// Internal implementation of lock(), must be overridden in subclasses
+		///  Internal implementation of lock(), must be overridden in subclasses
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
 		protected abstract PixelBox LockImpl( BasicBox lockBox, BufferLocking options );
 
 		///<summary>
-		/// Copies a region from normal memory to a region of this pixelbuffer. The source
-		/// image can be in any pixel format supported by Axiom, and in any size. 
+		///  Copies a region from normal memory to a region of this pixelbuffer. The source image can be in any pixel format supported by Axiom, and in any size.
 		///</summary>
-		///<param name="src">PixelBox containing the source pixels and format in memory</param>
-		///<param name="dstBox">Image.BasicBox describing the destination region in this buffer</param>
+		///<param name="src"> PixelBox containing the source pixels and format in memory </param>
+		///<param name="dstBox"> Image.BasicBox describing the destination region in this buffer </param>
 		///<remarks>
-		/// The source and destination regions dimensions don't have to match, in which
-		/// case scaling is done. This scaling is generally done using a bilinear filter in hardware,
-		/// but it is faster to pass the source image in the right dimensions.
-		/// Only call this function when both  buffers are unlocked. 
+		///  The source and destination regions dimensions don't have to match, in which case scaling is done. This scaling is generally done using a bilinear filter in hardware, but it is faster to pass the source image in the right dimensions. Only call this function when both buffers are unlocked.
 		///</remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public abstract void BlitFromMemory( PixelBox src, BasicBox dstBox );
 
 		///<summary>
-		/// Copies a region of this pixelbuffer to normal memory.
+		///  Copies a region of this pixelbuffer to normal memory.
 		///</summary>
-		///<param name="srcBox">BasicBox describing the source region of this buffer</param>
-		///<param name="dst">PixelBox describing the destination pixels and format in memory</param>
+		///<param name="srcBox"> BasicBox describing the source region of this buffer </param>
+		///<param name="dst"> PixelBox describing the destination pixels and format in memory </param>
 		///<remarks>
-		/// The source and destination regions don't have to match, in which
-		/// case scaling is done.
-		/// Only call this function when the buffer is unlocked. 
+		///  The source and destination regions don't have to match, in which case scaling is done. Only call this function when the buffer is unlocked.
 		///</remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public abstract void BlitToMemory( BasicBox srcBox, PixelBox dst );
@@ -219,8 +206,7 @@ namespace Axiom.Graphics
 		#region Methods
 
 		///<summary>
-		/// Internal implementation of lock(), do not override or call this
-		/// for HardwarePixelBuffer implementations, but override the previous method
+		///  Internal implementation of lock(), do not override or call this for HardwarePixelBuffer implementations, but override the previous method
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
 		protected override BufferBase LockImpl( int offset, int length, BufferLocking options )
@@ -234,14 +220,11 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		/// Lock the buffer for (potentially) reading / writing.
+		///  Lock the buffer for (potentially) reading / writing.
 		///</summary>
-		///<param name="lockBox">Region of the buffer to lock</param>
-		///<param name="options">Locking options</param>
-		///<returns>
-		/// PixelBox containing the locked region, the pitches and
-		/// the pixel format
-		///</returns>
+		///<param name="lockBox"> Region of the buffer to lock </param>
+		///<param name="options"> Locking options </param>
+		///<returns> PixelBox containing the locked region, the pitches and the pixel format </returns>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual PixelBox Lock( BasicBox lockBox, BufferLocking options )
 		{
@@ -266,17 +249,13 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		/// Copies a box from another PixelBuffer to a region of the 
-		/// this PixelBuffer. 
+		///  Copies a box from another PixelBuffer to a region of the this PixelBuffer.
 		///</summary>
-		///<param name="src">Source/dest pixel buffer</param>
-		///<param name="srcBox">Image.BasicBox describing the source region in this buffer</param>
-		///<param name="dstBox">Image.BasicBox describing the destination region in this buffer</param>
+		///<param name="src"> Source/dest pixel buffer </param>
+		///<param name="srcBox"> Image.BasicBox describing the source region in this buffer </param>
+		///<param name="dstBox"> Image.BasicBox describing the destination region in this buffer </param>
 		///<remarks>
-		/// The source and destination regions dimensions don't have to match, in which
-		/// case scaling is done. This scaling is generally done using a bilinear filter in hardware,
-		/// but it is faster to pass the source image in the right dimensions.
-		/// Only call this function when both buffers are unlocked. 
+		///  The source and destination regions dimensions don't have to match, in which case scaling is done. This scaling is generally done using a bilinear filter in hardware, but it is faster to pass the source image in the right dimensions. Only call this function when both buffers are unlocked.
 		///</remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void Blit( HardwarePixelBuffer src, BasicBox srcBox, BasicBox dstBox )
@@ -294,7 +273,8 @@ namespace Axiom.Graphics
 			var srclock = src.Lock( srcBox, BufferLocking.ReadOnly );
 
 			var method = BufferLocking.Normal;
-			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 && dstBox.Right == width && dstBox.Bottom == height && dstBox.Back == depth )
+			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 && dstBox.Right == width && dstBox.Bottom == height &&
+			     dstBox.Back == depth )
 			{
 				// Entire buffer -- we can discard the previous contents
 				method = BufferLocking.Discard;
@@ -317,12 +297,11 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		/// Convience function that blits the entire source pixel buffer to this buffer. 
-		/// If source and destination dimensions don't match, scaling is done.
+		///  Convience function that blits the entire source pixel buffer to this buffer. If source and destination dimensions don't match, scaling is done.
 		///</summary>
-		///<param name="src">PixelBox containing the source pixels and format in memory</param>
+		///<param name="src"> PixelBox containing the source pixels and format in memory </param>
 		///<remarks>
-		/// Only call this function when the buffer is unlocked. 
+		///  Only call this function when the buffer is unlocked.
 		///</remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public void Blit( HardwarePixelBuffer src )
@@ -331,14 +310,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Reads data from the buffer and places it in the memory pointed to by 'dest'.
+		///   Reads data from the buffer and places it in the memory pointed to by 'dest'.
 		/// </summary>
-		/// <param name="offset">The byte offset from the start of the buffer to read.</param>
-		/// <param name="length">The size of the area to read, in bytes.</param>
-		/// <param name="dest">
-		/// The area of memory in which to place the data, must be large enough to 
-		/// accommodate the data!
-		/// </param>
+		/// <param name="offset"> The byte offset from the start of the buffer to read. </param>
+		/// <param name="length"> The size of the area to read, in bytes. </param>
+		/// <param name="dest"> The area of memory in which to place the data, must be large enough to accommodate the data! </param>
 		[OgreVersion( 1, 7, 2 )]
 		public override void ReadData( int offset, int length, BufferBase dest )
 		{
@@ -346,16 +322,12 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Writes data to the buffer from an area of system memory; note that you must
-		/// ensure that your buffer is big enough.
+		///   Writes data to the buffer from an area of system memory; note that you must ensure that your buffer is big enough.
 		/// </summary>
-		/// <param name="offset">The byte offset from the start of the buffer to start writing.</param>
-		/// <param name="length">The size of the data to write to, in bytes.</param>
-		/// <param name="source">The source of the data to be written.</param>
-		/// <param name="discardWholeBuffer">
-		/// If true, this allows the driver to discard the entire buffer when writing,
-		/// such that DMA stalls can be avoided; use if you can.
-		/// </param>
+		/// <param name="offset"> The byte offset from the start of the buffer to start writing. </param>
+		/// <param name="length"> The size of the data to write to, in bytes. </param>
+		/// <param name="source"> The source of the data to be written. </param>
+		/// <param name="discardWholeBuffer"> If true, this allows the driver to discard the entire buffer when writing, such that DMA stalls can be avoided; use if you can. </param>
 		[OgreVersion( 1, 7, 2 )]
 		public override void WriteData( int offset, int length, BufferBase source, bool discardWholeBuffer )
 		{
@@ -363,14 +335,10 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		/// Get a render target for this PixelBuffer, or a slice of it. The texture this
-		/// was acquired from must have TextureUsage.RenderTarget set, otherwise it is possible to
-		/// render to it and this method will throw an exception.
+		///  Get a render target for this PixelBuffer, or a slice of it. The texture this was acquired from must have TextureUsage.RenderTarget set, otherwise it is possible to render to it and this method will throw an exception.
 		///</summary>
-		///<param name="slice">Which slice</param>
-		///<returns>
-		/// A pointer to the render target. This pointer has the lifespan of this PixelBuffer.
-		///</returns>
+		///<param name="slice"> Which slice </param>
+		///<returns> A pointer to the render target. This pointer has the lifespan of this PixelBuffer. </returns>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public virtual RenderTexture GetRenderTarget( int slice = 0 )
@@ -382,16 +350,15 @@ namespace Axiom.Graphics
 		}
 
 #if !NET_40
-		/// <see cref="HardwarePixelBuffer.GetRenderTarget(int)"/>
+		/// <see cref="HardwarePixelBuffer.GetRenderTarget(int)" />
 		public RenderTexture GetRenderTarget()
 		{
-			return this.GetRenderTarget( 0 );
+			return GetRenderTarget( 0 );
 		}
 #endif
 
 		///<summary>
-		/// Notify TextureBuffer of destruction of render target.
-		/// Called by RenderTexture when destroyed.
+		///  Notify TextureBuffer of destruction of render target. Called by RenderTexture when destroyed.
 		///</summary>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void ClearSliceRTT( int zoffset )
@@ -400,12 +367,11 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		/// Convenience function that blits a pixelbox from memory to the entire 
-		/// buffer. The source image is scaled as needed.
+		///  Convenience function that blits a pixelbox from memory to the entire buffer. The source image is scaled as needed.
 		///</summary>
-		///<param name="src">PixelBox containing the source pixels and format in memory</param>
+		///<param name="src"> PixelBox containing the source pixels and format in memory </param>
 		///<remarks>
-		/// Only call this function when the buffer is unlocked. 
+		///  Only call this function when the buffer is unlocked.
 		///</remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public void BlitFromMemory( PixelBox src )
@@ -415,12 +381,11 @@ namespace Axiom.Graphics
 
 
 		///<summary>
-		/// Convenience function that blits this entire buffer to a pixelbox.
-		/// The image is scaled as needed.
+		///  Convenience function that blits this entire buffer to a pixelbox. The image is scaled as needed.
 		///</summary>
-		///<param name="dst">PixelBox containing the source pixels and format in memory</param>
+		///<param name="dst"> PixelBox containing the source pixels and format in memory </param>
 		///<remarks>
-		/// Only call this function when the buffer is unlocked. 
+		///  Only call this function when the buffer is unlocked.
 		///</remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public void BlitToMemory( PixelBox dst )

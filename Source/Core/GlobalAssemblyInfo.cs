@@ -42,12 +42,14 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible( false )]
 [assembly: CLSCompliant( false )]
-[assembly: AssemblyConfiguration( "https://axiomengine.svn.sourceforge.net/svnroot/axiomengine, Mixed Revisions, Local Modifications, Debug" )]
-[assembly: AssemblyCompanyAttribute( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
-[assembly: AssemblyProductAttribute( "Axiom Rendering Engine" )]
-[assembly: AssemblyCopyrightAttribute( "Copyright © 2003-2012 Axiom Rendering Engine Project Team." )]
-[assembly: AssemblyTrademarkAttribute( "" )]
-[assembly: AssemblyCultureAttribute( "" )]
+[assembly:
+	AssemblyConfiguration(
+		"https://axiomengine.svn.sourceforge.net/svnroot/axiomengine, Mixed Revisions, Local Modifications, Debug" )]
+[assembly: AssemblyCompany( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
+[assembly: AssemblyProduct( "Axiom Rendering Engine" )]
+[assembly: AssemblyCopyright( "Copyright © 2003-2012 Axiom Rendering Engine Project Team." )]
+[assembly: AssemblyTrademark( "" )]
+[assembly: AssemblyCulture( "" )]
 
 // Version information for an assembly consists of the following four values:
 //

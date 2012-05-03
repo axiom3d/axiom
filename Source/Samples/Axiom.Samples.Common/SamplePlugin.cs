@@ -23,13 +23,12 @@
 #endregion License
 
 using System.ComponentModel.Composition;
-
 using Axiom.Core;
 
 namespace Axiom.Samples
 {
 	/// <summary>
-	/// Utility class used to hold a set of samples in an Axiom plugin.
+	///   Utility class used to hold a set of samples in an Axiom plugin.
 	/// </summary>
 #if !(WINDOWS_PHONE || XBOX || XBOX360)
 	[Export( typeof ( IPlugin ) )]
@@ -39,12 +38,10 @@ namespace Axiom.Samples
 		#region Fields and Properties
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public string Name { get; protected set; }
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public readonly SampleSet Samples = new SampleSet();
 
@@ -55,12 +52,12 @@ namespace Axiom.Samples
 		public SamplePlugin()
 		{
 			//this ctor is for axiom's plugin manager
-			this.Name = string.Empty;
+			Name = string.Empty;
 		}
 
 		public SamplePlugin( string name )
 		{
-			this.Name = name;
+			Name = name;
 		}
 
 		#endregion Construction and Destruction
@@ -76,9 +73,13 @@ namespace Axiom.Samples
 
 		#region IPlugin Implementation
 
-		public virtual void Initialize() {}
+		public virtual void Initialize()
+		{
+		}
 
-		public virtual void Shutdown() {}
+		public virtual void Shutdown()
+		{
+		}
 
 		#endregion
 	}

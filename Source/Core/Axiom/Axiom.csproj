@@ -771,6 +771,9 @@
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Proclaim.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Core\InstancedGeometry\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
 </Project>

@@ -43,7 +43,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -68,7 +67,7 @@ using System.Text;
 namespace Axiom.Math
 {
 	/// <summary>
-	/// A 3x3 matrix which can represent rotations around axes.
+	///   A 3x3 matrix which can represent rotations around axes.
 	/// </summary>
 	[StructLayout( LayoutKind.Sequential )]
 	public struct Matrix3
@@ -76,7 +75,6 @@ namespace Axiom.Math
 		#region Member variables and constants
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public Real m00, m01, m02;
 
@@ -91,9 +89,9 @@ namespace Axiom.Math
 
 		#region Constructors
 
-		/// <summary>
-		///		Creates a new Matrix3 with all the specified parameters.
-		/// </summary>
+		///<summary>
+		///  Creates a new Matrix3 with all the specified parameters.
+		///</summary>
 		public Matrix3( Real m00, Real m01, Real m02, Real m10, Real m11, Real m12, Real m20, Real m21, Real m22 )
 		{
 			this.m00 = m00;
@@ -108,11 +106,11 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		/// Create a new Matrix from 3 Vertex3 objects.
+		///   Create a new Matrix from 3 Vertex3 objects.
 		/// </summary>
-		/// <param name="xAxis"></param>
-		/// <param name="yAxis"></param>
-		/// <param name="zAxis"></param>
+		/// <param name="xAxis"> </param>
+		/// <param name="yAxis"> </param>
+		/// <param name="zAxis"> </param>
 		public Matrix3( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
 		{
 			m00 = xAxis.x;
@@ -131,7 +129,7 @@ namespace Axiom.Math
 		#region Static properties
 
 		/// <summary>
-		/// Identity Matrix
+		///   Identity Matrix
 		/// </summary>
 		public static Matrix3 Identity
 		{
@@ -142,7 +140,7 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		/// Zero matrix.
+		///   Zero matrix.
 		/// </summary>
 		public static Matrix3 Zero
 		{
@@ -157,19 +155,19 @@ namespace Axiom.Math
 		#region Public methods
 
 		/// <summary>
-		/// Swap the rows of the matrix with the columns.
+		///   Swap the rows of the matrix with the columns.
 		/// </summary>
-		/// <returns>A transposed Matrix.</returns>
+		/// <returns> A transposed Matrix. </returns>
 		public Matrix3 Transpose()
 		{
 			return new Matrix3( m00, m10, m20, m01, m11, m21, m02, m12, m22 );
 		}
 
-		/// <summary>
-		///		Gets a matrix column by index.
-		/// </summary>
-		/// <param name="col"></param>
-		/// <returns>A Vector3 representing one of the Matrix columns.</returns>
+		///<summary>
+		///  Gets a matrix column by index.
+		///</summary>
+		///<param name="col"> </param>
+		///<returns> A Vector3 representing one of the Matrix columns. </returns>
 		public Vector3 GetColumn( int col )
 		{
 			Debug.Assert( col >= 0 && col < 3, "Attempt to retreive a column of a Matrix3 greater than 2." );
@@ -195,12 +193,12 @@ namespace Axiom.Math
 #endif
 		}
 
-		/// <summary>
-		///		Sets one of the columns of the Matrix with a Vector3.
-		/// </summary>
-		/// <param name="col"></param>
-		/// <param name="vector"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Sets one of the columns of the Matrix with a Vector3.
+		///</summary>
+		///<param name="col"> </param>
+		///<param name="vector"> </param>
+		///<returns> </returns>
 		public void SetColumn( int col, Vector3 vector )
 		{
 			Debug.Assert( col >= 0 && col < 3, "Attempt to set a column of a Matrix3 greater than 2." );
@@ -210,12 +208,12 @@ namespace Axiom.Math
 			this[ 2, col ] = vector.z;
 		}
 
-		/// <summary>
-		///		Creates a Matrix3 from 3 axes.
-		/// </summary>
-		/// <param name="xAxis"></param>
-		/// <param name="yAxis"></param>
-		/// <param name="zAxis"></param>
+		///<summary>
+		///  Creates a Matrix3 from 3 axes.
+		///</summary>
+		///<param name="xAxis"> </param>
+		///<param name="yAxis"> </param>
+		///<param name="zAxis"> </param>
 		public void FromAxes( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
 		{
 			SetColumn( 0, xAxis );
@@ -224,11 +222,11 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		///    Constructs this Matrix from 3 euler angles, in degrees.
+		///   Constructs this Matrix from 3 euler angles, in degrees.
 		/// </summary>
-		/// <param name="yaw"></param>
-		/// <param name="pitch"></param>
-		/// <param name="roll"></param>
+		/// <param name="yaw"> </param>
+		/// <param name="pitch"> </param>
+		/// <param name="roll"> </param>
 		public void FromEulerAnglesXYZ( Real yaw, Real pitch, Real roll )
 		{
 			var cos = Utility.Cos( yaw );
@@ -243,7 +241,7 @@ namespace Axiom.Math
 			sin = Utility.Sin( roll );
 			var zMat = new Matrix3( cos, -sin, 0, sin, cos, 0, 0, 0, 1 );
 
-			this = xMat * ( yMat * zMat );
+			this = xMat*( yMat*zMat );
 		}
 
 		public Vector3 ToEulerAnglesXYZ()
@@ -253,9 +251,9 @@ namespace Axiom.Math
 			Real pAngle;
 
 			pAngle = Utility.ASin( m01 );
-			if ( pAngle < Utility.PI / 2 )
+			if ( pAngle < Utility.PI/2 )
 			{
-				if ( pAngle > -Utility.PI / 2 )
+				if ( pAngle > -Utility.PI/2 )
 				{
 					yAngle = Utility.ATan2( m21, m11 );
 					rAngle = Utility.ATan2( m02, m00 );
@@ -284,182 +282,182 @@ namespace Axiom.Math
 		#region Operator overloads + CLS complient method equivalents
 
 		/// <summary>
-		/// Multiply (concatenate) two Matrix3 instances together.
+		///   Multiply (concatenate) two Matrix3 instances together.
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		/// <param name="left"> </param>
+		/// <param name="right"> </param>
+		/// <returns> </returns>
 		public static Matrix3 Multiply( Matrix3 left, Matrix3 right )
 		{
-			return left * right;
+			return left*right;
 		}
 
 		/// <summary>
-		/// Multiply (concatenate) two Matrix3 instances together.
+		///   Multiply (concatenate) two Matrix3 instances together.
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		/// <param name="left"> </param>
+		/// <param name="right"> </param>
+		/// <returns> </returns>
 		public static Matrix3 operator *( Matrix3 left, Matrix3 right )
 		{
 			var result = new Matrix3();
 
-			result.m00 = left.m00 * right.m00 + left.m01 * right.m10 + left.m02 * right.m20;
-			result.m01 = left.m00 * right.m01 + left.m01 * right.m11 + left.m02 * right.m21;
-			result.m02 = left.m00 * right.m02 + left.m01 * right.m12 + left.m02 * right.m22;
+			result.m00 = left.m00*right.m00 + left.m01*right.m10 + left.m02*right.m20;
+			result.m01 = left.m00*right.m01 + left.m01*right.m11 + left.m02*right.m21;
+			result.m02 = left.m00*right.m02 + left.m01*right.m12 + left.m02*right.m22;
 
-			result.m10 = left.m10 * right.m00 + left.m11 * right.m10 + left.m12 * right.m20;
-			result.m11 = left.m10 * right.m01 + left.m11 * right.m11 + left.m12 * right.m21;
-			result.m12 = left.m10 * right.m02 + left.m11 * right.m12 + left.m12 * right.m22;
+			result.m10 = left.m10*right.m00 + left.m11*right.m10 + left.m12*right.m20;
+			result.m11 = left.m10*right.m01 + left.m11*right.m11 + left.m12*right.m21;
+			result.m12 = left.m10*right.m02 + left.m11*right.m12 + left.m12*right.m22;
 
-			result.m20 = left.m20 * right.m00 + left.m21 * right.m10 + left.m22 * right.m20;
-			result.m21 = left.m20 * right.m01 + left.m21 * right.m11 + left.m22 * right.m21;
-			result.m22 = left.m20 * right.m02 + left.m21 * right.m12 + left.m22 * right.m22;
+			result.m20 = left.m20*right.m00 + left.m21*right.m10 + left.m22*right.m20;
+			result.m21 = left.m20*right.m01 + left.m21*right.m11 + left.m22*right.m21;
+			result.m22 = left.m20*right.m02 + left.m21*right.m12 + left.m22*right.m22;
 
 			return result;
 		}
 
-		/// <summary>
-		///		vector * matrix [1x3 * 3x3 = 1x3]
-		/// </summary>
-		/// <param name="vector"></param>
-		/// <param name="matrix"></param>
-		/// <returns></returns>
+		///<summary>
+		///  vector * matrix [1x3 * 3x3 = 1x3]
+		///</summary>
+		///<param name="vector"> </param>
+		///<param name="matrix"> </param>
+		///<returns> </returns>
 		public static Vector3 Multiply( Vector3 vector, Matrix3 matrix )
 		{
-			return vector * matrix;
+			return vector*matrix;
 		}
 
-		/// <summary>
-		///		vector * matrix [1x3 * 3x3 = 1x3]
-		/// </summary>
-		/// <param name="vector"></param>
-		/// <param name="matrix"></param>
-		/// <returns></returns>
+		///<summary>
+		///  vector * matrix [1x3 * 3x3 = 1x3]
+		///</summary>
+		///<param name="vector"> </param>
+		///<param name="matrix"> </param>
+		///<returns> </returns>
 		public static Vector3 operator *( Vector3 vector, Matrix3 matrix )
 		{
 			var product = new Vector3();
 
-			product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
-			product.y = matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z;
-			product.z = matrix.m20 * vector.x + matrix.m21 * vector.y + matrix.m22 * vector.z;
+			product.x = matrix.m00*vector.x + matrix.m01*vector.y + matrix.m02*vector.z;
+			product.y = matrix.m10*vector.x + matrix.m11*vector.y + matrix.m12*vector.z;
+			product.z = matrix.m20*vector.x + matrix.m21*vector.y + matrix.m22*vector.z;
 
 			return product;
 		}
 
-		/// <summary>
-		///		matrix * vector [3x3 * 3x1 = 3x1]
-		/// </summary>
-		/// <param name="vector"></param>
-		/// <param name="matrix"></param>
-		/// <returns></returns>
+		///<summary>
+		///  matrix * vector [3x3 * 3x1 = 3x1]
+		///</summary>
+		///<param name="vector"> </param>
+		///<param name="matrix"> </param>
+		///<returns> </returns>
 		public static Vector3 Multiply( Matrix3 matrix, Vector3 vector )
 		{
-			return matrix * vector;
+			return matrix*vector;
 		}
 
-		/// <summary>
-		///		matrix * vector [3x3 * 3x1 = 3x1]
-		/// </summary>
-		/// <param name="vector"></param>
-		/// <param name="matrix"></param>
-		/// <returns></returns>
+		///<summary>
+		///  matrix * vector [3x3 * 3x1 = 3x1]
+		///</summary>
+		///<param name="vector"> </param>
+		///<param name="matrix"> </param>
+		///<returns> </returns>
 		public static Vector3 operator *( Matrix3 matrix, Vector3 vector )
 		{
 			var product = new Vector3();
 
-			product.x = matrix.m00 * vector.x + matrix.m01 * vector.y + matrix.m02 * vector.z;
-			product.y = matrix.m10 * vector.x + matrix.m11 * vector.y + matrix.m12 * vector.z;
-			product.z = matrix.m20 * vector.x + matrix.m21 * vector.y + matrix.m22 * vector.z;
+			product.x = matrix.m00*vector.x + matrix.m01*vector.y + matrix.m02*vector.z;
+			product.y = matrix.m10*vector.x + matrix.m11*vector.y + matrix.m12*vector.z;
+			product.z = matrix.m20*vector.x + matrix.m21*vector.y + matrix.m22*vector.z;
 
 			return product;
 		}
 
 		/// <summary>
-		/// Multiplies all the items in the Matrix3 by a scalar value.
+		///   Multiplies all the items in the Matrix3 by a scalar value.
 		/// </summary>
-		/// <param name="matrix"></param>
-		/// <param name="scalar"></param>
-		/// <returns></returns>
+		/// <param name="matrix"> </param>
+		/// <param name="scalar"> </param>
+		/// <returns> </returns>
 		public static Matrix3 Multiply( Matrix3 matrix, Real scalar )
 		{
-			return matrix * scalar;
+			return matrix*scalar;
 		}
 
 		/// <summary>
-		/// Multiplies all the items in the Matrix3 by a scalar value.
+		///   Multiplies all the items in the Matrix3 by a scalar value.
 		/// </summary>
-		/// <param name="matrix"></param>
-		/// <param name="scalar"></param>
-		/// <returns></returns>
+		/// <param name="matrix"> </param>
+		/// <param name="scalar"> </param>
+		/// <returns> </returns>
 		public static Matrix3 operator *( Matrix3 matrix, Real scalar )
 		{
 			var result = new Matrix3();
 
-			result.m00 = matrix.m00 * scalar;
-			result.m01 = matrix.m01 * scalar;
-			result.m02 = matrix.m02 * scalar;
-			result.m10 = matrix.m10 * scalar;
-			result.m11 = matrix.m11 * scalar;
-			result.m12 = matrix.m12 * scalar;
-			result.m20 = matrix.m20 * scalar;
-			result.m21 = matrix.m21 * scalar;
-			result.m22 = matrix.m22 * scalar;
+			result.m00 = matrix.m00*scalar;
+			result.m01 = matrix.m01*scalar;
+			result.m02 = matrix.m02*scalar;
+			result.m10 = matrix.m10*scalar;
+			result.m11 = matrix.m11*scalar;
+			result.m12 = matrix.m12*scalar;
+			result.m20 = matrix.m20*scalar;
+			result.m21 = matrix.m21*scalar;
+			result.m22 = matrix.m22*scalar;
 
 			return result;
 		}
 
 		/// <summary>
-		/// Multiplies all the items in the Matrix3 by a scalar value.
+		///   Multiplies all the items in the Matrix3 by a scalar value.
 		/// </summary>
-		/// <param name="matrix"></param>
-		/// <param name="scalar"></param>
-		/// <returns></returns>
+		/// <param name="matrix"> </param>
+		/// <param name="scalar"> </param>
+		/// <returns> </returns>
 		public static Matrix3 Multiply( Real scalar, Matrix3 matrix )
 		{
-			return scalar * matrix;
+			return scalar*matrix;
 		}
 
 		/// <summary>
-		/// Multiplies all the items in the Matrix3 by a scalar value.
+		///   Multiplies all the items in the Matrix3 by a scalar value.
 		/// </summary>
-		/// <param name="matrix"></param>
-		/// <param name="scalar"></param>
-		/// <returns></returns>
+		/// <param name="matrix"> </param>
+		/// <param name="scalar"> </param>
+		/// <returns> </returns>
 		public static Matrix3 operator *( Real scalar, Matrix3 matrix )
 		{
 			var result = new Matrix3();
 
-			result.m00 = matrix.m00 * scalar;
-			result.m01 = matrix.m01 * scalar;
-			result.m02 = matrix.m02 * scalar;
-			result.m10 = matrix.m10 * scalar;
-			result.m11 = matrix.m11 * scalar;
-			result.m12 = matrix.m12 * scalar;
-			result.m20 = matrix.m20 * scalar;
-			result.m21 = matrix.m21 * scalar;
-			result.m22 = matrix.m22 * scalar;
+			result.m00 = matrix.m00*scalar;
+			result.m01 = matrix.m01*scalar;
+			result.m02 = matrix.m02*scalar;
+			result.m10 = matrix.m10*scalar;
+			result.m11 = matrix.m11*scalar;
+			result.m12 = matrix.m12*scalar;
+			result.m20 = matrix.m20*scalar;
+			result.m21 = matrix.m21*scalar;
+			result.m22 = matrix.m22*scalar;
 
 			return result;
 		}
 
-		/// <summary>
-		///		Used to add two matrices together.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used to add two matrices together.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Matrix3 Add( Matrix3 left, Matrix3 right )
 		{
 			return left + right;
 		}
 
-		/// <summary>
-		///		Used to add two matrices together.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used to add two matrices together.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Matrix3 operator +( Matrix3 left, Matrix3 right )
 		{
 			var result = new Matrix3();
@@ -475,23 +473,23 @@ namespace Axiom.Math
 			return result;
 		}
 
-		/// <summary>
-		///		Used to subtract two matrices.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used to subtract two matrices.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Matrix3 Subtract( Matrix3 left, Matrix3 right )
 		{
 			return left - right;
 		}
 
-		/// <summary>
-		///		Used to subtract two matrices.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Used to subtract two matrices.
+		///</summary>
+		///<param name="left"> </param>
+		///<param name="right"> </param>
+		///<returns> </returns>
 		public static Matrix3 operator -( Matrix3 left, Matrix3 right )
 		{
 			var result = new Matrix3();
@@ -508,20 +506,20 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		/// Negates all the items in the Matrix.
+		///   Negates all the items in the Matrix.
 		/// </summary>
-		/// <param name="matrix"></param>
-		/// <returns></returns>
+		/// <param name="matrix"> </param>
+		/// <returns> </returns>
 		public static Matrix3 Negate( Matrix3 matrix )
 		{
 			return -matrix;
 		}
 
 		/// <summary>
-		/// Negates all the items in the Matrix.
+		///   Negates all the items in the Matrix.
 		/// </summary>
-		/// <param name="matrix"></param>
-		/// <returns></returns>
+		/// <param name="matrix"> </param>
+		/// <returns> </returns>
 		public static Matrix3 operator -( Matrix3 matrix )
 		{
 			var result = new Matrix3();
@@ -540,14 +538,16 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		/// 	Test two matrices for (value) equality
+		///   Test two matrices for (value) equality
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
+		/// <param name="left"> </param>
+		/// <param name="right"> </param>
+		/// <returns> </returns>
 		public static bool operator ==( Matrix3 left, Matrix3 right )
 		{
-			if ( left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 && left.m10 == right.m10 && left.m11 == right.m11 && left.m12 == right.m12 && left.m20 == right.m20 && left.m21 == right.m21 && left.m22 == right.m22 )
+			if ( left.m00 == right.m00 && left.m01 == right.m01 && left.m02 == right.m02 && left.m10 == right.m10 &&
+			     left.m11 == right.m11 && left.m12 == right.m12 && left.m20 == right.m20 && left.m21 == right.m21 &&
+			     left.m22 == right.m22 )
 			{
 				return true;
 			}
@@ -561,7 +561,7 @@ namespace Axiom.Math
 		}
 
 		/// <summary>
-		/// Indexer for accessing the matrix like a 2d array (i.e. matrix[2,3]).
+		///   Indexer for accessing the matrix like a 2d array (i.e. matrix[2,3]).
 		/// </summary>
 		public Real this[ int row, int col ]
 		{
@@ -603,7 +603,7 @@ namespace Axiom.Math
 				{
 					fixed ( Real* pM = &m00 )
 					{
-						return *( pM + ( ( 3 * row ) + col ) );
+						return *( pM + ( ( 3*row ) + col ) );
 					}
 				}
 #endif
@@ -645,16 +645,16 @@ namespace Axiom.Math
 				{
 					fixed ( Real* pM = &m00 )
 					{
-						*( pM + ( ( 3 * row ) + col ) ) = value;
+						*( pM + ( ( 3*row ) + col ) ) = value;
 					}
 				}
 #endif
 			}
 		}
 
-		/// <summary>
-		///		Allows the Matrix to be accessed linearly (m[0] -> m[8]).  
-		/// </summary>
+		///<summary>
+		///  Allows the Matrix to be accessed linearly (m[0] -> m[8]).
+		///</summary>
 		public Real this[ int index ]
 		{
 			get
@@ -722,11 +722,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				var cofactor00 = m11 * m22 - m12 * m21;
-				var cofactor10 = m12 * m20 - m10 * m22;
-				var cofactor20 = m10 * m21 - m11 * m20;
+				var cofactor00 = m11*m22 - m12*m21;
+				var cofactor10 = m12*m20 - m10*m22;
+				var cofactor20 = m10*m21 - m11*m20;
 
-				var result = m00 * cofactor00 + m01 * cofactor10 + m02 * cofactor20;
+				var result = m00*cofactor00 + m01*cofactor10 + m02*cofactor20;
 
 				return result;
 			}
@@ -736,11 +736,10 @@ namespace Axiom.Math
 
 		#region Object overloads
 
-		/// <summary>
-		///		Overrides the Object.ToString() method to provide a text representation of 
-		///		a Matrix4.
-		/// </summary>
-		/// <returns>A string representation of a vector3.</returns>
+		///<summary>
+		///  Overrides the Object.ToString() method to provide a text representation of a Matrix4.
+		///</summary>
+		///<returns> A string representation of a vector3. </returns>
 		public override string ToString()
 		{
 			var builder = new StringBuilder();
@@ -752,15 +751,10 @@ namespace Axiom.Math
 			return builder.ToString();
 		}
 
-		/// <summary>
-		///		Provides a unique hash code based on the member variables of this
-		///		class.  This should be done because the equality operators (==, !=)
-		///		have been overriden by this class.
-		///		<p/>
-		///		The standard implementation is a simple XOR operation between all local
-		///		member variables.
-		/// </summary>
-		/// <returns></returns>
+		///<summary>
+		///  Provides a unique hash code based on the member variables of this class. This should be done because the equality operators (==, !=) have been overriden by this class. <p /> The standard implementation is a simple XOR operation between all local member variables.
+		///</summary>
+		///<returns> </returns>
 		public override int GetHashCode()
 		{
 #if AXIOM_SAFE_ONLY
@@ -783,12 +777,11 @@ namespace Axiom.Math
 #endif
 		}
 
-		/// <summary>
-		///		Compares this Matrix to another object.  This should be done because the 
-		///		equality operators (==, !=) have been overriden by this class.
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Compares this Matrix to another object. This should be done because the equality operators (==, !=) have been overriden by this class.
+		///</summary>
+		///<param name="obj"> </param>
+		///<returns> </returns>
 		public override bool Equals( object obj )
 		{
 			return obj is Matrix3 && this == (Matrix3)obj;

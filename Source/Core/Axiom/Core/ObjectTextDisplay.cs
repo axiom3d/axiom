@@ -37,11 +37,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Axiom.Math;
 using Axiom.Overlays;
 
 #endregion Namespace Declarations
@@ -49,7 +44,7 @@ using Axiom.Overlays;
 namespace Axiom.Core
 {
 	/// <summary>
-	/// Attaches a label to a <see cref="MovableObject"/>
+	///   Attaches a label to a <see cref="MovableObject" />
 	/// </summary>
 	public class ObjectTextDisplay
 	{
@@ -71,14 +66,14 @@ namespace Axiom.Core
 			}
 			set
 			{
-				this.enabled = value;
+				enabled = value;
 				if ( value )
 				{
-					this.parentOverlay.Show();
+					parentOverlay.Show();
 				}
 				else
 				{
-					this.parentOverlay.Hide();
+					parentOverlay.Hide();
 				}
 			}
 		}
@@ -93,8 +88,8 @@ namespace Axiom.Core
 			}
 			set
 			{
-				this.text = value;
-				this.parentText.Text = this.text;
+				text = value;
+				parentText.Text = text;
 			}
 		}
 
@@ -104,61 +99,63 @@ namespace Axiom.Core
 
 		public ObjectTextDisplay( MovableObject p, Camera c, string shapeName )
 		{
-			this.parent = p;
-			this.camera = c;
-			this.enabled = false;
-			this.text = "";
+			parent = p;
+			camera = c;
+			enabled = false;
+			text = "";
 
 			// create an overlay that we can use for later
 
 			// = Ogre.OverlayManager.getSingleton().create("shapeName");
-			this.parentOverlay = (Overlay)OverlayManager.Instance.Create( "shapeName" );
+			parentOverlay = (Overlay)OverlayManager.Instance.Create( "shapeName" );
 
 			// (Ogre.OverlayContainer)(Ogre.OverlayManager.getSingleton().createOverlayElement("Panel", "container1"));
-			this.parentContainer = (OverlayElementContainer)( OverlayElementManager.Instance.CreateElement( "Panel", "container1", false ) );
+			parentContainer =
+				(OverlayElementContainer)( OverlayElementManager.Instance.CreateElement( "Panel", "container1", false ) );
 
 			//parentOverlay.add2D(parentContainer);
-			this.parentOverlay.AddElement( this.parentContainer );
+			parentOverlay.AddElement( parentContainer );
 
 			//parentText = Ogre.OverlayManager.getSingleton().createOverlayElement("TextArea", "shapeNameText");
-			this.parentText = OverlayElementManager.Instance.CreateElement( "TextArea", shapeName, false );
+			parentText = OverlayElementManager.Instance.CreateElement( "TextArea", shapeName, false );
 
-			this.parentText.SetDimensions( 1.0f, 1.0f );
+			parentText.SetDimensions( 1.0f, 1.0f );
 
 			//parentText.setMetricsMode(Ogre.GMM_PIXELS);
-			this.parentText.MetricsMode = MetricsMode.Pixels;
+			parentText.MetricsMode = MetricsMode.Pixels;
 
 
-			this.parentText.SetPosition( 1.0f, 1.0f );
+			parentText.SetPosition( 1.0f, 1.0f );
 
 
-			this.parentText.SetParam( "font_name", "Arial" );
-			this.parentText.SetParam( "char_height", "25" );
-			this.parentText.SetParam( "horz_align", "center" );
-			this.parentText.Color = new ColorEx( 1.0f, 1.0f, 1.0f );
+			parentText.SetParam( "font_name", "Arial" );
+			parentText.SetParam( "char_height", "25" );
+			parentText.SetParam( "horz_align", "center" );
+			parentText.Color = new ColorEx( 1.0f, 1.0f, 1.0f );
 			//parentText.setColour(Ogre.ColourValue(1.0, 1.0, 1.0));
 
 
-			this.parentContainer.AddChild( this.parentText );
+			parentContainer.AddChild( parentText );
 
-			this.parentOverlay.Show();
+			parentOverlay.Show();
 		}
 
 		#endregion Construction and Destruction
 
 		public void Update()
 		{
-			if ( !this.enabled )
+			if ( !enabled )
 			{
 				return;
 			}
 
 			// get the projection of the object's AABB into screen space
-			var bbox = this.parent.GetWorldBoundingBox( true ); //new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
+			var bbox = parent.GetWorldBoundingBox( true );
+				//new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
 
 
 			//Ogre.Matrix4 mat = camera.getViewMatrix();
-			var mat = this.camera.ViewMatrix;
+			var mat = camera.ViewMatrix;
 			//const Ogre.Vector3 corners = bbox.getAllCorners();
 			var corners = bbox.Corners;
 
@@ -177,12 +174,12 @@ namespace Axiom.Core
 				// multiply the AABB corner vertex by the view matrix to
 				// get a camera-space vertex
 				//corner = multiply(mat,corner);
-				corner = mat * corner;
+				corner = mat*corner;
 
 				// make 2D relative/normalized coords from the view-space vertex
 				// by dividing out the Z (depth) factor -- this is an approximation
-				float x = corner.x / corner.z + 0.5f;
-				float y = corner.y / corner.z + 0.5f;
+				float x = corner.x/corner.z + 0.5f;
+				float y = corner.y/corner.z + 0.5f;
 
 				if ( x < min_x )
 				{
@@ -210,8 +207,8 @@ namespace Axiom.Core
 			// this top edge is (min_x, min_y) to (max_x, min_y)
 
 			//parentContainer->setPosition(min_x, min_y);
-			this.parentContainer.SetPosition( 1 - max_x, min_y ); // Edited by alberts: This code works for me
-			this.parentContainer.SetDimensions( max_x - min_x, 0.1f ); // 0.1, just "because"
+			parentContainer.SetPosition( 1 - max_x, min_y ); // Edited by alberts: This code works for me
+			parentContainer.SetDimensions( max_x - min_x, 0.1f ); // 0.1, just "because"
 		}
 	}
 }

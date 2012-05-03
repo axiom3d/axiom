@@ -29,23 +29,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Math
 {
-	/// <summary>
-	///	Represents two related values
-	/// </summary>
+	///<summary>
+	///  Represents two related values
+	///</summary>
 	public class Tuple<A, B> : IEquatable<Tuple<A, B>>
 	{
 		#region Fields and Properties
 
-		/// <summary></summary>
+		/// <summary>
+		/// </summary>
 		public readonly A First;
 
-		/// <summary></summary>
+		/// <summary>
+		/// </summary>
 		public readonly B Second;
 
 		#endregion Fields and Properties
@@ -54,8 +55,8 @@ namespace Axiom.Math
 
 		public Tuple( A first, B second )
 		{
-			this.First = first;
-			this.Second = second;
+			First = first;
+			Second = second;
 		}
 
 		#endregion Construction and Destruction
@@ -71,7 +72,7 @@ namespace Axiom.Math
 		{
 			if ( other is Tuple<A, B> )
 			{
-				return this.Equals( (Tuple<A, B>)other );
+				return Equals( (Tuple<A, B>)other );
 			}
 			return false;
 		}
@@ -80,22 +81,25 @@ namespace Axiom.Math
 	}
 
 	/// <summary>
-	/// Represents three related values
+	///   Represents three related values
 	/// </summary>
-	/// <typeparam name="A"></typeparam>
-	/// <typeparam name="B"></typeparam>
-	/// <typeparam name="C"></typeparam>
+	/// <typeparam name="A"> </typeparam>
+	/// <typeparam name="B"> </typeparam>
+	/// <typeparam name="C"> </typeparam>
 	public struct Tuple<A, B, C> : IEquatable<Tuple<A, B, C>>
 	{
 		#region Fields and Properties
 
-		/// <summary></summary>
+		/// <summary>
+		/// </summary>
 		public readonly A First;
 
-		/// <summary></summary>
+		/// <summary>
+		/// </summary>
 		public readonly B Second;
 
-		/// <summary></summary>
+		/// <summary>
+		/// </summary>
 		public readonly C Third;
 
 		#endregion Fields and Properties
@@ -104,8 +108,8 @@ namespace Axiom.Math
 
 		public Tuple( A first, B second, C Third )
 		{
-			this.First = first;
-			this.Second = second;
+			First = first;
+			Second = second;
 			this.Third = Third;
 		}
 
@@ -122,7 +126,7 @@ namespace Axiom.Math
 		{
 			if ( other is Tuple<A, B, C> )
 			{
-				return this.Equals( (Tuple<A, B, C>)other );
+				return Equals( (Tuple<A, B, C>)other );
 			}
 			return false;
 		}
@@ -131,26 +135,30 @@ namespace Axiom.Math
 	}
 
 	/// <summary>
-	/// Represents four related values
+	///   Represents four related values
 	/// </summary>
-	/// <typeparam name="A"></typeparam>
-	/// <typeparam name="B"></typeparam>
-	/// <typeparam name="C"></typeparam>
-	/// <typeparam name="D"></typeparam>
+	/// <typeparam name="A"> </typeparam>
+	/// <typeparam name="B"> </typeparam>
+	/// <typeparam name="C"> </typeparam>
+	/// <typeparam name="D"> </typeparam>
 	public struct Tuple<A, B, C, D> : IEquatable<Tuple<A, B, C, D>>
 	{
 		#region Fields and Properties
 
-		/// <summary></summary>
+		/// <summary>
+		/// </summary>
 		public readonly A First;
 
-		/// <summary></summary>
+		/// <summary>
+		/// </summary>
 		public readonly B Second;
 
-		/// <summary></summary>
+		/// <summary>
+		/// </summary>
 		public readonly C Third;
 
-		/// <summary></summary>
+		/// <summary>
+		/// </summary>
 		public readonly D Fourth;
 
 		#endregion Fields and Properties
@@ -159,10 +167,10 @@ namespace Axiom.Math
 
 		public Tuple( A first, B second, C third, D fourth )
 		{
-			this.First = first;
-			this.Second = second;
-			this.Third = third;
-			this.Fourth = fourth;
+			First = first;
+			Second = second;
+			Third = third;
+			Fourth = fourth;
 		}
 
 		#endregion Construction and Destruction
@@ -178,7 +186,7 @@ namespace Axiom.Math
 		{
 			if ( other is Tuple<A, B, C, D> )
 			{
-				return this.Equals( (Tuple<A, B, C, D>)other );
+				return Equals( (Tuple<A, B, C, D>)other );
 			}
 			return false;
 		}

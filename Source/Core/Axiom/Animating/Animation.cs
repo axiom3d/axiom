@@ -37,11 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-
-using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -58,90 +55,100 @@ using Axiom.Graphics;
 
 namespace Axiom.Animating
 {
-	/// <summary>
-	///		Types of interpolation used in animation.
-	/// </summary>
+	///<summary>
+	///  Types of interpolation used in animation.
+	///</summary>
 	public enum InterpolationMode
 	{
-		/// <summary>
-		///		Values are interpolated along straight lines.  
-		///		More robotic movement, not as realistic.
-		///	 </summary>
+		///<summary>
+		///  Values are interpolated along straight lines. More robotic movement, not as realistic.
+		///</summary>
 		Linear,
 
-		/// <summary>
-		///		Values are interpolated along a spline, resulting in smoother changes in direction.  
-		///		Smooth movement between keyframes.
-		///	 </summary>
+		///<summary>
+		///  Values are interpolated along a spline, resulting in smoother changes in direction. Smooth movement between keyframes.
+		///</summary>
 		Spline
 	}
 
 	/// <summary>
-	/// The types of rotational interpolation available.
+	///   The types of rotational interpolation available.
 	/// </summary>
 	public enum RotationInterpolationMode
 	{
 		/// <summary>
-		/// Values are interpolated linearly. This is faster but does not 
-		///    necessarily give a completely accurate result.
+		///   Values are interpolated linearly. This is faster but does not necessarily give a completely accurate result.
 		/// </summary>
 		Linear,
 
 		/// <summary>
-		///  Values are interpolated spherically. This is more accurate but
-		///    has a higher cost.
+		///   Values are interpolated spherically. This is more accurate but has a higher cost.
 		/// </summary>
 		Spherical
 	};
 
-	/// <summary>
-	///		An animation sequence. 
-	/// </summary>
-	/// <remarks>
-	///		This class defines the interface for a sequence of animation, whether that
-	///		be animation of a mesh, a path along a spline, or possibly more than one
-	///		type of animation in one. An animation is made up of many 'tracks', which are
-	///		the more specific types of animation.
-	///		<p/>
-	///		You should not create these animations directly. They will be created via a parent
-	///		object which owns the animation, e.g. Skeleton, SceneManager, etc.
-	/// </remarks>
+	///<summary>
+	///  An animation sequence.
+	///</summary>
+	///<remarks>
+	///  This class defines the interface for a sequence of animation, whether that be animation of a mesh, a path along a spline, or possibly more than one type of animation in one. An animation is made up of many 'tracks', which are the more specific types of animation. <p /> You should not create these animations directly. They will be created via a parent object which owns the animation, e.g. Skeleton, SceneManager, etc.
+	///</remarks>
 	public class Animation
 	{
 		#region Member variables
 
-		/// <summary>Name of this animation.</summary>
+		/// <summary>
+		///   Name of this animation.
+		/// </summary>
 		protected string name;
 
-		/// <summary>The total length of this animation (sum of the tracks).</summary>
+		/// <summary>
+		///   The total length of this animation (sum of the tracks).
+		/// </summary>
 		protected float length;
 
-		/// <summary>Collection of NodeAnimationTracks.</summary>
+		/// <summary>
+		///   Collection of NodeAnimationTracks.
+		/// </summary>
 		protected Dictionary<ushort, NodeAnimationTrack> nodeTrackList;
 
-		/// <summary>Collection of NumericAnimationTracks.</summary>
+		/// <summary>
+		///   Collection of NumericAnimationTracks.
+		/// </summary>
 		protected Dictionary<ushort, NumericAnimationTrack> numericTrackList;
 
-		/// <summary>Collection of VertexAnimationTracks.</summary>
+		/// <summary>
+		///   Collection of VertexAnimationTracks.
+		/// </summary>
 		protected Dictionary<ushort, VertexAnimationTrack> vertexTrackList;
 
-		/// <summary>Interpolation mode of this animation.</summary>
+		/// <summary>
+		///   Interpolation mode of this animation.
+		/// </summary>
 		protected InterpolationMode interpolationMode;
 
-		/// <summary>Rotation interpolation mode of this animation.</summary>
+		/// <summary>
+		///   Rotation interpolation mode of this animation.
+		/// </summary>
 		protected RotationInterpolationMode rotationInterpolationMode;
 
-		/// <summary>Default interpolation mode of any animations.</summary>
+		/// <summary>
+		///   Default interpolation mode of any animations.
+		/// </summary>
 		protected static InterpolationMode defaultInterpolationMode;
 
-		/// <summary>default rotation interpolation mode of this animation.</summary>
+		/// <summary>
+		///   default rotation interpolation mode of this animation.
+		/// </summary>
 		protected static RotationInterpolationMode defaultRotationInterpolationMode;
 
 		#endregion
 
 		#region Constructors
 
-		/// <summary>Static constructor.</summary>
+		/// <summary>
+		///   Static constructor.
+		/// </summary>
 		static Animation()
 		{
 			// set default interpolation mode to Spline (mmm....spline)
@@ -149,33 +156,31 @@ namespace Axiom.Animating
 			defaultRotationInterpolationMode = RotationInterpolationMode.Linear;
 		}
 
-		/// <summary>
-		///		Internal constructor, to prevent from using new outside of the engine.
-		///		<p/>
-		///		Animations should be created within objects that can own them (skeletons, scene managers, etc).
-		/// </summary>
+		///<summary>
+		///  Internal constructor, to prevent from using new outside of the engine. <p /> Animations should be created within objects that can own them (skeletons, scene managers, etc).
+		///</summary>
 		internal Animation( string name, float length )
 		{
 			this.name = name;
 			this.length = length;
 
 			// use the default interpolation modes
-			this.interpolationMode = Animation.DefaultInterpolationMode;
-			this.rotationInterpolationMode = Animation.DefaultRotationInterpolationMode;
+			interpolationMode = Animation.DefaultInterpolationMode;
+			rotationInterpolationMode = Animation.DefaultRotationInterpolationMode;
 
 			// Create the track lists
-			this.nodeTrackList = new Dictionary<ushort, NodeAnimationTrack>();
-			this.numericTrackList = new Dictionary<ushort, NumericAnimationTrack>();
-			this.vertexTrackList = new Dictionary<ushort, VertexAnimationTrack>();
+			nodeTrackList = new Dictionary<ushort, NodeAnimationTrack>();
+			numericTrackList = new Dictionary<ushort, NumericAnimationTrack>();
+			vertexTrackList = new Dictionary<ushort, VertexAnimationTrack>();
 		}
 
 		#endregion
 
 		#region Properties
 
-		/// <summary>
-		///		Gets the name of this animation.
-		/// </summary>
+		///<summary>
+		///  Gets the name of this animation.
+		///</summary>
 		public string Name
 		{
 			get
@@ -184,9 +189,9 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///		Gets the total length of this animation.
-		/// </summary>
+		///<summary>
+		///  Gets the total length of this animation.
+		///</summary>
 		public float Length
 		{
 			get
@@ -195,9 +200,9 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets the current interpolation mode for this animation.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets the current interpolation mode for this animation.
+		///</summary>
 		public InterpolationMode InterpolationMode
 		{
 			get
@@ -210,9 +215,9 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets the current interpolation mode for this animation.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets the current interpolation mode for this animation.
+		///</summary>
 		public RotationInterpolationMode RotationInterpolationMode
 		{
 			get
@@ -225,9 +230,9 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///		A collection of the node tracks in this animation.
-		/// </summary>
+		///<summary>
+		///  A collection of the node tracks in this animation.
+		///</summary>
 		// TODO: See if we can ensure that the track list is not modified somehow.
 		public Dictionary<ushort, NodeAnimationTrack> NodeTracks
 		{
@@ -237,9 +242,9 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///		A collection of the numeric tracks in this animation.
-		/// </summary>
+		///<summary>
+		///  A collection of the numeric tracks in this animation.
+		///</summary>
 		// TODO: See if we can ensure that the track list is not modified somehow.
 		public Dictionary<ushort, NumericAnimationTrack> NumericTracks
 		{
@@ -249,9 +254,9 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///		A collection of the vertex tracks in this animation.
-		/// </summary>
+		///<summary>
+		///  A collection of the vertex tracks in this animation.
+		///</summary>
 		// TODO: See if we can ensure that the track list is not modified somehow.
 		public Dictionary<ushort, VertexAnimationTrack> VertexTracks
 		{
@@ -261,9 +266,9 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets the default interpolation mode to be used for all animations.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets the default interpolation mode to be used for all animations.
+		///</summary>
 		public static InterpolationMode DefaultInterpolationMode
 		{
 			get
@@ -276,9 +281,9 @@ namespace Axiom.Animating
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets the default interpolation mode to be used for all animations.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets the default interpolation mode to be used for all animations.
+		///</summary>
 		public static RotationInterpolationMode DefaultRotationInterpolationMode
 		{
 			get
@@ -295,11 +300,11 @@ namespace Axiom.Animating
 
 		#region Public methods
 
-		/// <summary>
-		///		Creates an NodeAnimationTrack. 
-		/// </summary>
-		/// <param name="handle">Handle to give the track, used for accessing the track later.</param>
-		/// <returns></returns>
+		///<summary>
+		///  Creates an NodeAnimationTrack.
+		///</summary>
+		///<param name="handle"> Handle to give the track, used for accessing the track later. </param>
+		///<returns> </returns>
 		public NodeAnimationTrack CreateNodeTrack( ushort handle )
 		{
 			var track = new NodeAnimationTrack( this, handle );
@@ -310,12 +315,12 @@ namespace Axiom.Animating
 			return track;
 		}
 
-		/// <summary>
-		///		Creates a new NodeAnimationTrack automatically associated with a Node. 
-		/// </summary>
-		/// <param name="handle">Handle to give the track, used for accessing the track later.</param>
-		/// <param name="targetNode">Node object which will be affected by this track.</param>
-		/// <returns></returns>
+		///<summary>
+		///  Creates a new NodeAnimationTrack automatically associated with a Node.
+		///</summary>
+		///<param name="handle"> Handle to give the track, used for accessing the track later. </param>
+		///<param name="targetNode"> Node object which will be affected by this track. </param>
+		///<returns> </returns>
 		public NodeAnimationTrack CreateNodeTrack( ushort handle, Node targetNode )
 		{
 			// create a new track and set it's target
@@ -325,11 +330,11 @@ namespace Axiom.Animating
 			return track;
 		}
 
-		/// <summary>
-		///		Creates an NumericAnimationTrack. 
-		/// </summary>
-		/// <param name="handle">Handle to give the track, used for accessing the track later.</param>
-		/// <returns></returns>
+		///<summary>
+		///  Creates an NumericAnimationTrack.
+		///</summary>
+		///<param name="handle"> Handle to give the track, used for accessing the track later. </param>
+		///<returns> </returns>
 		public NumericAnimationTrack CreateNumericTrack( ushort handle )
 		{
 			var track = new NumericAnimationTrack( this, handle );
@@ -340,12 +345,12 @@ namespace Axiom.Animating
 			return track;
 		}
 
-		/// <summary>
-		///		Creates a new NumericAnimationTrack automatically associated with a Numeric. 
-		/// </summary>
-		/// <param name="handle">Handle to give the track, used for accessing the track later.</param>
-		/// <param name="animable">AnimableValue which will be affected by this track.</param>
-		/// <returns></returns>
+		///<summary>
+		///  Creates a new NumericAnimationTrack automatically associated with a Numeric.
+		///</summary>
+		///<param name="handle"> Handle to give the track, used for accessing the track later. </param>
+		///<param name="animable"> AnimableValue which will be affected by this track. </param>
+		///<returns> </returns>
 		public NumericAnimationTrack CreateNumericTrack( ushort handle, AnimableValue animable )
 		{
 			// create a new track and set it's target
@@ -355,12 +360,12 @@ namespace Axiom.Animating
 			return track;
 		}
 
-		/// <summary>
-		///		Creates an VertexAnimationTrack. 
-		/// </summary>
-		/// <param name="handle">Handle to give the track, used for accessing the track later.</param>
-		/// <param name="animType"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Creates an VertexAnimationTrack.
+		///</summary>
+		///<param name="handle"> Handle to give the track, used for accessing the track later. </param>
+		///<param name="animType"> </param>
+		///<returns> </returns>
 		public VertexAnimationTrack CreateVertexTrack( ushort handle, VertexAnimationType animType )
 		{
 			var track = new VertexAnimationTrack( this, handle, animType );
@@ -371,13 +376,13 @@ namespace Axiom.Animating
 			return track;
 		}
 
-		/// <summary>
-		///		Creates a new VertexAnimationTrack automatically associated with a Vertex. 
-		/// </summary>
-		/// <param name="handle">Handle to give the track, used for accessing the track later.</param>
-		/// <param name="targetVertexData">Vertex object which will be affected by this track.</param>
-		/// <param name="type"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Creates a new VertexAnimationTrack automatically associated with a Vertex.
+		///</summary>
+		///<param name="handle"> Handle to give the track, used for accessing the track later. </param>
+		///<param name="targetVertexData"> Vertex object which will be affected by this track. </param>
+		///<param name="type"> </param>
+		///<returns> </returns>
 		public VertexAnimationTrack CreateVertexTrack( ushort handle, VertexData targetVertexData, VertexAnimationType type )
 		{
 			// create a new track and set it's target
@@ -386,18 +391,16 @@ namespace Axiom.Animating
 			return track;
 		}
 
-		/// <summary>
-		///		Applies an animation given a specific time point and weight.
-		/// </summary>
-		/// <remarks>
-		///		Where you have associated animation tracks with Node objects, you can eaily apply
-		///		an animation to those nodes by calling this method.
-		/// </remarks>
-		/// <param name="time">The time position in the animation to apply.</param>
-		/// <param name="weight">The influence to give to this track, 1.0 for full influence, less to blend with
-		///		other animations.</param>
-		/// <param name="accumulate"></param>
-		/// <param name="scale"></param>
+		///<summary>
+		///  Applies an animation given a specific time point and weight.
+		///</summary>
+		///<remarks>
+		///  Where you have associated animation tracks with Node objects, you can eaily apply an animation to those nodes by calling this method.
+		///</remarks>
+		///<param name="time"> The time position in the animation to apply. </param>
+		///<param name="weight"> The influence to give to this track, 1.0 for full influence, less to blend with other animations. </param>
+		///<param name="accumulate"> </param>
+		///<param name="scale"> </param>
 		public void Apply( float time, float weight, bool accumulate, float scale )
 		{
 			// loop through tracks and update them all with current time
@@ -489,7 +492,9 @@ namespace Axiom.Animating
 
 		#region Event handlers
 
-		private void TrackAdded( object source, System.EventArgs e ) {}
+		private void TrackAdded( object source, System.EventArgs e )
+		{
+		}
 
 		private void TracksCleared( object source, System.EventArgs e )
 		{

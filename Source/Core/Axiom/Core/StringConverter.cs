@@ -39,10 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.Text;
-
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -68,25 +65,27 @@ namespace Axiom.Core
 
 
 	/// <summary>
-	///     Helper class for going back and forth between strings and various types.
+	///   Helper class for going back and forth between strings and various types.
 	/// </summary>
 	public sealed class StringConverter
 	{
 		#region Fields
 
-		/// <summary>
-		///		Culture info to use for parsing numeric data.
-		/// </summary>
-		private static CultureInfo englishCulture = new CultureInfo( "en-US" );
+		///<summary>
+		///  Culture info to use for parsing numeric data.
+		///</summary>
+		private static readonly CultureInfo englishCulture = new CultureInfo( "en-US" );
 
 		#endregion Fields
 
 		#region Constructor
 
 		/// <summary>
-		///     Private constructor so no instances can be created.
+		///   Private constructor so no instances can be created.
 		/// </summary>
-		private StringConverter() {}
+		private StringConverter()
+		{
+		}
 
 		#endregion Constructor
 
@@ -240,11 +239,11 @@ namespace Axiom.Core
 
 		#endregion String.Split() replacements
 
-		/// <summary>
-		///		Parses a boolean type value
-		/// </summary>
-		/// <param name="val"></param>
-		/// <returns></returns>
+		///<summary>
+		///  Parses a boolean type value
+		///</summary>
+		///<param name="val"> </param>
+		///<returns> </returns>
 		public static bool ParseBool( string val )
 		{
 			switch ( val.ToLower() )
@@ -261,9 +260,9 @@ namespace Axiom.Core
 			return false;
 		}
 
-		/// <summary>
-		///		Parses an array of params and returns a color from it.
-		/// </summary>
+		///<summary>
+		///  Parses an array of params and returns a color from it.
+		///</summary>
 		public static ColorEx ParseColor( string[] values )
 		{
 			ColorEx color;
@@ -275,10 +274,10 @@ namespace Axiom.Core
 			return color;
 		}
 
-		/// <summary>
-		///		Parses an array of params and returns a color from it.
-		/// </summary>
-		/// <param name="val"></param>
+		///<summary>
+		///  Parses an array of params and returns a color from it.
+		///</summary>
+		///<param name="val"> </param>
 		public static ColorEx ParseColor( string val )
 		{
 			ColorEx color;
@@ -292,9 +291,9 @@ namespace Axiom.Core
 			return color;
 		}
 
-		/// <summary>
-		///		Parses an array of params and returns a color from it.
-		/// </summary>
+		///<summary>
+		///  Parses an array of params and returns a color from it.
+		///</summary>
 		public static Vector3 ParseVector3( string[] values )
 		{
 			var vec = new Vector3();
@@ -305,10 +304,10 @@ namespace Axiom.Core
 			return vec;
 		}
 
-		/// <summary>
-		///		Parses an array of params and returns a color from it.
-		/// </summary>
-		/// <param name="val"></param>
+		///<summary>
+		///  Parses an array of params and returns a color from it.
+		///</summary>
+		///<param name="val"> </param>
 		public static Vector3 ParseVector3( string val )
 		{
 			var values = val.Split( ' ' );
@@ -321,9 +320,9 @@ namespace Axiom.Core
 			return vec;
 		}
 
-		/// <summary>
-		///		Parses an array of params and returns a color from it.
-		/// </summary>
+		///<summary>
+		///  Parses an array of params and returns a color from it.
+		///</summary>
 		public static Vector4 ParseVector4( string[] values )
 		{
 			var vec = new Vector4();
@@ -335,15 +334,14 @@ namespace Axiom.Core
 			return vec;
 		}
 
-		/// <summary>
-		///		Parse a float value from a string.
-		/// </summary>
-		/// <remarks>
-		///		Since our file formats assume the 'en-US' style format for numbers, we need to
-		///		let the framework know that where numbers are being parsed.
-		/// </remarks>
-		/// <param name="val">String value holding the float.</param>
-		/// <returns>A float representation of the string value.</returns>
+		///<summary>
+		///  Parse a float value from a string.
+		///</summary>
+		///<remarks>
+		///  Since our file formats assume the 'en-US' style format for numbers, we need to let the framework know that where numbers are being parsed.
+		///</remarks>
+		///<param name="val"> String value holding the float. </param>
+		///<returns> A float representation of the string value. </returns>
 		public static float ParseFloat( string val )
 		{
 			if ( val == float.NaN.ToString() )
@@ -353,41 +351,38 @@ namespace Axiom.Core
 			return float.Parse( val, englishCulture );
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="color"></param>
-		/// <returns></returns>
+		///<summary>
+		///</summary>
+		///<param name="color"> </param>
+		///<returns> </returns>
 		public static string ToString( ColorEx color )
 		{
 			return string.Format( englishCulture, "{0} {1} {2} {3}", color.r, color.g, color.b, color.a );
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="vec"></param>
-		/// <returns></returns>
+		///<summary>
+		///</summary>
+		///<param name="vec"> </param>
+		///<returns> </returns>
 		public static string ToString( Vector4 vec )
 		{
 			return string.Format( englishCulture, "{0} {1} {2} {3}", vec.x, vec.y, vec.z, vec.w );
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="vec"></param>
-		/// <returns></returns>
+		///<summary>
+		///</summary>
+		///<param name="vec"> </param>
+		///<returns> </returns>
 		public static string ToString( Vector3 vec )
 		{
 			return string.Format( englishCulture, "{0} {1} {2}", vec.x, vec.y, vec.z );
 		}
 
 		/// <summary>
-		///     Converts a
+		///   Converts a
 		/// </summary>
-		/// <param name="val"></param>
-		/// <returns></returns>
+		/// <param name="val"> </param>
+		/// <returns> </returns>
 		public static string ToString( float val )
 		{
 			return val.ToString( englishCulture );

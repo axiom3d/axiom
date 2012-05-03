@@ -38,114 +38,105 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-
-using Axiom.Math;
-using Axiom.Graphics;
 using Axiom.Animating;
 using Axiom.Core.Collections;
+using Axiom.Graphics;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-	/// <summary>
-	///		Utility class which defines the sub-parts of an Entity.
-	/// </summary>
-	/// <remarks>
-	///		<para>
-	///		Just as models are split into meshes, an Entity is made up of
-	///		potentially multiple SubEntities. These are mainly here to provide the
-	///		link between the Material which the SubEntity uses (which may be the
-	///		default Material for the SubMesh or may have been changed for this
-	///		object) and the SubMesh data.
-	///		</para>
-	///		<para>
-	///		SubEntity instances are never created manually. They are created at
-	///		the same time as their parent Entity by the SceneManager method
-	///		CreateEntity.
-	///		</para>
-	/// </remarks>
+	///<summary>
+	///  Utility class which defines the sub-parts of an Entity.
+	///</summary>
+	///<remarks>
+	///  <para>Just as models are split into meshes, an Entity is made up of
+	///    potentially multiple SubEntities. These are mainly here to provide the
+	///    link between the Material which the SubEntity uses (which may be the
+	///    default Material for the SubMesh or may have been changed for this
+	///    object) and the SubMesh data.</para> <para>SubEntity instances are never created manually. They are created at
+	///                                           the same time as their parent Entity by the SceneManager method
+	///                                           CreateEntity.</para>
+	///</remarks>
 	public class SubEntity : DisposableObject, IRenderable
 	{
 		#region Fields
 
 		/// <summary>
-		///    Reference to the parent Entity.
+		///   Reference to the parent Entity.
 		/// </summary>
 		protected Entity parent;
 
 		/// <summary>
-		///    Name of the material being used.
+		///   Name of the material being used.
 		/// </summary>
 		protected string materialName;
 
 		/// <summary>
-		///    Reference to the material being used by this SubEntity.
+		///   Reference to the material being used by this SubEntity.
 		/// </summary>
 		protected Material material;
 
 		/// <summary>
-		///    Reference to the subMesh that represents the geometry for this SubEntity.
+		///   Reference to the subMesh that represents the geometry for this SubEntity.
 		/// </summary>
 		protected SubMesh subMesh;
 
 		private Camera cachedCamera;
 		private Real cachedCameraDist;
 
-		/// <summary>
-		///		Flag indicating whether this sub entity should be rendered or not.
-		/// </summary>
+		///<summary>
+		///  Flag indicating whether this sub entity should be rendered or not.
+		///</summary>
 		protected bool isVisible;
 
-		/// <summary>
-		///		Blend buffer details for dedicated geometry.
-		/// </summary>
+		///<summary>
+		///  Blend buffer details for dedicated geometry.
+		///</summary>
 		protected internal VertexData skelAnimVertexData;
 
-		/// <summary>
-		///		Temp buffer details for software skeletal anim geometry
-		/// </summary>
+		///<summary>
+		///  Temp buffer details for software skeletal anim geometry
+		///</summary>
 		protected internal TempBlendedBufferInfo tempSkelAnimInfo = new TempBlendedBufferInfo();
 
-		/// <summary>
-		///		Temp buffer details for software Vertex anim geometry
-		/// </summary>
+		///<summary>
+		///  Temp buffer details for software Vertex anim geometry
+		///</summary>
 		protected TempBlendedBufferInfo tempVertexAnimInfo = new TempBlendedBufferInfo();
 
-		/// <summary>
-		///		Vertex data details for software Vertex anim of shared geometry
-		/// </summary>
-		/// Temp buffer details for software Vertex anim geometry
+		///<summary>
+		///  Vertex data details for software Vertex anim of shared geometry
+		///</summary>
+		///Temp buffer details for software Vertex anim geometry
 		protected VertexData softwareVertexAnimVertexData;
 
 		/// <summary>
-		///     Vertex data details for hardware Vertex anim of shared geometry
-		///     - separate since we need to s/w anim for shadows whilst still altering
-		///       the vertex data for hardware morphing (pos2 binding)
+		///   Vertex data details for hardware Vertex anim of shared geometry - separate since we need to s/w anim for shadows whilst still altering the vertex data for hardware morphing (pos2 binding)
 		/// </summary>
 		protected VertexData hardwareVertexAnimVertexData;
 
-		/// <summary>
-		///		Have we applied any vertex animation to geometry?
-		/// </summary>
+		///<summary>
+		///  Have we applied any vertex animation to geometry?
+		///</summary>
 		protected bool vertexAnimationAppliedThisFrame;
 
-		/// <summary>
-		///		Number of hardware blended poses supported by material
-		/// </summary>
+		///<summary>
+		///  Number of hardware blended poses supported by material
+		///</summary>
 		protected ushort hardwarePoseCount;
 
-		/// <summary>
-		///		Flag indicating whether hardware skinning is supported by this subentity's materials.
-		/// </summary>
+		///<summary>
+		///  Flag indicating whether hardware skinning is supported by this subentity's materials.
+		///</summary>
 		protected bool hardwareSkinningEnabled;
 
-		/// <summary>
-		///		Flag indicating whether vertex programs are used by this subentity's materials.
-		/// </summary>
+		///<summary>
+		///  Flag indicating whether vertex programs are used by this subentity's materials.
+		///</summary>
 		protected bool useVertexProgram;
 
 		protected List<Vector4> customParams = new List<Vector4>();
@@ -154,9 +145,9 @@ namespace Axiom.Core
 
 		#region Constructor
 
-		/// <summary>
-		///		Internal constructor, only allows creation of SubEntities within the engine core.
-		/// </summary>
+		///<summary>
+		///  Internal constructor, only allows creation of SubEntities within the engine core.
+		///</summary>
 		internal SubEntity()
 			: base()
 		{
@@ -169,9 +160,9 @@ namespace Axiom.Core
 
 		#region Properties
 
-		/// <summary>
-		///		Gets a flag indicating whether or not this sub entity should be rendered or not.
-		/// </summary>
+		///<summary>
+		///  Gets a flag indicating whether or not this sub entity should be rendered or not.
+		///</summary>
 		public bool IsVisible
 		{
 			get
@@ -185,8 +176,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Name of this SubEntity.
-		/// It is the name of the associated SubMesh.
+		///   Name of this SubEntity. It is the name of the associated SubMesh.
 		/// </summary>
 		public string Name
 		{
@@ -196,9 +186,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets the name of the material used for this SubEntity.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets the name of the material used for this SubEntity.
+		///</summary>
 		public string MaterialName
 		{
 			get
@@ -219,7 +209,9 @@ namespace Axiom.Core
 
 				if ( material == null )
 				{
-					LogManager.Instance.Write( "Cannot assign material '{0}' to Entity.SubEntity '{1}.{2}' because the material doesn't exist.", materialName, parent.Name, this.Name );
+					LogManager.Instance.Write(
+						"Cannot assign material '{0}' to Entity.SubEntity '{1}.{2}' because the material doesn't exist.", materialName,
+						parent.Name, Name );
 
 					// give it base white so we can continue
 					material = (Material)MaterialManager.Instance[ "BaseWhite" ];
@@ -233,9 +225,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets the subMesh to be used for rendering this SubEntity.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets the subMesh to be used for rendering this SubEntity.
+		///</summary>
 		public SubMesh SubMesh
 		{
 			get
@@ -248,9 +240,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets the parent entity of this SubEntity.
-		/// </summary>
+		///<summary>
+		///  Gets/Sets the parent entity of this SubEntity.
+		///</summary>
 		public Entity Parent
 		{
 			get
@@ -315,9 +307,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		Are buffers already marked as vertex animated?
-		/// </summary>
+		///<summary>
+		///  Are buffers already marked as vertex animated?
+		///</summary>
 		public bool BuffersMarkedForAnimation
 		{
 			get
@@ -330,9 +322,9 @@ namespace Axiom.Core
 
 		#region Methods
 
-		/// <summary>
-		///		Internal method for preparing this sub entity for use in animation.
-		/// </summary>
+		///<summary>
+		///  Internal method for preparing this sub entity for use in animation.
+		///</summary>
 		protected internal void PrepareTempBlendBuffers()
 		{
 			// Handle the case where we have no submesh vertex data (probably shared)
@@ -385,9 +377,9 @@ namespace Axiom.Core
 
 		#region SubMesh Level of Detail
 
-		/// <summary>
-		///	current LOD index to use.
-		/// </summary>
+		///<summary>
+		///  current LOD index to use.
+		///</summary>
 		private int _materialLodIndex;
 
 		public int MaterialLodIndex
@@ -414,15 +406,12 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		Gets/Sets a reference to the material being used by this SubEntity.
-		/// </summary>
-		/// <remarks>
-		///		By default, the SubEntity will use the material defined by the SubMesh.  However,
-		///		this can be overridden by the SubEntity in the case where several entities use the
-		///		same SubMesh instance, but want to shade it different.
-		///     This should probably call parent.ReevaluateVertexProcessing.
-		/// </remarks>
+		///<summary>
+		///  Gets/Sets a reference to the material being used by this SubEntity.
+		///</summary>
+		///<remarks>
+		///  By default, the SubEntity will use the material defined by the SubMesh. However, this can be overridden by the SubEntity in the case where several entities use the same SubMesh instance, but want to shade it different. This should probably call parent.ReevaluateVertexProcessing.
+		///</remarks>
 		public Material Material
 		{
 			get
@@ -457,18 +446,17 @@ namespace Axiom.Core
 
 		protected RenderOperation renderOperation = new RenderOperation();
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="value"></param>
+		///<summary>
+		///</summary>
+		///<param name="value"> </param>
 		public RenderOperation RenderOperation
 		{
 			get
 			{
 				// use LOD
-				this.subMesh.GetRenderOperation( renderOperation, this.parent.MeshLodIndex );
+				subMesh.GetRenderOperation( renderOperation, parent.MeshLodIndex );
 				// Deal with any vertex data overrides
-				renderOperation.vertexData = this.GetVertexDataForBinding();
+				renderOperation.vertexData = GetVertexDataForBinding();
 				return renderOperation;
 			}
 		}
@@ -507,10 +495,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="matrices"></param>
+		///<summary>
+		///</summary>
+		///<param name="matrices"> </param>
 		public void GetWorldTransforms( Matrix4[] matrices )
 		{
 			if ( parent.numBoneMatrices == 0 || !parent.IsHardwareAnimationEnabled )
@@ -540,9 +527,8 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+		///<summary>
+		///</summary>
 		public ushort NumWorldTransforms
 		{
 			get
@@ -558,9 +544,8 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+		///<summary>
+		///</summary>
 		public bool UseIdentityProjection
 		{
 			get
@@ -569,9 +554,8 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+		///<summary>
+		///</summary>
 		public bool UseIdentityView
 		{
 			get
@@ -588,11 +572,10 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="camera"></param>
-		/// <returns></returns>
+		///<summary>
+		///</summary>
+		///<param name="camera"> </param>
+		///<returns> </returns>
 		public Real GetSquaredViewDepth( Camera camera )
 		{
 			// First of all, check the cached value
@@ -631,9 +614,8 @@ namespace Axiom.Core
 			return dist;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+		///<summary>
+		///</summary>
 		public Quaternion WorldOrientation
 		{
 			get
@@ -647,9 +629,8 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+		///<summary>
+		///</summary>
 		public Vector3 WorldPosition
 		{
 			get
@@ -663,9 +644,8 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///
-		/// </summary>
+		///<summary>
+		///</summary>
 		public LightList Lights
 		{
 			get
@@ -674,17 +654,12 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		Returns whether or not hardware skinning is enabled.
-		/// </summary>
-		/// <remarks>
-		///		Because fixed-function indexed vertex blending is rarely supported
-		///		by existing graphics cards, hardware skinning can only be done if
-		///		the vertex programs in the materials used to render an entity support
-		///		it. Therefore, this method will only return true if all the materials
-		///		assigned to this entity have vertex programs assigned, and all those
-		///		vertex programs must support 'include_skeletal_animation true'.
-		/// </remarks>
+		///<summary>
+		///  Returns whether or not hardware skinning is enabled.
+		///</summary>
+		///<remarks>
+		///  Because fixed-function indexed vertex blending is rarely supported by existing graphics cards, hardware skinning can only be done if the vertex programs in the materials used to render an entity support it. Therefore, this method will only return true if all the materials assigned to this entity have vertex programs assigned, and all those vertex programs must support 'include_skeletal_animation true'.
+		///</remarks>
 		public bool HardwareSkinningEnabled
 		{
 			get
@@ -739,7 +714,7 @@ namespace Axiom.Core
 				// If there are more than 4 entries, this will be called more than once
 				var val = Vector4.Zero;
 
-				var animIndex = entry.Data * 4;
+				var animIndex = entry.Data*4;
 				for ( var i = 0; i < 4 && animIndex < hardwareVertexAnimVertexData.HWAnimationDataList.Count; ++i, ++animIndex )
 				{
 					val[ i ] = hardwareVertexAnimVertexData.HWAnimationDataList[ animIndex ].Parametric;
@@ -770,13 +745,16 @@ namespace Axiom.Core
 			//  We didn't apply any animation and
 			//    We're morph animated (hardware binds keyframe, software is missing)
 			//    or we're pose animated and software (hardware is fine, still bound)
-			if ( subMesh.VertexAnimationType != VertexAnimationType.None && !subMesh.useSharedVertices && !vertexAnimationAppliedThisFrame && ( !hardwareAnimation || subMesh.VertexAnimationType == VertexAnimationType.Morph ) )
+			if ( subMesh.VertexAnimationType != VertexAnimationType.None && !subMesh.useSharedVertices &&
+			     !vertexAnimationAppliedThisFrame &&
+			     ( !hardwareAnimation || subMesh.VertexAnimationType == VertexAnimationType.Morph ) )
 			{
 				var srcPosElem = subMesh.vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 				var srcBuf = subMesh.vertexData.vertexBufferBinding.GetBuffer( srcPosElem.Source );
 
 				// Bind to software
-				var destPosElem = softwareVertexAnimVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+				var destPosElem =
+					softwareVertexAnimVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 				softwareVertexAnimVertexData.vertexBufferBinding.SetBinding( destPosElem.Source, srcBuf );
 			}
 		}
@@ -785,53 +763,36 @@ namespace Axiom.Core
 
 		#region IDisposable Implementation
 
-		/// <summary>
-		/// Class level dispose method
-		/// </summary>
-		/// <remarks>
-		/// When implementing this method in an inherited class the following template should be used;
-		/// protected override void dispose( bool disposeManagedResources )
-		/// {
-		/// 	if ( !isDisposed )
-		/// 	{
-		/// 		if ( disposeManagedResources )
-		/// 		{
-		/// 			// Dispose managed resources.
-		/// 		}
-		///
-		/// 		// There are no unmanaged resources to release, but
-		/// 		// if we add them, they need to be released here.
-		/// 	}
-		///
-		/// 	// If it is available, make the call to the
-		/// 	// base class's Dispose(Boolean) method
-		/// 	base.dispose( disposeManagedResources );
-		/// }
-		/// </remarks>
-		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+		///<summary>
+		///  Class level dispose method
+		///</summary>
+		///<remarks>
+		///  When implementing this method in an inherited class the following template should be used; protected override void dispose( bool disposeManagedResources ) { if ( !isDisposed ) { if ( disposeManagedResources ) { // Dispose managed resources. } // There are no unmanaged resources to release, but // if we add them, they need to be released here. } // If it is available, make the call to the // base class's Dispose(Boolean) method base.dispose( disposeManagedResources ); }
+		///</remarks>
+		///<param name="disposeManagedResources"> True if Unmanaged resources should be released. </param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( this.renderOperation != null )
+					if ( renderOperation != null )
 					{
 						//if (!this.renderOperation.IsDisposed)
 						//    this.renderOperation.Dispose();
 
-						this.renderOperation = null;
+						renderOperation = null;
 					}
 
-					if ( this.skelAnimVertexData != null )
+					if ( skelAnimVertexData != null )
 					{
-						if ( !this.skelAnimVertexData.IsDisposed )
+						if ( !skelAnimVertexData.IsDisposed )
 						{
-							this.skelAnimVertexData.Dispose();
+							skelAnimVertexData.Dispose();
 						}
 
-						this.skelAnimVertexData = null;
+						skelAnimVertexData = null;
 					}
 				}
 

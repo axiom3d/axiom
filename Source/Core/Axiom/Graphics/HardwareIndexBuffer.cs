@@ -33,22 +33,18 @@
 
 #region Namespace Declarations
 
-using System;
-using System.Runtime.InteropServices;
-
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-	/// <summary>
-	///	Describes the graphics API independent functionality required by a hardware
-	///	index buffer.  
-	/// </summary>
-	/// <remarks>
-	/// NB subclasses should override lock, unlock, readData, writeData
-	/// </remarks>
+	///<summary>
+	///  Describes the graphics API independent functionality required by a hardware index buffer.
+	///</summary>
+	///<remarks>
+	///  NB subclasses should override lock, unlock, readData, writeData
+	///</remarks>
 	public abstract class HardwareIndexBuffer : HardwareBuffer
 	{
 		#region Fields
@@ -61,14 +57,14 @@ namespace Axiom.Graphics
 
 		#region Type
 
-		/// <summary>
-		///	Type of index (16 or 32 bit).
-		/// </summary>
+		///<summary>
+		///  Type of index (16 or 32 bit).
+		///</summary>
 		protected IndexType type;
 
-		/// <summary>
-		///	Gets an enum specifying whether this index buffer is 16 or 32 bit elements.
-		/// </summary>
+		///<summary>
+		///  Gets an enum specifying whether this index buffer is 16 or 32 bit elements.
+		///</summary>
 		public IndexType Type
 		{
 			get
@@ -81,14 +77,14 @@ namespace Axiom.Graphics
 
 		#region IndexCount
 
-		/// <summary>
-		///	Number of indices in this buffer.
-		/// </summary>
+		///<summary>
+		///  Number of indices in this buffer.
+		///</summary>
 		protected int numIndices;
 
-		/// <summary>
-		///	Gets the number of indices in this buffer.
-		/// </summary>
+		///<summary>
+		///  Gets the number of indices in this buffer.
+		///</summary>
 		public int IndexCount
 		{
 			get
@@ -102,14 +98,14 @@ namespace Axiom.Graphics
 		#region IndexSize
 
 		/// <summary>
-		/// Size of each index.
+		///   Size of each index.
 		/// </summary>
 		protected int indexSize;
 
 		/// <summary>
-		/// Gets the size (in bytes) of each index element.
+		///   Gets the size (in bytes) of each index element.
 		/// </summary>
-		/// <value></value>
+		/// <value> </value>
 		public int IndexSize
 		{
 			get
@@ -124,21 +120,22 @@ namespace Axiom.Graphics
 
 		#region Construction and Destruction
 
-		/// <summary>
-		///	Constructor.
-		/// </summary>
-		///<param name="type">Type of index (16 or 32 bit).</param>
-		/// <param name="numIndices">Number of indices to create in this buffer.</param>
-		/// <param name="usage">Buffer usage.</param>
-		/// <param name="useSystemMemory">Create in system memory?</param>
-		/// <param name="useShadowBuffer">Use a shadow buffer for reading/writing?</param>
+		///<summary>
+		///  Constructor.
+		///</summary>
+		///<param name="type"> Type of index (16 or 32 bit). </param>
+		///<param name="numIndices"> Number of indices to create in this buffer. </param>
+		///<param name="usage"> Buffer usage. </param>
+		///<param name="useSystemMemory"> Create in system memory? </param>
+		///<param name="useShadowBuffer"> Use a shadow buffer for reading/writing? </param>
 		[OgreVersion( 1, 7, 2 )]
-		public HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+		public HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage,
+		                            bool useSystemMemory, bool useShadowBuffer )
 			: base( usage, useSystemMemory, useShadowBuffer )
 		{
 			this.type = type;
 			this.numIndices = numIndices;
-			this.Manager = manager;
+			Manager = manager;
 			// calc the index buffer size
 			sizeInBytes = numIndices;
 
@@ -163,13 +160,13 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2, "~HardwareIndexBuffer" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !this.IsDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( this.Manager != null )
+					if ( Manager != null )
 					{
-						this.Manager.NotifyIndexBufferDestroyed( this );
+						Manager.NotifyIndexBufferDestroyed( this );
 					}
 
 					shadowBuffer.SafeDispose();

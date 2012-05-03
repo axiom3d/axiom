@@ -38,68 +38,64 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-
-using Axiom.Utilities;
 using Axiom.Math;
+using Axiom.Utilities;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-	/// <summary>
-	///		This class is necessary so we can store the color components as floating
-	///		point values in the range [0,1].  It serves as an intermediary to System.Drawing.Color, which
-	///		stores them as byte values.  This doesn't allow for slow color component
-	///		interpolation, because with the values always being cast back to a byte would lose
-	///		any small interpolated values (i.e. 223 - .25 as a byte is 223).
-	/// </summary>
+	///<summary>
+	///  This class is necessary so we can store the color components as floating point values in the range [0,1]. It serves as an intermediary to System.Drawing.Color, which stores them as byte values. This doesn't allow for slow color component interpolation, because with the values always being cast back to a byte would lose any small interpolated values (i.e. 223 - .25 as a byte is 223).
+	///</summary>
 	[StructLayout( LayoutKind.Sequential )]
 	public struct ColorEx : IComparable
 	{
 		#region Member variables
 
-		/// <summary>
-		///		Alpha value [0,1].
-		/// </summary>
+		///<summary>
+		///  Alpha value [0,1].
+		///</summary>
 		public float a;
 
-		/// <summary>
-		///		Red color component [0,1].
-		/// </summary>
+		///<summary>
+		///  Red color component [0,1].
+		///</summary>
 		public float r;
 
-		/// <summary>
-		///		Green color component [0,1].
-		/// </summary>
+		///<summary>
+		///  Green color component [0,1].
+		///</summary>
 		public float g;
 
-		/// <summary>
-		///		Blue color component [0,1].
-		/// </summary>
+		///<summary>
+		///  Blue color component [0,1].
+		///</summary>
 		public float b;
 
 		#endregion Member variables
 
 		#region Constructors
 
-		/// <summary>
-		///	Constructor taking RGB values
-		/// </summary>
-		/// <param name="r">Red color component.</param>
-		/// <param name="g">Green color component.</param>
-		/// <param name="b">Blue color component.</param>
+		///<summary>
+		///  Constructor taking RGB values
+		///</summary>
+		///<param name="r"> Red color component. </param>
+		///<param name="g"> Green color component. </param>
+		///<param name="b"> Blue color component. </param>
 		public ColorEx( float r, float g, float b )
-			: this( 1.0f, r, g, b ) {}
+			: this( 1.0f, r, g, b )
+		{
+		}
 
-		/// <summary>
-		///		Constructor taking all component values.
-		/// </summary>
-		/// <param name="a">Alpha value.</param>
-		/// <param name="r">Red color component.</param>
-		/// <param name="g">Green color component.</param>
-		/// <param name="b">Blue color component.</param>
+		///<summary>
+		///  Constructor taking all component values.
+		///</summary>
+		///<param name="a"> Alpha value. </param>
+		///<param name="r"> Red color component. </param>
+		///<param name="g"> Green color component. </param>
+		///<param name="b"> Blue color component. </param>
 		public ColorEx( float a, float r, float g, float b )
 		{
 			Contract.Requires( a >= 0.0f && a <= 1.0f );
@@ -114,16 +110,16 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Copy constructor.
+		///   Copy constructor.
 		/// </summary>
-		/// <param name="other">The ColorEx instance to copy</param>
+		/// <param name="other"> The ColorEx instance to copy </param>
 		public ColorEx( ColorEx other )
 			: this()
 		{
-			this.a = other.a;
-			this.r = other.r;
-			this.g = other.g;
-			this.b = other.b;
+			a = other.a;
+			r = other.r;
+			g = other.g;
+			b = other.b;
 		}
 
 		#endregion Constructors
@@ -134,54 +130,54 @@ namespace Axiom.Core
 		{
 			var result = 0;
 
-			result += ( (int)( r * 255.0f ) ) << 24;
-			result += ( (int)( g * 255.0f ) ) << 16;
-			result += ( (int)( b * 255.0f ) ) << 8;
-			result += ( (int)( a * 255.0f ) );
+			result += ( (int)( r*255.0f ) ) << 24;
+			result += ( (int)( g*255.0f ) ) << 16;
+			result += ( (int)( b*255.0f ) ) << 8;
+			result += ( (int)( a*255.0f ) );
 
 			return result;
 		}
 
 
-		/// <summary>
-		///		Converts this color value to packed ABGR format.
-		/// </summary>
-		/// <returns></returns>
+		///<summary>
+		///  Converts this color value to packed ABGR format.
+		///</summary>
+		///<returns> </returns>
 		public int ToABGR()
 		{
 			var result = 0;
 
-			result += ( (int)( a * 255.0f ) ) << 24;
-			result += ( (int)( b * 255.0f ) ) << 16;
-			result += ( (int)( g * 255.0f ) ) << 8;
-			result += ( (int)( r * 255.0f ) );
+			result += ( (int)( a*255.0f ) ) << 24;
+			result += ( (int)( b*255.0f ) ) << 16;
+			result += ( (int)( g*255.0f ) ) << 8;
+			result += ( (int)( r*255.0f ) );
 
 			return result;
 		}
 
-		/// <summary>
-		///		Converts this color value to packed ARBG format.
-		/// </summary>
-		/// <returns></returns>
+		///<summary>
+		///  Converts this color value to packed ARBG format.
+		///</summary>
+		///<returns> </returns>
 		public int ToARGB()
 		{
 			var result = 0;
 
-			result += ( (int)( a * 255.0f ) ) << 24;
-			result += ( (int)( r * 255.0f ) ) << 16;
-			result += ( (int)( g * 255.0f ) ) << 8;
-			result += ( (int)( b * 255.0f ) );
+			result += ( (int)( a*255.0f ) ) << 24;
+			result += ( (int)( r*255.0f ) ) << 16;
+			result += ( (int)( g*255.0f ) ) << 8;
+			result += ( (int)( b*255.0f ) );
 
 			return result;
 		}
 
-		/// <summary>
-		///		Populates the color components in a 4 elements array in RGBA order.
-		/// </summary>
-		/// <remarks>
-		///		Primarily used to help in OpenGL.
-		/// </remarks>
-		/// <returns></returns>
+		///<summary>
+		///  Populates the color components in a 4 elements array in RGBA order.
+		///</summary>
+		///<remarks>
+		///  Primarily used to help in OpenGL.
+		///</remarks>
+		///<returns> </returns>
 		public void ToArrayRGBA( float[] vals )
 		{
 			vals[ 0 ] = r;
@@ -191,7 +187,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Clamps color value to the range [0, 1]
+		///   Clamps color value to the range [0, 1]
 		/// </summary>
 		public void Saturate()
 		{
@@ -202,7 +198,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Clamps color value to the range [0, 1] in a copy
+		///   Clamps color value to the range [0, 1] in a copy
 		/// </summary>
 		public ColorEx SaturateCopy()
 		{
@@ -294,9 +290,9 @@ namespace Axiom.Core
 
 		#region Static color properties
 
-		/// <summary>
-		///		The color Transparent.
-		/// </summary>
+		///<summary>
+		///  The color Transparent.
+		///</summary>
 		public static ColorEx Transparent
 		{
 			get
@@ -310,9 +306,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color AliceBlue.
-		/// </summary>
+		///<summary>
+		///  The color AliceBlue.
+		///</summary>
 		public static ColorEx AliceBlue
 		{
 			get
@@ -326,9 +322,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color AntiqueWhite.
-		/// </summary>
+		///<summary>
+		///  The color AntiqueWhite.
+		///</summary>
 		public static ColorEx AntiqueWhite
 		{
 			get
@@ -342,9 +338,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Aqua.
-		/// </summary>
+		///<summary>
+		///  The color Aqua.
+		///</summary>
 		public static ColorEx Aqua
 		{
 			get
@@ -358,9 +354,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Aquamarine.
-		/// </summary>
+		///<summary>
+		///  The color Aquamarine.
+		///</summary>
 		public static ColorEx Aquamarine
 		{
 			get
@@ -374,9 +370,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Azure.
-		/// </summary>
+		///<summary>
+		///  The color Azure.
+		///</summary>
 		public static ColorEx Azure
 		{
 			get
@@ -390,9 +386,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Beige.
-		/// </summary>
+		///<summary>
+		///  The color Beige.
+		///</summary>
 		public static ColorEx Beige
 		{
 			get
@@ -406,9 +402,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Bisque.
-		/// </summary>
+		///<summary>
+		///  The color Bisque.
+		///</summary>
 		public static ColorEx Bisque
 		{
 			get
@@ -422,9 +418,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Black.
-		/// </summary>
+		///<summary>
+		///  The color Black.
+		///</summary>
 		public static ColorEx Black
 		{
 			get
@@ -438,9 +434,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color BlanchedAlmond.
-		/// </summary>
+		///<summary>
+		///  The color BlanchedAlmond.
+		///</summary>
 		public static ColorEx BlanchedAlmond
 		{
 			get
@@ -454,9 +450,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Blue.
-		/// </summary>
+		///<summary>
+		///  The color Blue.
+		///</summary>
 		public static ColorEx Blue
 		{
 			get
@@ -470,9 +466,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color BlueViolet.
-		/// </summary>
+		///<summary>
+		///  The color BlueViolet.
+		///</summary>
 		public static ColorEx BlueViolet
 		{
 			get
@@ -486,9 +482,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Brown.
-		/// </summary>
+		///<summary>
+		///  The color Brown.
+		///</summary>
 		public static ColorEx Brown
 		{
 			get
@@ -502,9 +498,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color BurlyWood.
-		/// </summary>
+		///<summary>
+		///  The color BurlyWood.
+		///</summary>
 		public static ColorEx BurlyWood
 		{
 			get
@@ -518,9 +514,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color CadetBlue.
-		/// </summary>
+		///<summary>
+		///  The color CadetBlue.
+		///</summary>
 		public static ColorEx CadetBlue
 		{
 			get
@@ -534,9 +530,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Chartreuse.
-		/// </summary>
+		///<summary>
+		///  The color Chartreuse.
+		///</summary>
 		public static ColorEx Chartreuse
 		{
 			get
@@ -550,9 +546,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Chocolate.
-		/// </summary>
+		///<summary>
+		///  The color Chocolate.
+		///</summary>
 		public static ColorEx Chocolate
 		{
 			get
@@ -566,9 +562,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Coral.
-		/// </summary>
+		///<summary>
+		///  The color Coral.
+		///</summary>
 		public static ColorEx Coral
 		{
 			get
@@ -582,9 +578,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color CornflowerBlue.
-		/// </summary>
+		///<summary>
+		///  The color CornflowerBlue.
+		///</summary>
 		public static ColorEx CornflowerBlue
 		{
 			get
@@ -598,9 +594,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Cornsilk.
-		/// </summary>
+		///<summary>
+		///  The color Cornsilk.
+		///</summary>
 		public static ColorEx Cornsilk
 		{
 			get
@@ -614,9 +610,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Crimson.
-		/// </summary>
+		///<summary>
+		///  The color Crimson.
+		///</summary>
 		public static ColorEx Crimson
 		{
 			get
@@ -630,9 +626,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Cyan.
-		/// </summary>
+		///<summary>
+		///  The color Cyan.
+		///</summary>
 		public static ColorEx Cyan
 		{
 			get
@@ -646,9 +642,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkBlue.
-		/// </summary>
+		///<summary>
+		///  The color DarkBlue.
+		///</summary>
 		public static ColorEx DarkBlue
 		{
 			get
@@ -662,9 +658,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkCyan.
-		/// </summary>
+		///<summary>
+		///  The color DarkCyan.
+		///</summary>
 		public static ColorEx DarkCyan
 		{
 			get
@@ -678,9 +674,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkGoldenrod.
-		/// </summary>
+		///<summary>
+		///  The color DarkGoldenrod.
+		///</summary>
 		public static ColorEx DarkGoldenrod
 		{
 			get
@@ -694,9 +690,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkGray.
-		/// </summary>
+		///<summary>
+		///  The color DarkGray.
+		///</summary>
 		public static ColorEx DarkGray
 		{
 			get
@@ -710,9 +706,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkGreen.
-		/// </summary>
+		///<summary>
+		///  The color DarkGreen.
+		///</summary>
 		public static ColorEx DarkGreen
 		{
 			get
@@ -726,9 +722,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkKhaki.
-		/// </summary>
+		///<summary>
+		///  The color DarkKhaki.
+		///</summary>
 		public static ColorEx DarkKhaki
 		{
 			get
@@ -742,9 +738,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkMagenta.
-		/// </summary>
+		///<summary>
+		///  The color DarkMagenta.
+		///</summary>
 		public static ColorEx DarkMagenta
 		{
 			get
@@ -758,9 +754,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkOliveGreen.
-		/// </summary>
+		///<summary>
+		///  The color DarkOliveGreen.
+		///</summary>
 		public static ColorEx DarkOliveGreen
 		{
 			get
@@ -774,9 +770,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkOrange.
-		/// </summary>
+		///<summary>
+		///  The color DarkOrange.
+		///</summary>
 		public static ColorEx DarkOrange
 		{
 			get
@@ -790,9 +786,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkOrchid.
-		/// </summary>
+		///<summary>
+		///  The color DarkOrchid.
+		///</summary>
 		public static ColorEx DarkOrchid
 		{
 			get
@@ -806,9 +802,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkRed.
-		/// </summary>
+		///<summary>
+		///  The color DarkRed.
+		///</summary>
 		public static ColorEx DarkRed
 		{
 			get
@@ -822,9 +818,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkSalmon.
-		/// </summary>
+		///<summary>
+		///  The color DarkSalmon.
+		///</summary>
 		public static ColorEx DarkSalmon
 		{
 			get
@@ -838,9 +834,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkSeaGreen.
-		/// </summary>
+		///<summary>
+		///  The color DarkSeaGreen.
+		///</summary>
 		public static ColorEx DarkSeaGreen
 		{
 			get
@@ -854,9 +850,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkSlateBlue.
-		/// </summary>
+		///<summary>
+		///  The color DarkSlateBlue.
+		///</summary>
 		public static ColorEx DarkSlateBlue
 		{
 			get
@@ -870,9 +866,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkSlateGray.
-		/// </summary>
+		///<summary>
+		///  The color DarkSlateGray.
+		///</summary>
 		public static ColorEx DarkSlateGray
 		{
 			get
@@ -886,9 +882,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkTurquoise.
-		/// </summary>
+		///<summary>
+		///  The color DarkTurquoise.
+		///</summary>
 		public static ColorEx DarkTurquoise
 		{
 			get
@@ -902,9 +898,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DarkViolet.
-		/// </summary>
+		///<summary>
+		///  The color DarkViolet.
+		///</summary>
 		public static ColorEx DarkViolet
 		{
 			get
@@ -918,9 +914,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DeepPink.
-		/// </summary>
+		///<summary>
+		///  The color DeepPink.
+		///</summary>
 		public static ColorEx DeepPink
 		{
 			get
@@ -934,9 +930,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DeepSkyBlue.
-		/// </summary>
+		///<summary>
+		///  The color DeepSkyBlue.
+		///</summary>
 		public static ColorEx DeepSkyBlue
 		{
 			get
@@ -950,9 +946,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DimGray.
-		/// </summary>
+		///<summary>
+		///  The color DimGray.
+		///</summary>
 		public static ColorEx DimGray
 		{
 			get
@@ -966,9 +962,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color DodgerBlue.
-		/// </summary>
+		///<summary>
+		///  The color DodgerBlue.
+		///</summary>
 		public static ColorEx DodgerBlue
 		{
 			get
@@ -982,9 +978,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Firebrick.
-		/// </summary>
+		///<summary>
+		///  The color Firebrick.
+		///</summary>
 		public static ColorEx Firebrick
 		{
 			get
@@ -998,9 +994,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color FloralWhite.
-		/// </summary>
+		///<summary>
+		///  The color FloralWhite.
+		///</summary>
 		public static ColorEx FloralWhite
 		{
 			get
@@ -1014,9 +1010,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color ForestGreen.
-		/// </summary>
+		///<summary>
+		///  The color ForestGreen.
+		///</summary>
 		public static ColorEx ForestGreen
 		{
 			get
@@ -1030,9 +1026,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Fuchsia.
-		/// </summary>
+		///<summary>
+		///  The color Fuchsia.
+		///</summary>
 		public static ColorEx Fuchsia
 		{
 			get
@@ -1046,9 +1042,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Gainsboro.
-		/// </summary>
+		///<summary>
+		///  The color Gainsboro.
+		///</summary>
 		public static ColorEx Gainsboro
 		{
 			get
@@ -1062,9 +1058,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color GhostWhite.
-		/// </summary>
+		///<summary>
+		///  The color GhostWhite.
+		///</summary>
 		public static ColorEx GhostWhite
 		{
 			get
@@ -1078,9 +1074,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Gold.
-		/// </summary>
+		///<summary>
+		///  The color Gold.
+		///</summary>
 		public static ColorEx Gold
 		{
 			get
@@ -1094,9 +1090,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Goldenrod.
-		/// </summary>
+		///<summary>
+		///  The color Goldenrod.
+		///</summary>
 		public static ColorEx Goldenrod
 		{
 			get
@@ -1110,9 +1106,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Gray.
-		/// </summary>
+		///<summary>
+		///  The color Gray.
+		///</summary>
 		public static ColorEx Gray
 		{
 			get
@@ -1126,9 +1122,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Green.
-		/// </summary>
+		///<summary>
+		///  The color Green.
+		///</summary>
 		public static ColorEx Green
 		{
 			get
@@ -1142,9 +1138,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color GreenYellow.
-		/// </summary>
+		///<summary>
+		///  The color GreenYellow.
+		///</summary>
 		public static ColorEx GreenYellow
 		{
 			get
@@ -1158,9 +1154,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Honeydew.
-		/// </summary>
+		///<summary>
+		///  The color Honeydew.
+		///</summary>
 		public static ColorEx Honeydew
 		{
 			get
@@ -1174,9 +1170,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color HotPink.
-		/// </summary>
+		///<summary>
+		///  The color HotPink.
+		///</summary>
 		public static ColorEx HotPink
 		{
 			get
@@ -1190,9 +1186,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color IndianRed.
-		/// </summary>
+		///<summary>
+		///  The color IndianRed.
+		///</summary>
 		public static ColorEx IndianRed
 		{
 			get
@@ -1206,9 +1202,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Indigo.
-		/// </summary>
+		///<summary>
+		///  The color Indigo.
+		///</summary>
 		public static ColorEx Indigo
 		{
 			get
@@ -1222,9 +1218,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Ivory.
-		/// </summary>
+		///<summary>
+		///  The color Ivory.
+		///</summary>
 		public static ColorEx Ivory
 		{
 			get
@@ -1238,9 +1234,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Khaki.
-		/// </summary>
+		///<summary>
+		///  The color Khaki.
+		///</summary>
 		public static ColorEx Khaki
 		{
 			get
@@ -1254,9 +1250,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Lavender.
-		/// </summary>
+		///<summary>
+		///  The color Lavender.
+		///</summary>
 		public static ColorEx Lavender
 		{
 			get
@@ -1270,9 +1266,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LavenderBlush.
-		/// </summary>
+		///<summary>
+		///  The color LavenderBlush.
+		///</summary>
 		public static ColorEx LavenderBlush
 		{
 			get
@@ -1286,9 +1282,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LawnGreen.
-		/// </summary>
+		///<summary>
+		///  The color LawnGreen.
+		///</summary>
 		public static ColorEx LawnGreen
 		{
 			get
@@ -1302,9 +1298,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LemonChiffon.
-		/// </summary>
+		///<summary>
+		///  The color LemonChiffon.
+		///</summary>
 		public static ColorEx LemonChiffon
 		{
 			get
@@ -1318,9 +1314,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightBlue.
-		/// </summary>
+		///<summary>
+		///  The color LightBlue.
+		///</summary>
 		public static ColorEx LightBlue
 		{
 			get
@@ -1334,9 +1330,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightCoral.
-		/// </summary>
+		///<summary>
+		///  The color LightCoral.
+		///</summary>
 		public static ColorEx LightCoral
 		{
 			get
@@ -1350,9 +1346,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightCyan.
-		/// </summary>
+		///<summary>
+		///  The color LightCyan.
+		///</summary>
 		public static ColorEx LightCyan
 		{
 			get
@@ -1366,9 +1362,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightGoldenrodYellow.
-		/// </summary>
+		///<summary>
+		///  The color LightGoldenrodYellow.
+		///</summary>
 		public static ColorEx LightGoldenrodYellow
 		{
 			get
@@ -1382,9 +1378,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightGreen.
-		/// </summary>
+		///<summary>
+		///  The color LightGreen.
+		///</summary>
 		public static ColorEx LightGreen
 		{
 			get
@@ -1398,9 +1394,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightGray.
-		/// </summary>
+		///<summary>
+		///  The color LightGray.
+		///</summary>
 		public static ColorEx LightGray
 		{
 			get
@@ -1414,9 +1410,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightPink.
-		/// </summary>
+		///<summary>
+		///  The color LightPink.
+		///</summary>
 		public static ColorEx LightPink
 		{
 			get
@@ -1430,9 +1426,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightSalmon.
-		/// </summary>
+		///<summary>
+		///  The color LightSalmon.
+		///</summary>
 		public static ColorEx LightSalmon
 		{
 			get
@@ -1446,9 +1442,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightSeaGreen.
-		/// </summary>
+		///<summary>
+		///  The color LightSeaGreen.
+		///</summary>
 		public static ColorEx LightSeaGreen
 		{
 			get
@@ -1462,9 +1458,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightSkyBlue.
-		/// </summary>
+		///<summary>
+		///  The color LightSkyBlue.
+		///</summary>
 		public static ColorEx LightSkyBlue
 		{
 			get
@@ -1478,9 +1474,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightSlateGray.
-		/// </summary>
+		///<summary>
+		///  The color LightSlateGray.
+		///</summary>
 		public static ColorEx LightSlateGray
 		{
 			get
@@ -1494,9 +1490,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightSteelBlue.
-		/// </summary>
+		///<summary>
+		///  The color LightSteelBlue.
+		///</summary>
 		public static ColorEx LightSteelBlue
 		{
 			get
@@ -1510,9 +1506,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LightYellow.
-		/// </summary>
+		///<summary>
+		///  The color LightYellow.
+		///</summary>
 		public static ColorEx LightYellow
 		{
 			get
@@ -1526,9 +1522,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Lime.
-		/// </summary>
+		///<summary>
+		///  The color Lime.
+		///</summary>
 		public static ColorEx Lime
 		{
 			get
@@ -1542,9 +1538,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color LimeGreen.
-		/// </summary>
+		///<summary>
+		///  The color LimeGreen.
+		///</summary>
 		public static ColorEx LimeGreen
 		{
 			get
@@ -1558,9 +1554,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Linen.
-		/// </summary>
+		///<summary>
+		///  The color Linen.
+		///</summary>
 		public static ColorEx Linen
 		{
 			get
@@ -1574,9 +1570,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Magenta.
-		/// </summary>
+		///<summary>
+		///  The color Magenta.
+		///</summary>
 		public static ColorEx Magenta
 		{
 			get
@@ -1590,9 +1586,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Maroon.
-		/// </summary>
+		///<summary>
+		///  The color Maroon.
+		///</summary>
 		public static ColorEx Maroon
 		{
 			get
@@ -1606,9 +1602,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color MediumAquamarine.
-		/// </summary>
+		///<summary>
+		///  The color MediumAquamarine.
+		///</summary>
 		public static ColorEx MediumAquamarine
 		{
 			get
@@ -1622,9 +1618,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color MediumBlue.
-		/// </summary>
+		///<summary>
+		///  The color MediumBlue.
+		///</summary>
 		public static ColorEx MediumBlue
 		{
 			get
@@ -1638,9 +1634,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color MediumOrchid.
-		/// </summary>
+		///<summary>
+		///  The color MediumOrchid.
+		///</summary>
 		public static ColorEx MediumOrchid
 		{
 			get
@@ -1654,9 +1650,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color MediumPurple.
-		/// </summary>
+		///<summary>
+		///  The color MediumPurple.
+		///</summary>
 		public static ColorEx MediumPurple
 		{
 			get
@@ -1670,9 +1666,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color MediumSeaGreen.
-		/// </summary>
+		///<summary>
+		///  The color MediumSeaGreen.
+		///</summary>
 		public static ColorEx MediumSeaGreen
 		{
 			get
@@ -1686,9 +1682,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color MediumSlateBlue.
-		/// </summary>
+		///<summary>
+		///  The color MediumSlateBlue.
+		///</summary>
 		public static ColorEx MediumSlateBlue
 		{
 			get
@@ -1702,9 +1698,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color MediumSpringGreen.
-		/// </summary>
+		///<summary>
+		///  The color MediumSpringGreen.
+		///</summary>
 		public static ColorEx MediumSpringGreen
 		{
 			get
@@ -1718,9 +1714,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color MediumTurquoise.
-		/// </summary>
+		///<summary>
+		///  The color MediumTurquoise.
+		///</summary>
 		public static ColorEx MediumTurquoise
 		{
 			get
@@ -1734,9 +1730,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color MediumVioletRed.
-		/// </summary>
+		///<summary>
+		///  The color MediumVioletRed.
+		///</summary>
 		public static ColorEx MediumVioletRed
 		{
 			get
@@ -1750,9 +1746,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color MidnightBlue.
-		/// </summary>
+		///<summary>
+		///  The color MidnightBlue.
+		///</summary>
 		public static ColorEx MidnightBlue
 		{
 			get
@@ -1766,9 +1762,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color MintCream.
-		/// </summary>
+		///<summary>
+		///  The color MintCream.
+		///</summary>
 		public static ColorEx MintCream
 		{
 			get
@@ -1782,9 +1778,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color MistyRose.
-		/// </summary>
+		///<summary>
+		///  The color MistyRose.
+		///</summary>
 		public static ColorEx MistyRose
 		{
 			get
@@ -1798,9 +1794,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Moccasin.
-		/// </summary>
+		///<summary>
+		///  The color Moccasin.
+		///</summary>
 		public static ColorEx Moccasin
 		{
 			get
@@ -1814,9 +1810,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color NavajoWhite.
-		/// </summary>
+		///<summary>
+		///  The color NavajoWhite.
+		///</summary>
 		public static ColorEx NavajoWhite
 		{
 			get
@@ -1830,9 +1826,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Navy.
-		/// </summary>
+		///<summary>
+		///  The color Navy.
+		///</summary>
 		public static ColorEx Navy
 		{
 			get
@@ -1846,9 +1842,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color OldLace.
-		/// </summary>
+		///<summary>
+		///  The color OldLace.
+		///</summary>
 		public static ColorEx OldLace
 		{
 			get
@@ -1862,9 +1858,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Olive.
-		/// </summary>
+		///<summary>
+		///  The color Olive.
+		///</summary>
 		public static ColorEx Olive
 		{
 			get
@@ -1878,9 +1874,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color OliveDrab.
-		/// </summary>
+		///<summary>
+		///  The color OliveDrab.
+		///</summary>
 		public static ColorEx OliveDrab
 		{
 			get
@@ -1894,9 +1890,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Orange.
-		/// </summary>
+		///<summary>
+		///  The color Orange.
+		///</summary>
 		public static ColorEx Orange
 		{
 			get
@@ -1910,9 +1906,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color OrangeRed.
-		/// </summary>
+		///<summary>
+		///  The color OrangeRed.
+		///</summary>
 		public static ColorEx OrangeRed
 		{
 			get
@@ -1926,9 +1922,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Orchid.
-		/// </summary>
+		///<summary>
+		///  The color Orchid.
+		///</summary>
 		public static ColorEx Orchid
 		{
 			get
@@ -1942,9 +1938,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color PaleGoldenrod.
-		/// </summary>
+		///<summary>
+		///  The color PaleGoldenrod.
+		///</summary>
 		public static ColorEx PaleGoldenrod
 		{
 			get
@@ -1958,9 +1954,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color PaleGreen.
-		/// </summary>
+		///<summary>
+		///  The color PaleGreen.
+		///</summary>
 		public static ColorEx PaleGreen
 		{
 			get
@@ -1974,9 +1970,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color PaleTurquoise.
-		/// </summary>
+		///<summary>
+		///  The color PaleTurquoise.
+		///</summary>
 		public static ColorEx PaleTurquoise
 		{
 			get
@@ -1990,9 +1986,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color PaleVioletRed.
-		/// </summary>
+		///<summary>
+		///  The color PaleVioletRed.
+		///</summary>
 		public static ColorEx PaleVioletRed
 		{
 			get
@@ -2006,9 +2002,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color PapayaWhip.
-		/// </summary>
+		///<summary>
+		///  The color PapayaWhip.
+		///</summary>
 		public static ColorEx PapayaWhip
 		{
 			get
@@ -2022,9 +2018,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color PeachPuff.
-		/// </summary>
+		///<summary>
+		///  The color PeachPuff.
+		///</summary>
 		public static ColorEx PeachPuff
 		{
 			get
@@ -2038,9 +2034,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Peru.
-		/// </summary>
+		///<summary>
+		///  The color Peru.
+		///</summary>
 		public static ColorEx Peru
 		{
 			get
@@ -2054,9 +2050,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Pink.
-		/// </summary>
+		///<summary>
+		///  The color Pink.
+		///</summary>
 		public static ColorEx Pink
 		{
 			get
@@ -2070,9 +2066,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Plum.
-		/// </summary>
+		///<summary>
+		///  The color Plum.
+		///</summary>
 		public static ColorEx Plum
 		{
 			get
@@ -2086,9 +2082,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color PowderBlue.
-		/// </summary>
+		///<summary>
+		///  The color PowderBlue.
+		///</summary>
 		public static ColorEx PowderBlue
 		{
 			get
@@ -2102,9 +2098,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Purple.
-		/// </summary>
+		///<summary>
+		///  The color Purple.
+		///</summary>
 		public static ColorEx Purple
 		{
 			get
@@ -2118,9 +2114,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Red.
-		/// </summary>
+		///<summary>
+		///  The color Red.
+		///</summary>
 		public static ColorEx Red
 		{
 			get
@@ -2134,9 +2130,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color RosyBrown.
-		/// </summary>
+		///<summary>
+		///  The color RosyBrown.
+		///</summary>
 		public static ColorEx RosyBrown
 		{
 			get
@@ -2150,9 +2146,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color RoyalBlue.
-		/// </summary>
+		///<summary>
+		///  The color RoyalBlue.
+		///</summary>
 		public static ColorEx RoyalBlue
 		{
 			get
@@ -2166,9 +2162,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color SaddleBrown.
-		/// </summary>
+		///<summary>
+		///  The color SaddleBrown.
+		///</summary>
 		public static ColorEx SaddleBrown
 		{
 			get
@@ -2182,9 +2178,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Salmon.
-		/// </summary>
+		///<summary>
+		///  The color Salmon.
+		///</summary>
 		public static ColorEx Salmon
 		{
 			get
@@ -2198,9 +2194,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color SandyBrown.
-		/// </summary>
+		///<summary>
+		///  The color SandyBrown.
+		///</summary>
 		public static ColorEx SandyBrown
 		{
 			get
@@ -2214,9 +2210,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color SeaGreen.
-		/// </summary>
+		///<summary>
+		///  The color SeaGreen.
+		///</summary>
 		public static ColorEx SeaGreen
 		{
 			get
@@ -2230,9 +2226,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color SeaShell.
-		/// </summary>
+		///<summary>
+		///  The color SeaShell.
+		///</summary>
 		public static ColorEx SeaShell
 		{
 			get
@@ -2246,9 +2242,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Sienna.
-		/// </summary>
+		///<summary>
+		///  The color Sienna.
+		///</summary>
 		public static ColorEx Sienna
 		{
 			get
@@ -2262,9 +2258,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Silver.
-		/// </summary>
+		///<summary>
+		///  The color Silver.
+		///</summary>
 		public static ColorEx Silver
 		{
 			get
@@ -2278,9 +2274,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color SkyBlue.
-		/// </summary>
+		///<summary>
+		///  The color SkyBlue.
+		///</summary>
 		public static ColorEx SkyBlue
 		{
 			get
@@ -2294,9 +2290,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color SlateBlue.
-		/// </summary>
+		///<summary>
+		///  The color SlateBlue.
+		///</summary>
 		public static ColorEx SlateBlue
 		{
 			get
@@ -2310,9 +2306,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color SlateGray.
-		/// </summary>
+		///<summary>
+		///  The color SlateGray.
+		///</summary>
 		public static ColorEx SlateGray
 		{
 			get
@@ -2326,9 +2322,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Snow.
-		/// </summary>
+		///<summary>
+		///  The color Snow.
+		///</summary>
 		public static ColorEx Snow
 		{
 			get
@@ -2342,9 +2338,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color SpringGreen.
-		/// </summary>
+		///<summary>
+		///  The color SpringGreen.
+		///</summary>
 		public static ColorEx SpringGreen
 		{
 			get
@@ -2358,9 +2354,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color SteelBlue.
-		/// </summary>
+		///<summary>
+		///  The color SteelBlue.
+		///</summary>
 		public static ColorEx SteelBlue
 		{
 			get
@@ -2374,9 +2370,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Tan.
-		/// </summary>
+		///<summary>
+		///  The color Tan.
+		///</summary>
 		public static ColorEx Tan
 		{
 			get
@@ -2390,9 +2386,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Teal.
-		/// </summary>
+		///<summary>
+		///  The color Teal.
+		///</summary>
 		public static ColorEx Teal
 		{
 			get
@@ -2406,9 +2402,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Thistle.
-		/// </summary>
+		///<summary>
+		///  The color Thistle.
+		///</summary>
 		public static ColorEx Thistle
 		{
 			get
@@ -2422,9 +2418,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Tomato.
-		/// </summary>
+		///<summary>
+		///  The color Tomato.
+		///</summary>
 		public static ColorEx Tomato
 		{
 			get
@@ -2438,9 +2434,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Turquoise.
-		/// </summary>
+		///<summary>
+		///  The color Turquoise.
+		///</summary>
 		public static ColorEx Turquoise
 		{
 			get
@@ -2454,9 +2450,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Violet.
-		/// </summary>
+		///<summary>
+		///  The color Violet.
+		///</summary>
 		public static ColorEx Violet
 		{
 			get
@@ -2470,9 +2466,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Wheat.
-		/// </summary>
+		///<summary>
+		///  The color Wheat.
+		///</summary>
 		public static ColorEx Wheat
 		{
 			get
@@ -2486,9 +2482,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color White.
-		/// </summary>
+		///<summary>
+		///  The color White.
+		///</summary>
 		public static ColorEx White
 		{
 			get
@@ -2502,9 +2498,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color WhiteSmoke.
-		/// </summary>
+		///<summary>
+		///  The color WhiteSmoke.
+		///</summary>
 		public static ColorEx WhiteSmoke
 		{
 			get
@@ -2518,9 +2514,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color Yellow.
-		/// </summary>
+		///<summary>
+		///  The color Yellow.
+		///</summary>
 		public static ColorEx Yellow
 		{
 			get
@@ -2534,9 +2530,9 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		///		The color YellowGreen.
-		/// </summary>
+		///<summary>
+		///  The color YellowGreen.
+		///</summary>
 		public static ColorEx YellowGreen
 		{
 			get
@@ -2561,17 +2557,18 @@ namespace Axiom.Core
 			var vals = parsableText.TrimStart( '(', '[', '<' ).TrimEnd( ')', ']', '>' ).Split( ',' );
 			if ( vals.Length < 3 )
 			{
-				throw new FormatException( string.Format( "Cannot parse the text '{0}' because it must of the form (r,g,b) or (r,g,b,a)", parsableText ) );
+				throw new FormatException(
+					string.Format( "Cannot parse the text '{0}' because it must of the form (r,g,b) or (r,g,b,a)", parsableText ) );
 			}
 			//float r, g, b, a;
 			try
 			{
-				retVal.r = int.Parse( vals[ 0 ].Trim() ) / 255f;
-				retVal.g = int.Parse( vals[ 1 ].Trim() ) / 255f;
-				retVal.b = int.Parse( vals[ 2 ].Trim() ) / 255f;
+				retVal.r = int.Parse( vals[ 0 ].Trim() )/255f;
+				retVal.g = int.Parse( vals[ 1 ].Trim() )/255f;
+				retVal.b = int.Parse( vals[ 2 ].Trim() )/255f;
 				if ( vals.Length == 4 )
 				{
-					retVal.a = int.Parse( vals[ 3 ].Trim() ) / 255f;
+					retVal.a = int.Parse( vals[ 3 ].Trim() )/255f;
 				}
 				else
 				{
@@ -2588,7 +2585,7 @@ namespace Axiom.Core
 		//TODO : Move this to StringConverter
 		public string To_0_255_String()
 		{
-			return string.Format( "({0},{1},{2},{3})", (int)( r * 255f ), (int)( g * 255f ), (int)( b * 255f ), (int)( a * 255f ) );
+			return string.Format( "({0},{1},{2},{3})", (int)( r*255f ), (int)( g*255f ), (int)( b*255f ), (int)( a*255f ) );
 		}
 
 		#endregion Static color properties
@@ -2596,15 +2593,15 @@ namespace Axiom.Core
 		#region Object overloads
 
 		/// <summary>
-		///    Override GetHashCode.
+		///   Override GetHashCode.
 		/// </summary>
 		/// <remarks>
-		///    Done mainly to quash warnings, no real need for it.
+		///   Done mainly to quash warnings, no real need for it.
 		/// </remarks>
-		/// <returns></returns>
+		/// <returns> </returns>
 		public override int GetHashCode()
 		{
-			return this.ToARGB();
+			return ToARGB();
 		}
 
 		public override bool Equals( object obj )
@@ -2619,7 +2616,7 @@ namespace Axiom.Core
 
 		public override string ToString()
 		{
-			return this.To_0_255_String();
+			return To_0_255_String();
 		}
 
 		#endregion Object overloads
@@ -2627,15 +2624,15 @@ namespace Axiom.Core
 		#region IComparable Members
 
 		/// <summary>
-		///    Used to compare 2 ColorEx objects for equality.
+		///   Used to compare 2 ColorEx objects for equality.
 		/// </summary>
-		/// <param name="obj">An instance of a ColorEx object to compare to this instance.</param>
-		/// <returns>0 if they are equal, 1 if they are not.</returns>
+		/// <param name="obj"> An instance of a ColorEx object to compare to this instance. </param>
+		/// <returns> 0 if they are equal, 1 if they are not. </returns>
 		public int CompareTo( object obj )
 		{
 			var other = (ColorEx)obj;
 
-			if ( this.a == other.a && this.r == other.r && this.g == other.g && this.b == other.b )
+			if ( a == other.a && r == other.r && g == other.g && b == other.b )
 			{
 				return 0;
 			}
@@ -2648,19 +2645,17 @@ namespace Axiom.Core
 		#region ICloneable Implementation
 
 		/// <summary>
-		/// Creates a new object that is a copy of the current instance.
+		///   Creates a new object that is a copy of the current instance.
 		/// </summary>
-		/// <returns>
-		/// A new object that is a copy of this instance.
-		/// </returns>
+		/// <returns> A new object that is a copy of this instance. </returns>
 		/// <filterpriority>2</filterpriority>
 		public ColorEx Clone()
 		{
 			ColorEx clone;
-			clone.a = this.a;
-			clone.r = this.r;
-			clone.g = this.g;
-			clone.b = this.b;
+			clone.a = a;
+			clone.r = r;
+			clone.g = g;
+			clone.b = b;
 			return clone;
 		}
 

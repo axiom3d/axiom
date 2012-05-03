@@ -48,13 +48,12 @@ using System.Reflection;
 namespace Axiom.Core
 {
 	/// <summary>
-	/// Used by configuration classes to store assembly/class names and instantiate
-	/// objects from them.
+	///   Used by configuration classes to store assembly/class names and instantiate objects from them.
 	/// </summary>
 	public class ObjectCreator
 	{
-		private Assembly _assembly;
-		private Type _type;
+		private readonly Assembly _assembly;
+		private readonly Type _type;
 
 		public Type CreatedType
 		{
@@ -65,7 +64,9 @@ namespace Axiom.Core
 		}
 
 		public ObjectCreator( Type type )
-			: this( type.Assembly, type ) {}
+			: this( type.Assembly, type )
+		{
+		}
 
 		public ObjectCreator( Assembly assembly, Type type )
 		{
@@ -135,7 +136,8 @@ namespace Axiom.Core
 				}
 				catch ( Exception e )
 				{
-					LogManager.Instance.Write( "Failed to create instance of {0} of type {0} from assembly {1}", typeof ( T ).Name, type, assembly.FullName );
+					LogManager.Instance.Write( "Failed to create instance of {0} of type {0} from assembly {1}", typeof ( T ).Name,
+					                           type, assembly.FullName );
 					LogManager.Instance.Write( LogManager.BuildExceptionString( e ) );
 				}
 			}
@@ -149,7 +151,7 @@ namespace Axiom.Core
 		#region Fields and Properties
 
 		private static readonly object _mutex = new object();
-		private string _assemblyFilename;
+		private readonly string _assemblyFilename;
 		private Assembly _assembly;
 
 		#endregion Fields and Properties
@@ -157,12 +159,14 @@ namespace Axiom.Core
 		#region Construction and Destruction
 
 		/// <summary>
-		/// Creates a loader instance for the current executing assembly
+		///   Creates a loader instance for the current executing assembly
 		/// </summary>
-		public DynamicLoader() {}
+		public DynamicLoader()
+		{
+		}
 
 		/// <summary>
-		/// Creates a loader instance for the specified assembly
+		///   Creates a loader instance for the specified assembly
 		/// </summary>
 		public DynamicLoader( string assemblyFilename )
 			: this()
@@ -212,7 +216,8 @@ namespace Axiom.Core
 				foreach ( var type in assemblyTypes )
 				{
 #if !(XBOX || XBOX360)
-					if ( ( baseType.IsInterface && type.GetInterface( baseType.FullName, false ) != null ) || ( !baseType.IsInterface && type.BaseType == baseType ) )
+					if ( ( baseType.IsInterface && type.GetInterface( baseType.FullName, false ) != null ) ||
+					     ( !baseType.IsInterface && type.BaseType == baseType ) )
 					{
 						types.Add( new ObjectCreator( assembly, type ) );
 					}
@@ -244,10 +249,10 @@ namespace Axiom.Core
 				LogManager.Instance.Write( LogMessageLevel.Trivial, true, ex.Message );
 			}
 #endif
-			catch( Exception ex )
+			catch ( Exception ex )
 			{
-				LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
-				LogManager.Instance.Write("Loader Exceptions:");
+				LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
+				LogManager.Instance.Write( "Loader Exceptions:" );
 			}
 
 			return types;

@@ -12,7 +12,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpInputSystem.Core">
-      <HintPath>..\..\..\Lib\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />

@@ -59,13 +59,13 @@ namespace Axiom.Scripting.Compiler
 
 			#region Translator Implementation
 
-			/// <see cref="Translator.CheckFor"/>
-            public override bool CheckFor(Keywords nodeId, Keywords parentId)
+			/// <see cref="Translator.CheckFor" />
+			public override bool CheckFor( Keywords nodeId, Keywords parentId )
 			{
 				return nodeId == Keywords.ID_PASS && ( parentId == Keywords.ID_TARGET || parentId == Keywords.ID_TARGET_OUTPUT );
 			}
 
-			/// <see cref="Translator.Translate"/>
+			/// <see cref="Translator.Translate" />
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
 				var obj = (ObjectAbstractNode)node;
@@ -101,7 +101,8 @@ namespace Axiom.Scripting.Compiler
 				}
 				else
 				{
-					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line, "pass types must be \"clear\", \"stencil\", \"render_quad\", \"render_scene\" or \"render_custom\"." );
+					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line,
+					                   "pass types must be \"clear\", \"stencil\", \"render_quad\", \"render_scene\" or \"render_custom\"." );
 					return;
 				}
 
@@ -134,7 +135,8 @@ namespace Axiom.Scripting.Compiler
 									var val = string.Empty;
 									if ( getString( prop.Values[ 0 ], out val ) )
 									{
-										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material, val );
+										ScriptCompilerEvent evt =
+											new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material, val );
 
 										compiler._fireEvent( ref evt );
 										_Pass.MaterialName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
@@ -163,7 +165,9 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 );
+									AbstractNode i0 = getNodeAt( prop.Values, 0 ),
+									             i1 = getNodeAt( prop.Values, 1 ),
+									             i2 = getNodeAt( prop.Values, 2 );
 									var id = 0;
 									var name = string.Empty;
 									if ( getInt( i0, out id ) && getString( i1, out name ) )
@@ -344,7 +348,8 @@ namespace Axiom.Scripting.Compiler
 								#endregion ID_QUAD_NORMALS
 
 							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
+								                   "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						}
 					}

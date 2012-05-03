@@ -37,59 +37,37 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-
-using Axiom.Controllers;
-using Axiom.Core;
-using Axiom.Graphics;
-using Axiom.Math;
 using Axiom.Core.Collections;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
 	/// <summary>
-	/// Strategy for determining level of detail.
+	///   Strategy for determining level of detail.
 	/// </summary>
 	/// <remarks>
-	/// Generally, to create a new lod strategy, all of the following will
-	/// need to be implemented: Value, BaseValue, TransformBias,
-	/// Index, Sort, and IsSorted.
-	/// In addition, TransformUserValue may be overridden.</remarks>
+	///   Generally, to create a new lod strategy, all of the following will need to be implemented: Value, BaseValue, TransformBias, Index, Sort, and IsSorted. In addition, TransformUserValue may be overridden.
+	/// </remarks>
 	public abstract class LodStrategy
 	{
 		#region Fields and Properties
 
-		/// <summary>
-		/// Name of this strategy.
-		/// </summary>
-		private string _name;
-
-		public string Name
-		{
-			get
-			{
-				return this._name;
-			}
-			protected set
-			{
-				this._name = value;
-			}
-		}
+		public string Name { get; protected set; }
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
 		/// <summary>
-		/// Constructor accepting name.
+		///   Constructor accepting name.
 		/// </summary>
-		/// <param name="name"></param>
+		/// <param name="name"> </param>
 		public LodStrategy( string name )
 		{
-			_name = name;
+			Name = name;
 		}
 
 		#endregion Construction and Destruction
@@ -97,13 +75,13 @@ namespace Axiom.Core
 		#region Methods
 
 		/// <summary>
-		/// Transform user supplied value to internal value.
+		///   Transform user supplied value to internal value.
 		/// </summary>
 		/// By default, performs no transformation.
 		/// Do not throw exceptions for invalid values here, as the lod strategy
 		/// may be changed such that the values become valid.
-		/// <param name="userValue"></param>
-		/// <returns></returns>
+		/// <param name="userValue"> </param>
+		/// <returns> </returns>
 		public virtual Real TransformUserValue( Real userValue )
 		{
 			// No transformation by default
@@ -111,11 +89,11 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Compute the lod value for a given movable object relative to a given camera.
+		///   Compute the lod value for a given movable object relative to a given camera.
 		/// </summary>
-		/// <param name="movableObject"></param>
-		/// <param name="cam"></param>
-		/// <returns></returns>
+		/// <param name="movableObject"> </param>
+		/// <param name="cam"> </param>
+		/// <returns> </returns>
 		public float GetValue( MovableObject movableObject, Camera cam )
 		{
 			// Just return implementation with lod camera
@@ -123,10 +101,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Implementation of isSorted suitable for ascending values.
+		///   Implementation of isSorted suitable for ascending values.
 		/// </summary>
-		/// <param name="values"></param>
-		/// <returns></returns>
+		/// <param name="values"> </param>
+		/// <returns> </returns>
 		protected static bool IsSortedAscending( LodValueList values )
 		{
 			for ( var i = 0; i < values.Count; i++ )
@@ -144,10 +122,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Implementation of isSorted suitable for descending values.
+		///   Implementation of isSorted suitable for descending values.
 		/// </summary>
-		/// <param name="values"></param>
-		/// <returns></returns>
+		/// <param name="values"> </param>
+		/// <returns> </returns>
 		protected static bool IsSortedDescending( LodValueList values )
 		{
 			for ( var i = 0; i < values.Count; i++ )
@@ -164,30 +142,27 @@ namespace Axiom.Core
 			return true;
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="meshLodUsageList"></param>
+		///<summary>
+		///</summary>
+		///<param name="meshLodUsageList"> </param>
 		protected void SortAscending( MeshLodUsageList meshLodUsageList )
 		{
 			meshLodUsageList.Sort( 0, meshLodUsageList.Count, new LodUsageSortLess() );
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="meshLodUsageList"></param>
+		///<summary>
+		///</summary>
+		///<param name="meshLodUsageList"> </param>
 		protected void SortDescending( MeshLodUsageList meshLodUsageList )
 		{
 			meshLodUsageList.Sort( 0, meshLodUsageList.Count, new LodUsageSortGreater() );
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="value"></param>
-		/// <param name="meshLodUsageList"></param>
-		/// <returns></returns>
+		///<summary>
+		///</summary>
+		///<param name="value"> </param>
+		///<param name="meshLodUsageList"> </param>
+		///<returns> </returns>
 		protected static ushort GetIndexAscending( float value, MeshLodUsageList meshLodUsageList )
 		{
 			ushort index = 0;
@@ -201,12 +176,11 @@ namespace Axiom.Core
 			return (ushort)( meshLodUsageList.Count - 1 );
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="value"></param>
-		/// <param name="meshLodUsageList"></param>
-		/// <returns></returns>
+		///<summary>
+		///</summary>
+		///<param name="value"> </param>
+		///<param name="meshLodUsageList"> </param>
+		///<returns> </returns>
 		protected static ushort GetIndexDescending( float value, MeshLodUsageList meshLodUsageList )
 		{
 			ushort index = 0;
@@ -255,15 +229,15 @@ namespace Axiom.Core
 		#region Abstract Definitions
 
 		/// <summary>
-		/// Get the value of the first (highest) level of detail.
+		///   Get the value of the first (highest) level of detail.
 		/// </summary>
 		public abstract Real BaseValue { get; }
 
 		/// <summary>
-		/// Transform lod bias so it only needs to be multiplied by the lod value.
+		///   Transform lod bias so it only needs to be multiplied by the lod value.
 		/// </summary>
-		/// <param name="factor"></param>
-		/// <returns></returns>
+		/// <param name="factor"> </param>
+		/// <returns> </returns>
 		public abstract Real TransformBias( Real factor );
 
 		public abstract ushort GetIndex( Real value, MeshLodUsageList meshLodUsageList );
@@ -275,18 +249,18 @@ namespace Axiom.Core
 		public abstract bool IsSorted( LodValueList values );
 
 		/// <summary>
-		/// Compute the lod value for a given movable object relative to a given camera.
+		///   Compute the lod value for a given movable object relative to a given camera.
 		/// </summary>
-		/// <param name="movableObject"></param>
-		/// <param name="camera"></param>
-		/// <returns></returns>
+		/// <param name="movableObject"> </param>
+		/// <param name="camera"> </param>
+		/// <returns> </returns>
 		protected abstract Real getValue( MovableObject movableObject, Camera camera );
 
 		#endregion Abstract Definitions
 	}
 
 	/// <summary>
-	/// Small helper class to sort a MeshLodUsageList
+	///   Small helper class to sort a MeshLodUsageList
 	/// </summary>
 	public class LodUsageSortGreater : IComparer<MeshLodUsage>
 	{
@@ -304,7 +278,7 @@ namespace Axiom.Core
 	}
 
 	/// <summary>
-	/// Small helper class to sort a MeshLodUsageList
+	///   Small helper class to sort a MeshLodUsageList
 	/// </summary>
 	public class LodUsageSortLess : IComparer<MeshLodUsage>
 	{

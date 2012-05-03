@@ -4,8 +4,6 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-using Axiom.Core;
-
 #endregion Namespace Declarations
 
 namespace Axiom.Core
@@ -18,21 +16,17 @@ namespace Axiom.Core
 	[StructLayout( LayoutKind.Explicit )]
 	public struct TwoByte
 	{
-		[FieldOffset( 0 )]
-		public short Short;
+		[FieldOffset( 0 )] public short Short;
 
-		[FieldOffset( 0 )]
-		public ushort UShort;
+		[FieldOffset( 0 )] public ushort UShort;
 
 #if AXIOM_BIG_ENDIAN
 		[FieldOffset( 1 )] public byte b0;
 		[FieldOffset( 0 )] public byte b1;
 #else
-		[FieldOffset( 0 )]
-		public byte b0;
+		[FieldOffset( 0 )] public byte b0;
 
-		[FieldOffset( 1 )]
-		public byte b1;
+		[FieldOffset( 1 )] public byte b1;
 
 		public byte[] Bytes
 		{
@@ -40,13 +34,13 @@ namespace Axiom.Core
 			{
 				return new[]
 				       {
-				       	this.b0, this.b1
+				       	b0, b1
 				       };
 			}
 			set
 			{
-				this.b0 = value[ 0 ];
-				this.b1 = value[ 1 ];
+				b0 = value[ 0 ];
+				b1 = value[ 1 ];
 			}
 		}
 #endif
@@ -55,14 +49,11 @@ namespace Axiom.Core
 	[StructLayout( LayoutKind.Explicit )]
 	public struct FourByte
 	{
-		[FieldOffset( 0 )]
-		public float Float;
+		[FieldOffset( 0 )] public float Float;
 
-		[FieldOffset( 0 )]
-		public int Int;
+		[FieldOffset( 0 )] public int Int;
 
-		[FieldOffset( 0 )]
-		public uint UInt;
+		[FieldOffset( 0 )] public uint UInt;
 
 #if AXIOM_BIG_ENDIAN
 		[FieldOffset( 3 )] public byte b0;
@@ -70,17 +61,13 @@ namespace Axiom.Core
 		[FieldOffset( 1 )] public byte b2;
 		[FieldOffset( 0 )] public byte b3;
 #else
-		[FieldOffset( 0 )]
-		public byte b0;
+		[FieldOffset( 0 )] public byte b0;
 
-		[FieldOffset( 1 )]
-		public byte b1;
+		[FieldOffset( 1 )] public byte b1;
 
-		[FieldOffset( 2 )]
-		public byte b2;
+		[FieldOffset( 2 )] public byte b2;
 
-		[FieldOffset( 3 )]
-		public byte b3;
+		[FieldOffset( 3 )] public byte b3;
 #endif
 
 		public byte[] Bytes
@@ -89,15 +76,15 @@ namespace Axiom.Core
 			{
 				return new[]
 				       {
-				       	this.b0, this.b1, this.b2, this.b3
+				       	b0, b1, b2, b3
 				       };
 			}
 			set
 			{
-				this.b0 = value[ 0 ];
-				this.b1 = value[ 1 ];
-				this.b2 = value[ 2 ];
-				this.b3 = value[ 3 ];
+				b0 = value[ 0 ];
+				b1 = value[ 1 ];
+				b2 = value[ 2 ];
+				b3 = value[ 3 ];
 			}
 		}
 	};
@@ -105,14 +92,11 @@ namespace Axiom.Core
 	[StructLayout( LayoutKind.Explicit )]
 	public struct EightByte
 	{
-		[FieldOffset( 0 )]
-		public double Double;
+		[FieldOffset( 0 )] public double Double;
 
-		[FieldOffset( 0 )]
-		public long Long;
+		[FieldOffset( 0 )] public long Long;
 
-		[FieldOffset( 0 )]
-		public ulong ULong;
+		[FieldOffset( 0 )] public ulong ULong;
 
 #if AXIOM_BIG_ENDIAN
 		[FieldOffset( 7 )] public byte b0;
@@ -124,29 +108,21 @@ namespace Axiom.Core
 		[FieldOffset( 1 )] public byte b6;
 		[FieldOffset( 0 )] public byte b7;
 #else
-		[FieldOffset( 0 )]
-		public byte b0;
+		[FieldOffset( 0 )] public byte b0;
 
-		[FieldOffset( 1 )]
-		public byte b1;
+		[FieldOffset( 1 )] public byte b1;
 
-		[FieldOffset( 2 )]
-		public byte b2;
+		[FieldOffset( 2 )] public byte b2;
 
-		[FieldOffset( 3 )]
-		public byte b3;
+		[FieldOffset( 3 )] public byte b3;
 
-		[FieldOffset( 4 )]
-		public byte b4;
+		[FieldOffset( 4 )] public byte b4;
 
-		[FieldOffset( 5 )]
-		public byte b5;
+		[FieldOffset( 5 )] public byte b5;
 
-		[FieldOffset( 6 )]
-		public byte b6;
+		[FieldOffset( 6 )] public byte b6;
 
-		[FieldOffset( 7 )]
-		public byte b7;
+		[FieldOffset( 7 )] public byte b7;
 #endif
 
 		public byte[] Bytes
@@ -155,19 +131,19 @@ namespace Axiom.Core
 			{
 				return new[]
 				       {
-				       	this.b0, this.b1, this.b2, this.b3, this.b4, this.b5, this.b6, this.b7
+				       	b0, b1, b2, b3, b4, b5, b6, b7
 				       };
 			}
 			set
 			{
-				this.b0 = value[ 0 ];
-				this.b1 = value[ 1 ];
-				this.b2 = value[ 2 ];
-				this.b3 = value[ 3 ];
-				this.b4 = value[ 4 ];
-				this.b5 = value[ 5 ];
-				this.b6 = value[ 6 ];
-				this.b7 = value[ 7 ];
+				b0 = value[ 0 ];
+				b1 = value[ 1 ];
+				b2 = value[ 2 ];
+				b3 = value[ 3 ];
+				b4 = value[ 4 ];
+				b5 = value[ 5 ];
+				b6 = value[ 6 ];
+				b7 = value[ 7 ];
 			}
 		}
 	};
@@ -218,7 +194,9 @@ namespace Axiom.Core
 		{
 			if ( !IsDisposed )
 			{
-				if ( disposeManagedResources ) {}
+				if ( disposeManagedResources )
+				{
+				}
 
 				UnPin( true );
 			}
@@ -239,15 +217,15 @@ namespace Axiom.Core
 		public void UnPin( bool all )
 #endif
 		{
-			if ( !this.PinHandle.IsAllocated || !( all || Interlocked.Decrement( ref this.PinCount ) == 0 ) )
+			if ( !PinHandle.IsAllocated || !( all || Interlocked.Decrement( ref PinCount ) == 0 ) )
 			{
 				return;
 			}
 
 			lock ( _mutex )
 			{
-				this.PinHandle.Free();
-				this.PinCount = 0;
+				PinHandle.Free();
+				PinCount = 0;
 			}
 		}
 
@@ -400,7 +378,9 @@ namespace Axiom.Core
 #endif
 	};
 
-	public class ManagedBuffer : BufferBase, ITypePointer<byte>, ITypePointer<short>, ITypePointer<ushort>, ITypePointer<int>, ITypePointer<uint>, ITypePointer<long>, ITypePointer<ulong>, ITypePointer<float>, ITypePointer<double>
+	public class ManagedBuffer
+		: BufferBase, ITypePointer<byte>, ITypePointer<short>, ITypePointer<ushort>, ITypePointer<int>, ITypePointer<uint>,
+		  ITypePointer<long>, ITypePointer<ulong>, ITypePointer<float>, ITypePointer<double>
 	{
 		protected internal readonly byte[] Buf;
 		protected internal int IdxPtr;
@@ -411,90 +391,90 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.IdxPtr;
+				return IdxPtr;
 			}
 			set
 			{
-				this.IdxPtr = value;
+				IdxPtr = value;
 			}
 		}
 
 		public ManagedBuffer( ManagedBuffer buffer )
 			: base()
 		{
-			this.Buf = buffer.Buf;
-			this.IdxPtr = buffer.IdxPtr;
+			Buf = buffer.Buf;
+			IdxPtr = buffer.IdxPtr;
 		}
 
 		public ManagedBuffer( byte[] buffer )
 			: base()
 		{
-			this.Buf = buffer;
+			Buf = buffer;
 		}
 
 		public ManagedBuffer( object buffer )
 			: base()
 		{
-			this.obj = buffer;
+			obj = buffer;
 			int size;
-			var t = this.obj.GetType();
+			var t = obj.GetType();
 			if ( t.IsArray )
 			{
-				var buf = (Array)this.obj;
+				var buf = (Array)obj;
 				var te = t.GetElementType();
-				size = buf.Length * te.Size();
-				this.Buf = new byte[ size ];
+				size = buf.Length*te.Size();
+				Buf = new byte[size];
 				if ( te.IsPrimitive )
 				{
-					Buffer.BlockCopy( buf, 0, this.Buf, 0, size );
+					Buffer.BlockCopy( buf, 0, Buf, 0, size );
 					return;
 				}
-				this.Buf.CopyFrom( buf );
+				Buf.CopyFrom( buf );
 				return;
 			}
 			size = t.Size();
-			this.Buf = new byte[ size ];
-			this.Buf.CopyFrom( this.obj );
+			Buf = new byte[size];
+			Buf.CopyFrom( obj );
 		}
 
 		public ManagedBuffer( IntPtr buffer, int size )
 			: base()
 		{
-			this.obj = buffer;
-			this.Buf = new byte[ size ];
-			Marshal.Copy( buffer, this.Buf, 0, size );
+			obj = buffer;
+			Buf = new byte[size];
+			Marshal.Copy( buffer, Buf, 0, size );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{
-				if ( disposeManagedResources && this.obj != null )
+				if ( disposeManagedResources && obj != null )
 				{
-					if ( this.obj is IntPtr )
+					if ( obj is IntPtr )
 					{
-						Marshal.Copy( this.Buf, 0, (IntPtr)this.obj, this.Buf.Length );
+						Marshal.Copy( Buf, 0, (IntPtr)obj, Buf.Length );
 					}
 					else
 					{
-						var t = this.obj.GetType();
+						var t = obj.GetType();
 						if ( t.IsArray )
 						{
 							if ( t.GetElementType().IsPrimitive )
 							{
-								Buffer.BlockCopy( this.Buf, 0, (Array)this.obj, 0, this.Buf.Length );
+								Buffer.BlockCopy( Buf, 0, (Array)obj, 0, Buf.Length );
 							}
 							else
 							{
-								this.Buf.CopyTo( (Array)this.obj );
+								Buf.CopyTo( (Array)obj );
 							}
 						}
 						else
 						{
-							this.Buf.CopyTo( ref this.obj );
+							Buf.CopyTo( ref obj );
 						}
 					}
-					this.obj = null;
+					obj = null;
 				}
 			}
 
@@ -510,12 +490,13 @@ namespace Axiom.Core
 		{
 			if ( src is ManagedBuffer )
 			{
-				Buffer.BlockCopy( ( src as ManagedBuffer ).Buf, ( src as ManagedBuffer ).IdxPtr + srcOffset, this.Buf, this.IdxPtr + destOffset, length );
+				Buffer.BlockCopy( ( src as ManagedBuffer ).Buf, ( src as ManagedBuffer ).IdxPtr + srcOffset, Buf,
+				                  IdxPtr + destOffset, length );
 			}
 #if !AXIOM_SAFE_ONLY
 			else if ( src is UnsafeBuffer )
 			{
-				Marshal.Copy( (IntPtr)( (int)src.Pin() + srcOffset ), this.Buf, this.IdxPtr + destOffset, length );
+				Marshal.Copy( (IntPtr)( (int)src.Pin() + srcOffset ), Buf, IdxPtr + destOffset, length );
 				src.UnPin();
 			}
 #endif
@@ -527,7 +508,10 @@ namespace Axiom.Core
 			{
 				lock ( _pinMutex )
 				{
-					return new IntPtr( ( PinHandle.IsAllocated ? PinHandle : PinHandle = GCHandle.Alloc( this.Buf, GCHandleType.Pinned ) ).AddrOfPinnedObject().ToInt32() + this.IdxPtr );
+					return
+						new IntPtr(
+							( PinHandle.IsAllocated ? PinHandle : PinHandle = GCHandle.Alloc( Buf, GCHandleType.Pinned ) ).AddrOfPinnedObject
+								().ToInt32() + IdxPtr );
 				}
 			}
 			throw new AxiomException( "LockCount <= 0" );
@@ -539,11 +523,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return this.Buf[ index + this.IdxPtr ];
+				return Buf[ index + IdxPtr ];
 			}
 			set
 			{
-				this.Buf[ index + this.IdxPtr ] = value;
+				Buf[ index + IdxPtr ] = value;
 			}
 		}
 
@@ -551,22 +535,23 @@ namespace Axiom.Core
 		{
 			get
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 1;
 				return new TwoByte
 				       {
-				       	b0 = buf[ index += this.IdxPtr ], b1 = buf[ ++index ],
+				       	b0 = buf[ index += IdxPtr ],
+				       	b1 = buf[ ++index ],
 				       }.Short;
 			}
 			set
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 1;
 				var v = new TwoByte
 				        {
 				        	Short = value
 				        };
-				buf[ index += this.IdxPtr ] = v.b0;
+				buf[ index += IdxPtr ] = v.b0;
 				buf[ ++index ] = v.b1;
 			}
 		}
@@ -575,22 +560,23 @@ namespace Axiom.Core
 		{
 			get
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 1;
 				return new TwoByte
 				       {
-				       	b0 = buf[ index += this.IdxPtr ], b1 = buf[ ++index ],
+				       	b0 = buf[ index += IdxPtr ],
+				       	b1 = buf[ ++index ],
 				       }.UShort;
 			}
 			set
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 1;
 				var v = new TwoByte
 				        {
 				        	UShort = value
 				        };
-				buf[ index += this.IdxPtr ] = v.b0;
+				buf[ index += IdxPtr ] = v.b0;
 				buf[ ++index ] = v.b1;
 			}
 		}
@@ -599,22 +585,25 @@ namespace Axiom.Core
 		{
 			get
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 2;
 				return new FourByte
 				       {
-				       	b0 = buf[ index += this.IdxPtr ], b1 = buf[ ++index ], b2 = buf[ ++index ], b3 = buf[ ++index ],
+				       	b0 = buf[ index += IdxPtr ],
+				       	b1 = buf[ ++index ],
+				       	b2 = buf[ ++index ],
+				       	b3 = buf[ ++index ],
 				       }.Int;
 			}
 			set
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 2;
 				var v = new FourByte
 				        {
 				        	Int = value
 				        };
-				buf[ index += this.IdxPtr ] = v.b0;
+				buf[ index += IdxPtr ] = v.b0;
 				buf[ ++index ] = v.b1;
 				buf[ ++index ] = v.b2;
 				buf[ ++index ] = v.b3;
@@ -625,22 +614,25 @@ namespace Axiom.Core
 		{
 			get
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 2;
 				return new FourByte
 				       {
-				       	b0 = buf[ index += this.IdxPtr ], b1 = buf[ ++index ], b2 = buf[ ++index ], b3 = buf[ ++index ],
+				       	b0 = buf[ index += IdxPtr ],
+				       	b1 = buf[ ++index ],
+				       	b2 = buf[ ++index ],
+				       	b3 = buf[ ++index ],
 				       }.UInt;
 			}
 			set
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 2;
 				var v = new FourByte
 				        {
 				        	UInt = value
 				        };
-				buf[ index += this.IdxPtr ] = v.b0;
+				buf[ index += IdxPtr ] = v.b0;
 				buf[ ++index ] = v.b1;
 				buf[ ++index ] = v.b2;
 				buf[ ++index ] = v.b3;
@@ -651,22 +643,29 @@ namespace Axiom.Core
 		{
 			get
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 3;
 				return new EightByte
 				       {
-				       	b0 = buf[ index += this.IdxPtr ], b1 = buf[ ++index ], b2 = buf[ ++index ], b3 = buf[ ++index ], b4 = buf[ ++index ], b5 = buf[ ++index ], b6 = buf[ ++index ], b7 = buf[ ++index ],
+				       	b0 = buf[ index += IdxPtr ],
+				       	b1 = buf[ ++index ],
+				       	b2 = buf[ ++index ],
+				       	b3 = buf[ ++index ],
+				       	b4 = buf[ ++index ],
+				       	b5 = buf[ ++index ],
+				       	b6 = buf[ ++index ],
+				       	b7 = buf[ ++index ],
 				       }.Long;
 			}
 			set
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 3;
 				var v = new EightByte
 				        {
 				        	Long = value
 				        };
-				buf[ index += this.IdxPtr ] = v.b0;
+				buf[ index += IdxPtr ] = v.b0;
 				buf[ ++index ] = v.b1;
 				buf[ ++index ] = v.b2;
 				buf[ ++index ] = v.b3;
@@ -681,22 +680,29 @@ namespace Axiom.Core
 		{
 			get
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 3;
 				return new EightByte
 				       {
-				       	b0 = buf[ index += this.IdxPtr ], b1 = buf[ ++index ], b2 = buf[ ++index ], b3 = buf[ ++index ], b4 = buf[ ++index ], b5 = buf[ ++index ], b6 = buf[ ++index ], b7 = buf[ ++index ],
+				       	b0 = buf[ index += IdxPtr ],
+				       	b1 = buf[ ++index ],
+				       	b2 = buf[ ++index ],
+				       	b3 = buf[ ++index ],
+				       	b4 = buf[ ++index ],
+				       	b5 = buf[ ++index ],
+				       	b6 = buf[ ++index ],
+				       	b7 = buf[ ++index ],
 				       }.ULong;
 			}
 			set
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 3;
 				var v = new EightByte
 				        {
 				        	ULong = value
 				        };
-				buf[ index += this.IdxPtr ] = v.b0;
+				buf[ index += IdxPtr ] = v.b0;
 				buf[ ++index ] = v.b1;
 				buf[ ++index ] = v.b2;
 				buf[ ++index ] = v.b3;
@@ -711,22 +717,25 @@ namespace Axiom.Core
 		{
 			get
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 2;
 				return new FourByte
 				       {
-				       	b0 = buf[ index += this.IdxPtr ], b1 = buf[ ++index ], b2 = buf[ ++index ], b3 = buf[ ++index ],
+				       	b0 = buf[ index += IdxPtr ],
+				       	b1 = buf[ ++index ],
+				       	b2 = buf[ ++index ],
+				       	b3 = buf[ ++index ],
 				       }.Float;
 			}
 			set
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 2;
 				var v = new FourByte
 				        {
 				        	Float = value
 				        };
-				buf[ index += this.IdxPtr ] = v.b0;
+				buf[ index += IdxPtr ] = v.b0;
 				buf[ ++index ] = v.b1;
 				buf[ ++index ] = v.b2;
 				buf[ ++index ] = v.b3;
@@ -737,22 +746,29 @@ namespace Axiom.Core
 		{
 			get
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 3;
 				return new EightByte
 				       {
-				       	b0 = buf[ index += this.IdxPtr ], b1 = buf[ ++index ], b2 = buf[ ++index ], b3 = buf[ ++index ], b4 = buf[ ++index ], b5 = buf[ ++index ], b6 = buf[ ++index ], b7 = buf[ ++index ],
+				       	b0 = buf[ index += IdxPtr ],
+				       	b1 = buf[ ++index ],
+				       	b2 = buf[ ++index ],
+				       	b3 = buf[ ++index ],
+				       	b4 = buf[ ++index ],
+				       	b5 = buf[ ++index ],
+				       	b6 = buf[ ++index ],
+				       	b7 = buf[ ++index ],
 				       }.Double;
 			}
 			set
 			{
-				var buf = this.Buf;
+				var buf = Buf;
 				index <<= 3;
 				var v = new EightByte
 				        {
 				        	Double = value
 				        };
-				buf[ index += this.IdxPtr ] = v.b0;
+				buf[ index += IdxPtr ] = v.b0;
 				buf[ ++index ] = v.b1;
 				buf[ ++index ] = v.b2;
 				buf[ ++index ] = v.b3;
@@ -764,19 +780,29 @@ namespace Axiom.Core
 		}
 	};
 
-	public class BitConvertBuffer : ManagedBuffer, ITypePointer<short>, ITypePointer<ushort>, ITypePointer<int>, ITypePointer<uint>, ITypePointer<long>, ITypePointer<ulong>, ITypePointer<float>, ITypePointer<double>
+	public class BitConvertBuffer
+		: ManagedBuffer, ITypePointer<short>, ITypePointer<ushort>, ITypePointer<int>, ITypePointer<uint>, ITypePointer<long>,
+		  ITypePointer<ulong>, ITypePointer<float>, ITypePointer<double>
 	{
 		public BitConvertBuffer( ManagedBuffer buffer )
-			: base( buffer ) {}
+			: base( buffer )
+		{
+		}
 
 		public BitConvertBuffer( byte[] buffer )
-			: base( buffer ) {}
+			: base( buffer )
+		{
+		}
 
 		public BitConvertBuffer( object buffer )
-			: base( buffer ) {}
+			: base( buffer )
+		{
+		}
 
 		public BitConvertBuffer( IntPtr buffer, int size )
-			: base( buffer, size ) {}
+			: base( buffer, size )
+		{
+		}
 
 		short ITypePointer<short>.this[ int index ]
 		{
@@ -916,7 +942,9 @@ namespace Axiom.Core
 	};
 
 #if !AXIOM_SAFE_ONLY
-	public class UnsafeBuffer : BufferBase, ITypePointer<byte>, ITypePointer<short>, ITypePointer<ushort>, ITypePointer<int>, ITypePointer<uint>, ITypePointer<long>, ITypePointer<ulong>, ITypePointer<float>, ITypePointer<double>
+	public class UnsafeBuffer
+		: BufferBase, ITypePointer<byte>, ITypePointer<short>, ITypePointer<ushort>, ITypePointer<int>, ITypePointer<uint>,
+		  ITypePointer<long>, ITypePointer<ulong>, ITypePointer<float>, ITypePointer<double>
 	{
 		internal readonly unsafe byte* Buf;
 		internal unsafe byte* PtrBuf;
@@ -927,14 +955,14 @@ namespace Axiom.Core
 			{
 				unsafe
 				{
-					return (int)( this.PtrBuf - this.Buf );
+					return (int)( PtrBuf - Buf );
 				}
 			}
 			set
 			{
 				unsafe
 				{
-					this.PtrBuf = this.Buf + value;
+					PtrBuf = Buf + value;
 				}
 			}
 		}
@@ -944,9 +972,9 @@ namespace Axiom.Core
 		{
 			unsafe
 			{
-				this.Buf = (byte*)( PinHandle = GCHandle.Alloc( buffer, GCHandleType.Pinned ) ).AddrOfPinnedObject();
+				Buf = (byte*)( PinHandle = GCHandle.Alloc( buffer, GCHandleType.Pinned ) ).AddrOfPinnedObject();
 				PinCount = 1;
-				this.PtrBuf = this.Buf;
+				PtrBuf = Buf;
 			}
 		}
 
@@ -955,8 +983,8 @@ namespace Axiom.Core
 		{
 			unsafe
 			{
-				this.Buf = (byte*)buffer;
-				this.PtrBuf = this.Buf;
+				Buf = (byte*)buffer;
+				PtrBuf = Buf;
 			}
 		}
 
@@ -964,7 +992,7 @@ namespace Axiom.Core
 		{
 			unsafe
 			{
-				return new UnsafeBuffer( (IntPtr)this.Buf )
+				return new UnsafeBuffer( (IntPtr)Buf )
 				       {
 				       	Ptr = Ptr
 				       };
@@ -977,7 +1005,8 @@ namespace Axiom.Core
 			{
 				if ( src is ManagedBuffer )
 				{
-					Marshal.Copy( ( src as ManagedBuffer ).Buf, ( src as ManagedBuffer ).IdxPtr + srcOffset, (IntPtr)( this.PtrBuf + destOffset ), length );
+					Marshal.Copy( ( src as ManagedBuffer ).Buf, ( src as ManagedBuffer ).IdxPtr + srcOffset,
+					              (IntPtr)( PtrBuf + destOffset ), length );
 				}
 				else if ( src is UnsafeBuffer )
 				{
@@ -998,7 +1027,7 @@ namespace Axiom.Core
 			unsafe
 			{
 				Interlocked.Increment( ref PinCount );
-				return (IntPtr)this.PtrBuf;
+				return (IntPtr)PtrBuf;
 			}
 		}
 
@@ -1010,14 +1039,14 @@ namespace Axiom.Core
 			{
 				unsafe
 				{
-					return *( this.PtrBuf + index );
+					return *( PtrBuf + index );
 				}
 			}
 			set
 			{
 				unsafe
 				{
-					*( this.PtrBuf + index ) = value;
+					*( PtrBuf + index ) = value;
 				}
 			}
 		}
@@ -1029,7 +1058,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 1;
-					return *(short*)( this.PtrBuf + index );
+					return *(short*)( PtrBuf + index );
 				}
 			}
 			set
@@ -1037,7 +1066,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 1;
-					*(short*)( this.PtrBuf + index ) = value;
+					*(short*)( PtrBuf + index ) = value;
 				}
 			}
 		}
@@ -1049,7 +1078,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 1;
-					return *(ushort*)( this.PtrBuf + index );
+					return *(ushort*)( PtrBuf + index );
 				}
 			}
 			set
@@ -1057,7 +1086,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 1;
-					*(ushort*)( this.PtrBuf + index ) = value;
+					*(ushort*)( PtrBuf + index ) = value;
 				}
 			}
 		}
@@ -1069,7 +1098,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 2;
-					return *(int*)( this.PtrBuf + index );
+					return *(int*)( PtrBuf + index );
 				}
 			}
 			set
@@ -1077,7 +1106,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 2;
-					*(int*)( this.PtrBuf + index ) = value;
+					*(int*)( PtrBuf + index ) = value;
 				}
 			}
 		}
@@ -1089,7 +1118,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 2;
-					return *(uint*)( this.PtrBuf + index );
+					return *(uint*)( PtrBuf + index );
 				}
 			}
 			set
@@ -1097,7 +1126,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 2;
-					*(uint*)( this.PtrBuf + index ) = value;
+					*(uint*)( PtrBuf + index ) = value;
 				}
 			}
 		}
@@ -1109,7 +1138,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 3;
-					return *(long*)( this.PtrBuf + index );
+					return *(long*)( PtrBuf + index );
 				}
 			}
 			set
@@ -1117,7 +1146,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 3;
-					*(long*)( this.PtrBuf + index ) = value;
+					*(long*)( PtrBuf + index ) = value;
 				}
 			}
 		}
@@ -1129,7 +1158,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 3;
-					return *(ulong*)( this.PtrBuf + index );
+					return *(ulong*)( PtrBuf + index );
 				}
 			}
 			set
@@ -1137,7 +1166,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 3;
-					*(ulong*)( this.PtrBuf + index ) = value;
+					*(ulong*)( PtrBuf + index ) = value;
 				}
 			}
 		}
@@ -1149,7 +1178,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 2;
-					return *(float*)( this.PtrBuf + index );
+					return *(float*)( PtrBuf + index );
 				}
 			}
 			set
@@ -1157,7 +1186,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 2;
-					*(float*)( this.PtrBuf + index ) = value;
+					*(float*)( PtrBuf + index ) = value;
 				}
 			}
 		}
@@ -1169,7 +1198,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 3;
-					return *(double*)( this.PtrBuf + index );
+					return *(double*)( PtrBuf + index );
 				}
 			}
 			set
@@ -1177,7 +1206,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 3;
-					*(double*)( this.PtrBuf + index ) = value;
+					*(double*)( PtrBuf + index ) = value;
 				}
 			}
 		}

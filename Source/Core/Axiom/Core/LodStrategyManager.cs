@@ -37,7 +37,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
@@ -45,43 +44,28 @@ using System.Collections.Generic;
 namespace Axiom.Core
 {
 	/// <summary>
-	/// Manager for lod strategies.
+	///   Manager for lod strategies.
 	/// </summary>
 	public class LodStrategyManager : Singleton<LodStrategyManager>
 	{
 		#region Fields and Properties
 
 		/// <summary>
-		/// Internal map of strategies.
+		///   Internal map of strategies.
 		/// </summary>
-		private Dictionary<string, LodStrategy> _strategies = new Dictionary<string, LodStrategy>();
+		private readonly Dictionary<string, LodStrategy> _strategies = new Dictionary<string, LodStrategy>();
 
 		#region DefaultStrategy
 
 		/// <summary>
-		/// Default strategy.
+		///   Get's or set's the default strategy.
 		/// </summary>
-		private LodStrategy _defaultStrategy;
+		public LodStrategy DefaultStrategy { set; get; }
 
 		/// <summary>
-		/// Get's or set's the default strategy.
+		///   Set the default strategy by name.
 		/// </summary>
-		public LodStrategy DefaultStrategy
-		{
-			set
-			{
-				this._defaultStrategy = value;
-			}
-			get
-			{
-				return this._defaultStrategy;
-			}
-		}
-
-		/// <summary>
-		/// Set the default strategy by name.
-		/// </summary>
-		/// <param name="name"></param>
+		/// <param name="name"> </param>
 		public void SetDefaultStrategy( string name )
 		{
 			DefaultStrategy = GetStrategy( name );
@@ -92,7 +76,7 @@ namespace Axiom.Core
 		#endregion Fields and Properties
 
 		/// <summary>
-		/// Default constructor.
+		///   Default constructor.
 		/// </summary>
 		public LodStrategyManager()
 			: base()
@@ -129,59 +113,58 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Add a strategy to the manager.
+		///   Add a strategy to the manager.
 		/// </summary>
-		/// <param name="strategy"></param>
+		/// <param name="strategy"> </param>
 		public void AddStrategy( LodStrategy strategy )
 		{
 			// Check for invalid strategy name
 			if ( strategy.Name.ToLower() == "default" )
 			{
 				throw new AxiomException( "Lod strategy name must not be 'default'", new object[]
-				                                                                     {} );
+				                                                                     {
+				                                                                     } );
 			}
 
 			// Insert the strategy into the map with its name as the key
-			this._strategies.Add( strategy.Name, strategy );
+			_strategies.Add( strategy.Name, strategy );
 		}
 
 		/// <summary>
-		/// Remove a strategy from the manager with a specified name.
+		///   Remove a strategy from the manager with a specified name.
 		/// </summary>
 		/// <remarks>
-		/// The removed strategy is returned so the user can control
-		/// how it is destroyed.
+		///   The removed strategy is returned so the user can control how it is destroyed.
 		/// </remarks>
-		/// <param name="name"></param>
-		/// <returns></returns>
+		/// <param name="name"> </param>
+		/// <returns> </returns>
 		public LodStrategy RemoveStrategy( string name )
 		{
 			LodStrategy ret = null;
-			if ( this._strategies.TryGetValue( name, out ret ) )
+			if ( _strategies.TryGetValue( name, out ret ) )
 			{
-				this._strategies.Remove( name );
+				_strategies.Remove( name );
 				return ret;
 			}
 			return ret;
 		}
 
 		/// <summary>
-		///  Remove and delete all strategies from the manager.
+		///   Remove and delete all strategies from the manager.
 		/// </summary>
 		/// <remarks>
-		/// All strategies are deleted.  If finer control is required
-		/// over strategy destruction, use removeStrategy.
+		///   All strategies are deleted. If finer control is required over strategy destruction, use removeStrategy.
 		/// </remarks>
 		public void RemoveAllStrategies()
 		{
-			this._strategies.Clear();
+			_strategies.Clear();
 		}
 
 		/// <summary>
-		/// Get the strategy with the specified name.
+		///   Get the strategy with the specified name.
 		/// </summary>
-		/// <param name="name">name of the strategy</param>
-		/// <returns>strategy with the given name</returns>
+		/// <param name="name"> name of the strategy </param>
+		/// <returns> strategy with the given name </returns>
 		public LodStrategy GetStrategy( string name )
 		{
 			// If name is "default", return the default strategy instead of performing a lookup
@@ -191,7 +174,7 @@ namespace Axiom.Core
 			}
 
 			LodStrategy ret = null;
-			this._strategies.TryGetValue( name, out ret );
+			_strategies.TryGetValue( name, out ret );
 
 			return ret;
 		}

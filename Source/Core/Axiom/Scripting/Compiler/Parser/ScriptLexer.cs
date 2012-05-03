@@ -59,17 +59,26 @@ namespace Axiom.Scripting.Compiler.Parser
 			PossibleComment
 		}
 
-		public ScriptLexer() {}
+		public ScriptLexer()
+		{
+		}
 
 		/// <summary>
-		/// Tokenizes the given input and returns the list of tokens found
+		///   Tokenizes the given input and returns the list of tokens found
 		/// </summary>
-		/// <param name="str"></param>
-		/// <param name="source"></param>
-		/// <returns></returns>
+		/// <param name="str"> </param>
+		/// <param name="source"> </param>
+		/// <returns> </returns>
 		public IList<ScriptToken> Tokenize( String str, String source )
 		{
-			const char varOpener = '$', quote = '"', slash = '/', backslash = '\\', openbrace = '{', closebrace = '}', colon = ':', star = '*';
+			const char varOpener = '$',
+			           quote = '"',
+			           slash = '/',
+			           backslash = '\\',
+			           openbrace = '{',
+			           closebrace = '}',
+			           colon = ':',
+			           star = '*';
 			var c = (char)0;
 			var lastChar = (char)0;
 

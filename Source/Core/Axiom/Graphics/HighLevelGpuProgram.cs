@@ -38,11 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Diagnostics;
 using System.IO;
-
 using Axiom.Core;
-
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -50,49 +47,29 @@ using ResourceHandle = System.UInt64;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	/// 	Abstract base class representing a high-level program (a vertex or
-	/// 	fragment program).
+	///   Abstract base class representing a high-level program (a vertex or fragment program).
 	/// </summary>
 	/// <remarks>
-	///    High-level programs are vertex and fragment programs written in a high-level
-	///    language such as Cg or HLSL, and as such do not require you to write assembler code
-	///    like GpuProgram does. However, the high-level program does eventually 
-	///    get converted (compiled) into assembler and then eventually microcode which is
-	///    what runs on the GPU. As well as the convenience, some high-level languages like Cg allow
-	///    you to write a program which will operate under both Direct3D and OpenGL, something
-	///    which you cannot do with just GpuProgram (which requires you to write 2 programs and
-	///    use each in a Technique to provide cross-API compatibility). The engine will be creating
-	///    a GpuProgram for you based on the high-level program, which is compiled specifically 
-	///    for the API being used at the time, but this process is transparent.
-	///    <p/>
-	///    You cannot create high-level programs direct - use HighLevelGpuProgramManager instead.
-	///    Plugins can register new implementations of HighLevelGpuProgramFactory in order to add
-	///    support for new languages without requiring changes to the core engine API. To allow 
-	///    custom parameters to be set, this class implement IConfigurable - the application
-	///    can query on the available custom parameters and get/set them without having to 
-	///    link specifically with it.
+	///   High-level programs are vertex and fragment programs written in a high-level language such as Cg or HLSL, and as such do not require you to write assembler code like GpuProgram does. However, the high-level program does eventually get converted (compiled) into assembler and then eventually microcode which is what runs on the GPU. As well as the convenience, some high-level languages like Cg allow you to write a program which will operate under both Direct3D and OpenGL, something which you cannot do with just GpuProgram (which requires you to write 2 programs and use each in a Technique to provide cross-API compatibility). The engine will be creating a GpuProgram for you based on the high-level program, which is compiled specifically for the API being used at the time, but this process is transparent. <p /> You cannot create high-level programs direct - use HighLevelGpuProgramManager instead. Plugins can register new implementations of HighLevelGpuProgramFactory in order to add support for new languages without requiring changes to the core engine API. To allow custom parameters to be set, this class implement IConfigurable - the application can query on the available custom parameters and get/set them without having to link specifically with it.
 	/// </remarks>
 	public abstract class HighLevelGpuProgram : GpuProgram
 	{
 		/// <summary>
-		///    Whether the high-level program (and it's parameter defs) is loaded.
+		///   Whether the high-level program (and it's parameter defs) is loaded.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool highLevelLoaded;
+		[OgreVersion( 1, 7, 2790 )] protected bool highLevelLoaded;
 
 		/// <summary>
-		///    The underlying assembler program.
+		///   The underlying assembler program.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		protected GpuProgram assemblerProgram;
+		[OgreVersion( 1, 7, 2790 )] protected GpuProgram assemblerProgram;
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected bool constantDefsBuilt;
+		[OgreVersion( 1, 7, 2790 )] protected bool constantDefsBuilt;
 
 		#region BindingDelegate Property
 
 		/// <summary>
-		///    Gets the lowlevel assembler program based on this HighLevel program.
+		///   Gets the lowlevel assembler program based on this HighLevel program.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public override GpuProgram BindingDelegate
@@ -108,17 +85,20 @@ namespace Axiom.Graphics
 		#region constructor
 
 		/// <summary>
-		/// Default constructor.
+		///   Default constructor.
 		/// </summary>
-		protected HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader ) {}
+		protected HighLevelGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+		                               IManualResourceLoader loader )
+			: base( parent, name, handle, group, isManual, loader )
+		{
+		}
 
 		#endregion Construction and Destruction
 
 		#region LoadHighLevel
 
 		/// <summary>
-		///    Internal load high-level portion if not loaded
+		///   Internal load high-level portion if not loaded
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		protected virtual void LoadHighLevel()
@@ -149,7 +129,8 @@ namespace Axiom.Graphics
 			catch ( Exception e )
 			{
 				// will already have been logged
-				LogManager.Instance.Write( "High-level program {0} encountered an error during loading and is thus not supported.\n{1}", _name, e.Message );
+				LogManager.Instance.Write(
+					"High-level program {0} encountered an error during loading and is thus not supported.\n{1}", _name, e.Message );
 				compileError = true;
 			}
 		}
@@ -159,8 +140,7 @@ namespace Axiom.Graphics
 		#region LoadHighLevelImpl
 
 		/// <summary>
-		/// Internal load implementation, loads just the high-level portion, enough to 
-		/// get parameters.
+		///   Internal load implementation, loads just the high-level portion, enough to get parameters.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		protected virtual void LoadHighLevelImpl()
@@ -185,7 +165,7 @@ namespace Axiom.Graphics
 		#region UnloadHighLevel
 
 		/// <summary>
-		/// Internal unload high-level portion if loaded
+		///   Internal unload high-level portion if loaded
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		protected virtual void UnloadHighLevel()
@@ -208,8 +188,7 @@ namespace Axiom.Graphics
 		#region CreateLowLevelImpl
 
 		/// <summary>
-		///    Internal method for creating an appropriate low-level program from this
-		///    high-level program, must be implemented by subclasses.
+		///   Internal method for creating an appropriate low-level program from this high-level program, must be implemented by subclasses.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		protected abstract void CreateLowLevelImpl();
@@ -219,7 +198,7 @@ namespace Axiom.Graphics
 		#region UnloadHighLevelImpl
 
 		/// <summary>
-		///    Internal unload implementation, must be implemented by subclasses.
+		///   Internal unload implementation, must be implemented by subclasses.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		protected abstract void UnloadHighLevelImpl();
@@ -229,9 +208,9 @@ namespace Axiom.Graphics
 		#region PopulateParameterNames
 
 		/// <summary>
-		///    Populate the passed parameters with name->index map, must be overridden.
+		///   Populate the passed parameters with name->index map, must be overridden.
 		/// </summary>
-		/// <param name="parms"></param>
+		/// <param name="parms"> </param>
 		[OgreVersion( 1, 7, 2790 )]
 		protected virtual void PopulateParameterNames( GpuProgramParameters parms )
 		{
@@ -246,13 +225,10 @@ namespace Axiom.Graphics
 		#region BuildConstantDefinitions
 
 		/// <summary>
-		/// Build the constant definition map, must be overridden.
+		///   Build the constant definition map, must be overridden.
 		/// </summary>
 		/// <remarks>
-		/// The implementation must fill in the (inherited) mConstantDefs field at a minimum, 
-		/// and if the program requires that parameters are bound using logical 
-		/// parameter indexes then the mFloatLogicalToPhysical and mIntLogicalToPhysical
-		/// maps must also be populated.
+		///   The implementation must fill in the (inherited) mConstantDefs field at a minimum, and if the program requires that parameters are bound using logical parameter indexes then the mFloatLogicalToPhysical and mIntLogicalToPhysical maps must also be populated.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		protected abstract void BuildConstantDefinitions();
@@ -281,7 +257,7 @@ namespace Axiom.Graphics
 		#region NamedConstants
 
 		/// <summary>
-		/// Override GpuProgram::getNamedConstants to ensure built
+		///   Override GpuProgram::getNamedConstants to ensure built
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public override GpuProgramParameters.GpuNamedConstants NamedConstants
@@ -297,15 +273,12 @@ namespace Axiom.Graphics
 		#region CreateParameters
 
 		/// <summary>
-		///    Creates a new parameters object compatible with this program definition.
+		///   Creates a new parameters object compatible with this program definition.
 		/// </summary>
 		/// <remarks>
-		///    Unlike low-level assembly programs, parameters objects are specific to the
-		///    program and therefore must be created from it rather than by the 
-		///    HighLevelGpuProgramManager. This method creates a new instance of a parameters
-		///    object containing the definition of the parameters this program understands.
+		///   Unlike low-level assembly programs, parameters objects are specific to the program and therefore must be created from it rather than by the HighLevelGpuProgramManager. This method creates a new instance of a parameters object containing the definition of the parameters this program understands.
 		/// </remarks>
-		/// <returns>A new set of program parameters.</returns>
+		/// <returns> A new set of program parameters. </returns>
 		[OgreVersion( 1, 7, 2790 )]
 		public override GpuProgramParameters CreateParameters()
 		{
@@ -344,7 +317,7 @@ namespace Axiom.Graphics
 		#region loadImpl
 
 		/// <summary>
-		///    Implementation of Resource.load.
+		///   Implementation of Resource.load.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void load()
@@ -371,7 +344,7 @@ namespace Axiom.Graphics
 		#region unloadImpl
 
 		/// <summary>
-		///    Implementation of Resource.unload.
+		///   Implementation of Resource.unload.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void unload()
@@ -390,14 +363,14 @@ namespace Axiom.Graphics
 	}
 
 	/// <summary>
-	///    Interface definition for factories that create instances of HighLevelGpuProgram.
+	///   Interface definition for factories that create instances of HighLevelGpuProgram.
 	/// </summary>
 	public abstract class HighLevelGpuProgramFactory : AbstractFactory<HighLevelGpuProgram>
 	{
 		#region Properties
 
 		/// <summary>
-		///    Gets the name of the HLSL language that this factory creates programs for.
+		///   Gets the name of the HLSL language that this factory creates programs for.
 		/// </summary>
 		public abstract string Language { get; }
 
@@ -406,20 +379,18 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		///    Create method which needs to be implemented to return an
-		///    instance of a HighLevelGpuProgram.
+		///   Create method which needs to be implemented to return an instance of a HighLevelGpuProgram.
 		/// </summary>
-		/// <returns>
-		///    A newly created instance of HighLevelGpuProgram.
-		/// </returns>
-		public abstract HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader );
+		/// <returns> A newly created instance of HighLevelGpuProgram. </returns>
+		public abstract HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ResourceHandle handle,
+		                                                    string group, bool isManual, IManualResourceLoader loader );
 
 		#endregion Methods
 
 		#region AbstractFactory<HighLevelGpuProgram> Implementation
 
 		/// <summary>
-		/// For HighLevelGpuPrograms this simply returns the Language.
+		///   For HighLevelGpuPrograms this simply returns the Language.
 		/// </summary>
 		public override string Type
 		{
@@ -430,11 +401,13 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Creates an instance of a HighLevelGpuProgram
+		///   Creates an instance of a HighLevelGpuProgram
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		/// <remarks>This method cannot be used to create an instance of a HighLevelGpuProgram use CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader ) instead.</remarks>
+		/// <param name="name"> </param>
+		/// <returns> </returns>
+		/// <remarks>
+		///   This method cannot be used to create an instance of a HighLevelGpuProgram use CreateInstance( ResourceManager creator, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader ) instead.
+		/// </remarks>
 		public override HighLevelGpuProgram CreateInstance( string name )
 		{
 			throw new AxiomException( "Cannot create a HighLevelGpuProgram without specifing the GpuProgramType." );

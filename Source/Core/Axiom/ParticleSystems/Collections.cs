@@ -37,17 +37,21 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.ParticleSystems
 {
-	public class EmitterList : List<ParticleEmitter> {}
+	public class EmitterList : List<ParticleEmitter>
+	{
+	}
 
-	public class AffectorList : List<ParticleAffector> {}
+	public class AffectorList : List<ParticleAffector>
+	{
+	}
 
-	public class ParticleList : List<Particle> {}
+	public class ParticleList : List<Particle>
+	{
+	}
 }

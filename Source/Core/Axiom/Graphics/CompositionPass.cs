@@ -42,68 +42,59 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections;
-using System.Diagnostics;
-using System.IO;
-
-using Axiom.Core;
 using Axiom.Configuration;
-
-using System.Collections.Generic;
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
 	///<summary>
-	///    Object representing one pass or operation in a composition sequence. This provides a 
-	///    method to conviently interleave RenderSystem commands between Render Queues.
+	///  Object representing one pass or operation in a composition sequence. This provides a method to conviently interleave RenderSystem commands between Render Queues.
 	///</summary>
 	public class CompositionPass : DisposableObject
 	{
 		public struct InputTexture
 		{
 			/// <summary>
-			/// Name (local) of the input texture (empty == no input)
+			///   Name (local) of the input texture (empty == no input)
 			/// </summary>
 			public string Name;
 
 			/// <summary>
-			/// MRT surface index if applicable
+			///   MRT surface index if applicable
 			/// </summary>
 			public int MrtIndex;
 
 			/// <summary>
-			/// 
 			/// </summary>
-			/// <param name="name">Name (local) of the input texture (empty == no input)</param>
+			/// <param name="name"> Name (local) of the input texture (empty == no input) </param>
 			public InputTexture( string name )
 			{
 				Name = name;
-				this.MrtIndex = 0;
+				MrtIndex = 0;
 			}
 
 			/// <summary>
-			/// 
 			/// </summary>
-			/// <param name="name">Name (local) of the input texture (empty == no input)</param>
-			/// <param name="mrtIndex">MRT surface index if applicable</param>
+			/// <param name="name"> Name (local) of the input texture (empty == no input) </param>
+			/// <param name="mrtIndex"> MRT surface index if applicable </param>
 			public InputTexture( string name, int mrtIndex )
 			{
 				Name = name;
-				this.MrtIndex = mrtIndex;
+				MrtIndex = mrtIndex;
 			}
 		}
 
 		#region Fields and Properties
 
 		///<summary>
-		///    Parent technique
+		///  Parent technique
 		///</summary>
 		protected CompositionTargetPass parent;
 
 		///<summary>
-		///    Parent technique
+		///  Parent technique
 		///</summary>
 		public CompositionTargetPass Parent
 		{
@@ -114,12 +105,12 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Type of composition pass
+		///  Type of composition pass
 		///</summary>
 		protected CompositorPassType type;
 
 		///<summary>
-		///    Type of composition pass
+		///  Type of composition pass
 		///</summary>
 		public CompositorPassType Type
 		{
@@ -134,12 +125,12 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Identifier for this pass
+		///  Identifier for this pass
 		///</summary>
 		protected uint identifier;
 
 		///<summary>
-		///    Identifier for this pass
+		///  Identifier for this pass
 		///</summary>
 		public uint Identifier
 		{
@@ -154,12 +145,12 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Material used for rendering
+		///  Material used for rendering
 		///</summary>
 		protected Material material;
 
 		///<summary>
-		///    Material used for rendering
+		///  Material used for rendering
 		///</summary>
 		public Material Material
 		{
@@ -174,7 +165,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Material name to use for rendering
+		///  Material name to use for rendering
 		///</summary>
 		public string MaterialName
 		{
@@ -193,16 +184,15 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Material scheme name
+		///   Material scheme name
 		/// </summary>
 		protected string materialSchemeName;
 
 		/// <summary>
-		/// Get's or set's the material scheme used by this pass
+		///   Get's or set's the material scheme used by this pass
 		/// </summary>
 		/// <remarks>
-		/// Only applicable to passes that render the scene.
-		/// <see cref="Technique.Scheme"/>
+		///   Only applicable to passes that render the scene. <see cref="Technique.Scheme" />
 		/// </remarks>
 		public string MaterialScheme
 		{
@@ -217,12 +207,12 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    first render queue to render this pass (in case of CompositorPassType.RenderScene)
+		///  first render queue to render this pass (in case of CompositorPassType.RenderScene)
 		///</summary>
 		protected RenderQueueGroupID firstRenderQueue;
 
 		///<summary>
-		///    first render queue to render this pass (in case of CompositorPassType.RenderScene)
+		///  first render queue to render this pass (in case of CompositorPassType.RenderScene)
 		///</summary>
 		public RenderQueueGroupID FirstRenderQueue
 		{
@@ -237,12 +227,12 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    last render queue to render this pass (in case of CompositorPassType.RenderScene)
+		///  last render queue to render this pass (in case of CompositorPassType.RenderScene)
 		///</summary>
 		protected RenderQueueGroupID lastRenderQueue;
 
 		///<summary>
-		///    last render queue to render this pass (in case of CompositorPassType.RenderScene)
+		///  last render queue to render this pass (in case of CompositorPassType.RenderScene)
 		///</summary>
 		public RenderQueueGroupID LastRenderQueue
 		{
@@ -257,12 +247,12 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Clear buffers (in case of CompositorPassType.Clear)
+		///  Clear buffers (in case of CompositorPassType.Clear)
 		///</summary>
 		protected FrameBufferType clearBuffers;
 
 		///<summary>
-		///    Clear buffers (in case of CompositorPassType.Clear)
+		///  Clear buffers (in case of CompositorPassType.Clear)
 		///</summary>
 		public FrameBufferType ClearBuffers
 		{
@@ -277,12 +267,12 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Clear colour (in case of CompositorPassType.Clear)
+		///  Clear colour (in case of CompositorPassType.Clear)
 		///</summary>
 		protected ColorEx clearColor;
 
 		///<summary>
-		///    Clear colour (in case of CompositorPassType.Clear)
+		///  Clear colour (in case of CompositorPassType.Clear)
 		///</summary>
 		public ColorEx ClearColor
 		{
@@ -297,12 +287,12 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Clear depth (in case of CompositorPassType.Clear)
+		///  Clear depth (in case of CompositorPassType.Clear)
 		///</summary>
 		protected float clearDepth;
 
 		///<summary>
-		///    Clear depth (in case of CompositorPassType.Clear)
+		///  Clear depth (in case of CompositorPassType.Clear)
 		///</summary>
 		public float ClearDepth
 		{
@@ -317,12 +307,12 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Clear stencil value (in case of CompositorPassType.Clear)
+		///  Clear stencil value (in case of CompositorPassType.Clear)
 		///</summary>
 		protected int clearStencil;
 
 		///<summary>
-		///    Clear stencil value (in case of CompositorPassType.Clear)
+		///  Clear stencil value (in case of CompositorPassType.Clear)
 		///</summary>
 		public int ClearStencil
 		{
@@ -337,14 +327,12 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Inputs (for material used for rendering the quad)
-		///    An empty string signifies that no input is used
+		///  Inputs (for material used for rendering the quad) An empty string signifies that no input is used
 		///</summary>
-		protected InputTexture[] inputs = new InputTexture[ Config.MaxTextureLayers ];
+		protected InputTexture[] inputs = new InputTexture[Config.MaxTextureLayers];
 
 		///<summary>
-		///    Inputs (for material used for rendering the quad)
-		///    An empty string signifies that no input is used
+		///  Inputs (for material used for rendering the quad) An empty string signifies that no input is used
 		///</summary>
 		public InputTexture[] Inputs
 		{
@@ -355,7 +343,7 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Stencil operation parameters
+		///  Stencil operation parameters
 		///</summary>
 		protected bool stencilCheck;
 
@@ -470,37 +458,36 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// true if quad should not cover whole screen
+		///   true if quad should not cover whole screen
 		/// </summary>
 		protected bool quadCornerModified;
 
 		/// <summary>
-		/// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
+		///   quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
 		/// </summary>
 		protected float quadLeft;
 
 		/// <summary>
-		/// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
+		///   quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
 		/// </summary>
 		protected float quadTop;
 
 		/// <summary>
-		/// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
+		///   quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
 		/// </summary>
 		protected float quadRight;
 
 		/// <summary>
-		/// quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
+		///   quad positions in normalised coordinates [-1;1]x[-1;1] (in case of RENDERQUAD)
 		/// </summary>
 		protected float quadBottom;
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected bool quadFarCorners;
 
 		/// <summary>
-		/// Returns true if camera frustum far corners are provided in the quad.
+		///   Returns true if camera frustum far corners are provided in the quad.
 		/// </summary>
 		public bool QuadFarCorners
 		{
@@ -511,12 +498,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected bool quadFarCornersViewSpace;
 
 		/// <summary>
-		/// Returns true if the far corners provided in the quad are in view space
+		///   Returns true if the far corners provided in the quad are in view space
 		/// </summary>
 		public bool QuadFarCornersViewSpace
 		{
@@ -529,12 +515,10 @@ namespace Axiom.Graphics
 		protected string customType;
 
 		/// <summary>
-		/// Get's or set's the type name of this custom composition pass.
-		/// <see cref="CompositorManager.RegisterCustomCompositorPass"/>
+		///   Get's or set's the type name of this custom composition pass. <see
+		///    cref="CompositorManager.RegisterCustomCompositorPass" />
 		/// </summary>
-		/// <note>
-		/// applies when PassType is RenderCustom
-		/// </note>
+		/// <note>applies when PassType is RenderCustom</note>
 		public string CustomType
 		{
 			get
@@ -607,14 +591,14 @@ namespace Axiom.Graphics
 		#region InputTexture Management
 
 		///<summary>
-		///    Set an input local texture. An empty string clears the input.
+		///  Set an input local texture. An empty string clears the input.
 		///</summary>
-		///<param name="id">Input to set. Must be in 0..Config.MaxTextureLayers-1</param>
-		///<param name="name">Which texture to bind to this input. An empty string clears the input.</param>
-		/// <param name="mrtIndex"></param>
+		///<param name="id"> Input to set. Must be in 0..Config.MaxTextureLayers-1 </param>
+		///<param name="name"> Which texture to bind to this input. An empty string clears the input. </param>
+		///<param name="mrtIndex"> </param>
 		///<remarks>
-		///    Note applies when CompositorPassType is RenderQuad 
-		///</remarks>	
+		///  Note applies when CompositorPassType is RenderQuad
+		///</remarks>
 		public void SetInput( int id, string name, int mrtIndex )
 		{
 			inputs[ id ] = new InputTexture( name, mrtIndex );
@@ -631,24 +615,23 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Get the value of an input.
+		///  Get the value of an input.
 		///</summary>
-		///<param name="id">Input to get. Must be in 0..Config.MaxTextureLayers-1.</param>
+		///<param name="id"> Input to get. Must be in 0..Config.MaxTextureLayers-1. </param>
 		///<remarks>
-		///    Note applies when CompositorPassType is RenderQuad 
-		///</remarks>	
+		///  Note applies when CompositorPassType is RenderQuad
+		///</remarks>
 		public InputTexture GetInput( int id )
 		{
 			return inputs[ id ];
 		}
 
 		///<summary>
-		///    Get the number of inputs used.  If there are holes in the inputs array,
-		///    this number will include those entries as well.
+		///  Get the number of inputs used. If there are holes in the inputs array, this number will include those entries as well.
 		///</summary>
 		///<remarks>
-		///    Note applies when CompositorPassType is RenderQuad 
-		///</remarks>	
+		///  Note applies when CompositorPassType is RenderQuad
+		///</remarks>
 		public int InputsCount
 		{
 			get
@@ -666,11 +649,11 @@ namespace Axiom.Graphics
 		}
 
 		///<summary>
-		///    Clear all inputs.
+		///  Clear all inputs.
 		///</summary>
 		///<remarks>
-		///    Note applies when CompositorPassType is RenderQuad 
-		///</remarks>	
+		///  Note applies when CompositorPassType is RenderQuad
+		///</remarks>
 		public void ClearAllInputs()
 		{
 			for ( var i = 0; i < Config.MaxTextureLayers; i++ )
@@ -684,12 +667,12 @@ namespace Axiom.Graphics
 		#region Quad Management
 
 		/// <summary>
-		/// Set quad normalised positions [-1;1]x[-1;1]
+		///   Set quad normalised positions [-1;1]x[-1;1]
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="top"></param>
-		/// <param name="right"></param>
-		/// <param name="bottom"></param>
+		/// <param name="left"> </param>
+		/// <param name="top"> </param>
+		/// <param name="right"> </param>
+		/// <param name="bottom"> </param>
 		public void SetQuadCorners( float left, float top, float right, float bottom )
 		{
 			quadCornerModified = true;
@@ -700,13 +683,13 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Get quad normalised positions [-1;1]x[-1;1]
+		///   Get quad normalised positions [-1;1]x[-1;1]
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="top"></param>
-		/// <param name="right"></param>
-		/// <param name="bottom"></param>
-		/// <returns></returns>
+		/// <param name="left"> </param>
+		/// <param name="top"> </param>
+		/// <param name="right"> </param>
+		/// <param name="bottom"> </param>
+		/// <returns> </returns>
 		public bool GetQuadCorners( out float left, out float top, out float right, out float bottom )
 		{
 			left = quadLeft;
@@ -717,10 +700,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		/// Sets the use of camera frustum far corners provided in the quad's normals
+		///   Sets the use of camera frustum far corners provided in the quad's normals
 		/// </summary>
-		/// <param name="farCorners"></param>
-		/// <param name="farCornersViewSpace"></param>
+		/// <param name="farCorners"> </param>
+		/// <param name="farCornersViewSpace"> </param>
 		public void SetQuadFarCorners( bool farCorners, bool farCornersViewSpace )
 		{
 			quadFarCorners = farCorners;
