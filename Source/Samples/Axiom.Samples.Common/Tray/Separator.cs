@@ -23,7 +23,6 @@
 #endregion License
 
 using System;
-
 using Axiom.Math;
 using Axiom.Overlays;
 
@@ -55,11 +54,11 @@ namespace Axiom.Samples
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Separator", "Panel", name );
 			if ( width <= 0 )
 			{
-				this.IsFitToTray = true;
+				IsFitToTray = true;
 			}
 			else
 			{
-				this.IsFitToTray = false;
+				IsFitToTray = false;
 				element.Width = width;
 			}
 		}

@@ -24,7 +24,6 @@
 
 using Axiom.Core;
 using Axiom.Math;
-
 using SIS = SharpInputSystem;
 
 namespace Axiom.Samples
@@ -224,16 +223,16 @@ namespace Axiom.Samples
 				if ( accel.LengthSquared != 0 )
 				{
 					accel.Normalize();
-					mVelocity += accel * TopSpeed * evt.TimeSinceLastFrame * 10;
+					mVelocity += accel*TopSpeed*evt.TimeSinceLastFrame*10;
 				}
 					// if not accelerating, try to stop in a certain time
 				else
 				{
-					mVelocity -= mVelocity * evt.TimeSinceLastFrame * 10;
+					mVelocity -= mVelocity*evt.TimeSinceLastFrame*10;
 				}
 
 				// keep camera velocity below top speed and above zero
-				if ( mVelocity.LengthSquared > TopSpeed * TopSpeed )
+				if ( mVelocity.LengthSquared > TopSpeed*TopSpeed )
 				{
 					mVelocity.Normalize();
 					mVelocity *= TopSpeed;
@@ -245,7 +244,7 @@ namespace Axiom.Samples
 
 				if ( mVelocity != Vector3.Zero )
 				{
-					mCamera.Move( mVelocity * evt.TimeSinceLastFrame );
+					mCamera.Move( mVelocity*evt.TimeSinceLastFrame );
 				}
 			}
 
@@ -336,8 +335,8 @@ namespace Axiom.Samples
 				{
 					mCamera.Position = mTarget.DerivedPosition;
 
-					mCamera.Yaw( (Real)( new Degree( (Real)( -evt.State.X.Relative * 0.25f ) ) ) );
-					mCamera.Pitch( (Real)( new Degree( (Real)( -evt.State.Y.Relative * 0.25f ) ) ) );
+					mCamera.Yaw( (Real)( new Degree( (Real)( -evt.State.X.Relative*0.25f ) ) ) );
+					mCamera.Pitch( (Real)( new Degree( (Real)( -evt.State.Y.Relative*0.25f ) ) ) );
 
 					mCamera.MoveRelative( new Vector3( 0, 0, dist ) );
 
@@ -346,18 +345,18 @@ namespace Axiom.Samples
 				else if ( mZooming ) // move the camera toward or away from the target
 				{
 					// the further the camera is, the faster it moves
-					mCamera.MoveRelative( new Vector3( 0, 0, evt.State.Y.Relative * 0.004f * dist ) );
+					mCamera.MoveRelative( new Vector3( 0, 0, evt.State.Y.Relative*0.004f*dist ) );
 				}
 				else if ( evt.State.Z.Relative != 0 ) // move the camera toward or away from the target
 				{
 					// the further the camera is, the faster it moves
-					mCamera.MoveRelative( new Vector3( 0, 0, -evt.State.Z.Relative * 0.0008f * dist ) );
+					mCamera.MoveRelative( new Vector3( 0, 0, -evt.State.Z.Relative*0.0008f*dist ) );
 				}
 			}
 			else if ( mStyle == CameraStyle.FreeLook )
 			{
-				mCamera.Yaw( (Real)( new Degree( (Real)( -evt.State.X.Relative * 0.15f ) ) ) );
-				mCamera.Pitch( (Real)( new Degree( (Real)( -evt.State.Y.Relative * 0.15f ) ) ) );
+				mCamera.Yaw( (Real)( new Degree( (Real)( -evt.State.X.Relative*0.15f ) ) ) );
+				mCamera.Pitch( (Real)( new Degree( (Real)( -evt.State.Y.Relative*0.15f ) ) ) );
 			}
 		}
 

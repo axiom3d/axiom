@@ -23,7 +23,6 @@
 #endregion License
 
 using System.ComponentModel.Composition;
-
 using Axiom.Core;
 
 namespace Axiom.Samples
@@ -55,12 +54,12 @@ namespace Axiom.Samples
 		public SamplePlugin()
 		{
 			//this ctor is for axiom's plugin manager
-			this.Name = string.Empty;
+			Name = string.Empty;
 		}
 
 		public SamplePlugin( string name )
 		{
-			this.Name = name;
+			Name = name;
 		}
 
 		#endregion Construction and Destruction
@@ -76,9 +75,13 @@ namespace Axiom.Samples
 
 		#region IPlugin Implementation
 
-		public virtual void Initialize() {}
+		public virtual void Initialize()
+		{
+		}
 
-		public virtual void Shutdown() {}
+		public virtual void Shutdown()
+		{
+		}
 
 		#endregion
 	}

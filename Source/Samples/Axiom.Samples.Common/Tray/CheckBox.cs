@@ -23,7 +23,6 @@
 #endregion License
 
 using System;
-
 using Axiom.Math;
 using Axiom.Overlays;
 using Axiom.Overlays.Elements;
@@ -85,16 +84,16 @@ namespace Axiom.Samples
 		/// <param name="width"></param>
 		public CheckBox( String name, String caption, Real width )
 		{
-			IsCursorOver = false;
+			this.IsCursorOver = false;
 			isFitToContents = width <= 0;
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/CheckBox", "BorderPanel", name );
-			OverlayElementContainer c = (OverlayElementContainer)element;
-			this.textArea = (TextArea)c.Children[ Name + "/CheckBoxCaption" ];
-			this.square = (BorderPanel)c.Children[ Name + "/CheckBoxSquare" ];
-			this.x = this.square.Children[ this.square.Name + "/CheckBoxX" ];
-			this.x.Hide();
+			var c = (OverlayElementContainer)element;
+			textArea = (TextArea)c.Children[ Name + "/CheckBoxCaption" ];
+			square = (BorderPanel)c.Children[ Name + "/CheckBoxSquare" ];
+			x = square.Children[ square.Name + "/CheckBoxX" ];
+			x.Hide();
 			element.Width = width;
-			this.Caption = caption;
+			Caption = caption;
 		}
 
 		#endregion
@@ -112,10 +111,10 @@ namespace Axiom.Samples
 			}
 			set
 			{
-				this.textArea.Text = value;
-				if ( this.isFitToContents )
+				textArea.Text = value;
+				if ( isFitToContents )
 				{
-					element.Width = GetCaptionWidth( value, this.textArea ) + this.square.Width + 23;
+					element.Width = GetCaptionWidth( value, textArea ) + square.Width + 23;
 				}
 			}
 		}
@@ -127,7 +126,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.x.IsVisible;
+				return x.IsVisible;
 			}
 			set
 			{
@@ -148,11 +147,11 @@ namespace Axiom.Samples
 		{
 			if ( check )
 			{
-				this.x.Show();
+				x.Show();
 			}
 			else
 			{
-				this.x.Hide();
+				x.Hide();
 			}
 			if ( listener != null && notifyListener )
 			{
@@ -176,7 +175,7 @@ namespace Axiom.Samples
 		/// <param name="notifyListener"></param>
 		public void Check( bool notifyListener )
 		{
-			this.SetChecked( true, notifyListener );
+			SetChecked( true, notifyListener );
 		}
 
 		/// <summary>
@@ -193,7 +192,7 @@ namespace Axiom.Samples
 		/// <param name="notifyListener"></param>
 		public void Uncheck( bool notifyListener )
 		{
-			this.SetChecked( false, notifyListener );
+			SetChecked( false, notifyListener );
 			OnCheckChanged( this );
 		}
 
@@ -211,7 +210,7 @@ namespace Axiom.Samples
 		/// <param name="notifyListener"></param>
 		public void Toggle( bool notifyListener )
 		{
-			this.SetChecked( !this.IsChecked, notifyListener );
+			SetChecked( !IsChecked, notifyListener );
 		}
 
 		/// <summary>
@@ -220,7 +219,7 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorPressed( Vector2 cursorPos )
 		{
-			if ( IsCursorOver )
+			if ( this.IsCursorOver )
 			{
 				Toggle();
 				base.OnCursorPressed( cursorPos );
@@ -233,13 +232,13 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorMoved( Vector2 cursorPos )
 		{
-			if ( IsCursorOver( this.square, cursorPos, 5 ) )
+			if ( IsCursorOver( square, cursorPos, 5 ) )
 			{
 				if ( !this.IsCursorOver )
 				{
 					this.IsCursorOver = true;
-					this.square.MaterialName = "SdkTrays/MiniTextBox/Over";
-					this.square.BorderMaterialName = "SdkTrays/MiniTextBox/Over";
+					square.MaterialName = "SdkTrays/MiniTextBox/Over";
+					square.BorderMaterialName = "SdkTrays/MiniTextBox/Over";
 				}
 			}
 			else
@@ -247,8 +246,8 @@ namespace Axiom.Samples
 				if ( this.IsCursorOver )
 				{
 					this.IsCursorOver = false;
-					this.square.MaterialName = "SdkTrays/MiniTextBox";
-					this.square.BorderMaterialName = "SdkTrays/MiniTextBox";
+					square.MaterialName = "SdkTrays/MiniTextBox";
+					square.BorderMaterialName = "SdkTrays/MiniTextBox";
 				}
 			}
 
@@ -260,9 +259,9 @@ namespace Axiom.Samples
 		/// </summary>
 		public override void OnLostFocus()
 		{
-			this.square.MaterialName = "SdkTrays/MiniTextBox";
-			this.square.BorderMaterialName = "SdkTrays/MiniTextBox";
-			this.IsCursorOver = false;
+			square.MaterialName = "SdkTrays/MiniTextBox";
+			square.BorderMaterialName = "SdkTrays/MiniTextBox";
+			IsCursorOver = false;
 
 			base.OnLostFocus();
 		}

@@ -24,12 +24,10 @@
 
 using System;
 using System.Collections.Generic;
-
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Overlays;
-
 using DisplayString = System.String;
 using SIS = SharpInputSystem;
 using WidgetList = System.Collections.Generic.List<Axiom.Samples.Widget>;
@@ -84,8 +82,8 @@ namespace Axiom.Samples
 		protected Overlay mPriorityLayer; // top priority layer
 		protected Overlay cursorLayer; // cursor layer
 		protected OverlayElementContainer backdrop; // backdrop
-		protected OverlayElementContainer[] mTrays = new OverlayElementContainer[ 10 ]; // widget trays
-		protected WidgetList[] mWidgets = new WidgetList[ 10 ]; // widgets
+		protected OverlayElementContainer[] mTrays = new OverlayElementContainer[10]; // widget trays
+		protected WidgetList[] mWidgets = new WidgetList[10]; // widgets
 		protected WidgetList mWidgetDeathRow = new WidgetList(); // widget queue for deletion
 		protected OverlayElementContainer cursor; // cursor
 		protected ISdkTrayListener listener; // tray listener
@@ -107,7 +105,7 @@ namespace Axiom.Samples
 		protected Real groupInitProportion; // proportion of load job assigned to initialising one resource group
 		protected Real groupLoadProportion; // proportion of load job assigned to loading one resource group
 		protected Real loadInc; // loading increment
-		protected HorizontalAlignment[] trayWidgetAlign = new HorizontalAlignment[ 10 ]; // tray widget alignments
+		protected HorizontalAlignment[] trayWidgetAlign = new HorizontalAlignment[10]; // tray widget alignments
 
 		#endregion
 
@@ -123,10 +121,11 @@ namespace Axiom.Samples
 			{
 				if ( expandedMenu == null && value != null )
 				{
-					OverlayElementContainer c = (OverlayElementContainer)value.OverlayElement;
-					OverlayElementContainer eb = (OverlayElementContainer)c.Children[ value.Name + "/MenuExpandedBox" ];
+					var c = (OverlayElementContainer)value.OverlayElement;
+					var eb = (OverlayElementContainer)c.Children[ value.Name + "/MenuExpandedBox" ];
 					eb.Update();
-					eb.SetPosition( (int)( eb.DerivedLeft * OverlayManager.Instance.ViewportWidth ), (int)( eb.DerivedTop * OverlayManager.Instance.ViewportHeight ) );
+					eb.SetPosition( (int)( eb.DerivedLeft*OverlayManager.Instance.ViewportWidth ),
+					                (int)( eb.DerivedTop*OverlayManager.Instance.ViewportHeight ) );
 					c.RemoveChild( eb.Name );
 					mPriorityLayer.AddElement( eb );
 				}
@@ -188,7 +187,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.Logo != null;
+				return Logo != null;
 			}
 		}
 
@@ -259,7 +258,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.cursorLayer.IsVisible;
+				return cursorLayer.IsVisible;
 			}
 		}
 
@@ -270,7 +269,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.BackdropLayer.IsVisible;
+				return BackdropLayer.IsVisible;
 			}
 		}
 
@@ -281,7 +280,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.mTraysLayer.IsVisible;
+				return mTraysLayer.IsVisible;
 			}
 		}
 
@@ -390,7 +389,9 @@ namespace Axiom.Samples
 		/// <param name="window"></param>
 		/// <param name="mouse"></param>
 		public SdkTrayManager( String name, RenderWindow window, SIS.Mouse mouse )
-			: this( name, window, mouse, null ) {}
+			: this( name, window, mouse, null )
+		{
+		}
 
 		/// <summary>
 		/// Creates backdrop, cursor, and trays.
@@ -403,7 +404,7 @@ namespace Axiom.Samples
 		{
 			mName = name;
 			mWindow = window;
-			this.Mouse = mouse;
+			Mouse = mouse;
 			Listener = listener;
 
 			mWidgetPadding = 8;
@@ -416,21 +417,22 @@ namespace Axiom.Samples
 
 			// create overlay layers for everything
 
-			this.BackdropLayer = om.Create( nameBase + "BackdropLayer" );
+			BackdropLayer = om.Create( nameBase + "BackdropLayer" );
 			mTraysLayer = om.Create( nameBase + "WidgetsLayer" );
 			mPriorityLayer = om.Create( nameBase + "PriorityLayer" );
 			cursorLayer = om.Create( nameBase + "CursorLayer" );
-			this.BackdropLayer.ZOrder = 100;
+			BackdropLayer.ZOrder = 100;
 			mTraysLayer.ZOrder = 200;
 			mPriorityLayer.ZOrder = 300;
 			cursorLayer.ZOrder = 400;
 
 			// make backdrop and cursor overlay containers
 
-			cursor = (OverlayElementContainer)om.Elements.CreateElementFromTemplate( "SdkTrays/Cursor", "Panel", nameBase + "Cursor" );
+			cursor =
+				(OverlayElementContainer)om.Elements.CreateElementFromTemplate( "SdkTrays/Cursor", "Panel", nameBase + "Cursor" );
 			cursorLayer.AddElement( cursor );
 			backdrop = (OverlayElementContainer)om.Elements.CreateElement( "Panel", nameBase + "Backdrop" );
-			this.BackdropLayer.AddElement( backdrop );
+			BackdropLayer.AddElement( backdrop );
 			mDialogShade = (OverlayElementContainer)om.Elements.CreateElement( "Panel", nameBase + "DialogShade" );
 			mDialogShade.MaterialName = "SdkTrays/Shade";
 			mDialogShade.Hide();
@@ -442,7 +444,9 @@ namespace Axiom.Samples
 
 			for ( int i = 0; i < 9; i++ ) // make the real trays
 			{
-				mTrays[ i ] = (OverlayElementContainer)om.Elements.CreateElementFromTemplate( "SdkTrays/Tray", "BorderPanel", nameBase + trayNames[ i ] + "Tray" );
+				mTrays[ i ] =
+					(OverlayElementContainer)
+					om.Elements.CreateElementFromTemplate( "SdkTrays/Tray", "BorderPanel", nameBase + trayNames[ i ] + "Tray" );
 
 				mTraysLayer.AddElement( mTrays[ i ] );
 
@@ -477,7 +481,7 @@ namespace Axiom.Samples
 				mWidgets[ i ] = new WidgetList();
 			}
 
-			this.AdjustTrays();
+			AdjustTrays();
 
 			ShowTrays();
 			ShowCursor();
@@ -499,7 +503,7 @@ namespace Axiom.Samples
 			mWidgetDeathRow.Clear();
 			if ( om != null )
 			{
-				om.Destroy( this.BackdropLayer );
+				om.Destroy( BackdropLayer );
 				om.Destroy( mTraysLayer );
 				om.Destroy( mPriorityLayer );
 				om.Destroy( cursorLayer );
@@ -537,8 +541,8 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public static Vector2 sceneToScreen( Camera cam, Vector3 pt )
 		{
-			Vector3 result = cam.ProjectionMatrix * cam.ViewMatrix * pt;
-			return new Vector2( ( result.x + 1 ) / 2, -( result.y + 1 ) / 2 );
+			Vector3 result = cam.ProjectionMatrix*cam.ViewMatrix*pt;
+			return new Vector2( ( result.x + 1 )/2, -( result.y + 1 )/2 );
 		}
 
 		#region ISdkTrayListerner implementation
@@ -548,31 +552,41 @@ namespace Axiom.Samples
 		/// </summary>
 		/// <param name="text"></param>
 		/// <param name="yesHit"></param>
-		public void YesNoDialogClosed( string text, bool yesHit ) {}
+		public void YesNoDialogClosed( string text, bool yesHit )
+		{
+		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="text"></param>
-		public void OkDialogClosed( string text ) {}
+		public void OkDialogClosed( string text )
+		{
+		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="slider"></param>
-		public void SliderMoved( Slider slider ) {}
+		public void SliderMoved( Slider slider )
+		{
+		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="box"></param>
-		public void CheckboxToggled( CheckBox box ) {}
+		public void CheckboxToggled( CheckBox box )
+		{
+		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="menu"></param>
-		public void ItemSelected( SelectMenu menu ) {}
+		public void ItemSelected( SelectMenu menu )
+		{
+		}
 
 		#endregion ISdkTrayListerner implementation
 
@@ -602,7 +616,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public void ShowBackdrop()
 		{
-			this.ShowBackdrop( String.Empty );
+			ShowBackdrop( String.Empty );
 		}
 
 		/// <summary>
@@ -616,7 +630,7 @@ namespace Axiom.Samples
 			{
 				backdrop.MaterialName = materialName;
 			}
-			this.BackdropLayer.Show();
+			BackdropLayer.Show();
 		}
 
 		/// <summary>
@@ -633,7 +647,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public void ShowCursor()
 		{
-			this.ShowCursor( String.Empty );
+			ShowCursor( String.Empty );
 		}
 
 		/// <summary>
@@ -746,7 +760,7 @@ namespace Axiom.Samples
 			{
 				Real trayWidth = 0;
 				Real trayHeight = mWidgetPadding;
-				List<OverlayElement> labelsAndSeps = new List<OverlayElement>();
+				var labelsAndSeps = new List<OverlayElement>();
 
 				if ( mWidgets[ i ] == null || mWidgets[ i ].Count == 0 ) // hide tray if empty
 				{
@@ -780,7 +794,7 @@ namespace Axiom.Samples
 							e.Left = -( e.Width + mWidgetPadding );
 							break;
 						default:
-							e.Left = ( -( e.Width / 2 ) );
+							e.Left = ( -( e.Width/2 ) );
 							break;
 					}
 
@@ -790,13 +804,13 @@ namespace Axiom.Samples
 
 					trayHeight += e.Height;
 
-					Label l = mWidgets[ i ][ j ] as Label;
+					var l = mWidgets[ i ][ j ] as Label;
 					if ( l != null && l.IsFitToTray )
 					{
 						labelsAndSeps.Add( e );
 						continue;
 					}
-					Separator s = mWidgets[ i ][ j ] as Separator;
+					var s = mWidgets[ i ][ j ] as Separator;
 					if ( s != null && s.IsFitToTray )
 					{
 						labelsAndSeps.Add( e );
@@ -810,13 +824,13 @@ namespace Axiom.Samples
 				}
 
 				// add paddings and resize trays
-				mTrays[ i ].Width = trayWidth + 2 * mWidgetPadding;
+				mTrays[ i ].Width = trayWidth + 2*mWidgetPadding;
 				mTrays[ i ].Height = trayHeight + mWidgetPadding;
 
 				for ( int k = 0; k < labelsAndSeps.Count; k++ )
 				{
 					labelsAndSeps[ k ].Width = (int)trayWidth;
-					labelsAndSeps[ k ].Left = -(int)( trayWidth / 2 );
+					labelsAndSeps[ k ].Left = -(int)( trayWidth/2 );
 				}
 			}
 
@@ -828,7 +842,7 @@ namespace Axiom.Samples
 				}
 				if ( i == (int)TrayLocation.Top || i == (int)TrayLocation.Center || i == (int)TrayLocation.Bottom )
 				{
-					mTrays[ i ].Left = -mTrays[ i ].Width / 2;
+					mTrays[ i ].Left = -mTrays[ i ].Width/2;
 				}
 				if ( i == (int)TrayLocation.TopRight || i == (int)TrayLocation.Right || i == (int)TrayLocation.BottomRight )
 				{
@@ -841,7 +855,7 @@ namespace Axiom.Samples
 				}
 				if ( i == (int)TrayLocation.Left || i == (int)TrayLocation.Center || i == (int)TrayLocation.Right )
 				{
-					mTrays[ i ].Top = -mTrays[ i ].Height / 2;
+					mTrays[ i ].Top = -mTrays[ i ].Height/2;
 				}
 				if ( i == (int)TrayLocation.BottomLeft || i == (int)TrayLocation.Bottom || i == (int)TrayLocation.BottomRight )
 				{
@@ -873,7 +887,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public Button CreateButton( TrayLocation trayLoc, String name, String caption )
 		{
-			return this.CreateButton( trayLoc, name, caption, 0 );
+			return CreateButton( trayLoc, name, caption, 0 );
 		}
 
 		/// <summary>
@@ -886,7 +900,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public Button CreateButton( TrayLocation trayLoc, String name, String caption, Real width )
 		{
-			Button b = new Button( name, caption, width );
+			var b = new Button( name, caption, width );
 			MoveWidgetToTray( b, trayLoc );
 			b.AssignedTrayListener = listener;
 			return b;
@@ -903,7 +917,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public TextBox CreateTextBox( TrayLocation trayLoc, String name, DisplayString caption, Real width, Real height )
 		{
-			TextBox tb = new TextBox( name, caption, width, height );
+			var tb = new TextBox( name, caption, width, height );
 			MoveWidgetToTray( tb, trayLoc );
 			tb.AssignedTrayListener = listener;
 			return tb;
@@ -918,7 +932,8 @@ namespace Axiom.Samples
 		/// <param name="width"></param>
 		/// <param name="maxItemsShown"></param>
 		/// <returns></returns>
-		public SelectMenu CreateThickSelectMenu( TrayLocation trayLoc, String name, DisplayString caption, Real width, int maxItemsShown )
+		public SelectMenu CreateThickSelectMenu( TrayLocation trayLoc, String name, DisplayString caption, Real width,
+		                                         int maxItemsShown )
 		{
 			return CreateThickSelectMenu( trayLoc, name, caption, width, maxItemsShown, new List<String>() );
 		}
@@ -933,9 +948,10 @@ namespace Axiom.Samples
 		/// <param name="maxItemsShown"></param>
 		/// <param name="items"></param>
 		/// <returns></returns>
-		public SelectMenu CreateThickSelectMenu( TrayLocation trayLoc, String name, DisplayString caption, Real width, int maxItemsShown, IList<String> items )
+		public SelectMenu CreateThickSelectMenu( TrayLocation trayLoc, String name, DisplayString caption, Real width,
+		                                         int maxItemsShown, IList<String> items )
 		{
-			SelectMenu sm = new SelectMenu( name, caption, width, 0, maxItemsShown );
+			var sm = new SelectMenu( name, caption, width, 0, maxItemsShown );
 			MoveWidgetToTray( sm, trayLoc );
 			sm.AssignedTrayListener = listener;
 			if ( !( items.Count == 0 ) )
@@ -955,7 +971,8 @@ namespace Axiom.Samples
 		/// <param name="boxWidth"></param>
 		/// <param name="maxItemsShown"></param>
 		/// <returns></returns>
-		public SelectMenu CreateLongSelectMenu( TrayLocation trayLoc, String name, DisplayString caption, Real width, Real boxWidth, int maxItemsShown )
+		public SelectMenu CreateLongSelectMenu( TrayLocation trayLoc, String name, DisplayString caption, Real width,
+		                                        Real boxWidth, int maxItemsShown )
 		{
 			return CreateLongSelectMenu( trayLoc, name, caption, width, boxWidth, maxItemsShown, new List<string>() );
 		}
@@ -969,7 +986,8 @@ namespace Axiom.Samples
 		/// <param name="boxWidth"></param>
 		/// <param name="maxItemsShown"></param>
 		/// <returns></returns>
-		public SelectMenu createLongSelectMenu( TrayLocation trayLoc, String name, DisplayString caption, Real boxWidth, int maxItemsShown )
+		public SelectMenu createLongSelectMenu( TrayLocation trayLoc, String name, DisplayString caption, Real boxWidth,
+		                                        int maxItemsShown )
 		{
 			return CreateLongSelectMenu( trayLoc, name, caption, 0, boxWidth, maxItemsShown, new List<string>() );
 		}
@@ -985,9 +1003,10 @@ namespace Axiom.Samples
 		/// <param name="maxItemsShown"></param>
 		/// <param name="items"></param>
 		/// <returns></returns>
-		public SelectMenu CreateLongSelectMenu( TrayLocation trayLoc, String name, DisplayString caption, Real width, Real boxWidth, int maxItemsShown, IList<String> items )
+		public SelectMenu CreateLongSelectMenu( TrayLocation trayLoc, String name, DisplayString caption, Real width,
+		                                        Real boxWidth, int maxItemsShown, IList<String> items )
 		{
-			SelectMenu sm = new SelectMenu( name, caption, width, boxWidth, maxItemsShown );
+			var sm = new SelectMenu( name, caption, width, boxWidth, maxItemsShown );
 			MoveWidgetToTray( sm, trayLoc );
 			sm.AssignedTrayListener = listener;
 			if ( !( items.Count == 0 ) )
@@ -1019,7 +1038,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public Label CreateLabel( TrayLocation trayLoc, String name, DisplayString caption, Real width )
 		{
-			Label l = new Label( name, caption, width );
+			var l = new Label( name, caption, width );
 			MoveWidgetToTray( l, trayLoc );
 			l.AssignedTrayListener = listener;
 			return l;
@@ -1045,7 +1064,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public Separator CreateSeparator( TrayLocation trayLoc, String name, Real width )
 		{
-			Separator s = new Separator( name, width );
+			var s = new Separator( name, width );
 			MoveWidgetToTray( s, trayLoc );
 			return s;
 		}
@@ -1062,9 +1081,10 @@ namespace Axiom.Samples
 		/// <param name="maxValue"></param>
 		/// <param name="snaps"></param>
 		/// <returns></returns>
-		public Slider CreateThickSlider( TrayLocation trayLoc, String name, DisplayString caption, Real width, Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
+		public Slider CreateThickSlider( TrayLocation trayLoc, String name, DisplayString caption, Real width,
+		                                 Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
 		{
-			Slider s = new Slider( name, caption, width, 0, valueBoxWidth, minValue, maxValue, snaps );
+			var s = new Slider( name, caption, width, 0, valueBoxWidth, minValue, maxValue, snaps );
 			MoveWidgetToTray( s, trayLoc );
 			s.AssignedTrayListener = listener;
 			return s;
@@ -1083,13 +1103,14 @@ namespace Axiom.Samples
 		/// <param name="maxValue"></param>
 		/// <param name="snaps"></param>
 		/// <returns></returns>
-		public Slider CreateLongSlider( TrayLocation trayLoc, String name, DisplayString caption, Real width, Real trackWidth, Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
+		public Slider CreateLongSlider( TrayLocation trayLoc, String name, DisplayString caption, Real width, Real trackWidth,
+		                                Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
 		{
 			if ( trackWidth <= 0 )
 			{
 				trackWidth = 1;
 			}
-			Slider s = new Slider( name, caption, width, trackWidth, valueBoxWidth, minValue, maxValue, snaps );
+			var s = new Slider( name, caption, width, trackWidth, valueBoxWidth, minValue, maxValue, snaps );
 			MoveWidgetToTray( s, trayLoc );
 			s.AssignedTrayListener = listener;
 			return s;
@@ -1107,7 +1128,8 @@ namespace Axiom.Samples
 		/// <param name="maxValue"></param>
 		/// <param name="snaps"></param>
 		/// <returns></returns>
-		public Slider CreateLongSlider( TrayLocation trayLoc, String name, DisplayString caption, Real trackWidth, Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
+		public Slider CreateLongSlider( TrayLocation trayLoc, String name, DisplayString caption, Real trackWidth,
+		                                Real valueBoxWidth, Real minValue, Real maxValue, int snaps )
 		{
 			return CreateLongSlider( trayLoc, name, caption, 0, trackWidth, valueBoxWidth, minValue, maxValue, snaps );
 		}
@@ -1122,7 +1144,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public ParamsPanel CreateParamsPanel( TrayLocation trayLoc, String name, Real width, int lines )
 		{
-			ParamsPanel pp = new ParamsPanel( name, width, lines );
+			var pp = new ParamsPanel( name, width, lines );
 			MoveWidgetToTray( pp, trayLoc );
 			return pp;
 		}
@@ -1137,9 +1159,9 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public ParamsPanel CreateParamsPanel( TrayLocation trayLoc, String name, Real width, IList<String> paramNames )
 		{
-			ParamsPanel pp = new ParamsPanel( name, width, paramNames.Count );
+			var pp = new ParamsPanel( name, width, paramNames.Count );
 			pp.ParamNames = paramNames;
-			this.MoveWidgetToTray( pp, trayLoc );
+			MoveWidgetToTray( pp, trayLoc );
 			return pp;
 		}
 
@@ -1165,7 +1187,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public CheckBox CreateCheckBox( TrayLocation trayLoc, String name, DisplayString caption, Real width )
 		{
-			CheckBox cb = new CheckBox( name, caption, width );
+			var cb = new CheckBox( name, caption, width );
 			MoveWidgetToTray( cb, trayLoc );
 			cb.AssignedTrayListener = listener;
 			return cb;
@@ -1181,7 +1203,7 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public DecorWidget CreateDecorWidget( TrayLocation trayLoc, String name, String typeName, String templateName )
 		{
-			DecorWidget dw = new DecorWidget( name, typeName, templateName );
+			var dw = new DecorWidget( name, typeName, templateName );
 			MoveWidgetToTray( dw, trayLoc );
 			return dw;
 		}
@@ -1210,9 +1232,10 @@ namespace Axiom.Samples
 		/// <param name="width"></param>
 		/// <param name="commentBoxWidth"></param>
 		/// <returns></returns>
-		public ProgressBar CreateProgressBar( TrayLocation trayLoc, String name, DisplayString caption, Real width, Real commentBoxWidth )
+		public ProgressBar CreateProgressBar( TrayLocation trayLoc, String name, DisplayString caption, Real width,
+		                                      Real commentBoxWidth )
 		{
-			ProgressBar pb = new ProgressBar( name, caption, width, commentBoxWidth );
+			var pb = new ProgressBar( name, caption, width, commentBoxWidth );
 			MoveWidgetToTray( pb, trayLoc );
 			return pb;
 		}
@@ -1235,7 +1258,7 @@ namespace Axiom.Samples
 		{
 			if ( !IsFrameStatsVisible )
 			{
-				List<String> stats = new List<string>();
+				var stats = new List<string>();
 				stats.Add( "Average FPS" );
 				stats.Add( "Best FPS" );
 				stats.Add( "Worst FPS" );
@@ -1282,7 +1305,7 @@ namespace Axiom.Samples
 		/// <param name="trayLoc"></param>
 		public void ShowLogo( TrayLocation trayLoc )
 		{
-			this.ShowLogo( trayLoc, -1 );
+			ShowLogo( trayLoc, -1 );
 		}
 
 		/// <summary>
@@ -1304,10 +1327,10 @@ namespace Axiom.Samples
 		/// </summary>
 		public void HideLogo()
 		{
-			if ( this.IsLogoVisible )
+			if ( IsLogoVisible )
 			{
-				DestroyWidget( this.Logo );
-				this.Logo = null;
+				DestroyWidget( Logo );
+				Logo = null;
 			}
 		}
 
@@ -1319,7 +1342,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public void ShowLoadingBar()
 		{
-			this.ShowLoadingBar( 1, 1, 0.7f );
+			ShowLoadingBar( 1, 1, 0.7f );
 		}
 
 		///<summary>
@@ -1332,7 +1355,7 @@ namespace Axiom.Samples
 		/// <param name="numGroupsLoad"></param>
 		public void ShowLoadingBar( int numGroupsInit, int numGroupsLoad )
 		{
-			this.ShowLoadingBar( numGroupsInit, numGroupsLoad, 0.7f );
+			ShowLoadingBar( numGroupsInit, numGroupsLoad, 0.7f );
 		}
 
 		///<summary>
@@ -1355,8 +1378,8 @@ namespace Axiom.Samples
 			OverlayElement e = LoadBar.OverlayElement;
 			mDialogShade.AddChild( e );
 			e.VerticalAlignment = VerticalAlignment.Center;
-			e.Left = ( -( e.Width / 2 ) );
-			e.Top = ( -( e.Height / 2 ) );
+			e.Left = ( -( e.Width/2 ) );
+			e.Top = ( -( e.Height/2 ) );
 			ResourceGroupManager.Instance.AddResourceGroupListener( this );
 			CursorWasVisible = IsCursorVisible;
 			HideCursor();
@@ -1382,8 +1405,8 @@ namespace Axiom.Samples
 			}
 			else
 			{
-				groupInitProportion = initProportion / numGroupsInit;
-				groupLoadProportion = ( 1 - initProportion ) / numGroupsLoad;
+				groupInitProportion = initProportion/numGroupsInit;
+				groupLoadProportion = ( 1 - initProportion )/numGroupsLoad;
 			}
 		}
 
@@ -1452,8 +1475,8 @@ namespace Axiom.Samples
 				e = Dialog.OverlayElement;
 				mDialogShade.AddChild( e );
 				e.VerticalAlignment = VerticalAlignment.Center;
-				e.Left = -( e.Width / 2 );
-				e.Top = -( e.Height / 2 );
+				e.Left = -( e.Width/2 );
+				e.Top = -( e.Height/2 );
 				CursorWasVisible = IsCursorVisible;
 				ShowCursor();
 			}
@@ -1462,7 +1485,7 @@ namespace Axiom.Samples
 			e = mOk.OverlayElement;
 			mDialogShade.AddChild( e );
 			e.VerticalAlignment = VerticalAlignment.Center;
-			e.Left = -( e.Width / 2 );
+			e.Left = -( e.Width/2 );
 			e.Top = Dialog.OverlayElement.Top + Dialog.OverlayElement.Height + 5;
 		}
 
@@ -1508,8 +1531,8 @@ namespace Axiom.Samples
 				e = Dialog.OverlayElement;
 				mDialogShade.AddChild( e );
 				e.VerticalAlignment = VerticalAlignment.Center;
-				e.Left = -( e.Width / 2 );
-				e.Top = -( e.Height / 2 );
+				e.Left = -( e.Width/2 );
+				e.Top = -( e.Height/2 );
 				CursorWasVisible = IsCursorVisible;
 				ShowCursor();
 			}
@@ -1755,7 +1778,7 @@ namespace Axiom.Samples
 		/// <param name="trayLoc"></param>
 		public void MoveWidgetToTray( Widget widget, TrayLocation trayLoc )
 		{
-			this.MoveWidgetToTray( widget, trayLoc, -1 );
+			MoveWidgetToTray( widget, trayLoc, -1 );
 		}
 
 		/// <summary>
@@ -1869,7 +1892,8 @@ namespace Axiom.Samples
 		/// <param name="currentPlace"></param>
 		/// <param name="targetTrayLoc"></param>
 		/// <param name="targetPlace"></param>
-		public void MoveWidgetToTray( TrayLocation currentTrayLoc, int currentPlace, TrayLocation targetTrayLoc, int targetPlace )
+		public void MoveWidgetToTray( TrayLocation currentTrayLoc, int currentPlace, TrayLocation targetTrayLoc,
+		                              int targetPlace )
 		{
 			MoveWidgetToTray( GetWidget( currentTrayLoc, currentPlace ), targetTrayLoc, targetPlace );
 		}
@@ -1880,7 +1904,7 @@ namespace Axiom.Samples
 		/// <param name="widget"></param>
 		public void RemoveWidgetFromTray( Widget widget )
 		{
-			this.MoveWidgetToTray( widget, TrayLocation.None );
+			MoveWidgetToTray( widget, TrayLocation.None );
 		}
 
 		/// <summary>
@@ -1965,7 +1989,7 @@ namespace Axiom.Samples
 
 				if ( StatsPanel.OverlayElement.IsVisible )
 				{
-					List<String> values = new List<string>();
+					var values = new List<string>();
 
 					s = String.Format( "{0:#.##}", stats.AverageFPS );
 					values.Add( s );
@@ -1998,7 +2022,7 @@ namespace Axiom.Samples
 		/// <param name="scriptCount">The number of scripts which will be parsed</param>
 		public void ResourceGroupScriptingStarted( string groupName, int scriptCount )
 		{
-			loadInc = groupInitProportion / scriptCount;
+			loadInc = groupInitProportion/scriptCount;
 			LoadBar.Caption = "Parsing...";
 			mWindow.Update();
 			// allow OS events to process (if the platform requires it
@@ -2041,7 +2065,9 @@ namespace Axiom.Samples
 		/// This event is fired when a resource group finished parsing scripts.
 		/// </summary>
 		/// <param name="groupName">The name of the group</param>
-		public void ResourceGroupScriptingEnded( string groupName ) {}
+		public void ResourceGroupScriptingEnded( string groupName )
+		{
+		}
 
 		/// <summary>
 		/// This event is fired  when a resource group begins loading.
@@ -2053,7 +2079,7 @@ namespace Axiom.Samples
 		/// </param>
 		public void ResourceGroupLoadStarted( string groupName, int resourceCount )
 		{
-			loadInc = groupLoadProportion / resourceCount;
+			loadInc = groupLoadProportion/resourceCount;
 			LoadBar.Caption = "Loading...";
 			mWindow.Update();
 			// allow OS events to process (if the platform requires it
@@ -2129,31 +2155,41 @@ namespace Axiom.Samples
 		/// <summary>
 		/// This event is fired when a resource group finished loading.
 		/// </summary>
-		public void ResourceGroupLoadEnded( string groupName ) {}
+		public void ResourceGroupLoadEnded( string groupName )
+		{
+		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="groupName"></param>
-		public void ResourceGroupPrepareEnded( string groupName ) {}
+		public void ResourceGroupPrepareEnded( string groupName )
+		{
+		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		public void ResourcePrepareEnded() {}
+		public void ResourcePrepareEnded()
+		{
+		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="resource"></param>
-		public void ResourcePrepareStarted( Resource resource ) {}
+		public void ResourcePrepareStarted( Resource resource )
+		{
+		}
 
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="groupName"></param>
 		/// <param name="resourceCount"></param>
-		public void ResourceGroupPrepareStarted( string groupName, int resourceCount ) {}
+		public void ResourceGroupPrepareStarted( string groupName, int resourceCount )
+		{
+		}
 
 		#endregion
 
@@ -2217,7 +2253,7 @@ namespace Axiom.Samples
 				return false;
 			}
 
-			Vector2 cursorPos = new Vector2( cursor.Left, cursor.Top );
+			var cursorPos = new Vector2( cursor.Left, cursor.Top );
 
 			mTrayDrag = false;
 
@@ -2257,7 +2293,8 @@ namespace Axiom.Samples
 
 			for ( int i = 0; i < mWidgets[ 9 ].Count; i++ ) // check if mouse is over a non-null tray's widgets
 			{
-				if ( mWidgets[ 9 ][ i ].OverlayElement.IsVisible && Widget.IsCursorOver( mWidgets[ 9 ][ i ].OverlayElement, cursorPos ) )
+				if ( mWidgets[ 9 ][ i ].OverlayElement.IsVisible &&
+				     Widget.IsCursorOver( mWidgets[ 9 ][ i ].OverlayElement, cursorPos ) )
 				{
 					mTrayDrag = true; // initiate a drag that originates in a tray
 					break;
@@ -2287,7 +2324,7 @@ namespace Axiom.Samples
 					}
 					w.OnCursorPressed( cursorPos ); // send event to widget
 
-					SelectMenu m = w as SelectMenu;
+					var m = w as SelectMenu;
 					if ( m != null && m.IsExpanded ) // a menu has begun a top priority session
 					{
 						ExpandedMenu = m;
@@ -2314,7 +2351,7 @@ namespace Axiom.Samples
 				return false;
 			}
 
-			Vector2 cursorPos = new Vector2( cursor.Left, cursor.Top );
+			var cursorPos = new Vector2( cursor.Left, cursor.Top );
 
 			if ( ExpandedMenu != null ) // only check top priority widget until it passes on
 			{
@@ -2385,7 +2422,7 @@ namespace Axiom.Samples
 
 			cursor.SetPosition( evt.State.X.Absolute, evt.State.Y.Absolute );
 
-			Vector2 cursorPos = new Vector2( cursor.Left, cursor.Top );
+			var cursorPos = new Vector2( cursor.Left, cursor.Top );
 
 			if ( ExpandedMenu != null ) // only check top priority widget until it passes on
 			{

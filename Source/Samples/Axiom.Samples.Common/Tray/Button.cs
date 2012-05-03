@@ -23,7 +23,6 @@
 #endregion License
 
 using System;
-
 using Axiom.Math;
 using Axiom.Overlays;
 using Axiom.Overlays.Elements;
@@ -74,21 +73,21 @@ namespace Axiom.Samples
 			{
 				if ( value == ButtonState.Over )
 				{
-					this.BorderPanel.BorderMaterialName = "SdkTrays/Button/Over";
-					this.BorderPanel.MaterialName = "SdkTrays/Button/Over";
+					BorderPanel.BorderMaterialName = "SdkTrays/Button/Over";
+					BorderPanel.MaterialName = "SdkTrays/Button/Over";
 				}
 				else if ( value == ButtonState.Up )
 				{
-					this.BorderPanel.BorderMaterialName = "SdkTrays/Button/Up";
-					this.BorderPanel.MaterialName = "SdkTrays/Button/Up";
+					BorderPanel.BorderMaterialName = "SdkTrays/Button/Up";
+					BorderPanel.MaterialName = "SdkTrays/Button/Up";
 				}
 				else
 				{
-					this.BorderPanel.BorderMaterialName = "SdkTrays/Button/Down";
-					this.BorderPanel.MaterialName = "SdkTrays/Button/Down";
+					BorderPanel.BorderMaterialName = "SdkTrays/Button/Down";
+					BorderPanel.MaterialName = "SdkTrays/Button/Down";
 				}
 
-				this.buttonState = value;
+				buttonState = value;
 			}
 		}
 
@@ -99,14 +98,14 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return this.TextArea.Text;
+				return TextArea.Text;
 			}
 			set
 			{
-				this.TextArea.Text = value;
-				if ( this.isFitToContents )
+				TextArea.Text = value;
+				if ( isFitToContents )
 				{
-					this.element.Width = GetCaptionWidth( Caption, this.TextArea ) + element.Height - 12;
+					element.Width = GetCaptionWidth( Caption, TextArea ) + element.Height - 12;
 				}
 			}
 		}
@@ -127,21 +126,21 @@ namespace Axiom.Samples
 		public Button( String name, String caption, Real width )
 		{
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Button", "BorderPanel", name );
-			this.BorderPanel = (BorderPanel)element;
-			this.TextArea = (TextArea)this.BorderPanel.Children[ this.BorderPanel.Name + "/ButtonCaption" ];
-			this.TextArea.Top = -( this.TextArea.CharHeight / 2 ); //
+			BorderPanel = (BorderPanel)element;
+			TextArea = (TextArea)BorderPanel.Children[ BorderPanel.Name + "/ButtonCaption" ];
+			TextArea.Top = -( TextArea.CharHeight/2 ); //
 			if ( width > 0 )
 			{
 				element.Width = width;
-				this.isFitToContents = false;
+				isFitToContents = false;
 			}
 			else
 			{
-				this.isFitToContents = true;
+				isFitToContents = true;
 			}
 
-			this.Caption = caption;
-			this.State = ButtonState.Up;
+			Caption = caption;
+			State = ButtonState.Up;
 		}
 
 		#endregion Construction and Destruction
@@ -154,7 +153,7 @@ namespace Axiom.Samples
 		{
 			if ( IsCursorOver( element, cursorPos, 4 ) )
 			{
-				this.State = ButtonState.Down;
+				State = ButtonState.Down;
 				base.OnCursorPressed( cursorPos );
 			}
 		}
@@ -165,10 +164,10 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorReleased( Vector2 cursorPos )
 		{
-			if ( this.State == ButtonState.Down )
+			if ( State == ButtonState.Down )
 			{
-				this.State = ButtonState.Over;
-				if ( this.listener != null )
+				State = ButtonState.Over;
+				if ( listener != null )
 				{
 					listener.OnButtonHit( this, this );
 				}
@@ -185,16 +184,16 @@ namespace Axiom.Samples
 		{
 			if ( IsCursorOver( element, cursorPos, 4 ) )
 			{
-				if ( this.State == ButtonState.Up )
+				if ( State == ButtonState.Up )
 				{
-					this.State = ButtonState.Over;
+					State = ButtonState.Over;
 				}
 			}
 			else
 			{
-				if ( this.State != ButtonState.Up )
+				if ( State != ButtonState.Up )
 				{
-					this.State = ButtonState.Up;
+					State = ButtonState.Up;
 				}
 			}
 
@@ -206,7 +205,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public override void OnLostFocus()
 		{
-			this.State = ButtonState.Up; // reset button if cursor was lost
+			State = ButtonState.Up; // reset button if cursor was lost
 
 			base.OnLostFocus();
 		}

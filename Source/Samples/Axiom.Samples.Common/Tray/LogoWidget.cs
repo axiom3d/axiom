@@ -23,7 +23,6 @@
 #endregion License
 
 using System;
-
 using Axiom.Overlays;
 
 namespace Axiom.Samples
