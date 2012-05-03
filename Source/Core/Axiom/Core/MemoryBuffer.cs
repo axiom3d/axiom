@@ -44,9 +44,7 @@ using System.Collections.Generic;
 
 namespace Axiom.Core
 {
-	public interface IMemoryBuffer : IDisposable
-	{
-	}
+	public interface IMemoryBuffer : IDisposable {}
 
 	public interface IBitConverter
 	{
@@ -72,17 +70,16 @@ namespace Axiom.Core
 			                 {
 			                 	{
 			                 		typeof ( int ), new IntBitConverter()
-			                 		},
-			                 	{
-			                 		typeof ( float ), new SingleBitConverter()
-			                 		}
+			                 		}, {
+			                 		   	typeof ( float ), new SingleBitConverter()
+			                 		   	}
 			                 };
 		}
 
 		public MemoryBuffer<T> Allocate<T>( long size ) where T : struct
 		{
 			var buffer = new MemoryBuffer<T>( this, size );
-			_memoryPool.Add( buffer );
+			this._memoryPool.Add( buffer );
 			return buffer;
 		}
 
@@ -105,8 +102,8 @@ namespace Axiom.Core
 			public Array Convert( Array buffer, int startIndex )
 			{
 				int[] retVal;
-				var size = buffer.Length/4;
-				retVal = new int[size];
+				var size = buffer.Length / 4;
+				retVal = new int[ size ];
 				for ( var index = startIndex; index < size; index++, startIndex += 4 )
 				{
 					retVal[ index ] = BitConverter.ToInt32( (byte[])buffer, startIndex );
@@ -120,8 +117,8 @@ namespace Axiom.Core
 			public Array Convert( Array buffer, int startIndex )
 			{
 				float[] retVal;
-				var size = buffer.Length/4;
-				retVal = new float[size];
+				var size = buffer.Length / 4;
+				retVal = new float[ size ];
 				for ( var index = startIndex; index < size; index++, startIndex += 4 )
 				{
 					retVal[ index ] = BitConverter.ToInt32( (byte[])buffer, startIndex );
@@ -154,13 +151,13 @@ namespace Axiom.Core
 		internal MemoryBuffer( MemoryManager owner )
 		{
 			IsDisposed = false;
-			Owner = owner;
+			this.Owner = owner;
 		}
 
 		internal MemoryBuffer( MemoryManager owner, long size )
 			: this( owner )
 		{
-			_buffer = new T[size];
+			_buffer = new T[ size ];
 		}
 
 		public TDestType[] AsArray<TDestType>()
@@ -169,7 +166,7 @@ namespace Axiom.Core
 			{
 				return (TDestType[])( Owner.BitConverters[ typeof ( TDestType ) ].Convert( _buffer, 0 ) );
 			}
-			return new TDestType[0];
+			return new TDestType[ 0 ];
 		}
 
 		#region IDisposable Implementation
@@ -180,7 +177,7 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-					_buffer = null;
+					this._buffer = null;
 				}
 
 				// There are no unmanaged resources to release, but

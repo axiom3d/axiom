@@ -44,20 +44,41 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Axiom.Graphics;
+using System.IO;
+using System.Runtime.InteropServices;
+
+using Axiom.Animating;
+using Axiom.Collections;
+using Axiom.Configuration;
+
 using Axiom.Math;
+using Axiom.Serialization;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
 	/// <summary>
-	///   Class for handling multiple levels of detail for a Mesh
+	///    Class for handling multiple levels of detail for a Mesh
 	/// </summary>
 	/// <remarks>
-	///   This class reduces the complexity of the geometry it is given. This class is dedicated to reducing the number of triangles in a given mesh taking into account seams in both geometry and texture co-ordinates and meshes which have multiple frames. <para /> The primary use for this is generating LOD versions of Mesh objects, but it can be used by any geometry provider. The only limitation at the moment is that the provider uses a common vertex buffer for all LODs and one index buffer per LOD. Therefore at the moment this class can only handle indexed geometry. <para /> NB the interface of this class will certainly change when compiled vertex buffers are supported.
+	///    This class reduces the complexity of the geometry it is given.
+	///    This class is dedicated to reducing the number of triangles in a given mesh
+	///    taking into account seams in both geometry and texture co-ordinates and meshes 
+	///    which have multiple frames.
+	///    <para/>
+	///    The primary use for this is generating LOD versions of Mesh objects, but it can be
+	///    used by any geometry provider. The only limitation at the moment is that the 
+	///    provider uses a common vertex buffer for all LODs and one index buffer per LOD.
+	///    Therefore at the moment this class can only handle indexed geometry.
+	///    <para/>
+	///    NB the interface of this class will certainly change when compiled vertex buffers are
+	///    supported.
 	/// </remarks>
 	public class ProgressiveMesh
 	{
@@ -68,7 +89,8 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   A vertex as used by a face. This records the index of the actual vertex which is used by the face, and a pointer to the common vertex used for surface evaluation.
+		///    A vertex as used by a face. This records the index of the actual vertex which is used
+		///    by the face, and a pointer to the common vertex used for surface evaluation.
 		/// </summary>
 		internal class PMFaceVertex
 		{
@@ -77,7 +99,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   A triangle in the progressive mesh, holds extra info like face normal.
+		///    A triangle in the progressive mesh, holds extra info like face normal.
 		/// </summary>
 		internal class PMTriangle
 		{
@@ -194,7 +216,7 @@ namespace Axiom.Core
 				}
 				for ( var i = 0; i < 3; i++ )
 				{
-					var i2 = ( i + 1 )%3;
+					var i2 = ( i + 1 ) % 3;
 					if ( vertex[ i ] == null || vertex[ i2 ] == null )
 					{
 						continue;
@@ -208,14 +230,18 @@ namespace Axiom.Core
 				removed = true;
 			}
 
-			internal PMFaceVertex[] vertex = new PMFaceVertex[3]; // the 3 points that make this tri
+			internal PMFaceVertex[] vertex = new PMFaceVertex[ 3 ]; // the 3 points that make this tri
 			internal Vector3 normal; // unit vector othogonal to this face
 			internal bool removed = false; // true if this tri is now removed
 			private uint index;
 		}
 
 		/// <summary>
-		///   A vertex in the progressive mesh, holds info like collapse cost etc. This vertex can actually represent several vertices in the final model, because vertices along texture seams etc will have been duplicated. In order to properly evaluate the surface properties, a single common vertex is used for these duplicates, and the faces hold the detail of the duplicated vertices.
+		///    A vertex in the progressive mesh, holds info like collapse cost etc. 
+		///    This vertex can actually represent several vertices in the final model, because
+		///    vertices along texture seams etc will have been duplicated. In order to properly
+		///    evaluate the surface properties, a single common vertex is used for these duplicates,
+		///    and the faces hold the detail of the duplicated vertices.
 		/// </summary>
 		internal class PMVertex
 		{
@@ -247,7 +273,7 @@ namespace Axiom.Core
 				if ( neighbors.Count == 0 && !toBeRemoved )
 				{
 					// This vertex has been removed through isolation (collapsing around it)
-					NotifyRemoved();
+					this.NotifyRemoved();
 				}
 			}
 
@@ -286,8 +312,8 @@ namespace Axiom.Core
 					vertex.neighbors.Remove( this );
 				}
 				removed = true;
-				collapseTo = null;
-				collapseCost = float.MaxValue;
+				this.collapseTo = null;
+				this.collapseCost = float.MaxValue;
 			}
 
 			#endregion
@@ -295,9 +321,9 @@ namespace Axiom.Core
 			#region Properties
 
 			/// <summary>
-			///   Determine if this vertex is on the edge of an open geometry patch
+			///    Determine if this vertex is on the edge of an open geometry patch
 			/// </summary>
-			/// <returns> tru if this vertex is on the edge of an open geometry patch </returns>
+			/// <returns>tru if this vertex is on the edge of an open geometry patch</returns>
 			internal bool IsBorder
 			{
 				get
@@ -350,8 +376,8 @@ namespace Axiom.Core
 			#endregion
 			internal void SetDetails( Vector3 pos, uint numCommon )
 			{
-				position = pos;
-				index = numCommon;
+				this.position = pos;
+				this.index = numCommon;
 			}
 		}
 
@@ -364,13 +390,13 @@ namespace Axiom.Core
 
 		#region Fields
 
-		private readonly VertexData vertexData;
-		private readonly IndexData indexData;
+		private VertexData vertexData;
+		private IndexData indexData;
 		private uint currNumIndexes;
 		private uint numCommonVertices;
 
 		/// Multiple copies, 1 per vertex buffer
-		private readonly List<PMWorkingData> workingDataList = new List<PMWorkingData>();
+		private List<PMWorkingData> workingDataList = new List<PMWorkingData>();
 
 		/// The worst collapse cost from all vertex buffers for each vertex
 		private float[] worstCosts;
@@ -378,13 +404,16 @@ namespace Axiom.Core
 		#endregion
 
 		/// <summary>
-		///   Constructor, takes the geometry data and index buffer.
+		///    Constructor, takes the geometry data and index buffer. 
 		/// </summary>
 		/// <remarks>
-		///   DO NOT pass write-only, unshadowed buffers to this method! They will not work. Pass only shadowed buffers, or better yet perform mesh reduction as an offline process using DefaultHardwareBufferManager to manage vertex buffers in system memory.
+		///    DO NOT pass write-only, unshadowed buffers to this method! They will not
+		///    work. Pass only shadowed buffers, or better yet perform mesh reduction as
+		///    an offline process using DefaultHardwareBufferManager to manage vertex
+		///    buffers in system memory.
 		/// </remarks>
-		/// <param name="vertexData"> </param>
-		/// <param name="indexData"> </param>
+		/// <param name="vertexData"></param>
+		/// <param name="indexData"></param>
 		public ProgressiveMesh( VertexData vertexData, IndexData indexData )
 		{
 			AddWorkingData( vertexData, indexData );
@@ -393,15 +422,26 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Adds an extra vertex position buffer.
+		///    Adds an extra vertex position buffer. 
 		/// </summary>
 		/// <remarks>
-		///   As well as the main vertex buffer, the client of this class may add extra versions of the vertex buffer which will also be taken into account when the cost of simplifying the mesh is taken into account. This is because the cost of simplifying an animated mesh cannot be calculated from just the reference position, multiple positions needs to be assessed in order to find the best simplification option. <p /> DO NOT pass write-only, unshadowed buffers to this method! They will not work. Pass only shadowed buffers, or better yet perform mesh reduction as an offline process using DefaultHardwareBufferManager to manage vertex buffers in system memory.
+		///    As well as the main vertex buffer, the client of this class may add extra versions
+		///    of the vertex buffer which will also be taken into account when the cost of 
+		///    simplifying the mesh is taken into account. This is because the cost of
+		///    simplifying an animated mesh cannot be calculated from just the reference position,
+		///    multiple positions needs to be assessed in order to find the best simplification option.
+		///    <p/>
+		///    DO NOT pass write-only, unshadowed buffers to this method! They will not
+		///    work. Pass only shadowed buffers, or better yet perform mesh reduction as
+		///    an offline process using DefaultHardwareBufferManager to manage vertex
+		///    buffers in system memory.
 		/// </remarks>
-		/// <param name="vertexData"> buffer Pointer to x/y/z buffer with vertex positions. The number of vertices must be the same as in the original GeometryData passed to the constructor. </param>
+		/// <param name="vertexData">buffer Pointer to x/y/z buffer with vertex positions.
+		///    The number of vertices must be the same as in the original GeometryData passed to the constructor.
+		/// </param>
 		public void AddExtraVertexPositionBuffer( VertexData vertexData )
 		{
-			AddWorkingData( vertexData, indexData );
+			AddWorkingData( vertexData, this.indexData );
 		}
 
 
@@ -421,7 +461,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Builds the progressive mesh with the specified number of levels.
+		///    Builds the progressive mesh with the specified number of levels.
 		/// </summary>
 		public void Build( ushort numLevels, List<IndexData> lodFaceList, VertexReductionQuota quota, float reductionValue )
 		{
@@ -444,7 +484,7 @@ namespace Axiom.Core
 				{
 					if ( quota == VertexReductionQuota.Proportional )
 					{
-						numCollapses = (uint)( numVerts*reductionValue );
+						numCollapses = (uint)( numVerts * reductionValue );
 					}
 					else
 					{
@@ -491,19 +531,19 @@ namespace Axiom.Core
 		#region protected methods
 
 		/// <summary>
-		///   Internal method for building PMWorkingData from geometry data
+		///    Internal method for building PMWorkingData from geometry data
 		/// </summary>
 		private void AddWorkingData( VertexData vertexData, IndexData indexData )
 		{
 			// Insert blank working data, then fill
 			var work = new PMWorkingData();
-			workingDataList.Add( work );
+			this.workingDataList.Add( work );
 
 			// Build vertex list
 			// Resize face list (this will always be this big)
-			work.faceVertList = new PMFaceVertex[vertexData.vertexCount];
+			work.faceVertList = new PMFaceVertex[ vertexData.vertexCount ];
 			// Also resize common vert list to max, to avoid reallocations
-			work.vertList = new PMVertex[vertexData.vertexCount];
+			work.vertList = new PMVertex[ vertexData.vertexCount ];
 
 			// locate position element & the buffer to go with it
 			var posElem = vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
@@ -569,7 +609,7 @@ namespace Axiom.Core
 			numCommonVertices = numCommon;
 
 			// Build tri list
-			var numTris = (uint)indexData.indexCount/3;
+			var numTris = (uint)indexData.indexCount / 3;
 			var ibuf = indexData.indexBuffer;
 			var use32bitindexes = ( ibuf.Type == IndexType.Size32 );
 			var indexBufferPtr = ibuf.Lock( BufferLocking.ReadOnly );
@@ -580,7 +620,7 @@ namespace Axiom.Core
 				var pInt = indexBufferPtr.ToUIntPointer();
 				var pShort = indexBufferPtr.ToUShortPointer();
 				var idx = 0;
-				work.triList = new PMTriangle[(int)numTris]; // assumed tri list
+				work.triList = new PMTriangle[ (int)numTris ]; // assumed tri list
 				for ( uint i = 0; i < numTris; ++i )
 				{
 					// use 32-bit index always since we're not storing
@@ -602,7 +642,7 @@ namespace Axiom.Core
 		/// Internal method for initialising the edge collapse costs
 		private void InitialiseEdgeCollapseCosts()
 		{
-			worstCosts = new float[vertexData.vertexCount];
+			worstCosts = new float[ vertexData.vertexCount ];
 			foreach ( var data in workingDataList )
 			{
 				for ( var i = 0; i < data.vertList.Length; ++i )
@@ -680,7 +720,7 @@ namespace Axiom.Core
 							// This time, the nearer the dot is to -1, the better, because that means
 							// the edges are opposite each other, therefore less kinkiness
 							// Scale into [0..1]
-							kinkiness = ( otherBorderEdge.Dot( collapseEdge ) + 1.002f )*0.5f;
+							kinkiness = ( otherBorderEdge.Dot( collapseEdge ) + 1.002f ) * 0.5f;
 							maxKinkiness = Utility.Max( kinkiness, maxKinkiness );
 						}
 					}
@@ -705,7 +745,7 @@ namespace Axiom.Core
 						float dotprod = srcFace.normal.Dot( sideFace.normal );
 						// NB we do (1-..) to invert curvature where 1 is high curvature [0..1]
 						// Whilst dot product is high when angle difference is low
-						mincurv = Utility.Min( mincurv, ( 1.002f - dotprod )*0.5f );
+						mincurv = Utility.Min( mincurv, ( 1.002f - dotprod ) * 0.5f );
 					}
 					curvature = Utility.Max( curvature, mincurv );
 				}
@@ -767,7 +807,7 @@ namespace Axiom.Core
 
 
 		/// <summary>
-		///   Internal method evaluates all collapse costs from this vertex and picks the lowest for a single buffer
+		///    Internal method evaluates all collapse costs from this vertex and picks the lowest for a single buffer
 		/// </summary>
 		private float ComputeEdgeCostAtVertexForBuffer( PMWorkingData workingData, uint vertIndex )
 		{
@@ -814,7 +854,7 @@ namespace Axiom.Core
 			{
 				worstCost = Utility.Max( worstCost, ComputeEdgeCostAtVertexForBuffer( data, vertIndex ) );
 			}
-			worstCosts[ (int)vertIndex ] = worstCost;
+			this.worstCosts[ (int)vertIndex ] = worstCost;
 		}
 
 		/// Internal method to compute edge collapse costs for all buffers /
@@ -846,9 +886,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Internal method builds an new LOD based on the current state
+		///    Internal method builds an new LOD based on the current state
 		/// </summary>
-		/// <param name="indexData"> Index data which will have an index buffer created and initialized </param>
+		/// <param name="indexData">Index data which will have an index buffer created and initialized</param>
 		private void BakeNewLOD( IndexData indexData )
 		{
 			Debug.Assert( currNumIndexes > 0, "No triangles to bake!" );
@@ -859,9 +899,7 @@ namespace Axiom.Core
 			var use32bitindexes = ( this.indexData.indexBuffer.Type == IndexType.Size32 );
 
 			// Create index buffer, we don't need to read it back or modify it a lot
-			indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( this.indexData.indexBuffer.Type,
-			                                                                          indexData.indexCount,
-			                                                                          BufferUsage.StaticWriteOnly, false );
+			indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( this.indexData.indexBuffer.Type, indexData.indexCount, BufferUsage.StaticWriteOnly, false );
 
 			var bufPtr = indexData.indexBuffer.Lock( BufferLocking.Discard );
 
@@ -873,7 +911,7 @@ namespace Axiom.Core
 				var pShort = bufPtr.ToUShortPointer();
 				var pInt = bufPtr.ToUIntPointer();
 				// Use the first working data buffer, they are all the same index-wise
-				var work = workingDataList[ 0 ];
+				var work = this.workingDataList[ 0 ];
 				foreach ( var tri in work.triList )
 				{
 					if ( !tri.removed )
@@ -898,10 +936,12 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Internal method, collapses vertex onto it's saved collapse target.
+		///    Internal method, collapses vertex onto it's saved collapse target. 
 		/// </summary>
 		/// <remarks>
-		///   This updates the working triangle list to drop a triangle and recalculates the edge collapse costs around the collapse target. This also updates all the working vertex lists for the relevant buffer.
+		///    This updates the working triangle list to drop a triangle and recalculates
+		///    the edge collapse costs around the collapse target. 
+		///    This also updates all the working vertex lists for the relevant buffer. 
 		/// </remarks>
 		/// <pram name="src">the collapser</pram>
 		private void Collapse( PMVertex src )

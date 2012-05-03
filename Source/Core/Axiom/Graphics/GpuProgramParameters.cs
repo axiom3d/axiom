@@ -41,6 +41,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using Axiom.Core;
 using Axiom.Math;
 
@@ -49,10 +50,29 @@ using Axiom.Math;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///   Collects together the program parameters used for a GpuProgram.
+	/// 	Collects together the program parameters used for a GpuProgram.
 	/// </summary>
 	/// <remarks>
-	///   Gpu program state includes constant parameters used by the program, and bindings to render system state which is propagated into the constants by the engine automatically if requested. <p /> GpuProgramParameters objects should be created through the GpuProgramManager and may be shared between multiple GpuProgram instances. For this reason they are managed using a shared pointer, which will ensure they are automatically deleted when no program is using them anymore. <p /> Different types of GPU programs support different types of constant parameters. For example, it's relatively common to find that vertex programs only support floating point constants, and that fragment programs only support integer (fixed point) parameters. This can vary depending on the program version supported by the graphics card being used. You should consult the documentation for the type of low level program you are using, or alternatively use the methods provided on Capabilities to determine the options. <p /> Another possible limitation is that some systems only allow constants to be set on certain boundaries, e.g. in sets of 4 values for example. Again, see Capabilities for full details.
+	///    Gpu program state includes constant parameters used by the program, and
+	///    bindings to render system state which is propagated into the constants
+	///    by the engine automatically if requested.
+	///    <p/>
+	///    GpuProgramParameters objects should be created through the GpuProgramManager and
+	///    may be shared between multiple GpuProgram instances. For this reason they
+	///    are managed using a shared pointer, which will ensure they are automatically
+	///    deleted when no program is using them anymore.
+	///    <p/>
+	///    Different types of GPU programs support different types of constant parameters.
+	///    For example, it's relatively common to find that vertex programs only support
+	///    floating point constants, and that fragment programs only support integer (fixed point)
+	///    parameters. This can vary depending on the program version supported by the
+	///    graphics card being used. You should consult the documentation for the type of
+	///    low level program you are using, or alternatively use the methods
+	///    provided on Capabilities to determine the options.
+	///    <p/>
+	///    Another possible limitation is that some systems only allow constants to be set
+	///    on certain boundaries, e.g. in sets of 4 values for example. Again, see
+	///    Capabilities for full details.
 	/// </remarks>
 	public partial class GpuProgramParameters : DisposableObject
 	{
@@ -65,27 +85,27 @@ namespace Axiom.Graphics
 		public enum GpuParamVariability : ushort
 		{
 			/// <summary>
-			///   No variation except by manual setting - the default
+			/// No variation except by manual setting - the default
 			/// </summary>
 			Global = 1,
 
 			/// <summary>
-			///   Varies per object (based on an auto param usually), but not per light setup
+			/// Varies per object (based on an auto param usually), but not per light setup
 			/// </summary>
 			PerObject = 2,
 
 			/// <summary>
-			///   Varies with light setup
+			/// Varies with light setup
 			/// </summary>
 			Lights = 4,
 
 			/// <summary>
-			///   Varies with pass iteration number
+			/// Varies with pass iteration number
 			/// </summary>
 			PassIterationNumber = 8,
 
 			/// <summary>
-			///   Full mask (16-bit)
+			/// Full mask (16-bit)
 			/// </summary>
 			All = 0xFFFF
 		};
@@ -95,11 +115,13 @@ namespace Axiom.Graphics
 		#region GpuConstantType
 
 		/// <summary>
-		///   Enumeration of the types of constant we may encounter in programs.
+		/// Enumeration of the types of constant we may encounter in programs.
 		/// </summary>
-		/// <note>Low-level programs, by definition, will always use either
-		///   float4 or int4 constant types since that is the fundamental underlying
-		///   type in assembler.</note>
+		/// <note>
+		/// Low-level programs, by definition, will always use either
+		/// float4 or int4 constant types since that is the fundamental underlying
+		/// type in assembler.
+		/// </note>
 		[OgreVersion( 1, 7, 2790 )]
 		public enum GpuConstantType
 		{
@@ -136,27 +158,33 @@ namespace Axiom.Graphics
 		#region Fields
 
 		/// <summary>
-		///   Definition of container that holds the current float constants.
+		/// Definition of container that holds the current float constants.
 		/// </summary>
 		/// <remarks>
-		///   Not necessarily in direct index order to constant indexes, logical to physical index map is derived from GpuProgram
+		/// Not necessarily in direct index order to constant indexes, logical
+		/// to physical index map is derived from GpuProgram
 		/// </remarks>
-		[OgreVersion( 1, 7, 2790 )] protected FloatConstantList floatConstants = new FloatConstantList();
+		[OgreVersion( 1, 7, 2790 )]
+		protected FloatConstantList floatConstants = new FloatConstantList();
 
 		/// <summary>
-		///   Definition of container that holds the current integer constants.
+		/// Definition of container that holds the current integer constants.
 		/// </summary>
 		/// <remarks>
-		///   Not necessarily in direct index order to constant indexes, logical to physical index map is derived from GpuProgram
+		/// Not necessarily in direct index order to constant indexes, logical
+		/// to physical index map is derived from GpuProgram
 		/// </remarks>
-		[OgreVersion( 1, 7, 2790 )] protected IntConstantList intConstants = new IntConstantList();
+		[OgreVersion( 1, 7, 2790 )]
+		protected IntConstantList intConstants = new IntConstantList();
 
 		#region FloatLogicalBufferStruct
 
 		/// <summary>
-		///   Logical index to physical index map - for low-level programs or high-level programs which pass params this way.
+		/// Logical index to physical index map - for low-level programs
+		/// or high-level programs which pass params this way.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected GpuLogicalBufferStruct floatLogicalToPhysical;
+		[OgreVersion( 1, 7, 2790 )]
+		protected GpuLogicalBufferStruct floatLogicalToPhysical;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public GpuLogicalBufferStruct FloatLogicalBufferStruct
@@ -172,9 +200,10 @@ namespace Axiom.Graphics
 		#region IntLogicalBufferStruct
 
 		/// <summary>
-		///   Packed list of floating-point constants (physical indexing)
+		/// Packed list of floating-point constants (physical indexing)
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected GpuLogicalBufferStruct intLogicalToPhysical;
+		[OgreVersion( 1, 7, 2790 )]
+		protected GpuLogicalBufferStruct intLogicalToPhysical;
 
 		[OgreVersion( 1, 7, 2790 )]
 		public GpuLogicalBufferStruct IntLogicalBufferStruct
@@ -189,10 +218,11 @@ namespace Axiom.Graphics
 
 		#region NamedConstants
 
-		[OgreVersion( 1, 7, 2790 )] private GpuNamedConstants _namedConstants;
+		[OgreVersion( 1, 7, 2790 )]
+		private GpuNamedConstants _namedConstants;
 
 		/// <summary>
-		///   Mapping from parameter names to def - high-level programs are expected to populate this
+		/// Mapping from parameter names to def - high-level programs are expected to populate this
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public GpuNamedConstants NamedConstants
@@ -218,34 +248,36 @@ namespace Axiom.Graphics
 		#endregion NamedConstants
 
 		/// <summary>
-		///   The combined variability masks of all parameters
+		/// The combined variability masks of all parameters
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] private GpuParamVariability _combinedVariability;
+		[OgreVersion( 1, 7, 2790 )]
+		private GpuParamVariability _combinedVariability;
 
 		/// <summary>
-		///   List of automatically updated parameters.
+		/// List of automatically updated parameters.
 		/// </summary>
 		protected AutoConstantsList autoConstants = new AutoConstantsList();
 
 		/// <summary>
-		///   flag to indicate if names not found will be ignored
+		/// flag to indicate if names not found will be ignored
 		/// </summary>
 		protected bool ignoreMissingParameters;
 
 		/// <summary>
-		///   physical index for active pass iteration parameter real constant entry;
+		/// physical index for active pass iteration parameter real constant entry;
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected int activePassIterationIndex;
+		[OgreVersion( 1, 7, 2790 )]
+		protected int activePassIterationIndex;
 
-		[OgreVersion( 1, 7, 2790 )] private readonly GpuSharedParametersUsageList _sharedParamSets =
-			new GpuSharedParametersUsageList();
+		[OgreVersion( 1, 7, 2790 )]
+		private readonly GpuSharedParametersUsageList _sharedParamSets = new GpuSharedParametersUsageList();
 
 		#endregion Fields
 
 		#region Properties
 
 		/// <summary>
-		///   physical index for active pass iteration parameter real constant entry;
+		/// physical index for active pass iteration parameter real constant entry;
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public int PassIterationNumberIndex
@@ -257,7 +289,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Does this parameters object have a pass iteration number constant?
+		/// Does this parameters object have a pass iteration number constant?
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public bool HasPassIterationNumber
@@ -269,7 +301,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Returns true if this instance contains any automatic constants.
+		/// Returns true if this instance contains any automatic constants.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public bool HasAutoConstantType
@@ -281,13 +313,14 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Specifies whether matrices need to be transposed prior to being sent to the hardware.
+		/// Specifies whether matrices need to be transposed prior to
+		/// being sent to the hardware.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public bool TransposeMatrices { get; set; }
 
 		/// <summary>
-		///   List of automatically updated parameters.
+		///    List of automatically updated parameters.
 		/// </summary>
 		public AutoConstantsList AutoConstantList
 		{
@@ -298,7 +331,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Tells the program whether to ignore missing parameters or not.
+		/// Tells the program whether to ignore missing parameters or not.
 		/// </summary>
 		public bool IgnoreMissingParameters
 		{
@@ -327,9 +360,9 @@ namespace Axiom.Graphics
 
 		#region Construction and destruction
 
-		///<summary>
-		///  Default constructor.
-		///</summary>
+		/// <summary>
+		///	Default constructor.
+		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public GpuProgramParameters()
 			: base()
@@ -368,7 +401,7 @@ namespace Axiom.Graphics
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -414,10 +447,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Sends 4 packed floating-point values to the program.
+		/// Sends 4 packed floating-point values to the program.
 		/// </summary>
-		/// <param name="index"> Index of the contant register. </param>
-		/// <param name="val"> Structure containing 4 packed float values. </param>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="val">Structure containing 4 packed float values.</param>
 		[OgreVersion( 1, 7, 2790, "not passing as [] but as 4 args" )]
 		public void SetConstant( int index, Vector4 val )
 		{
@@ -425,10 +458,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Provides a way to pass in a single float
+		/// Provides a way to pass in a single float
 		/// </summary>
-		/// <param name="index"> Index of the contant register to start at. </param>
-		/// <param name="value"> </param>
+		/// <param name="index">Index of the contant register to start at.</param>
+		/// <param name="value"></param>
 		[OgreVersion( 1, 7, 2790, "not passing as [] but as 4 args" )]
 		public void SetConstant( int index, Real value )
 		{
@@ -436,10 +469,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Sends 3 packed floating-point values to the program.
+		/// Sends 3 packed floating-point values to the program.
 		/// </summary>
-		/// <param name="index"> Index of the contant register. </param>
-		/// <param name="val"> Structure containing 3 packed float values. </param>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="val">Structure containing 3 packed float values.</param>
 		[OgreVersion( 1, 7, 2790, "not passing as [] but as 4 args" )]
 		public void SetConstant( int index, Vector3 val )
 		{
@@ -447,17 +480,20 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Sends a multiple value constant floating-point parameter to the program.
+		///    Sends a multiple value constant floating-point parameter to the program.
 		/// </summary>
 		/// <remarks>
-		///   This method is made virtual to allow GpuProgramManagers, or even individual GpuProgram implementations to supply their own implementation if need be. An example would be where a Matrix needs to be transposed to row-major format before passing to the hardware.
+		///     This method is made virtual to allow GpuProgramManagers, or even individual
+		///     GpuProgram implementations to supply their own implementation if need be.
+		///     An example would be where a Matrix needs to be transposed to row-major format
+		///     before passing to the hardware.
 		/// </remarks>
-		/// <param name="index"> Index of the contant register. </param>
-		/// <param name="mat"> Structure containing 3 packed float values. </param>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="mat">Structure containing 3 packed float values.</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetConstant( int index, Matrix4 mat )
 		{
-			var a = new float[16];
+			var a = new float[ 16 ];
 
 			// set as 4x 4-element floats
 			if ( TransposeMatrices )
@@ -473,17 +509,17 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Sends a multiple matrix values to the program.
+		///    Sends a multiple matrix values to the program.
 		/// </summary>
-		/// <param name="index"> Index of the contant register. </param>
-		/// <param name="matrices"> Values to set. </param>
-		/// <param name="count"> Number of matrices to set </param>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="matrices">Values to set.</param>
+		/// <param name="count">Number of matrices to set</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetConstant( int index, Matrix4[] matrices, int count )
 		{
 			if ( TransposeMatrices )
 			{
-				var a = new float[16];
+				var a = new float[ 16 ];
 				for ( var i = 0; i < count; ++i )
 				{
 					matrices[ i ].Transpose().MakeFloatArray( a );
@@ -493,21 +529,21 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				var a = new float[16*count];
+				var a = new float[ 16 * count ];
 				for ( var i = 0; i < count; ++i )
 				{
-					matrices[ i ].MakeFloatArray( a, 16*i );
+					matrices[ i ].MakeFloatArray( a, 16 * i );
 				}
 
-				SetConstant( index, a, 4*count );
+				SetConstant( index, a, 4 * count );
 			}
 		}
 
 		/// <summary>
-		///   Sends 4 packed floating-point RGBA color values to the program.
+		///    Sends 4 packed floating-point RGBA color values to the program.
 		/// </summary>
-		/// <param name="index"> Index of the contant register. </param>
-		/// <param name="color"> Structure containing 4 packed RGBA color values. </param>
+		/// <param name="index">Index of the contant register.</param>
+		/// <param name="color">Structure containing 4 packed RGBA color values.</param>
 		[OgreVersion( 1, 7, 2790, "not passing as [] but as 4 args" )]
 		public void SetConstant( int index, ColorEx color )
 		{
@@ -515,28 +551,29 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Optimize the most common case of setting constant consisting of four floats
+		///    Optimize the most common case of setting constant
+		///    consisting of four floats
 		/// </summary>
-		/// <param name="index"> Index of the contant register to start at. </param>
-		/// <param name="f0"> The floats. </param>
-		/// <param name="f1"> The floats. </param>
-		/// <param name="f2"> The floats. </param>
-		/// <param name="f3"> The floats. </param>
+		/// <param name="index">Index of the contant register to start at.</param>
+		/// <param name="f0">The floats.</param>
+		/// <param name="f1">The floats.</param>
+		/// <param name="f2">The floats.</param>
+		/// <param name="f3">The floats.</param>
 		[AxiomHelper( 0, 8 )]
 		public void SetConstant( int index, float f0, float f1, float f2, float f3 )
 		{
 			// TODO: optimize this in case of GC pressure problems
 			SetConstant( index, new[]
-			                    {
-			                    	f0, f1, f2, f3
-			                    } );
+								{
+									f0, f1, f2, f3
+								} );
 		}
 
 		/// <summary>
-		///   Sets an array of int values starting at the specified index.
+		///    Sets an array of int values starting at the specified index.
 		/// </summary>
-		/// <param name="index"> Index of the contant register to start at. </param>
-		/// <param name="val"> Array of ints. </param>
+		/// <param name="index">Index of the contant register to start at.</param>
+		/// <param name="val">Array of ints.</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetConstant( int index, int[] val )
 		{
@@ -551,10 +588,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Sets a multiple value constant floating-point parameter to the program.
+		/// Sets a multiple value constant floating-point parameter to the program.
 		/// </summary>
-		/// <param name="index"> The logical constant index at which to start placing parameters (each constant is a 4D float) </param>
-		/// <param name="val"> Pointer to the values to write, must contain 4*count floats </param>
+		/// <param name="index">The logical constant index at which to start placing parameters 
+		/// (each constant is a 4D float)</param>
+		/// <param name="val">Pointer to the values to write, must contain 4*count floats</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetConstant( int index, float[] val )
 		{
@@ -570,10 +608,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Sets a multiple value constant floating-point parameter to the program.
+		/// Sets a multiple value constant floating-point parameter to the program.
 		/// </summary>
-		/// <param name="index"> The logical constant index at which to start placing parameters (each constant is a 4D float) </param>
-		/// <param name="val"> Pointer to the values to write, must contain 4*count floats </param>
+		/// <param name="index">The logical constant index at which to start placing parameters 
+		/// (each constant is a 4D float)</param>
+		/// <param name="val">Pointer to the values to write, must contain 4*count floats</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetConstant( int index, double[] val )
 		{
@@ -592,16 +631,16 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Sets an array of int values starting at the specified index.
+		///    Sets an array of int values starting at the specified index.
 		/// </summary>
-		/// <param name="index"> Index of the contant register to start at. </param>
-		/// <param name="val"> Array of ints. </param>
-		/// <param name="count"> </param>
+		/// <param name="index">Index of the contant register to start at.</param>
+		/// <param name="val">Array of ints.</param>
+		/// <param name="count"></param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetConstant( int index, int[] val, int count )
 		{
 			// Raw buffer size is 4x count
-			var rawCount = count*4;
+			var rawCount = count * 4;
 			// get physical index
 			Debug.Assert( intLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
 
@@ -614,7 +653,7 @@ namespace Axiom.Graphics
 		public void SetConstant( int index, float[] val, int count )
 		{
 			// Raw buffer size is 4x count
-			var rawCount = count*4;
+			var rawCount = count * 4;
 			// get physical index
 			Debug.Assert( floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
 
@@ -637,9 +676,9 @@ namespace Axiom.Graphics
 			// WriteRawConstants(physicalIndex, vec.ptr(), sz);
 
 			var arr = new float[]
-			          {
-			          	val.x, val.y, val.z, val.w
-			          };
+					  {
+						val.x, val.y, val.z, val.w
+					  };
 			_writeRawConstants( physicalIndex, arr, Utility.Min( count, 4 ) );
 		}
 
@@ -647,34 +686,34 @@ namespace Axiom.Graphics
 		public void WriteRawConstant( int physicalIndex, Real val )
 		{
 			_writeRawConstants( physicalIndex, new float[]
-			                                   {
-			                                   	val
-			                                   }, 1 );
+											   {
+												val
+											   }, 1 );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		public void WriteRawConstant( int physicalIndex, int val )
 		{
 			_writeRawConstants( physicalIndex, new[]
-			                                   {
-			                                   	val
-			                                   }, 1 );
+											   {
+												val
+											   }, 1 );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public void WriteRawConstant( int physicalIndex, Vector3 val )
 		{
 			var arr = new float[]
-			          {
-			          	val.x, val.y, val.z
-			          };
+					  {
+						val.x, val.y, val.z
+					  };
 			_writeRawConstants( physicalIndex, arr, 3 );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		public void WriteRawConstant( int physicalIndex, Matrix4 m, int elementCount )
 		{
-			var arr = new float[16];
+			var arr = new float[ 16 ];
 			// remember, raw content access uses raw float count rather than float4
 			if ( TransposeMatrices )
 			{
@@ -707,7 +746,7 @@ namespace Axiom.Graphics
 #endif
 		{
 			// write either the number requested (for packed types) or up to 4
-			var arr = new float[4];
+			var arr = new float[ 4 ];
 			color.ToArrayRGBA( arr );
 			_writeRawConstants( physicalIndex, arr, Utility.Min( count, 4 ) );
 		}
@@ -754,7 +793,7 @@ namespace Axiom.Graphics
 		{
 			Debug.Assert( physicalIndex + dest.Length <= floatConstants.Count );
 			var destBuf = Memory.PinObject( dest );
-			Memory.Copy( GetFloatPointer( physicalIndex ).Pointer, destBuf, sizeof ( float )*dest.Length );
+			Memory.Copy( GetFloatPointer( physicalIndex ).Pointer, destBuf, sizeof ( float ) * dest.Length );
 			Memory.UnpinObject( dest );
 		}
 
@@ -763,7 +802,7 @@ namespace Axiom.Graphics
 		{
 			Debug.Assert( physicalIndex + dest.Length <= intConstants.Count );
 			var destBuf = Memory.PinObject( dest );
-			Memory.Copy( GetFloatPointer( physicalIndex ).Pointer, destBuf, sizeof ( int )*dest.Length );
+			Memory.Copy( GetFloatPointer( physicalIndex ).Pointer, destBuf, sizeof ( int ) * dest.Length );
 			Memory.UnpinObject( dest );
 		}
 
@@ -919,8 +958,7 @@ namespace Axiom.Graphics
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected GpuLogicalIndexUse GetFloatConstantLogicalIndexUse( int logicalIndex, int requestedSize,
-		                                                              GpuParamVariability variability )
+		protected GpuLogicalIndexUse GetFloatConstantLogicalIndexUse( int logicalIndex, int requestedSize, GpuParamVariability variability )
 		{
 			if ( floatLogicalToPhysical == null )
 			{
@@ -952,7 +990,7 @@ namespace Axiom.Graphics
 
 						// Set up a mapping for all items in the count
 						var currPhys = physicalIndex;
-						var count = requestedSize/4;
+						var count = requestedSize / 4;
 
 						GpuLogicalIndexUse insertedIterator = null;
 						for ( var logicalNum = 0; logicalNum < count; ++logicalNum )
@@ -1007,8 +1045,7 @@ namespace Axiom.Graphics
 						foreach ( var i in autoConstants )
 						{
 							AutoConstantDefinition def;
-							if ( i.PhysicalIndex > physicalIndex && GetAutoConstantDefinition( i.Type.ToString(), out def ) &&
-							     def.ElementType == ElementType.Real )
+							if ( i.PhysicalIndex > physicalIndex && GetAutoConstantDefinition( i.Type.ToString(), out def ) && def.ElementType == ElementType.Real )
 							{
 								i.PhysicalIndex += insertCount;
 							}
@@ -1039,8 +1076,7 @@ namespace Axiom.Graphics
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected GpuLogicalIndexUse GetIntConstantLogicalIndexUse( int logicalIndex, int requestedSize,
-		                                                            GpuParamVariability variability )
+		protected GpuLogicalIndexUse GetIntConstantLogicalIndexUse( int logicalIndex, int requestedSize, GpuParamVariability variability )
 		{
 			if ( intLogicalToPhysical == null )
 			{
@@ -1072,7 +1108,7 @@ namespace Axiom.Graphics
 
 						// Set up a mapping for all items in the count
 						var currPhys = physicalIndex;
-						var count = requestedSize/4;
+						var count = requestedSize / 4;
 
 						GpuLogicalIndexUse insertedIterator = null;
 						for ( var logicalNum = 0; logicalNum < count; ++logicalNum )
@@ -1128,8 +1164,7 @@ namespace Axiom.Graphics
 						foreach ( var i in autoConstants )
 						{
 							AutoConstantDefinition def;
-							if ( i.PhysicalIndex > physicalIndex && GetAutoConstantDefinition( i.Type.ToString(), out def ) &&
-							     def.ElementType == ElementType.Int )
+							if ( i.PhysicalIndex > physicalIndex && GetAutoConstantDefinition( i.Type.ToString(), out def ) && def.ElementType == ElementType.Int )
 							{
 								i.PhysicalIndex += insertCount;
 							}
@@ -1174,9 +1209,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Retrieves the logical index relating to a physical index in the float buffer, for programs which support that (low-level programs and high-level programs which use logical parameter indexes).
+		/// Retrieves the logical index relating to a physical index in the float
+		/// buffer, for programs which support that (low-level programs and 
+		/// high-level programs which use logical parameter indexes).
 		/// </summary>
-		/// <returns> int.MaxValue if not found </returns>
+		/// <returns>int.MaxValue if not found</returns>
 		[OgreVersion( 1, 7, 2790 )]
 		public int GetFloatLogicalIndexForPhysicalIndex( int physicalIndex )
 		{
@@ -1186,9 +1223,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Retrieves the logical index relating to a physical index in the int buffer, for programs which support that (low-level programs and high-level programs which use logical parameter indexes).
+		/// Retrieves the logical index relating to a physical index in the int
+		/// buffer, for programs which support that (low-level programs and 
+		/// high-level programs which use logical parameter indexes).
 		/// </summary>
-		/// <returns> int.MaxValue if not found </returns>
+		/// <returns>int.MaxValue if not found</returns>
 		[OgreVersion( 1, 7, 2790 )]
 		public int GetIntLogicalIndexForPhysicalIndex( int physicalIndex )
 		{
@@ -1198,7 +1237,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Get a specific GpuConstantDefinition for a named parameter.
+		/// Get a specific GpuConstantDefinition for a named parameter.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public GpuConstantDefinition GetConstantDefinition( string name )
@@ -1213,11 +1252,15 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Overloaded method.
+		/// Overloaded method.
 		/// </summary>
-		/// <param name="acType"> The type of automatic constant to set. </param>
-		/// <param name="index"> The location in the constant list to place this updated constant every time it is changed. Note that because of the nature of the types, we know how big the parameter details will be so you don't need to set that like you do for manual constants. </param>
-		/// <param name="extraInfo"> If the constant type needs more information (like a light index) put it here. </param>
+		/// <param name="acType">The type of automatic constant to set.</param>
+		/// <param name="index">
+		/// The location in the constant list to place this updated constant every time
+		/// it is changed. Note that because of the nature of the types, we know how big the
+		/// parameter details will be so you don't need to set that like you do for manual constants.
+		/// </param>
+		/// <param name="extraInfo">If the constant type needs more information (like a light index) put it here.</param>
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
 		public void SetAutoConstant( int index, AutoConstantType acType, int extraInfo = 0 )
@@ -1230,9 +1273,9 @@ namespace Axiom.Graphics
 			GetAutoConstantDefinition( (int)acType, out autoDef );
 			// round up to nearest multiple of 4
 			var sz = autoDef.ElementCount;
-			if ( sz%4 > 0 )
+			if ( sz % 4 > 0 )
 			{
-				sz += 4 - ( sz%4 );
+				sz += 4 - ( sz % 4 );
 			}
 
 			var indexUse = GetFloatConstantLogicalIndexUse( index, sz, DeriveVariability( acType ) );
@@ -1244,7 +1287,7 @@ namespace Axiom.Graphics
 		}
 
 #if !NET_40
-		/// <see cref="SetAutoConstant(int, AutoConstantType, int)" />
+		/// <see cref="SetAutoConstant(int, AutoConstantType, int)"/>
 		public void SetAutoConstant( int index, AutoConstantType type )
 		{
 			SetAutoConstant( index, type, 0 );
@@ -1252,8 +1295,7 @@ namespace Axiom.Graphics
 #endif
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected internal void SetRawAutoConstant( int physicalIndex, AutoConstantType acType, int extraInfo,
-		                                            GpuParamVariability variability, int elementSize )
+		protected internal void SetRawAutoConstant( int physicalIndex, AutoConstantType acType, int extraInfo, GpuParamVariability variability, int elementSize )
 		{
 			// update existing index if it exists
 			var found = false;
@@ -1285,8 +1327,7 @@ namespace Axiom.Graphics
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
-		protected internal void SetRawAutoConstantReal( int physicalIndex, AutoConstantType acType, Real extraInfo,
-		                                                GpuParamVariability variability, int elementSize )
+		protected internal void SetRawAutoConstantReal( int physicalIndex, AutoConstantType acType, Real extraInfo, GpuParamVariability variability, int elementSize )
 		{
 			// update existing index if it exists
 			var found = false;
@@ -1341,7 +1382,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Clears all the existing automatic constants.
+		/// Clears all the existing automatic constants.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public void ClearAutoConstants()
@@ -1358,9 +1399,9 @@ namespace Axiom.Graphics
 			GetAutoConstantDefinition( (int)acType, out autoDef );
 			// round up to nearest multiple of 4
 			var sz = autoDef.ElementCount;
-			if ( sz%4 > 0 )
+			if ( sz % 4 > 0 )
 			{
-				sz += 4 - ( sz%4 );
+				sz += 4 - ( sz % 4 );
 			}
 
 			var indexUse = GetFloatConstantLogicalIndexUse( index, sz, DeriveVariability( acType ) );
@@ -1394,10 +1435,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Sends 4 packed floating-point values to the program.
+		///    Sends 4 packed floating-point values to the program.
 		/// </summary>
-		/// <param name="name"> Name of the contant register. </param>
-		/// <param name="val"> Structure containing 4 packed float values. </param>
+		/// <param name="name">Name of the contant register.</param>
+		/// <param name="val">Structure containing 4 packed float values.</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetNamedConstant( string name, Vector4 val )
 		{
@@ -1410,10 +1451,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Sends 3 packed floating-point values to the program.
+		///    Sends 3 packed floating-point values to the program.
 		/// </summary>
-		/// <param name="name"> Name of the param. </param>
-		/// <param name="val"> Structure containing 3 packed float values. </param>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="val">Structure containing 3 packed float values.</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetNamedConstant( string name, Vector3 val )
 		{
@@ -1437,11 +1478,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Sends multiple matrices into a program.
+		///    Sends multiple matrices into a program.
 		/// </summary>
-		/// <param name="name"> Name of the param. </param>
-		/// <param name="matrices"> Array of matrices. </param>
-		/// <param name="count"> </param>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="matrices">Array of matrices.</param>
+		/// <param name="count"></param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetNamedConstant( string name, Matrix4[] matrices, int count )
 		{
@@ -1460,7 +1501,7 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, float[] val, int count, int multiple )
 #endif
 		{
-			var rawCount = count*multiple;
+			var rawCount = count * multiple;
 			// look up, and throw an exception if we're not ignoring missing
 			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
 			if ( def != null )
@@ -1477,10 +1518,10 @@ namespace Axiom.Graphics
 #endif
 
 		/// <summary>
-		///   Sends 4 packed floating-point RGBA color values to the program.
+		///    Sends 4 packed floating-point RGBA color values to the program.
 		/// </summary>
-		/// <param name="name"> Name of the param. </param>
-		/// <param name="color"> Structure containing 4 packed RGBA color values. </param>
+		/// <param name="name">Name of the param.</param>
+		/// <param name="color">Structure containing 4 packed RGBA color values.</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetNamedConstant( string name, ColorEx color )
 		{
@@ -1499,7 +1540,7 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, int[] val, int count, int multiple )
 #endif
 		{
-			var rawCount = count*multiple;
+			var rawCount = count * multiple;
 			// look up, and throw an exception if we're not ignoring missing
 			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
 			if ( def != null )
@@ -1516,14 +1557,24 @@ namespace Axiom.Graphics
 #endif
 
 		/// <summary>
-		///   Sets up a constant which will automatically be updated by the engine.
+		///    Sets up a constant which will automatically be updated by the engine.
 		/// </summary>
 		/// <remarks>
-		///   Vertex and fragment programs often need parameters which are to do with the current render state, or particular values which may very well change over time, and often between objects which are being rendered. This feature allows you to set up a certain number of predefined parameter mappings that are kept up to date for you.
+		///    Vertex and fragment programs often need parameters which are to do with the
+		///    current render state, or particular values which may very well change over time,
+		///    and often between objects which are being rendered. This feature allows you
+		///    to set up a certain number of predefined parameter mappings that are kept up to
+		///    date for you.
 		/// </remarks>
-		/// <param name="name"> Name of the param. </param>
-		/// <param name="acType"> The type of automatic constant to set. </param>
-		/// <param name="extraInfo"> Any extra information needed by the auto constant (i.e. light index, etc). </param>
+		/// <param name="name">
+		///    Name of the param.
+		/// </param>
+		/// <param name="acType">
+		///    The type of automatic constant to set.
+		/// </param>
+		/// <param name="extraInfo">
+		///    Any extra information needed by the auto constant (i.e. light index, etc).
+		/// </param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetNamedAutoConstant( string name, AutoConstantType acType, int extraInfo )
 		{
@@ -1533,7 +1584,7 @@ namespace Axiom.Graphics
 			{
 				def.Variability = DeriveVariability( acType );
 				// make sure we also set variability on the logical index map
-				var indexUse = GetFloatConstantLogicalIndexUse( def.LogicalIndex, def.ElementSize*def.ArraySize, def.Variability );
+				var indexUse = GetFloatConstantLogicalIndexUse( def.LogicalIndex, def.ElementSize * def.ArraySize, def.Variability );
 				if ( indexUse != null )
 				{
 					indexUse.Variability = def.Variability;
@@ -1543,7 +1594,7 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <see cref="GpuProgramParameters.SetNamedAutoConstant(string, AutoConstantType, int)" />
+		/// <see cref="GpuProgramParameters.SetNamedAutoConstant(string, AutoConstantType, int)"/>
 		[AxiomHelper( 0, 9 )]
 		public void SetNamedAutoConstant( string name, AutoConstantType type )
 		{
@@ -1559,7 +1610,7 @@ namespace Axiom.Graphics
 			{
 				def.Variability = DeriveVariability( acType );
 				// make sure we also set variability on the logical index map
-				var indexUse = GetFloatConstantLogicalIndexUse( def.LogicalIndex, def.ElementSize*def.ArraySize, def.Variability );
+				var indexUse = GetFloatConstantLogicalIndexUse( def.LogicalIndex, def.ElementSize * def.ArraySize, def.Variability );
 				if ( indexUse != null )
 				{
 					indexUse.Variability = def.Variability;
@@ -1595,10 +1646,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Finds an auto constant that's affecting a given logical parameter index for floating-point values.
+		/// Finds an auto constant that's affecting a given logical parameter 
+		/// index for floating-point values.
 		/// </summary>
 		/// <remarks>
-		///   Only applicable for low-level programs.
+		/// Only applicable for low-level programs.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public AutoConstantEntry FindFloatAutoConstantEntry( int logicalIndex )
@@ -1612,10 +1664,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Finds an auto constant that's affecting a given logical parameter index for integer values.
+		/// Finds an auto constant that's affecting a given logical parameter 
+		/// index for integer values.
 		/// </summary>
 		/// <remarks>
-		///   Only applicable for low-level programs.
+		/// Only applicable for low-level programs.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public AutoConstantEntry FindIntAutoConstantEntry( int logicalIndex )
@@ -1629,10 +1682,10 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Finds an auto constant that's affecting a given named parameter index.
+		/// Finds an auto constant that's affecting a given named parameter index.
 		/// </summary>
 		/// <remarks>
-		///   Only applicable to high-level programs.
+		/// Only applicable to high-level programs.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public AutoConstantEntry FindAutoConstantEntry( string paramName )
@@ -1643,9 +1696,7 @@ namespace Axiom.Graphics
 			}
 
 			var def = GetConstantDefinition( paramName );
-			return def.IsFloat
-			       	? FindRawAutoConstantEntryFloat( def.PhysicalIndex )
-			       	: FindRawAutoConstantEntryInt( def.PhysicalIndex );
+			return def.IsFloat ? FindRawAutoConstantEntryFloat( def.PhysicalIndex ) : FindRawAutoConstantEntryInt( def.PhysicalIndex );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -1664,10 +1715,10 @@ namespace Axiom.Graphics
 			return null;
 		}
 
-		///<summary>
-		///  Copies the values of all constants (including auto constants) from another <see cref="GpuProgramParameters" /> object.
-		///</summary>
-		///<param name="source"> Set of params to use as the source. </param>
+		/// <summary>
+		///	Copies the values of all constants (including auto constants) from another <see cref="GpuProgramParameters"/> object.
+		/// </summary>
+		/// <param name="source">Set of params to use as the source.</param>
 		[OgreVersion( 1, 7, 2 )]
 		public void CopyConstantsFrom( GpuProgramParameters source )
 		{
@@ -1687,10 +1738,14 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Copies the values of all matching named constants (including auto constants) from another GpuProgramParameters object.
+		/// Copies the values of all matching named constants (including auto constants) from 
+		/// another GpuProgramParameters object.
 		/// </summary>
 		/// <remarks>
-		///   This method iterates over the named constants in another parameters object and copies across the values where they match. This method is safe to use when the 2 parameters objects came from different programs, but only works for named parameters.
+		/// This method iterates over the named constants in another parameters object
+		/// and copies across the values where they match. This method is safe to
+		/// use when the 2 parameters objects came from different programs, but only
+		/// works for named parameters.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public void CopyMatchingNamedConstantsFrom( GpuProgramParameters source )
@@ -1712,18 +1767,16 @@ namespace Axiom.Graphics
 				}
 
 				// Copy data across, based on smallest common definition size
-				var srcsz = olddef.ElementSize*olddef.ArraySize;
-				var destsz = newdef.ElementSize*newdef.ArraySize;
+				var srcsz = olddef.ElementSize * olddef.ArraySize;
+				var destsz = newdef.ElementSize * newdef.ArraySize;
 				var sz = Utility.Min( srcsz, destsz );
 				if ( newdef.IsFloat )
 				{
-					Memory.Copy( source.GetFloatPointer( olddef.PhysicalIndex ).Pointer,
-					             GetFloatPointer( newdef.PhysicalIndex ).Pointer, sz*sizeof ( float ) );
+					Memory.Copy( source.GetFloatPointer( olddef.PhysicalIndex ).Pointer, GetFloatPointer( newdef.PhysicalIndex ).Pointer, sz * sizeof ( float ) );
 				}
 				else
 				{
-					Memory.Copy( source.GetIntPointer( olddef.PhysicalIndex ).Pointer, GetIntPointer( newdef.PhysicalIndex ).Pointer,
-					             sz*sizeof ( int ) );
+					Memory.Copy( source.GetIntPointer( olddef.PhysicalIndex ).Pointer, GetIntPointer( newdef.PhysicalIndex ).Pointer, sz * sizeof ( int ) );
 				}
 				// we'll use this map to resolve autos later
 				// ignore the [0] aliases
@@ -1762,7 +1815,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Increments the multipass number entry by 1 if it exists
+		/// Increments the multipass number entry by 1 if it exists
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public void IncPassIterationNumber()
@@ -1775,10 +1828,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Use a set of shared parameters in this parameters object.
+		/// Use a set of shared parameters in this parameters object.
 		/// </summary>
 		/// <remarks>
-		///   Allows you to use a set of shared parameters to automatically update this parameter set.
+		/// Allows you to use a set of shared parameters to automatically update 
+		/// this parameter set.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public void AddSharedParameters( GpuSharedParameters sharedParams )
@@ -1790,12 +1844,15 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Use a set of shared parameters in this parameters object.
+		/// Use a set of shared parameters in this parameters object.
 		/// </summary>
 		/// <remarks>
-		///   Allows you to use a set of shared parameters to automatically update this parameter set.
+		/// Allows you to use a set of shared parameters to automatically update 
+		/// this parameter set.
 		/// </remarks>
-		/// <param name="sharedParamsName"> The name of a shared parameter set as defined in GpuProgramManager </param>
+		/// <param name="sharedParamsName">
+		/// The name of a shared parameter set as defined in GpuProgramManager
+		/// </param>
 		[OgreVersion( 1, 7, 2 )]
 		public void AddSharedParameters( string sharedParamsName )
 		{
@@ -1803,7 +1860,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Returns whether this parameter set is using the named shared parameter set.
+		/// Returns whether this parameter set is using the named shared parameter set.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public bool IsUsingSharedParameters( string sharedParamsName )
@@ -1812,7 +1869,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Stop using the named shared parameter set.
+		/// Stop using the named shared parameter set.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public void RemoveSharedParameters( string sharedParamsName )
@@ -1821,7 +1878,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Stop using all shared parameter sets.
+		/// Stop using all shared parameter sets.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public void RemoveAllSharedParameters()
@@ -1830,10 +1887,14 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Update the parameters by copying the data from the shared parameters.
+		/// Update the parameters by copying the data from the shared
+		/// parameters.
 		/// </summary>
 		/// <remarks>
-		///   This method may not actually be called if the RenderSystem supports using shared parameters directly in their own shared buffer; in which case the values should not be copied out of the shared area into the individual parameter set, but bound separately.
+		/// This method  may not actually be called if the RenderSystem
+		/// supports using shared parameters directly in their own shared buffer; in
+		/// which case the values should not be copied out of the shared area
+		/// into the individual parameter set, but bound separately.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public void CopySharedParams()
@@ -1859,7 +1920,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Get a reference to the list of float constants
+		/// Get a reference to the list of float constants
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public float[] GetFloatConstantList()
@@ -1868,7 +1929,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Get a reference to the list of int constants
+		/// Get a reference to the list of int constants
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public int[] GetIntConstantList()
@@ -1877,7 +1938,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Get a pointer to the 'nth' item in the float buffer
+		/// Get a pointer to the 'nth' item in the float buffer
 		/// </summary>
 		[AxiomHelper( 0, 9 )]
 		public OffsetArray<float>.FixedPointer GetFloatPointer( int physicalIndex )
@@ -1886,7 +1947,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Get a pointer to the 'nth' item in the int buffer
+		/// Get a pointer to the 'nth' item in the int buffer
 		/// </summary>
 		[AxiomHelper( 0, 9 )]
 		public OffsetArray<int>.FixedPointer GetIntPointer( int physicalIndex )

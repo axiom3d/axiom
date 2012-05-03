@@ -58,13 +58,13 @@ namespace Axiom.Scripting.Compiler
 
 			#region Translator Implementation
 
-			/// <see cref="Translator.CheckFor" />
-			public override bool CheckFor( Keywords nodeId, Keywords parentId )
+			/// <see cref="Translator.CheckFor"/>
+            public override bool CheckFor(Keywords nodeId, Keywords parentId)
 			{
 				return nodeId == Keywords.ID_AFFECTOR;
 			}
 
-			/// <see cref="Translator.Translate" />
+			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
 				var obj = (ObjectAbstractNode)node;

@@ -38,27 +38,31 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
+
 using Axiom.Core;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Scripting
 {
 	/// <summary>
-	///   Class contining helper methods for parsing text files.
+	/// 	Class contining helper methods for parsing text files.
 	/// </summary>
 	public class ParseHelper
 	{
 		#region Methods
 
 		/// <summary>
-		///   Helper method for taking a string array and returning a single concatenated string composed of the range of specified elements.
+		///    Helper method for taking a string array and returning a single concatenated
+		///    string composed of the range of specified elements.
 		/// </summary>
-		/// <param name="items"> </param>
-		/// <param name="start"> </param>
-		/// <param name="end"> </param>
+		/// <param name="items"></param>
+		/// <param name="start"></param>
+		/// <param name="end"></param>
 		public static string Combine( string[] items, int start, int end )
 		{
 			var sb = new StringBuilder();
@@ -71,9 +75,10 @@ namespace Axiom.Scripting
 			return sb.ToString( 0, sb.Length - 1 );
 		}
 
-		///<summary>
-		///  Helper method to log a formatted error when encountering problems with parsing an attribute.
-		///</summary>
+		/// <summary>
+		///		Helper method to log a formatted error when encountering problems with parsing
+		///		an attribute.
+		/// </summary>
 		public static void LogParserError( string attribute, string context, string reason )
 		{
 			var error = string.Format( "Bad {0} attribute in block '{1}'. Reason: {2}", attribute, context, reason );
@@ -81,11 +86,12 @@ namespace Axiom.Scripting
 			LogManager.Instance.Write( error );
 		}
 
-		///<summary>
-		///  Helper method to nip/tuck the string before parsing it. This includes trimming spaces from the beginning and end of the string, as well as removing excess spaces in between values.
-		///</summary>
-		///<param name="reader"> </param>
-		///<returns> </returns>
+		/// <summary>
+		///		Helper method to nip/tuck the string before parsing it.  This includes trimming spaces from the beginning
+		///		and end of the string, as well as removing excess spaces in between values.
+		/// </summary>
+		/// <param name="reader"></param>
+		/// <returns></returns>
 		public static string ReadLine( TextReader reader )
 		{
 			var line = reader.ReadLine();
@@ -123,21 +129,23 @@ namespace Axiom.Scripting
 			return line;
 		}
 
-		///<summary>
-		///  Helper method to remove the first item from a string array and return a new array 1 element smaller starting at the second element of the original array. This helpe to seperate the params from the command in the various script files.
-		///</summary>
-		///<returns> </returns>
+		/// <summary>
+		///		Helper method to remove the first item from a string array and return a new array 1 element smaller
+		///		starting at the second element of the original array.  This helpe to seperate the params from the command
+		///		in the various script files.
+		/// </summary>
+		/// <returns></returns>
 		public static string[] GetParams( string[] all )
 		{
 			// create a seperate parm list that has the command removed
-			var parms = new string[all.Length - 1];
+			var parms = new string[ all.Length - 1 ];
 			Array.Copy( all, 1, parms, 0, parms.Length );
 
 			return parms;
 		}
 
 		/// <summary>
-		///   Advances in the stream until it hits the next {.
+		///    Advances in the stream until it hits the next {.
 		/// </summary>
 		public static void SkipToNextOpenBrace( TextReader reader )
 		{
@@ -149,9 +157,9 @@ namespace Axiom.Scripting
 		}
 
 		/// <summary>
-		///   Advances in the stream until it hits the next }.
+		///    Advances in the stream until it hits the next }.
 		/// </summary>
-		/// <param name="reader"> </param>
+		/// <param name="reader"></param>
 		public static void SkipToNextCloseBrace( TextReader reader )
 		{
 			var line = "";

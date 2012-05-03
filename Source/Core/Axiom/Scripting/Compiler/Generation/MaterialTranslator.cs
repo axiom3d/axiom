@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Core.Collections;
 using Axiom.Graphics;
@@ -58,19 +59,17 @@ namespace Axiom.Scripting.Compiler
 			protected Dictionary<string, string> _textureAliases = new Dictionary<string, string>();
 
 			public MaterialTranslator()
-				: base()
-			{
-			}
+				: base() {}
 
 			#region Translator Implementation
 
-			/// <see cref="Translator.CheckFor" />
-			public override bool CheckFor( Keywords nodeId, Keywords parentId )
+			/// <see cref="Translator.CheckFor"/>
+            public override bool CheckFor(Keywords nodeId, Keywords parentId)
 			{
 				return nodeId == Keywords.ID_MATERIAL;
 			}
 
-			/// <see cref="Translator.Translate" />
+			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
 				var obj = (ObjectAbstractNode)node;
@@ -118,8 +117,7 @@ namespace Axiom.Scripting.Compiler
 
 					if ( _material == null )
 					{
-						compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line,
-						                   "failed to find or create material \"" + obj.Name + "\"" );
+						compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line, "failed to find or create material \"" + obj.Name + "\"" );
 					}
 				}
 
@@ -149,8 +147,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-										                   "lod_values expects only numbers as arguments" );
+										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "lod_values expects only numbers as arguments" );
 									}
 								}
 								_material.SetLodLevels( lods );
@@ -178,8 +175,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-										                   "lod_values expects only numbers as arguments" );
+										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "lod_values expects only numbers as arguments" );
 									}
 								}
 								_material.SetLodLevels( lods );
@@ -197,8 +193,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "lod_strategy only supports 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "lod_strategy only supports 1 argument" );
 								}
 								else
 								{
@@ -218,8 +213,7 @@ namespace Axiom.Scripting.Compiler
 
 									if ( !result )
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "lod_strategy argument must be a valid lod strategy" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "lod_strategy argument must be a valid lod strategy" );
 									}
 								}
 								break;
@@ -235,8 +229,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "receive_shadows only supports 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "receive_shadows only supports 1 argument" );
 								}
 								else
 								{
@@ -247,8 +240,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "receive_shadows argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "receive_shadows argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
 									}
 								}
 								break;
@@ -264,8 +256,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "transparency_casts_shadows only supports 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "transparency_casts_shadows only supports 1 argument" );
 								}
 								else
 								{
@@ -276,8 +267,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "transparency_casts_shadows argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "transparency_casts_shadows argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
 									}
 								}
 								break;
@@ -305,8 +295,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "set_texture_alias must have 2 string argument" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "set_texture_alias must have 2 string argument" );
 									}
 								}
 								break;
@@ -314,8 +303,7 @@ namespace Axiom.Scripting.Compiler
 								#endregion ID_SET_TEXTURE_ALIAS
 
 							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-								                   "token \"" + prop.Name + "\" is not recognized" );
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						} //end of switch statement
 					}

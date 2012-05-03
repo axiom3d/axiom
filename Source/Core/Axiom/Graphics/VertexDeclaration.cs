@@ -41,36 +41,43 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-	///<summary>
-	///  This class declares the format of a set of vertex inputs, which can be issued to the rendering API through a <see
-	///   cref="RenderOperation" /> .
-	///</summary>
-	///<remarks>
-	///  You should be aware that the ordering and structure of the VertexDeclaration can be very important on DirectX with older cards, so if you want to maintain maximum compatibility with all render systems and all cards you should be careful to follow these rules: <ol>
-	///                                                                                                                                                                                                                                                                        <li>VertexElements should be added in the following order, and the order of the
-	///                                                                                                                                                                                                                                                                          elements within a shared buffer should be as follows:
-	///                                                                                                                                                                                                                                                                          position, blending weights, normals, diffuse colours, specular colours,
-	///                                                                                                                                                                                                                                                                          texture coordinates (in order, with no gaps)</li>
-	///                                                                                                                                                                                                                                                                        <li>You must not have unused gaps in your buffers which are not referenced
-	///                                                                                                                                                                                                                                                                          by any
-	///                                                                                                                                                                                                                                                                          <see cref="VertexElement" />
-	///                                                                                                                                                                                                                                                                        </li>
-	///                                                                                                                                                                                                                                                                        <li>You must not cause the buffer &amp; offset settings of 2 VertexElements to overlap</li>
-	///                                                                                                                                                                                                                                                                      </ol> Whilst GL and more modern graphics cards in D3D will allow you to defy these rules, sticking to them will ensure that your buffers have the maximum compatibility. <p /> Like the other classes in this functional area, these declarations should be created and destroyed using the <see
-	///   cref="HardwareBufferManager" /> .
-	///</remarks>
+	/// <summary>
+	/// 	This class declares the format of a set of vertex inputs, which
+	/// 	can be issued to the rendering API through a <see cref="RenderOperation"/>.
+	/// </summary>
+	/// <remarks>
+	///		You should be aware that the ordering and structure of the
+	///		VertexDeclaration can be very important on DirectX with older
+	///		cards, so if you want to maintain maximum compatibility with
+	///		all render systems and all cards you should be careful to follow these
+	///		rules:<ol>
+	///		<li>VertexElements should be added in the following order, and the order of the
+	///		elements within a shared buffer should be as follows:
+	///		position, blending weights, normals, diffuse colours, specular colours,
+	///		texture coordinates (in order, with no gaps)</li>
+	///		<li>You must not have unused gaps in your buffers which are not referenced
+	///		by any <see cref="VertexElement"/></li>
+	///		<li>You must not cause the buffer &amp; offset settings of 2 VertexElements to overlap</li>
+	///		</ol>
+	///		Whilst GL and more modern graphics cards in D3D will allow you to defy these rules,
+	///		sticking to them will ensure that your buffers have the maximum compatibility.
+	///		<p/>
+	///		Like the other classes in this functional area, these declarations should be created and
+	///		destroyed using the <see cref="HardwareBufferManager"/>.
+	/// </remarks>
 	public class VertexDeclaration : DisposableObject, ICloneable
 	{
 		#region Fields
 
 		/// <summary>
-		///   List of elements that make up this declaration.
+		///     List of elements that make up this declaration.
 		/// </summary>
 		protected List<VertexElement> elements = new List<VertexElement>();
 
@@ -83,39 +90,40 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		///   Adds a new VertexElement to this declaration.
+		///     Adds a new VertexElement to this declaration.
 		/// </summary>
 		/// <remarks>
-		///   This method adds a single element (positions, normals etc) to the vertex declaration. <b>Please read the information in
-		///                                                                                           <see cref="VertexDeclaration" />
-		///                                                                                           about
-		///                                                                                           the importance of ordering and structure for compatibility with older D3D drivers</b> .
+		///     This method adds a single element (positions, normals etc) to the
+		///     vertex declaration. <b>Please read the information in <see cref="VertexDeclaration"/> about
+		///     the importance of ordering and structure for compatibility with older D3D drivers</b>.
 		/// </remarks>
-		/// <param name="source"> The binding index of HardwareVertexBuffer which will provide the source for this element. </param>
-		/// <param name="offset"> The offset in bytes where this element is located in the buffer. </param>
-		/// <param name="type"> The data format of the element (3 floats, a color etc). </param>
-		/// <param name="semantic"> The meaning of the data (position, normal, diffuse color etc). </param>
+		/// <param name="source">
+		///     The binding index of HardwareVertexBuffer which will provide the source for this element.
+		/// </param>
+		/// <param name="offset">The offset in bytes where this element is located in the buffer.</param>
+		/// <param name="type">The data format of the element (3 floats, a color etc).</param>
+		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
 		public VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic )
 		{
 			return AddElement( source, offset, type, semantic, 0 );
 		}
 
 		/// <summary>
-		///   Adds a new VertexElement to this declaration.
+		///     Adds a new VertexElement to this declaration.
 		/// </summary>
 		/// <remarks>
-		///   This method adds a single element (positions, normals etc) to the vertex declaration. <b>Please read the information in
-		///                                                                                           <see cref="VertexDeclaration" />
-		///                                                                                           about
-		///                                                                                           the importance of ordering and structure for compatibility with older D3D drivers</b> .
+		///     This method adds a single element (positions, normals etc) to the
+		///     vertex declaration. <b>Please read the information in <see cref="VertexDeclaration"/> about
+		///     the importance of ordering and structure for compatibility with older D3D drivers</b>.
 		/// </remarks>
-		/// <param name="source"> The binding index of HardwareVertexBuffer which will provide the source for this element. </param>
-		/// <param name="offset"> The offset in bytes where this element is located in the buffer. </param>
-		/// <param name="type"> The data format of the element (3 floats, a color etc). </param>
-		/// <param name="semantic"> The meaning of the data (position, normal, diffuse color etc). </param>
-		/// <param name="index"> Optional index for multi-input elements like texture coordinates. </param>
-		public virtual VertexElement AddElement( short source, int offset, VertexElementType type,
-		                                         VertexElementSemantic semantic, int index )
+		/// <param name="source">
+		///     The binding index of HardwareVertexBuffer which will provide the source for this element.
+		/// </param>
+		/// <param name="offset">The offset in bytes where this element is located in the buffer.</param>
+		/// <param name="type">The data format of the element (3 floats, a color etc).</param>
+		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
+		/// <param name="index">Optional index for multi-input elements like texture coordinates.</param>
+		public virtual VertexElement AddElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			var element = new VertexElement( source, offset, type, semantic, index );
 			elements.Add( element );
@@ -123,10 +131,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Finds a <see cref="VertexElement" /> with the given semantic, and index if there is more than one element with the same semantic.
+		///     Finds a <see cref="VertexElement"/> with the given semantic, and index if there is more than
+		///     one element with the same semantic.
 		/// </summary>
-		/// <param name="semantic"> Semantic to search for. </param>
-		/// <returns> If the element is not found, this method returns null. </returns>
+		/// <param name="semantic">Semantic to search for.</param>
+		/// <returns>If the element is not found, this method returns null.</returns>
 		public VertexElement FindElementBySemantic( VertexElementSemantic semantic )
 		{
 			// call overload with a default of index 0
@@ -134,11 +143,12 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Finds a <see cref="VertexElement" /> with the given semantic, and index if there is more than one element with the same semantic.
+		///     Finds a <see cref="VertexElement"/> with the given semantic, and index if there is more than
+		///     one element with the same semantic.
 		/// </summary>
-		/// <param name="semantic"> Semantic to search for. </param>
-		/// <param name="index"> Index of item to looks for using the supplied semantic (applicable to tex coords and colors). </param>
-		/// <returns> If the element is not found, this method returns null. </returns>
+		/// <param name="semantic">Semantic to search for.</param>
+		/// <param name="index">Index of item to looks for using the supplied semantic (applicable to tex coords and colors).</param>
+		/// <returns>If the element is not found, this method returns null.</returns>
 		public virtual VertexElement FindElementBySemantic( VertexElementSemantic semantic, short index )
 		{
 			for ( var i = 0; i < elements.Count; i++ )
@@ -157,7 +167,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Gets a list of elements which use a given source.
+		///     Gets a list of elements which use a given source.
 		/// </summary>
 		public virtual List<VertexElement> FindElementBySource( short source )
 		{
@@ -178,11 +188,11 @@ namespace Axiom.Graphics
 			return rv;
 		}
 
-		///<summary>
-		///  Gets the <see cref="VertexElement" /> at the specified index.
-		///</summary>
-		///<param name="index"> Index of the element to retrieve. </param>
-		///<returns> Element at the requested index. </returns>
+		/// <summary>
+		///		Gets the <see cref="VertexElement"/> at the specified index.
+		/// </summary>
+		/// <param name="index">Index of the element to retrieve.</param>
+		/// <returns>Element at the requested index.</returns>
 		public VertexElement GetElement( int index )
 		{
 			Debug.Assert( index < elements.Count && index >= 0, "Element index out of bounds." );
@@ -191,7 +201,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Returns the entire vertexelement list
+		///  Returns the entire vertexelement list
 		/// </summary>
 		public List<VertexElement> Elements
 		{
@@ -263,7 +273,7 @@ namespace Axiom.Graphics
 
 		public VertexDeclaration GetAutoOrganizedDeclaration( bool skeletalAnimation, bool vertexAnimation )
 		{
-			var newDecl = (VertexDeclaration)Clone();
+			var newDecl = (VertexDeclaration)this.Clone();
 			// Set all sources to the same buffer (for now)
 			var elems = newDecl.Elements;
 
@@ -297,8 +307,7 @@ namespace Axiom.Graphics
 						break;
 					case VertexElementSemantic.Normal:
 						// Normals can't sharing with blend weights/indices
-						splitWithPrev = ( prevSemantic == VertexElementSemantic.BlendWeights ||
-						                  prevSemantic == VertexElementSemantic.BlendIndices );
+						splitWithPrev = ( prevSemantic == VertexElementSemantic.BlendWeights || prevSemantic == VertexElementSemantic.BlendIndices );
 						// All animated meshes have to split after normal
 						splitWithNext = ( skeletalAnimation || vertexAnimation );
 						break;
@@ -337,7 +346,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Gets the vertex size defined by this declaration.
+		/// Gets the vertex size defined by this declaration.
 		/// </summary>
 		public virtual int GetVertexSize()
 		{
@@ -352,9 +361,9 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Gets the vertex size defined by this declaration for a given source.
+		///     Gets the vertex size defined by this declaration for a given source.
 		/// </summary>
-		/// <param name="source"> The buffer binding index for which to get the vertex size. </param>
+		/// <param name="source">The buffer binding index for which to get the vertex size.</param>
 		public virtual int GetVertexSize( short source )
 		{
 			var size = 0;
@@ -374,41 +383,41 @@ namespace Axiom.Graphics
 			return size;
 		}
 
-		///<summary>
-		///  Inserts a new <see cref="VertexElement" /> at a given position in this declaration.
-		///</summary>
-		///<remarks>
-		///  This method adds a single element (positions, normals etc) at a given position in this vertex declaration. <b>Please read the information in VertexDeclaration about
-		///                                                                                                               the importance of ordering and structure for compatibility with older D3D drivers</b> .
-		///</remarks>
-		///<param name="position"> Position to insert into. </param>
-		///<param name="source"> The binding index of HardwareVertexBuffer which will provide the source for this element. </param>
-		///<param name="offset"> The offset in bytes where this element is located in the buffer. </param>
-		///<param name="type"> The data format of the element (3 floats, a color, etc). </param>
-		///<param name="semantic"> The meaning of the data (position, normal, diffuse color etc). </param>
-		///<returns> A reference to the newly created element. </returns>
-		public VertexElement InsertElement( int position, short source, int offset, VertexElementType type,
-		                                    VertexElementSemantic semantic )
+		/// <summary>
+		///		Inserts a new <see cref="VertexElement"/> at a given position in this declaration.
+		/// </summary>
+		/// <remarks>
+		///		This method adds a single element (positions, normals etc) at a given position in this
+		///		vertex declaration. <b>Please read the information in VertexDeclaration about
+		///		the importance of ordering and structure for compatibility with older D3D drivers</b>.
+		/// </remarks>
+		/// <param name="position">Position to insert into.</param>
+		/// <param name="source">The binding index of HardwareVertexBuffer which will provide the source for this element.</param>
+		/// <param name="offset">The offset in bytes where this element is located in the buffer.</param>
+		/// <param name="type">The data format of the element (3 floats, a color, etc).</param>
+		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
+		/// <returns>A reference to the newly created element.</returns>
+		public VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic )
 		{
 			return InsertElement( position, source, offset, type, semantic, 0 );
 		}
 
-		///<summary>
-		///  Inserts a new <see cref="VertexElement" /> at a given position in this declaration.
-		///</summary>
-		///<remarks>
-		///  This method adds a single element (positions, normals etc) at a given position in this vertex declaration. <b>Please read the information in VertexDeclaration about
-		///                                                                                                               the importance of ordering and structure for compatibility with older D3D drivers</b> .
-		///</remarks>
-		///<param name="position"> Position to insert into. </param>
-		///<param name="source"> The binding index of HardwareVertexBuffer which will provide the source for this element. </param>
-		///<param name="offset"> The offset in bytes where this element is located in the buffer. </param>
-		///<param name="type"> The data format of the element (3 floats, a color, etc). </param>
-		///<param name="semantic"> The meaning of the data (position, normal, diffuse color etc). </param>
-		///<param name="index"> Optional index for multi-input elements like texture coordinates. </param>
-		///<returns> A reference to the newly created element. </returns>
-		public virtual VertexElement InsertElement( int position, short source, int offset, VertexElementType type,
-		                                            VertexElementSemantic semantic, int index )
+		/// <summary>
+		///		Inserts a new <see cref="VertexElement"/> at a given position in this declaration.
+		/// </summary>
+		/// <remarks>
+		///		This method adds a single element (positions, normals etc) at a given position in this
+		///		vertex declaration. <b>Please read the information in VertexDeclaration about
+		///		the importance of ordering and structure for compatibility with older D3D drivers</b>.
+		/// </remarks>
+		/// <param name="position">Position to insert into.</param>
+		/// <param name="source">The binding index of HardwareVertexBuffer which will provide the source for this element.</param>
+		/// <param name="offset">The offset in bytes where this element is located in the buffer.</param>
+		/// <param name="type">The data format of the element (3 floats, a color, etc).</param>
+		/// <param name="semantic">The meaning of the data (position, normal, diffuse color etc).</param>
+		/// <param name="index">Optional index for multi-input elements like texture coordinates.</param>
+		/// <returns>A reference to the newly created element.</returns>
+		public virtual VertexElement InsertElement( int position, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			if ( position >= elements.Count )
 			{
@@ -422,11 +431,11 @@ namespace Axiom.Graphics
 			return element;
 		}
 
-		///<summary>
-		///  Gets the <see cref="VertexElement" /> at the specified index.
-		///</summary>
-		///<param name="index"> Index of the element to retrieve. </param>
-		///<returns> Element at the requested index. </returns>
+		/// <summary>
+		///		Gets the <see cref="VertexElement"/> at the specified index.
+		/// </summary>
+		/// <param name="index">Index of the element to retrieve.</param>
+		/// <returns>Element at the requested index.</returns>
 		public virtual void RemoveElement( int index )
 		{
 			Debug.Assert( index < elements.Count && index >= 0, "Element index out of bounds." );
@@ -434,60 +443,58 @@ namespace Axiom.Graphics
 			elements.RemoveAt( index );
 		}
 
-		///<summary>
-		///  Removes all <see cref="VertexElement" /> from the declaration.
-		///</summary>
+		/// <summary>
+		///		Removes all <see cref="VertexElement"/> from the declaration.
+		/// </summary>
 		public virtual void RemoveAllElements()
 		{
 			elements.Clear();
 		}
 
-		///<summary>
-		///  Modifies the definition of a <see cref="VertexElement" /> .
-		///</summary>
-		///<param name="elemIndex"> Index of the element to modify. </param>
-		///<param name="source"> Source of the element. </param>
-		///<param name="offset"> Offset of the element. </param>
-		///<param name="type"> Type of the element. </param>
-		///<param name="semantic"> Semantic of the element. </param>
-		public void ModifyElement( int elemIndex, short source, int offset, VertexElementType type,
-		                           VertexElementSemantic semantic )
+		/// <summary>
+		///		Modifies the definition of a <see cref="VertexElement"/>.
+		/// </summary>
+		/// <param name="elemIndex">Index of the element to modify.</param>
+		/// <param name="source">Source of the element.</param>
+		/// <param name="offset">Offset of the element.</param>
+		/// <param name="type">Type of the element.</param>
+		/// <param name="semantic">Semantic of the element.</param>
+		public void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic )
 		{
 			ModifyElement( elemIndex, source, offset, type, semantic, 0 );
 		}
 
-		///<summary>
-		///  Modifies the definition of a <see cref="VertexElement" /> .
-		///</summary>
-		///<param name="elemIndex"> Index of the element to modify. </param>
-		///<param name="source"> Source of the element. </param>
-		///<param name="offset"> Offset of the element. </param>
-		///<param name="type"> Type of the element. </param>
-		///<param name="semantic"> Semantic of the element. </param>
-		///<param name="index"> Usage index of the element. </param>
-		public virtual void ModifyElement( int elemIndex, short source, int offset, VertexElementType type,
-		                                   VertexElementSemantic semantic, int index )
+		/// <summary>
+		///		Modifies the definition of a <see cref="VertexElement"/>.
+		/// </summary>
+		/// <param name="elemIndex">Index of the element to modify.</param>
+		/// <param name="source">Source of the element.</param>
+		/// <param name="offset">Offset of the element.</param>
+		/// <param name="type">Type of the element.</param>
+		/// <param name="semantic">Semantic of the element.</param>
+		/// <param name="index">Usage index of the element.</param>
+		public virtual void ModifyElement( int elemIndex, short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
 		{
 			elements[ elemIndex ] = new VertexElement( source, offset, type, semantic, index );
 		}
 
-		///<summary>
-		///  Remove the element with the given semantic.
-		///</summary>
-		///<remarks>
-		///  For elements that have usage indexes, the default of 0 is used.
-		///</remarks>
-		///<param name="semantic"> Semantic to remove. </param>
+		/// <summary>
+		///		Remove the element with the given semantic.
+		/// </summary>
+		/// <remarks>
+		///		For elements that have usage indexes, the default of 0 is used.
+		/// </remarks>
+		/// <param name="semantic">Semantic to remove.</param>
 		public void RemoveElement( VertexElementSemantic semantic )
 		{
 			RemoveElement( semantic, 0 );
 		}
 
-		///<summary>
-		///  Remove the element with the given semantic and usage index.
-		///</summary>
-		///<param name="semantic"> Semantic to remove. </param>
-		///<param name="index"> Usage index to remove, typically only applies to tex coords. </param>
+		/// <summary>
+		///		Remove the element with the given semantic and usage index.
+		/// </summary>
+		/// <param name="semantic">Semantic to remove.</param>
+		/// <param name="index">Usage index to remove, typically only applies to tex coords.</param>
 		public virtual void RemoveElement( VertexElementSemantic semantic, int index )
 		{
 			for ( var i = elements.Count - 1; i >= 0; i-- )
@@ -503,11 +510,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Tests equality of 2 <see cref="VertexElement" /> objects.
+		///     Tests equality of 2 <see cref="VertexElement"/> objects.
 		/// </summary>
-		/// <param name="left"> A <see cref="VertexElement" /> </param>
-		/// <param name="right"> A <see cref="VertexElement" /> </param>
-		/// <returns> true if equal, false otherwise. </returns>
+		/// <param name="left">A <see cref="VertexElement"/></param>
+		/// <param name="right">A <see cref="VertexElement"/></param>
+		/// <returns>true if equal, false otherwise.</returns>
 		public static bool operator ==( VertexDeclaration left, VertexDeclaration right )
 		{
 			// If both are null, or both are same instance, return true.
@@ -545,11 +552,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Tests in-equality of 2 <see cref="VertexElement" /> objects.
+		///     Tests in-equality of 2 <see cref="VertexElement"/> objects.
 		/// </summary>
-		/// <param name="left"> A <see cref="VertexElement" /> </param>
-		/// <param name="right"> A <see cref="VertexElement" /> </param>
-		/// <returns> true if not equal, false otherwise. </returns>
+		/// <param name="left">A <see cref="VertexElement"/></param>
+		/// <param name="right">A <see cref="VertexElement"/></param>
+		/// <returns>true if not equal, false otherwise.</returns>
 		public static bool operator !=( VertexDeclaration left, VertexDeclaration right )
 		{
 			return !( left == right );
@@ -560,7 +567,7 @@ namespace Axiom.Graphics
 		#region Properties
 
 		/// <summary>
-		///   Gets the number of elements in the declaration.
+		///     Gets the number of elements in the declaration.
 		/// </summary>
 		public int ElementCount
 		{
@@ -583,10 +590,10 @@ namespace Axiom.Graphics
 		#region Object overloads
 
 		/// <summary>
-		///   Override to determine equality between 2 VertexDeclaration objects,
+		///    Override to determine equality between 2 VertexDeclaration objects,
 		/// </summary>
-		/// <param name="obj"> </param>
-		/// <returns> </returns>
+		/// <param name="obj"></param>
+		/// <returns></returns>
 		public override bool Equals( object obj )
 		{
 			var decl = obj as VertexDeclaration;
@@ -595,12 +602,12 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Override GetHashCode.
+		///    Override GetHashCode.
 		/// </summary>
 		/// <remarks>
-		///   Done mainly to quash warnings, no real need for it.
+		///    Done mainly to quash warnings, no real need for it.
 		/// </remarks>
-		/// <returns> </returns>
+		/// <returns></returns>
 		// TODO: Does this need to be implemented, dont think we are stuffing these into hashtables.
 		public override int GetHashCode()
 		{
@@ -612,9 +619,9 @@ namespace Axiom.Graphics
 		#region ICloneable Members
 
 		/// <summary>
-		///   Clones this declaration, including a copy of all <see cref="VertexElement" /> objects this declaration holds.
+		///     Clones this declaration, including a copy of all <see cref="VertexElement"/> objects this declaration holds.
 		/// </summary>
-		/// <returns> </returns>
+		/// <returns></returns>
 		public object Clone()
 		{
 			var clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
@@ -629,13 +636,11 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Clones this declaration, including a copy of all <see cref="VertexElement" /> objects this declaration holds for the given source.
+		/// Clones this declaration, including a copy of all <see cref="VertexElement"/> objects this declaration holds for the given source.
 		/// </summary>
-		/// <param name="source"> the source elements to clone </param>
-		/// <returns> a new <see cref="VertexDeclaration" /> containing only those <see cref="VertexElement" /> s </returns>
-		/// <remarks>
-		///   all elements in the cloned <see cref="VertexDeclaration" /> will have a source of 0.
-		/// </remarks>
+		/// <param name="source">the source elements to clone</param>
+		/// <returns>a new <see cref="VertexDeclaration"/> containing only those <see cref="VertexElement"/>s</returns>
+		/// <remarks>all elements in the cloned <see cref="VertexDeclaration"/> will have a source of 0.</remarks>
 		public VertexDeclaration Clone( short source )
 		{
 			var clone = HardwareBufferManager.Instance.CreateVertexDeclaration();
@@ -654,16 +659,33 @@ namespace Axiom.Graphics
 
 		#region IDisposable Implementation
 
-		///<summary>
-		///  Class level dispose method
-		///</summary>
-		///<remarks>
-		///  When implementing this method in an inherited class the following template should be used; protected override void dispose( bool disposeManagedResources ) { if ( !isDisposed ) { if ( disposeManagedResources ) { // Dispose managed resources. } // There are no unmanaged resources to release, but // if we add them, they need to be released here. } // If it is available, make the call to the // base class's Dispose(Boolean) method base.dispose( disposeManagedResources ); }
-		///</remarks>
-		///<param name="disposeManagedResources"> True if Unmanaged resources should be released. </param>
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

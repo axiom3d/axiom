@@ -40,6 +40,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+using System.Text;
+
 using Axiom.Collections;
 
 #endregion Namespace Declarations
@@ -47,9 +49,10 @@ using Axiom.Collections;
 namespace Axiom.Core
 {
 	/// <summary>
-	///   Abstract factory class implementation. Provides a basic Factory implementation that can be overriden by derivitives
+	/// Abstract factory class implementation. Provides a basic Factory
+	/// implementation that can be overriden by derivitives
 	/// </summary>
-	/// <typeparam name="T"> The Type to instantiate </typeparam>
+	/// <typeparam name="T">The Type to instantiate</typeparam>
 	public class AbstractFactory<T> : DisposableObject, IAbstractFactory<T>
 		where T : class
 	{
@@ -58,7 +61,7 @@ namespace Axiom.Core
 		#region Implementation of IAbstractFactory<T>
 
 		/// <summary>
-		///   The factory type.
+		/// The factory type.
 		/// </summary>
 		public virtual string Type
 		{
@@ -73,21 +76,27 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Creates a new object.
+		/// Creates a new object.
 		/// </summary>
-		/// <param name="name"> Name of the object to create </param>
-		/// <returns> An object created by the factory. The type of the object depends on the factory. </returns>
+		/// <param name="name">Name of the object to create</param>
+		/// <returns>
+		/// An object created by the factory. The type of the object depends on
+		/// the factory.
+		/// </returns>
 		public virtual T CreateInstance( string name )
 		{
-			return CreateInstance( name, new NameValuePairList() );
+			return this.CreateInstance( name, new NameValuePairList() );
 		}
 
 		/// <summary>
-		///   Creates a new object.
+		/// Creates a new object.
 		/// </summary>
-		/// <param name="name"> Name of the object to create </param>
-		/// <param name="parms"> List of Name/Value pairs to initialize the object with </param>
-		/// <returns> An object created by the factory. The type of the object depends on the factory. </returns>
+		/// <param name="name">Name of the object to create</param>
+		/// <param name="parms">List of Name/Value pairs to initialize the object with</param>
+		/// <returns>
+		/// An object created by the factory. The type of the object depends on
+		/// the factory.
+		/// </returns>
 		public virtual T CreateInstance( string name, NameValuePairList parms )
 		{
 			var creator = new ObjectCreator( typeof ( T ) );
@@ -97,9 +106,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Destroys an object which was created by this factory.
+		/// Destroys an object which was created by this factory.
 		/// </summary>
-		/// <param name="obj"> the object to destroy </param>
+		/// <param name="obj">the object to destroy</param>
 		public virtual void DestroyInstance( ref T obj )
 		{
 			_instances.Remove( obj );

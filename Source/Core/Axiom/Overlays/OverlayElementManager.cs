@@ -39,6 +39,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
 using Axiom.Overlays.Elements;
 using Axiom.Utilities;
@@ -57,22 +58,23 @@ using Axiom.Utilities;
 namespace Axiom.Overlays
 {
 	/// <summary>
-	///   This class acts as a repository and regitrar of overlay components.
+	///    This class acts as a repository and regitrar of overlay components.
 	/// </summary>
 	/// <remarks>
-	///   OverlayElementManager's job is to manage the lifecycle of OverlayElement (subclass) instances, and also to register plugin suppliers of new components.
+	///    OverlayElementManager's job is to manage the lifecycle of OverlayElement (subclass)
+	///    instances, and also to register plugin suppliers of new components.
 	/// </remarks>
 	public sealed class OverlayElementManager : DisposableObject
 	{
 		#region Singleton implementation
 
 		/// <summary>
-		///   Singleton instance of this class.
+		///     Singleton instance of this class.
 		/// </summary>
 		private static OverlayElementManager instance;
 
 		/// <summary>
-		///   Internal constructor. This class cannot be instantiated externally.
+		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal OverlayElementManager()
 			: base()
@@ -89,7 +91,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Gets the singleton instance of this class.
+		///     Gets the singleton instance of this class.
 		/// </summary>
 		internal static OverlayElementManager Instance
 		{
@@ -103,15 +105,14 @@ namespace Axiom.Overlays
 
 		#region Fields & Properties
 
-		private readonly Dictionary<string, IOverlayElementFactory> _elementFactories =
-			new Dictionary<string, IOverlayElementFactory>();
+		private Dictionary<string, IOverlayElementFactory> _elementFactories = new Dictionary<string, IOverlayElementFactory>();
 
 		#region Instances Property
 
-		private readonly Dictionary<string, OverlayElement> _elementInstances = new Dictionary<string, OverlayElement>();
+		private Dictionary<string, OverlayElement> _elementInstances = new Dictionary<string, OverlayElement>();
 
 		/// <summary>
-		///   returns all elemnt instances
+		/// returns all elemnt instances
 		/// </summary>
 		public IEnumerable<OverlayElement> Instances
 		{
@@ -125,10 +126,10 @@ namespace Axiom.Overlays
 
 		#region Templates Property
 
-		private readonly Dictionary<string, OverlayElement> _elementTemplates = new Dictionary<string, OverlayElement>();
+		private Dictionary<string, OverlayElement> _elementTemplates = new Dictionary<string, OverlayElement>();
 
 		/// <summary>
-		///   returns all element templates
+		/// returns all element templates
 		/// </summary>
 		public IEnumerable<OverlayElement> Templates
 		{
@@ -145,12 +146,13 @@ namespace Axiom.Overlays
 		#region Methods
 
 		/// <summary>
-		///   Registers a new OverlayElementFactory with this manager.
+		///     Registers a new OverlayElementFactory with this manager.
 		/// </summary>
 		/// <remarks>
-		///   Should be used by plugins or other apps wishing to provide a new OverlayElement subclass.
+		///    Should be used by plugins or other apps wishing to provide
+		///    a new OverlayElement subclass.
 		/// </remarks>
-		/// <param name="factory"> </param>
+		/// <param name="factory"></param>
 		public void AddElementFactory( IOverlayElementFactory factory )
 		{
 			_elementFactories.Add( factory.Type, factory );
@@ -161,23 +163,25 @@ namespace Axiom.Overlays
 		#region Creat* Methods
 
 		/// <summary>
-		///   Creates a new OverlayElement of the type requested.
+		///    Creates a new OverlayElement of the type requested.
 		/// </summary>
-		/// <param name="typeName"> The type of element to create is passed in as a string because this allows plugins to register new types of component. </param>
-		/// <param name="instanceName"> The type of element to create. </param>
-		/// <returns> </returns>
+		/// <param name="typeName">The type of element to create is passed in as a string because this
+		///    allows plugins to register new types of component.</param>
+		/// <param name="instanceName">The type of element to create.</param>
+		/// <returns></returns>
 		public OverlayElement CreateElement( string typeName, string instanceName )
 		{
 			return CreateElement( typeName, instanceName, false );
 		}
 
 		/// <summary>
-		///   Creates a new OverlayElement of the type requested.
+		///    Creates a new OverlayElement of the type requested.
 		/// </summary>
-		/// <param name="typeName"> The type of element to create is passed in as a string because this allows plugins to register new types of component. </param>
-		/// <param name="instanceName"> The type of element to create. </param>
-		/// <param name="isTemplate"> </param>
-		/// <returns> </returns>
+		/// <param name="typeName">The type of element to create is passed in as a string because this
+		///    allows plugins to register new types of component.</param>
+		/// <param name="instanceName">The type of element to create.</param>
+		/// <param name="isTemplate"></param>
+		/// <returns></returns>
 		public OverlayElement CreateElement( string typeName, string instanceName, bool isTemplate )
 		{
 			var elements = GetElementTable( isTemplate );
@@ -197,14 +201,14 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Creates an element of the specified type, with the specified name
+		///    Creates an element of the specified type, with the specified name
 		/// </summary>
 		/// <remarks>
-		///   A factory must be available to handle the requested type, or an exception will be thrown.
+		///    A factory must be available to handle the requested type, or an exception will be thrown.
 		/// </remarks>
-		/// <param name="typeName"> </param>
-		/// <param name="instanceName"> </param>
-		/// <returns> </returns>
+		/// <param name="typeName"></param>
+		/// <param name="instanceName"></param>
+		/// <returns></returns>
 		public OverlayElement CreateElementFromFactory( string typeName, string instanceName )
 		{
 			if ( !_elementFactories.ContainsKey( typeName ) )
@@ -225,8 +229,7 @@ namespace Axiom.Overlays
 
 		/// <summary>
 		/// </summary>
-		public OverlayElement CreateElementFromTemplate( string templateName, string typeName, string instanceName,
-		                                                 bool isTemplate )
+		public OverlayElement CreateElementFromTemplate( string templateName, string typeName, string instanceName, bool isTemplate )
 		{
 			OverlayElement element = null;
 
@@ -260,11 +263,11 @@ namespace Axiom.Overlays
 		#endregion Creat* Methods
 
 		/// <summary>
-		///   Clones an overlay element from a template
+		/// Clones an overlay element from a template
 		/// </summary>
-		/// <param name="template"> template to clone </param>
-		/// <param name="name"> name of the new element </param>
-		/// <returns> </returns>
+		/// <param name="template">template to clone</param>
+		/// <param name="name">name of the new element</param>
+		/// <returns></returns>
 		public OverlayElement CloneOverlayElementFromTemplate( string template, string name )
 		{
 			var element = GetElement( template, true );
@@ -272,21 +275,21 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Gets a reference to an existing element.
+		///    Gets a reference to an existing element.
 		/// </summary>
-		/// <param name="name"> Name of the element to retrieve. </param>
-		/// <returns> </returns>
+		/// <param name="name">Name of the element to retrieve.</param>
+		/// <returns></returns>
 		public OverlayElement GetElement( string name )
 		{
 			return GetElement( name, false );
 		}
 
 		/// <summary>
-		///   Gets a reference to an existing element.
+		///    Gets a reference to an existing element.
 		/// </summary>
-		/// <param name="name"> Name of the element to retrieve. </param>
-		/// <param name="isTemplate"> </param>
-		/// <returns> </returns>
+		/// <param name="name">Name of the element to retrieve.</param>
+		/// <param name="isTemplate"></param>
+		/// <returns></returns>
 		public OverlayElement GetElement( string name, bool isTemplate )
 		{
 			Contract.RequiresNotEmpty( name, "name" );
@@ -305,10 +308,10 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Quick helper method to return the lookup table for the right element type.
+		///    Quick helper method to return the lookup table for the right element type.
 		/// </summary>
-		/// <param name="isTemplate"> </param>
-		/// <returns> </returns>
+		/// <param name="isTemplate"></param>
+		/// <returns></returns>
 		private Dictionary<string, OverlayElement> GetElementTable( bool isTemplate )
 		{
 			return isTemplate ? _elementTemplates : _elementInstances;
@@ -317,19 +320,19 @@ namespace Axiom.Overlays
 		#region Destroy*OverlayElement
 
 		/// <summary>
-		///   Destroys the specified OverlayElement
+		/// Destroys the specified OverlayElement
 		/// </summary>
-		/// <param name="name"> </param>
+		/// <param name="name"></param>
 		public void DestroyElement( string name )
 		{
 			DestroyElement( name, false );
 		}
 
 		/// <summary>
-		///   Destroys the specified OverlayElement
+		/// Destroys the specified OverlayElement
 		/// </summary>
-		/// <param name="name"> </param>
-		/// <param name="isTemplate"> </param>
+		/// <param name="name"></param>
+		/// <param name="isTemplate"></param>
 		public void DestroyElement( string name, bool isTemplate )
 		{
 			var elements = isTemplate ? _elementTemplates : _elementInstances;
@@ -342,19 +345,19 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Destroys the supplied OvelayElement
+		/// Destroys the supplied OvelayElement
 		/// </summary>
-		/// <param name="element"> </param>
+		/// <param name="element"></param>
 		public void DestroyElement( OverlayElement element )
 		{
 			DestroyElement( element, false );
 		}
 
 		/// <summary>
-		///   Destroys the supplied OvelayElement
+		/// Destroys the supplied OvelayElement
 		/// </summary>
-		/// <param name="element"> </param>
-		/// <param name="isTemplate"> </param>
+		/// <param name="element"></param>
+		/// <param name="isTemplate"></param>
 		public void DestroyElement( OverlayElement element, bool isTemplate )
 		{
 			var elements = isTemplate ? _elementTemplates : _elementInstances;
@@ -367,7 +370,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   destroys all OverlayElements
+		/// destroys all OverlayElements
 		/// </summary>
 		public void DestroyAllElements()
 		{
@@ -375,7 +378,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   destroys all OverlayElements
+		/// destroys all OverlayElements
 		/// </summary>
 		public void DestroyAllElements( bool isTemplate )
 		{
@@ -389,11 +392,11 @@ namespace Axiom.Overlays
 		#region IDisposable Implementation
 
 		/// <summary>
-		///   Called when the engine is shutting down.
+		///     Called when the engine is shutting down.
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

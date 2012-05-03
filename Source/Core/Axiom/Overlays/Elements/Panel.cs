@@ -39,11 +39,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
+
 using Axiom.Configuration;
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Scripting;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
@@ -59,17 +60,28 @@ using Axiom.Scripting;
 namespace Axiom.Overlays.Elements
 {
 	/// <summary>
-	///   GuiElement representing a flat, single-material (or transparent) panel which can contain other elements.
+	/// 	GuiElement representing a flat, single-material (or transparent) panel which can contain other elements.
 	/// </summary>
 	/// <remarks>
-	///   This class subclasses OverlayElementContainer because it can contain other elements. Like other containers, if hidden it's contents are also hidden, if moved it's contents also move etc. The panel itself is a 2D rectangle which is either completely transparent, or is rendered with a single material. The texture(s) on the panel can be tiled depending on your requirements. <p /> This component is suitable for backgrounds and grouping other elements. Note that because it has a single repeating material it cannot have a discrete border (unless the texture has one and the texture is tiled only once). For a bordered panel, see it's subclass BorderPanel. <p /> Note that the material can have all the usual effects applied to it like multiple texture layers, scrolling / animated textures etc. For multiple texture layers, you have to set the tiling level for each layer.
+	/// 	This class subclasses OverlayElementContainer because it can contain other elements. Like other
+	/// 	containers, if hidden it's contents are also hidden, if moved it's contents also move etc. 
+	/// 	The panel itself is a 2D rectangle which is either completely transparent, or is rendered 
+	/// 	with a single material. The texture(s) on the panel can be tiled depending on your requirements.
+	/// 	<p/>
+	/// 	This component is suitable for backgrounds and grouping other elements. Note that because
+	/// 	it has a single repeating material it cannot have a discrete border (unless the texture has one and
+	/// 	the texture is tiled only once). For a bordered panel, see it's subclass BorderPanel.
+	/// 	<p/>
+	/// 	Note that the material can have all the usual effects applied to it like multiple texture
+	/// 	layers, scrolling / animated textures etc. For multiple texture layers, you have to set 
+	/// 	the tiling level for each layer.
 	/// </remarks>
 	public class Panel : OverlayElementContainer
 	{
 		#region Member variables
 
-		protected float[] tileX = new float[Config.MaxTextureLayers];
-		protected float[] tileY = new float[Config.MaxTextureLayers];
+		protected float[] tileX = new float[ Config.MaxTextureLayers ];
+		protected float[] tileY = new float[ Config.MaxTextureLayers ];
 		protected bool isTransparent;
 		protected int numTexCoordsInBuffer;
 		protected Vector2 topLeft, bottomRight;
@@ -104,6 +116,7 @@ namespace Axiom.Overlays.Elements
 		#region Methods
 
 		/// <summary>
+		/// 
 		/// </summary>
 		public override void Initialize()
 		{
@@ -122,9 +135,7 @@ namespace Axiom.Overlays.Elements
 				renderOperation.vertexData.vertexCount = 4;
 
 				// create the first vertex buffer, mostly static except during resizing
-				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ),
-				                                                                renderOperation.vertexData.vertexCount,
-				                                                                BufferUsage.StaticWriteOnly );
+				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 				// bind the vertex buffer
 				renderOperation.vertexData.vertexBufferBinding.SetBinding( POSITION, buffer );
@@ -160,7 +171,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
-		///   Internal method for setting up geometry, called by GuiElement.Update
+		///    Internal method for setting up geometry, called by GuiElement.Update
 		/// </summary>
 		protected override void UpdatePositionGeometry()
 		{
@@ -181,10 +192,10 @@ namespace Axiom.Overlays.Elements
 				  1.0 to get the actual correct value).
 			*/
 
-			left = DerivedLeft*2 - 1;
-			right = left + ( width*2 );
-			top = -( ( DerivedTop*2 ) - 1 );
-			bottom = top - ( height*2 );
+			left = this.DerivedLeft * 2 - 1;
+			right = left + ( width * 2 );
+			top = -( ( this.DerivedTop * 2 ) - 1 );
+			bottom = top - ( height * 2 );
 
 			// get a reference to the position buffer
 			var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION );
@@ -244,7 +255,7 @@ namespace Axiom.Overlays.Elements
 
 
 		/// <summary>
-		///   Called to update the texture coords when layers change.
+		///    Called to update the texture coords when layers change.
 		/// </summary>
 		protected override void UpdateTextureGeometry()
 		{
@@ -266,7 +277,7 @@ namespace Axiom.Overlays.Elements
 				else if ( numTexCoordsInBuffer < numLayers )
 				{
 					// we need to add more buffers
-					var offset = VertexElement.GetTypeSize( VertexElementType.Float2 )*numTexCoordsInBuffer;
+					var offset = VertexElement.GetTypeSize( VertexElementType.Float2 ) * numTexCoordsInBuffer;
 
 					for ( var i = numTexCoordsInBuffer; i < numLayers; ++i )
 					{
@@ -278,9 +289,7 @@ namespace Axiom.Overlays.Elements
 				// if the number of layers changed at all, we'll need to reallocate buffer
 				if ( numTexCoordsInBuffer != numLayers )
 				{
-					var newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXTURE_COORDS ),
-					                                                                   renderOperation.vertexData.vertexCount,
-					                                                                   BufferUsage.StaticWriteOnly );
+					var newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXTURE_COORDS ), renderOperation.vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 					// Bind buffer, note this will unbind the old one and destroy the buffer it had
 					renderOperation.vertexData.vertexBufferBinding.SetBinding( TEXTURE_COORDS, newBuffer );
@@ -302,14 +311,14 @@ namespace Axiom.Overlays.Elements
 						var texPtr = data.ToFloatPointer();
 						var texIndex = 0;
 
-						var uvSize = VertexElement.GetTypeSize( VertexElementType.Float2 )/sizeof ( float );
-						var vertexSize = decl.GetVertexSize( TEXTURE_COORDS )/sizeof ( float );
+						var uvSize = VertexElement.GetTypeSize( VertexElementType.Float2 ) / sizeof ( float );
+						var vertexSize = decl.GetVertexSize( TEXTURE_COORDS ) / sizeof ( float );
 
 						for ( var i = 0; i < numLayers; i++ )
 						{
 							// Calc upper tex coords
-							float upperX = bottomRight.x*tileX[ i ];
-							float upperY = bottomRight.y*tileY[ i ];
+							float upperX = bottomRight.x * tileX[ i ];
+							float upperY = bottomRight.y * tileY[ i ];
 
 							/*
 								0-----2
@@ -319,7 +328,7 @@ namespace Axiom.Overlays.Elements
 								1-----3
 							*/
 							// Find start offset for this set
-							texIndex = ( i*uvSize );
+							texIndex = ( i * uvSize );
 
 							texPtr[ texIndex ] = topLeft.x;
 							texPtr[ texIndex + 1 ] = topLeft.y;
@@ -348,7 +357,7 @@ namespace Axiom.Overlays.Elements
 		{
 			topLeft = new Vector2( u1, v1 );
 			bottomRight = new Vector2( u2, v2 );
-			isGeomUVsOutOfDate = true;
+			this.isGeomUVsOutOfDate = true;
 		}
 
 		public void GetUV( out Real u1, out Real v1, out Real u2, out Real v2 )
@@ -364,6 +373,7 @@ namespace Axiom.Overlays.Elements
 		#region Properties
 
 		/// <summary>
+		/// 
 		/// </summary>
 		public bool IsTransparent
 		{
@@ -378,6 +388,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
 		public override string MaterialName
 		{
@@ -402,10 +413,10 @@ namespace Axiom.Overlays.Elements
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///   Gets the value for this command from the target object.
+			///    Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"> </param>
-			/// <returns> </returns>
+			/// <param name="target"></param>
+			/// <returns></returns>
 			public string Get( object target )
 			{
 				var element = target as Panel;
@@ -421,36 +432,33 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///   Sets the value for this command on the target object.
+			///    Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"> </param>
-			/// <param name="val"> </param>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
 			public void Set( object target, string val )
 			{
 				var element = target as Panel;
 				var parms = val.Split( ' ' );
 				if ( element != null )
 				{
-					element.SetTiling( StringConverter.ParseFloat( parms[ 1 ] ), StringConverter.ParseFloat( parms[ 2 ] ),
-					                   int.Parse( parms[ 0 ] ) );
+					element.SetTiling( StringConverter.ParseFloat( parms[ 1 ] ), StringConverter.ParseFloat( parms[ 2 ] ), int.Parse( parms[ 0 ] ) );
 				}
 			}
 
 			#endregion
 		}
 
-		[ScriptableProperty( "transparent",
-			"Sets whether the panel is transparent, i.e. invisible, itself " + "but it's contents are still displayed.",
-			typeof ( Panel ) )]
+		[ScriptableProperty( "transparent", "Sets whether the panel is transparent, i.e. invisible, itself " + "but it's contents are still displayed.", typeof ( Panel ) )]
 		public class TransparentAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///   Gets the value for this command from the target object.
+			///    Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"> </param>
-			/// <returns> </returns>
+			/// <param name="target"></param>
+			/// <returns></returns>
 			public string Get( object target )
 			{
 				var element = target as Panel;
@@ -465,10 +473,10 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///   Sets the value for this command on the target object.
+			///    Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"> </param>
-			/// <param name="val"> </param>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
 			public void Set( object target, string val )
 			{
 				var element = target as Panel;
@@ -487,10 +495,10 @@ namespace Axiom.Overlays.Elements
 			#region Implementation of IPropertyCommand<object,string>
 
 			/// <summary>
-			///   Gets the value for this command from the target object.
+			///    Gets the value for this command from the target object.
 			/// </summary>
-			/// <param name="target"> </param>
-			/// <returns> </returns>
+			/// <param name="target"></param>
+			/// <returns></returns>
 			public string Get( object target )
 			{
 				var element = target as Panel;
@@ -507,18 +515,17 @@ namespace Axiom.Overlays.Elements
 			}
 
 			/// <summary>
-			///   Sets the value for this command on the target object.
+			///    Sets the value for this command on the target object.
 			/// </summary>
-			/// <param name="target"> </param>
-			/// <param name="val"> </param>
+			/// <param name="target"></param>
+			/// <param name="val"></param>
 			public void Set( object target, string val )
 			{
 				var element = target as Panel;
 				var parms = val.Split( ' ' );
 				if ( element != null )
 				{
-					element.SetUV( StringConverter.ParseFloat( parms[ 0 ] ), StringConverter.ParseFloat( parms[ 1 ] ),
-					               StringConverter.ParseFloat( parms[ 2 ] ), StringConverter.ParseFloat( parms[ 3 ] ) );
+					element.SetUV( StringConverter.ParseFloat( parms[ 0 ] ), StringConverter.ParseFloat( parms[ 1 ] ), StringConverter.ParseFloat( parms[ 2 ] ), StringConverter.ParseFloat( parms[ 3 ] ) );
 				}
 			}
 

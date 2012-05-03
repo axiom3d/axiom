@@ -37,14 +37,18 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
+using System.Text;
+
+using Axiom.Scripting.Compiler.Parser;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Scripting.Compiler
 {
 	/// <summary>
-	///   These enums hold the types of the concrete parsed nodes
+	/// These enums hold the types of the concrete parsed nodes
 	/// </summary>
 	public enum ConcreteNodeType
 	{
@@ -59,7 +63,7 @@ namespace Axiom.Scripting.Compiler
 	}
 
 	/// <summary>
-	///   The ConcreteNode is the class that holds an un-conditioned sub-tree of parsed input
+	/// The ConcreteNode is the class that holds an un-conditioned sub-tree of parsed input
 	/// </summary>
 	public class ConcreteNode
 	{

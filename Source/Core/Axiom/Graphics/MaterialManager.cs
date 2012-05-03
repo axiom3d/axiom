@@ -39,29 +39,47 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.IO;
+using System.Reflection;
+using System.Linq;
+
 using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Core.Collections;
 using Axiom.Serialization;
+
 using ResourceHandle = System.UInt64;
+
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///   Class for managing Material settings.
+	///     Class for managing Material settings.
 	/// </summary>
 	/// <remarks>
-	///   Materials control the eventual surface rendering properties of geometry. This class manages the library of materials, dealing with programmatic registrations and lookups, as well as loading predefined Material settings from scripts. <p /> When loaded from a script, a Material is in an 'unloaded' state and only stores the settings required. It does not at that stage load any textures. This is because the material settings may be loaded 'en masse' from bulk material script files, but only a subset will actually be required. <p /> Because this is a subclass of ResourceManager, any files loaded will be searched for in any path or archive added to the resource paths/archives. See ResourceManager for details. <p /> For a definition of the material script format, see <a
-	///    href="http://www.ogre3d.org/docs/manual/manual_16.html#SEC25">here</a> .
+	///     Materials control the eventual surface rendering properties of geometry. This class
+	///     manages the library of materials, dealing with programmatic registrations and lookups,
+	///     as well as loading predefined Material settings from scripts.
+	///     <p/>
+	///     When loaded from a script, a Material is in an 'unloaded' state and only stores the settings
+	///     required. It does not at that stage load any textures. This is because the material settings may be
+	///     loaded 'en masse' from bulk material script files, but only a subset will actually be required.
+	///     <p/>
+	///     Because this is a subclass of ResourceManager, any files loaded will be searched for in any path or
+	///     archive added to the resource paths/archives. See ResourceManager for details.
+	///     <p/>
+	///     For a definition of the material script format, see <a href="http://www.ogre3d.org/docs/manual/manual_16.html#SEC25">here</a>.
 	/// </remarks>
+	/// 
 	/// <ogre name="MaterialManager">
-	///   <file name="OgreMaterialManager.h" revision="" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
-	///   <file name="OgreMaterialManager.cpp" revision="" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
-	/// </ogre>
+	///     <file name="OgreMaterialManager.h"   revision="" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreMaterialManager.cpp" revision="" lastUpdated="6/19/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
+	/// 
 	public class MaterialManager : ResourceManager, ISingleton<MaterialManager>
 	{
 		#region Delegates
@@ -82,8 +100,7 @@ namespace Axiom.Graphics
 
 			public IRenderable Renderable { get; private set; }
 
-			public SchemeNotFoundEventArgs( ushort schemeIndex, string schemeName, Material originalMaterial, int lodIndex,
-			                                IRenderable renderable )
+			public SchemeNotFoundEventArgs( ushort schemeIndex, string schemeName, Material originalMaterial, int lodIndex, IRenderable renderable )
 			{
 				SchemeIndex = schemeIndex;
 				Renderable = renderable;
@@ -100,33 +117,50 @@ namespace Axiom.Graphics
 		#region Fields and Properties
 
 		/// <summary>
-		///   Default Texture filtering - minification.
+		///     Default Texture filtering - minification.
 		/// </summary>
 		private FilterOptions _defaultMinFilter;
 
 		/// <summary>
-		///   Default Texture filtering - magnification.
+		///     Default Texture filtering - magnification.
 		/// </summary>
 		private FilterOptions _defaultMagFilter;
 
 		/// <summary>
-		///   Default Texture filtering - mipmapping.
+		///     Default Texture filtering - mipmapping.
 		/// </summary>
 		private FilterOptions _defaultMipFilter;
 
 		#region DefaultAnisotropy Property
 
 		/// <summary>
-		///   Sets the default anisotropy level to be used for loaded textures, for when textures are loaded automatically (e.g. by Material class) or when 'Load' is called with the default parameters by the application.
+		///     Default Texture anisotropy.
 		/// </summary>
-		public int DefaultAnisotropy { get; set; }
+		private int _defaultMaxAniso;
+
+		/// <summary>
+		///    Sets the default anisotropy level to be used for loaded textures, for when textures are
+		///    loaded automatically (e.g. by Material class) or when 'Load' is called with the default
+		///    parameters by the application.
+		/// </summary>
+		public int DefaultAnisotropy
+		{
+			get
+			{
+				return _defaultMaxAniso;
+			}
+			set
+			{
+				_defaultMaxAniso = value;
+			}
+		}
 
 		#endregion DefaultAnisotropy Property
 
-		///<summary>
-		///  Used for parsing material scripts.
-		///</summary>
-		private readonly MaterialSerializer _serializer = new MaterialSerializer();
+		/// <summary>
+		///		Used for parsing material scripts.
+		/// </summary>
+		private MaterialSerializer _serializer = new MaterialSerializer();
 
 		private TextureFiltering _filtering;
 
@@ -135,7 +169,7 @@ namespace Axiom.Graphics
 		#region Constructors and Destructor
 
 		/// <summary>
-		///   private constructor. This class cannot be instantiated externally.
+		/// private constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		public MaterialManager()
 			: base()
@@ -145,11 +179,11 @@ namespace Axiom.Graphics
 				instance = this;
 			}
 
-			SetDefaultTextureFiltering( TextureFiltering.Bilinear );
-			DefaultAnisotropy = 1;
+			this.SetDefaultTextureFiltering( TextureFiltering.Bilinear );
+			_defaultMaxAniso = 1;
 
 			// Loading order
-			LoadingOrder = 100.0f;
+			this.LoadingOrder = 100.0f;
 
 #if !AXIOM_USENEWCOMPILERS
 			// Scripting is supported by this manager
@@ -176,7 +210,7 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		///   Sets up default materials and parses all material scripts.
+		///     Sets up default materials and parses all material scripts.
 		/// </summary>
 		public void Initialize()
 		{
@@ -198,14 +232,16 @@ namespace Axiom.Graphics
 		#region SetDefaultTextureFiltering Method
 
 		/// <overload>
-		///   <summary>
-		///     Sets the default texture filtering to be used for loaded textures, for when textures are loaded automatically (e.g. by Material class) or when 'load' is called with the default parameters by the application.
-		///   </summary>
-		/// </overload>
-		/// <param name="filtering"> </param>
+		/// <summary>
+		///     Sets the default texture filtering to be used for loaded textures, for when textures are
+		///     loaded automatically (e.g. by Material class) or when 'load' is called with the default
+		///     parameters by the application.
+		/// </summary>
+		/// </overload> 
+		/// <param name="filtering"></param>
 		public virtual void SetDefaultTextureFiltering( TextureFiltering filtering )
 		{
-			_filtering = filtering;
+			this._filtering = filtering;
 			switch ( filtering )
 			{
 				case TextureFiltering.None:
@@ -223,8 +259,8 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <param name="type"> Type to configure. </param>
-		/// <param name="options"> Options to set for the specified type. </param>
+		/// <param name="type">Type to configure.</param>
+		/// <param name="options">Options to set for the specified type.</param>
 		public virtual void SetDefaultTextureFiltering( FilterType type, FilterOptions options )
 		{
 			switch ( type )
@@ -243,11 +279,10 @@ namespace Axiom.Graphics
 			}
 		}
 
-		/// <param name="minFilter"> Minification filter. </param>
-		/// <param name="magFilter"> Magnification filter. </param>
-		/// <param name="mipFilter"> Map filter. </param>
-		public virtual void SetDefaultTextureFiltering( FilterOptions minFilter, FilterOptions magFilter,
-		                                                FilterOptions mipFilter )
+		/// <param name="minFilter">Minification filter.</param>
+		/// <param name="magFilter">Magnification filter.</param>
+		/// <param name="mipFilter">Map filter.</param>
+		public virtual void SetDefaultTextureFiltering( FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter )
 		{
 			_defaultMinFilter = minFilter;
 			_defaultMagFilter = magFilter;
@@ -259,10 +294,10 @@ namespace Axiom.Graphics
 		#region GetDefaultTextureFiltering Method
 
 		/// <summary>
-		///   Gets the default texture filtering options for the specified filter type.
+		///     Gets the default texture filtering options for the specified filter type.
 		/// </summary>
-		/// <param name="type"> Filter type to get options for. </param>
-		/// <returns> </returns>
+		/// <param name="type">Filter type to get options for.</param>
+		/// <returns></returns>
 		public virtual FilterOptions GetDefaultTextureFiltering( FilterType type )
 		{
 			switch ( type )
@@ -282,7 +317,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Gets the default texture filtering options.
+		///     Gets the default texture filtering options.
 		/// </summary>
 		public virtual TextureFiltering GetDefaultTextureFiltering()
 		{
@@ -302,9 +337,9 @@ namespace Axiom.Graphics
 		protected ushort _activeSchemeIndex;
 
 		/// <summary>
-		///   The index for the given material scheme name.
+		/// The index for the given material scheme name. 
 		/// </summary>
-		/// <seealso ref="Technique.SchemeName" />
+		/// <seealso ref="Technique.SchemeName"/>
 		public ushort GetSchemeIndex( String name )
 		{
 			if ( !_schemes.ContainsKey( name ) )
@@ -317,9 +352,9 @@ namespace Axiom.Graphics
 
 
 		/// <summary>
-		///   The name for the given material scheme index.
+		/// The name for the given material scheme index. 
 		/// </summary>
-		/// <seealso ref="Technique.SchemeName" />
+		/// <seealso ref="Technique.SchemeName"/>
 		public String GetSchemeName( ushort index )
 		{
 			if ( _schemes.ContainsValue( index ) )
@@ -336,15 +371,15 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   The active scheme index.
+		/// The active scheme index. 
 		/// </summary>
-		/// <seealso ref="Technique.SchemeIndex" />
+		/// <seealso ref="Technique.SchemeIndex"/>
 		public ushort ActiveSchemeIndex { get; protected set; }
 
 		/// <summary>
-		///   The name of the active material scheme.
+		/// The name of the active material scheme. 
 		/// </summary>
-		/// <seealso ref="Technique.SchemeName" />
+		/// <seealso ref="Technique.SchemeName"/>
 		public String ActiveScheme
 		{
 			get
@@ -362,7 +397,7 @@ namespace Axiom.Graphics
 		private readonly MultiMap<string, SchemeNotFoundHandler> _listenerMap = new MultiMap<string, SchemeNotFoundHandler>();
 
 		/// <summary>
-		///   Add a listener to handle material events.
+		/// Add a listener to handle material events. 
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Using delegate rather than an Listener interface" )]
 		public virtual void AddListener( SchemeNotFoundHandler l )
@@ -371,7 +406,8 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Add a listener to handle material events. If schemeName is supplied, the listener will only receive events for that certain scheme.
+		/// Add a listener to handle material events. 
+		/// If schemeName is supplied, the listener will only receive events for that certain scheme.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Using delegate rather than an Listener interface" )]
 		public virtual void AddListener( SchemeNotFoundHandler l, string schemeName )
@@ -380,7 +416,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Remove a listener handling material events.
+		/// Remove a listener handling material events. 
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Using delegate rather than an Listener interface" )]
 		public virtual void RemoveListener( SchemeNotFoundHandler l )
@@ -389,7 +425,8 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Remove a listener handling material events. If the listener was added with a custom scheme name, it needs to be supplied here as well.
+		/// Remove a listener handling material events. 
+		/// If the listener was added with a custom scheme name, it needs to be supplied here as well.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "Using delegate rather than an Listener interface" )]
 		public virtual void RemoveListener( SchemeNotFoundHandler l, string schemeName )
@@ -398,9 +435,7 @@ namespace Axiom.Graphics
 		}
 
 
-		/// <summary>
-		///   Internal method for sorting out missing technique for a scheme
-		/// </summary>
+		/// <summary>Internal method for sorting out missing technique for a scheme</summary>
 		public Technique ArbitrateMissingTechniqueForActiveScheme( Material mat, int lodIndex, IRenderable rend )
 		{
 			var args = new SchemeNotFoundEventArgs( _activeSchemeIndex, _activeSchemeName, mat, lodIndex, rend );
@@ -439,8 +474,7 @@ namespace Axiom.Graphics
 
 		#region ResourceManager Implementation
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual,
-		                                     IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			return new Material( this, name, handle, group, isManual, loader );
 		}
@@ -450,12 +484,12 @@ namespace Axiom.Graphics
 		#region ISingleton<MaterialManager> implementation
 
 		/// <summary>
-		///   Singleton instance of this class.
+		///     Singleton instance of this class.
 		/// </summary>
 		protected static MaterialManager instance;
 
 		/// <summary>
-		///   Gets the singleton instance of this class.
+		///     Gets the singleton instance of this class.
 		/// </summary>
 		public static MaterialManager Instance
 		{
@@ -475,7 +509,7 @@ namespace Axiom.Graphics
 		#region IScriptLoader Implementation
 
 		/// <summary>
-		///   Parse a .material script passed in as a chunk.
+		///    Parse a .material script passed in as a chunk.
 		/// </summary>
 		public override void ParseScript( Stream stream, string groupName, string fileName )
 		{
@@ -491,12 +525,12 @@ namespace Axiom.Graphics
 		#region IDisposable Implementation
 
 		/// <summary>
-		///   Dispose of this object
+		/// Dispose of this object 
 		/// </summary>
 		/// <ogre name="~MaterialManager" />
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

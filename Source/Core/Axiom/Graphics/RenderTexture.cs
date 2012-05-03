@@ -38,6 +38,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+
+using Axiom.Core;
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -45,7 +47,7 @@ using Axiom.Media;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///   Custom RenderTarget that allows for rendering a scene to a texture.
+	///    Custom RenderTarget that allows for rendering a scene to a texture.
 	/// </summary>
 	public abstract class RenderTexture : RenderTarget
 	{
@@ -94,7 +96,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Ensures texture is destroyed.
+		/// Ensures texture is destroyed.
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{

@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Math;
 
 #endregion Namespace Declarations
@@ -44,11 +46,10 @@ using Axiom.Math;
 namespace Axiom.Controllers.Canned
 {
 	/// <summary>
-	///   A Controller representing a periodic waveform function ranging from Sine to InverseSawtooth
+	/// A Controller representing a periodic waveform function ranging from Sine to InverseSawtooth
 	/// </summary>
-	/// <remarks>
-	///   Function take to form of BaseValue + Amplitude * ( F(time * freq) / 2 + .5 ) such as Base + A * ( Sin(t freq 2 pi) + .5)
-	/// </remarks>
+	/// <remarks>Function take to form of BaseValue + Amplitude * ( F(time * freq) / 2 + .5 )
+	/// such as Base + A * ( Sin(t freq 2 pi) + .5) </remarks>
 	public class WaveformControllerFunction : BaseControllerFunction
 	{
 		#region Member variables
@@ -64,8 +65,7 @@ namespace Axiom.Controllers.Canned
 
 		#region Constructors
 
-		public WaveformControllerFunction( WaveformType type, Real baseVal, Real frequency, Real phase, Real amplitude,
-		                                   bool useDelta )
+		public WaveformControllerFunction( WaveformType type, Real baseVal, Real frequency, Real phase, Real amplitude, bool useDelta )
 			: base( useDelta )
 		{
 			this.type = type;
@@ -73,7 +73,7 @@ namespace Axiom.Controllers.Canned
 			this.frequency = frequency;
 			this.phase = phase;
 			this.amplitude = amplitude;
-			deltaCount = phase;
+			this.deltaCount = phase;
 		}
 
 		public WaveformControllerFunction( WaveformType type, Real baseVal )
@@ -122,7 +122,7 @@ namespace Axiom.Controllers.Canned
 
 		public override Real Execute( Real sourceValue )
 		{
-			var input = AdjustInput( sourceValue*frequency )%1f;
+			var input = AdjustInput( sourceValue * frequency ) % 1f;
 			var output = 0.0f;
 
 			//For simplicity, factor input down to {0,1}
@@ -140,21 +140,21 @@ namespace Axiom.Controllers.Canned
 			switch ( type )
 			{
 				case WaveformType.Sine:
-					output = Utility.Sin( input*Utility.TWO_PI );
+					output = Utility.Sin( input * Utility.TWO_PI );
 					break;
 
 				case WaveformType.Triangle:
 					if ( input < 0.25f )
 					{
-						output = input*4;
+						output = input * 4;
 					}
 					else if ( input >= 0.25f && input < 0.75f )
 					{
-						output = 1.0f - ( ( input - 0.25f )*4 );
+						output = 1.0f - ( ( input - 0.25f ) * 4 );
 					}
 					else
 					{
-						output = ( ( input - 0.75f )*4 ) - 1.0f;
+						output = ( ( input - 0.75f ) * 4 ) - 1.0f;
 					}
 
 					break;
@@ -171,11 +171,11 @@ namespace Axiom.Controllers.Canned
 					break;
 
 				case WaveformType.Sawtooth:
-					output = ( input*2 ) - 1;
+					output = ( input * 2 ) - 1;
 					break;
 
 				case WaveformType.InverseSawtooth:
-					output = -( ( input*2 ) - 1 );
+					output = -( ( input * 2 ) - 1 );
 					break;
 				case WaveformType.PulseWidthModulation:
 					if ( input <= dutyCycle )
@@ -190,7 +190,7 @@ namespace Axiom.Controllers.Canned
 			} // end switch
 
 			// scale final output to range [0,1], and then by base and amplitude
-			return baseVal + ( ( output + 1.0f )*0.5f*amplitude );
+			return baseVal + ( ( output + 1.0f ) * 0.5f * amplitude );
 		}
 
 		protected override Real AdjustInput( Real input )

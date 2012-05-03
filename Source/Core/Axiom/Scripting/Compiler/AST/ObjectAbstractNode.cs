@@ -45,7 +45,7 @@ using System.Collections.Generic;
 namespace Axiom.Scripting.Compiler.AST
 {
 	/// <summary>
-	///   This specific abstract node represents a script object
+	/// This specific abstract node represents a script object
 	/// </summary>
 	public class ObjectAbstractNode : AbstractNode
 	{
@@ -63,7 +63,7 @@ namespace Axiom.Scripting.Compiler.AST
 			}
 		}
 
-		private readonly List<string> _bases = new List<string>();
+		private List<string> _bases = new List<string>();
 
 		public uint Id;
 
@@ -74,7 +74,7 @@ namespace Axiom.Scripting.Compiler.AST
 		public IList<AbstractNode> Values = new List<AbstractNode>();
 
 		/// <summary>
-		///   For use when processing object inheritance and overriding
+		/// For use when processing object inheritance and overriding
 		/// </summary>
 		public IList<AbstractNode> Overrides
 		{
@@ -84,7 +84,7 @@ namespace Axiom.Scripting.Compiler.AST
 			}
 		}
 
-		private readonly List<AbstractNode> _overrides = new List<AbstractNode>();
+		private List<AbstractNode> _overrides = new List<AbstractNode>();
 
 		private Dictionary<String, String> _environment = new Dictionary<string, string>();
 
@@ -123,7 +123,7 @@ namespace Axiom.Scripting.Compiler.AST
 				return new KeyValuePair<bool, string>( true, _environment[ inName ] );
 			}
 
-			var parentNode = (ObjectAbstractNode)Parent;
+			var parentNode = (ObjectAbstractNode)this.Parent;
 			while ( parentNode != null )
 			{
 				if ( parentNode._environment.ContainsKey( inName ) )
@@ -141,23 +141,23 @@ namespace Axiom.Scripting.Compiler.AST
 
 		#region AbstractNode Implementation
 
-		/// <see cref="AbstractNode.Clone" />
+		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
 			var node = new ObjectAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Name = Name;
-			node.Cls = Cls;
-			node.Id = Id;
-			node.IsAbstract = IsAbstract;
-			foreach ( var an in Children )
+			node.Name = this.Name;
+			node.Cls = this.Cls;
+			node.Id = this.Id;
+			node.IsAbstract = this.IsAbstract;
+			foreach ( var an in this.Children )
 			{
 				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
 				node.Children.Add( newNode );
 			}
-			foreach ( var an in Values )
+			foreach ( var an in this.Values )
 			{
 				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
@@ -167,7 +167,7 @@ namespace Axiom.Scripting.Compiler.AST
 			return node;
 		}
 
-		/// <see cref="AbstractNode.Value" />
+		/// <see cref="AbstractNode.Value"/>
 		public override string Value
 		{
 			get

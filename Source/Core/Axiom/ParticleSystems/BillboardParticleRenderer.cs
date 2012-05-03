@@ -38,12 +38,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Text;
 using System.Reflection;
+using System.Diagnostics;
+
+using Axiom.Math;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.Math;
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
@@ -58,9 +62,9 @@ namespace Axiom.ParticleSystems
 		private const string PARTICLE = "Particle";
 
 		/// <summary>
-		///   List of available attibute parsers for script attributes.
+		///     List of available attibute parsers for script attributes.
 		/// </summary>
-		private readonly Dictionary<string, MethodInfo> attribParsers = new Dictionary<string, MethodInfo>();
+		private Dictionary<string, MethodInfo> attribParsers = new Dictionary<string, MethodInfo>();
 
 		private BillboardSet billboardSet;
 
@@ -183,21 +187,21 @@ namespace Axiom.ParticleSystems
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( billboardSet != null )
+					if ( this.billboardSet != null )
 					{
-						if ( !billboardSet.IsDisposed )
+						if ( !this.billboardSet.IsDisposed )
 						{
-							billboardSet.Dispose();
+							this.billboardSet.Dispose();
 						}
 
-						billboardSet = null;
+						this.billboardSet = null;
 					}
 
-					attribParsers.Clear();
+					this.attribParsers.Clear();
 				}
 			}
 
@@ -212,19 +216,19 @@ namespace Axiom.ParticleSystems
 		{
 			var otherBpr = (BillboardParticleRenderer)other;
 			Debug.Assert( otherBpr != null );
-			otherBpr.BillboardType = BillboardType;
-			otherBpr.CommonUpVector = CommonUpVector;
-			otherBpr.CommonDirection = CommonDirection;
+			otherBpr.BillboardType = this.BillboardType;
+			otherBpr.CommonUpVector = this.CommonUpVector;
+			otherBpr.CommonDirection = this.CommonDirection;
 		}
 
-		///<summary>
-		///  Parses an attribute intended for the particle system itself.
-		///</summary>
+		/// <summary>
+		///		Parses an attribute intended for the particle system itself.
+		/// </summary>
 		public override bool SetParameter( string attr, string val )
 		{
 			if ( attribParsers.ContainsKey( attr ) )
 			{
-				var args = new object[2];
+				var args = new object[ 2 ];
 				args[ 0 ] = val.Split( ' ' );
 				args[ 1 ] = this;
 				attribParsers[ attr ].Invoke( null, args );
@@ -248,8 +252,7 @@ namespace Axiom.ParticleSystems
 			foreach ( var p in currentParticles )
 			{
 				bb.Position = p.Position;
-				if ( billboardSet.BillboardType == BillboardType.OrientedSelf ||
-				     billboardSet.BillboardType == BillboardType.PerpendicularSelf )
+				if ( billboardSet.BillboardType == BillboardType.OrientedSelf || billboardSet.BillboardType == BillboardType.PerpendicularSelf )
 				{
 					// Normalise direction vector
 					bb.Direction = p.Direction;
@@ -322,13 +325,11 @@ namespace Axiom.ParticleSystems
 		#region BillboardTypeCommand
 
 		[OgreVersion( 1, 7, 2 )]
-		[ScriptableProperty( "billboard_type",
-			@"The type of billboard to use. 'point' means a simulated spherical particle,
+		[ScriptableProperty( "billboard_type", @"The type of billboard to use. 'point' means a simulated spherical particle,
                 'oriented_common' means all particles in the set are oriented around common_direction,
                 'oriented_self' means particles are oriented around their own direction,
                 'perpendicular_common' means all particles are perpendicular to common_direction, 
-                and 'perpendicular_self' means particles are perpendicular to their own direction."
-			)]
+                and 'perpendicular_self' means particles are perpendicular to their own direction." )]
 		public class BillboardTypeCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -343,8 +344,7 @@ namespace Axiom.ParticleSystems
 			[OgreVersion( 1, 7, 2 )]
 			public void Set( object target, string val )
 			{
-				( (BillboardParticleRenderer)target ).BillboardType =
-					(BillboardType)ScriptEnumAttribute.Lookup( val, typeof ( BillboardType ) );
+				( (BillboardParticleRenderer)target ).BillboardType = (BillboardType)ScriptEnumAttribute.Lookup( val, typeof ( BillboardType ) );
 			}
 
 			#endregion IPropertyCommand Members
@@ -355,11 +355,9 @@ namespace Axiom.ParticleSystems
 		#region BillboardOriginCommand
 
 		[OgreVersion( 1, 7, 2 )]
-		[ScriptableProperty( "billboard_origin",
-			@"This setting controls the fine tuning of where a billboard appears in relation to it's position.
+		[ScriptableProperty( "billboard_origin", @"This setting controls the fine tuning of where a billboard appears in relation to it's position.
                 Possible value are: 'top_left', 'top_center', 'top_right', 'center_left', 'center', 'center_right',
-                'bottom_left', 'bottom_center' and 'bottom_right'. Default value is 'center'."
-			)]
+                'bottom_left', 'bottom_center' and 'bottom_right'. Default value is 'center'." )]
 		public class BillboardOriginCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -374,8 +372,7 @@ namespace Axiom.ParticleSystems
 			[OgreVersion( 1, 7, 2 )]
 			public void Set( object target, string val )
 			{
-				( (BillboardParticleRenderer)target ).BillboardOrigin =
-					(BillboardOrigin)ScriptEnumAttribute.Lookup( val, typeof ( BillboardOrigin ) );
+				( (BillboardParticleRenderer)target ).BillboardOrigin = (BillboardOrigin)ScriptEnumAttribute.Lookup( val, typeof ( BillboardOrigin ) );
 			}
 
 			#endregion IPropertyCommand Members
@@ -386,11 +383,9 @@ namespace Axiom.ParticleSystems
 		#region BillboardRotationTypeCommand
 
 		[OgreVersion( 1, 7, 2 )]
-		[ScriptableProperty( "billboard_rotation_type",
-			@"This setting controls the billboard rotation type.
+		[ScriptableProperty( "billboard_rotation_type", @"This setting controls the billboard rotation type.
 				'vertex' means rotate the billboard's vertices around their facing direction.
-                'texcoord' means rotate the billboard's texture coordinates. Default value is 'texcoord'."
-			)]
+                'texcoord' means rotate the billboard's texture coordinates. Default value is 'texcoord'." )]
 		public class BillboardRotationTypeCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -405,8 +400,7 @@ namespace Axiom.ParticleSystems
 			[OgreVersion( 1, 7, 2 )]
 			public void Set( object target, string val )
 			{
-				( (BillboardParticleRenderer)target ).BillboardRotationType =
-					(BillboardRotationType)ScriptEnumAttribute.Lookup( val, typeof ( BillboardRotationType ) );
+				( (BillboardParticleRenderer)target ).BillboardRotationType = (BillboardRotationType)ScriptEnumAttribute.Lookup( val, typeof ( BillboardRotationType ) );
 			}
 
 			#endregion IPropertyCommand Members
@@ -417,13 +411,11 @@ namespace Axiom.ParticleSystems
 		#region CommonDirectionCommand
 
 		[OgreVersion( 1, 7, 2 )]
-		[ScriptableProperty( "common_direction",
-			@"Only useful when billboard_type is oriented_common or perpendicular_common.
+		[ScriptableProperty( "common_direction", @"Only useful when billboard_type is oriented_common or perpendicular_common.
 				When billboard_type is oriented_common, this parameter sets the common orientation for
 				all particles in the set (e.g. raindrops may all be oriented downwards).
 				When billboard_type is perpendicular_common, this parameter sets the perpendicular vector for
-				all particles in the set (e.g. an aureola around the player and parallel to the ground)."
-			)]
+				all particles in the set (e.g. an aureola around the player and parallel to the ground)." )]
 		public class CommonDirectionCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -448,11 +440,9 @@ namespace Axiom.ParticleSystems
 		#region CommonUpVectorCommand
 
 		[OgreVersion( 1, 7, 2 )]
-		[ScriptableProperty( "common_up_vector",
-			@"Only useful when billboard_type is perpendicular_self or perpendicular_common. This
+		[ScriptableProperty( "common_up_vector", @"Only useful when billboard_type is perpendicular_self or perpendicular_common. This
 				parameter sets the common up-vector for all particles in the set (e.g. an aureola around
-				the player and parallel to the ground)."
-			)]
+				the player and parallel to the ground)." )]
 		public class CommonUpVectorCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -477,13 +467,11 @@ namespace Axiom.ParticleSystems
 		#region PointRenderingCommand
 
 		[OgreVersion( 1, 7, 2 )]
-		[ScriptableProperty( "point_rendering",
-			@"Set whether or not particles will use point rendering
+		[ScriptableProperty( "point_rendering", @"Set whether or not particles will use point rendering
 				rather than manually generated quads. This allows for faster
 				rendering of point-oriented particles although introduces some
 				limitations too such as requiring a common particle size.
-				Possible values are 'true' or 'false'."
-			)]
+				Possible values are 'true' or 'false'." )]
 		public class PointRenderingCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -508,12 +496,10 @@ namespace Axiom.ParticleSystems
 		#region AccurateFacingCommand
 
 		[OgreVersion( 1, 7, 2 )]
-		[ScriptableProperty( "accurate_facing",
-			@"Set whether or not particles will be oriented to the camera
+		[ScriptableProperty( "accurate_facing", @"Set whether or not particles will be oriented to the camera
 				based on the relative position to the camera rather than just
 				the camera direction. This is more accurate but less optimal.
-				Cannot be combined with point rendering."
-			)]
+				Cannot be combined with point rendering." )]
 		public class AccurateFacingCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members

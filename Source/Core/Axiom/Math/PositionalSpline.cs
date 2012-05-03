@@ -43,27 +43,36 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.Collections.Generic;
+using System;
+using System.Diagnostics;
+
+using Axiom.Math.Collections;
 using Axiom.Utilities;
+
+using System.Collections.Generic;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Math
 {
-	///<summary>
-	///  A Catmull-Rom spline that can be used for interpolating translation movements.
-	///</summary>
-	///<remarks>
-	///  A Catmull-Rom spline is a derivitive of the Hermite spline. The difference is that the Hermite spline allows you to specifiy 2 endpoints and 2 tangents, then the spline is generated. A Catmull-Rom spline allows you to just supply 1-n number of points and the tangents will be automatically calculated. <p /> Derivation of the hermite polynomial can be found here: <a
-	///   href="http://www.cs.unc.edu/~hoff/projects/comp236/curves/papers/hermite.html">Hermite splines.</a>
-	///</remarks>
+	/// <summary>
+	///		A Catmull-Rom spline that can be used for interpolating translation movements.
+	/// </summary>
+	/// <remarks>
+	///		A Catmull-Rom spline is a derivitive of the Hermite spline.  The difference is that the Hermite spline
+	///		allows you to specifiy 2 endpoints and 2 tangents, then the spline is generated.  A Catmull-Rom spline
+	///		allows you to just supply 1-n number of points and the tangents will be automatically calculated.
+	///		<p/>
+	///		Derivation of the hermite polynomial can be found here: 
+	///		<a href="http://www.cs.unc.edu/~hoff/projects/comp236/curves/papers/hermite.html">Hermite splines.</a>
+	/// </remarks>
 	public sealed class PositionalSpline : Spline<Vector3>
 	{
 		#region Constructors
 
-		///<summary>
-		///  Creates a new Positional Spline.
-		///</summary>
+		/// <summary>
+		///		Creates a new Positional Spline.
+		/// </summary>
 		public PositionalSpline()
 			: base()
 		{
@@ -79,21 +88,22 @@ namespace Axiom.Math
 
 		#region Public methods
 
-		///<summary>
-		///  Returns an interpolated point based on a parametric value over the whole series.
-		///</summary>
-		///<remarks>
-		///  Given a t value between 0 and 1 representing the parametric distance along the whole length of the spline, this method returns an interpolated point.
-		///</remarks>
-		///<param name="t"> Parametric value. </param>
-		///<returns> An interpolated point along the spline. </returns>
+		/// <summary>
+		///		Returns an interpolated point based on a parametric value over the whole series.
+		/// </summary>
+		/// <remarks>
+		///		Given a t value between 0 and 1 representing the parametric distance along the
+		///		whole length of the spline, this method returns an interpolated point.
+		/// </remarks>
+		/// <param name="t">Parametric value.</param>
+		/// <returns>An interpolated point along the spline.</returns>
 		public override Vector3 Interpolate( Real t )
 		{
 			// This does not take into account that points may not be evenly spaced.
 			// This will cause a change in velocity for interpolation.
 
 			// What segment this is in?
-			var segment = t*( pointList.Count - 1 );
+			var segment = t * ( pointList.Count - 1 );
 			var segIndex = (int)segment;
 
 			// apportion t
@@ -103,12 +113,12 @@ namespace Axiom.Math
 			return Interpolate( segIndex, t );
 		}
 
-		///<summary>
-		///  Interpolates a single segment of the spline given a parametric value.
-		///</summary>
-		///<param name="index"> The point index to treat as t=0. index + 1 is deemed to be t=1 </param>
-		///<param name="t"> Parametric value </param>
-		///<returns> An interpolated point along the spline. </returns>
+		/// <summary>
+		///		Interpolates a single segment of the spline given a parametric value.
+		/// </summary>
+		/// <param name="index">The point index to treat as t=0. index + 1 is deemed to be t=1</param>
+		/// <param name="t">Parametric value</param>
+		/// <returns>An interpolated point along the spline.</returns>
 		public override Vector3 Interpolate( int index, Real t )
 		{
 			Contract.Requires( index >= 0, "index", "Spline point index underrun." );
@@ -134,9 +144,9 @@ namespace Axiom.Math
 			// Construct a Vector4 of powers of 2
 			Real t2, t3;
 			// t^2
-			t2 = t*t;
+			t2 = t * t;
 			// t^3
-			t3 = t2*t;
+			t3 = t2 * t;
 
 			var powers = new Vector4( t3, t2, t, 1 );
 
@@ -166,18 +176,19 @@ namespace Axiom.Math
 			point.m33 = 1.0f;
 
 			// get the final result in a Vector4
-			var result = powers*hermitePoly*point;
+			var result = powers * hermitePoly * point;
 
 			// return the final result
 			return new Vector3( result.x, result.y, result.z );
 		}
 
-		///<summary>
-		///  Recalculates the tangents associated with this spline.
-		///</summary>
-		///<remarks>
-		///  If you tell the spline not to update on demand by setting AutoCalculate to false, then you must call this after completing your updates to the spline points.
-		///</remarks>
+		/// <summary>
+		///		Recalculates the tangents associated with this spline. 
+		/// </summary>
+		/// <remarks>
+		///		If you tell the spline not to update on demand by setting AutoCalculate to false,
+		///		then you must call this after completing your updates to the spline points.
+		/// </remarks>
 		public override void RecalculateTangents()
 		{
 			// Catmull-Rom approach
@@ -217,11 +228,11 @@ namespace Axiom.Math
 					if ( isClosed )
 					{
 						// Use numPoints-2 since numPoints-1 is the last point and == [0]
-						tangentList.Add( 0.5f*( pointList[ 1 ] - pointList[ numPoints - 2 ] ) );
+						tangentList.Add( 0.5f * ( pointList[ 1 ] - pointList[ numPoints - 2 ] ) );
 					}
 					else
 					{
-						tangentList.Add( 0.5f*( pointList[ 1 ] - pointList[ 0 ] ) );
+						tangentList.Add( 0.5f * ( pointList[ 1 ] - pointList[ 0 ] ) );
 					}
 				}
 				else if ( i == numPoints - 1 )
@@ -233,12 +244,12 @@ namespace Axiom.Math
 					}
 					else
 					{
-						tangentList.Add( 0.5f*( pointList[ i ] - pointList[ i - 1 ] ) );
+						tangentList.Add( 0.5f * ( pointList[ i ] - pointList[ i - 1 ] ) );
 					}
 				}
 				else
 				{
-					tangentList.Add( 0.5f*( pointList[ i + 1 ] - pointList[ i - 1 ] ) );
+					tangentList.Add( 0.5f * ( pointList[ i + 1 ] - pointList[ i - 1 ] ) );
 				}
 			}
 		}

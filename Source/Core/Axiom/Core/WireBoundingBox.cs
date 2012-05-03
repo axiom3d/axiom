@@ -38,15 +38,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using Axiom.Graphics;
+
 using Axiom.Math;
+using Axiom.Graphics;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
 	/// <summary>
-	///   Summary description for WireBoundingBox.
+	/// Summary description for WireBoundingBox.
 	/// </summary>
 	public class WireBoundingBox : SimpleRenderable
 	{
@@ -81,7 +82,7 @@ namespace Axiom.Core
 		#region Constructors
 
 		/// <summary>
-		///   Default constructor.
+		///    Default constructor.
 		/// </summary>
 		public WireBoundingBox()
 		{
@@ -101,13 +102,12 @@ namespace Axiom.Core
 			decl.AddElement( PositionBinding, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
 			// create a new hardware vertex buffer for the position data
-			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( PositionBinding ), vertexData.vertexCount,
-			                                                                BufferUsage.StaticWriteOnly );
+			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( PositionBinding ), vertexData.vertexCount, BufferUsage.StaticWriteOnly );
 
 			// bind the position buffer
 			binding.SetBinding( PositionBinding, buffer );
 
-			material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
+			this.material = (Material)MaterialManager.Instance[ "BaseWhiteNoLighting" ];
 		}
 
 		#endregion Constructors
@@ -118,14 +118,14 @@ namespace Axiom.Core
 		public void InitAABB( AxisAlignedBox box )
 		{
 			// store the bounding box locally
-			BoundingBox = box;
+			this.BoundingBox = box;
 		}
 
 		[Obsolete( "Use WireBoundingBox.BoundingBox property." )]
 		public void SetupBoundingBox( AxisAlignedBox aabb )
 		{
 			// store the bounding box locally
-			BoundingBox = box;
+			this.BoundingBox = box;
 		}
 
 		protected virtual void SetupBoundingBoxVertices( AxisAlignedBox aab )
@@ -245,34 +245,36 @@ namespace Axiom.Core
 
 		#region Implementation of SimpleRenderable
 
-		///<summary>
-		///</summary>
-		///<param name="matrices"> </param>
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="matrices"></param>
 		public override void GetWorldTransforms( Matrix4[] matrices )
 		{
 			// return identity matrix to prevent parent transforms
 			matrices[ 0 ] = Matrix4.Identity;
 		}
 
-		///<summary>
-		///</summary>
-		///<param name="camera"> </param>
-		///<returns> </returns>
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="camera"></param>
+		/// <returns></returns>
 		public override Real GetSquaredViewDepth( Camera camera )
 		{
-			Vector3 min = box.Minimum, max = box.Maximum, mid = ( ( max - min )*0.5f ) + min, dist = camera.DerivedPosition - mid;
+			Vector3 min = box.Minimum, max = box.Maximum, mid = ( ( max - min ) * 0.5f ) + min, dist = camera.DerivedPosition - mid;
 
 			return dist.LengthSquared;
 		}
 
 		/// <summary>
-		///   Get the local bounding radius of the wire bounding box.
+		///    Get the local bounding radius of the wire bounding box.
 		/// </summary>
 		public override Real BoundingRadius
 		{
 			get
 			{
-				return Radius;
+				return this.Radius;
 			}
 		}
 

@@ -39,20 +39,28 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System.IO;
 using System.Text;
+
+
 using Axiom.Graphics;
 using Axiom.Media;
+
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
-	///<summary>
-	///  Abstract class representing a Texture resource.
-	///</summary>
-	///<remarks>
-	///  The actual concrete subclass which will exist for a texture is dependent on the rendering system in use (Direct3D, OpenGL etc). This class represents the commonalities, and is the one 'used' by programmers even though the real implementation could be different in reality. Texture objects are created through the 'Create' method of the TextureManager concrete subclass.
-	///</remarks>
+	/// <summary>
+	///		Abstract class representing a Texture resource.
+	/// </summary>
+	/// <remarks>
+	///		The actual concrete subclass which will exist for a texture
+	///		is dependent on the rendering system in use (Direct3D, OpenGL etc).
+	///		This class represents the commonalities, and is the one 'used'
+	///		by programmers even though the real implementation could be
+	///		different in reality. Texture objects are created through
+	///		the 'Create' method of the TextureManager concrete subclass.
+	/// </remarks>
 	public abstract class Texture : Resource, ICopyable<Texture>
 	{
 		#region Fields and Properties
@@ -68,13 +76,11 @@ namespace Axiom.Core
 
 		#region Width Property
 
-		/// <summary>
-		///   Width of this texture.
-		/// </summary>
+		/// <summary>Width of this texture.</summary>
 		protected int width = 512;
 
 		/// <summary>
-		///   Gets the width (in pixels) of this texture.
+		/// Gets the width (in pixels) of this texture.
 		/// </summary>
 		/// <ogre name="getWidth" />
 		/// <ogre name="setWidth" />
@@ -97,13 +103,11 @@ namespace Axiom.Core
 
 		#region Height Property
 
-		/// <summary>
-		///   Height of this texture.
-		/// </summary>
+		/// <summary>Height of this texture.</summary>
 		protected int height = 512;
 
 		/// <summary>
-		///   Gets the height (in pixels) of this texture.
+		/// Gets the height (in pixels) of this texture.
 		/// </summary>
 		/// <ogre name="setHeight" />
 		/// <ogre name="getHeight" />
@@ -126,13 +130,11 @@ namespace Axiom.Core
 
 		#region Depth Property
 
-		/// <summary>
-		///   Depth of this texture.
-		/// </summary>
+		/// <summary>Depth of this texture.</summary>
 		protected int depth = 1;
 
 		/// <summary>
-		///   Gets the depth of this texture (for volume textures).
+		/// Gets the depth of this texture (for volume textures).
 		/// </summary>
 		/// <ogre name="setDepth" />
 		/// <ogre name="getDepth" />
@@ -155,17 +157,30 @@ namespace Axiom.Core
 
 		#region Bpp Property
 
+		/// <summary>Bits per pixel in this texture.</summary>
+		private int _finalBpp;
+
 		/// <summary>
-		///   Gets the bits per pixel found within this texture data.
+		///    Gets the bits per pixel found within this texture data.
 		/// </summary>
-		public int Bpp { get; protected set; }
+		public int Bpp
+		{
+			get
+			{
+				return _finalBpp;
+			}
+			protected set
+			{
+				_finalBpp = value;
+			}
+		}
 
 		#endregion Bpp Property
 
 		#region HasAlpha Property
 
 		/// <summary>
-		///   Gets whether or not the PixelFormat of this texture contains an alpha component.
+		/// Gets whether or not the PixelFormat of this texture contains an alpha component.
 		/// </summary>
 		/// <ogre name="hasAlpha" />
 		public virtual bool HasAlpha
@@ -184,9 +199,11 @@ namespace Axiom.Core
 		protected bool treatLuminanceAsAlpha;
 
 		/// <summary>
-		///   Gets or sets a value indicating whether to treat luminence as aplha.
+		/// Gets or sets a value indicating whether to treat luminence as aplha.
 		/// </summary>
-		/// <value> <c>true</c> if treat luminence as aplha; otherwise, <c>false</c> . </value>
+		/// <value>
+		/// 	<c>true</c> if treat luminence as aplha; otherwise, <c>false</c>.
+		/// </value>
 		public bool TreatLuminanceAsAlpha
 		{
 			[OgreVersion( 1, 7, 2 )]
@@ -206,16 +223,14 @@ namespace Axiom.Core
 
 		#region Gamma Property
 
-		/// <summary>
-		///   Gamma setting for this texture.
-		/// </summary>
+		/// <summary>Gamma setting for this texture.</summary>
 		protected float gamma = 1.0f;
 
 		/// <summary>
-		///   Gets/Sets the gamma adjustment factor for this texture.
+		///    Gets/Sets the gamma adjustment factor for this texture.
 		/// </summary>
 		/// <remarks>
-		///   Must be called before any variation of Load.
+		///    Must be called before any variation of Load.
 		/// </remarks>
 		/// <ogre name="setGamma" />
 		/// <ogre name="getGamma" />
@@ -238,13 +253,11 @@ namespace Axiom.Core
 
 		#region Format Property
 
-		/// <summary>
-		///   Pixel format of this texture.
-		/// </summary>
+		/// <summary>Pixel format of this texture.</summary>
 		protected PixelFormat format = PixelFormat.Unknown;
 
 		/// <summary>
-		///   Gets the PixelFormat of this texture.
+		/// Gets the PixelFormat of this texture.
 		/// </summary>
 		/// <ogre name="getFormat" />
 		public PixelFormat Format
@@ -260,13 +273,11 @@ namespace Axiom.Core
 
 		#region MipmapCount Property
 
-		/// <summary>
-		///   Number of mipmaps present in this texture.
-		/// </summary>
+		/// <summary>Number of mipmaps present in this texture.</summary>
 		protected int mipmapCount;
 
 		/// <summary>
-		///   Number of mipmaps present in this texture.
+		/// Number of mipmaps present in this texture.
 		/// </summary>
 		/// <ogre name="setNumMipmaps" />
 		/// <ogre name="getNumMipmaps" />
@@ -289,15 +300,15 @@ namespace Axiom.Core
 
 		#region MipmapsHardwareGenerated Property
 
-		/// <summary>
-		///   Are the mipmaps generated in hardware?
-		/// </summary>
+		/// <summary>Are the mipmaps generated in hardware?</summary>
 		protected bool mipmapsHardwareGenerated;
 
 		/// <summary>
-		///   Gets or sets a value indicating whether mipmaps are hardware generated.
+		/// Gets or sets a value indicating whether mipmaps are hardware generated.
 		/// </summary>
-		/// <value> <c>true</c> if mipmaps are hardware generated; otherwise, <c>false</c> . </value>
+		/// <value>
+		/// 	<c>true</c> if mipmaps are hardware generated; otherwise, <c>false</c>.
+		/// </value>
 		public virtual bool MipmapsHardwareGenerated
 		{
 			[OgreVersion( 1, 7, 2 )]
@@ -311,13 +322,11 @@ namespace Axiom.Core
 
 		#region TextureType Property
 
-		/// <summary>
-		///   Type of texture, i.e. 1D, 2D, Cube, Volume.
-		/// </summary>
+		/// <summary>Type of texture, i.e. 1D, 2D, Cube, Volume.</summary>
 		protected TextureType textureType = TextureType.TwoD;
 
 		/// <summary>
-		///   Type of texture, i.e. 2d, 3d, cubemap.
+		/// Type of texture, i.e. 2d, 3d, cubemap.
 		/// </summary>
 		/// <ogre name="setTextureType" />
 		/// <ogre name="getTextureType" />
@@ -340,13 +349,12 @@ namespace Axiom.Core
 
 		#region Usage Property
 
-		/// <summary>
-		///   Specifies how this texture will be used.
-		/// </summary>
+		/// <summary>Specifies how this texture will be used.</summary>
 		protected TextureUsage usage = TextureUsage.Default;
 
 		/// <summary>
-		///   Gets the intended usage of this texture, whether for standard usage or as a render target.
+		/// Gets the intended usage of this texture, whether for standard usage
+		/// or as a render target.
 		/// </summary>
 		/// <ogre name="setUsage" />
 		/// <ogre name="getUsage" />
@@ -369,14 +377,10 @@ namespace Axiom.Core
 
 		#region SrcWidth Property
 
-		/// <summary>
-		///   Original source width if this texture had been modified.
-		/// </summary>
+		/// <summary>Original source width if this texture had been modified.</summary>
 		protected int srcWidth;
 
-		/// <summary>
-		///   Original source width if this texture had been modified.
-		/// </summary>
+		/// <summary>Original source width if this texture had been modified.</summary>
 		/// <ogre name="geteSrcWidth" />
 		public virtual int SrcWidth
 		{
@@ -391,14 +395,10 @@ namespace Axiom.Core
 
 		#region SrcHeight Property
 
-		/// <summary>
-		///   Original source height if this texture had been modified.
-		/// </summary>
+		/// <summary>Original source height if this texture had been modified.</summary>
 		protected int srcHeight;
 
-		/// <summary>
-		///   Original source height if this texture had been modified.
-		/// </summary>
+		/// <summary>Original source height if this texture had been modified.</summary>
 		/// <ogre name="getSrcHeight" />
 		public virtual int SrcHeight
 		{
@@ -413,23 +413,30 @@ namespace Axiom.Core
 
 		#region SrcBpp Property
 
-		/// <summary>
-		///   Original source bits per pixel if this texture had been modified.
-		/// </summary>
-		public int srcBpp { get; protected set; }
+		/// <summary>Original source bits per pixel if this texture had been modified.</summary>
+		private int _srcBpp;
+
+		/// <summary>Original source bits per pixel if this texture had been modified.</summary>
+		public int srcBpp
+		{
+			get
+			{
+				return _srcBpp;
+			}
+			protected set
+			{
+				_srcBpp = value;
+			}
+		}
 
 		#endregion SrcBpp Property
 
 		#region SrcDepth Property
 
-		/// <summary>
-		///   Original depth of the input texture (only applicable for 3D textures).
-		/// </summary>
+		/// <summary>Original depth of the input texture (only applicable for 3D textures).</summary>
 		protected int srcDepth;
 
-		/// <summary>
-		///   Original depth of the input texture (only applicable for 3D textures).
-		/// </summary>
+		/// <summary>Original depth of the input texture (only applicable for 3D textures).</summary>
 		/// <ogre name="getSrcDepth" />
 		public virtual int SrcDepth
 		{
@@ -444,14 +451,10 @@ namespace Axiom.Core
 
 		#region SrcFormat Property
 
-		/// <summary>
-		///   Original format of the input texture (only applicable for 3D textures).
-		/// </summary>
+		/// <summary>Original format of the input texture (only applicable for 3D textures).</summary>
 		protected PixelFormat srcFormat = PixelFormat.Unknown;
 
-		/// <summary>
-		///   Original format of the input texture (only applicable for 3D textures).
-		/// </summary>
+		/// <summary>Original format of the input texture (only applicable for 3D textures).</summary>
 		/// <ogre name="getSrcDepth" />
 		public virtual PixelFormat SrcFormat
 		{
@@ -466,14 +469,10 @@ namespace Axiom.Core
 
 		#region DesiredFormat Property
 
-		/// <summary>
-		///   Desired format of the input texture (only applicable for 3D textures).
-		/// </summary>
+		/// <summary>Desired format of the input texture (only applicable for 3D textures).</summary>
 		protected PixelFormat desiredFormat = PixelFormat.Unknown;
 
-		/// <summary>
-		///   Desired format of the input texture (only applicable for 3D textures).
-		/// </summary>
+		/// <summary>Desired format of the input texture (only applicable for 3D textures).</summary>
 		/// <ogre name="getSrcDepth" />
 		public virtual PixelFormat DesiredFormat
 		{
@@ -492,10 +491,11 @@ namespace Axiom.Core
 		protected ushort desiredIntegerBitDepth;
 
 		/// <summary>
-		///   Desired bit depth for integer pixel format textures.
+		/// Desired bit depth for integer pixel format textures.
 		/// </summary>
 		/// <remarks>
-		///   Available values: 0, 16 and 32, where 0 (the default) means keep original format as it is. This value is number of bits for a channel of the pixel.
+		/// Available values: 0, 16 and 32, where 0 (the default) means keep original format
+		/// as it is. This value is number of bits for a channel of the pixel.
 		/// </remarks>
 		public virtual ushort DesiredIntegerBitDepth
 		{
@@ -513,10 +513,11 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Desired bit depth for float pixel format textures.
+		/// Desired bit depth for float pixel format textures.
 		/// </summary>
 		/// <remarks>
-		///   Available values: 0, 16 and 32, where 0 (the default) means keep original format as it is. This value is number of bits for a channel of the pixel.
+		/// Available values: 0, 16 and 32, where 0 (the default) means keep original format
+		/// as it is. This value is number of bits for a channel of the pixel.
 		/// </remarks>
 		public virtual ushort DesiredFloatBitDepth
 		{
@@ -540,7 +541,7 @@ namespace Axiom.Core
 		protected int fsaa;
 
 		/// <summary>
-		///   Get the level of multisample AA to be used if this texture is a rendertarget.
+		/// Get the level of multisample AA to be used if this texture is a rendertarget.
 		/// </summary>
 		/// <ogre name="getFSAA" />
 		public int FSAA
@@ -555,7 +556,7 @@ namespace Axiom.Core
 		protected string fsaaHint;
 
 		/// <summary>
-		///   Get the multisample AA hint if this texture is a rendertarget.
+		/// Get the multisample AA hint if this texture is a rendertarget.
 		/// </summary>
 		public virtual string FSAAHint
 		{
@@ -567,12 +568,14 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Set the level of multisample AA to be used if this texture is a rendertarget.
+		/// Set the level of multisample AA to be used if this texture is a rendertarget.
 		/// </summary>
-		/// <note>This option will be ignored if TU_RENDERTARGET is not part of the
-		///   usage options on this texture, or if the hardware does not support it.</note>
-		/// <param name="fsaa"> The number of samples </param>
-		/// <param name="fsaaHint"> Any hinting text <see cref="Root.CreateRenderWindow" /> </param>
+		/// <note>
+		/// This option will be ignored if TU_RENDERTARGET is not part of the
+		/// usage options on this texture, or if the hardware does not support it. 
+		/// </note>
+		/// <param name="fsaa">The number of samples</param>
+		/// <param name="fsaaHint">Any hinting text <see cref="Root.CreateRenderWindow"/></param>
 		[OgreVersion( 1, 7, 2 )]
 		public void SetFSAA( int fsaa, string fsaaHint )
 		{
@@ -587,11 +590,23 @@ namespace Axiom.Core
 		protected bool hwGamma;
 
 		/// <summary>
-		///   Gets/Sets whether this texture will be set up so that on sampling it, hardware gamma correction is applied.
+		/// Gets/Sets whether this texture will be set up so that on sampling it, hardware gamma correction is applied.
 		/// </summary>
 		/// <remarks>
-		///   24-bit textures are often saved in gamma color space; this preserves precision in the 'darks'. However, if you're performing blending on the sampled colors, you really want to be doing it in linear space. One way is to apply a gamma correction value on loading <see
-		///    cref="Gamma" /> , but this means you lose precision in those dark colors. An alternative is to get the hardware to do the gamma correction when reading the texture and converting it to a floating point value for the rest of the pipeline. This option allows you to do that; it's only supported in relatively recent hardware (others will ignore it) but can improve the quality of color reproduction. Note: Must be called before any 'load' method since it may affect the construction of the underlying hardware resources. Also note this only useful on textures using 8-bit color channels.
+		/// 24-bit textures are often saved in gamma color space; this preserves
+		/// precision in the 'darks'. However, if you're performing blending on
+		/// the sampled colors, you really want to be doing it in linear space.
+		/// One way is to apply a gamma correction value on loading <see cref="Gamma" />,
+		/// but this means you lose precision in those dark colors. An alternative
+		/// is to get the hardware to do the gamma correction when reading the
+		/// texture and converting it to a floating point value for the rest of
+		/// the pipeline. This option allows you to do that; it's only supported
+		/// in relatively recent hardware (others will ignore it) but can improve
+		/// the quality of color reproduction.
+		/// Note:
+		/// Must be called before any 'load' method since it may affect the
+		/// construction of the underlying hardware resources.
+		/// Also note this only useful on textures using 8-bit color channels.
 		/// </remarks>
 		public virtual bool HardwareGammaEnabled
 		{
@@ -611,7 +626,7 @@ namespace Axiom.Core
 		#endregion HardwareGammaEnabled Property
 
 		/// <summary>
-		///   Return the number of faces this texture has. This will be 6 for a cubemap texture and 1 for a 1D, 2D or 3D one.
+		/// Return the number of faces this texture has. This will be 6 for a cubemap texture and 1 for a 1D, 2D or 3D one.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual int FaceCount
@@ -627,20 +642,19 @@ namespace Axiom.Core
 		#region Construction and Destruction
 
 		/// <summary>
-		///   Initializes a new instance of the <see cref="Texture" /> class.
+		/// Initializes a new instance of the <see cref="Texture"/> class.
 		/// </summary>
-		/// <param name="parent"> The parent. </param>
-		/// <param name="name"> The name. </param>
-		/// <param name="handle"> The handle. </param>
-		/// <param name="group"> The group. </param>
-		/// <param name="isManual"> if set to <c>true</c> [is manual]. </param>
-		/// <param name="loader"> The loader. </param>
+		/// <param name="parent">The parent.</param>
+		/// <param name="name">The name.</param>
+		/// <param name="handle">The handle.</param>
+		/// <param name="group">The group.</param>
+		/// <param name="isManual">if set to <c>true</c> [is manual].</param>
+		/// <param name="loader">The loader.</param>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public Texture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader = null )
 #else
-		public Texture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
-		                IManualResourceLoader loader )
+		public Texture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 #endif
 			: base( parent, name, handle, group, isManual, loader )
 		{
@@ -662,9 +676,7 @@ namespace Axiom.Core
 
 #if !NET_40
 		public Texture( ResourceManager parent, string name, ResourceHandle handle, string group )
-			: this( parent, name, handle, group, false, null )
-		{
-		}
+			: this( parent, name, handle, group, false, null ) {}
 #endif
 
 		#endregion Construction and Destruction
@@ -672,16 +684,18 @@ namespace Axiom.Core
 		#region Methods
 
 		/// <summary>
-		///   Loads raw image data from the stream into this texture.
+		/// Loads raw image data from the stream into this texture.
 		/// </summary>
-		/// <note>Important: only call this from outside the load() routine of a 
-		///   Resource. Don't call it within (including ManualResourceLoader) - use
-		///   _loadImages() instead. This method is designed to be external, 
-		///   performs locking and checks the load status before loading.</note>
-		/// <param name="data"> The raw, decoded image data. </param>
-		/// <param name="width"> Width of the texture data. </param>
-		/// <param name="height"> Height of the texture data. </param>
-		/// <param name="format"> Format of the supplied image data. </param>
+		/// <note>
+		/// Important: only call this from outside the load() routine of a 
+		/// Resource. Don't call it within (including ManualResourceLoader) - use
+		/// _loadImages() instead. This method is designed to be external, 
+		/// performs locking and checks the load status before loading.
+		/// </note>
+		/// <param name="data">The raw, decoded image data.</param>
+		/// <param name="width">Width of the texture data.</param>
+		/// <param name="height">Height of the texture data.</param>
+		/// <param name="format">Format of the supplied image data.</param>
 		/// <ogre name="loadRawData" />
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void LoadRawData( Stream data, int width, int height, PixelFormat format )
@@ -694,7 +708,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Loads data from an Image directly into this texture.
+		/// Loads data from an Image directly into this texture.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void LoadImage( Image image )
@@ -716,9 +730,9 @@ namespace Axiom.Core
 				lock ( _loadingStatusMutex )
 				{
 					LoadImages( new Image[]
-					            {
-					            	image
-					            } );
+								{
+									image
+								} );
 				}
 			}
 			catch
@@ -732,16 +746,16 @@ namespace Axiom.Core
 			_loadingState.Value = Core.LoadingState.Loaded;
 
 			// Notify manager
-			if ( Creator != null )
+			if ( this.Creator != null )
 			{
-				Creator.NotifyResourceLoaded( this );
+				this.Creator.NotifyResourceLoaded( this );
 			}
 
 			// No deferred loading events since this method is not called in background
 		}
 
 		/// <summary>
-		///   Sets the pixel format for the texture surface; can only be set before load().
+		/// Sets the pixel format for the texture surface; can only be set before load().
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void SetFormat( PixelFormat pf )
@@ -754,7 +768,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Sets desired bit depth for integer and float pixel format.
+		/// Sets desired bit depth for integer and float pixel format.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void SetDesiredBitDepths( ushort integerBitDepth, ushort floatBitDepth )
@@ -763,19 +777,26 @@ namespace Axiom.Core
 			desiredFloatBitDepth = floatBitDepth;
 		}
 
-		/// <see cref="Resource.calculateSize" />
+		/// <see cref="Resource.calculateSize"/>
 		[OgreVersion( 1, 7, 2 )]
 		protected override int calculateSize()
 		{
-			return FaceCount*PixelUtil.GetMemorySize( Width, Height, Depth, Format );
+			return FaceCount * PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 		}
 
-		///<summary>
-		///  Internal method to load the texture from a set of images. <note>Do NOT call this method unless you are inside the load() routine
-		///                                                              already, e.g. a ManualResourceLoader. It is not threadsafe and does
-		///                                                              not check or update resource loading status.</note>
-		///</summary>
-		///<param name="images"> Vector of pointers to Images. If there is only one image in this vector, the faces of that image will be used. If there are multiple images in the vector each image will be loaded as a face. </param>
+		/// <summary>
+		/// Internal method to load the texture from a set of images. 
+		/// <note>
+		/// Do NOT call this method unless you are inside the load() routine
+		/// already, e.g. a ManualResourceLoader. It is not threadsafe and does
+		/// not check or update resource loading status.
+		/// </note>
+		/// </summary>
+		///<param name="images">
+		/// Vector of pointers to Images. If there is only one image
+		/// in this vector, the faces of that image will be used. If there are multiple
+		/// images in the vector each image will be loaded as a face.
+		/// </param>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void LoadImages( Image[] images )
 		{
@@ -836,18 +857,16 @@ namespace Axiom.Core
 
 			// Check wether number of faces in images exceeds number of faces
 			// in this texture. If so, clamp it.
-			if ( faces > FaceCount )
+			if ( faces > this.FaceCount )
 			{
-				faces = FaceCount;
+				faces = this.FaceCount;
 			}
 
 			// Say what we're doing
 			if ( TextureManager.Instance.Verbose )
 			{
 				var msg = new StringBuilder();
-				msg.AppendFormat( "Texture: {0}: Loading {1} faces( {2}, {3}x{4}x{5} ) with", _name, faces,
-				                  PixelUtil.GetFormatName( images[ 0 ].Format ), images[ 0 ].Width, images[ 0 ].Height,
-				                  images[ 0 ].Depth );
+				msg.AppendFormat( "Texture: {0}: Loading {1} faces( {2}, {3}x{4}x{5} ) with", _name, faces, PixelUtil.GetFormatName( images[ 0 ].Format ), images[ 0 ].Width, images[ 0 ].Height, images[ 0 ].Depth );
 				if ( !( mipmapsHardwareGenerated && mipmapCount == 0 ) )
 				{
 					msg.AppendFormat( " {0}", mipmapCount );
@@ -866,8 +885,7 @@ namespace Axiom.Core
 
 				// Print data about first destination surface
 				var buf = GetBuffer( 0, 0 );
-				msg.AppendFormat( " Internal format is {0} , {1}x{2}x{3}.", PixelUtil.GetFormatName( buf.Format ), buf.Width,
-				                  buf.Height, buf.Depth );
+				msg.AppendFormat( " Internal format is {0} , {1}x{2}x{3}.", PixelUtil.GetFormatName( buf.Format ), buf.Width, buf.Height, buf.Depth );
 
 				LogManager.Instance.Write( msg.ToString() );
 			}
@@ -898,7 +916,7 @@ namespace Axiom.Core
 						// Apply gamma correction
 						// Do not overwrite original image but do gamma correction in temporary buffer
 						var bufSize = PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, src.Format );
-						var buff = new byte[bufSize];
+						var buff = new byte[ bufSize ];
 						var buffer = BufferBase.Wrap( buff );
 
 						var corrected = new PixelBox( src.Width, src.Height, src.Depth, src.Format, buffer );
@@ -920,14 +938,21 @@ namespace Axiom.Core
 			}
 
 			// Update size (the final size, not including temp space)
-			Size = FaceCount*PixelUtil.GetMemorySize( width, height, depth, format );
+			Size = this.FaceCount * PixelUtil.GetMemorySize( width, height, depth, format );
 		}
 
 		/// <summary>
-		///   Creates the internal texture resources for this texture.
+		/// Creates the internal texture resources for this texture.
 		/// </summary>
 		/// <remarks>
-		///   This method creates the internal texture resources (pixel buffers, texture surfaces etc) required to begin using this texture. You do not need to call this method directly unless you are manually creating a texture, in which case something must call it, after having set the size and format of the texture (e.g. the ManualResourceLoader might be the best one to call it). If you are not defining a manual texture, or if you use one of the self-contained load...() methods, then it will be called for you.
+		/// This method creates the internal texture resources (pixel buffers, 
+		/// texture surfaces etc) required to begin using this texture. You do
+		/// not need to call this method directly unless you are manually creating
+		/// a texture, in which case something must call it, after having set the
+		/// size and format of the texture (e.g. the ManualResourceLoader might
+		/// be the best one to call it). If you are not defining a manual texture,
+		/// or if you use one of the self-contained load...() methods, then it will be
+		/// called for you.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void CreateInternalResources()
@@ -940,12 +965,12 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Implementation of creating internal texture resources
+		/// Implementation of creating internal texture resources
 		/// </summary>
 		protected abstract void createInternalResources();
 
 		/// <summary>
-		///   Frees internal texture resources for this texture.
+		/// Frees internal texture resources for this texture.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public void FreeInternalResources()
@@ -958,12 +983,12 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Implementation of freeing internal texture resources
+		/// Implementation of freeing internal texture resources
 		/// </summary>
 		protected abstract void freeInternalResources();
 
 		/// <summary>
-		///   Default implementation of unload which calls freeInternalResources
+		/// Default implementation of unload which calls freeInternalResources
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		protected override void unload()
@@ -972,24 +997,24 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Copies (and maybe scales to fit) the contents of this texture to another texture.
+		/// Copies (and maybe scales to fit) the contents of this texture to
+		/// another texture.
 		/// </summary>
 		[OgreVersion( 1, 7, 2, "Original name was CopyToTexture" )]
 		public virtual void CopyTo( Texture target )
 		{
-			if ( target.FaceCount != FaceCount )
+			if ( target.FaceCount != this.FaceCount )
 			{
 				throw new AxiomException( "Texture types must match!" );
 			}
 
-			var numMips = Axiom.Math.Utility.Min( MipmapCount, target.MipmapCount );
-			if ( ( usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap ||
-			     ( target.Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap )
+			var numMips = Axiom.Math.Utility.Min( this.MipmapCount, target.MipmapCount );
+			if ( ( usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap || ( target.Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap )
 			{
 				numMips = 0;
 			}
 
-			for ( var face = 0; face < FaceCount; face++ )
+			for ( var face = 0; face < this.FaceCount; face++ )
 			{
 				for ( var mip = 0; mip <= numMips; mip++ )
 				{
@@ -999,7 +1024,8 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Identify the source file type as a string, either from the extension or from a magic number.
+		/// Identify the source file type as a string, either from the extension
+		/// or from a magic number.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		protected string GetSourceFileType()
@@ -1022,9 +1048,7 @@ namespace Axiom.Core
 				{
 					dstream = ResourceGroupManager.Instance.OpenResource( _name, _group, true, null );
 				}
-				catch
-				{
-				}
+				catch {}
 				if ( dstream == null && TextureType == Graphics.TextureType.CubeMap )
 				{
 					// try again with one of the faces (non-dds)
@@ -1032,9 +1056,7 @@ namespace Axiom.Core
 					{
 						dstream = ResourceGroupManager.Instance.OpenResource( _name + "_rt", _group, true, null );
 					}
-					catch
-					{
-					}
+					catch {}
 				}
 
 				if ( dstream != null )
@@ -1047,10 +1069,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Populate an Image with the contents of this texture.
+		/// Populate an Image with the contents of this texture.
 		/// </summary>
-		/// <param name="destImage"> The target image (contents will be overwritten) </param>
-		/// <param name="includeMipMaps"> Whether to embed mipmaps in the image </param>
+		/// <param name="destImage">The target image (contents will be overwritten)</param>
+		/// <param name="includeMipMaps">Whether to embed mipmaps in the image</param>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public virtual void ConvertToImage( out Image destImage, bool includeMipMaps = false )
@@ -1058,21 +1080,21 @@ namespace Axiom.Core
 		public virtual void ConvertToImage( out Image destImage, bool includeMipMaps )
 #endif
 		{
-			var numMips = includeMipMaps ? MipmapCount + 1 : 1;
-			var dataSize = Image.CalculateSize( numMips, FaceCount, Width, Height, Depth, Format );
+			var numMips = includeMipMaps ? this.MipmapCount + 1 : 1;
+			var dataSize = Image.CalculateSize( numMips, this.FaceCount, this.Width, this.Height, this.Depth, this.Format );
 
-			var pixData = new byte[dataSize];
+			var pixData = new byte[ dataSize ];
 			// if there are multiple faces and mipmaps we must pack them into the data
 			// faces, then mips
 			var currentPixData = BufferBase.Wrap( pixData );
 
-			for ( var face = 0; face < FaceCount; ++face )
+			for ( var face = 0; face < this.FaceCount; ++face )
 			{
 				for ( var mip = 0; mip < numMips; ++mip )
 				{
-					var mipDataSize = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
+					var mipDataSize = PixelUtil.GetMemorySize( this.Width, this.Height, this.Depth, this.Format );
 
-					var pixBox = new PixelBox( Width, Height, Depth, Format, currentPixData );
+					var pixBox = new PixelBox( this.Width, this.Height, this.Depth, this.Format, currentPixData );
 					GetBuffer( face, mip ).BlitToMemory( pixBox );
 
 					currentPixData += mipDataSize;
@@ -1082,11 +1104,11 @@ namespace Axiom.Core
 			currentPixData.Dispose();
 
 			// load, and tell Image to delete the memory when it's done.
-			destImage = ( new Image() ).FromDynamicImage( pixData, Width, Height, Depth, Format, true, FaceCount, numMips - 1 );
+			destImage = ( new Image() ).FromDynamicImage( pixData, this.Width, this.Height, this.Depth, this.Format, true, this.FaceCount, numMips - 1 );
 		}
 
 #if !NET_40
-		/// <see cref="Texture.ConvertToImage(out Image, bool)" />
+		/// <see cref="Texture.ConvertToImage(out Image, bool)"/>
 		public void ConvertToImage( out Image destImage )
 		{
 			ConvertToImage( out destImage, false );
@@ -1094,27 +1116,37 @@ namespace Axiom.Core
 #endif
 
 		/// <summary>
-		///   Return hardware pixel buffer for a surface. This buffer can then be used to copy data from and to a particular level of the texture.
+		/// Return hardware pixel buffer for a surface. This buffer can then
+		/// be used to copy data from and to a particular level of the texture.
 		/// </summary>
-		/// <param name="face"> Face number, in case of a cubemap texture. Must be 0 for other types of textures. For cubemaps, this is one of +X (0), -X (1), +Y (2), -Y (3), +Z (4), -Z (5) </param>
-		/// <param name="mipmap"> Mipmap level. This goes from 0 for the first, largest mipmap level to getNumMipmaps()-1 for the smallest. </param>
+		/// <param name="face">
+		/// Face number, in case of a cubemap texture. Must be 0
+		/// for other types of textures.
+		/// For cubemaps, this is one of
+		/// +X (0), -X (1), +Y (2), -Y (3), +Z (4), -Z (5)
+		/// </param>
+		/// <param name="mipmap">
+		/// Mipmap level. This goes from 0 for the first, largest
+		/// mipmap level to getNumMipmaps()-1 for the smallest.
+		/// </param>
 		/// <remarks>
-		///   The buffer is invalidated when the resource is unloaded or destroyed. Do not use it after the lifetime of the containing texture.
+		/// The buffer is invalidated when the resource is unloaded or destroyed.
+		/// Do not use it after the lifetime of the containing texture.
 		/// </remarks>
-		/// <returns> A shared pointer to a hardware pixel buffer </returns>
+		/// <returns>A shared pointer to a hardware pixel buffer</returns>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
 		public abstract HardwarePixelBuffer GetBuffer( int face = 0, int mipmap = 0 );
 #else
 		public abstract HardwarePixelBuffer GetBuffer( int face, int mipmap );
 
-		/// <see cref="Texture.GetBuffer(int, int)" />
+		/// <see cref="Texture.GetBuffer(int, int)"/>
 		public HardwarePixelBuffer GetBuffer()
 		{
 			return GetBuffer( 0, 0 );
 		}
 
-		/// <see cref="Texture.GetBuffer(int, int)" />
+		/// <see cref="Texture.GetBuffer(int, int)"/>
 		public HardwarePixelBuffer GetBuffer( int face )
 		{
 			return GetBuffer( face, 0 );

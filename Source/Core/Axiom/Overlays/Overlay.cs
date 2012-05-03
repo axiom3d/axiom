@@ -37,10 +37,15 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.Collections.Generic;
+using System;
+using System.Collections;
+
 using Axiom.Core;
-using Axiom.Graphics;
 using Axiom.Math;
+using Axiom.Graphics;
+
+using System.Collections.Generic;
+
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
@@ -57,52 +62,59 @@ using Axiom.Utilities;
 namespace Axiom.Overlays
 {
 	/// <summary>
-	///   Represents a layer which is rendered on top of the 'normal' scene contents.
+	///    Represents a layer which is rendered on top of the 'normal' scene contents.
 	/// </summary>
 	/// <remarks>
-	///   An overlay is a container for visual components (2D and 3D) which will be rendered after the main scene in order to composite heads-up-displays, menus or other layers on top of the contents of the scene. <p /> An overlay always takes up the entire size of the viewport, although the components attached to it do not have to. An overlay has no visual element in itself, it it merely a container for visual elements. <p /> Overlays are created by calling SceneManager.CreateOverlay, or by defining them in special text scripts (.overlay files). As many overlays as you like can be defined; after creation an overlay is hidden i.e. not visible until you specifically enable it by calling Show(). This allows you to have multiple overlays predefined (menus etc) which you make visible only when you want. It is possible to have multiple overlays enabled at once; in this case the relative ZOrder parameter of the overlays determine which one is displayed on top. <p /> By default overlays are rendered into all viewports. This is fine when you only have fullscreen viewports, but if you have picture-in-picture views, you probably don't want the overlay displayed in the smaller viewports. You turn this off for a specific viewport by calling the Viewport.DisplayOverlays property.
+	///    An overlay is a container for visual components (2D and 3D) which will be 
+	///    rendered after the main scene in order to composite heads-up-displays, menus
+	///    or other layers on top of the contents of the scene.
+	///    <p/>
+	///    An overlay always takes up the entire size of the viewport, although the 
+	///    components attached to it do not have to. An overlay has no visual element
+	///    in itself, it it merely a container for visual elements.
+	///    <p/>
+	///    Overlays are created by calling SceneManager.CreateOverlay, or by defining them
+	///    in special text scripts (.overlay files). As many overlays
+	///    as you like can be defined; after creation an overlay is hidden i.e. not
+	///    visible until you specifically enable it by calling Show(). This allows you to have multiple
+	///    overlays predefined (menus etc) which you make visible only when you want.
+	///    It is possible to have multiple overlays enabled at once; in this case the
+	///    relative ZOrder parameter of the overlays determine which one is displayed
+	///    on top.
+	///    <p/>
+	///    By default overlays are rendered into all viewports. This is fine when you only
+	///    have fullscreen viewports, but if you have picture-in-picture views, you probably
+	///    don't want the overlay displayed in the smaller viewports. You turn this off for 
+	///    a specific viewport by calling the Viewport.DisplayOverlays property.
 	/// </remarks>
 	public class Overlay : Resource
 	{
 		#region Member variables
 
 		/// <summary>
-		///   Internal root node, used as parent for 3D objects
+		/// Internal root node, used as parent for 3D objects
 		/// </summary>
 		protected SceneNode rootNode;
 
-		/// <summary>
-		///   2D element list.
-		/// </summary>
+		/// <summary>2D element list.</summary>
 		protected List<OverlayElementContainer> elementList = new List<OverlayElementContainer>();
 
-		protected Dictionary<string, OverlayElementContainer> elementLookup =
-			new Dictionary<string, OverlayElementContainer>();
+		protected Dictionary<string, OverlayElementContainer> elementLookup = new Dictionary<string, OverlayElementContainer>();
 
-		/// <summary>
-		///   Degrees of rotation around center.
-		/// </summary>
+		/// <summary>Degrees of rotation around center.</summary>
 		protected float rotate;
 
-		/// <summary>
-		///   Scroll values, offsets.
-		/// </summary>
+		/// <summary>Scroll values, offsets.</summary>
 		protected float scrollX, scrollY;
 
-		/// <summary>
-		///   Scale values.
-		/// </summary>
+		/// <summary>Scale values.</summary>
 		protected float scaleX, scaleY;
 
-		/// <summary>
-		///   Camera relative transform.
-		/// </summary>
+		/// <summary> Camera relative transform. </summary>
 		protected Matrix4 transform = Matrix4.Identity;
 
-		/// <summary>
-		///   Used when passing transform to overlay elements.
-		/// </summary>
-		protected Matrix4[] xform = new Matrix4[1]
+		/// <summary> Used when passing transform to overlay elements.</summary>
+		protected Matrix4[] xform = new Matrix4[ 1 ]
 		                            {
 		                            	Matrix4.Identity
 		                            };
@@ -120,19 +132,19 @@ namespace Axiom.Overlays
 		#region Constructors
 
 		/// <summary>
-		///   Constructor: do not call direct, use SceneManager.CreateOverlay
+		///    Constructor: do not call direct, use SceneManager.CreateOverlay
 		/// </summary>
-		/// <param name="name"> </param>
+		/// <param name="name"></param>
 		internal Overlay( string name )
 			: base()
 		{
-			Name = name;
-			scaleX = 1.0f;
-			scaleY = 1.0f;
-			isTransformOutOfDate = true;
-			isTransformUpdated = true;
-			zOrder = 100;
-			isInitialised = false;
+			this.Name = name;
+			this.scaleX = 1.0f;
+			this.scaleY = 1.0f;
+			this.isTransformOutOfDate = true;
+			this.isTransformUpdated = true;
+			this.zOrder = 100;
+			this.isInitialised = false;
 			rootNode = new SceneNode( null );
 		}
 
@@ -141,12 +153,17 @@ namespace Axiom.Overlays
 		#region Methods
 
 		/// <summary>
-		///   Adds a 2d element to this overlay.
+		///    Adds a 2d element to this overlay.
 		/// </summary>
 		/// <remarks>
-		///   Containers are created and managed using the OverlayManager. A container could be as simple as a square panel, or something more complex like a grid or tree view. Containers group collections of other elements, giving them a relative coordinate space and a common z-order. If you want to attach a gui widget to an overlay, you have to do it via a container.
+		///    Containers are created and managed using the OverlayManager. A container
+		///    could be as simple as a square panel, or something more complex like
+		///    a grid or tree view. Containers group collections of other elements,
+		///    giving them a relative coordinate space and a common z-order.
+		///    If you want to attach a gui widget to an overlay, you have to do it via
+		///    a container.
 		/// </remarks>
-		/// <param name="element"> </param>
+		/// <param name="element"></param>
 		public void AddElement( OverlayElementContainer element )
 		{
 			elementList.Add( element );
@@ -164,18 +181,36 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Adds a node capable of holding 3D objects to the overlay.
+		///    Adds a node capable of holding 3D objects to the overlay.
 		/// </summary>
 		/// <remarks>
-		///   Although overlays are traditionally associated with 2D elements, there are reasons why you might want to attach 3D elements to the overlay too. For example, if you wanted to have a 3D cockpit, which was overlaid with a HUD, then you would create 2 overlays, one with a 3D object attached for the cockpit, and one with the HUD elements attached (the zorder of the HUD overlay would be higher than the cockpit to ensure it was always on top). <p /> A SceneNode can have any number of 3D objects attached to it. SceneNodes are created using SceneManager.CreateSceneNode, and are normally attached (directly or indirectly) to the root node of the scene. By attaching them to an overlay, you indicate that: <OL>
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <LI>You want the contents of this node to only appear when the overlay is active</LI>
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <LI>You want the node to inherit a coordinate space relative to the camera,
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     rather than relative to the root scene node</LI>
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   <LI>You want these objects to be rendered after the contents of the main scene
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     to ensure they are rendered on top</LI>
-		///                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 </OL> One major consideration when using 3D objects in overlays is the behavior of the depth buffer. Overlays are rendered with depth checking off, to ensure that their contents are always displayed on top of the main scene (to do otherwise would result in objects 'poking through' the overlay). The problem with using 3D objects is that if they are concave, or self-overlap, then you can get artifacts because of the lack of depth buffer checking. So you should ensure that any 3D objects you us in the overlay are convex and don't overlap each other. If they must overlap, split them up and put them in 2 overlays.
+		///    Although overlays are traditionally associated with 2D elements, there 
+		///    are reasons why you might want to attach 3D elements to the overlay too.
+		///    For example, if you wanted to have a 3D cockpit, which was overlaid with a
+		///    HUD, then you would create 2 overlays, one with a 3D object attached for the
+		///    cockpit, and one with the HUD elements attached (the zorder of the HUD 
+		///    overlay would be higher than the cockpit to ensure it was always on top).
+		///    <p/>
+		///    A SceneNode can have any number of 3D objects attached to it. SceneNodes
+		///    are created using SceneManager.CreateSceneNode, and are normally attached 
+		///    (directly or indirectly) to the root node of the scene. By attaching them
+		///    to an overlay, you indicate that:<OL>
+		///    <LI>You want the contents of this node to only appear when the overlay is active</LI>
+		///    <LI>You want the node to inherit a coordinate space relative to the camera,
+		///    rather than relative to the root scene node</LI>
+		///    <LI>You want these objects to be rendered after the contents of the main scene
+		///    to ensure they are rendered on top</LI>
+		///    </OL>
+		///    One major consideration when using 3D objects in overlays is the behavior of 
+		///    the depth buffer. Overlays are rendered with depth checking off, to ensure
+		///    that their contents are always displayed on top of the main scene (to do 
+		///    otherwise would result in objects 'poking through' the overlay). The problem
+		///    with using 3D objects is that if they are concave, or self-overlap, then you
+		///    can get artifacts because of the lack of depth buffer checking. So you should 
+		///    ensure that any 3D objects you us in the overlay are convex and don't overlap
+		///    each other. If they must overlap, split them up and put them in 2 overlays.
 		/// </remarks>
-		/// <param name="node"> </param>
+		/// <param name="node"></param>
 		public void AddElement( SceneNode node )
 		{
 			// add the scene node as a child of the root node
@@ -183,10 +218,10 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Removes a 2D container from the overlay.
+		/// Removes a 2D container from the overlay.
 		/// </summary>
 		/// <remarks>
-		///   Consider using <see>Hide</see> .
+		/// Consider using <see>Hide</see>.
 		/// </remarks>
 		public void RemoveElement( string name )
 		{
@@ -194,12 +229,12 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Removes a 2D container from the overlay.
+		/// Removes a 2D container from the overlay.
 		/// </summary>
 		/// <remarks>
-		///   Consider using <see>Hide</see> .
+		/// Consider using <see>Hide</see>.
 		/// </remarks>
-		/// <param name="element"> </param>
+		/// <param name="element"></param>
 		public void RemoveElement( OverlayElementContainer element )
 		{
 			if ( elementList.Contains( element ) )
@@ -216,16 +251,16 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Removes a 3D element from the overlay.
+		/// Removes a 3D element from the overlay.
 		/// </summary>
-		/// <param name="node"> </param>
+		/// <param name="node"></param>
 		public void RemoveElement( SceneNode node )
 		{
 			rootNode.RemoveChild( node );
 		}
 
 		/// <summary>
-		///   Clears the overlay of all attached items.
+		///    Clears the overlay of all attached items.
 		/// </summary>
 		public void Clear()
 		{
@@ -234,7 +269,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Shows this overlay if it is not already visible.
+		///    Shows this overlay if it is not already visible.
 		/// </summary>
 		public void Show()
 		{
@@ -242,7 +277,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Hides this overlay if it is currently being displayed.
+		///    Hides this overlay if it is currently being displayed.
 		/// </summary>
 		public void Hide()
 		{
@@ -257,14 +292,14 @@ namespace Axiom.Overlays
 				var container = (OverlayElementContainer)elementList[ i ];
 				container.Initialize();
 			}
-			isInitialised = true;
+			this.isInitialised = true;
 		}
 
 		/// <summary>
-		///   Internal method to put the overlay contents onto the render queue.
+		///    Internal method to put the overlay contents onto the render queue.
 		/// </summary>
-		/// <param name="camera"> Current camera being used in the render loop. </param>
-		/// <param name="queue"> Current render queue. </param>
+		/// <param name="camera">Current camera being used in the render loop.</param>
+		/// <param name="queue">Current render queue.</param>
 		public void FindVisibleObjects( Camera camera, RenderQueue queue )
 		{
 			if ( OverlayManager.Instance.HasViewportChanged )
@@ -300,7 +335,7 @@ namespace Axiom.Overlays
 				var oldPriority = queue.DefaultRenderablePriority;
 
 				queue.DefaultRenderGroup = RenderQueueGroupID.Overlay;
-				queue.DefaultRenderablePriority = (ushort)( ( zOrder*100 ) - 1 );
+				queue.DefaultRenderablePriority = (ushort)( ( zOrder * 100 ) - 1 );
 				rootNode.FindVisibleObjects( camera, queue, true, false );
 
 				// reset the group
@@ -318,11 +353,11 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   This returns a OverlayElement at position x,y.
+		/// This returns a OverlayElement at position x,y.
 		/// </summary>
-		/// <param name="x"> </param>
-		/// <param name="y"> </param>
-		/// <returns> </returns>
+		/// <param name="x"></param>
+		/// <param name="y"></param>
+		/// <returns></returns>
 		public virtual OverlayElement FindElementAt( float x, float y )
 		{
 			OverlayElement ret = null;
@@ -346,19 +381,21 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Gets a child container of this overlay by name.
+		///    Gets a child container of this overlay by name.
 		/// </summary>
-		/// <param name="name"> </param>
-		/// <returns> </returns>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public OverlayElementContainer GetChild( string name )
 		{
 			return (OverlayElementContainer)elementLookup[ name ];
 		}
 
 		/// <summary>
-		///   Used to transform the overlay when scrolling, scaling etc.
+		///    Used to transform the overlay when scrolling, scaling etc.
 		/// </summary>
-		/// <param name="xform"> Array of Matrix4s to populate with the world transforms of this overlay. </param>
+		/// <param name="xform">Array of Matrix4s to populate with the world 
+		///    transforms of this overlay.
+		/// </param>
 		public void GetWorldTransforms( Matrix4[] xform )
 		{
 			if ( isTransformOutOfDate )
@@ -382,21 +419,23 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Adds the passed in angle to the rotation applied to this overlay.
+		///    Adds the passed in angle to the rotation applied to this overlay.
 		/// </summary>
 		public void Rotate( float degrees )
 		{
-			Rotation = ( rotate += degrees );
+			this.Rotation = ( rotate += degrees );
 		}
 
 		/// <summary>
-		///   Scrolls the overlay by the offsets provided.
+		///    Scrolls the overlay by the offsets provided.
 		/// </summary>
 		/// <remarks>
-		///   This method moves the overlay by the amounts provided. As with other methods on this object, a full screen width / height is represented by the value 1.0.
+		///    This method moves the overlay by the amounts provided. As with
+		///    other methods on this object, a full screen width / height is represented
+		///    by the value 1.0.
 		/// </remarks>
-		/// <param name="xOffset"> </param>
-		/// <param name="yOffset"> </param>
+		/// <param name="xOffset"></param>
+		/// <param name="yOffset"></param>
 		public void Scroll( float xOffset, float yOffset )
 		{
 			scrollX += xOffset;
@@ -406,13 +445,13 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Sets the scaling factor of this overlay.
+		///    Sets the scaling factor of this overlay.
 		/// </summary>
 		/// <remarks>
-		///   You can use this to set an scale factor to be used to zoom an overlay.
+		///    You can use this to set an scale factor to be used to zoom an overlay.
 		/// </remarks>
-		/// <param name="x"> Horizontal scale value, where 1.0 = normal, 0.5 = half size etc </param>
-		/// <param name="y"> Vertical scale value, where 1.0 = normal, 0.5 = half size etc </param>
+		/// <param name="x">Horizontal scale value, where 1.0 = normal, 0.5 = half size etc</param>
+		/// <param name="y">Vertical scale value, where 1.0 = normal, 0.5 = half size etc</param>
 		public void SetScale( float x, float y )
 		{
 			scaleX = x;
@@ -422,13 +461,20 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Sets the scrolling factor of this overlay.
+		///    Sets the scrolling factor of this overlay.
 		/// </summary>
 		/// <remarks>
-		///   You can use this to set an offset to be used to scroll an overlay around the screen.
+		///    You can use this to set an offset to be used to scroll an 
+		///    overlay around the screen.
 		/// </remarks>
-		/// <param name="x"> Horizontal scroll value, where 0 = normal, -0.5 = scroll so that only the right half the screen is visible etc </param>
-		/// <param name="y"> Vertical scroll value, where 0 = normal, 0.5 = scroll down by half a screen etc. </param>
+		/// <param name="x">
+		///    Horizontal scroll value, where 0 = normal, -0.5 = scroll so that only
+		///    the right half the screen is visible etc
+		/// </param>
+		/// <param name="y">
+		///    Vertical scroll value, where 0 = normal, 0.5 = scroll down by half 
+		///    a screen etc.
+		/// </param>
 		public void SetScroll( float x, float y )
 		{
 			scrollX = x;
@@ -438,7 +484,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Internal lazy update method.
+		///    Internal lazy update method.
 		/// </summary>
 		protected void UpdateTransforms()
 		{
@@ -454,18 +500,18 @@ namespace Axiom.Overlays
 			scale3x3.m11 = scaleY;
 			scale3x3.m22 = 1.0f;
 
-			transform = rot3x3*scale3x3;
+			transform = rot3x3 * scale3x3;
 			transform.Translation = new Vector3( scrollX, scrollY, 0 );
 
 			isTransformOutOfDate = false;
 		}
 
 		/// <summary>
-		///   Updates container elements' Z-ordering
+		/// Updates container elements' Z-ordering
 		/// </summary>
 		protected void AssignZOrders()
 		{
-			var zorder = zOrder*100;
+			var zorder = this.zOrder * 100;
 			// notify attached 2d elements
 			for ( var i = 0; i < elementList.Count; i++ )
 			{
@@ -478,7 +524,7 @@ namespace Axiom.Overlays
 		#region Properties
 
 		/// <summary>
-		///   Gets whether this overlay is being displayed or not.
+		///    Gets whether this overlay is being displayed or not.
 		/// </summary>
 		public bool IsVisible
 		{
@@ -505,7 +551,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Gets/Sets the rotation applied to this overlay, in degrees.
+		///    Gets/Sets the rotation applied to this overlay, in degrees.
 		/// </summary>
 		public float Rotation
 		{
@@ -522,7 +568,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Gets the current x scale value.
+		///    Gets the current x scale value.
 		/// </summary>
 		public float ScaleX
 		{
@@ -533,7 +579,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Gets the current y scale value.
+		///    Gets the current y scale value.
 		/// </summary>
 		public float ScaleY
 		{
@@ -544,7 +590,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Gets the current x scroll value.
+		///    Gets the current x scroll value.
 		/// </summary>
 		public float ScrollX
 		{
@@ -555,7 +601,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Gets the current y scroll value.
+		///    Gets the  current y scroll value.
 		/// </summary>
 		public float ScrollY
 		{
@@ -566,7 +612,7 @@ namespace Axiom.Overlays
 		}
 
 		/// <summary>
-		///   Z ordering of this overlay. Valid values are between 0 and 650.
+		///    Z ordering of this overlay. Valid values are between 0 and 650.
 		/// </summary>
 		public int ZOrder
 		{
@@ -602,15 +648,17 @@ namespace Axiom.Overlays
 
 		#region Implementation of Resource
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///		
+		/// </summary>
 		protected override void load()
 		{
 			// do nothing
 		}
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///		
+		/// </summary>
 		protected override void unload()
 		{
 			// do nothing

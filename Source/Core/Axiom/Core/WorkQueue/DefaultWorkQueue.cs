@@ -44,17 +44,18 @@ using System.Threading;
 namespace Axiom.Core
 {
 	/// <summary>
-	///   Implementation of a general purpose request / response style background work queue.
+	/// Implementation of a general purpose request / response style background work queue.
 	/// </summary>
 	/// <remarks>
-	///   This default implementation of a work queue starts a thread pool and provides queues to process requests.
+	/// This default implementation of a work queue starts a thread pool and 
+	/// provides queues to process requests.
 	/// </remarks>
 	public class DefaultWorkQueue : DefaultWorkQueueBase
 	{
 		protected int numThreadsRegisteredWithRS;
 
 		/// <summary>
-		///   Synchroniser token to wait / notify on thread init
+		/// Synchroniser token to wait / notify on thread init
 		/// </summary>
 		protected static readonly object initSync = new object();
 
@@ -67,32 +68,28 @@ namespace Axiom.Core
 		public DefaultWorkQueue( string name = "" )
 #else
 		public DefaultWorkQueue()
-			: this( string.Empty )
-		{
-		}
+			: this( string.Empty ) {}
 
 
 		public DefaultWorkQueue( string name )
 #endif
-			: base( name )
-		{
-		}
+			: base( name ) {}
 
 		[OgreVersion( 1, 7, 2, "~DefaultWorkQueue" )]
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					Shutdown();
+					this.Shutdown();
 				}
 			}
 
 			base.dispose( disposeManagedResources );
 		}
 
-		/// <see cref="Axiom.Core.WorkQueue.Startup(bool)" />
+		/// <see cref="Axiom.Core.WorkQueue.Startup(bool)"/>
 #if NET_40
 		public override void Startup( bool forceRestart = true )
 #else
@@ -144,7 +141,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Notify that a thread has registered itself with the render system
+		/// Notify that a thread has registered itself with the render system
 		/// </summary>
 		protected virtual void NotifyThreadRegistered()
 		{
@@ -159,7 +156,7 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <see cref="Axiom.Core.WorkQueue.Shutdown" />
+		/// <see cref="Axiom.Core.WorkQueue.Shutdown"/>
 		public override void Shutdown()
 		{
 			if ( !isRunning )
@@ -183,7 +180,7 @@ namespace Axiom.Core
 			isRunning = false;
 		}
 
-		/// <see cref="DefaultWorkQueueBase.NotifyWorkers" />
+		/// <see cref="DefaultWorkQueueBase.NotifyWorkers"/>
 		[OgreVersion( 1, 7, 2 )]
 		protected override void NotifyWorkers()
 		{
@@ -194,7 +191,8 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   To be called by a separate thread; will return immediately if there are items in the queue, or suspend the thread until new items are added otherwise.
+		/// To be called by a separate thread; will return immediately if there
+		/// are items in the queue, or suspend the thread until new items are added	otherwise.
 		/// </summary>
 		protected virtual void WaitForNextRequest()
 		{
@@ -216,7 +214,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Main function for each thread spawned.
+		/// Main function for each thread spawned.
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		internal override void ThreadMain()

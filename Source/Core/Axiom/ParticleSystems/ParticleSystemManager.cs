@@ -38,11 +38,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Text;
+
+using Axiom.Collections;
 using Axiom.Core;
-using Axiom.Math;
 using Axiom.Scripting;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -53,23 +58,37 @@ namespace Axiom.ParticleSystems
 
 	#endregion Delegates
 
-	///<summary>
-	///  Manages particle systems, particle system scripts (templates) and the available emitter &amp; affector factories.
-	///</summary>
-	///<remarks>
-	///  This singleton class is responsible for creating and managing particle systems. All particle systems must be created and destroyed using this object. Remember that like all other SceneObject subclasses, ParticleSystems do not get rendered until they are attached to a SceneNode object. <p /> This class also manages factories for ParticleEmitter and ParticleAffector classes. To enable easy extensions to the types of emitters (particle sources) and affectors (particle modifiers), the ParticleSystemManager lets plugins or applications register factory classes which submit new subclasses to ParticleEmitter and ParticleAffector. The engine comes with a number of them already provided, such as cone, sphere and box-shaped emitters, and simple affectors such as constant directional force and color faders. However using this registration process, a plugin can create any behavior required. <p /> This class also manages the loading and parsing of particle system scripts, which are XML files describing named particle system templates. Instances of particle systems using these templates can then be created easily through the CreateParticleSystem method.
-	///</remarks>
+	/// <summary>
+	///		Manages particle systems, particle system scripts (templates) and the available emitter &amp; affector factories.
+	///	 </summary>
+	///	 <remarks>
+	///		This singleton class is responsible for creating and managing particle systems. All particle
+	///		systems must be created and destroyed using this object. Remember that like all other SceneObject
+	///		subclasses, ParticleSystems do not get rendered until they are attached to a SceneNode object.
+	///		<p/>
+	///		This class also manages factories for ParticleEmitter and ParticleAffector classes. To enable easy
+	///		extensions to the types of emitters (particle sources) and affectors (particle modifiers), the
+	///		ParticleSystemManager lets plugins or applications register factory classes which submit new
+	///		subclasses to ParticleEmitter and ParticleAffector. The engine comes with a number of them already provided,
+	///		such as cone, sphere and box-shaped emitters, and simple affectors such as constant directional force
+	///		and color faders. However using this registration process, a plugin can create any behavior
+	///		required.
+	///		<p/>
+	///		This class also manages the loading and parsing of particle system scripts, which are XML files
+	///		describing named particle system templates. Instances of particle systems using these templates can
+	///		then be created easily through the CreateParticleSystem method.
+	/// </remarks>
 	public sealed class ParticleSystemManager : DisposableObject, IScriptLoader
 	{
 		#region Singleton implementation
 
 		/// <summary>
-		///   Singleton instance of this class.
+		///     Singleton instance of this class.
 		/// </summary>
 		private static ParticleSystemManager instance;
 
 		/// <summary>
-		///   Internal constructor. This class cannot be instantiated externally.
+		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal ParticleSystemManager()
 			: base()
@@ -90,7 +109,7 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// <summary>
-		///   Gets the singleton instance of this class.
+		///     Gets the singleton instance of this class.
 		/// </summary>
 		public static ParticleSystemManager Instance
 		{
@@ -111,46 +130,43 @@ namespace Axiom.ParticleSystems
 		//TODO : MovableObjectFactory : private static ParticleSystemFactory _psFactory;
 
 		/// <summary>
-		///   List of template particle systems.
+		///     List of template particle systems.
 		/// </summary>
 		private Dictionary<int, ParticleSystem> systemTemplateList = new Dictionary<int, ParticleSystem>();
 
 		/// <summary>
-		///   Actual instantiated particle systems (may be based on template, may be manual).
+		///     Actual instantiated particle systems (may be based on template, may be manual).
 		/// </summary>
 		private Dictionary<int, ParticleSystem> systemList = new Dictionary<int, ParticleSystem>();
 
 		/// <summary>
-		///   Factories for named emitter type (can be extended using plugins).
+		///     Factories for named emitter type (can be extended using plugins).
 		/// </summary>
-		private readonly Dictionary<int, ParticleEmitterFactory> emitterFactoryList =
-			new Dictionary<int, ParticleEmitterFactory>();
+		private Dictionary<int, ParticleEmitterFactory> emitterFactoryList = new Dictionary<int, ParticleEmitterFactory>();
 
 		/// <summary>
-		///   Factories for named affector types (can be extended using plugins).
+		///     Factories for named affector types (can be extended using plugins).
 		/// </summary>
-		private readonly Dictionary<int, ParticleAffectorFactory> affectorFactoryList =
-			new Dictionary<int, ParticleAffectorFactory>();
+		private Dictionary<int, ParticleAffectorFactory> affectorFactoryList = new Dictionary<int, ParticleAffectorFactory>();
 
 		/// <summary>
-		///   Factories for named renderer types (can be extended using plugins).
+		///     Factories for named renderer types (can be extended using plugins).
 		/// </summary>
-		private readonly Dictionary<int, ParticleSystemRendererFactory> rendererFactoryList =
-			new Dictionary<int, ParticleSystemRendererFactory>();
+		private Dictionary<int, ParticleSystemRendererFactory> rendererFactoryList = new Dictionary<int, ParticleSystemRendererFactory>();
 
 
 		/// <summary>
-		///   Controls time. (1.0 is real time)
+		///     Controls time. (1.0 is real time)
 		/// </summary>
 		private float timeFactor = 1.0f;
 
 		/// <summary>
-		///   Default param constants.
+		///     Default param constants.
 		/// </summary>
 		private const int DefaultQuota = 500;
 
 		/// <summary>
-		///   Script parsing constants.
+		///     Script parsing constants.
 		/// </summary>
 		private const string PARTICLE = "Particle";
 
@@ -158,13 +174,20 @@ namespace Axiom.ParticleSystems
 
 		#region Methods
 
-		///<summary>
-		///  Adds a new 'factory' object for emitters to the list of available emitter types.
-		///</summary>
-		///<remarks>
-		///  This method allows plugins etc to add new particle emitter types. Particle emitters are sources of particles, and generate new particles with their start positions, colors and momentums appropriately. Plugins would create new subclasses of ParticleEmitter which emit particles a certain way, and register a subclass of ParticleEmitterFactory to create them (since multiple emitters can be created for different particle systems). <p /> All particle emitter factories have an assigned name which is used to identify the emitter type. This must be unique.
-		///</remarks>
-		///<param name="factory"> </param>
+		/// <summary>
+		///		Adds a new 'factory' object for emitters to the list of available emitter types.
+		///	 </summary>
+		///	 <remarks>
+		///		This method allows plugins etc to add new particle emitter types. Particle emitters
+		///		are sources of particles, and generate new particles with their start positions, colors and
+		///		momentums appropriately. Plugins would create new subclasses of ParticleEmitter which
+		///		emit particles a certain way, and register a subclass of ParticleEmitterFactory to create them (since multiple
+		///		emitters can be created for different particle systems).
+		///		<p/>
+		///		All particle emitter factories have an assigned name which is used to identify the emitter
+		///		type. This must be unique.
+		/// </remarks>
+		/// <param name="factory"></param>
 		public void AddEmitterFactory( ParticleEmitterFactory factory )
 		{
 			emitterFactoryList.Add( factory.Name.ToLower().GetHashCode(), factory );
@@ -172,13 +195,20 @@ namespace Axiom.ParticleSystems
 			LogManager.Instance.Write( "Particle Emitter type '{0}' registered.", factory.Name );
 		}
 
-		///<summary>
-		///  Adds a new 'factory' object for affectors to the list of available affector types.
-		///</summary>
-		///<remarks>
-		///  This method allows plugins etc to add new particle affector types. Particle affectors modify the particles in a system a certain way such as affecting their direction or changing their color, lifespan etc. Plugins would create new subclasses of ParticleAffector which affect particles a certain way, and register a subclass of ParticleAffectorFactory to create them. <p /> All particle affector factories have an assigned name which is used to identify the affector type. This must be unique.
-		///</remarks>
-		///<param name="factory"> </param>
+		/// <summary>
+		///		Adds a new 'factory' object for affectors to the list of available affector types.
+		///	 </summary>
+		///	  <remarks>
+		///		This method allows plugins etc to add new particle affector types. Particle
+		///		affectors modify the particles in a system a certain way such as affecting their direction
+		///		or changing their color, lifespan etc. Plugins would
+		///		create new subclasses of ParticleAffector which affect particles a certain way, and register
+		///		a subclass of ParticleAffectorFactory to create them.
+		///		<p/>
+		///		All particle affector factories have an assigned name which is used to identify the affector
+		///		type. This must be unique.
+		/// </remarks>
+		/// <param name="factory"></param>
 		public void AddAffectorFactory( ParticleAffectorFactory factory )
 		{
 			affectorFactoryList.Add( factory.Name.ToLower().GetHashCode(), factory );
@@ -187,11 +217,15 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// <summary>
-		///   Registers a factory class for creating ParticleSystemRenderer instances.
+		/// Registers a factory class for creating ParticleSystemRenderer instances.
 		/// </summary>
-		/// <param name="factory"> factory Pointer to a ParticleSystemRendererFactory subclass created by the plugin or application code. </param>
+		/// <param name="factory">
+		/// factory Pointer to a ParticleSystemRendererFactory subclass created by the plugin or application code.
+		/// </param>
 		/// <remarks>
-		///   Note that the object passed to this function will not be destroyed by the ParticleSystemManager, since it may have been allocted on a different heap in the case of plugins. The caller must destroy the object later on, probably on plugin shutdown.
+		/// Note that the object passed to this function will not be destroyed by the ParticleSystemManager,
+		/// since it may have been allocted on a different heap in the case of plugins. The caller must
+		/// destroy the object later on, probably on plugin shutdown.
 		/// </remarks>
 		public void AddRendererFactory( ParticleSystemRendererFactory factory )
 		{
@@ -210,28 +244,36 @@ namespace Axiom.ParticleSystems
 			throw new Exception( "Cannot find requested renderer type." );
 		}
 
-		///<summary>
-		///  Adds a new particle system template to the list of available templates.
-		///</summary>
-		///<remarks>
-		///  Instances of particle systems in a scene are not normally unique - often you want to place the same effect in many places. This method allows you to register a ParticleSystem as a named template, which can subsequently be used to create instances using the CreateSystem method. <p /> Note that particle system templates can either be created programmatically by an application and registered using this method, or they can be defined in a XML script file which is loaded by the engine at startup, very much like Material scripts.
-		///</remarks>
-		///<param name="name"> The name of the template. Must be unique across all templates. </param>
-		///<param name="system"> A reference to a particle system to be used as a template. </param>
+		/// <summary>
+		///		Adds a new particle system template to the list of available templates.
+		///	 </summary>
+		///	 <remarks>
+		///		Instances of particle systems in a scene are not normally unique - often you want to place the
+		///		same effect in many places. This method allows you to register a ParticleSystem as a named template,
+		///		which can subsequently be used to create instances using the CreateSystem method.
+		///		<p/>
+		///		Note that particle system templates can either be created programmatically by an application
+		///		and registered using this method, or they can be defined in a XML script file which is
+		///		loaded by the engine at startup, very much like Material scripts.
+		/// </remarks>
+		/// <param name="name">The name of the template. Must be unique across all templates.</param>
+		/// <param name="system">A reference to a particle system to be used as a template.</param>
 		public void AddTemplate( string name, ParticleSystem system )
 		{
 			systemTemplateList.Add( name.ToLower().GetHashCode(), system );
 		}
 
-		///<summary>
-		///  Create a new particle system template.
-		///</summary>
-		///<remarks>
-		///  This method is similar to the AddTemplate method, except this just creates a new template and returns a reference to it to be populated. Use this when you don't already have a system to add as a template and just want to create a new template which you will build up at runtime.
-		///</remarks>
-		///<param name="name"> </param>
-		///<param name="resourceGroup"> The name of the resource group which will be used to load any dependent resources. </param>
-		///<returns> returns a reference to a ParticleSystem template to be populated </returns>
+		/// <summary>
+		///		Create a new particle system template.
+		/// </summary>
+		/// <remarks>
+		///		This method is similar to the AddTemplate method, except this just creates a new template
+		///		and returns a reference to it to be populated. Use this when you don't already have a system
+		///		to add as a template and just want to create a new template which you will build up at runtime.
+		/// </remarks>
+		/// <param name="name"></param>
+		/// <param name="resourceGroup">The name of the resource group which will be used to load any dependent resources.</param>
+		/// <returns>returns a reference to a ParticleSystem template to be populated</returns>
 		public ParticleSystem CreateTemplate( string name, string resourceGroup )
 		{
 			if ( systemTemplateList.ContainsKey( name.ToLower().GetHashCode() ) )
@@ -244,11 +286,11 @@ namespace Axiom.ParticleSystems
 			return system;
 		}
 
-		///<summary>
-		///  Overloaded method.
-		///</summary>
-		///<param name="name"> </param>
-		///<returns> </returns>
+		/// <summary>
+		///		Overloaded method.
+		/// </summary>
+		/// <param name="name"></param>
+		/// <returns></returns>
 		public ParticleSystem CreateSystem( string name )
 		{
 			// create a system with a default quota
@@ -260,15 +302,22 @@ namespace Axiom.ParticleSystems
 			return CreateSystem( name, templateName, DefaultQuota );
 		}
 
-		///<summary>
-		///  Basic method for creating a blank particle system.
-		///</summary>
-		///<remarks>
-		///  This method creates a new, blank ParticleSystem instance and returns a reference to it. <p /> The instance returned from this method won't actually do anything because on creation a particle system has no emitters. The caller should manipulate the instance through it's ParticleSystem methods to actually create a real particle effect. <p /> Creating a particle system does not make it a part of the scene. As with other SceneObject subclasses, a ParticleSystem is not rendered until it is attached to a SceneNode.
-		///</remarks>
-		///<param name="name"> The name to give the ParticleSystem. </param>
-		///<param name="quota"> The maximum number of particles to allow in this system. </param>
-		///<returns> </returns>
+		/// <summary>
+		///		Basic method for creating a blank particle system.
+		///	 </summary>
+		///	 <remarks>
+		///		This method creates a new, blank ParticleSystem instance and returns a reference to it.
+		///		<p/>
+		///		The instance returned from this method won't actually do anything because on creation a
+		///		particle system has no emitters. The caller should manipulate the instance through it's
+		///		ParticleSystem methods to actually create a real particle effect.
+		///		<p/>
+		///		Creating a particle system does not make it a part of the scene. As with other SceneObject
+		///		subclasses, a ParticleSystem is not rendered until it is attached to a SceneNode.
+		/// </remarks>
+		/// <param name="name">The name to give the ParticleSystem.</param>
+		/// <param name="quota">The maximum number of particles to allow in this system.</param>
+		/// <returns></returns>
 		public ParticleSystem CreateSystem( string name, int quota )
 		{
 			var system = new ParticleSystem( name );
@@ -283,23 +332,31 @@ namespace Axiom.ParticleSystems
 			systemList.Remove( name.ToLower().GetHashCode() );
 		}
 
-		///<summary>
-		///  Creates a particle system based on a template.
-		///</summary>
-		///<remarks>
-		///  This method creates a new ParticleSystem instance based on the named template and returns a reference to the caller. <p /> Each system created from a template takes the template's settings at the time of creation, but is completely separate from the template from there on. <p /> Creating a particle system does not make it a part of the scene. As with other SceneObject subclasses, a ParticleSystem is not rendered until it is attached to a SceneNode. <p /> This is probably the more useful particle system creation method since it does not require manual setup of the system.
-		///</remarks>
-		///<param name="name"> The name to give the new particle system instance. </param>
-		///<param name="templateName"> The name of the template to base the new instance on. </param>
-		///<param name="quota"> The maximum number of particles to allow in this system (can be changed later). </param>
-		///<returns> </returns>
+		/// <summary>
+		///		Creates a particle system based on a template.
+		///	 </summary>
+		///	 <remarks>
+		///		This method creates a new ParticleSystem instance based on the named template and returns a
+		///		reference to the caller.
+		///		<p/>
+		///		Each system created from a template takes the template's settings at the time of creation,
+		///		but is completely separate from the template from there on.
+		///		<p/>
+		///		Creating a particle system does not make it a part of the scene. As with other SceneObject
+		///		subclasses, a ParticleSystem is not rendered until it is attached to a SceneNode.
+		///		<p/>
+		///		This is probably the more useful particle system creation method since it does not require manual
+		///		setup of the system.
+		/// </remarks>
+		/// <param name="name">The name to give the new particle system instance.</param>
+		/// <param name="templateName">The name of the template to base the new instance on.</param>
+		/// <param name="quota">The maximum number of particles to allow in this system (can be changed later).</param>
+		/// <returns></returns>
 		public ParticleSystem CreateSystem( string name, string templateName, int quota )
 		{
 			if ( !systemTemplateList.ContainsKey( templateName.ToLower().GetHashCode() ) )
 			{
-				LogManager.Instance.Write(
-					"Cannot create a particle system with template '{0}' because it does not exist, using NullParticleSystem.",
-					templateName );
+				LogManager.Instance.Write( "Cannot create a particle system with template '{0}' because it does not exist, using NullParticleSystem.", templateName );
 				return CreateSystem( name, "NullParticleSystem" );
 			}
 
@@ -313,14 +370,16 @@ namespace Axiom.ParticleSystems
 			return system;
 		}
 
-		///<summary>
-		///  Internal method for creating a new emitter from a factory.
-		///</summary>
-		///<remarks>
-		///  Used internally by the engine to create new ParticleEmitter instances from named factories. Applications should use the ParticleSystem.AddEmitter method instead, which calls this method to create an instance.
-		///</remarks>
-		///<param name="emitterType"> string name of the emitter type to be created. A factory of this type must have been registered. </param>
-		///<param name="ps"> </param>
+		/// <summary>
+		///		Internal method for creating a new emitter from a factory.
+		/// </summary>
+		/// <remarks>
+		///		Used internally by the engine to create new ParticleEmitter instances from named
+		///		factories. Applications should use the ParticleSystem.AddEmitter method instead,
+		///		which calls this method to create an instance.
+		/// </remarks>
+		/// <param name="emitterType">string name of the emitter type to be created. A factory of this type must have been registered.</param>
+		/// <param name="ps"></param>
 		internal ParticleEmitter CreateEmitter( string emitterType, ParticleSystem ps )
 		{
 			ParticleEmitterFactory factory;
@@ -333,14 +392,16 @@ namespace Axiom.ParticleSystems
 			return factory.Create( ps );
 		}
 
-		///<summary>
-		///  Internal method for creating a new affector from a factory.
-		///</summary>
-		///<remarks>
-		///  Used internally by the engine to create new ParticleAffector instances from named factories. Applications should use the ParticleSystem.AddAffector method instead, which calls this method to create an instance.
-		///</remarks>
-		///<param name="affectorType"> name of the affector type to be created. A factory of this type must have been registered. </param>
-		///<param name="psys"> The particle system it is being created for </param>
+		/// <summary>
+		///		Internal method for creating a new affector from a factory.
+		/// </summary>
+		/// <remarks>
+		///		Used internally by the engine to create new ParticleAffector instances from named
+		///		factories. Applications should use the ParticleSystem.AddAffector method instead,
+		///		which calls this method to create an instance.
+		/// </remarks>
+		/// <param name="affectorType">name of the affector type to be created. A factory of this type must have been registered.</param>
+		/// <param name="psys">The particle system it is being created for</param>
 		[OgreVersion( 1, 7, 2 )]
 		internal ParticleAffector CreateAffector( string affectorType, ParticleSystem psys )
 		{
@@ -354,12 +415,13 @@ namespace Axiom.ParticleSystems
 			return factory.CreateAffector( psys );
 		}
 
-		///<summary>
-		///  Internal method to init the particle systems.
-		///</summary>
-		///<remarks>
-		///  Since this method is dependent on other engine systems being started, this method will be called by the engine when the render system is initialized.
-		///</remarks>
+		/// <summary>
+		///		Internal method to init the particle systems.
+		/// </summary>
+		/// <remarks>
+		///		Since this method is dependent on other engine systems being started, this method will be called by the
+		///		engine when the render system is initialized.
+		/// </remarks>
 		public void Initialize()
 		{
 			// Create Billboard renderer factory
@@ -369,11 +431,11 @@ namespace Axiom.ParticleSystems
 			CreateTemplate( "NullParticleSystem", ResourceGroupManager.DefaultResourceGroupName );
 		}
 
-		///<summary>
-		///  Parses an attribute intended for the particle system itself.
-		///</summary>
-		///<param name="line"> </param>
-		///<param name="system"> </param>
+		/// <summary>
+		///		Parses an attribute intended for the particle system itself.
+		/// </summary>
+		/// <param name="line"></param>
+		/// <param name="system"></param>
 		private void ParseAttrib( string line, ParticleSystem system )
 		{
 			// Split params on space or tab
@@ -455,10 +517,11 @@ namespace Axiom.ParticleSystems
 			} // while
 		}
 
-		///<summary>
-		///</summary>
-		///<param name="line"> </param>
-		///<param name="emitter"> </param>
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="line"></param>
+		/// <param name="emitter"></param>
 		private void ParseEmitterAttrib( string line, ParticleEmitter emitter )
 		{
 			var values = StringConverter.Split( line, new char[]
@@ -473,10 +536,11 @@ namespace Axiom.ParticleSystems
 		}
 
 
-		///<summary>
-		///</summary>
-		///<param name="line"> </param>
-		///<param name="affector"> </param>
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="line"></param>
+		/// <param name="affector"></param>
 		private void ParseAffectorAttrib( string line, ParticleAffector affector )
 		{
 			var values = StringConverter.Split( line, new char[]
@@ -496,7 +560,7 @@ namespace Axiom.ParticleSystems
 			emitterFactoryList.Clear();
 			affectorFactoryList.Clear();
 
-			foreach ( var system in systemList.Values )
+			foreach ( var system in this.systemList.Values )
 			{
 				if ( !system.IsDisposed )
 				{
@@ -506,7 +570,7 @@ namespace Axiom.ParticleSystems
 			systemList.Clear();
 			systemList = null;
 
-			foreach ( var system in systemTemplateList.Values )
+			foreach ( var system in this.systemTemplateList.Values )
 			{
 				if ( !system.IsDisposed )
 				{
@@ -521,12 +585,15 @@ namespace Axiom.ParticleSystems
 
 		#region Properties
 
-		///<summary>
-		///  Get/Set the relative speed of time as perceived by particle systems.
-		///</summary>
-		///<remarks>
-		///  Normally particle systems are updated automatically in line with the real passage of time. This method allows you to change that, so that particle systems are told that the time is passing slower or faster than it actually is. Use this to globally speed up / slow down particle systems.
-		///</remarks>
+		/// <summary>
+		///		Get/Set the relative speed of time as perceived by particle systems.
+		///	 </summary>
+		///	 <remarks>
+		///		Normally particle systems are updated automatically in line with the real
+		///		passage of time. This method allows you to change that, so that
+		///		particle systems are told that the time is passing slower or faster than it
+		///		actually is. Use this to globally speed up / slow down particle systems.
+		/// </remarks>
 		public float TimeFactor
 		{
 			get
@@ -539,9 +606,9 @@ namespace Axiom.ParticleSystems
 			}
 		}
 
-		///<summary>
-		///  List of available particle systems.
-		///</summary>
+		/// <summary>
+		///		List of available particle systems.
+		/// </summary>
 		public Dictionary<int, ParticleSystem> ParticleSystems
 		{
 			get
@@ -551,7 +618,7 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// <summary>
-		///   List of available affector factories.
+		///     List of available affector factories.
 		/// </summary>
 		public Dictionary<int, ParticleAffectorFactory> Affectors
 		{
@@ -562,7 +629,7 @@ namespace Axiom.ParticleSystems
 		}
 
 		/// <summary>
-		///   List of available emitter factories.
+		///     List of available emitter factories.
 		/// </summary>
 		public Dictionary<int, ParticleEmitterFactory> Emitters
 		{
@@ -576,16 +643,16 @@ namespace Axiom.ParticleSystems
 
 		#region Event Handlers
 
-		///<summary>
-		///  A listener that is added to the engine's render loop.
-		///</summary>
-		///<param name="source"> </param>
-		///<param name="e"> </param>
-		///<returns> </returns>
+		/// <summary>
+		///		A listener that is added to the engine's render loop.
+		/// </summary>
+		/// <param name="source"></param>
+		/// <param name="e"></param>
+		/// <returns></returns>
 		private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
 		{
 			// Apply time factor
-			var timeSinceLastFrame = timeFactor*e.TimeSinceLastFrame;
+			var timeSinceLastFrame = timeFactor * e.TimeSinceLastFrame;
 
 			// loop through and update each particle system
 			foreach ( var system in systemList.Values )
@@ -600,12 +667,12 @@ namespace Axiom.ParticleSystems
 		#region IDisposable Members
 
 		/// <summary>
-		///   Called when the engine is shutting down.
+		/// Called when the engine is shutting down.
 		/// </summary>
-		/// <param name="disposeManagedResources"> </param>
+		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -625,7 +692,7 @@ namespace Axiom.ParticleSystems
 
 		#region IScriptLoader Implementation
 
-		private readonly List<string> _scriptPatterns = new List<string>();
+		private List<string> _scriptPatterns = new List<string>();
 
 		public List<string> ScriptPatterns
 		{

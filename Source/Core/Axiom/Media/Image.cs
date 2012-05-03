@@ -40,7 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Diagnostics;
 using System.IO;
+
 using Axiom.Core;
+
 using Axiom.Utilities;
 
 #endregion Namespace Declarations
@@ -88,7 +90,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return buffer;
+				return this.buffer;
 			}
 		}
 
@@ -99,7 +101,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return buffer != null ? buffer.Length : 0;
+				return this.buffer != null ? this.buffer.Length : 0;
 			}
 		}
 
@@ -115,7 +117,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return width;
+				return this.width;
 			}
 		}
 
@@ -131,7 +133,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return height;
+				return this.height;
 			}
 		}
 
@@ -147,7 +149,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return depth;
+				return this.depth;
 			}
 		}
 
@@ -168,7 +170,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return numMipMaps;
+				return this.numMipMaps;
 			}
 		}
 
@@ -204,7 +206,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return format;
+				return this.format;
 			}
 		}
 
@@ -215,7 +217,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return PixelUtil.GetNumElemBits( format );
+				return PixelUtil.GetNumElemBits( this.format );
 			}
 		}
 
@@ -226,7 +228,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return PixelUtil.HasAlpha( format );
+				return PixelUtil.HasAlpha( this.format );
 			}
 		}
 
@@ -237,7 +239,7 @@ namespace Axiom.Media
 		{
 			get
 			{
-				return width*PixelUtil.GetNumElemBytes( format );
+				return this.width * PixelUtil.GetNumElemBytes( this.format );
 			}
 		}
 
@@ -246,9 +248,7 @@ namespace Axiom.Media
 		#region Construction and Destruction
 
 		public Image()
-			: base()
-		{
-		}
+			: base() {}
 
 		/// <summary>
 		///   Copy constructor
@@ -257,14 +257,14 @@ namespace Axiom.Media
 		public Image( Image img )
 			: base()
 		{
-			width = img.width;
-			height = img.height;
-			depth = img.depth;
-			size = img.size;
-			numMipMaps = img.numMipMaps;
-			flags = img.flags;
-			format = img.format;
-			buffer = img.buffer;
+			this.width = img.width;
+			this.height = img.height;
+			this.depth = img.depth;
+			this.size = img.size;
+			this.numMipMaps = img.numMipMaps;
+			this.flags = img.flags;
+			this.format = img.format;
+			this.buffer = img.buffer;
 			//TODO
 			//m_bAutoDelete
 		}
@@ -283,8 +283,8 @@ namespace Axiom.Media
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					bufPtr.SafeDispose();
-					buffer = null;
+					this.bufPtr.SafeDispose();
+					this.buffer = null;
 				}
 
 #if !AXIOM_SAFE_ONLY
@@ -306,15 +306,15 @@ namespace Axiom.Media
 
 		protected void SetBuffer( byte[] newBuffer )
 		{
-			if ( buffer != null )
+			if ( this.buffer != null )
 			{
-				bufPtr = null;
-				buffer = null;
+				this.bufPtr = null;
+				this.buffer = null;
 			}
 			if ( newBuffer != null )
 			{
-				buffer = newBuffer;
-				bufPtr = BufferBase.Wrap( newBuffer );
+				this.buffer = newBuffer;
+				this.bufPtr = BufferBase.Wrap( newBuffer );
 			}
 		}
 
@@ -343,7 +343,7 @@ namespace Axiom.Media
 
 			var stride = bpp >> 3;
 
-			for ( int i = 0, j = size/stride, p = 0; i < j; i++, p += stride )
+			for ( int i = 0, j = size / stride, p = 0; i < j; i++, p += stride )
 			{
 				float r, g, b;
 
@@ -351,21 +351,21 @@ namespace Axiom.Media
 				g = (float)buffer[ p + 1 ];
 				b = (float)buffer[ p + 2 ];
 
-				r = r*gamma;
-				g = g*gamma;
-				b = b*gamma;
+				r = r * gamma;
+				g = g * gamma;
+				b = b * gamma;
 
 				float scale = 1.0f, tmp;
 
-				if ( r > 255.0f && ( tmp = ( 255.0f/r ) ) < scale )
+				if ( r > 255.0f && ( tmp = ( 255.0f / r ) ) < scale )
 				{
 					scale = tmp;
 				}
-				if ( g > 255.0f && ( tmp = ( 255.0f/g ) ) < scale )
+				if ( g > 255.0f && ( tmp = ( 255.0f / g ) ) < scale )
 				{
 					scale = tmp;
 				}
-				if ( b > 255.0f && ( tmp = ( 255.0f/b ) ) < scale )
+				if ( b > 255.0f && ( tmp = ( 255.0f / b ) ) < scale )
 				{
 					scale = tmp;
 				}
@@ -407,7 +407,7 @@ namespace Axiom.Media
 			{
 				var srcBytes = bufPtr.ToBytePointer();
 
-				for ( int i = 0, j = size/stride, p = 0; i < j; i++, p += stride )
+				for ( int i = 0, j = size / stride, p = 0; i < j; i++, p += stride )
 				{
 					float r, g, b;
 
@@ -415,21 +415,21 @@ namespace Axiom.Media
 					g = (float)srcBytes[ p + 1 ];
 					b = (float)srcBytes[ p + 2 ];
 
-					r = r*gamma;
-					g = g*gamma;
-					b = b*gamma;
+					r = r * gamma;
+					g = g * gamma;
+					b = b * gamma;
 
 					float scale = 1.0f, tmp;
 
-					if ( r > 255.0f && ( tmp = ( 255.0f/r ) ) < scale )
+					if ( r > 255.0f && ( tmp = ( 255.0f / r ) ) < scale )
 					{
 						scale = tmp;
 					}
-					if ( g > 255.0f && ( tmp = ( 255.0f/g ) ) < scale )
+					if ( g > 255.0f && ( tmp = ( 255.0f / g ) ) < scale )
 					{
 						scale = tmp;
 					}
-					if ( b > 255.0f && ( tmp = ( 255.0f/b ) ) < scale )
+					if ( b > 255.0f && ( tmp = ( 255.0f / b ) ) < scale )
 					{
 						scale = tmp;
 					}
@@ -461,17 +461,17 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public void FlipAroundY()
 		{
-			if ( buffer == null )
+			if ( this.buffer == null )
 			{
 				throw new AxiomException( "Can not flip an unitialized texture" );
 			}
 
-			numMipMaps = 0; // Image operations lose precomputed mipmaps
+			this.numMipMaps = 0; // Image operations lose precomputed mipmaps
 
 			int src = 0, dst = 0;
 
-			var bytes = PixelUtil.GetNumElemBytes( format );
-			var tempBuffer = new byte[width*height*bytes];
+			var bytes = PixelUtil.GetNumElemBytes( this.format );
+			var tempBuffer = new byte[ this.width * this.height * bytes ];
 
 			if ( bytes > 4 || bytes < 1 )
 			{
@@ -480,12 +480,12 @@ namespace Axiom.Media
 
 			else if ( bytes == 3 )
 			{
-				for ( int y = 0; y < height; y++ )
+				for ( int y = 0; y < this.height; y++ )
 				{
-					dst = ( ( y*width ) + width - 1 )*3;
-					for ( int x = 0; x < width; x++ )
+					dst = ( ( y * this.width ) + this.width - 1 ) * 3;
+					for ( int x = 0; x < this.width; x++ )
 					{
-						Array.Copy( buffer, src, tempBuffer, dst, bytes );
+						Array.Copy( this.buffer, src, tempBuffer, dst, bytes );
 						src += 3;
 						dst -= 3;
 					}
@@ -494,17 +494,17 @@ namespace Axiom.Media
 
 			else
 			{
-				for ( int y = 0; y < height; y++ )
+				for ( int y = 0; y < this.height; y++ )
 				{
-					dst = ( ( y*width ) + width - 1 );
-					for ( int x = 0; x < width; x++ )
+					dst = ( ( y * this.width ) + this.width - 1 );
+					for ( int x = 0; x < this.width; x++ )
 					{
-						Array.Copy( buffer, src++, tempBuffer, dst--, bytes );
+						Array.Copy( this.buffer, src++, tempBuffer, dst--, bytes );
 					}
 				}
 			}
 
-			Array.Copy( tempBuffer, buffer, tempBuffer.Length );
+			Array.Copy( tempBuffer, this.buffer, tempBuffer.Length );
 		}
 
 		///<summary>
@@ -523,28 +523,28 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public void FlipAroundX()
 		{
-			if ( buffer == null )
+			if ( this.buffer == null )
 			{
 				throw new AxiomException( "Can not flip an unitialized texture" );
 			}
 
-			var bytes = PixelUtil.GetNumElemBytes( format );
-			numMipMaps = 0; // Image operations lose precomputed mipmaps
-			var rowSpan = width*bytes;
+			var bytes = PixelUtil.GetNumElemBytes( this.format );
+			this.numMipMaps = 0; // Image operations lose precomputed mipmaps
+			var rowSpan = this.width * bytes;
 
-			var tempBuffer = new byte[rowSpan*height];
+			var tempBuffer = new byte[ rowSpan * this.height ];
 
 			int srcOffset = 0, dstOffset = tempBuffer.Length - rowSpan;
 
-			for ( short y = 0; y < height; y++ )
+			for ( short y = 0; y < this.height; y++ )
 			{
-				Array.Copy( buffer, srcOffset, tempBuffer, dstOffset, rowSpan );
+				Array.Copy( this.buffer, srcOffset, tempBuffer, dstOffset, rowSpan );
 
 				srcOffset += rowSpan;
 				dstOffset -= rowSpan;
 			}
 
-			Array.Copy( tempBuffer, buffer, tempBuffer.Length );
+			Array.Copy( tempBuffer, this.buffer, tempBuffer.Length );
 		}
 
 		/// <summary>
@@ -593,8 +593,8 @@ namespace Axiom.Media
 		public static Image FromRawStream( Stream stream, int width, int height, int depth, PixelFormat format )
 		{
 			// create a new buffer and write the image data directly to it
-			var size = width*height*depth*PixelUtil.GetNumElemBytes( format );
-			var buffer = new byte[size];
+			var size = width * height * depth * PixelUtil.GetNumElemBytes( format );
+			var buffer = new byte[ size ];
 			stream.Read( buffer, 0, size );
 			return ( new Image() ).FromDynamicImage( buffer, width, height, depth, format );
 		}
@@ -625,31 +625,31 @@ namespace Axiom.Media
 #if NET_40
 			bool autoDelete = false, int numFaces = 1, int numMipMaps = 0 )
 #else
-		                               bool autoDelete, int numFaces, int numMipMaps )
+									   bool autoDelete, int numFaces, int numMipMaps )
 #endif
 		{
 			// Set image metadata
-			width = uWidth;
-			height = uHeight;
+			this.width = uWidth;
+			this.height = uHeight;
 			this.depth = depth;
-			format = eFormat;
+			this.format = eFormat;
 
 			this.numMipMaps = numMipMaps;
-			flags = 0;
+			this.flags = 0;
 			// Set flags
 			if ( PixelUtil.IsCompressed( eFormat ) )
 			{
-				flags |= ImageFlags.Compressed;
+				this.flags |= ImageFlags.Compressed;
 			}
 
 			if ( this.depth != 1 )
 			{
-				flags |= ImageFlags.Volume;
+				this.flags |= ImageFlags.Volume;
 			}
 
 			if ( numFaces == 6 )
 			{
-				flags |= ImageFlags.CubeMap;
+				this.flags |= ImageFlags.CubeMap;
 			}
 
 			if ( numFaces != 6 && numFaces != 1 )
@@ -657,7 +657,7 @@ namespace Axiom.Media
 				throw new AxiomException( "Number of faces currently must be 6 or 1." );
 			}
 
-			size = CalculateSize( numMipMaps, numFaces, uWidth, uHeight, depth, eFormat );
+			this.size = CalculateSize( numMipMaps, numFaces, uWidth, uHeight, depth, eFormat );
 			SetBuffer( pData );
 			//TODO
 			//m_bAutoDelete = autoDelete;
@@ -679,8 +679,7 @@ namespace Axiom.Media
 		}
 
 		/// <see cref="Image.FromDynamicImage(byte[], int, int, int, PixelFormat, bool, int, int)" />
-		public Image FromDynamicImage( byte[] pData, int uWidth, int uHeight, int depth, PixelFormat eFormat, bool autoDelete,
-		                               int numFaces )
+		public Image FromDynamicImage( byte[] pData, int uWidth, int uHeight, int depth, PixelFormat eFormat, bool autoDelete, int numFaces )
 		{
 			return FromDynamicImage( pData, uWidth, uHeight, depth, eFormat, autoDelete, numFaces, 0 );
 		}
@@ -714,7 +713,7 @@ namespace Axiom.Media
 				// derive from magic number
 				// read the first 32 bytes or file size, if less
 				var magicLen = Axiom.Math.Utility.Min( (int)stream.Length, 32 );
-				var magicBuf = new byte[magicLen];
+				var magicBuf = new byte[ magicLen ];
 				stream.Read( magicBuf, 0, magicLen );
 				// return to start
 				stream.Position = 0;
@@ -723,8 +722,7 @@ namespace Axiom.Media
 
 			if ( codec == null )
 			{
-				throw new AxiomException(
-					"Unable to load image: Image format is unknown. Unable to identify codec. Check it or specify format explicitly." );
+				throw new AxiomException( "Unable to load image: Image format is unknown. Unable to identify codec. Check it or specify format explicitly." );
 			}
 
 			var res = codec.Decode( stream );
@@ -738,19 +736,13 @@ namespace Axiom.Media
 
 			// copy the image data
 			var image = new Image
-			            {
-			            	height = data.height,
-			            	width = data.width,
-			            	depth = data.depth,
-			            	size = data.size,
-			            	numMipMaps = data.numMipMaps,
-			            	flags = data.flags,
-			            	// Get the format and compute the pixel size
-			            	format = data.format,
-			            };
+						{
+							height = data.height, width = data.width, depth = data.depth, size = data.size, numMipMaps = data.numMipMaps, flags = data.flags, // Get the format and compute the pixel size
+							format = data.format,
+						};
 
 			// stuff the image data into an array
-			var buffer = new byte[decoded.Length];
+			var buffer = new byte[ decoded.Length ];
 			decoded.Position = 0;
 			decoded.Read( buffer, 0, buffer.Length );
 			decoded.Close();
@@ -776,7 +768,7 @@ namespace Axiom.Media
 		{
 			// read the first 32 bytes or file size, if less
 			var magicLen = Axiom.Math.Utility.Min( (int)stream.Length, 32 );
-			var magicBuf = new byte[magicLen];
+			var magicBuf = new byte[ magicLen ];
 			stream.Read( magicBuf, 0, magicLen );
 			// return to start
 			stream.Position = 0;
@@ -799,7 +791,7 @@ namespace Axiom.Media
 		/// <param name="filename"> Filename to save as </param>
 		public void Save( String filename )
 		{
-			if ( buffer == null )
+			if ( this.buffer == null )
 			{
 				throw new AxiomException( "No image data loaded" );
 			}
@@ -826,7 +818,7 @@ namespace Axiom.Media
 			imgData.depth = Depth;
 			imgData.size = Size;
 			// Wrap memory, be sure not to delete when stream destroyed
-			var wrapper = new MemoryStream( buffer );
+			var wrapper = new MemoryStream( this.buffer );
 
 			pCodec.EncodeToFile( wrapper, filename, imgData );
 		}
@@ -834,8 +826,7 @@ namespace Axiom.Media
 		[OgreVersion( 1, 7, 2 )]
 		public ColorEx GetColorAt( int x, int y, int z )
 		{
-			return PixelConverter.UnpackColor( Format,
-			                                   bufPtr + PixelUtil.GetNumElemBytes( format )*( z*Width*Height + Width*y + x ) );
+			return PixelConverter.UnpackColor( Format, this.bufPtr + PixelUtil.GetNumElemBytes( this.format ) * ( z * Width * Height + Width * y + x ) );
 		}
 
 		/// <summary>
@@ -846,7 +837,7 @@ namespace Axiom.Media
 		/// <returns> </returns>
 		public PixelBox GetPixelBox( int face, int mipmap )
 		{
-			if ( mipmap > numMipMaps )
+			if ( mipmap > this.numMipMaps )
 			{
 				throw new IndexOutOfRangeException();
 			}
@@ -864,7 +855,7 @@ namespace Axiom.Media
 			{
 				faceSize = PixelUtil.GetMemorySize( width, height, depth, Format );
 				// Skip all faces of this mipmap
-				offset += faceSize*NumFaces;
+				offset += faceSize * NumFaces;
 				// Half size in each dimension
 				if ( width != 1 )
 				{
@@ -881,11 +872,11 @@ namespace Axiom.Media
 			}
 			// We have advanced to the desired mipmap, offset to right face
 			faceSize = PixelUtil.GetMemorySize( width, height, depth, Format );
-			offset += faceSize*face;
+			offset += faceSize * face;
 			// Return subface as pixelbox
-			if ( bufPtr != null )
+			if ( this.bufPtr != null )
 			{
-				return new PixelBox( width, height, depth, Format, bufPtr + offset );
+				return new PixelBox( width, height, depth, Format, this.bufPtr + offset );
 			}
 			else
 			{
@@ -910,7 +901,7 @@ namespace Axiom.Media
 		/// <returns> True if the flag is set, false otherwise. </returns>
 		public bool HasFlag( ImageFlags flag )
 		{
-			return ( flags & flag ) > 0;
+			return ( this.flags & flag ) > 0;
 		}
 
 		/// <summary>
@@ -955,7 +946,7 @@ namespace Axiom.Media
 					{
 						// Allocate temporary buffer of destination size in source format 
 						temp = new PixelBox( scaled.Width, scaled.Height, scaled.Depth, src.Format );
-						buf = new byte[temp.ConsecutiveSize];
+						buf = new byte[ temp.ConsecutiveSize ];
 						temp.Data = BufferBase.Wrap( buf );
 					}
 
@@ -993,7 +984,7 @@ namespace Axiom.Media
 							{
 								// Allocate temp buffer of destination size in source format 
 								temp = new PixelBox( scaled.Width, scaled.Height, scaled.Depth, src.Format );
-								buf = new byte[temp.ConsecutiveSize];
+								buf = new byte[ temp.ConsecutiveSize ];
 								temp.Data = BufferBase.Wrap( buf );
 							}
 
@@ -1013,8 +1004,7 @@ namespace Axiom.Media
 									( new LinearResampler.Byte( 4 ) ).Scale( src, temp );
 									break;
 								default:
-									throw new NotSupportedException( String.Format( "Scaling of images using {0} byte format is not supported.",
-									                                                PixelUtil.GetNumElemBytes( src.Format ) ) );
+									throw new NotSupportedException( String.Format( "Scaling of images using {0} byte format is not supported.", PixelUtil.GetNumElemBytes( src.Format ) ) );
 							}
 							if ( temp.Data != scaled.Data )
 							{
@@ -1067,15 +1057,15 @@ namespace Axiom.Media
 
 			// reassign buffer to temp image, make sure auto-delete is true
 			var temp = new Image();
-			temp.FromDynamicImage( buffer, this.width, this.height, 1, format );
+			temp.FromDynamicImage( this.buffer, this.width, this.height, 1, this.format );
 			// do not delete[] m_pBuffer!  temp will destroy it
 
 			// set new dimensions, allocate new buffer
 			this.width = width;
 			this.height = height;
-			size = PixelUtil.GetMemorySize( Width, Height, 1, Format );
-			SetBuffer( new byte[size] ); // AXIOM IMPORTANT: cant set buffer only as this wont sync the IntPtr!
-			numMipMaps = 0; // Loses precomputed mipmaps
+			this.size = PixelUtil.GetMemorySize( Width, Height, 1, Format );
+			SetBuffer( new byte[ this.size ] ); // AXIOM IMPORTANT: cant set buffer only as this wont sync the IntPtr!
+			this.numMipMaps = 0; // Loses precomputed mipmaps
 
 			// scale the image from temp into our resized buffer
 			Scale( temp.GetPixelBox( 0, 0 ), GetPixelBox( 0, 0 ), filter );
@@ -1086,7 +1076,7 @@ namespace Axiom.Media
 			var size = 0;
 			for ( var mip = 0; mip <= mipmaps; ++mip )
 			{
-				size += PixelUtil.GetMemorySize( width, height, depth, format )*faces;
+				size += PixelUtil.GetMemorySize( width, height, depth, format ) * faces;
 				if ( width != 1 )
 				{
 					width /= 2;
@@ -1126,16 +1116,16 @@ namespace Axiom.Media
 			var bpp = PixelUtil.GetNumElemBytes( source.Format );
 
 			var srcData = source.Data;
-			var dstData = new byte[width*height*bpp];
+			var dstData = new byte[ width * height * bpp ];
 
 			var srcPitch = source.RowSpan;
-			var dstPitch = width*bpp;
+			var dstPitch = width * bpp;
 
 			for ( var row = 0; row < height; row++ )
 			{
-				for ( var col = 0; col < width*bpp; col++ )
+				for ( var col = 0; col < width * bpp; col++ )
 				{
-					dstData[ ( row*dstPitch ) + col ] = srcData[ ( ( row + offsetY )*srcPitch ) + ( offsetX*bpp ) + col ];
+					dstData[ ( row * dstPitch ) + col ] = srcData[ ( ( row + offsetY ) * srcPitch ) + ( offsetX * bpp ) + col ];
 				}
 			}
 

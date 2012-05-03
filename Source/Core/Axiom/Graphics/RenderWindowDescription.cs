@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Axiom.Collections;
 
 namespace Axiom.Graphics
@@ -13,7 +14,5 @@ namespace Axiom.Graphics
 		public NamedParameterList MiscParams;
 	}
 
-	public class RenderWindowDescriptionList : List<RenderWindowDescription>
-	{
-	}
+	public class RenderWindowDescriptionList : List<RenderWindowDescription> {}
 }

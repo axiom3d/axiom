@@ -39,8 +39,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+
+using Axiom.Collections;
 using Axiom.Core;
+using Axiom.Math;
 using Axiom.Core.Collections;
 using Axiom.Graphics.Collections;
 
@@ -49,34 +54,34 @@ using Axiom.Graphics.Collections;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///   Base class for classes that iterate over the vertices in a mesh
+	/// Base class for classes that iterate over the vertices in a mesh
 	/// </summary>
 	public class AnyBuilder : DisposableObject
 	{
 		#region Fields
 
 		/// <summary>
-		///   List of objects that will provide index data to the build process.
+		/// List of objects that will provide index data to the build process.
 		/// </summary>
 		protected IndexDataList indexDataList = new IndexDataList();
 
 		/// <summary>
-		///   Mapping of index data sets to vertex data sets.
+		/// Mapping of index data sets to vertex data sets.
 		/// </summary>
 		protected IntList indexDataVertexDataSetList = new IntList();
 
 		/// <summary>
-		///   List of vertex data objects.
+		/// List of vertex data objects.
 		/// </summary>
 		protected VertexDataList vertexDataList = new VertexDataList();
 
 		/// <summary>
-		///   Mappings of operation type to vertex data.
+		/// Mappings of operation type to vertex data.
 		/// </summary>
 		protected OperationTypeList operationTypes = new OperationTypeList();
 
 		/// <summary>
-		///   List of software index buffers that were created and to be disposed by this class.
+		/// List of software index buffers that were created and to be disposed by this class.
 		/// </summary>
 		protected List<DefaultHardwareIndexBuffer> customIndexBufferList = new List<DefaultHardwareIndexBuffer>();
 
@@ -85,24 +90,26 @@ namespace Axiom.Graphics
 		#region Methods
 
 		/// <summary>
-		///   Add a set of vertex geometry data to the edge builder.
+		/// Add a set of vertex geometry data to the edge builder.
 		/// </summary>
 		/// <remarks>
-		///   You must add at least one set of vertex data to the builder before invoking the <see name="Build" /> method.
+		/// You must add at least one set of vertex data to the builder before invoking the
+		/// <see name="Build"/> method.
 		/// </remarks>
-		/// <param name="vertexData"> Vertex data to consider for edge detection. </param>
+		/// <param name="vertexData">Vertex data to consider for edge detection.</param>
 		public void AddVertexData( VertexData vertexData )
 		{
 			vertexDataList.Add( vertexData );
 		}
 
 		/// <summary>
-		///   Add a set of index geometry data to the edge builder.
+		/// Add a set of index geometry data to the edge builder.
 		/// </summary>
 		/// <remarks>
-		///   You must add at least one set of index data to the builder before invoking the <see name="Build" /> method.
+		/// You must add at least one set of index data to the builder before invoking the
+		/// <see name="Build"/> method.
 		/// </remarks>
-		/// <param name="indexData"> The index information which describes the triangles. </param>
+		/// <param name="indexData">The index information which describes the triangles.</param>
 		public void AddIndexData( IndexData indexData )
 		{
 			AddIndexData( indexData, 0, OperationType.TriangleList );
@@ -114,14 +121,18 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Add a set of index geometry data to the edge builder.
+		/// Add a set of index geometry data to the edge builder.
 		/// </summary>
 		/// <remarks>
-		///   You must add at least one set of index data to the builder before invoking the <see name="Build" /> method.
+		/// You must add at least one set of index data to the builder before invoking the
+		/// <see name="Build"/> method.
 		/// </remarks>
-		/// <param name="indexData"> The index information which describes the triangles. </param>
-		/// <param name="vertexSet"> The vertex data set this index data refers to; you only need to alter this if you have added multiple sets of vertices. </param>
-		/// <param name="opType"> </param>
+		/// <param name="indexData">The index information which describes the triangles.</param>
+		/// <param name="vertexSet">
+		/// The vertex data set this index data refers to; you only need to alter this
+		/// if you have added multiple sets of vertices.
+		/// </param>
+		/// <param name="opType"></param>
 		public void AddIndexData( IndexData indexData, int vertexSet, OperationType opType )
 		{
 			indexDataList.Add( indexData );
@@ -130,11 +141,13 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Populate with data as obtained from an IRenderable.
+		/// Populate with data as obtained from an IRenderable.
 		/// </summary>
 		/// <remarks>
-		///   Will share the buffers. In case there are no index data associated with the <see cref="IRenderable" /> , i.e. <see
-		///    cref="RenderOperation.useIndices" /> is false, custom software index buffer is created to provide default index data to the builder. This makes it possible for derived classes to handle the data in a convenient way.
+		/// Will share the buffers.
+		/// In case there are no index data associated with the <see cref="IRenderable"/>, i.e. <see cref="RenderOperation.useIndices"/> is false,
+		/// custom software index buffer is created to provide default index data to the builder.
+		/// This makes it possible for derived classes to handle the data in a convenient way.
 		/// </remarks>
 		public void AddObject( IRenderable obj )
 		{
@@ -199,10 +212,10 @@ namespace Axiom.Graphics
 
 
 		/// <summary>
-		///   Add vertex and index sets of a mesh to the builder.
+		/// Add vertex and index sets of a mesh to the builder.
 		/// </summary>
-		/// <param name="mesh"> The mesh object. </param>
-		/// <param name="lodIndex"> The LOD level to be processed. </param>
+		/// <param name="mesh">The mesh object.</param>
+		/// <param name="lodIndex">The LOD level to be processed.</param>
 		public void AddObject( Mesh mesh, int lodIndex )
 		{
 			if ( mesh == null )
@@ -270,11 +283,12 @@ namespace Axiom.Graphics
 		#region IDisposable Implementation
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="disposeManagedResources"> </param>
+		/// <param name="disposeManagedResources"></param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

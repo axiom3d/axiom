@@ -39,12 +39,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 
+using Axiom.Core;
+
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
 	/// <summary>
-	///   Summary description for IPlatformManager.
+	/// Summary description for IPlatformManager.
 	/// </summary>
 	public interface IPlatformManager : IDisposable
 	{

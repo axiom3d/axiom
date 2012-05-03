@@ -37,7 +37,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
 using System.IO;
+
 using Axiom.Collections;
 using Axiom.Core;
 
@@ -45,33 +48,40 @@ using Axiom.Core;
 
 namespace Axiom.Serialization
 {
-	///<summary>
-	///  Class for serialising mesh data to/from an OGRE .mesh file.
-	///</summary>
-	///<remarks>
-	///  This class allows exporters to write OGRE .mesh files easily, and allows the OGRE engine to import .mesh files into instatiated OGRE Meshes. <p /> It's important to realize that this exporter uses OGRE terminology. In this context, 'Mesh' means a top-level mesh structure which can actually contain many SubMeshes, each of which has only one Material. Modelling packages may refer to these differently, for example in Milkshape, it says 'Model' instead of 'Mesh' and 'Mesh' instead of 'SubMesh', but the theory is the same.
-	///</remarks>
+	/// <summary>
+	///		Class for serialising mesh data to/from an OGRE .mesh file.
+	/// </summary>
+	/// <remarks>
+	///		This class allows exporters to write OGRE .mesh files easily, and allows the
+	///		OGRE engine to import .mesh files into instatiated OGRE Meshes.
+	///		<p/>
+	///		It's important to realize that this exporter uses OGRE terminology. In this context,
+	///		'Mesh' means a top-level mesh structure which can actually contain many SubMeshes, each
+	///		of which has only one Material. Modelling packages may refer to these differently, for
+	///		example in Milkshape, it says 'Model' instead of 'Mesh' and 'Mesh' instead of 'SubMesh',
+	///		but the theory is the same.
+	/// </remarks>
 	public sealed class MeshSerializer : Serializer
 	{
 		#region Fields
 
-		///<summary>
-		///  Lookup table holding the various mesh serializer versions.
-		///</summary>
-		private readonly AxiomCollection<MeshSerializerImpl> implementations = new AxiomCollection<MeshSerializerImpl>();
+		/// <summary>
+		///		Lookup table holding the various mesh serializer versions.
+		/// </summary>
+		private AxiomCollection<MeshSerializerImpl> implementations = new AxiomCollection<MeshSerializerImpl>();
 
-		///<summary>
-		///  Current version string.
-		///</summary>
+		/// <summary>
+		///		Current version string.
+		/// </summary>
 		private static string currentVersion = "[MeshSerializer_v1.41]";
 
 		#endregion Fields
 
 		#region Constructor
 
-		///<summary>
-		///  Default constructor.
-		///</summary>
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
 		public MeshSerializer()
 		{
 			// add the supported .mesh versions
@@ -86,11 +96,11 @@ namespace Axiom.Serialization
 
 		#region Methods
 
-		///<summary>
-		///  Exports a mesh to the file specified.
-		///</summary>
-		///<param name="mesh"> Reference to the mesh to export. </param>
-		///<param name="fileName"> The destination filename. </param>
+		/// <summary>
+		///		Exports a mesh to the file specified.
+		/// </summary>
+		/// <param name="mesh">Reference to the mesh to export.</param>
+		/// <param name="fileName">The destination filename.</param>
 		public void ExportMesh( Mesh mesh, string fileName )
 		{
 			// call implementation
@@ -98,11 +108,11 @@ namespace Axiom.Serialization
 			serializer.ExportMesh( mesh, fileName );
 		}
 
-		///<summary>
-		///  Imports mesh data from a .mesh file.
-		///</summary>
-		///<param name="stream"> The stream holding the .mesh data. Must be initialised (pos at the start of the buffer). </param>
-		///<param name="mesh"> Reference to the Mesh object which will receive the data. Should be blank already. </param>
+		/// <summary>
+		///		Imports mesh data from a .mesh file.
+		/// </summary>
+		/// <param name="stream">The stream holding the .mesh data. Must be initialised (pos at the start of the buffer).</param>
+		/// <param name="mesh">Reference to the Mesh object which will receive the data. Should be blank already.</param>
 		public void ImportMesh( Stream stream, Mesh mesh )
 		{
 			var reader = new BinaryReader( stream );
@@ -136,9 +146,7 @@ namespace Axiom.Serialization
 			// warn on old version of mesh
 			if ( fileVersion != currentVersion )
 			{
-				LogManager.Instance.Write(
-					"WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.",
-					mesh.Name, fileVersion );
+				LogManager.Instance.Write( "WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.", mesh.Name, fileVersion );
 			}
 		}
 
@@ -175,9 +183,7 @@ namespace Axiom.Serialization
 			// warn on old version of mesh
 			if ( fileVersion != currentVersion )
 			{
-				LogManager.Instance.Write(
-					"WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.",
-					mesh.Name, fileVersion );
+				LogManager.Instance.Write( "WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.", mesh.Name, fileVersion );
 			}
 			return rv;
 		}

@@ -9,60 +9,85 @@ namespace Axiom.Graphics
 	partial class GpuProgramParameters
 	{
 		/// <summary>
-		///   Information about predefined program constants.
+		/// Information about predefined program constants.
 		/// </summary>
-		/// <note>Only available for high-level programs but is referenced generically
-		///   by GpuProgramParameters</note>
+		/// <note>
+		/// Only available for high-level programs but is referenced generically
+		/// by GpuProgramParameters
+		/// </note>
 		public class GpuConstantDefinition
 		{
 			#region ConstantType
 
 			/// <summary>
-			///   Data type.
+			/// Data type.
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )] public GpuConstantType ConstantType;
+			[OgreVersion( 1, 7, 2790 )]
+			public GpuConstantType ConstantType;
 
 			#endregion
 
 			#region PhysicalIndex
 
-			public int PhysicalIndex { get; set; }
+			/// <summary>
+			/// Physical start index in buffer (either float or int buffer)
+			/// </summary>
+			//[OgreVersion(1, 7, 2790)]
+			//public int PhysicalIndex;
+			private int _physIndex;
+
+			public int PhysicalIndex
+			{
+				get
+				{
+					return _physIndex;
+				}
+				set
+				{
+					_physIndex = value;
+				}
+			}
 
 			#endregion
 
 			#region LogicalIndex
 
 			/// <summary>
-			///   Logical index - used to communicate this constant to the rendersystem
+			/// Logical index - used to communicate this constant to the rendersystem
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )] public int LogicalIndex;
+			[OgreVersion( 1, 7, 2790 )]
+			public int LogicalIndex;
 
 			#endregion
 
 			#region ElementSize
 
 			/// <summary>
-			///   Number of raw buffer slots per element (some programs pack each array element to float4, some do not)
+			/// Number of raw buffer slots per element
+			/// (some programs pack each array element to float4, some do not)
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )] public int ElementSize;
+			[OgreVersion( 1, 7, 2790 )]
+			public int ElementSize;
 
 			#endregion
 
 			#region ArraySize
 
 			/// <summary>
-			///   Length of array
+			/// Length of array
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )] public int ArraySize;
+			[OgreVersion( 1, 7, 2790 )]
+			public int ArraySize;
 
 			#endregion
 
 			#region Variability
 
 			/// <summary>
-			///   How this parameter varies (bitwise combination of GpuParamVariability)
+			/// How this parameter varies (bitwise combination of GpuParamVariability)
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )] public GpuParamVariability Variability;
+			[OgreVersion( 1, 7, 2790 )]
+			public GpuParamVariability Variability;
 
 			#endregion
 
@@ -81,7 +106,9 @@ namespace Axiom.Graphics
 
 			/// <summary>
 			/// </summary>
-			/// <returns> true when the curent ConstantType is a float based type </returns>
+			/// <returns>
+			/// true when the curent ConstantType is a float based type
+			/// </returns>
 			[OgreVersion( 1, 7, 2790, "IsFloat overload in OGRE" )]
 			public static bool IsFloatConst( GpuConstantType c )
 			{
@@ -121,7 +148,9 @@ namespace Axiom.Graphics
 
 			/// <summary>
 			/// </summary>
-			/// <returns> true when the curent ConstantType is an int based type </returns>
+			/// <returns>
+			/// true when the curent ConstantType is an int based type
+			/// </returns>
 			[OgreVersion( 1, 7, 2790, "IsSampler overload in OGRE" )]
 			public bool IsSamplerConst( GpuConstantType c )
 			{
@@ -144,11 +173,12 @@ namespace Axiom.Graphics
 			#region GetElementSize
 
 			/// <summary>
-			///   Get the element size of a given type, including whether to pad the elements into multiples of 4 (e.g. SM1 and D3D does, GLSL doesn't)
+			/// Get the element size of a given type, including whether to pad the 
+			/// elements into multiples of 4 (e.g. SM1 and D3D does, GLSL doesn't)
 			/// </summary>
-			/// <param name="ctype"> </param>
-			/// <param name="padToMultiplesOf4"> </param>
-			/// <returns> </returns>
+			/// <param name="ctype"></param>
+			/// <param name="padToMultiplesOf4"></param>
+			/// <returns></returns>
 			[OgreVersion( 1, 7, 2790 )]
 			public static int GetElementSize( GpuConstantType ctype, bool padToMultiplesOf4 )
 			{

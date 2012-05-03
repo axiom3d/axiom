@@ -44,19 +44,19 @@ using Axiom.Math;
 namespace Axiom.Controllers.Canned
 {
 	/// <summary>
-	///   Predefined controller function for dealing with animation.
+	///     Predefined controller function for dealing with animation.
 	/// </summary>
 	public class AnimationControllerFunction : IControllerFunction<Real>
 	{
 		#region Fields
 
 		/// <summary>
-		///   The amount of time in seconds it takes to loop through the whole animation sequence.
+		///     The amount of time in seconds it takes to loop through the whole animation sequence.
 		/// </summary>
 		protected Real sequenceTime;
 
 		/// <summary>
-		///   The offset in seconds at which to start (default is start at 0).
+		///     The offset in seconds at which to start (default is start at 0).
 		/// </summary>
 		protected Real time;
 
@@ -65,23 +65,21 @@ namespace Axiom.Controllers.Canned
 		#region Constructor
 
 		/// <summary>
-		///   Constructor.
+		///     Constructor.
 		/// </summary>
-		/// <param name="sequenceTime"> The amount of time in seconds it takes to loop through the whole animation sequence. </param>
+		/// <param name="sequenceTime">The amount of time in seconds it takes to loop through the whole animation sequence.</param>
 		public AnimationControllerFunction( Real sequenceTime )
-			: this( sequenceTime, 0.0f )
-		{
-		}
+			: this( sequenceTime, 0.0f ) {}
 
 		/// <summary>
-		///   Constructor.
+		///     Constructor.
 		/// </summary>
-		/// <param name="sequenceTime"> The amount of time in seconds it takes to loop through the whole animation sequence. </param>
-		/// <param name="timeOffset"> The offset in seconds at which to start. </param>
+		/// <param name="sequenceTime">The amount of time in seconds it takes to loop through the whole animation sequence.</param>
+		/// <param name="timeOffset">The offset in seconds at which to start.</param>
 		public AnimationControllerFunction( Real sequenceTime, Real timeOffset )
 		{
 			this.sequenceTime = sequenceTime;
-			time = timeOffset;
+			this.time = timeOffset;
 		}
 
 		#endregion
@@ -89,9 +87,10 @@ namespace Axiom.Controllers.Canned
 		#region ControllerFunction Members
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="sourceValue"> </param>
-		/// <returns> </returns>
+		/// <param name="sourceValue"></param>
+		/// <returns></returns>
 		public Real Execute( Real sourceValue )
 		{
 			// assuming source if the time since the last update
@@ -104,7 +103,7 @@ namespace Axiom.Controllers.Canned
 			}
 
 			// return parametric
-			return time/sequenceTime;
+			return time / sequenceTime;
 		}
 
 		#endregion ControllerFunction Members

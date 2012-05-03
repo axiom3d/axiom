@@ -38,37 +38,42 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
-using System.IO;
+using System.IO.IsolatedStorage;
 using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
-using Axiom.Core;
-using Ionic.Zip;
-
+using System.IO;
 #if SILVERLIGHT
 using System.Windows;
 #endif
+using Axiom.Core;
+
+using Ionic.Zip;
 
 #endregion Namespace Declarations
 
 namespace Axiom.FileSystem
 {
 	/// <summary>
-	///   Specialization of the Archive class to allow reading of files from from a zip format source archive.
+	/// Specialization of the Archive class to allow reading of files from from a zip format source archive.
 	/// </summary>
 	/// <remarks>
-	///   This archive format supports all archives compressed in the standard zip format, including iD pk3 files.
+	/// This archive format supports all archives compressed in the standard
+	/// zip format, including iD pk3 files.
 	/// </remarks>
 	/// <ogre name="ZipArchive">
-	///   <file name="OgreZip.h" revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-	///   <file name="OgreZip.cpp" revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-	/// </ogre>
+	///     <file name="OgreZip.h"   revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreZip.cpp" revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
 	public class ZipArchive : Archive
 	{
 		#region Fields and Properties
 
 		/// <summary>
-		///   root location of the zip file.
+		/// root location of the zip file.
 		/// </summary>
 		protected string _zipFile;
 
@@ -80,27 +85,25 @@ namespace Axiom.FileSystem
 
 		#region Utility Methods
 
-		/// <overloads>
-		///   <summary>
-		///     Utility method to retrieve all files in a directory matching pattern.
-		///   </summary>
-		///   <param name="pattern"> File pattern </param>
-		///   <param name="recursive"> Whether to cascade down directories </param>
-		///   <param name="simpleList"> Populated if retrieving a simple list </param>
-		///   <param name="detailList"> Populated if retrieving a detailed list </param>
+		/// <overloads><summary>
+		/// Utility method to retrieve all files in a directory matching pattern.
+		/// </summary>
+		/// <param name="pattern">File pattern</param>
+		/// <param name="recursive">Whether to cascade down directories</param>
+		/// <param name="simpleList">Populated if retrieving a simple list</param>
+		/// <param name="detailList">Populated if retrieving a detailed list</param>
 		/// </overloads>
 		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList )
 		{
 			findFiles( pattern, recursive, simpleList, detailList, "" );
 		}
 
-		/// <param name="detailList"> </param>
-		/// <param name="currentDir"> The current directory relative to the base of the archive, for file naming </param>
-		/// <param name="pattern"> </param>
-		/// <param name="recursive"> </param>
-		/// <param name="simpleList"> </param>
-		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList,
-		                          string currentDir )
+		/// <param name="detailList"></param>
+		/// <param name="currentDir">The current directory relative to the base of the archive, for file naming</param>
+		/// <param name="pattern"></param>
+		/// <param name="recursive"></param>
+		/// <param name="simpleList"></param>
+		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList, string currentDir )
 		{
 			if ( currentDir == "" )
 			{
@@ -114,7 +117,7 @@ namespace Axiom.FileSystem
 			}
 			var ex = new Regex( pattern );
 
-			foreach ( var entry in _zipStream )
+			foreach (var entry in _zipStream)
 			{
 				// get the full path for the output file
 				var file = entry.FileName;
@@ -138,6 +141,7 @@ namespace Axiom.FileSystem
 					}
 				}
 			}
+
 		}
 
 		#endregion Utility Methods
@@ -145,9 +149,7 @@ namespace Axiom.FileSystem
 		#region Constructors and Destructor
 
 		public ZipArchive( string name, string archType )
-			: base( name, archType )
-		{
-		}
+			: base( name, archType ) {}
 
 		~ZipArchive()
 		{
@@ -159,6 +161,7 @@ namespace Axiom.FileSystem
 		#region Archive Implementation
 
 		/// <summary>
+		/// 
 		/// </summary>
 		public override bool IsCaseSensitive
 		{
@@ -169,6 +172,7 @@ namespace Axiom.FileSystem
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
 		public override void Load()
 		{
@@ -193,8 +197,8 @@ namespace Axiom.FileSystem
 					_zipFile = Name.Replace( '/', '.' );
 
 					var assemblyContent = ( from assembly in AssemblyEx.Neighbors()
-					                        where _zipFile.StartsWith( assembly.FullName.Split( ',' )[ 0 ] )
-					                        select assembly ).FirstOrDefault();
+											where _zipFile.StartsWith( assembly.FullName.Split( ',' )[ 0 ] )
+											select assembly ).FirstOrDefault();
 					if ( assemblyContent != null )
 					{
 						fs = assemblyContent.GetManifestResourceStream( _zipFile );
@@ -253,6 +257,7 @@ namespace Axiom.FileSystem
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
 		public override void Unload()
 		{
@@ -264,19 +269,20 @@ namespace Axiom.FileSystem
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="filename"> </param>
-		/// <param name="readOnly"> </param>
-		/// <returns> </returns>
+		/// <param name="filename"></param>
+		/// <param name="readOnly"></param>
+		/// <returns></returns>
 		public override Stream Open( string filename, bool readOnly )
 		{
 			Load();
 
-			if ( _zipStream.ContainsEntry( filename ) )
+			if (_zipStream.ContainsEntry( filename ) )
 			{
 				var entry = _zipStream[ filename ];
 				var output = new MemoryStream();
-				entry.Extract( output );
+				entry.Extract(output);
 
 				// reset the position to make sure it is at the beginning of the stream
 				output.Position = 0;
@@ -287,28 +293,31 @@ namespace Axiom.FileSystem
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="recursive"> </param>
-		/// <returns> </returns>
+		/// <param name="recursive"></param>
+		/// <returns></returns>
 		public override List<string> List( bool recursive )
 		{
 			return Find( "*", recursive );
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="recursive"> </param>
-		/// <returns> </returns>
+		/// <param name="recursive"></param>
+		/// <returns></returns>
 		public override FileInfoList ListFileInfo( bool recursive )
 		{
 			return FindFileInfo( "*", recursive );
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="pattern"> </param>
-		/// <param name="recursive"> </param>
-		/// <returns> </returns>
+		/// <param name="pattern"></param>
+		/// <param name="recursive"></param>
+		/// <returns></returns>
 		public override List<string> Find( string pattern, bool recursive )
 		{
 			var ret = new List<string>();
@@ -319,10 +328,11 @@ namespace Axiom.FileSystem
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="pattern"> </param>
-		/// <param name="recursive"> </param>
-		/// <returns> </returns>
+		/// <param name="pattern"></param>
+		/// <param name="recursive"></param>
+		/// <returns></returns>
 		public override FileInfoList FindFileInfo( string pattern, bool recursive )
 		{
 			var ret = new FileInfoList();
@@ -333,9 +343,10 @@ namespace Axiom.FileSystem
 		}
 
 		/// <summary>
+		/// 
 		/// </summary>
-		/// <param name="fileName"> </param>
-		/// <returns> </returns>
+		/// <param name="fileName"></param>
+		/// <returns></returns>
 		public override bool Exists( string fileName )
 		{
 			var ret = new List<string>();
@@ -349,12 +360,12 @@ namespace Axiom.FileSystem
 	}
 
 	/// <summary>
-	///   Specialization of ArchiveFactory for Zip files.
+	/// Specialization of ArchiveFactory for Zip files.
 	/// </summary>
 	/// <ogre name="ZipArchive">
-	///   <file name="OgreZip.h" revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-	///   <file name="OgreZip.cpp" revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-	/// </ogre>
+	///     <file name="OgreZip.h"   revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreZip.cpp" revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	/// </ogre> 
 	public class ZipArchiveFactory : ArchiveFactory
 	{
 		private const string _type = "ZipFile";

@@ -42,7 +42,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 namespace Axiom.Configuration
 {
 	/// <summary>
-	///   Summary description for Config.
+	/// Summary description for Config.
 	/// </summary>
 	public class Config
 	{
@@ -83,8 +83,6 @@ namespace Axiom.Configuration
         public static readonly int AxiomThreadLevel = 2;
 #endif
 
-		public Config()
-		{
-		}
+		public Config() {}
 	}
 }

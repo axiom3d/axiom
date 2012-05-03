@@ -37,6 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+
+
 #endregion Namespace Declarations
 
 namespace Axiom.Media
@@ -51,18 +53,14 @@ namespace Axiom.Media
 			private int _count;
 
 			public Float32()
-				: this( 1 )
-			{
-			}
+				: this( 1 ) {}
 
 			public Float32( int count )
 			{
-				_count = count;
+				this._count = count;
 			}
 
-			public void Scale( PixelBox src, PixelBox dst )
-			{
-			}
+			public void Scale( PixelBox src, PixelBox dst ) {}
 		}
 	}
 }

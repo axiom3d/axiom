@@ -37,7 +37,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Math;
+using Axiom.Core;
+using Axiom.Collections;
 
 #endregion Namespace Declarations
 
@@ -54,10 +58,10 @@ namespace Axiom.Animating
 {
 	public class AttachmentPoint
 	{
-		private readonly string name;
-		private readonly string parentBone;
-		private readonly Quaternion orientation;
-		private readonly Vector3 position;
+		private string name;
+		private string parentBone;
+		private Quaternion orientation;
+		private Vector3 position;
 
 		public AttachmentPoint( string name, string parentBone, Quaternion orientation, Vector3 position )
 		{

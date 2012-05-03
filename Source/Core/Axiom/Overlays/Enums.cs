@@ -37,66 +37,79 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+
 using Axiom.Scripting;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Overlays
 {
-	///<summary>
-	///  Describes how the position / size of an element is to be treated.
-	///</summary>
+	/// <summary>
+	///		Describes how the position / size of an element is to be treated. 
+	/// </summary>
 	public enum MetricsMode
 	{
-		/// <summary>
-		///   'left', 'top', 'height' and 'width' are parametrics from 0.0 to 1.0
-		/// </summary>
-		[ScriptEnum( "relative" )] Relative,
+		/// <summary>'left', 'top', 'height' and 'width' are parametrics from 0.0 to 1.0</summary>
+		[ScriptEnum( "relative" )]
+		Relative,
+
+		/// <summary>Positions &amp; sizes are in absolute pixels.</summary>
+		[ScriptEnum( "pixels" )]
+		Pixels,
 
 		/// <summary>
-		///   Positions &amp; sizes are in absolute pixels.
+		/// Positions &amp; sizes are in virtual pixels
 		/// </summary>
-		[ScriptEnum( "pixels" )] Pixels,
-
-		/// <summary>
-		///   Positions &amp; sizes are in virtual pixels
-		/// </summary>
-		[ScriptEnum( "relative_aspect_adjusted" )] Relative_Aspect_Adjusted
+		[ScriptEnum( "relative_aspect_adjusted" )]
+		Relative_Aspect_Adjusted
 	}
 
-	///<summary>
-	///  Describes where '0' is in relation to the parent in the horizontal dimension. Affects how 'left' is interpreted.
-	///</summary>
+	/// <summary>
+	///		Describes where '0' is in relation to the parent in the horizontal dimension.  Affects how 'left' is interpreted.
+	/// </summary>
 	public enum HorizontalAlignment
 	{
 		/// <summary>
+		/// 
 		/// </summary>
-		[ScriptEnum( "left" )] Left,
+		[ScriptEnum( "left" )]
+		Left,
 
 		/// <summary>
+		/// 
 		/// </summary>
-		[ScriptEnum( "center" )] Center,
+		[ScriptEnum( "center" )]
+		Center,
 
 		/// <summary>
+		/// 
 		/// </summary>
-		[ScriptEnum( "right" )] Right
+		[ScriptEnum( "right" )]
+		Right
 	}
 
-	///<summary>
-	///  Describes where '0' is in relation to the parent in the vertical dimension. Affects how 'top' is interpreted.
-	///</summary>
+	/// <summary>
+	///		Describes where '0' is in relation to the parent in the vertical dimension.  Affects how 'top' is interpreted.
+	/// </summary>
 	public enum VerticalAlignment
 	{
 		/// <summary>
+		/// 
 		/// </summary>
-		[ScriptEnum( "top" )] Top,
+		[ScriptEnum( "top" )]
+		Top,
 
 		/// <summary>
+		/// 
 		/// </summary>
-		[ScriptEnum( "center" )] Center,
+		[ScriptEnum( "center" )]
+		Center,
 
-		///<summary>
-		///</summary>
-		[ScriptEnum( "bottom" )] Bottom
+		/// <summary>
+		///
+		/// </summary>
+		[ScriptEnum( "bottom" )]
+		Bottom
 	}
 }

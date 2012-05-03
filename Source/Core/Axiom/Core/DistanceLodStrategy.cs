@@ -38,18 +38,23 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using Axiom.Core.Collections;
-using Axiom.Graphics;
+
 using Axiom.Math;
+using Axiom.Core;
+using Axiom.Graphics;
+
 using MathHelper = Axiom.Math.Utility;
+
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
 {
 	/// <summary>
-	///   Level of detail strategy based on distance from camera.
+	/// Level of detail strategy based on distance from camera.
 	/// </summary>
 	public class DistanceLodStrategy : LodStrategy, ISingleton<DistanceLodStrategy>
 	{
@@ -57,16 +62,19 @@ namespace Axiom.Core
 
 		public const string StrategyName = "Distance";
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///
+		/// </summary>
 		protected Real ReferenceViewValue;
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///
+		/// </summary>
 		private bool _referenceViewEnabled;
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///
+		/// </summary>
 		public bool ReferenceViewEnabled
 		{
 			set
@@ -88,7 +96,7 @@ namespace Axiom.Core
 		#endregion Fields and Properties
 
 		/// <summary>
-		///   Default constructor.
+		/// Default constructor.
 		/// </summary>
 		protected internal DistanceLodStrategy()
 			: base( StrategyName )
@@ -100,29 +108,31 @@ namespace Axiom.Core
 			}
 			else
 			{
-				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", GetType().Name );
+				throw new AxiomException( "Cannot create another instance of {0}. Use Instance property instead", this.GetType().Name );
 			}
 		}
 
 		/// <summary>
-		///   Sets the reference view upon which the distances were based.
+		/// Sets the reference view upon which the distances were based.
 		/// </summary>
-		/// <note>This automatically enables use of the reference view.
-		///   There is no corresponding get method for these values as
-		///   they are not saved, but used to compute a reference value.</note>
-		/// <param name="viewportWidth"> </param>
-		/// <param name="viewportHeight"> </param>
-		/// <param name="fovY"> </param>
+		/// <note>
+		/// This automatically enables use of the reference view.
+		///  There is no corresponding get method for these values as
+		///    they are not saved, but used to compute a reference value.
+		/// </note>
+		/// <param name="viewportWidth"></param>
+		/// <param name="viewportHeight"></param>
+		/// <param name="fovY"></param>
 		public virtual void SetReferenceView( float viewportWidth, float viewportHeight, Radian fovY )
 		{
 			// Determine x FOV based on aspect ratio
-			var fovX = fovY*( (Real)viewportWidth/(Real)viewportHeight );
+			var fovX = fovY * ( (Real)viewportWidth / (Real)viewportHeight );
 
 			// Determine viewport area
-			var viewportArea = viewportHeight*viewportWidth;
+			var viewportArea = viewportHeight * viewportWidth;
 
 			// Compute reference view value based on viewport area and FOVs
-			ReferenceViewValue = viewportArea*MathHelper.Tan( fovX*(Real)0.5f )*MathHelper.Tan( fovY*(Real)0.5f );
+			ReferenceViewValue = viewportArea * MathHelper.Tan( fovX * (Real)0.5f ) * MathHelper.Tan( fovY * (Real)0.5f );
 
 			// Enable use of reference view
 			_referenceViewEnabled = true;
@@ -145,43 +155,41 @@ namespace Axiom.Core
 			// more computation (including a sqrt) so we approximate
 			// it with d^2 - r^2, which is good enough for determining
 			// lod.
-			Real squaredDepth = movableObject.ParentNode.GetSquaredViewDepth( cam ) -
-			                    MathHelper.Sqr( movableObject.BoundingRadius );
+			Real squaredDepth = movableObject.ParentNode.GetSquaredViewDepth( cam ) - MathHelper.Sqr( movableObject.BoundingRadius );
 
 			// Check if reference view needs to be taken into account
 			if ( _referenceViewEnabled )
 			{
 				// Reference view only applicable to perspective projection
-				System.Diagnostics.Debug.Assert( cam.ProjectionType == Projection.Perspective,
-				                                 "Camera projection type must be perspective!" );
+				System.Diagnostics.Debug.Assert( cam.ProjectionType == Projection.Perspective, "Camera projection type must be perspective!" );
 
 				// Get camera viewport
 				var viewport = cam.Viewport;
 
 				// Get viewport area
-				Real viewportArea = viewport.ActualWidth*viewport.ActualHeight;
+				Real viewportArea = viewport.ActualWidth * viewport.ActualHeight;
 
 				// Get projection matrix (this is done to avoid computation of tan(fov / 2))
 				var projectionMatrix = cam.ProjectionMatrix;
 
 				// Compute bias value (note that this is similar to the method used for PixelCountLodStrategy)
-				Real biasValue = viewportArea*projectionMatrix[ 0, 0 ]*projectionMatrix[ 1, 1 ];
+				Real biasValue = viewportArea * projectionMatrix[ 0, 0 ] * projectionMatrix[ 1, 1 ];
 
 				// Scale squared depth appropriately
-				squaredDepth *= ( ReferenceViewValue/biasValue );
+				squaredDepth *= ( ReferenceViewValue / biasValue );
 			}
 
 			// Squared depth should never be below 0, so clamp
 			squaredDepth = MathHelper.Max( squaredDepth, 0 );
 
 			// Now adjust it by the camera bias and return the computed value
-			return squaredDepth*cam.InverseLodBias;
+			return squaredDepth * cam.InverseLodBias;
 		}
 
 		public override Real TransformBias( Real factor )
 		{
 			Debug.Assert( factor > 0.0f, "Bias factor must be > 0!" );
-			return 1.0f/factor;
+			return 1.0f / factor;
 		}
 
 		public override Real TransformUserValue( Real userValue )

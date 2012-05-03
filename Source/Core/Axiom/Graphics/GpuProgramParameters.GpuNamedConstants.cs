@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace Axiom.Graphics
 {
 	public partial class GpuProgramParameters
 	{
 		/// <summary>
-		///   class collecting together the information for named constants.
+		/// class collecting together the information for named constants.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public class GpuNamedConstants
@@ -14,52 +17,65 @@ namespace Axiom.Graphics
 			#region FloatBufferSize
 
 			/// <summary>
-			///   Total size of the float buffer required
+			/// Total size of the float buffer required
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )] public int FloatBufferSize;
+			[OgreVersion( 1, 7, 2790 )]
+			public int FloatBufferSize;
 
 			#endregion
 
 			#region IntBufferSize
 
 			/// <summary>
-			///   Total size of the int buffer required
+			/// Total size of the int buffer required
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )] public int IntBufferSize;
+			[OgreVersion( 1, 7, 2790 )]
+			public int IntBufferSize;
 
 			#endregion
 
 			#region Map
 
 			/// <summary>
-			///   Dictionary of parameter names to GpuConstantDefinition
+			/// Dictionary of parameter names to GpuConstantDefinition
 			/// </summary>
-			[OgreVersion( 1, 7, 2790 )] public GpuConstantDefinitionMap Map = new GpuConstantDefinitionMap();
+			[OgreVersion( 1, 7, 2790 )]
+			public GpuConstantDefinitionMap Map = new GpuConstantDefinitionMap();
 
 			#endregion
 
 			#region GenerateAllConstantDefinitionArrayEntries
 
 			/// <summary>
-			///   Indicates whether all array entries will be generated and added to the definitions map
+			/// Indicates whether all array entries will be generated and added to the definitions map
 			/// </summary>
 			/// <remarks>
-			///   Normally, the number of array entries added to the definitions map is capped at 16 to save memory. Setting this value to <code>true</code> allows all of the entries to be generated and added to the map.
+			/// Normally, the number of array entries added to the definitions map is capped at 16
+			/// to save memory. Setting this value to <code>true</code> allows all of the entries
+			/// to be generated and added to the map.
 			/// </remarks>
-			[OgreVersion( 1, 7, 2790 )] protected static bool GenerateAllConstantDefinitionArrayEntries;
+			[OgreVersion( 1, 7, 2790 )]
+			protected static bool GenerateAllConstantDefinitionArrayEntries;
 
 			#endregion
 
 			#region GenerateConstantDefinitionArrayEntries
 
-			///<summary>
-			///  Generate additional constant entries for arrays based on a base definition.
-			///</summary>
-			///<param name="paramName"> </param>
-			///<param name="baseDef"> </param>
-			///<remarks>
-			///  Array uniforms will be added just with their base name with no array suffix. This method will add named entries for array suffixes too so individual array entries can be addressed. Note that we only individually index array elements if the array size is up to 16 entries in size. Anything larger than that only gets a [0] entry as well as the main entry, to save cluttering up the name map. After all, you can address the larger arrays in a bulk fashion much more easily anyway.
-			///</remarks>
+			/// <summary>
+			/// Generate additional constant entries for arrays based on a base definition.
+			/// </summary>
+			/// <param name="paramName"></param>
+			/// <param name="baseDef"></param>
+			/// <remarks>
+			/// Array uniforms will be added just with their base name with no array
+			/// suffix. This method will add named entries for array suffixes too
+			///	so individual array entries can be addressed. Note that we only
+			///	individually index array elements if the array size is up to 16
+			///	entries in size. Anything larger than that only gets a [0] entry
+			///	as well as the main entry, to save cluttering up the name map. After
+			///	all, you can address the larger arrays in a bulk fashion much more
+			///	easily anyway.
+			/// </remarks>
 			[OgreVersion( 1, 7, 2790 )]
 			public void GenerateConstantDefinitionArrayEntries( String paramName, GpuConstantDefinition baseDef )
 			{
@@ -94,7 +110,7 @@ namespace Axiom.Graphics
 			#region Save
 
 			/// <summary>
-			///   Saves constant definitions to a file, compatible with GpuProgram::setManualNamedConstantsFile.
+			/// Saves constant definitions to a file, compatible with GpuProgram::setManualNamedConstantsFile.
 			/// </summary>
 			[OgreVersion( 1, 7, 2790 )]
 			public void Save( string filename )
@@ -108,9 +124,9 @@ namespace Axiom.Graphics
 			#region Load
 
 			/// <summary>
-			///   Loads constant definitions from a stream, compatible with GpuProgram::setManualNamedConstantsFile.
+			/// Loads constant definitions from a stream, compatible with GpuProgram::setManualNamedConstantsFile.
 			/// </summary>
-			/// <param name="stream"> </param>
+			/// <param name="stream"></param>
 			[OgreVersion( 1, 7, 2790 )]
 			public void Load( Stream stream )
 			{

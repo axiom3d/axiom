@@ -50,19 +50,19 @@ using System.Reflection;
 namespace Axiom.Core
 {
 	/// <summary>
-	///   Summary description for PluginManager.
+	/// Summary description for PluginManager.
 	/// </summary>
 	public class PluginManager : DisposableObject
 	{
 		#region Singleton implementation
 
 		/// <summary>
-		///   Singleton instance of this class.
+		///     Singleton instance of this class.
 		/// </summary>
 		private static PluginManager instance;
 
 		/// <summary>
-		///   Internal constructor. This class cannot be instantiated externally.
+		///     Internal constructor.  This class cannot be instantiated externally.
 		/// </summary>
 		internal PluginManager()
 			: base()
@@ -74,7 +74,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Gets the singleton instance of this class.
+		///     Gets the singleton instance of this class.
 		/// </summary>
 		public static PluginManager Instance
 		{
@@ -88,17 +88,17 @@ namespace Axiom.Core
 
 		#region Fields
 
-		///<summary>
-		///  List of loaded plugins.
-		///</summary>
-		private static readonly List<IPlugin> _plugins = new List<IPlugin>();
+		/// <summary>
+		///		List of loaded plugins.
+		/// </summary>
+		private static List<IPlugin> _plugins = new List<IPlugin>();
 
 		#endregion Fields
 
 		#region properties
 
 		/// <summary>
-		///   Gets a read only collection with all known plugins.
+		/// Gets a read only collection with all known plugins.
 		/// </summary>
 		public ReadOnlyCollection<IPlugin> InstalledPlugins
 		{
@@ -112,9 +112,9 @@ namespace Axiom.Core
 
 		#region Methods
 
-		///<summary>
-		///  Loads all plugins specified in the plugins section of the app.config file.
-		///</summary>
+		/// <summary>
+		///		Loads all plugins specified in the plugins section of the app.config file.
+		/// </summary>
 		public void LoadAll()
 		{
 			var newPlugins = ScanForPlugins();
@@ -143,19 +143,19 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Scans for plugin files in the current directory.
-		///</summary>
+		/// <summary>
+		///		Scans for plugin files in the current directory.
+		/// </summary>
 		protected IList<ObjectCreator> ScanForPlugins()
 		{
 			return ScanForPlugins( "." );
 		}
 
 		/// <summary>
-		///   Checks if the given Module contains managed code
+		/// Checks if the given Module contains managed code
 		/// </summary>
-		/// <param name="file"> The file to check </param>
-		/// <returns> True if the module contains CLR data </returns>
+		/// <param name="file">The file to check</param>
+		/// <returns>True if the module contains CLR data</returns>
 		private bool _isValidModule( string file )
 		{
 			using ( var fs = new FileStream( file, FileMode.Open, FileAccess.Read, FileShare.Read ) )
@@ -187,11 +187,11 @@ namespace Axiom.Core
 		public IEnumerable<IPlugin> plugins { private get; set; }
 #endif
 
-		///<summary>
-		///  Scans for plugin files in the current directory.
-		///</summary>
-		///<param name="folder"> </param>
-		///<returns> </returns>
+		/// <summary>
+		///		Scans for plugin files in the current directory.
+		/// </summary>
+		///<param name="folder"></param>
+		///<returns></returns>
 		protected IList<ObjectCreator> ScanForPlugins( string folder )
 		{
 			var pluginFactories = new List<ObjectCreator>();
@@ -234,9 +234,9 @@ namespace Axiom.Core
 			return pluginFactories;
 		}
 
-		///<summary>
-		///  Unloads all currently loaded plugins.
-		///</summary>
+		/// <summary>
+		///		Unloads all currently loaded plugins.
+		/// </summary>
 		public void UnloadAll()
 		{
 			// loop through and stop all loaded plugins
@@ -256,8 +256,7 @@ namespace Axiom.Core
 		public static string GetAssemblyTitle( Type type )
 		{
 			var assembly = type.Assembly;
-			var title =
-				(AssemblyTitleAttribute)Attribute.GetCustomAttribute( (Assembly)assembly, typeof ( AssemblyTitleAttribute ) );
+			var title = (AssemblyTitleAttribute)Attribute.GetCustomAttribute( (Assembly)assembly, typeof ( AssemblyTitleAttribute ) );
 			if ( title == null )
 			{
 				return assembly.GetName().Name;
@@ -265,10 +264,12 @@ namespace Axiom.Core
 			return title.Title;
 		}
 
-		///<summary>
-		///  Loads a plugin of the given class name from the given assembly, and calls Initialize() on it. This function does NOT add the plugin to the PluginManager's list of plugins.
-		///</summary>
-		///<returns> The loaded plugin. </returns>
+		/// <summary>
+		///		Loads a plugin of the given class name from the given assembly, and calls Initialize() on it.
+		///		This function does NOT add the plugin to the PluginManager's
+		///		list of plugins.
+		/// </summary>
+		/// <returns>The loaded plugin.</returns>
 		private static IPlugin LoadPlugin( ObjectCreator creator )
 		{
 			try
@@ -277,8 +278,8 @@ namespace Axiom.Core
 				if ( _plugins.Count > 0 )
 				{
 					var byTypePlugins = from p in _plugins
-					                    where p.GetType() == creator.CreatedType
-					                    select p;
+										where p.GetType() == creator.CreatedType
+										select p;
 
 					if ( byTypePlugins.Count() > 0 )
 					{
@@ -316,7 +317,7 @@ namespace Axiom.Core
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{

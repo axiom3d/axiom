@@ -38,17 +38,19 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+
 using Axiom.Core;
-using Axiom.Core.Collections;
 using Axiom.Math;
+using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///   Summary description for SimpleRenderable.
+	/// Summary description for SimpleRenderable.
 	/// </summary>
 	public abstract class SimpleRenderable : MovableObject, IRenderable
 	{
@@ -67,7 +69,7 @@ namespace Axiom.Graphics
 		protected IndexData indexData;
 
 		/// <summary>
-		///   Empty light list to use when there is no parent for this renderable.
+		///    Empty light list to use when there is no parent for this renderable.
 		/// </summary>
 		protected LightList dummyLightList = new LightList();
 
@@ -77,17 +79,15 @@ namespace Axiom.Graphics
 
 		#region Constructor
 
-		///<summary>
-		///  Default constructor.
-		///</summary>
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
 		public SimpleRenderable()
-			: this( "SimpleRenderable" + nextAutoGenName++ )
-		{
-		}
+			: this( "SimpleRenderable" + nextAutoGenName++ ) {}
 
-		///<summary>
-		///  Default constructor.
-		///</summary>
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
 		public SimpleRenderable( string name )
 			: base( name )
 		{
@@ -99,17 +99,18 @@ namespace Axiom.Graphics
 
 		private void LoadDefaultMaterial()
 		{
-			materialName = "BaseWhite";
-			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
-			material.Load();
+			this.materialName = "BaseWhite";
+			this.material = (Material)MaterialManager.Instance[ "BaseWhite" ];
+			this.material.Load();
 		}
 
 		#endregion Constructor
 
 		#region Implementation of MovableObject
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///
+		/// </summary>
 		public override AxisAlignedBox BoundingBox
 		{
 			get
@@ -118,21 +119,23 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///</summary>
-		///<param name="camera"> </param>
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="camera"></param>
 		public override void NotifyCurrentCamera( Camera camera )
 		{
 			this.camera = camera;
 		}
 
-		///<summary>
-		///</summary>
-		///<param name="queue"> </param>
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="queue"></param>
 		public override void UpdateRenderQueue( RenderQueue queue )
 		{
 			// add ourself to the render queue
-			queue.AddRenderable( this, RenderQueueGroup );
+			queue.AddRenderable( this, this.RenderQueueGroup );
 		}
 
 		#endregion Implementation of MovableObject
@@ -147,8 +150,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///
+		/// </summary>
 		public virtual Material Material
 		{
 			get
@@ -181,12 +185,13 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///</summary>
-		///<param name="matrices"> </param>
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="matrices"></param>
 		public virtual void GetWorldTransforms( Matrix4[] matrices )
 		{
-			matrices[ 0 ] = worldTransform*parentNode.FullTransform;
+			matrices[ 0 ] = worldTransform * parentNode.FullTransform;
 		}
 
 		public bool NormalizeNormals
@@ -197,8 +202,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///
+		/// </summary>
 		public ushort NumWorldTransforms
 		{
 			get
@@ -207,8 +213,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///
+		/// </summary>
 		public virtual bool UseIdentityProjection
 		{
 			get
@@ -217,8 +224,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///
+		/// </summary>
 		public virtual bool UseIdentityView
 		{
 			get
@@ -235,14 +243,16 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///</summary>
-		///<param name="camera"> </param>
-		///<returns> </returns>
+		/// <summary>
+		///
+		/// </summary>
+		/// <param name="camera"></param>
+		/// <returns></returns>
 		public abstract Real GetSquaredViewDepth( Camera camera );
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///
+		/// </summary>
 		public virtual Quaternion WorldOrientation
 		{
 			get
@@ -251,8 +261,9 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///
+		/// </summary>
 		public virtual Vector3 WorldPosition
 		{
 			get
@@ -302,25 +313,42 @@ namespace Axiom.Graphics
 
 		#region IDisposable Implementation
 
-		///<summary>
-		///  Class level dispose method
-		///</summary>
-		///<remarks>
-		///  When implementing this method in an inherited class the following template should be used; protected override void dispose( bool disposeManagedResources ) { if ( !isDisposed ) { if ( disposeManagedResources ) { // Dispose managed resources. } // There are no unmanaged resources to release, but // if we add them, they need to be released here. } // If it is available, make the call to the // base class's Dispose(Boolean) method base.dispose( disposeManagedResources ); }
-		///</remarks>
-		///<param name="disposeManagedResources"> True if Unmanaged resources should be released. </param>
+		/// <summary>
+		/// Class level dispose method
+		/// </summary>
+		/// <remarks>
+		/// When implementing this method in an inherited class the following template should be used;
+		/// protected override void dispose( bool disposeManagedResources )
+		/// {
+		/// 	if ( !isDisposed )
+		/// 	{
+		/// 		if ( disposeManagedResources )
+		/// 		{
+		/// 			// Dispose managed resources.
+		/// 		}
+		///
+		/// 		// There are no unmanaged resources to release, but
+		/// 		// if we add them, they need to be released here.
+		/// 	}
+		///
+		/// 	// If it is available, make the call to the
+		/// 	// base class's Dispose(Boolean) method
+		/// 	base.dispose( disposeManagedResources );
+		/// }
+		/// </remarks>
+		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( !IsDisposed )
+			if ( !this.IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
 					if ( renderOperation != null )
 					{
-						if ( !renderOperation.IsDisposed )
+						if ( !this.renderOperation.IsDisposed )
 						{
-							renderOperation.Dispose();
+							this.renderOperation.Dispose();
 						}
 
 						renderOperation = null;
@@ -328,22 +356,22 @@ namespace Axiom.Graphics
 
 					if ( indexData != null )
 					{
-						if ( !indexData.IsDisposed )
+						if ( !this.indexData.IsDisposed )
 						{
 							indexData.Dispose();
 						}
 
-						indexData = null;
+						this.indexData = null;
 					}
 
 					if ( vertexData != null )
 					{
-						if ( !vertexData.IsDisposed )
+						if ( !this.vertexData.IsDisposed )
 						{
 							vertexData.Dispose();
 						}
 
-						vertexData = null;
+						this.vertexData = null;
 					}
 				}
 

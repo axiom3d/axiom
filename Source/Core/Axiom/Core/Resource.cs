@@ -40,7 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+
 using Axiom.Scripting;
+
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -48,86 +50,105 @@ using ResourceHandle = System.UInt64;
 namespace Axiom.Core
 {
 	/// <summary>
-	///   Enum identifying the loading state of the resource
+	/// Enum identifying the loading state of the resource
 	/// </summary>
 	[OgreVersion( 1, 7, 2 )]
 	public enum LoadingState
 	{
 		/// <summary>
-		///   Not loaded
+		/// Not loaded
 		/// </summary>
 		Unloaded,
 
 		/// <summary>
-		///   Loading is in progress
+		/// Loading is in progress
 		/// </summary>
 		Loading,
 
 		/// <summary>
-		///   Fully loaded
+		/// Fully loaded
 		/// </summary>
 		Loaded,
 
 		/// <summary>
-		///   Currently unloading
+		/// Currently unloading
 		/// </summary>
 		Unloading,
 
 		/// <summary>
-		///   Fully prepared
+		/// Fully prepared
 		/// </summary>
 		Prepared,
 
 		/// <summary>
-		///   Preparing is in progress
+		/// Preparing is in progress
 		/// </summary>
 		Preparing
 	};
 
-	///<summary>
-	///  Abstract class representing a loadable resource (e.g. textures, sounds etc)
-	///</summary>
-	///<remarks>
-	///  Resources are generally passive constructs, handled through the ResourceManager abstract class for the appropriate subclass. The main thing is that Resources can be loaded or unloaded by the ResourceManager to stay within a defined memory budget. Therefore, all Resources must be able to load, unload (whilst retainin enough info about themselves to be reloaded later), and state how big they are. <para /> Subclasses must implement: 1. A constructor, with at least a mandatory name param. This constructor must set name and optionally size. 2. The Load() and Unload() methods - size must be set after Load() Each must check &amp; update the isLoaded flag.
-	///</remarks>
+	/// <summary>
+	///		Abstract class representing a loadable resource (e.g. textures, sounds etc)
+	/// </summary>
+	/// <remarks>
+	///		Resources are generally passive constructs, handled through the
+	///		ResourceManager abstract class for the appropriate subclass.
+	///		The main thing is that Resources can be loaded or unloaded by the
+	///		ResourceManager to stay within a defined memory budget. Therefore,
+	///		all Resources must be able to load, unload (whilst retainin enough
+	///		info about themselves to be reloaded later), and state how big they are.
+	/// <para/>
+	///		Subclasses must implement:
+	///		1. A constructor, with at least a mandatory name param.
+	///			This constructor must set name and optionally size.
+	///		2. The Load() and Unload() methods - size must be set after Load()
+	///			Each must check &amp; update the isLoaded flag.
+	/// </remarks>
 	public abstract class Resource : ScriptableObject
 	{
 		public interface IListener
 		{
 			/// <summary>
-			///   Callback to indicate that background loading has completed.
+			/// Callback to indicate that background loading has completed.
 			/// </summary>
 			[OgreVersion( 1, 7, 2 )]
 			[Obsolete( "Use LoadingComplete instead" )]
 			void BackgroundLoadingComplete( Resource res );
 
 			/// <summary>
-			///   Callback to indicate that background preparing has completed.
+			/// Callback to indicate that background preparing has completed.
 			/// </summary>
 			[OgreVersion( 1, 7, 2 )]
 			[Obsolete( "Use PreparingComplete instead." )]
 			void BackgroundPreparingComplete( Resource res );
 
 			/// <summary>
-			///   Called whenever the resource finishes loading.
+			/// Called whenever the resource finishes loading.
 			/// </summary>
 			/// <remarks>
-			///   If a Resource has been marked as background loaded (@see Resource::setBackgroundLoaded), the call does not itself occur in the thread which is doing the loading; when loading is complete a response indicator is placed with the ResourceGroupManager, which will then be sent back to the listener as part of the application's primary frame loop thread.
+			/// If a Resource has been marked as background loaded (@see Resource::setBackgroundLoaded), 
+			/// the call does not itself occur in the thread which is doing the loading;
+			/// when loading is complete a response indicator is placed with the
+			/// ResourceGroupManager, which will then be sent back to the 
+			/// listener as part of the application's primary frame loop thread.
 			/// </remarks>
 			[OgreVersion( 1, 7, 2 )]
 			void LoadingComplete( Resource res );
 
 			/// <summary>
-			///   Called whenever the resource finishes preparing (paging into memory).
+			/// Called whenever the resource finishes preparing (paging into memory).
 			/// </summary>
 			/// <remarks>
-			///   If a Resource has been marked as background loaded (@see Resource::setBackgroundLoaded) the call does not itself occur in the thread which is doing the preparing; when preparing is complete a response indicator is placed with the ResourceGroupManager, which will then be sent back to the listener as part of the application's primary frame loop thread.
+			/// If a Resource has been marked as background loaded (@see Resource::setBackgroundLoaded)
+			/// the call does not itself occur in the thread which is doing the preparing;
+			/// when preparing is complete a response indicator is placed with the
+			/// ResourceGroupManager, which will then be sent back to the 
+			/// listener as part of the application's primary frame loop thread.
 			/// </remarks>
 			[OgreVersion( 1, 7, 2 )]
 			void PreparingComplete( Resource res );
 
 			/// <summary>
-			///   Called whenever the resource has been unloaded.
+			/// Called whenever the resource has been unloaded.
 			/// </summary>
 			[OgreVersion( 1, 7, 2 )]
 			void UnloadingComplete( Resource res );
@@ -148,7 +169,7 @@ namespace Axiom.Core
 		private ResourceManager _creator;
 
 		/// <summary>
-		///   the manager which created this resource.
+		/// the manager which created this resource.
 		/// </summary>
 		public ResourceManager Creator
 		{
@@ -168,9 +189,9 @@ namespace Axiom.Core
 
 		protected string _name;
 
-		///<summary>
-		///  Name of this resource.
-		///</summary>
+		/// <summary>
+		///		Name of this resource.
+		/// </summary>
 		public string Name
 		{
 			get
@@ -189,9 +210,9 @@ namespace Axiom.Core
 
 		protected string _group;
 
-		///<summary>
-		///  Gets the group which this resource is a member of
-		///</summary>
+		/// <summary>
+		///	Gets the group which this resource is a member of
+		/// </summary>
 		public string Group
 		{
 			get
@@ -213,9 +234,9 @@ namespace Axiom.Core
 
 		#region IsLoad* Properties
 
-		///<summary>
-		///  Has this resource been loaded yet?
-		///</summary>
+		/// <summary>
+		///	Has this resource been loaded yet?
+		/// </summary>
 		public bool IsLoaded
 		{
 			[OgreVersion( 1, 7, 2 )]
@@ -226,9 +247,10 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Returns whether the resource is currently in the process of background loading.
-		///</summary>
+		/// <summary>
+		///	Returns whether the resource is currently in the process of
+		/// background loading.
+		/// </summary>
 		public bool IsLoading
 		{
 			[OgreVersion( 1, 7, 2 )]
@@ -244,8 +266,9 @@ namespace Axiom.Core
 
 		private bool _isManuallyLoaded;
 
-		///<summary>
-		///</summary>
+		/// <summary>
+		///
+		/// </summary>
 		public bool IsManuallyLoaded
 		{
 			get
@@ -264,9 +287,9 @@ namespace Axiom.Core
 
 		private long _size;
 
-		///<summary>
-		///  Size (in bytes) that this resource takes up in memory.
-		///</summary>
+		/// <summary>
+		///		Size (in bytes) that this resource takes up in memory.
+		/// </summary>
 		public long Size
 		{
 			get
@@ -283,28 +306,64 @@ namespace Axiom.Core
 
 		#region LastAccessed Property
 
-		///<summary>
-		///  Timestamp of the last time this resource was accessed.
-		///</summary>
-		public long LastAccessed { get; protected set; }
+		private long _lastAccessed;
+
+		/// <summary>
+		///		Timestamp of the last time this resource was accessed.
+		/// </summary>
+		public long LastAccessed
+		{
+			get
+			{
+				return _lastAccessed;
+			}
+			protected set
+			{
+				_lastAccessed = value;
+			}
+		}
 
 		#endregion LastAccessed Property
 
 		#region Handle Property
 
-		///<summary>
-		///  Unique handle of this resource.
-		///</summary>
-		public ResourceHandle Handle { get; set; }
+		private ResourceHandle _handle;
+
+		/// <summary>
+		///		Unique handle of this resource.
+		/// </summary>
+		public ResourceHandle Handle
+		{
+			get
+			{
+				return _handle;
+			}
+			set
+			{
+				_handle = value;
+			}
+		}
 
 		#endregion Handle Property
 
 		#region Origin Property
 
+		private string _origin;
+
 		/// <summary>
-		///   Origin of this resource (e.g. script name) - optional
+		/// Origin of this resource (e.g. script name) - optional
 		/// </summary>
-		public string Origin { get; set; }
+		public string Origin
+		{
+			get
+			{
+				return _origin;
+			}
+			set
+			{
+				_origin = value;
+			}
+		}
 
 		#endregion Origin Property
 
@@ -313,7 +372,7 @@ namespace Axiom.Core
 		private IManualResourceLoader _loader;
 
 		/// <summary>
-		///   Optional manual loader; if provided, data is loaded from here instead of a file
+		/// Optional manual loader; if provided, data is loaded from here instead of a file
 		/// </summary>
 		protected IManualResourceLoader loader
 		{
@@ -332,12 +391,12 @@ namespace Axiom.Core
 		#region LoadingState Property
 
 		/// <summary>
-		///   Is the resource currently loaded?
+		/// Is the resource currently loaded?
 		/// </summary>
 		protected AtomicScalar<LoadingState> _loadingState = new AtomicScalar<LoadingState>( LoadingState.Unloaded );
 
 		/// <summary>
-		///   Returns whether the resource is currently in the process of background loading.
+		/// Returns whether the resource is currently in the process of	background loading.
 		/// </summary>
 		public LoadingState LoadingState
 		{
@@ -354,10 +413,22 @@ namespace Axiom.Core
 		private bool _isBackgroundLoaded;
 
 		/// <summary>
-		///   Returns whether this Resource has been earmarked for background loading.
+		/// Returns whether this Resource has been earmarked for background loading.
 		/// </summary>
 		/// <remarks>
-		///   This option only makes sense when you have built Axiom with thread support (AXIOM_THREAD_SUPPORT). If a resource has been marked for background loading, then it won't load on demand like normal when load() is called. Instead, it will ignore request to load() except if the caller indicates it is the background loader. Any other users of this resource should check isLoaded(), and if that returns false, don't use the resource and come back later. <para /> Note that setting this only defers the normal on-demand loading behaviour of a resource, it does not actually set up a thread to make sure the resource gets loaded in the background. You should use ResourceBackgroundLoadingQueue to manage the actual loading (which will set this property itself).
+		/// This option only makes sense when you have built Axiom with
+		/// thread support (AXIOM_THREAD_SUPPORT). If a resource has been marked
+		/// for background loading, then it won't load on demand like normal
+		/// when load() is called. Instead, it will ignore request to load()
+		/// except if the caller indicates it is the background loader. Any
+		/// other users of this resource should check isLoaded(), and if that
+		/// returns false, don't use the resource and come back later.
+		/// <para/>
+		/// Note that setting this only	defers the normal on-demand loading
+		/// behaviour of a resource, it	does not actually set up a thread to make
+		/// sure the resource gets loaded in the background. You should use
+		/// ResourceBackgroundLoadingQueue to manage the actual loading
+		/// (which will set this property itself).
 		/// </remarks>
 		public bool IsBackgroundLoaded
 		{
@@ -374,9 +445,9 @@ namespace Axiom.Core
 		#endregion IsBackgroundLoaded Property
 
 		/// <summary>
-		///   Is the Resource reloadable?
+		///  Is the Resource reloadable?
 		/// </summary>
-		/// <returns> </returns>
+		/// <returns></returns>
 		public bool IsReloadable
 		{
 			get
@@ -389,41 +460,47 @@ namespace Axiom.Core
 
 		#region Constructors and Destructor
 
-		///<summary>
-		///  Protected unnamed constructor to prevent default construction.
-		///</summary>
+		/// <summary>
+		///	Protected unnamed constructor to prevent default construction.
+		/// </summary>
 		protected Resource()
-			: this( null, string.Empty, 0, string.Empty, false, null )
-		{
-		}
+			: this( null, string.Empty, 0, string.Empty, false, null ) {}
 
 		/// <overloads>
-		///   <summary>
-		///     Standard constructor.
-		///   </summary>
-		///   <param name="parent"> ResourceManager that is creating this resource </param>
-		///   <param name="name"> The unique name of the resource </param>
-		///   <param name="handle"> </param>
-		///   <param name="group"> The name of the resource group to which this resource belongs </param>
+		/// <summary>
+		/// Standard constructor.
+		/// </summary>
+		/// <param name="parent">ResourceManager that is creating this resource</param>
+		/// <param name="name">The unique name of the resource</param>
+		/// <param name="handle"></param>
+		/// <param name="group">The name of the resource group to which this resource belongs</param>
 		/// </overloads>
 		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group )
-			: this( parent, name, handle, group, false, null )
-		{
-		}
+			: this( parent, name, handle, group, false, null ) {}
 
-		/// <param name="group"> </param>
-		/// <param name="isManual"> Is this resource manually loaded? If so, you should really populate the loader parameter in order that the load process can call the loader back when loading is required. </param>
-		/// <param name="loader"> An IManualResourceLoader implementation which will be called when the Resource wishes to load (should be supplied if you set isManual to true). You can in fact leave this parameter null if you wish, but the Resource will never be able to reload if anything ever causes it to unload. Therefore provision of a proper IManualResourceLoader instance is strongly recommended. </param>
-		/// <param name="parent"> </param>
-		/// <param name="name"> </param>
-		/// <param name="handle"> </param>
-		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
-		                    IManualResourceLoader loader )
+		/// <param name="group"></param>
+		/// <param name="isManual">
+		///     Is this resource manually loaded? If so, you should really
+		///     populate the loader parameter in order that the load process
+		///     can call the loader back when loading is required.
+		/// </param>
+		/// <param name="loader">
+		///     An IManualResourceLoader implementation which will be called
+		///     when the Resource wishes to load (should be supplied if you set
+		///     isManual to true). You can in fact leave this parameter null
+		///     if you wish, but the Resource will never be able to reload if
+		///     anything ever causes it to unload. Therefore provision of a proper
+		///     IManualResourceLoader instance is strongly recommended.
+		/// </param>
+		/// <param name="parent"></param>
+		/// <param name="name"></param>
+		/// <param name="handle"></param>
+		protected Resource( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base()
 		{
 			_creator = parent;
 			_name = name;
-			Handle = handle;
+			_handle = handle;
 			_group = group;
 			_size = 0;
 			_isManuallyLoaded = isManual;
@@ -442,68 +519,80 @@ namespace Axiom.Core
 		#region Load/Unload Stage Notifiers
 
 		/// <summary>
-		///   Internal hook to perform actions before the load process, but after the resource has been marked as 'Loading'.
+		/// Internal hook to perform actions before the load process, but
+		/// after the resource has been marked as 'Loading'.
 		/// </summary>
 		/// <remarks>
-		///   Mutex will have already been acquired by the loading thread. Also, this call will occur even when using a <see>IManualResourceLoader</see> (when <see>load()</see> is not actually called)
+		/// Mutex will have already been acquired by the loading thread.
+		/// Also, this call will occur even when using a <see>IManualResourceLoader</see>
+		/// (when <see>load()</see> is not actually called)
 		/// </remarks>
-		protected virtual void preLoad()
-		{
-		}
+		protected virtual void preLoad() {}
 
 		/// <summary>
-		///   Internal hook to perform actions after the load process, but before the resource has been marked as 'Loaded'.
+		/// Internal hook to perform actions after the load process, but
+		/// before the resource has been marked as 'Loaded'.
 		/// </summary>
 		/// <remarks>
-		///   Mutex will have already been acquired by the loading thread. Also, this call will occur even when using a <see>IManualResourceLoader</see> (when <see>load()</see> is not actually called)
+		/// Mutex will have already been acquired by the loading thread.
+		/// Also, this call will occur even when using a <see>IManualResourceLoader</see>
+		/// (when <see>load()</see> is not actually called)
 		/// </remarks>
-		protected virtual void postLoad()
-		{
-		}
+		protected virtual void postLoad() {}
 
 		/// <summary>
-		///   Internal hook to perform actions before the unload process, but after the resource has been marked as 'Unloading'.
+		/// Internal hook to perform actions before the unload process, but
+		/// after the resource has been marked as 'Unloading'.
 		/// </summary>
 		/// <remarks>
-		///   Mutex will have already been acquired by the unloading thread. Also, this call will occur even when using a <see>IManualResourceLoader</see> (when <see>unload()</see> is not actually called)
+		/// Mutex will have already been acquired by the unloading thread.
+		/// Also, this call will occur even when using a <see>IManualResourceLoader</see>
+		/// (when <see>unload()</see> is not actually called)
 		/// </remarks>
-		protected virtual void preUnload()
-		{
-		}
+		protected virtual void preUnload() {}
 
 		/// <summary>
-		///   Internal hook to perform actions after the unload process, but before the resource has been marked as 'Unloaded'.
+		/// Internal hook to perform actions after the unload process, but
+		/// before the resource has been marked as 'Unloaded'.
 		/// </summary>
 		/// <remarks>
-		///   Mutex will have already been acquired by the unloading thread. Also, this call will occur even when using a <see>IManualResourceLoader</see> (when <see>unload()</see> is not actually called)
+		/// Mutex will have already been acquired by the unloading thread.
+		/// Also, this call will occur even when using a <see>IManualResourceLoader</see>
+		/// (when <see>unload()</see> is not actually called)
 		/// </remarks>
-		protected virtual void postUnload()
-		{
-		}
+		protected virtual void postUnload() {}
 
 		/// <summary>
-		///   Internal implementation of the meat of the 'prepare' action.
+		/// Internal implementation of the meat of the 'prepare' action.
 		/// </summary>
-		protected virtual void prepare()
-		{
-		}
+		protected virtual void prepare() {}
 
 		/// <summary>
-		///   Internal function for undoing the 'prepare' action. Called when the load is completed, and when resources are unloaded when they are prepared but not yet loaded.
+		/// Internal function for undoing the 'prepare' action.  Called when
+		/// the load is completed, and when resources are unloaded when they
+		/// are prepared but not yet loaded.
 		/// </summary>
-		protected virtual void unPrepare()
-		{
-		}
+		protected virtual void unPrepare() {}
 
 		#endregion Load/Unload Stage Notifiers
 
 		/// <summary>
-		///   Prepares the resource for load, if it is not already.
+		/// Prepares the resource for load, if it is not already.
 		/// </summary>
 		/// <remarks>
-		///   One can call prepare() before load(), but this is not required as load() will call prepare() itself, if needed. When OGRE_THREAD_SUPPORT==1 both load() and prepare() are thread-safe. When OGRE_THREAD_SUPPORT==2 however, only prepare() is thread-safe. The reason for this function is to allow a background thread to do some of the loading work, without requiring the whole render system to be thread-safe. The background thread would call prepare() while the main render loop would later call load(). So long as prepare() remains thread-safe, subclasses can arbitrarily split the work of loading a resource between load() and prepare(). It is best to try and do as much work in prepare(), however, since this will leave less work for the main render thread to do and thus increase FPS.
+		/// One can call prepare() before load(), but this is not required as load() will call prepare() 
+		/// itself, if needed.  When OGRE_THREAD_SUPPORT==1 both load() and prepare() 
+		/// are thread-safe.  When OGRE_THREAD_SUPPORT==2 however, only prepare() 
+		/// is thread-safe.  The reason for this function is to allow a background 
+		/// thread to do some of the loading work, without requiring the whole render
+		/// system to be thread-safe.  The background thread would call
+		/// prepare() while the main render loop would later call load().  So long as
+		/// prepare() remains thread-safe, subclasses can arbitrarily split the work of
+		/// loading a resource between load() and prepare().  It is best to try and
+		/// do as much work in prepare(), however, since this will leave less work for
+		/// the main render thread to do and thus increase FPS.
 		/// </remarks>
-		/// <param name="background"> Whether this is occurring in a background thread </param>
+		/// <param name="background">Whether this is occurring in a background thread</param>
 #if NET_40
 		public virtual void Prepare( bool background = false )
 #else
@@ -515,20 +604,25 @@ namespace Axiom.Core
 
 #if !NET_40
 		/// <summary>
-		///   Prepares the resource for load, if it is not already.
+		/// Prepares the resource for load, if it is not already.
 		/// </summary>
-		/// <see cref="Resource.Prepare(bool)" />
+		/// <see cref="Resource.Prepare(bool)"/>
 		public void Prepare()
 		{
-			Prepare( false );
+			this.Prepare( false );
 		}
 #endif
 
 		/// <summary>
-		///   Escalates the loading of a background loaded resource.
+		/// Escalates the loading of a background loaded resource.
 		/// </summary>
 		/// <remarks>
-		///   If a resource is set to load in the background, but something needs it before it's been loaded, there could be a problem. If the user of this resource really can't wait, they can escalate the loading which basically pulls the loading into the current thread immediately. If the resource is already being loaded but just hasn't quite finished then this method will simply wait until the background load is complete.
+		/// If a resource is set to load in the background, but something needs
+		/// it before it's been loaded, there could be a problem. If the user
+		/// of this resource really can't wait, they can escalate the loading
+		/// which basically pulls the loading into the current thread immediately.
+		/// If the resource is already being loaded but just hasn't quite finished
+		/// then this method will simply wait until the background load is complete.
 		/// </remarks>
 		public void EscalateLoading()
 		{
@@ -538,12 +632,16 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Loads the resource, if not loaded already.
+		/// Loads the resource, if not loaded already.
 		/// </summary>
 		/// <remarks>
-		///   If the resource is loaded from a file, loading is automatic. If not, if for example this resource gained it's data from procedural calls rather than loading from a file, then this resource will not reload on it's own.
+		/// If the resource is loaded from a file, loading is automatic. If not,
+		/// if for example this resource gained it's data from procedural calls
+		/// rather than loading from a file, then this resource will not reload
+		/// on it's own.
 		/// </remarks>
-		/// <param name="background"> Indicates whether the caller of this method is the background resource loading thread. </param>
+		/// <param name="background">Indicates whether the caller of this method is
+		/// the background resource loading thread.</param>
 		[OgreVersion( 1, 7, 2, "Just missing _dirtyState implementation" )]
 #if NET_40
 		public virtual void Load( bool background = false )
@@ -632,9 +730,7 @@ namespace Axiom.Core
 						else
 						{
 							// Warn that this resource is not reloadable
-							LogManager.Instance.Write(
-								"WARNING: {0} instance '{1}' was defined as manually loaded, but no manual loader was provided. This Resource " +
-								"will be lost if it has to be reloaded.", _creator.ResourceType, _name );
+							LogManager.Instance.Write( "WARNING: {0} instance '{1}' was defined as manually loaded, but no manual loader was provided. This Resource " + "will be lost if it has to be reloaded.", _creator.ResourceType, _name );
 						}
 						postLoad();
 					}
@@ -693,16 +789,17 @@ namespace Axiom.Core
 		}
 
 #if !NET_40
-		/// <see cref="Load(bool)" />
+		/// <see cref="Load(bool)"/>
 		public void Load()
 		{
 			Load( false );
 		}
 #endif
 
-		///<summary>
-		///  Unloads the resource data, but retains enough info. to be able to recreate it on demand.
-		///</summary>
+		/// <summary>
+		///		Unloads the resource data, but retains enough info. to be able to recreate it
+		///		on demand.
+		/// </summary>
 		public virtual void Unload()
 		{
 			// Early-out without lock (mitigate perf cost of ensuring unloaded)
@@ -752,10 +849,11 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Reloads the resource, if it is already loaded.
+		/// Reloads the resource, if it is already loaded.
 		/// </summary>
 		/// <remarks>
-		///   Calls unload() and then load() again, if the resource is already loaded. If it is not loaded already, then nothing happens.
+		/// Calls unload() and then load() again, if the resource is already
+		/// loaded. If it is not loaded already, then nothing happens.
 		/// </remarks>
 		public virtual void Reload()
 		{
@@ -771,9 +869,9 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  'Touches' the resource to indicate it has been used.
-		///</summary>
+		/// <summary>
+		///	'Touches' the resource to indicate it has been used.
+		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void Touch()
 		{
@@ -787,7 +885,8 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Register a listener on this resource. <seealso cref="Resource.IListener" />
+		/// Register a listener on this resource.
+		/// <seealso cref="Resource.IListener"/>
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public void AddListener( IListener lis )
@@ -799,7 +898,8 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Remove a listener on this resource. <seealso cref="Resource.IListener" />
+		/// Remove a listener on this resource.
+		/// <seealso cref="Resource.IListener"/>
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public void RemoveListener( IListener lis )
@@ -811,12 +911,15 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Firing of loading complete event
+		/// Firing of loading complete event
 		/// </summary>
 		/// <remarks>
-		///   You should call this from the thread that runs the main frame loop to avoid having to make the receivers of this event thread-safe. If you use Axiom's built in frame loop you don't need to call this yourself.
+		/// You should call this from the thread that runs the main frame loop 
+		/// to avoid having to make the receivers of this event thread-safe.
+		/// If you use Axiom's built in frame loop you don't need to call this
+		/// yourself.
 		/// </remarks>
-		/// <param name="wasBackgroundLoaded"> Whether this was a background loaded event </param>
+		/// <param name="wasBackgroundLoaded">Whether this was a background loaded event</param>
 		[OgreVersion( 1, 7, 2 )]
 		internal virtual void FireLoadingComplete( bool wasBackgroundLoaded )
 		{
@@ -837,12 +940,15 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Firing of preparing complete event
+		/// Firing of preparing complete event
 		/// </summary>
 		/// <remarks>
-		///   You should call this from the thread that runs the main frame loop to avoid having to make the receivers of this event thread-safe. If you use Axiom's built in frame loop you don't need to call this yourself.
+		/// You should call this from the thread that runs the main frame loop 
+		/// to avoid having to make the receivers of this event thread-safe.
+		/// If you use Axiom's built in frame loop you don't need to call this
+		/// yourself.
 		/// </remarks>
-		/// <param name="wasBackgroundLoaded"> Whether this was a background loaded event </param>
+		/// <param name="wasBackgroundLoaded">Whether this was a background loaded event</param>
 		[OgreVersion( 1, 7, 2 )]
 		internal virtual void FirePreparingComplete( bool wasBackgroundLoaded )
 		{
@@ -863,10 +969,13 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Firing of unloading complete event
+		/// Firing of unloading complete event
 		/// </summary>
 		/// <remarks>
-		///   You should call this from the thread that runs the main frame loop to avoid having to make the receivers of this event thread-safe. If you use Axiom's built in frame loop you don't need to call this yourself.
+		/// You should call this from the thread that runs the main frame loop 
+		/// to avoid having to make the receivers of this event thread-safe.
+		/// If you use Axiom's built in frame loop you don't need to call this
+		/// yourself.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2 )]
 		internal virtual void FireUnloadingComplete()
@@ -882,9 +991,9 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Calculate the size of a resource; this will only be called after 'load'
+		/// Calculate the size of a resource; this will only be called after 'load'
 		/// </summary>
-		/// <returns> </returns>
+		/// <returns></returns>
 		protected virtual int calculateSize()
 		{
 			return 0;
@@ -893,12 +1002,14 @@ namespace Axiom.Core
 		#region Abstract Load/Unload Implementation Methods
 
 		/// <summary>
-		///   Internal implementation of the 'load' action, only called if this resource is not being loaded from a ManualResourceLoader.
+		/// Internal implementation of the 'load' action, only called if this
+		/// resource is not being loaded from a ManualResourceLoader.
 		/// </summary>
 		protected abstract void load();
 
 		/// <summary>
-		///   Internal implementation of the 'unload' action; called regardless of whether this resource is being loaded from a ManualResourceLoader.
+		/// Internal implementation of the 'unload' action; called regardless of
+		/// whether this resource is being loaded from a ManualResourceLoader.
 		/// </summary>
 		protected abstract void unload();
 
@@ -932,20 +1043,37 @@ namespace Axiom.Core
 	};
 
 	/// <summary>
-	///   Interface describing a manual resource loader.
+	/// Interface describing a manual resource loader.
 	/// </summary>
 	/// <remarks>
-	///   Resources are usually loaded from files; however in some cases you want to be able to set the data up manually instead. This provides some problems, such as how to reload a Resource if it becomes unloaded for some reason, either because of memory constraints, or because a device fails and some or all of the data is lost. <para /> This interface should be implemented by all classes which wish to provide manual data to a resource. They provide a pointer to themselves when defining the resource (via the appropriate ResourceManager), and will be called when the Resource tries to load. They should implement the loadResource method such that the Resource is in the end set up exactly as if it had loaded from a file, although the implementations will likely differ between subclasses of Resource, which is why no generic algorithm can be stated here. <para /> The loader must remain valid for the entire life of the resource, so that if need be it can be called upon to re-load the resource at any time.
+	/// Resources are usually loaded from files; however in some cases you
+	/// want to be able to set the data up manually instead. This provides
+	/// some problems, such as how to reload a Resource if it becomes
+	/// unloaded for some reason, either because of memory constraints, or
+	/// because a device fails and some or all of the data is lost.
+	/// <para/>
+	/// This interface should be implemented by all classes which wish to
+	/// provide manual data to a resource. They provide a pointer to themselves
+	/// when defining the resource (via the appropriate ResourceManager),
+	/// and will be called when the Resource tries to load.
+	/// They should implement the loadResource method such that the Resource
+	/// is in the end set up exactly as if it had loaded from a file,
+	/// although the implementations will likely differ	between subclasses
+	/// of Resource, which is why no generic algorithm can be stated here.
+	/// <para/>
+	/// The loader must remain valid for the entire life of the resource,
+	/// so that if need be it can be called upon to re-load the resource
+	/// at any time.
 	/// </remarks>
 	/// <ogre name="ManualResourceLoader">
-	///   <file name="OgreResource.h" revision="1.16.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreResource.h"   revision="1.16.2.1" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre>
 	public interface IManualResourceLoader
 	{
 		/// <summary>
-		///   Called when a resource wishes to load.
+		/// Called when a resource wishes to load.
 		/// </summary>
-		/// <param name="resource"> The resource which wishes to load </param>
+		/// <param name="resource">The resource which wishes to load</param>
 		void LoadResource( Resource resource );
 	};
 }

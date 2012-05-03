@@ -37,7 +37,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
+
 using Axiom.Animating;
 using Axiom.Graphics;
 
@@ -45,73 +47,64 @@ using Axiom.Graphics;
 
 namespace Axiom.Core
 {
-	///<summary>
-	///  Defines a part of a complete 3D mesh.
-	///</summary>
-	///<remarks>
-	///  Models which make up the definition of a discrete 3D object are made up of potentially multiple parts. This is because different parts of the mesh may use different materials or use different vertex formats, such that a rendering state change is required between them. <p /> Like the Mesh class, instatiations of 3D objects in the scene share the SubMesh instances, and have the option of overriding their material differences on a per-object basis if required. See the SubEntity class for more information.
-	///</remarks>
+	/// <summary>
+	///		Defines a part of a complete 3D mesh.
+	/// </summary>
+	/// <remarks>
+	///		Models which make up the definition of a discrete 3D object
+	///		are made up of potentially multiple parts. This is because
+	///		different parts of the mesh may use different materials or
+	///		use different vertex formats, such that a rendering state
+	///		change is required between them.
+	///		<p/>
+	///		Like the Mesh class, instatiations of 3D objects in the scene
+	///		share the SubMesh instances, and have the option of overriding
+	///		their material differences on a per-object basis if required.
+	///		See the SubEntity class for more information.
+	/// </remarks>
 	public class SubMesh : DisposableObject
 	{
 		#region Member variables
 
-		/// <summary>
-		///   The parent mesh that this subMesh belongs to.
-		/// </summary>
+		/// <summary>The parent mesh that this subMesh belongs to.</summary>
 		protected Mesh parent;
 
-		/// <summary>
-		///   Name of the material assigned to this subMesh.
-		/// </summary>
+		/// <summary>Name of the material assigned to this subMesh.</summary>
 		protected string materialName;
 
-		/// <summary>
-		///   Name of this SubMesh.
-		/// </summary>
+		/// <summary>Name of this SubMesh.</summary>
 		internal string name;
 
-		/// <summary>
-		/// </summary>
+		/// <summary></summary>
 		protected bool isMaterialInitialized;
 
-		/// <summary>
-		///   List of bone assignment for this mesh.
-		/// </summary>
-		protected Dictionary<int, List<VertexBoneAssignment>> boneAssignmentList =
-			new Dictionary<int, List<VertexBoneAssignment>>();
+		/// <summary>List of bone assignment for this mesh.</summary>
+		protected Dictionary<int, List<VertexBoneAssignment>> boneAssignmentList = new Dictionary<int, List<VertexBoneAssignment>>();
 
-		/// <summary>
-		///   Flag indicating that bone assignments need to be recompiled.
-		/// </summary>
+		/// <summary>Flag indicating that bone assignments need to be recompiled.</summary>
 		protected internal bool boneAssignmentsOutOfDate;
 
-		/// <summary>
-		///   Mode used for rendering this submesh.
-		/// </summary>
+		/// <summary>Mode used for rendering this submesh.</summary>
 		protected internal Axiom.Graphics.OperationType operationType;
 
 		public VertexData vertexData;
 		public IndexData indexData = new IndexData();
 
-		/// <summary>
-		///   Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.
-		/// </summary>
+		/// <summary>Indicates if this submesh shares vertex data with other meshes or whether it has it's own vertices.</summary>
 		public bool useSharedVertices;
 
 		protected internal List<IndexData> lodFaceList = new List<IndexData>();
 
-		/// <summary>
-		///   Type of vertex animation for dedicated vertex data (populated by Mesh)
-		/// </summary>
+		/// <summary>Type of vertex animation for dedicated vertex data (populated by Mesh)</summary>
 		protected VertexAnimationType vertexAnimationType = VertexAnimationType.None;
 
 		#endregion Member variables
 
 		#region Constructor
 
-		///<summary>
-		///  Basic contructor.
-		///</summary>
+		/// <summary>
+		///		Basic contructor.
+		/// </summary>
 		public SubMesh( /*string name*/ )
 			: base()
 		{
@@ -127,12 +120,15 @@ namespace Axiom.Core
 		#region Methods
 
 		/// <summary>
-		///   Assigns a vertex to a bone with a given weight, for skeletal animation.
+		///    Assigns a vertex to a bone with a given weight, for skeletal animation.
 		/// </summary>
 		/// <remarks>
-		///   This method is only valid after setting the SkeletonName property. You should not need to modify bone assignments during rendering (only the positions of bones) and the engine reserves the right to do some internal data reformatting of this information, depending on render system requirements.
+		///    This method is only valid after setting the SkeletonName property.
+		///    You should not need to modify bone assignments during rendering (only the positions of bones)
+		///    and the engine reserves the right to do some internal data reformatting of this information,
+		///    depending on render system requirements.
 		/// </remarks>
-		/// <param name="boneAssignment"> </param>
+		/// <param name="boneAssignment"></param>
 		public void AddBoneAssignment( VertexBoneAssignment boneAssignment )
 		{
 			if ( !boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
@@ -144,10 +140,11 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Removes all bone assignments for this mesh.
+		///    Removes all bone assignments for this mesh.
 		/// </summary>
 		/// <remarks>
-		///   This method is for modifying weights to the shared geometry of the Mesh. To assign weights to the per-SubMesh geometry, see the equivalent methods on SubMesh.
+		///    This method is for modifying weights to the shared geometry of the Mesh. To assign
+		///    weights to the per-SubMesh geometry, see the equivalent methods on SubMesh.
 		/// </remarks>
 		public void ClearBoneAssignments()
 		{
@@ -156,7 +153,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Must be called once to compile bone assignments into geometry buffer.
+		///    Must be called once to compile bone assignments into geometry buffer.
 		/// </summary>
 		protected internal void CompileBoneAssignments()
 		{
@@ -182,9 +179,9 @@ namespace Axiom.Core
 
 		#region Properties
 
-		///<summary>
-		///  Gets/Sets the name of this SubMesh.
-		///</summary>
+		/// <summary>
+		///		Gets/Sets the name of this SubMesh.
+		/// </summary>
 		public string Name
 		{
 			get
@@ -197,9 +194,9 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Gets/Sets the name of the material this SubMesh will be using.
-		///</summary>
+		/// <summary>
+		///		Gets/Sets the name of the material this SubMesh will be using.
+		/// </summary>
 		public string MaterialName
 		{
 			get
@@ -213,9 +210,9 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Gets/Sets the parent mode of this SubMesh.
-		///</summary>
+		/// <summary>
+		///		Gets/Sets the parent mode of this SubMesh.
+		/// </summary>
 		public Mesh Parent
 		{
 			get
@@ -228,11 +225,11 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Overloaded method.
-		///</summary>
-		///<param name="op"> </param>
-		///<returns> </returns>
+		/// <summary>
+		///		Overloaded method.
+		/// </summary>
+		/// <param name="op"></param>
+		/// <returns></returns>
 		public void GetRenderOperation( RenderOperation op )
 		{
 			// call overloaded method with lod index of 0 by default
@@ -240,10 +237,10 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///   Fills a RenderOperation structure required to render this mesh.
+		///    Fills a RenderOperation structure required to render this mesh.
 		/// </summary>
-		/// <param name="op"> Reference to a RenderOperation structure to populate. </param>
-		/// <param name="lodIndex"> The index of the LOD to use. </param>
+		/// <param name="op">Reference to a RenderOperation structure to populate.</param>
+		/// <param name="lodIndex">The index of the LOD to use.</param>
 		public void GetRenderOperation( RenderOperation op, int lodIndex )
 		{
 			// meshes always use indices
@@ -267,9 +264,9 @@ namespace Axiom.Core
 			op.vertexData = useSharedVertices ? parent.SharedVertexData : vertexData;
 		}
 
-		///<summary>
-		///  Gets whether or not a material has been set for this subMesh.
-		///</summary>
+		/// <summary>
+		///		Gets whether or not a material has been set for this subMesh.
+		/// </summary>
 		public bool IsMaterialInitialized
 		{
 			get
@@ -278,9 +275,9 @@ namespace Axiom.Core
 			}
 		}
 
-		///<summary>
-		///  Gets bone assigment list
-		///</summary>
+		/// <summary>
+		///		Gets bone assigment list
+		/// </summary>
 		public Dictionary<int, List<VertexBoneAssignment>> BoneAssignmentList
 		{
 			get
@@ -300,7 +297,7 @@ namespace Axiom.Core
 				}
 				if ( operationType == OperationType.TriangleList )
 				{
-					numFaces = indexData.indexCount/3;
+					numFaces = indexData.indexCount / 3;
 				}
 				else
 				{

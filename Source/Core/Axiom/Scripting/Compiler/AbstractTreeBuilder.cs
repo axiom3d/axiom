@@ -38,7 +38,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
 using System.Collections.Generic;
+
 using Axiom.Scripting.Compiler.AST;
 
 #endregion Namespace Declarations
@@ -49,9 +51,9 @@ namespace Axiom.Scripting.Compiler
 	{
 		private class AbstractTreeBuilder
 		{
-			private readonly ScriptCompiler _compiler;
+			private ScriptCompiler _compiler;
 			private AbstractNode _current;
-			private readonly List<AbstractNode> _nodes;
+			private List<AbstractNode> _nodes;
 
 			public AbstractTreeBuilder( ScriptCompiler compiler )
 			{
@@ -158,8 +160,7 @@ namespace Axiom.Scripting.Compiler
 					}
 
 					// object = last 2 children == { and }
-					if ( temp1 != null && temp2 != null && temp1.Type == ConcreteNodeType.RightBrace &&
-					     temp2.Type == ConcreteNodeType.LeftBrace )
+					if ( temp1 != null && temp2 != null && temp1.Type == ConcreteNodeType.RightBrace && temp2.Type == ConcreteNodeType.LeftBrace )
 					{
 						if ( node.Children.Count < 2 )
 						{
@@ -192,16 +193,14 @@ namespace Axiom.Scripting.Compiler
 
 						// Get the name
 						// Unless the type is in the exclusion list
-						if ( validNode && ( iter.Current.Type == ConcreteNodeType.Word || iter.Current.Type == ConcreteNodeType.Quote ) &&
-						     !_compiler._isNameExcluded( impl.Cls, _current ) )
+						if ( validNode && ( iter.Current.Type == ConcreteNodeType.Word || iter.Current.Type == ConcreteNodeType.Quote ) && !_compiler._isNameExcluded( impl.Cls, _current ) )
 						{
 							impl.Name = iter.Current.Token;
 							validNode = iter.MoveNext();
 						}
 
 						// Everything up until the colon is a "value" of this object
-						while ( validNode && iter.Current.Type != ConcreteNodeType.Colon &&
-						        iter.Current.Type != ConcreteNodeType.LeftBrace )
+						while ( validNode && iter.Current.Type != ConcreteNodeType.Colon && iter.Current.Type != ConcreteNodeType.LeftBrace )
 						{
 							if ( iter.Current.Type == ConcreteNodeType.Variable )
 							{

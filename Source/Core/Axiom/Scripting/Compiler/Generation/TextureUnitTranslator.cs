@@ -38,6 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Graphics;
@@ -63,13 +64,13 @@ namespace Axiom.Scripting.Compiler
 
 			#region Translator Implementation
 
-			/// <see cref="Translator.CheckFor" />
+			/// <see cref="Translator.CheckFor"/>
 			public override bool CheckFor( Keywords nodeId, Keywords parentId )
 			{
 				return nodeId == Keywords.ID_TEXTURE_UNIT && parentId == Keywords.ID_PASS;
 			}
 
-			/// <see cref="Translator.Translate" />
+			/// <see cref="Translator.Translate"/>
 			public override void Translate( ScriptCompiler compiler, AbstractNode node )
 			{
 				var obj = (ObjectAbstractNode)node;
@@ -101,8 +102,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "texture_alias must have at most 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "texture_alias must have at most 1 argument" );
 								}
 								else
 								{
@@ -113,8 +113,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   prop.Values[ 0 ].Value + " is not a valid texture alias" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not a valid texture alias" );
 									}
 								}
 								break;
@@ -130,8 +129,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 5 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "texture must have at most 5 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "texture must have at most 5 arguments" );
 								}
 								else
 								{
@@ -195,15 +193,13 @@ namespace Axiom.Scripting.Compiler
 											}
 											else
 											{
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   j.Value + " is not a supported argument to the texture property" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, j.Value + " is not a supported argument to the texture property" );
 											}
 
 											j = getNodeAt( prop.Values, index++ );
 										}
 
-										ScriptCompilerEvent evt =
-											new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, val );
+										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, val );
 
 										compiler._fireEvent( ref evt );
 
@@ -217,8 +213,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   j.Value + " is not a valid texture name" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, j.Value + " is not a valid texture name" );
 									}
 								}
 								break;
@@ -246,9 +241,7 @@ namespace Axiom.Scripting.Compiler
 											Real val2;
 											if ( getString( i0, out val0 ) && getInt( i1, out val1 ) && getReal( i2, out val2 ) )
 											{
-												ScriptCompilerEvent evt =
-													new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture,
-													                                            val0 );
+												ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, val0 );
 
 												compiler._fireEvent( ref evt );
 												var evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
@@ -257,14 +250,12 @@ namespace Axiom.Scripting.Compiler
 											}
 											else
 											{
-												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-												                   "anim_texture short form requires a texture name, number of frames, and animation duration" );
+												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "anim_texture short form requires a texture name, number of frames, and animation duration" );
 											}
 										}
 										else
 										{
-											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											                   "anim_texture short form requires a texture name, number of frames, and animation duration" );
+											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "anim_texture short form requires a texture name, number of frames, and animation duration" );
 										}
 									}
 									else
@@ -274,7 +265,7 @@ namespace Axiom.Scripting.Compiler
 										var inNode = getNodeAt( prop.Values, prop.Values.Count - 1 );
 										if ( getReal( inNode, out duration ) )
 										{
-											var names = new string[prop.Values.Count - 1];
+											var names = new string[ prop.Values.Count - 1 ];
 											var n = 0;
 
 											var j = prop.Values[ 0 ];
@@ -289,9 +280,7 @@ namespace Axiom.Scripting.Compiler
 													// Run the name through the listener
 													if ( compiler.Listener != null )
 													{
-														ScriptCompilerEvent evt =
-															new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture,
-															                                            name );
+														ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, name );
 
 														compiler._fireEvent( ref evt );
 														names[ n++ ] = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
@@ -303,8 +292,7 @@ namespace Axiom.Scripting.Compiler
 												}
 												else
 												{
-													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													                   j.Value + " is not supported as a texture name" );
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, j.Value + " is not supported as a texture name" );
 												}
 
 												++index;
@@ -315,8 +303,7 @@ namespace Axiom.Scripting.Compiler
 										}
 										else
 										{
-											compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-											                   inNode.Value + " is not supported for the duration argument" );
+											compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, inNode.Value + " is not supported for the duration argument" );
 										}
 									}
 								}
@@ -338,9 +325,7 @@ namespace Axiom.Scripting.Compiler
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1;
 
-										ScriptCompilerEvent evt =
-											new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture,
-											                                            atom0.Value );
+										ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, atom0.Value );
 
 										compiler._fireEvent( ref evt );
 										var evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
@@ -354,26 +339,13 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count == 7 )
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 ),
-									             i1 = getNodeAt( prop.Values, 1 ),
-									             i2 = getNodeAt( prop.Values, 2 ),
-									             i3 = getNodeAt( prop.Values, 3 ),
-									             i4 = getNodeAt( prop.Values, 4 ),
-									             i5 = getNodeAt( prop.Values, 5 ),
-									             i6 = getNodeAt( prop.Values, 6 );
+									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 ), i3 = getNodeAt( prop.Values, 3 ), i4 = getNodeAt( prop.Values, 4 ), i5 = getNodeAt( prop.Values, 5 ), i6 = getNodeAt( prop.Values, 6 );
 
-									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode && i3 is AtomAbstractNode &&
-									     i4 is AtomAbstractNode && i5 is AtomAbstractNode && i6 is AtomAbstractNode )
+									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode && i3 is AtomAbstractNode && i4 is AtomAbstractNode && i5 is AtomAbstractNode && i6 is AtomAbstractNode )
 									{
-										AtomAbstractNode atom0 = (AtomAbstractNode)i0,
-										                 atom1 = (AtomAbstractNode)i1,
-										                 atom2 = (AtomAbstractNode)i2,
-										                 atom3 = (AtomAbstractNode)i3,
-										                 atom4 = (AtomAbstractNode)i4,
-										                 atom5 = (AtomAbstractNode)i5,
-										                 atom6 = (AtomAbstractNode)i6;
+										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1, atom2 = (AtomAbstractNode)i2, atom3 = (AtomAbstractNode)i3, atom4 = (AtomAbstractNode)i4, atom5 = (AtomAbstractNode)i5, atom6 = (AtomAbstractNode)i6;
 
-										var names = new string[6];
+										var names = new string[ 6 ];
 										names[ 0 ] = atom0.Value;
 										names[ 1 ] = atom1.Value;
 										names[ 2 ] = atom2.Value;
@@ -386,9 +358,7 @@ namespace Axiom.Scripting.Compiler
 											// Run each name through the listener
 											for ( var j = 0; j < 6; ++j )
 											{
-												ScriptCompilerEvent evt =
-													new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture,
-													                                            names[ j ] );
+												ScriptCompilerEvent evt = new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Texture, names[ j ] );
 
 												compiler._fireEvent( ref evt );
 												names[ j ] = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
@@ -400,8 +370,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "cubic_texture must have at most 7 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "cubic_texture must have at most 7 arguments" );
 								}
 								break;
 
@@ -416,8 +385,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "tex_coord_set must have at most 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "tex_coord_set must have at most 1 argument" );
 								}
 								else
 								{
@@ -428,8 +396,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   prop.Values[ 0 ].Value + " is not supported as an integer argument" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not supported as an integer argument" );
 									}
 								}
 								break;
@@ -445,9 +412,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 ),
-									             i1 = getNodeAt( prop.Values, 1 ),
-									             i2 = getNodeAt( prop.Values, 2 );
+									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 );
 
 									var mode = new UVWAddressing( TextureAddressing.Wrap );
 
@@ -473,9 +438,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   i0.Value +
-												                   " not supported as first argument (must be \"wrap\", \"clamp\", \"mirror\", or \"border\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i0.Value + " not supported as first argument (must be \"wrap\", \"clamp\", \"mirror\", or \"border\")" );
 												break;
 										}
 									}
@@ -504,9 +467,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   i0.Value +
-												                   " not supported as second argument (must be \"wrap\", \"clamp\", \"mirror\", or \"border\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i0.Value + " not supported as second argument (must be \"wrap\", \"clamp\", \"mirror\", or \"border\")" );
 												break;
 										}
 									}
@@ -533,9 +494,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   i0.Value +
-												                   " not supported as third argument (must be \"wrap\", \"clamp\", \"mirror\", or \"border\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i0.Value + " not supported as third argument (must be \"wrap\", \"clamp\", \"mirror\", or \"border\")" );
 												break;
 										}
 									}
@@ -562,8 +521,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "tex_border_colour only accepts a colour argument" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "tex_border_colour only accepts a colour argument" );
 									}
 								}
 								break;
@@ -601,24 +559,18 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   prop.Values[ 0 ].Value +
-												                   " not supported as first argument (must be \"none\", \"bilinear\", \"trilinear\", or \"anisotropic\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " not supported as first argument (must be \"none\", \"bilinear\", \"trilinear\", or \"anisotropic\")" );
 												break;
 										}
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   prop.Values[ 0 ].Value +
-										                   " not supported as first argument (must be \"none\", \"bilinear\", \"trilinear\", or \"anisotropic\")" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " not supported as first argument (must be \"none\", \"bilinear\", \"trilinear\", or \"anisotropic\")" );
 									}
 								}
 								else if ( prop.Values.Count == 3 )
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 ),
-									             i1 = getNodeAt( prop.Values, 1 ),
-									             i2 = getNodeAt( prop.Values, 2 );
+									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 );
 
 									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode )
 									{
@@ -644,9 +596,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   i0.Value +
-												                   " not supported as first argument (must be \"none\", \"point\", \"linear\", or \"anisotropic\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i0.Value + " not supported as first argument (must be \"none\", \"point\", \"linear\", or \"anisotropic\")" );
 												break;
 										}
 
@@ -669,9 +619,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   i0.Value +
-												                   " not supported as second argument (must be \"none\", \"point\", \"linear\", or \"anisotropic\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i0.Value + " not supported as second argument (must be \"none\", \"point\", \"linear\", or \"anisotropic\")" );
 												break;
 										}
 
@@ -694,9 +642,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   i0.Value +
-												                   " not supported as third argument (must be \"none\", \"point\", \"linear\", or \"anisotropic\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i0.Value + " not supported as third argument (must be \"none\", \"point\", \"linear\", or \"anisotropic\")" );
 												break;
 										}
 
@@ -709,8 +655,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "filtering must have either 1 or 3 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "filtering must have either 1 or 3 arguments" );
 								}
 								break;
 
@@ -725,8 +670,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "max_anisotropy must have at most 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "max_anisotropy must have at most 1 argument" );
 								}
 								else
 								{
@@ -737,8 +681,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   prop.Values[ 0 ].Value + " is not a valid integer argument" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not a valid integer argument" );
 									}
 								}
 								break;
@@ -754,8 +697,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "mipmap_bias must have at most 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "mipmap_bias must have at most 1 argument" );
 								}
 								else
 								{
@@ -783,8 +725,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "color_op must have at most 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "color_op must have at most 1 argument" );
 								}
 								else
 								{
@@ -810,17 +751,13 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   prop.Values[ 0 ].Value +
-												                   " is not a valid argument (must be \"replace\", \"add\", \"modulate\", or \"alpha_blend\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not a valid argument (must be \"replace\", \"add\", \"modulate\", or \"alpha_blend\")" );
 												break;
 										}
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   prop.Values[ 0 ].Value +
-										                   " is not a valid argument (must be \"replace\", \"add\", \"modulate\", or \"alpha_blend\")" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not a valid argument (must be \"replace\", \"add\", \"modulate\", or \"alpha_blend\")" );
 									}
 								}
 								break;
@@ -832,19 +769,15 @@ namespace Axiom.Scripting.Compiler
 							case Keywords.ID_COLOR_OP_EX:
 								if ( prop.Values.Count < 3 )
 								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line,
-									                   "color_op_ex must have at least 3 arguments" );
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line, "color_op_ex must have at least 3 arguments" );
 								}
 								else if ( prop.Values.Count > 10 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "color_op_ex must have at most 10 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "color_op_ex must have at most 10 arguments" );
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 ),
-									             i1 = getNodeAt( prop.Values, 1 ),
-									             i2 = getNodeAt( prop.Values, 2 );
+									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 );
 
 									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode )
 									{
@@ -918,9 +851,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   i0.Value +
-												                   " is not a valid first argument (must be \"source1\", \"source2\", \"modulate\", \"modulate_x2\", \"modulate_x4\", \"add\", \"add_signed\", \"add_smooth\", \"subtract\", \"blend_diffuse_alpha\", \"blend_texture_alpha\", \"blend_current_alpha\", \"blend_manual\", \"dot_product\", or \"blend_diffuse_colour\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i0.Value + " is not a valid first argument (must be \"source1\", \"source2\", \"modulate\", \"modulate_x2\", \"modulate_x4\", \"add\", \"add_signed\", \"add_smooth\", \"subtract\", \"blend_diffuse_alpha\", \"blend_texture_alpha\", \"blend_current_alpha\", \"blend_manual\", \"dot_product\", or \"blend_diffuse_colour\")" );
 												break;
 										}
 
@@ -947,9 +878,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   i1.Value +
-												                   " is not a valid second argument (must be \"src_current\", \"src_texture\", \"src_diffuse\", \"src_specular\", or \"src_manual\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i1.Value + " is not a valid second argument (must be \"src_current\", \"src_texture\", \"src_diffuse\", \"src_specular\", or \"src_manual\")" );
 												break;
 										}
 
@@ -976,9 +905,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   i2.Value +
-												                   " is not a valid third argument (must be \"src_current\", \"src_texture\", \"src_diffuse\", \"src_specular\", or \"src_manual\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i2.Value + " is not a valid third argument (must be \"src_current\", \"src_texture\", \"src_diffuse\", \"src_specular\", or \"src_manual\")" );
 												break;
 										}
 
@@ -989,14 +916,12 @@ namespace Axiom.Scripting.Compiler
 											{
 												if ( !getReal( i3, out manualBlend ) )
 												{
-													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													                   i3.Value + " is not a valid number argument" );
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i3.Value + " is not a valid number argument" );
 												}
 											}
 											else
 											{
-												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-												                   "fourth argument expected when blend_manual is used" );
+												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "fourth argument expected when blend_manual is used" );
 											}
 										}
 
@@ -1013,14 +938,12 @@ namespace Axiom.Scripting.Compiler
 											{
 												if ( !getColor( prop.Values, 3, out arg1, 3 ) )
 												{
-													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													                   "valid colour expected when src_manual is used" );
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "valid colour expected when src_manual is used" );
 												}
 											}
 											else
 											{
-												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-												                   "valid colour expected when src_manual is used" );
+												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "valid colour expected when src_manual is used" );
 											}
 										}
 
@@ -1030,14 +953,12 @@ namespace Axiom.Scripting.Compiler
 											{
 												if ( !getColor( prop.Values, 3, out arg2, 3 ) )
 												{
-													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													                   "valid colour expected when src_manual is used" );
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "valid colour expected when src_manual is used" );
 												}
 											}
 											else
 											{
-												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-												                   "valid colour expected when src_manual is used" );
+												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "valid colour expected when src_manual is used" );
 											}
 										}
 
@@ -1061,8 +982,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 2 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "color_op_multiplass_fallback must have at most 2 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "color_op_multiplass_fallback must have at most 2 arguments" );
 								}
 								else if ( prop.Values.Count == 1 )
 								{
@@ -1092,30 +1012,26 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   "argument must be a valid scene blend type (add, modulate, colour_blend, alpha_blend, or replace)" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "argument must be a valid scene blend type (add, modulate, colour_blend, alpha_blend, or replace)" );
 												break;
 										}
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "argument must be a valid scene blend type (add, modulate, colour_blend, alpha_blend, or replace)" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "argument must be a valid scene blend type (add, modulate, colour_blend, alpha_blend, or replace)" );
 									}
 								}
 								else
 								{
 									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 );
 									SceneBlendFactor sbf0, sbf1;
-									if ( getEnumeration<SceneBlendFactor>( i0, compiler, out sbf0 ) &&
-									     getEnumeration<SceneBlendFactor>( i1, compiler, out sbf1 ) )
+									if ( getEnumeration<SceneBlendFactor>( i0, compiler, out sbf0 ) && getEnumeration<SceneBlendFactor>( i1, compiler, out sbf1 ) )
 									{
 										_textureunit.SetColorOpMultipassFallback( sbf0, sbf1 );
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "arguments must be valid scene blend factors" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "arguments must be valid scene blend factors" );
 									}
 								}
 								break;
@@ -1127,19 +1043,15 @@ namespace Axiom.Scripting.Compiler
 							case Keywords.ID_ALPHA_OP_EX:
 								if ( prop.Values.Count < 3 )
 								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line,
-									                   "alpha_op_ex must have at least 3 arguments" );
+									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line, "alpha_op_ex must have at least 3 arguments" );
 								}
 								else if ( prop.Values.Count > 6 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "alpha_op_ex must have at most 6 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "alpha_op_ex must have at most 6 arguments" );
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 ),
-									             i1 = getNodeAt( prop.Values, 1 ),
-									             i2 = getNodeAt( prop.Values, 2 );
+									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 );
 
 									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode )
 									{
@@ -1213,9 +1125,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   i0.Value +
-												                   " is not a valid first argument (must be \"source1\", \"source2\", \"modulate\", \"modulate_x2\", \"modulate_x4\", \"add\", \"add_signed\", \"add_smooth\", \"subtract\", \"blend_diffuse_alpha\", \"blend_texture_alpha\", \"blend_current_alpha\", \"blend_manual\", \"dot_product\", or \"blend_diffuse_colour\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i0.Value + " is not a valid first argument (must be \"source1\", \"source2\", \"modulate\", \"modulate_x2\", \"modulate_x4\", \"add\", \"add_signed\", \"add_smooth\", \"subtract\", \"blend_diffuse_alpha\", \"blend_texture_alpha\", \"blend_current_alpha\", \"blend_manual\", \"dot_product\", or \"blend_diffuse_colour\")" );
 												break;
 										}
 
@@ -1242,9 +1152,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   i1.Value +
-												                   " is not a valid second argument (must be \"src_current\", \"src_texture\", \"src_diffuse\", \"src_specular\", or \"src_manual\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i1.Value + " is not a valid second argument (must be \"src_current\", \"src_texture\", \"src_diffuse\", \"src_specular\", or \"src_manual\")" );
 												break;
 										}
 
@@ -1271,9 +1179,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   i2.Value +
-												                   " is not a valid third argument (must be \"src_current\", \"src_texture\", \"src_diffuse\", \"src_specular\", or \"src_manual\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i2.Value + " is not a valid third argument (must be \"src_current\", \"src_texture\", \"src_diffuse\", \"src_specular\", or \"src_manual\")" );
 												break;
 										}
 
@@ -1284,14 +1190,12 @@ namespace Axiom.Scripting.Compiler
 											{
 												if ( !getReal( i3, out manualBlend ) )
 												{
-													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													                   "valid number expected when blend_manual is used" );
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "valid number expected when blend_manual is used" );
 												}
 											}
 											else
 											{
-												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-												                   "valid number expected when blend_manual is used" );
+												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "valid number expected when blend_manual is used" );
 											}
 										}
 
@@ -1308,8 +1212,7 @@ namespace Axiom.Scripting.Compiler
 											{
 												if ( !getReal( j, out arg1 ) )
 												{
-													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													                   "valid colour expected when src_manual is used" );
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "valid colour expected when src_manual is used" );
 												}
 												else
 												{
@@ -1318,8 +1221,7 @@ namespace Axiom.Scripting.Compiler
 											}
 											else
 											{
-												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-												                   "valid colour expected when src_manual is used" );
+												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "valid colour expected when src_manual is used" );
 											}
 										}
 
@@ -1329,14 +1231,12 @@ namespace Axiom.Scripting.Compiler
 											{
 												if ( !getReal( j, out arg2 ) )
 												{
-													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-													                   "valid colour expected when src_manual is used" );
+													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "valid colour expected when src_manual is used" );
 												}
 											}
 											else
 											{
-												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-												                   "valid colour expected when src_manual is used" );
+												compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line, "valid colour expected when src_manual is used" );
 											}
 										}
 
@@ -1360,8 +1260,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "env_map must have at most 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "env_map must have at most 1 argument" );
 								}
 								else
 								{
@@ -1391,17 +1290,13 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   prop.Values[ 0 ].Value +
-												                   " is not a valid argument (must be \"off\", \"spherical\", \"planar\", \"cubic_reflection\", or \"cubic_normal\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not a valid argument (must be \"off\", \"spherical\", \"planar\", \"cubic_reflection\", or \"cubic_normal\")" );
 												break;
 										}
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   prop.Values[ 0 ].Value +
-										                   " is not a valid argument (must be \"off\", \"spherical\", \"planar\", \"cubic_reflection\", or \"cubic_normal\")" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not a valid argument (must be \"off\", \"spherical\", \"planar\", \"cubic_reflection\", or \"cubic_normal\")" );
 									}
 								}
 								break;
@@ -1417,8 +1312,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 2 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "scroll must have at most 2 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "scroll must have at most 2 arguments" );
 								}
 								else
 								{
@@ -1430,8 +1324,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   i0.Value + " and/or " + i1.Value + " is invalid; both must be numbers" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i0.Value + " and/or " + i1.Value + " is invalid; both must be numbers" );
 									}
 								}
 								break;
@@ -1447,8 +1340,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 2 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "scroll_anim must have at most 2 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "scroll_anim must have at most 2 arguments" );
 								}
 								else
 								{
@@ -1460,8 +1352,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   i0.Value + " and/or " + i1.Value + " is invalid; both must be numbers" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, i0.Value + " and/or " + i1.Value + " is invalid; both must be numbers" );
 									}
 								}
 								break;
@@ -1477,8 +1368,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "rotate must have at most 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "rotate must have at most 1 argument" );
 								}
 								else
 								{
@@ -1491,8 +1381,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   prop.Values[ 0 ].Value + " is not a valid number value" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not a valid number value" );
 									}
 								}
 								break;
@@ -1508,8 +1397,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "rotate_anim must have at most 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "rotate_anim must have at most 1 argument" );
 								}
 								else
 								{
@@ -1520,8 +1408,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   prop.Values[ 0 ].Value + " is not a valid number value" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not a valid number value" );
 									}
 								}
 								break;
@@ -1537,8 +1424,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 2 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "scale must have at most 2 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "scale must have at most 2 arguments" );
 								}
 								else
 								{
@@ -1550,9 +1436,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "first and second arguments must both be valid number values (received " + i0.Value + ", " +
-										                   i1.Value + ")" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "first and second arguments must both be valid number values (received " + i0.Value + ", " + i1.Value + ")" );
 									}
 								}
 								break;
@@ -1568,20 +1452,13 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 6 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "wave_xform must have at most 6 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "wave_xform must have at most 6 arguments" );
 								}
 								else
 								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 ),
-									             i1 = getNodeAt( prop.Values, 1 ),
-									             i2 = getNodeAt( prop.Values, 2 ),
-									             i3 = getNodeAt( prop.Values, 3 ),
-									             i4 = getNodeAt( prop.Values, 4 ),
-									             i5 = getNodeAt( prop.Values, 5 );
+									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 ), i2 = getNodeAt( prop.Values, 2 ), i3 = getNodeAt( prop.Values, 3 ), i4 = getNodeAt( prop.Values, 4 ), i5 = getNodeAt( prop.Values, 5 );
 
-									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode && i3 is AtomAbstractNode &&
-									     i4 is AtomAbstractNode && i5 is AtomAbstractNode )
+									if ( i0 is AtomAbstractNode && i1 is AtomAbstractNode && i2 is AtomAbstractNode && i3 is AtomAbstractNode && i4 is AtomAbstractNode && i5 is AtomAbstractNode )
 									{
 										AtomAbstractNode atom0 = (AtomAbstractNode)i0, atom1 = (AtomAbstractNode)i1;
 										var type = TextureTransform.Rotate;
@@ -1611,9 +1488,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   atom0.Value +
-												                   " is not a valid transform type (must be \"scroll_x\", \"scroll_y\", \"scale_x\", \"scale_y\", or \"rotate\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, atom0.Value + " is not a valid transform type (must be \"scroll_x\", \"scroll_y\", \"scale_x\", \"scale_y\", or \"rotate\")" );
 												break;
 										}
 
@@ -1640,18 +1515,13 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   atom1.Value +
-												                   " is not a valid waveform type (must be \"sine\", \"triangle\", \"square\", \"sawtooth\", or \"inverse_sawtooth\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, atom1.Value + " is not a valid waveform type (must be \"sine\", \"triangle\", \"square\", \"sawtooth\", or \"inverse_sawtooth\")" );
 												break;
 										}
 
-										if ( !getReal( i2, out baseVal ) || !getReal( i3, out freq ) || !getReal( i4, out phase ) ||
-										     !getReal( i5, out amp ) )
+										if ( !getReal( i2, out baseVal ) || !getReal( i3, out freq ) || !getReal( i4, out phase ) || !getReal( i5, out amp ) )
 										{
-											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-											                   "arguments 3, 4, 5, and 6 must be valid numbers; received " + i2.Value + ", " + i3.Value +
-											                   ", " + i4.Value + ", " + i5.Value );
+											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, "arguments 3, 4, 5, and 6 must be valid numbers; received " + i2.Value + ", " + i3.Value + ", " + i4.Value + ", " + i5.Value );
 										}
 
 										_textureunit.SetTransformAnimation( type, wave, baseVal, freq, phase, amp );
@@ -1694,8 +1564,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 1 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "binding_type must have at most 1 argument" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "binding_type must have at most 1 argument" );
 								}
 								else
 								{
@@ -1713,15 +1582,13 @@ namespace Axiom.Scripting.Compiler
 												break;
 
 											default:
-												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-												                   atom.Value + " is not a valid binding type (must be \"vertex\" or \"fragment\")" );
+												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, atom.Value + " is not a valid binding type (must be \"vertex\" or \"fragment\")" );
 												break;
 										}
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   prop.Values[ 0 ].Value + " is not a valid binding type" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not a valid binding type" );
 									}
 								}
 								break;
@@ -1737,8 +1604,7 @@ namespace Axiom.Scripting.Compiler
 								}
 								else if ( prop.Values.Count > 4 )
 								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "content_type must have at most 4 arguments" );
+									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line, "content_type must have at most 4 arguments" );
 								}
 								else
 								{
@@ -1793,8 +1659,7 @@ namespace Axiom.Scripting.Compiler
 									}
 									else
 									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   prop.Values[ 0 ].Value + " is not a valid content type" );
+										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line, prop.Values[ 0 ].Value + " is not a valid content type" );
 									}
 								}
 								break;
@@ -1802,8 +1667,7 @@ namespace Axiom.Scripting.Compiler
 								#endregion ID_CONTENT_TYPE
 
 							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-								                   "token \"" + prop.Name + "\" is not recognized" );
+								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line, "token \"" + prop.Name + "\" is not recognized" );
 								break;
 						}
 					}

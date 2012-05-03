@@ -45,7 +45,7 @@ using System.Collections.Generic;
 namespace Axiom.Scripting.Compiler.AST
 {
 	/// <summary>
-	///   This abstract node represents a script property
+	/// This abstract node represents a script property
 	/// </summary>
 	public class PropertyAbstractNode : AbstractNode
 	{
@@ -67,7 +67,7 @@ namespace Axiom.Scripting.Compiler.AST
 
 		#region AbstractNode Implementation
 
-		/// <see cref="AbstractNode.Clone" />
+		/// <see cref="AbstractNode.Clone"/>
 		public override AbstractNode Clone()
 		{
 			var node = new PropertyAbstractNode( Parent );
@@ -84,7 +84,7 @@ namespace Axiom.Scripting.Compiler.AST
 			return node;
 		}
 
-		/// <see cref="AbstractNode.Value" />
+		/// <see cref="AbstractNode.Value"/>
 		public override string Value
 		{
 			get

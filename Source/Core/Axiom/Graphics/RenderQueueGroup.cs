@@ -37,58 +37,70 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections;
+using System.Diagnostics;
+
+using Axiom.Core;
+using Axiom.Collections;
+using Axiom.Graphics;
+
+using System.Collections.Generic;
+
 using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Graphics
 {
-	///<summary>
-	///  A grouping level underneath RenderQueue which groups renderables to be issued at coarsely the same time to the renderer.
-	///</summary>
-	///<remarks>
-	///  Each instance of this class itself hold RenderPriorityGroup instances, which are the groupings of renderables by priority for fine control of ordering (not required for most instances).
-	///</remarks>
+	/// <summary>
+	///		A grouping level underneath RenderQueue which groups renderables
+	///		to be issued at coarsely the same time to the renderer.	
+	/// </summary>
+	/// <remarks>
+	///		Each instance of this class itself hold RenderPriorityGroup instances, 
+	///		which are the groupings of renderables by priority for fine control
+	///		of ordering (not required for most instances).
+	/// </remarks>
 	public class RenderQueueGroup
 	{
 		#region Fields
 
-		///<summary>
-		///  Render queue that this queue group belongs to.
-		///</summary>
+		/// <summary>
+		///		Render queue that this queue group belongs to.
+		/// </summary>
 		protected RenderQueue parent;
 
-		///<summary>
-		///  Should passes be split by their lighting stage?
-		///</summary>
+		/// <summary>
+		///		Should passes be split by their lighting stage?
+		/// </summary>
 		protected bool splitPassesByLightingType;
 
 		protected bool splitNoShadowPasses;
 		protected bool shadowCastersCannotBeReceivers;
 
-		///<summary>
-		///  List of priority groups.
-		///</summary>
-		private readonly RenderPriorityGroupList priorityGroups = new RenderPriorityGroupList();
+		/// <summary>
+		///		List of priority groups.
+		/// </summary>
+		private RenderPriorityGroupList priorityGroups = new RenderPriorityGroupList();
 
-		///<summary>
-		///  Are shadows enabled for this group?
-		///</summary>
+		/// <summary>
+		///		Are shadows enabled for this group?
+		/// </summary>
 		protected bool shadowsEnabled;
 
 		#endregion Fields
 
 		#region Constructor
 
-		///<summary>
-		///  Default constructor.
-		///</summary>
-		///<param name="parent"> Render queue that owns this group. </param>
-		///<param name="splitPassesByLightingType"> Split passes based on lighting stage? </param>
-		///<param name="splitNoShadowPasses"> </param>
-		///<param name="shadowCastersCannotBeReceivers"> </param>
-		public RenderQueueGroup( RenderQueue parent, bool splitPassesByLightingType, bool splitNoShadowPasses,
-		                         bool shadowCastersCannotBeReceivers )
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		/// <param name="parent">Render queue that owns this group.</param>
+		/// <param name="splitPassesByLightingType">Split passes based on lighting stage?</param>
+		/// <param name="splitNoShadowPasses"></param>
+		/// <param name="shadowCastersCannotBeReceivers"></param>
+		public RenderQueueGroup( RenderQueue parent, bool splitPassesByLightingType, bool splitNoShadowPasses, bool shadowCastersCannotBeReceivers )
 		{
 			// shadows enabled by default
 			shadowsEnabled = true;
@@ -128,17 +140,17 @@ namespace Axiom.Graphics
 			group.AddRenderable( item, technique );
 		}
 
-		///<summary>
-		///  Clears all the priority groups within this group.
-		///</summary>
+		/// <summary>
+		///		Clears all the priority groups within this group.
+		/// </summary>
 		public void Clear()
 		{
 			Clear( false );
 		}
 
-		///<summary>
-		///  Clears all the priority groups within this group.
-		///</summary>
+		/// <summary>
+		///	Clears all the priority groups within this group.
+		/// </summary>
 		public void Clear( bool dispose )
 		{
 			// loop through each priority group and clear it's items.  We don't wanna clear the group
@@ -159,7 +171,7 @@ namespace Axiom.Graphics
 		#region Properties
 
 		/// <summary>
-		///   Gets the number of priority groups within this queue group.
+		///    Gets the number of priority groups within this queue group.
 		/// </summary>
 		public int NumPriorityGroups
 		{
@@ -170,7 +182,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   List of priority groups.
+		/// List of priority groups.
 		/// </summary>
 		public RenderPriorityGroupList PriorityGroups
 		{
@@ -180,12 +192,19 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///  Indicate whether a given queue group will be doing any shadow setup.
-		///</summary>
-		///<remarks>
-		///  This method allows you to inform the queue about a queue group, and to indicate whether this group will require shadow processing of any sort. In order to preserve rendering order, Axiom/Ogre has to treat queue groups as very separate elements of the scene, and this can result in it having to duplicate shadow setup for each group. Therefore, if you know that a group which you are using will never need shadows, you should preregister the group using this method in order to improve the performance.
-		///</remarks>
+		/// <summary>
+		///		Indicate whether a given queue group will be doing any shadow setup.
+		/// </summary>
+		/// <remarks>
+		///		This method allows you to inform the queue about a queue group, and to 
+		///		indicate whether this group will require shadow processing of any sort.
+		///		In order to preserve rendering order, Axiom/Ogre has to treat queue groups
+		///		as very separate elements of the scene, and this can result in it
+		///		having to duplicate shadow setup for each group. Therefore, if you
+		///		know that a group which you are using will never need shadows, you
+		///		should preregister the group using this method in order to improve
+		///		the performance.
+		/// </remarks>
 		public bool ShadowsEnabled
 		{
 			get
@@ -198,9 +217,10 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///  Gets/Sets whether or not the queue will split passes by their lighting type, ie ambient, per-light and decal.
-		///</summary>
+		/// <summary>
+		///		Gets/Sets whether or not the queue will split passes by their lighting type,
+		///		ie ambient, per-light and decal. 
+		/// </summary>
 		public bool SplitPassesByLightingType
 		{
 			get
@@ -219,9 +239,11 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///  Gets/Sets whether or not the queue will split passes which have shadow receive turned off (in their parent material), which is needed when certain shadow techniques are used.
-		///</summary>
+		/// <summary>
+		///		Gets/Sets whether or not the queue will split passes which have shadow receive
+		///		turned off (in their parent material), which is needed when certain shadow
+		///		techniques are used.
+		/// </summary>
 		public bool SplitNoShadowPasses
 		{
 			get
@@ -240,9 +262,10 @@ namespace Axiom.Graphics
 			}
 		}
 
-		///<summary>
-		///  Gets/Sets whether or not the queue will disallow receivers when certain shadow techniques are used.
-		///</summary>
+		/// <summary>
+		///		Gets/Sets whether or not the queue will disallow receivers when certain shadow
+		///		techniques are used.
+		/// </summary>
 		public bool ShadowCastersCannotBeReceivers
 		{
 			get

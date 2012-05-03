@@ -42,9 +42,7 @@ using Axiom.Core;
 namespace Axiom.Collections
 {
 	/// <summary>
-	///   Summary description for SubEntityCollection.
+	/// Summary description for SubEntityCollection.
 	/// </summary>
-	public class SubEntityCollection : AxiomCollection<SubEntity>
-	{
-	}
+	public class SubEntityCollection : AxiomCollection<SubEntity> {}
 }

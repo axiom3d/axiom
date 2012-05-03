@@ -38,30 +38,39 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+using Axiom.Collections;
+
 namespace Axiom.Core
 {
 
 	#endregion Namespace Declarations
 
 	/// <summary>
-	///   Abstract factory class. Does nothing by itself, but derived classes can add functionality.
+	/// Abstract factory class. Does nothing by itself, but derived classes can add functionality.
 	/// </summary>
-	/// <typeparam name="T"> </typeparam>
+	/// <typeparam name="T"></typeparam>
 	/// <ogre name="FactoryObj">
-	///   <file name="OgreFactoryObj.h" revision="1.10" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+	///     <file name="OgreFactoryObj.h"   revision="1.10" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
 	/// </ogre>
 	public interface IAbstractFactory<T>
 	{
 		/// <summary>
-		///   The factory type.
+		/// The factory type.
 		/// </summary>
 		string Type { get; }
 
 		/// <summary>
-		///   Creates a new object.
+		/// Creates a new object.
 		/// </summary>
-		/// <param name="name"> Name of the object to create </param>
-		/// <returns> An object created by the factory. The type of the object depends on the factory. </returns>
+		/// <param name="name">Name of the object to create</param>
+		/// <returns>
+		/// An object created by the factory. The type of the object depends on
+		/// the factory.
+		/// </returns>
 		T CreateInstance( string name );
 
 		// <summary>
@@ -76,9 +85,9 @@ namespace Axiom.Core
 		//T CreateInstance( string name, NameValuePairList parms );
 
 		/// <summary>
-		///   Destroys an object which was created by this factory.
+		/// Destroys an object which was created by this factory.
 		/// </summary>
-		/// <param name="obj"> the object to destroy </param>
+		/// <param name="obj">the object to destroy</param>
 		void DestroyInstance( ref T obj );
 	}
 }

@@ -39,8 +39,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.IO;
+
 using Axiom.Core;
 using Axiom.Scripting;
+
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -50,7 +52,7 @@ using ResourceHandle = System.UInt64;
 namespace Axiom.Graphics
 {
 	/// <summary>
-	///   Defines a program which runs on the GPU such as a vertex or fragment program.
+	/// Defines a program which runs on the GPU such as a vertex or fragment program.
 	/// </summary>
 	public abstract class GpuProgram : Resource
 	{
@@ -59,10 +61,11 @@ namespace Axiom.Graphics
 		#region BindingDelegate Property
 
 		/// <summary>
-		///   Returns the GpuProgram which should be bound to the pipeline.
+		///    Returns the GpuProgram which should be bound to the pipeline.
 		/// </summary>
 		/// <remarks>
-		///   This method is simply to allow some subclasses of GpuProgram to delegate the program which is bound to the pipeline to a delegate, if required.
+		///    This method is simply to allow some subclasses of GpuProgram to delegate
+		///    the program which is bound to the pipeline to a delegate, if required.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual GpuProgram BindingDelegate
@@ -76,12 +79,13 @@ namespace Axiom.Graphics
 		#endregion BindingDelegate Property
 
 		/// <summary>
-		///   Whether this source is being loaded from file or not.
+		///    Whether this source is being loaded from file or not.
 		/// </summary>
 		protected bool LoadFromFile { get; set; }
 
 		/// <summary>
-		///   Returns a string that specifies the language of the gpu programs as specified in a material script. ie: asm, cg, hlsl, glsl
+		/// Returns a string that specifies the language of the gpu programs as specified
+		/// in a material script. ie: asm, cg, hlsl, glsl
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual string Language
@@ -95,15 +99,16 @@ namespace Axiom.Graphics
 		#region SourceFile Property
 
 		/// <summary>
-		///   The name of the file to load from source (may be blank).
+		///    The name of the file to load from source (may be blank).
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected string fileName;
+		[OgreVersion( 1, 7, 2790 )]
+		protected string fileName;
 
 		/// <summary>
-		///   Gets/Sets the source file for this program.
+		///    Gets/Sets the source file for this program.
 		/// </summary>
 		/// <remarks>
-		///   Setting this will have no effect until you (re)load the program.
+		///    Setting this will have no effect until you (re)load the program.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual string SourceFile
@@ -126,15 +131,16 @@ namespace Axiom.Graphics
 		#region Source Property
 
 		/// <summary>
-		///   The assembler source of this program.
+		///    The assembler source of this program.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected string source;
+		[OgreVersion( 1, 7, 2790 )]
+		protected string source;
 
 		/// <summary>
-		///   Gets/Sets the source assembler code for this program.
+		///    Gets/Sets the source assembler code for this program.
 		/// </summary>
 		/// <remarks>
-		///   Setting this will have no effect until you (re)load the program.
+		///    Setting this will have no effect until you (re)load the program.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual string Source
@@ -156,7 +162,8 @@ namespace Axiom.Graphics
 
 		#region SyntaxCode Property
 
-		[OgreVersion( 1, 7, 2790 )] protected string syntaxCode;
+		[OgreVersion( 1, 7, 2790 )]
+		protected string syntaxCode;
 
 		/// <summary>
 		///   Syntax code (i.e. arbvp1, vs_2_0, etc.)
@@ -178,7 +185,8 @@ namespace Axiom.Graphics
 
 		#region Type Property
 
-		[OgreVersion( 1, 7, 2790 )] protected GpuProgramType type;
+		[OgreVersion( 1, 7, 2790 )]
+		protected GpuProgramType type;
 
 		/// <summary>
 		///   Type of program this represents (vertex or fragment).
@@ -200,10 +208,11 @@ namespace Axiom.Graphics
 
 		#region IsSkeletalAnimationIncluded Property
 
-		[OgreVersion( 1, 7, 2790 )] protected bool isSkeletalAnimationIncluded;
+		[OgreVersion( 1, 7, 2790 )]
+		protected bool isSkeletalAnimationIncluded;
 
 		/// <summary>
-		///   Flag indicating whether this program is being used for hardware skinning.
+		///        Flag indicating whether this program is being used for hardware skinning.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool IsSkeletalAnimationIncluded
@@ -223,12 +232,14 @@ namespace Axiom.Graphics
 		#region IsMorphAninimationIncluded Property
 
 		/// <summary>
-		///   Does this (vertex) program include morph animation?
+		///        Does this (vertex) program include morph animation?
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected bool morphAnimation;
+		[OgreVersion( 1, 7, 2790 )]
+		protected bool morphAnimation;
 
 		/// <summary>
-		///   Gets/Sets whether a vertex program includes the required instructions to perform morph animation.
+		///        Gets/Sets whether a vertex program includes the required instructions
+		///        to perform morph animation. 
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool IsMorphAnimationIncluded
@@ -248,12 +259,14 @@ namespace Axiom.Graphics
 		#region IsVertexTextureFetchRequired Property
 
 		/// <summary>
-		///   Does this (vertex) program require vertex texture fetch?
+		///        Does this (vertex) program require vertex texture fetch?
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected bool vertexTextureFetchRequired;
+		[OgreVersion( 1, 7, 2790 )]
+		protected bool vertexTextureFetchRequired;
 
 		/// <summary>
-		///   Gets/Sets whether this vertex program requires support for vertex texture fetch from the hardware.
+		///        Gets/Sets whether this vertex program requires support for vertex 
+		///        texture fetch from the hardware. 
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool IsVertexTextureFetchRequired
@@ -273,12 +286,14 @@ namespace Axiom.Graphics
 		#region IsAdjacencyInfoRequired Property
 
 		/// <summary>
-		///   Does this (vertex) program require vertex texture fetch?
+		///        Does this (vertex) program require vertex texture fetch?
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected bool needsAdjacencyInfo;
+		[OgreVersion( 1, 7, 2790 )]
+		protected bool needsAdjacencyInfo;
 
 		/// <summary>
-		///   Gets/Sets whether this vertex program requires support for vertex texture fetch from the hardware.
+		///        Gets/Sets whether this vertex program requires support for vertex 
+		///        texture fetch from the hardware. 
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool IsAdjacencyInfoRequired
@@ -298,12 +313,14 @@ namespace Axiom.Graphics
 		#region PoseAnimationCount Property
 
 		/// <summary>
-		///   Does this (vertex) program include morph animation?
+		///        Does this (vertex) program include morph animation?
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected ushort poseAnimation;
+		[OgreVersion( 1, 7, 2790 )]
+		protected ushort poseAnimation;
 
 		/// <summary>
-		///   Gets/Sets whether a vertex program includes the required instructions to perform pose animation.
+		///        Gets/Sets whether a vertex program includes the required instructions
+		///        to perform pose animation. 
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual ushort PoseAnimationCount
@@ -323,6 +340,7 @@ namespace Axiom.Graphics
 		#region IsPoseAnimationIncluded Property
 
 		/// <summary>
+		/// 
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool IsPoseAnimationIncluded
@@ -338,15 +356,21 @@ namespace Axiom.Graphics
 		#region DefaultParameters Property
 
 		/// <summary>
-		///   List of default parameters, as gathered from the program definition.
+		///    List of default parameters, as gathered from the program definition.
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected GpuProgramParameters defaultParams;
+		[OgreVersion( 1, 7, 2790 )]
+		protected GpuProgramParameters defaultParams;
 
 		/// <summary>
-		///   Get a reference to the default parameters which are to be used for all uses of this program.
+		///    Get a reference to the default parameters which are to be used for all uses of this program.
 		/// </summary>
 		/// <remarks>
-		///   A program can be set up with a list of default parameters, which can save time when using a program many times in a material with roughly the same settings. By retrieving the default parameters and populating it with the most used options, any new parameter objects created from this program afterwards will automatically include the default parameters; thus users of the program need only change the parameters which are unique to their own usage of the program.
+		/// A program can be set up with a list of default parameters, which can save time when 
+		/// using a program many times in a material with roughly the same settings. By 
+		/// retrieving the default parameters and populating it with the most used options, 
+		/// any new parameter objects created from this program afterwards will automatically include
+		/// the default parameters; thus users of the program need only change the parameters
+		/// which are unique to their own usage of the program.
 		/// </remarks>
 		public virtual GpuProgramParameters DefaultParameters
 		{
@@ -374,10 +398,14 @@ namespace Axiom.Graphics
 		#region PassSurfaceAndLightStates Property
 
 		/// <summary>
-		///   Determines whether a vertex program requires light and material states to be passed to through fixed pipeline low level API rendering calls.
+		///        Determines whether a vertex program requires light and material states to be passed
+		///        to through fixed pipeline low level API rendering calls.
 		/// </summary>
 		/// <remarks>
-		///   If this is set to true, Axiom will pass all active light states to the fixed function pipeline. This is useful for high level shaders like GLSL that can read the OpenGL light and material states. This way the user does not have to use autoparameters to pass light position, color etc.
+		///        If this is set to true, Axiom will pass all active light states to the fixed function
+		///        pipeline.  This is useful for high level shaders like GLSL that can read the OpenGL
+		///        light and material states.  This way the user does not have to use autoparameters to 
+		///        pass light position, color etc.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool PassSurfaceAndLightStates
@@ -393,10 +421,14 @@ namespace Axiom.Graphics
 		#region PassFogStates Property
 
 		/// <summary>
-		///   Determines whether a vertex program requires fog states to be passed to through fixed pipeline low level API rendering calls.
+		///        Determines whether a vertex program requires fog states to be passed
+		///        to through fixed pipeline low level API rendering calls.
 		/// </summary>
 		/// <remarks>
-		///   If this is set to true, Axiom will pass all fog states to the fixed function pipeline. This is useful for high level shaders like GLSL that can read the OpenGL fog states. This way the user does not have to use autoparameters to pass fog color etc.
+		///        If this is set to true, Axiom will pass all fog states to the fixed function
+		///        pipeline.  This is useful for high level shaders like GLSL that can read the OpenGL
+		///        fog states.  This way the user does not have to use autoparameters to 
+		///        pass fog color etc.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool PassFogStates
@@ -412,10 +444,14 @@ namespace Axiom.Graphics
 		#region PassTransformStates Property
 
 		/// <summary>
-		///   Sets whether a vertex program requires transform states to be passed to through fixed pipeline low level API rendering calls.
+		///        Sets whether a vertex program requires transform states to be passed
+		///        to through fixed pipeline low level API rendering calls.
 		/// </summary>
 		/// <remarks>
-		///   If this is set to true, Axiom will pass all transform states to the fixed function pipeline. This is useful for high level shaders like GLSL that can read the OpenGL transform states. This way the user does not have to use autoparameters to pass position etc.
+		///        If this is set to true, Axiom will pass all transform states to the fixed function
+		///        pipeline.  This is useful for high level shaders like GLSL that can read the OpenGL
+		///        transform states.  This way the user does not have to use autoparameters to 
+		///        pass position etc.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool PassTransformStates
@@ -431,7 +467,7 @@ namespace Axiom.Graphics
 		#region IsSupported Property
 
 		/// <summary>
-		///   Returns whether this program can be supported on the current renderer and hardware.
+		///    Returns whether this program can be supported on the current renderer and hardware.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool IsSupported
@@ -452,12 +488,12 @@ namespace Axiom.Graphics
 		#region CompilerError Property
 
 		/// <summary>
-		///   Did we encounter a compilation error?
+		/// Did we encounter a compilation error?
 		/// </summary>
 		protected bool compileError;
 
 		/// <summary>
-		///   Did this program encounter a compile error when loading?
+		/// Did this program encounter a compile error when loading?
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool HasCompileError
@@ -469,7 +505,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Reset a compile error if it occurred, allowing the load to be retried.
+		/// Reset a compile error if it occurred, allowing the load to be retried.
 		/// </summary>
 		public virtual void ResetCompileError()
 		{
@@ -479,28 +515,33 @@ namespace Axiom.Graphics
 		#endregion CompilerError Property
 
 		/// <summary>
-		///   Record of logical to physical buffer maps. Mandatory for low-level programs or high-level programs which set their params the same way.
+		/// Record of logical to physical buffer maps. Mandatory for low-level
+		/// programs or high-level programs which set their params the same way.
 		/// </summary>
 		protected GpuProgramParameters.GpuLogicalBufferStruct floatLogicalToPhysical;
 
 		/// <summary>
-		///   Record of logical to physical buffer maps. Mandatory for low-level programs or high-level programs which set their params the same way.
+		/// Record of logical to physical buffer maps. Mandatory for low-level
+		/// programs or high-level programs which set their params the same way.
 		/// </summary>
 		protected GpuProgramParameters.GpuLogicalBufferStruct intLogicalToPhysical;
 
 		#region ConstantDefinitions Property
 
 		/// <summary>
-		///   Parameter name -> ConstantDefinition map, shared instance used by all parameter objects
+		/// Parameter name -> ConstantDefinition map, shared instance used by all parameter objects
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected GpuProgramParameters.GpuNamedConstants constantDefs;
+		[OgreVersion( 1, 7, 2790 )]
+		protected GpuProgramParameters.GpuNamedConstants constantDefs;
 
 		/// <summary>
-		///   Get the full list of named constants.
+		/// Get the full list of named constants.
 		/// </summary>
-		/// <note>Only available if this parameters object has named parameters, which means either
-		///   a high-level program which loads them, or a low-level program which has them
-		///   specified manually.</note>
+		/// <note>
+		/// Only available if this parameters object has named parameters, which means either
+		/// a high-level program which loads them, or a low-level program which has them
+		/// specified manually.
+		/// </note>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual GpuProgramParameters.GpuNamedConstants ConstantDefinitions
 		{
@@ -515,11 +556,14 @@ namespace Axiom.Graphics
 		#region ManualNamedConstants Property
 
 		/// <summary>
-		///   Allows you to manually provide a set of named parameter mappings to a program which would not be able to derive named parameters itself.
+		/// Allows you to manually provide a set of named parameter mappings
+		/// to a program which would not be able to derive named parameters itself.
 		/// </summary>
 		/// <remarks>
-		///   You may wish to use this if you have assembler programs that were compiled from a high-level source, and want the convenience of still being able to use the named parameters from the original high-level source. <seealso
-		///    cref="ManualNamedConstantsFile" />
+		/// You may wish to use this if you have assembler programs that were compiled
+		/// from a high-level source, and want the convenience of still being able
+		/// to use the named parameters from the original high-level source.
+		/// <seealso cref="ManualNamedConstantsFile"/>
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual GpuProgramParameters.GpuNamedConstants ManualNamedConstants
@@ -545,8 +589,7 @@ namespace Axiom.Graphics
 						continue;
 					}
 
-					var val = new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize*def.ElementSize,
-					                                                       def.Variability );
+					var val = new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, def.Variability );
 					if ( def.IsFloat )
 					{
 						floatLogicalToPhysical.Map.Add( def.LogicalIndex, val );
@@ -571,16 +614,23 @@ namespace Axiom.Graphics
 
 		#region ManualNamedConstantsFile Property
 
-		/// <summary>
-		///   File from which to load named constants manually
+		/// <summary>   
+		/// File from which to load named constants manually
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected string manualNamedConstantsFile;
+		[OgreVersion( 1, 7, 2790 )]
+		protected string manualNamedConstantsFile;
 
 		/// <summary>
-		///   Specifies the name of a file from which to load named parameters mapping for a program which would not be able to derive named parameters itself.
+		/// Specifies the name of a file from which to load named parameters mapping
+		/// for a program which would not be able to derive named parameters itself.
 		/// </summary>
 		/// <remarks>
-		///   You may wish to use this if you have assembler programs that were compiled from a high-level source, and want the convenience of still being able to use the named parameters from the original high-level source. This method will make a low-level program search in the resource group of the program for the named file from which to load parameter names from. The file must be in the format produced by <see>GpuNamedConstants.Save</see> .
+		/// You may wish to use this if you have assembler programs that were compiled
+		/// from a high-level source, and want the convenience of still being able
+		/// to use the named parameters from the original high-level source. This
+		/// method will make a low-level program search in the resource group of the
+		/// program for the named file from which to load parameter names from. 
+		/// The file must be in the format produced by <see>GpuNamedConstants.Save</see>.
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual string ManualNamedConstantsFile
@@ -598,18 +648,18 @@ namespace Axiom.Graphics
 
 		#endregion ManualNamedConstantsFile Property
 
-		[OgreVersion( 1, 7, 2790 )] private bool _loadedManualNamedConstants;
+		[OgreVersion( 1, 7, 2790 )]
+		private bool _loadedManualNamedConstants;
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
 		/// <summary>
-		///   Constructor for creating
+		///    Constructor for creating
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		protected GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
-		                      IManualResourceLoader loader )
+		protected GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			type = GpuProgramType.Vertex;
@@ -632,12 +682,15 @@ namespace Axiom.Graphics
 		#region CreateParameters
 
 		/// <summary>
-		///   Creates a new parameters object compatible with this program definition.
+		///    Creates a new parameters object compatible with this program definition.
 		/// </summary>
 		/// <remarks>
-		///   It is recommended that you use this method of creating parameters objects rather than going direct to GpuProgramManager, because this method will populate any implementation-specific extras (like named parameters) where they are appropriate.
+		///    It is recommended that you use this method of creating parameters objects
+		///    rather than going direct to GpuProgramManager, because this method will
+		///    populate any implementation-specific extras (like named parameters) where
+		///    they are appropriate.
 		/// </remarks>
-		/// <returns> </returns>
+		/// <returns></returns>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual GpuProgramParameters CreateParameters()
 		{
@@ -656,8 +709,7 @@ namespace Axiom.Graphics
 				}
 				catch ( Exception ex )
 				{
-					LogManager.Instance.Write( "Unable to load manual named constants for GpuProgram {0} : {1}", Name,
-					                           LogManager.BuildExceptionString( ex ) );
+					LogManager.Instance.Write( "Unable to load manual named constants for GpuProgram {0} : {1}", Name, LogManager.BuildExceptionString( ex ) );
 				}
 				_loadedManualNamedConstants = true;
 			}
@@ -685,7 +737,7 @@ namespace Axiom.Graphics
 		#region load
 
 		/// <summary>
-		///   Loads this Gpu Program.
+		///    Loads this Gpu Program.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "original name loadImpl" )]
 		protected override void load()
@@ -720,8 +772,7 @@ namespace Axiom.Graphics
 			}
 			catch ( Exception ex )
 			{
-				LogManager.Instance.Write(
-					"Gpu program {0} encountered an error during loading and is thus not supported. Details: {1}", Name, ex.Message );
+				LogManager.Instance.Write( "Gpu program {0} encountered an error during loading and is thus not supported. Details: {1}", Name, ex.Message );
 				compileError = true;
 			}
 		}
@@ -729,12 +780,10 @@ namespace Axiom.Graphics
 		#endregion
 
 		[OgreVersion( 0, 0, 0, "not overriden in 1.7.2790" )]
-		protected override void unload()
-		{
-		}
+		protected override void unload() {}
 
 		/// <summary>
-		///   Method which must be implemented by subclasses, loads the program from source.
+		///    Method which must be implemented by subclasses, loads the program from source.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		protected abstract void LoadFromSource();
@@ -760,7 +809,7 @@ namespace Axiom.Graphics
 		#region CreateParameterMappingStructures
 
 		/// <summary>
-		///   Create the internal params logical &amp; named mapping structures
+		/// Create the internal params logical &amp; named mapping structures
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		protected void CreateParameterMappingStructures()
@@ -769,7 +818,7 @@ namespace Axiom.Graphics
 		}
 
 		/// <summary>
-		///   Create the internal params logical &amp; named mapping structures
+		/// Create the internal params logical &amp; named mapping structures
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		protected void CreateParameterMappingStructures( bool recreateIfExists )
@@ -783,7 +832,7 @@ namespace Axiom.Graphics
 		#region CreateLogicalParameterMappingStructures
 
 		/// <summary>
-		///   Create the internal params logical mapping structures
+		/// Create the internal params logical mapping structures
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		protected void CreateLogicalParameterMappingStructures( bool recreateIfExists )
@@ -803,7 +852,7 @@ namespace Axiom.Graphics
 		#region CreateNamedParameterMappingStructures
 
 		/// <summary>
-		///   Create the internal params named mapping structures
+		/// Create the internal params named mapping structures
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		private void CreateNamedParameterMappingStructures( bool recreateIfExists )
@@ -894,8 +943,7 @@ namespace Axiom.Graphics
 		#region IncludesSkeletalAnimationPropertyCommand
 
 		[OgreVersion( 1, 7, 2790 )]
-		[ScriptableProperty( "includes_skeletal_animation", "Whether this vertex program includes skeletal animation",
-			typeof ( GpuProgram ) )]
+		[ScriptableProperty( "includes_skeletal_animation", "Whether this vertex program includes skeletal animation", typeof ( GpuProgram ) )]
 		public class IncludesSkeletalAnimationPropertyCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -945,8 +993,7 @@ namespace Axiom.Graphics
 		#region IncludesPoseAnimationPropertyCommand
 
 		[OgreVersion( 1, 7, 2790 )]
-		[ScriptableProperty( "includes_pose_animation", "The number of poses this vertex program supports for pose animation"
-			)]
+		[ScriptableProperty( "includes_pose_animation", "The number of poses this vertex program supports for pose animation" )]
 		public class IncludesPoseAnimationPropertyCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -971,8 +1018,7 @@ namespace Axiom.Graphics
 		#region IsVertexTextureFetchRequiredPropertyCommand
 
 		[OgreVersion( 1, 7, 2790 )]
-		[ScriptableProperty( "uses_vertex_texture_fetch", "Whether this vertex program requires vertex texture fetch support."
-			)]
+		[ScriptableProperty( "uses_vertex_texture_fetch", "Whether this vertex program requires vertex texture fetch support." )]
 		public class IsVertexTextureFetchRequiredPropertyCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
@@ -1022,8 +1068,7 @@ namespace Axiom.Graphics
 		#region IsAdjacencyInfoRequiredPropertyCommand
 
 		[OgreVersion( 1, 7, 2790 )]
-		[ScriptableProperty( "uses_adjacency_information",
-			"Whether this geometry program requires adjacency information from the input primitives." )]
+		[ScriptableProperty( "uses_adjacency_information", "Whether this geometry program requires adjacency information from the input primitives." )]
 		public class IsAdjacencyInfoRequiredPropertyCommand : IPropertyCommand
 		{
 			#region IPropertyCommand Members
