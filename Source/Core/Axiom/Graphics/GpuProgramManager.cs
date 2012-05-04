@@ -125,10 +125,10 @@ namespace Axiom.Graphics
 		/// </returns>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
-	    public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual = false, IManualResourceLoader loader = null )
+		public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual = false, IManualResourceLoader loader = null )
 #else
 		public virtual GpuProgram Create( string name, string group, GpuProgramType type, string syntaxCode, bool isManual,
-		                                  IManualResourceLoader loader )
+										  IManualResourceLoader loader )
 #endif
 		{
 			// Call creation implementation
@@ -168,7 +168,7 @@ namespace Axiom.Graphics
 		/// <returns>A new instance of GpuProgram.</returns>
 		[OgreVersion( 1, 7, 2 )]
 		protected abstract Resource _create( string name, ResourceHandle handle, string group, bool isManual,
-		                                     IManualResourceLoader loader, GpuProgramType type, string syntaxCode );
+											 IManualResourceLoader loader, GpuProgramType type, string syntaxCode );
 
 		/// <summary>
 		///    Create a new, unloaded GpuProgram from a file of assembly.
@@ -193,7 +193,7 @@ namespace Axiom.Graphics
 		/// </returns>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual GpuProgram CreateProgram( string name, string group, string fileName, GpuProgramType type,
-		                                         string syntaxCode )
+												 string syntaxCode )
 		{
 			var program = Create( name, group, type, syntaxCode );
 			// Set all prarmeters (create does not set, just determines factory)
@@ -225,7 +225,7 @@ namespace Axiom.Graphics
 		/// <returns>An unloaded GpuProgram instance.</returns>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual GpuProgram CreateProgramFromString( string name, string group, string source, GpuProgramType type,
-		                                                   string syntaxCode )
+														   string syntaxCode )
 		{
 			var program = Create( name, group, type, syntaxCode );
 			// Set all prarmeters (create does not set, just determines factory)
@@ -311,7 +311,7 @@ namespace Axiom.Graphics
 		/// </param>
 		[OgreVersion( 1, 7, 2 )]
 		public virtual GpuProgram LoadFromString( string name, string group, string source, GpuProgramType type,
-		                                          string syntaxCode )
+												  string syntaxCode )
 		{
 			lock ( _autoMutex )
 			{
@@ -336,7 +336,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
-        public GpuProgram GetByName( string name, bool preferHighLevelPrograms = true )
+		public GpuProgram GetByName( string name, bool preferHighLevelPrograms = true )
 #else
 		public GpuProgram GetByName( string name, bool preferHighLevelPrograms )
 #endif
