@@ -2240,16 +2240,15 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="filename"></param>
 		/// <returns></returns>
-		public string FindGroupContainingResource( string filename )
+		public Math.Tuple<bool, string> FindGroupContainingResource( string filename )
 		{
 			var grp = _findGroupContainingResourceImpl( filename );
 
 			if ( grp == null )
 			{
-				throw new Exception( "Unable to derive resource group for " + filename +
-				                     " automatically since the resource was not found." );
+				return new Math.Tuple<bool, string>( false, null );
 			}
-			return grp.Name;
+			return new Math.Tuple<bool, string>( false, grp.Name );
 		}
 
 		/// <summary>
