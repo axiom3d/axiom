@@ -729,7 +729,15 @@ namespace Axiom.Core
 						if ( Group == ResourceGroupManager.AutoDetectResourceGroupName )
 						{
 							// Derive resource group
-							Group = ResourceGroupManager.Instance.FindGroupContainingResource( Name );
+							var result = ResourceGroupManager.Instance.FindGroupContainingResource( Name );
+							if ( result.First )
+								Group = result.Second;
+							else
+							{
+								LogManager.Instance.Write( string.Format( "Unable to derive resource group for {0} automatically since the resource was not found.", Name ) );
+								_loadingState.Value = LoadingState.Unloaded;
+								return;
+							}
 						}
 						load();
 						postLoad();
