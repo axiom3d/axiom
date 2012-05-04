@@ -45,10 +45,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 	{
 		protected Resource program;
 
-		public System.IDisposable Shadow
-		{
-			get; set;
-		}
+		public System.IDisposable Shadow { get; set; }
 
 
 		[OgreVersion( 1, 7, 2 )]

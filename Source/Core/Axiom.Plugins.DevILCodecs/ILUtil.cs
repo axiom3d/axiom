@@ -560,7 +560,7 @@ namespace Axiom.Plugins.DevILCodecs
 				// Let DevIL allocate the memory for us, then do the conversion ourselves
 				ifmt = Convert( fmt );
 				Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, IntPtr.Zero );
-					// TAO 2.0
+				// TAO 2.0
 				//Il.ilTexImage( src.Width, src.Height, src.Depth, (byte)ifmt.Channels, ifmt.Format, ifmt.Type, null );
 				using ( var dstbuf = BufferBase.Wrap( Il.ilGetData(), Il.ilGetInteger( Il.IL_IMAGE_SIZE_OF_DATA ) ) )
 				{

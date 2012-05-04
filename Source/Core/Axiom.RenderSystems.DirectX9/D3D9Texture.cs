@@ -1683,7 +1683,6 @@ namespace Axiom.RenderSystems.DirectX9
 		private bool _canAutoGenMipMaps( D3D9.Device d3d9Device, D3D9.Usage srcUsage, D3D9.ResourceType srcType,
 		                                 D3D9.Format srcFormat )
 		{
-
 			var device = D3D9RenderSystem.DeviceManager.GetDeviceFromD3D9Device( d3d9Device );
 			var rkCurCaps = device.D3D9DeviceCaps;
 			var eBackBufferFormat = device.BackBufferFormat;
@@ -1701,7 +1700,7 @@ namespace Axiom.RenderSystems.DirectX9
 				var d3d = d3d9Device.Direct3D;
 				// check for auto gen. mip maps support
 				var hr = d3d.CheckDeviceFormat( rkCurCaps.AdapterOrdinal, rkCurCaps.DeviceType, eBackBufferFormat,
-				                                 srcUsage | D3D9.Usage.AutoGenerateMipMap, srcType, srcFormat );
+				                                srcUsage | D3D9.Usage.AutoGenerateMipMap, srcType, srcFormat );
 				d3d.Dispose();
 				// this HR could be a SUCCESS
 				// but mip maps will not be generated

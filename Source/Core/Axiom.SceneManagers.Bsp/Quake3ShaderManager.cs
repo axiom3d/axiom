@@ -325,7 +325,7 @@ namespace Axiom.SceneManagers.Bsp
 				if ( attribParams[ 1 ] == "rotate" )
 				{
 					pass.tcModRotate = -StringConverter.ParseFloat( attribParams[ 2 ] )/360;
-						// +ve is clockwise degrees in Q3 shader, anticlockwise complete rotations in Ogre
+					// +ve is clockwise degrees in Q3 shader, anticlockwise complete rotations in Ogre
 				}
 				else if ( attribParams[ 1 ] == "scroll" )
 				{

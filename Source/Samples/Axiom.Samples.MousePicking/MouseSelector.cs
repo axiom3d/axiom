@@ -206,14 +206,14 @@ namespace Axiom.Samples.MousePicking
 
 			var vol = new PlaneBoundedVolume();
 			vol.planes.Add( new Math.Plane( topLeft.GetPoint( 3 ), topRight.GetPoint( 3 ), bottomRight.GetPoint( 3 ) ) );
-				// front plane
+			// front plane
 			vol.planes.Add( new Math.Plane( topLeft.Origin, topLeft.GetPoint( 100 ), topRight.GetPoint( 100 ) ) ); // top plane
 			vol.planes.Add( new Math.Plane( topLeft.Origin, bottomLeft.GetPoint( 100 ), topLeft.GetPoint( 100 ) ) );
-				// left plane
+			// left plane
 			vol.planes.Add( new Math.Plane( bottomLeft.Origin, bottomRight.GetPoint( 100 ), bottomLeft.GetPoint( 100 ) ) );
-				// bottom plane
+			// bottom plane
 			vol.planes.Add( new Math.Plane( topRight.Origin, topRight.GetPoint( 100 ), bottomRight.GetPoint( 100 ) ) );
-				// right plane
+			// right plane
 
 			var volList = new PlaneBoundedVolumeList();
 			volList.Add( vol );

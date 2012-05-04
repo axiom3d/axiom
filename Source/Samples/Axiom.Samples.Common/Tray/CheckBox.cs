@@ -84,7 +84,7 @@ namespace Axiom.Samples
 		/// <param name="width"></param>
 		public CheckBox( String name, String caption, Real width )
 		{
-			this.IsCursorOver = false;
+			IsCursorOver = false;
 			isFitToContents = width <= 0;
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/CheckBox", "BorderPanel", name );
 			var c = (OverlayElementContainer)element;
@@ -219,7 +219,7 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorPressed( Vector2 cursorPos )
 		{
-			if ( this.IsCursorOver )
+			if ( IsCursorOver )
 			{
 				Toggle();
 				base.OnCursorPressed( cursorPos );
@@ -234,18 +234,18 @@ namespace Axiom.Samples
 		{
 			if ( IsCursorOver( square, cursorPos, 5 ) )
 			{
-				if ( !this.IsCursorOver )
+				if ( !IsCursorOver )
 				{
-					this.IsCursorOver = true;
+					IsCursorOver = true;
 					square.MaterialName = "SdkTrays/MiniTextBox/Over";
 					square.BorderMaterialName = "SdkTrays/MiniTextBox/Over";
 				}
 			}
 			else
 			{
-				if ( this.IsCursorOver )
+				if ( IsCursorOver )
 				{
-					this.IsCursorOver = false;
+					IsCursorOver = false;
 					square.MaterialName = "SdkTrays/MiniTextBox";
 					square.BorderMaterialName = "SdkTrays/MiniTextBox";
 				}

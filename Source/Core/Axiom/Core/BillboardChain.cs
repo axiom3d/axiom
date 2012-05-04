@@ -69,10 +69,10 @@ namespace Axiom.Core
 
 			public Element( Vector3 position, float width, float texCoord, ColorEx color )
 			{
-				this.Position = position;
-				this.Width = width;
-				this.TexCoord = texCoord;
-				this.Color = color;
+				Position = position;
+				Width = width;
+				TexCoord = texCoord;
+				Color = color;
 			}
 
 			#endregion Constructors

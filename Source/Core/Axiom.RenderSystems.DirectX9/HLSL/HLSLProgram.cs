@@ -152,7 +152,6 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			{
 				if ( disposeManagedResources )
 				{
-
 					// have to call this here reather than in Resource destructor
 					// since calling virtual methods in base destructors causes crash
 					if ( IsLoaded )

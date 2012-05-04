@@ -76,7 +76,7 @@ namespace Axiom.Samples.CameraTrack
 			SceneNode headNode = SceneManager.RootSceneNode.CreateChildSceneNode();
 			headNode.AttachObject( head );
 			CameraManager.setStyle( CameraStyle.Manual );
-				// we will be controlling the camera ourselves, so disable the camera man
+			// we will be controlling the camera ourselves, so disable the camera man
 			Camera.SetAutoTracking( true, headNode ); // make the camera face the head
 
 

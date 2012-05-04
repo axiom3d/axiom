@@ -332,7 +332,7 @@ namespace Axiom.Samples
 
 			sectionIndex = -1;
 			isFitToContents = false;
-			this.IsCursorOver = false;
+			IsCursorOver = false;
 			isExpanded = false;
 			isDragging = false;
 			this.maxItemsShown = maxItemsShown;
@@ -665,15 +665,15 @@ namespace Axiom.Samples
 				{
 					smallBox.MaterialName = "SdkTrays/MiniTextBox/Over";
 					smallBox.BorderMaterialName = "SdkTrays/MiniTextBox/Over";
-					this.IsCursorOver = true;
+					IsCursorOver = true;
 				}
 				else
 				{
-					if ( this.IsCursorOver )
+					if ( IsCursorOver )
 					{
 						smallBox.MaterialName = "SdkTrays/MiniTextBox";
 						smallBox.BorderMaterialName = "SdkTrays/MiniTextBox";
-						this.IsCursorOver = false;
+						IsCursorOver = false;
 					}
 				}
 			}

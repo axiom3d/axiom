@@ -1644,7 +1644,7 @@ namespace Axiom.ParticleSystems
 			ParticleEmitter clonedEmitter = null;
 			List<ParticleEmitter> e = null;
 			var maxNumberOfEmitters = size/emittedEmitterPool.Count;
-				// equally distribute the number for each emitted emitter list
+			// equally distribute the number for each emitted emitter list
 			var oldSize = 0;
 
 			// Run through mEmittedEmitterPool and search for every key (=name) its corresponding emitter in mEmitters

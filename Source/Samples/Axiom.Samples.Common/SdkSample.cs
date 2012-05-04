@@ -414,7 +414,7 @@ namespace Axiom.Samples
 			SetupView();
 
 			TrayManager = new SdkTrayManager( "SampleControls", window, mouse, this as ISdkTrayListener );
-				// create a tray interface
+			// create a tray interface
 
 			LoadResources();
 			ResourcesLoaded = true;

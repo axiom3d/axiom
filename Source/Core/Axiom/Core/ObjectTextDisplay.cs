@@ -155,7 +155,7 @@ namespace Axiom.Core
 
 			// get the projection of the object's AABB into screen space
 			var bbox = parent.GetWorldBoundingBox( true );
-				//new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
+			//new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
 
 
 			//Ogre.Matrix4 mat = camera.getViewMatrix();

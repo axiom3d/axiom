@@ -198,7 +198,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			if ( null != targetPortal )
 			{
 				targetPortal.setTargetPortal( null );
-					// the targetPortal will still have targetZone value, but targetPortal will be invalid
+				// the targetPortal will still have targetZone value, but targetPortal will be invalid
 			}
 			// remove the Portal from it's home zone
 			PCZone homeZone = p.getCurrentHomeZone();

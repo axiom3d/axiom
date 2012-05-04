@@ -133,7 +133,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 			prevPosition = newPosition;
 			newPosition = DerivedPosition;
-				// do this way since _update is called through SceneManager::_updateSceneGraph which comes before PCZSceneManager::_updatePCZSceneNodes
+			// do this way since _update is called through SceneManager::_updateSceneGraph which comes before PCZSceneManager::_updatePCZSceneNodes
 		}
 
 		//-----------------------------------------------------------------------
