@@ -62,7 +62,6 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		{
 			if ( !IsDisposed && disposeManagedResources )
 			{
-				program.SafeDispose();
 				program = null;
 			}
 
