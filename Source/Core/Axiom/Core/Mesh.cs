@@ -1159,7 +1159,7 @@ namespace Axiom.Core
 
 			var vbuf = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( bindIndex ), targetVertexData.vertexCount,
 			                                                              BufferUsage.StaticWriteOnly, true );
-				// use shadow buffer
+			// use shadow buffer
 
 			// bind new buffer
 			bind.SetBinding( bindIndex, vbuf );

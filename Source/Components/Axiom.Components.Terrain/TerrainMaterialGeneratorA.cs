@@ -981,7 +981,7 @@ namespace Axiom.Components.Terrain
 					}
 
 					source += "uniform float4x4 worldMatrix,\n" + "uniform float4x4 viewProjMatrix,\n" + "uniform float2   lodMorph,\n";
-						// morph amount, morph LOD target
+					// morph amount, morph LOD target
 
 					// uv multipliers
 					uint maxLayers = prof.GetMaxLayers( terrain );

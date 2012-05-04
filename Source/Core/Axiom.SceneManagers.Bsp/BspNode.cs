@@ -462,8 +462,8 @@ namespace Axiom.SceneManagers.Bsp
 
 		public BspBrush( PlaneList planes, SceneQuery.WorldFragment fragment )
 		{
-			this.Planes = planes;
-			this.Fragment = fragment;
+			Planes = planes;
+			Fragment = fragment;
 		}
 	}
 }

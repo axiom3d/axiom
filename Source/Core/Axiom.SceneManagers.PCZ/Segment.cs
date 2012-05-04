@@ -62,9 +62,9 @@ namespace Axiom.SceneManagers.PortalConnected
 		//----------------------------------------------------------------------------
 		public Segment( Vector3 origin, Vector3 direction, float extent )
 		{
-			this.Origin = origin;
-			this.Direction = direction;
-			this.Extent = extent;
+			Origin = origin;
+			Direction = direction;
+			Extent = extent;
 		}
 
 		#endregion Constructors

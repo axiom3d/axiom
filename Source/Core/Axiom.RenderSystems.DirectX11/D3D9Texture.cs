@@ -1670,7 +1670,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// Check for sRGB support		
 			// check for auto gen. mip maps support
-			var hr = d3d.CheckDeviceFormat( rkCurCaps.AdapterOrdinal, rkCurCaps.DeviceType, eBackBufferFormat, srcUsage, srcType, srcFormat );
+			var hr = d3d.CheckDeviceFormat( rkCurCaps.AdapterOrdinal, rkCurCaps.DeviceType, eBackBufferFormat, srcUsage, srcType,
+			                                srcFormat );
 
 			return hr;
 		}
@@ -1679,7 +1680,8 @@ namespace Axiom.RenderSystems.DirectX9
 		/// internal method, return true if the device/texture combination can auto gen. mip maps
 		/// </summary>
 		[OgreVersion( 1, 7, 2, "some todo need to be checked" )]
-		private bool _canAutoGenMipMaps( D3D9.Device d3d9Device, D3D9.Usage srcUsage, D3D9.ResourceType srcType, D3D9.Format srcFormat )
+		private bool _canAutoGenMipMaps( D3D9.Device d3d9Device, D3D9.Usage srcUsage, D3D9.ResourceType srcType,
+		                                 D3D9.Format srcFormat )
 		{
 			var device = D3D9RenderSystem.DeviceManager.GetDeviceFromD3D9Device( d3d9Device );
 			var rkCurCaps = device.D3D9DeviceCaps;
@@ -1697,7 +1699,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				// check for auto gen. mip maps support
 				var hr = d3d9Device.Direct3D.CheckDeviceFormat( rkCurCaps.AdapterOrdinal, rkCurCaps.DeviceType, eBackBufferFormat,
-				                                 srcUsage | D3D9.Usage.AutoGenerateMipMap, srcType, srcFormat );
+				                                                srcUsage | D3D9.Usage.AutoGenerateMipMap, srcType, srcFormat );
 				// this HR could a SUCCESS
 				// but mip maps will not be generated
 				return hr;

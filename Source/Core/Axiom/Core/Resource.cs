@@ -731,10 +731,13 @@ namespace Axiom.Core
 							// Derive resource group
 							var result = ResourceGroupManager.Instance.FindGroupContainingResource( Name );
 							if ( result.First )
+							{
 								Group = result.Second;
+							}
 							else
 							{
-								LogManager.Instance.Write( string.Format( "Unable to derive resource group for {0} automatically since the resource was not found.", Name ) );
+								LogManager.Instance.Write(
+									string.Format( "Unable to derive resource group for {0} automatically since the resource was not found.", Name ) );
 								_loadingState.Value = LoadingState.Unloaded;
 								return;
 							}

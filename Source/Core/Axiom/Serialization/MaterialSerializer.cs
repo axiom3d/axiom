@@ -2328,7 +2328,7 @@ namespace Axiom.Serialization
 			// use 2d as default if anything goes wrong
 			var texType = TextureType.TwoD;
 			var mipmaps = (int)TextureMipmap.Default;
-				// When passed to TextureManager::load, this means default to default number of mipmaps
+			// When passed to TextureManager::load, this means default to default number of mipmaps
 			var isAlpha = false;
 			var hwGamma = false;
 			var desiredFormat = PixelFormat.Unknown;
@@ -3167,7 +3167,7 @@ namespace Axiom.Serialization
 		public GpuProgramParameters programParams;
 
 		public MaterialScriptProgramDefinition programDef = new MaterialScriptProgramDefinition();
-		                                       // this is used while defining a program
+		// this is used while defining a program
 
 		public int techLev; //Keep track of what tech, pass, and state level we are in
 		public int passLev;
