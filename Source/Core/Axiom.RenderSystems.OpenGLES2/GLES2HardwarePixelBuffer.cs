@@ -431,6 +431,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		protected override void Download( PixelBox data )
 		{
+#if GL_NV_get_tex_image
 			if ( data.Width != Width || data.Height != Height || data.Depth != Depth )
 			{
 				throw new Core.AxiomException( "only download of entire buffer is supported by GL" );
@@ -444,8 +445,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 					throw new Core.AxiomException( "Compressed images must be consecutive, in the source format" );
 				}
 
-				//todo
-				//GL.GetCompressedTexImage(this.faceTarget, this.level, data.Data);
+				GL.GetCompressedTexImageNV(this.faceTarget, this.level, data.Data);
 			}
 			else
 			{
@@ -456,13 +456,14 @@ namespace Axiom.RenderSystems.OpenGLES2
 				}
 
 				//We can only get the entire texture
-				GL.TexImage2D( this.faceTarget, this.level, GLES2PixelUtil.GetGLOriginFormat( data.Format ), GLES2PixelUtil.GetGLOriginDataType( data.Format ), data.Data );
+				GL.GetTexImageNV( this.faceTarget, this.level, GLES2PixelUtil.GetGLOriginFormat( data.Format ), GLES2PixelUtil.GetGLOriginDataType( data.Format ), data.Data );
 
 				//Restore defaults
 				GL.PixelStore( Glenum.PackAlignment, 4 );
 			}
-
+#else
 			throw new Core.AxiomException( "Downloading texture buffers is not supported by OpenGL ES" );
+#endif
 		}
 
 		public override void BindToFramebuffer( Glenum attachment, int zoffset )
@@ -517,7 +518,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			if ( !Buffer.Contains( dstBox ) )
 			{
-				throw new Core.AxiomException( "Destination box out of range" );
+				throw new ArgumentOutOfRangeException( "dstBox","Destination box out of range" );
 			}
 
 			//For scoped deletion of conversion buffer
@@ -531,6 +532,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				buf = BufferBase.Wrap( new byte[ PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, this.format ) ] );
 
 				srcPB = new PixelBox( src.Width, src.Height, src.Depth, this.format, buf );
+				PixelConverter.BulkPixelConversion( src, srcPB );
 			}
 			else
 			{
@@ -539,31 +541,34 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 
 			//Create temporary texture to store source data
-			int id;
+			int id = 0;
 			Glenum target = Glenum.Texture2D;
 			int width = GLES2PixelUtil.OptionalPO2( src.Width );
 			int height = GLES2PixelUtil.OptionalPO2( src.Height );
 			Glenum format = GLES2PixelUtil.GetClosestGLInternalFormat( src.Format );
 			Glenum datatype = GLES2PixelUtil.GetGLOriginDataType( src.Format );
 
-			//Genearte texture name
+			//Generate texture name
 			GL.GenTextures( 1, ref id );
+			GLES2Config.GlCheckError( this );
 
 			//Set texture type
 			GL.BindTexture( target, id );
+			GLES2Config.GlCheckError( this );
 
 			//Allocate texture memory
 			GL.TexImage2D( target, 0, (int) format, width, height, 0, format, datatype, IntPtr.Zero );
+			GLES2Config.GlCheckError( this );
 
-
-			var tex = new GLES2TextureBuffer( string.Empty, target, id, width, height, format, src.Format, 0, 0, BufferUsage.StaticWriteOnly, false, false, 0 );
+			var tex = new GLES2TextureBuffer( string.Empty, target, id, width, height, format, (Glenum)src.Format, 0, 0, BufferUsage.StaticWriteOnly, false, false, 0 );
 
 			//Upload data to 0,0,0 in temprary texture
-			var tempTarget = new BasicBox( 0, 0, 0, src.Width, src.Height, src.Depth );
-			tex.Upload( src, tempTarget );
+			var tempTarget = new BasicBox( 0, 0, 0, srcPB.Width, srcPB.Height, srcPB.Depth );
+			tex.Upload( srcPB, tempTarget );
 
 			//Blit
 			this.BlitFromTexture( tex, tempTarget, dstBox );
+			GLES2Config.GlCheckError( this );
 		}
 
 		public override RenderTexture GetRenderTarget( int slice )

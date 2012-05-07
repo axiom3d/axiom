@@ -46,6 +46,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="GLES2Config.cs" />
     <Compile Include="GLES2Context.cs" />
     <Compile Include="GLES2DefaultHardwareBufferManager.cs" />
     <Compile Include="GLES2DefaultHardwareIndexBuffer.cs" />
