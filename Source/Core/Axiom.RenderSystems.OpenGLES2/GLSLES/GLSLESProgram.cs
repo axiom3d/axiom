@@ -12,7 +12,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
     class GLSLESProgram : HighLevelGpuProgram
     {
         #region NestedTypes
-        class CmdOptimization
+        public class CmdOptimization
         {
             public string DoGet(GLSLESProgram target)
             {
@@ -23,7 +23,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                 target.OptimizerEnabled = bool.Parse(val);
             }
         }
-        class CmdPreprocessorDefines
+        public class CmdPreprocessorDefines
         {
             public string DoGet(GLSLESProgram target)
             {
@@ -85,7 +85,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
             {
                 GL.DeleteShader(glShaderHandle);
 
-                if (true)//Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+                if (false)//Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
                 {
                     GL.DeleteProgram(glProgramHandle);
                 }
@@ -233,7 +233,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 
             // Therefore instead, parse the source code manually and extract the uniforms
             CreateParameterMappingStructures(true);
-            if (true)//Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+            if (false)//Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
             {
                 GLSLESProgramPipelineManager.Instance.ExtractConstantDefs(source, constantDefs, Name);
             }
@@ -323,7 +323,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                 }
                 glShaderHandle = GL.CreateShader(shaderType);
 
-                if (true)//Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+                if (false)//Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
                 {
                     glProgramHandle = GL.CreateProgram();
                 }
@@ -419,72 +419,6 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
             {
                 return "glsles";
             }
-        }
-        
-
-        //Helper method
-        private static int FindFirstOf(string strToCheck, string characters, int startPos)
-        {
-            for (int i = 0; i < strToCheck.Length; i++)
-            {
-                if (characters.Contains(strToCheck[i]))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-        private static int FindLastOf(string toCheck, char c)
-        {
-            for (int i = toCheck.Length - 1; i >= 0; i--)
-            {
-                if (toCheck[i] == c)
-                    return i;
-            }
-            return -1;
-        }
-        public static int Find(string toCheck, string toFind)
-        {
-
-            if (toCheck.Length < toFind.Length)
-            {
-                return -1;
-            }
-
-            for (int i = 0; i < toCheck.Length; i++)
-            {
-                char c = toCheck[i];
-
-                if (toCheck[i] == toFind[0])
-                {
-                    int startPos = i;
-                    int index = i + 1;
-                    bool broken = false;
-
-                    while (index < toCheck.Length)
-                    {
-                        if (toCheck[index] != toFind[index - startPos])
-                        {
-                            broken = true;
-                            //this isn't the string we're looking for, move along
-                            break;
-                        }
-                        index++;
-                        if (index - startPos >= toFind.Length)
-                        {
-                            //good break, not bad. Means we've found the full substring
-                            break;
-                        }
-                    }
-                    if (broken == false)
-                    {
-                        //found it
-                        return startPos;
-                    }
-                }
-            }
-            return -1;
         }
     }
 }

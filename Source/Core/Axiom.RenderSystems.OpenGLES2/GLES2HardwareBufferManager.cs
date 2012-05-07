@@ -29,8 +29,29 @@ namespace Axiom.RenderSystems.OpenGLES2
 
         public static GLenum GetGLUsage(int usage)
         { }
-        public static GLenum GetGLType(int type)
-        { }
+        public static GLenum GetGLType(VertexElementType type)
+        {
+            switch (type)
+            {
+                case VertexElementType.Float1:
+                case VertexElementType.Float2:
+                case VertexElementType.Float3:
+                case VertexElementType.Float4:
+                    return GLenum.Float;
+                case VertexElementType.Short1:
+                case VertexElementType.Short2:
+                case VertexElementType.Short3:
+                case VertexElementType.Short4:
+                    return GLenum.Short;
+                case VertexElementType.Color:
+                case VertexElementType.Color_ARGB:
+                case VertexElementType.Color_ABGR:
+                case VertexElementType.UByte4:
+                    return GLenum.UnsignedByte;
+                default:
+                    return 0;
+            }
+        }
 
         public void AllocateScratch(int size)
         { }
@@ -63,7 +84,7 @@ namespace Axiom.RenderSystems.OpenGLES2
         {
             return GLES2HardwareBufferManagerBase.GetGLUsage(usage);
         }
-        public static GLenum GetGLType(int type)
+        public static GLenum GetGLType(VertexElementType type)
         {
             return GLES2HardwareBufferManagerBase.GetGLType(type);
         }

@@ -16,31 +16,92 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
      ///    vertex and fragment program.  Previously created pipeline objects are stored along with a unique
     ///    key in a hash_map for quick retrieval the next time the pipeline object is required.
     /// </summary>
-    class GLSLESProgramPipelineManager
+    class GLSLESProgramPipelineManager : GLSLESProgramManagerCommon
     {
-        private static GLSLESProgramPipelineManager _instance;
         private Dictionary<long, GLSLESProgramPipeline> programPipelines;
         private GLSLESProgramPipeline activeProgramPipeline;
+        private static GLSLESProgramPipelineManager _instance = null;
 
         public GLSLESProgramPipelineManager()
         {
-
+            activeProgramPipeline = null;
+        }
+        ~GLSLESProgramPipelineManager()
+        {
+            //Iterate through map container and delete program pipelines
+            foreach (var key in programPipelines.Keys)
+            {
+                programPipelines[key] = null;
+            }
         }
 
-        /// <summary>
-        /// Gets active, if a program pipeline object was not already create and linked, a new one is create
-        /// </summary>
         public GLSLESProgramPipeline ActiveProgramPipeline
         {
-            get;
+            get
+            {
+                //if there is an active link program then return it
+                if (activeProgramPipeline != null)
+                    return activeProgramPipeline;
+
+                //No active link program so find one or make a new one
+                //Is there an active key?
+                long activeKey = 0;
+
+                if (activeVertexGpuProgram != null)
+                {
+                    activeKey = activeVertexGpuProgram.ProgramID << 32;
+                }
+                if (activeFragmentGpuProgram != null)
+                {
+                    activeKey += activeFragmentGpuProgram.ProgramID;
+                }
+
+                //Only return a program pipeline object if a vertex or fragment stage exist
+                if (activeKey > 0)
+                {
+                    //Find the key in the hash map
+                    if (!programPipelines.ContainsKey(activeKey))
+                    {
+                        activeProgramPipeline = new GLSLESProgramPipeline(activeVertexGpuProgram, activeFragmentGpuProgram);
+                        programPipelines.Add(activeKey, new GLSLESProgramPipeline(activeVertexGpuProgram, activeFragmentGpuProgram);
+                    }
+                    else
+                    {
+                        //Found a link program in map container so make it active
+                        activeProgramPipeline = programPipelines[activeKey];
+                    }
+                }
+                //Make the program object active
+                if(activeProgramPipeline != null)
+                {
+                    activeProgramPipeline.Activate();
+                }
+
+                return activeProgramPipeline;
+            }
         }
+
         public GLSLESGpuProgram ActiveVertexLinkProgram
         {
-            set;
+            set
+            {
+                if (value != activeVertexGpuProgram)
+                {
+                    activeVertexGpuProgram = value;
+                    activeProgramPipeline = null;
+                }
+            }
         }
         public GLSLESGpuProgram ActiveFragmentLinkProgram
         {
-            set;
+            set
+            {
+                if (value != activeFragmentGpuProgram)
+                {
+                    activeFragmentGpuProgram = value;
+                    activeProgramPipeline = null;
+                }
+            }
         }
         public static GLSLESProgramPipelineManager Instance
         {

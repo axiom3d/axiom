@@ -22,6 +22,7 @@
     <DefineConstants>DEBUG;TRACE;$(TargetFrameworkDefine)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -66,10 +67,15 @@
     <Compile Include="GLES2Support.cs" />
     <Compile Include="GLES2Texture.cs" />
     <Compile Include="GLES2TextureManager.cs" />
+    <Compile Include="GLSLES\GLSLESCgProgramFactory.cs" />
+    <Compile Include="GLSLES\GLSLESCgProgram.cs" />
     <Compile Include="GLSLES\GLSLESGpuProgram.cs" />
+    <Compile Include="GLSLES\GLSLESLinkProgram.cs" />
     <Compile Include="GLSLES\GLSLESLinkProgramManager.cs" />
     <Compile Include="GLSLES\GLSLESPreprocessor.cs" />
     <Compile Include="GLSLES\GLSLESProgram.cs" />
+    <Compile Include="GLSLES\GLSLESProgramCommon.cs" />
+    <Compile Include="GLSLES\GLSLESProgramFactory.cs" />
     <Compile Include="GLSLES\GLSLESProgramManagerCommon.cs" />
     <Compile Include="GLSLES\GLSLESProgramPipeline.cs" />
     <Compile Include="GLSLES\GLSLESProgramPipelineManager.cs" />
