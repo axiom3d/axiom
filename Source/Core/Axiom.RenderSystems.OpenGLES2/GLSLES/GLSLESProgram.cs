@@ -146,7 +146,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				while ( pos != this.preprocessorDefines.Length )
 				{
 					//Find delims
-					int endpos = FindFirstOf( this.preprocessorDefines, ";,=", pos );
+					int endpos = this.preprocessorDefines.IndexOf( ";,=", pos );
 
 					if ( endpos != -1 )
 					{
@@ -162,7 +162,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 							int macroValStart = pos;
 							int macroValLen;
 
-							endpos = FindFirstOf( this.preprocessorDefines, ";,", pos );
+							endpos = this.preprocessorDefines.IndexOf( ";,", pos );
 							if ( endpos == -1 )
 							{
 								macroValLen = this.preprocessorDefines.Length - pos;
@@ -307,11 +307,11 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				for ( int i = errors.Length - 1; i >= 0; i-- )
 				{
 					string curError = errors[ i ];
-					int foundPos = Find( curError, precisionQualifierErrorString );
+					int foundPos = curError.IndexOf( precisionQualifierErrorString );
 					if ( foundPos != -1 )
 					{
 						string lineNumber = curError.Substring( 0, foundPos );
-						int posOfStartOfNumber = FindLastOf( lineNumber, ':' );
+						int posOfStartOfNumber = lineNumber.LastIndexOf( ':' );
 						if ( posOfStartOfNumber != -1 )
 						{
 							lineNumber = lineNumber.Substring( posOfStartOfNumber + 1, lineNumber.Length - ( posOfStartOfNumber + 1 ) );
