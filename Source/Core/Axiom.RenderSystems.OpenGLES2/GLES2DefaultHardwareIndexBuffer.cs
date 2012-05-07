@@ -122,7 +122,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			Contract.Requires( ( offset + length ) <= sizeInBytes );
 
-			Memory.Copy( dest, this._dataPtr + offset, length );
+			Memory.Copy( this._dataPtr + offset, dest, length );
 		}
 
 		/// <summary>
