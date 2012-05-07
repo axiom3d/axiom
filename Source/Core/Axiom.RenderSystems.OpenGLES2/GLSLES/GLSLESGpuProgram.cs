@@ -70,9 +70,13 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 			LoadFromFile = false;
 		}
 
-		~GLSLESGpuProgram()
+		protected override void dispose( bool disposeManagedResources )
 		{
-			this.unload();
+			if ( !IsDisposed )
+				if ( disposeManagedResources)
+					this.unload();
+
+			base.dispose( disposeManagedResources );
 		}
 
 		public override void BindProgram()

@@ -38,6 +38,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Axiom.Scripting;
+
 using GL = OpenTK.Graphics.ES20.GL;
 using GLenum = OpenTK.Graphics.ES20.All;
 
@@ -126,10 +128,10 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				GL.GetError();
 
 				glProgramHandle = GL.CreateProgram();
-
+#if !AXIOM_NO_GLES2_GLSL_OPTIMIZER
 				if ( vertexProgram != null )
 				{
-					string paramStr = vertexProgram.GLSLProgram.GetParameter( "use_optimiser" );
+					string paramStr = vertexProgram.GLSLProgram.GetParameter[ "use_optimiser" ];
 					if ( paramStr == "true" || paramStr.Length == 0 )
 					{
 						GLSLESLinkProgramManager.Instance.OptimizeShaderSource( vertexProgram );
@@ -143,6 +145,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 						GLSLESLinkProgramManager.Instance.OptimizeShaderSource( fragmentProgram );
 					}
 				}
+#endif
 				this.CompileAndLink();
 
 				this.ExtractLayoutQualifiers();
