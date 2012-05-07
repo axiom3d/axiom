@@ -52,7 +52,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		//Scratch buffer handling
 		private bool _lockedToScratch;
 		private int _scratchOffset, _scratchSize;
-		private IntPtr _scratchPtr;
+		private BufferBase _scratchPtr;
 		private bool _scratchUploadOnUnlock;
 
 		public GLES2HardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, bool useShadowBuffer )
@@ -71,7 +71,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 
 			( Root.Instance.RenderSystem as GLES2RenderSystem ).BindGLBuffer( GLenum.ArrayBuffer, this._bufferID );
-			GL.BufferData( GLenum.ArrayBuffer, sizeInBytes, null, GLES2HardwareBufferManager.GetGLUsage( usage ) );
+			GL.BufferData( GLenum.ArrayBuffer, new IntPtr( sizeInBytes ), IntPtr.Zero, GLES2HardwareBufferManager.GetGLUsage( usage ) );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -89,11 +89,11 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				throw new AxiomException( "Invalid attempt to lock an index buffer that has already been locked." );
 			}
-			IntPtr retPtr = IntPtr.Zero;
+			BufferBase retPtr;
 			var glBufManager = ( HardwareBufferManager.Instance as GLES2HardwareBufferManager );
 
 			//Try to use scratch buffers for smaller buffers
-			if ( length < glBufManager.GLMapBufferThreshold )
+			if ( length < glBufManager.MapBufferThreshold )
 			{
 				retPtr = glBufManager.AllocateScratch( length );
 
@@ -125,7 +125,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				if ( locking == BufferLocking.Discard )
 				{
 					//Discard the buffer
-					GL.BufferData( GLenum.ArrayBuffer, sizeInBytes, null, GLES2HardwareBufferManager.GetGLUsage( usage ) );
+					GL.BufferData( GLenum.ArrayBuffer, new IntPtr( sizeInBytes) , IntPtr.Zero, GLES2HardwareBufferManager.GetGLUsage( usage ) );
 				}
 				if ( ( usage & BufferUsage.WriteOnly ) == BufferUsage.WriteOnly )
 				{
@@ -134,14 +134,13 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 				var pbuffer = GL.Oes.MapBuffer( GLenum.ArrayBuffer, access );
 
-				if ( pbuffer == null )
+				if ( pbuffer == IntPtr.Zero )
 				{
 					throw new AxiomException( "Vertex Buffer: Out of memory" );
 				}
 
 				//return offsetted
-				//todo: need to return BufferBase, not IntPtr
-				retPtr = pbuffer + offset;
+				retPtr = BufferBase.Wrap(pbuffer) + offset;
 				this._lockedToScratch = false;
 			}
 			isLocked = true;
@@ -174,19 +173,20 @@ namespace Axiom.RenderSystems.OpenGLES2
 			isLocked = false;
 		}
 
-		//public override void ReadData(int offset, int length, out BufferBase dest)
-		//{
-		//    if (useShadowBuffer)
-		//    {
-		//        var srcData = shadowBuffer.Lock(offset, length, BufferLocking.ReadOnly);
-		//        dest = srcData;
-		//        shadowBuffer.Unlock();
-		//    }
-		//    else
-		//    {
-		//        throw new AxiomException("Read hardware buffer is not supported");
-		//    }
-		//}
+		public override void ReadData( int offset, int length, BufferBase dest )
+		{
+			if ( useShadowBuffer )
+			{
+				var srcData = shadowBuffer.Lock( offset, length, BufferLocking.ReadOnly );
+				dest = srcData;
+				shadowBuffer.Unlock();
+			}
+			else
+			{
+				throw new AxiomException( "Read hardware buffer is not supported" );
+			}
+		}
+
 		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
 		{
 			//Update the shadow buffer
@@ -199,15 +199,15 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			if ( offset == 0 && length == sizeInBytes )
 			{
-				GL.BufferData( GLenum.ArrayBuffer, sizeInBytes, src, GLES2HardwareBufferManager.getGLUsage( usage ) );
+				GL.BufferData( GLenum.ArrayBuffer, new IntPtr(sizeInBytes), src.Pin(), GLES2HardwareBufferManager.GetGLUsage( usage ) );
 			}
 			else
 			{
 				if ( discardWholeBuffer )
 				{
-					GL.BufferData( GLenum.ArrayBuffer, sizeInBytes, null, GLES2HardwareBufferManager.GetGLUsage( usage ) );
+					GL.BufferData( GLenum.ArrayBuffer, new IntPtr( sizeInBytes ), IntPtr.Zero, GLES2HardwareBufferManager.GetGLUsage( usage ) );
 				}
-				GL.BufferSubData( GLenum.ArrayBuffer, offset, length, src );
+				GL.BufferSubData( GLenum.ArrayBuffer, new IntPtr( offset), new IntPtr( length ), src.Pin() );
 			}
 		}
 
@@ -222,12 +222,12 @@ namespace Axiom.RenderSystems.OpenGLES2
 				//Update whole buffer if possible, otherwise normal
 				if ( lockStart == 0 && lockSize == sizeInBytes )
 				{
-					GL.BufferData( GLenum.ArrayBuffer, sizeInBytes, srcData, GLES2HardwareBufferManager.GetGLUsage( usage ) );
+					GL.BufferData( GLenum.ArrayBuffer, new IntPtr( sizeInBytes ), srcData.Pin(), GLES2HardwareBufferManager.GetGLUsage( usage ) );
 				}
 				else
 				{
 					//Ogre FIXME: GPU frequently stalls here - DJR
-					GL.BufferSubData( GLenum.ArrayBuffer, lockStart, lockSize, srcData );
+					GL.BufferSubData( GLenum.ArrayBuffer, new IntPtr( lockStart ), new IntPtr( lockSize ), srcData.Pin() );
 				}
 
 				shadowBuffer.Unlock();
@@ -238,11 +238,6 @@ namespace Axiom.RenderSystems.OpenGLES2
 		public int GLBufferID
 		{
 			get { return this._bufferID; }
-		}
-
-		public override void ReadData( int offset, int length, BufferBase dest )
-		{
-			throw new NotImplementedException();
 		}
 	}
 }
