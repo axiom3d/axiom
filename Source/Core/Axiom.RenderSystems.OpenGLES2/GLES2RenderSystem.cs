@@ -10,6 +10,7 @@ using Android.Graphics;
 using Axiom.Core;
 using GL = OpenTK.Graphics.ES20.GL;
 using GLenum = OpenTK.Graphics.ES20.All;
+using Axiom.RenderSystems.OpenGLES2.GLSLES;
 
 namespace Axiom.RenderSystems.OpenGLES2
 {
@@ -37,8 +38,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 		GLES2Context mainContext;
 		GLES2Context currentContext;
 		GLES2GpuProgramManager gpuProgramManager;
-		GLES2ProgramFactory glslESProgramFactory;
-		GLESCgProgramFactory glslESCgProgramFactory;
+		GLSLES.GLSLESProgramFactory glslESProgramFactory;
+        GLSLES.GLSLESCgProgramFactory glslESCgProgramFactory;
 		HardwareBufferManager hardwareBufferManager;
 		GLES2RTTManager rttManager;
 		OpenTK.Graphics.ES20.TextureUnit activeTextureUnit;
@@ -370,7 +371,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		#region RenderSystem Overrides
 		public override void SetConfigOption(string name, string value)
 		{
-			glSupport.ConfigOptions[name] = value;
+            glSupport.ConfigOptions[name].Value = value;
 		}
 		public override string ValidateConfigOptions()
 		{
@@ -566,11 +567,11 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 
 			gpuProgramManager = new GLES2GpuProgramManager();
-			this.glslESProgramFactory = new GLES2ProgramFactory();
+            this.glslESProgramFactory = new GLSLES.GLSLESProgramFactory();
 			HighLevelGpuProgramManager.Instance.AddFactory(glslESProgramFactory);
 
 			//todo: check what can/can't support cg
-			this.glslESCgProgramFactory = new GLESCgProgramFactory();
+            this.glslESCgProgramFactory = new GLSLES.GLSLESCgProgramFactory();
 			HighLevelGpuProgramManager.Instance.AddFactory(this.glslESCgProgramFactory);
 
 			//Set texture the number of texture units
@@ -674,7 +675,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 
 			//Create the window
-			RenderWindow win = glSupport.NewWindow(name, width, height, isFullScreen, miscParams);
+
+            RenderWindow win = glSupport.NewWindow(name, width, height, isFullScreen, miscParams);
 			AttachRenderTarget(win);
 
 			if (glInitialized == false)
@@ -710,8 +712,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 				//Initialize the main context
 				OneTimeContextInitialization();
-				if (currentContext != null)
-					currentContext.SetInitalized();
+                if (currentContext != null)
+                    currentContext.IsInitialized = true;
 			}
 
 			if (win.DepthBufferPool != PoolId.NoDepth)
@@ -722,9 +724,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 				GLES2DepthBuffer depthBuffer = new GLES2DepthBuffer(PoolId.Default, this, windowContext,
 					null, null, win.Width, win.Height, win.FSAA, 0, true);
 
-				depthBufferPool.Add(depthBuffer.PoolId, depthBuffer);
-
+                depthBufferPool[depthBuffer.PoolId].Add(depthBuffer);
 				win.AttachDepthBuffer(depthBuffer);
+                
 
 			}
 			return win;
@@ -743,9 +745,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				// Presence of an FBO means the manager is an FBO Manager, that's why it's safe to downcast
 				// Find best depth & stencil format suited for the RT's format
-				int depthFormat, stencilFormat;
+				GLenum depthFormat = GLenum.None, stencilFormat = GLenum.None;
 				(rttManager as GLES2FBOManager).GetBestDepthStencil(fbo.Format, ref depthFormat, ref stencilFormat);
-
 				GLES2RenderBuffer depthBuffer = new GLES2RenderBuffer(depthFormat, fbo.Width, fbo.Height, fbo.FSAA);
 
 				GLES2RenderBuffer stencilBuffer = depthBuffer;
@@ -783,12 +784,14 @@ namespace Axiom.RenderSystems.OpenGLES2
 				//find the depth buffer from this window and remove it.
 
 				DepthBuffer depthBufferToRemove = null;
+                PoolId nkey = 0;
 
 				foreach (var key in depthBufferPool.Keys)
 				{
-					foreach (var itor in depthBufferPool[key])
-					{
-						//A Depthbuffer with no depth & stencil pointers is a dummy one,
+                    for (int i = 0; i < depthBufferPool[key].Count; i++)
+                    {
+                        var itor = depthBufferPool[key][i];
+                     	//A Depthbuffer with no depth & stencil pointers is a dummy one,
 						//look for the one that matches the same GL context
 						GLES2DepthBuffer depthBuffer = itor as GLES2DepthBuffer;
 						GLES2Context glContext = depthBuffer.GLContext;
@@ -796,16 +799,18 @@ namespace Axiom.RenderSystems.OpenGLES2
 						if (glContext == windowContext &&
 							(depthBuffer.DepthBuffer != null || depthBuffer.StencilBuffer != null))
 						{
+                            
 							bFound = true;
 							itor = null;
-							depthBufferToRemove = depthBufferPool[key];
+                            depthBufferToRemove = depthBufferPool[key][i];
+                            nkey = key;
 							break;
 						}
 					}
 				}
 				if (depthBufferToRemove != null)
 				{
-					depthBufferPool[key].Remove(depthBufferToRemove);
+					depthBufferPool[nkey].Remove(depthBufferToRemove);
 				}
 
 				renderTargets.Remove(name);
@@ -835,7 +840,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		}
 		public override void SetTexture(int unit, bool enabled, Core.Texture texture)
 		{
-			GLES2Texture tex = texture;
+			GLES2Texture tex = (GLES2Texture)texture;
 
 			if (!ActivateGLTextureUnit(unit))
 				return;
@@ -887,9 +892,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			if (!ActivateGLTextureUnit(unit))
 				return;
-			OpenTK.Graphics.ES20.GL.TexParameter(textureTypes[unit], OpenTK.Graphics.ES20.All.TextureWrapS, GetTextureAddressingMode(uvw.U));
+			
+            GL.TexParameter(textureTypes[unit], GLenum.TextureWrapS, (int)GetTextureAddressingMode(uvw.U));
 
-			OpenTK.Graphics.ES20.GL.TexParameter(textureTypes[unit], OpenTK.Graphics.ES20.All.TextureWrapT, GetTextureAddressingMode(uvw.V));
+			OpenTK.Graphics.ES20.GL.TexParameter(textureTypes[unit], OpenTK.Graphics.ES20.All.TextureWrapT, (int)GetTextureAddressingMode(uvw.V));
 
 			ActivateGLTextureUnit(0);
 		}
@@ -1079,7 +1085,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		public override void SetStencilBufferParams(CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp, StencilOperation depthFailOp, StencilOperation passOp, bool twoSidedOperation)
 		{
 			bool flip;
-			stencilMask = mask;
+			stencilMask = (uint)mask;
 
 			if (twoSidedOperation)
 			{
@@ -1108,7 +1114,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 			else
 			{
-				flip = faceCount;
+                flip = (faceCount == 0) ? false : true;
 				GL.StencilMask(mask);
 				GL.StencilFunc(ConvertCompareFunction(function), refValue, mask);
 				GL.StencilOp(
@@ -1136,8 +1142,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				case FilterType.Min:
 					this.minFilter = filter;
 					//Combine with exisiting mip filter
-					GL.TexParameter(textureTypes[unit], GLenum.TextureMinFilter, CombinedMinMipFilter);
-
+                    GL.TexParameter(textureTypes[unit], GLenum.TextureMinFilter, (int)CombinedMinMipFilter);
 					break;
 				case FilterType.Mag:
 					{
@@ -1146,11 +1151,11 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 							case FilterOptions.Anisotropic:
 							case FilterOptions.Linear:
-								GL.TexParameter(textureTypes[unit], GLenum.TextureMagFilter, GLenum.Linear);
+								GL.TexParameter(textureTypes[unit], GLenum.TextureMagFilter, (int)GLenum.Linear);
 								break;
 							case FilterOptions.None:
 							case FilterOptions.Point:
-								GL.TexParameter(textureTypes[unit], GLenum.TextureMagFilter, GLenum.Nearest);
+								GL.TexParameter(textureTypes[unit], GLenum.TextureMagFilter, (int)GLenum.Nearest);
 								break;
 						}
 					}
@@ -1159,7 +1164,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 					mipFilter = filter;
 
 					//Combine with exsiting min filter
-					GL.TexParameter(textureTypes[unit], GLenum.TextureMinFilter, CombinedMinMipFilter);
+					GL.TexParameter(textureTypes[unit], GLenum.TextureMinFilter, (int)CombinedMinMipFilter);
 					break;
 			}
 
@@ -1254,14 +1259,15 @@ namespace Axiom.RenderSystems.OpenGLES2
 						 break;
 					}
 
-				GL.VertexAttribPointer(attrib, typeCount, GLES2HardwareBufferManager.GetGLType(elem.Type), normalized, vertexBuffer.VertexSize, bufferData);
+                GL.VertexAttribPointer(attrib, typeCount, GLES2HardwareBufferManager.GetGLType(elem.Type), normalized, vertexBuffer.VertexSize, ref bufferData);
+                
 				GL.EnableVertexAttribArray(attrib);
 
 				renderAttribsBound.Add(attrib);
 			}
 
 			//Find the correct type to render
-			GLenum primType;
+            GLenum primType = GLenum.TriangleFan;
 
 			switch (op.operationType)
 				{
@@ -1288,7 +1294,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			if(op.useIndices)
 			{
 				BindGLBuffer(GLenum.ElementArrayBuffer, (op.indexData.indexBuffer as GLES2HardwareIndexBuffer).GLBufferID);
-
+                                                                  
 				bufferData = op.indexData.indexStart * op.indexData.indexBuffer.IndexSize;
 
 				GLenum indexType = (op.indexData.indexBuffer.Type == IndexType.Size16) ? GLenum.UnsignedShort : GLenum.UnsignedInt;
@@ -1298,10 +1304,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 					//Update derived depth bias
 					if(derivedDepthBias && currentPassIterationCount > 0)
 					{
-						SetDepthBias(derivedDepthBias + derivedDepthBiasMultiplier * currentPassIterationNum, derivedDepthBiasSlopeScale);
-
+                        SetDepthBias(derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationNum, derivedDepthBiasSlopeScale);
+                        
 					}
-					GL.DrawElements((this.polygonMode == GLenum.PolygonOffsetFill) ? primType : polygonMode, op.indexData.indexCount, indexType, bufferData);
+					GL.DrawElements((this.polygonMode == GLenum.PolygonOffsetFill) ? primType : polygonMode, op.indexData.indexCount, indexType, ref bufferData);
 				} while (UpdatePassIterationRenderState());
 			}
 			else
@@ -1517,7 +1523,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				case GpuProgramType.Vertex:
 					if (currentVertexProgram != glprg)
 					{
-						if (currentVertexProgram)
+						if (currentVertexProgram != null)
 							currentVertexProgram.UnbindProgram();
 						currentVertexProgram = glprg;
 					}
@@ -1525,7 +1531,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				case GpuProgramType.Fragment:
 					if (currentFragmentProgram != glprg)
 					{
-						if (currentFragmentProgram)
+						if (currentFragmentProgram != null)
 							currentFragmentProgram.UnbindProgram();
 						currentFragmentProgram = glprg;
 					}
@@ -1567,11 +1573,11 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				case GpuProgramType.Vertex:
 					activeVertexGpuProgramParameters = parms;
-					currentVertexProgram.BindProgramParameters(parms, mask);
+					currentVertexProgram.BindProgramParameters(parms, (uint)mask);
 					break;
 				case GpuProgramType.Fragment:
 					activeFragmentGpuProgramParameters = parms;
-					currentFragmentProgram.BindProgramParameters(parms, mask);
+					currentFragmentProgram.BindProgramParameters(parms, (uint)mask);
 					break;
 				case GpuProgramType.Geometry:
 				default:
@@ -2050,7 +2056,19 @@ namespace Axiom.RenderSystems.OpenGLES2
 		}
 		public override PolygonMode PolygonMode
 		{
-            get { return this.polygonMode; }
+            get 
+            {
+                switch (this.polygonMode)
+                {
+                    case GLenum.Points:
+                        return Graphics.PolygonMode.Points;
+                    case GLenum.LineStrip:
+                        return Graphics.PolygonMode.Wireframe;
+                    case GLenum.PolygonOffsetFill:
+                    default:
+                        return Graphics.PolygonMode.Solid;
+                }
+            }
 		    set
 			{
 				switch (value)

@@ -13,7 +13,7 @@ namespace Axiom.RenderSystems.OpenGLES2
     /// </summary>
     class GLES2GpuProgram : GpuProgram
     {
-        private int _programID;
+        protected int _programID;
         private GLenum _programType;
 
         public GLES2GpuProgram(ResourceManager creator, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader)
@@ -25,9 +25,9 @@ namespace Axiom.RenderSystems.OpenGLES2
         { }
         public virtual void UnbindProgram()
         { }
-        public virtual void BindProgramParamaters(GpuProgramParameters parms, uint mask)
+        public virtual void BindProgramParameters(GpuProgramParameters parms, uint mask)
         { }
-        public virtual void BindProgramPassIterationParameters(GpuProgramManager parms)
+        public virtual void BindProgramPassIterationParameters(GpuProgramParameters parms)
         { }
         protected override void dispose(bool disposeManagedResources)
         {
@@ -36,7 +36,6 @@ namespace Axiom.RenderSystems.OpenGLES2
             unload();
             base.dispose(disposeManagedResources);
         }
-
         public static GLenum GetGLShaderType(GpuProgramType programType)
         {
             switch (programType)

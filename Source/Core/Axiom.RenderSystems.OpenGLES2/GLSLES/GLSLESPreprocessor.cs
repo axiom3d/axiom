@@ -256,7 +256,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
             public Token Body;
 
             public Macro Next;
-            public delegate Macro ExpandFunc(GLSLESPreprocessor parent, int numArgs, Token args);
+            public delegate Token ExpandMethod(GLSLESPreprocessor parent, int numArgs, Token[] args);
             public bool Expanding;
 
             public Macro(Token name)
@@ -273,7 +273,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                 Args = null;
                 Next = null;
             }
-
+            public ExpandMethod ExpandFunc;
             public Token Expand(int numArgs, Token[] args, Macro macros)
             {
                 Expanding = true;
@@ -309,7 +309,12 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
         }
 
         string Source;
-        string SourceEnd;
+        int _sourceEnd;
+        private int SourceEnd
+        {
+            get { return _sourceEnd; }
+            set{_sourceEnd = value;}
+        }
         int Line;
         bool BOL;
         bool[] outputsEnabled = new bool[32];
@@ -326,7 +331,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
         {
             ErrorHandler = DefaultError;
             Source = token.String;
-            SourceEnd = token.String + token.Length.ToString();
+            SourceEnd = token.String.Length + token.Length;
             for (int i = 0; i < outputsEnabled.Length; i++)
             {
                 outputsEnabled[i] = true;
@@ -336,7 +341,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
         }
         public GLSLESPreprocessor()
         {
-            MacroList = new List<Macro>();
+            MacroList = null;
         }
         ~GLSLESPreprocessor()
         {
@@ -485,7 +490,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                 return new Token(Token.Kind.Punctuation, Source, index);
             }
 
-            
+            return Token.Error; 
         }
         public Token HandleDirective(Token token, int line)
         {
@@ -638,7 +643,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 
                 default:
                     t.Type = Token.Kind.Text;
-                    t.Length = cpp.SourceEnd - t.String;
+                    t.Length = cpp.SourceEnd - t.String.Length;
                     break;
             }
 
@@ -895,6 +900,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                             done = true;
                             break;
                         }
+                        break;
                     default:
                         break;
                 }
@@ -913,10 +919,14 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 
                 return t;
             }
+
+            return Token.Error;
         }
         public Token GetExpression(Token result, int line)
         {
-            return this.GetExpression(result, line, 0);
+            this.GetExpression(out result, line, 0);
+
+            return result;
         }
         /**
  * Operator priority:
@@ -956,7 +966,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                     char uop = result.String[0];
                     op = GetExpression(out result, line, 12);
                     long val;
-                    if (!GetValue(result, val, line))
+                    if (!GetValue(result, out val, line))
                     {
                         tmp = "Unary " + uop + " not applicable";
                         Error(line, tmp, result);
@@ -969,7 +979,9 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                     }
                     else if (uop == '!')
                     {
-                        result.SetValue(!val);
+                        bool bVal = Convert.ToBoolean(val);
+                        result.SetValue(!bVal);
+                        
                     }
                     else if (uop == '~')
                     {
@@ -1066,18 +1078,22 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                         Error(line, tmp, result);
                         return new Token(Token.Kind.Error);
                     }
+                    bool bvlop = Convert.ToBoolean(vlop), bvrop = Convert.ToBoolean(vrop);
 
                     switch (op.String[0])
                     {
                         case '|':
                             if (prio == 2)
-                                result.SetValue(vlop || vrop);
+                            {
+                               
+                                result.SetValue(bvlop || bvrop);
+                            }
                             else
                                 result.SetValue(vlop | vrop);
                             break;
                         case '&':
                             if (prio == 3)
-                                result.SetValue(vlop && vrop);
+                                result.SetValue(bvlop && bvrop);
                             else
                                 result.SetValue(vlop & vrop);
                             break;
@@ -1087,7 +1103,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                             else if (prio == 8)
                                 result.SetValue(vlop <= vrop);
                             else if (prio == 9)
-                                result.SetValue(vlop << vrop);
+                                result.SetValue((int)vlop << (int)vrop);
                             break;
                         case '>':
                             if (op.Length == 1)
@@ -1095,7 +1111,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                             else if (prio == 8)
                                 result.SetValue(vlop >= vrop);
                             else if (prio == 9)
-                                result.SetValue(vlop >> vrop);
+                                result.SetValue((int)vlop >> (int)vrop);
                             break;
                         case '^': result.SetValue(vlop ^ vrop); break;
                         case '!': result.SetValue(vlop != vrop); break;
@@ -1141,8 +1157,8 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                 GLSLESPreprocessor cpp = new GLSLESPreprocessor(token, line);
                 cpp.MacroList = MacroList;
 
-                Token t = cpp.GetExpression(r, line);
-
+                Token t = cpp.GetExpression(out r, line, 0);
+                
                 cpp.MacroList = null;
 
                 if (t.Type == Token.Kind.Error)
@@ -1174,7 +1190,8 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                     break;
                 case Token.Kind.Keyword:
                     //Try to expand the macro
-                    if ((m = IsDefined(vt)) && !m.Expanding)
+                    m = IsDefined(vt);
+                    if (m != null && !m.Expanding)
                     {
                         Token x = ExpandMacro(vt);
                         m.Expanding = true;
@@ -1198,13 +1215,14 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 
             if (cur != null && !cur.Expanding)
             {
-                Token args = null;
+                Token[] args = new Token[MaxMacroArgs];
                 int nargs = 0;
                 int old_line = Line;
 
                 if (cur.NumArgs != 0)
                 {
                     Token t = GetArguments(nargs, args, (cur.ExpandFunc != null) ? false : true);
+                    
                     if (t.Type == Token.Kind.Error)
                     {
                         args = null;
@@ -1238,14 +1256,10 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
         }
         public Macro IsDefined(Token token)
         {
-            foreach (var macro in MacroList)
+            for  (Macro cur = MacroList; cur != null; cur = cur.Next)
             {
-                var cur = macro.Next;
-                if (cur != null)
-                {
-                    if (cur.Name == token)
-                        return cur;
-                }
+                if (cur.Name == token)
+                    return cur;
             }
 
             return null;
@@ -1257,8 +1271,8 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
                 parent.Error(parent.Line, "The defined() function takes exactly one argument", null);
                 return new Token(Token.Kind.Error);
             }
-
-            string v = parent.IsDefined(args[0]) ? "1" : "0";
+            
+            string v = (parent.IsDefined(args[0]) != null) ? "1" : "0";
             return new Token(Token.Kind.Number, v, 1);
         }
 

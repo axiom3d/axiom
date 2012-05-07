@@ -82,17 +82,17 @@ namespace Axiom.RenderSystems.OpenGLES2
         protected override void createInternalResources()
         {
             //Conver to nearest power of two size if require
-            width = GLES2PixelUtil.OptionalPO2(width);
-            height = GLES2PixelUtil.OptionalPO2(height);
-            depth = GLES2PixelUtil.OptionalPO2(depth);
+            this.width = GLES2PixelUtil.OptionalPO2(Width);
+            this.height = GLES2PixelUtil.OptionalPO2(Height);
+            this.depth = GLES2PixelUtil.OptionalPO2(Depth);
 
             //Adjust format if required
-            format = TextureManager.Instance.GetNativeFormat(textureType, format, usage);
+            this.format = TextureManager.Instance.GetNativeFormat(textureType, Format, usage);
 
             //Check requested number of mipmaps
-            int maxMips = GLES2PixelUtil.GetMaxMipmaps(width, height, depth, format);
+            int maxMips = GLES2PixelUtil.GetMaxMipmaps(this.width, this.height, this.depth, this.format);
 
-            if (PixelUtil.IsCompressed(format) && (mipmapCount == 0))
+            if (PixelUtil.IsCompressed(this.format) && (mipmapCount == 0))
                 requestedMipmapCount = 0;
 
             mipmapCount = requestedMipmapCount;
@@ -126,8 +126,9 @@ namespace Axiom.RenderSystems.OpenGLES2
             }
             //Allocate internal buffer so that glTexSubImageXD can be used
             //INternal format
-            GLenum format = GLES2PixelUtil.GetClosestGLInternalFormat(format, hwGamma);
-            GLenum dataType = GLES2PixelUtil.GetOriginDataType = format;
+            GLenum glformat = GLES2PixelUtil.GetClosestGLInternalFormat(this.format, this.hwGamma);
+            
+            GLenum dataType = GLES2PixelUtil.GetGLOriginDataType(this.format);
             int width = Width;
             int height = Height;
             int depth = Depth;
@@ -154,7 +155,7 @@ namespace Axiom.RenderSystems.OpenGLES2
                         case TextureType.TwoD:
                             GL.CompressedTexImage2D(GLenum.Texture2D,
                                 mip,
-                                format,
+                                glformat,
                                 width, height,
                                 0,
                                 size,
@@ -163,7 +164,7 @@ namespace Axiom.RenderSystems.OpenGLES2
                         case TextureType.CubeMap:
                             for (int face = 0; face < 6; face++)
                             {
-                                GL.CompressedTexImage2D(GLenum.TextureCubeMapPositiveX + (GLenum)face, mip, format,
+                                GL.CompressedTexImage2D((GLenum)((int)GLenum.TextureCubeMapPositiveX + face), mip, glformat,
                                     width, height, 0, size, tmpData);
                             }
                             break;
@@ -193,18 +194,17 @@ namespace Axiom.RenderSystems.OpenGLES2
                         case TextureType.OneD:
                         case TextureType.TwoD:
                             GL.TexImage2D(GLenum.Texture2D,
-                                mip,
-                                (int)format,
+                                mip, (int)glformat,
                                width, height,
                                0,
-                               format,
+                               glformat,
                                dataType,
                                new IntPtr());
                             break;
                         case TextureType.CubeMap:
                             for (int face = 0; face < 6; face++)
                             {
-                                GL.TexImage2D(GLenum.TextureCubeMapPositiveX + face, mip, (int)format, width, height, 0, format, dataType, new IntPtr());
+                                GL.TexImage2D(GLenum.TextureCubeMapPositiveX + face, mip, (int)glformat, width, height, 0, glformat, dataType, new IntPtr());
                             }
                             break;
                         case TextureType.ThreeD:
@@ -356,12 +356,15 @@ namespace Axiom.RenderSystems.OpenGLES2
 
                 for (int mip = 0; mip < MipmapCount; mip++)
                 {
-                    GLES2HardwarePixelBuffer buf = new GLES2HardwarePixelBuffer(Name,
-                                                                                GLES2TextureTarget, width, height,
-                                                                                GLES2PixelUtil.GetClosestGLInternalFormat(format, hwGamma),
-                                                                                GLES2PixelUtil.GetGLOriginDataType(usage),
-                                                                                doSoftware && mip == 0, hwGamma, fsaa);
-
+                    GLES2HardwarePixelBuffer buf = new GLES2TextureBuffer(this._name, GLES2TextureTarget, textureID, width, height,
+                                                                            GLES2PixelUtil.GetClosestGLInternalFormat(this.format, this.hwGamma),
+                                                                            (int)GLES2PixelUtil.GetGLOriginDataType(this.format),
+                                                                            face,
+                                                                            mip,
+                                                                            (BufferUsage)(usage),
+                                                                            doSoftware && mip == 0, hwGamma, fsaa);
+                    
+                    
                     surfaceList.Add(buf);
 
                     //check for error

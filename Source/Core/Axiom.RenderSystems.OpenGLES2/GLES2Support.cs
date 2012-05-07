@@ -11,7 +11,7 @@ using Axiom.Core;
 
 namespace Axiom.RenderSystems.OpenGLES2
 {
-    public class GLES2Support : IDisposable
+    public abstract class GLES2Support : IDisposable
     {
         private string version, vendor;
         private string shaderCachePath, shaderLibraryPath;
@@ -29,9 +29,7 @@ namespace Axiom.RenderSystems.OpenGLES2
         /// Makes sure all the extra options are valid
         /// </summary>
         /// <returns>string with error message</returns>
-        public virtual string ValidateConfig()
-        {
-        }
+        public abstract string ValidateConfig();
 
         public virtual void Start()
         {
@@ -42,7 +40,7 @@ namespace Axiom.RenderSystems.OpenGLES2
             //Meant to be overridden
             throw new NotImplementedException();
         }
-        public virtual RenderWindow NewWindow(string name, int width, int height, bool fullScreen, NameValuePairList miscParams)
+        public virtual RenderWindow NewWindow(string name, int width, int height, bool fullScreen, NamedParameterList miscParams)
         {
             //Meant to be overridden
             throw new NotImplementedException();
@@ -140,7 +138,7 @@ namespace Axiom.RenderSystems.OpenGLES2
         /// </summary>
         public virtual ConfigOptionMap ConfigOptions 
         {
-            get { return this.options; }
+            get { return (ConfigOptionMap)this.options; }
             set { options = value; }
         }
 
