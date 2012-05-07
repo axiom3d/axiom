@@ -269,7 +269,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 			while ( currPos != -1 )
 			{
 				var def = new GpuProgramParameters.GpuConstantDefinition();
-				string paramName;
+                string paramName = string.Empty;
 
 				//Now check for using the word 'uniform' in a larger string & ignore
 				bool inLargerString = false;
