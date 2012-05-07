@@ -36,6 +36,7 @@
 using System;
 using System.Collections.Generic;
 
+using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 
@@ -50,34 +51,38 @@ namespace Axiom.RenderSystems.OpenGLES2
 {
 	public class GLES2HardwarePixelBuffer : HardwarePixelBuffer
 	{
-		protected PixelBox buffer;
-		protected Glenum glInternalFormat;
-		protected BufferLocking currentLockOptions;
+		protected PixelBox Buffer;
+		protected Glenum GlInternalFormat;
+		protected BufferLocking CurrentLockOptions;
 
 		public GLES2HardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage )
 			: base( width, height, depth, format, usage, false, false )
 		{
-			this.buffer = new PixelBox( width, height, depth, format );
-			this.glInternalFormat = Glenum.None;
+			this.Buffer = new PixelBox( width, height, depth, format );
+			this.GlInternalFormat = Glenum.None;
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			//Force free buffer
-			this.buffer.Data = null;
+			if (!IsDisposed)
+				if ( disposeManagedResources )
+				{
+					//Force free buffer
+					this.Buffer.SafeDispose();
+					this.Buffer.Data = null;
+				}
 			base.dispose( disposeManagedResources );
 		}
 
 		private void AllocateBuffer()
 		{
-			if ( this.buffer.Data != null )
+			if ( this.Buffer.Data != null )
 			{
 				//already allocated
 				return;
 			}
 
-			//TODO
-			this.buffer.Data = new buffer.Data();
+			this.Buffer.Data = BufferBase.Wrap( new byte[ sizeInBytes ] );
 		}
 
 		private void FreeBuffer()
@@ -85,9 +90,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 			//Free buffer if we're STATIC to save meory
 			if ( ( usage & BufferUsage.Static ) == BufferUsage.Static )
 			{
-				this.buffer.Data = null;
-				//todo
-				this.buffer.Data = new buffer.Data();
+				this.Buffer.Data.SafeDispose();
+				this.Buffer.Data = null;
 			}
 		}
 
@@ -112,21 +116,31 @@ namespace Axiom.RenderSystems.OpenGLES2
 		protected override Media.PixelBox LockImpl( Media.BasicBox lockBox, BufferLocking options )
 		{
 			this.AllocateBuffer();
-			if ( options != BufferLocking.Discard )
+			if ( options != BufferLocking.Discard && ( usage & BufferUsage.WriteOnly ) == 0  )
 			{
 				//Downoad the old contents of the texture
-				this.Download( this.buffer );
+				this.Download( this.Buffer );
 			}
-			this.currentLockOptions = options;
+			this.CurrentLockOptions = options;
 			lockedBox = lockBox;
-			return this.buffer.GetSubVolume( lockBox );
+			return this.Buffer.GetSubVolume( lockBox );
+		}
+
+		protected override void UnlockImpl()
+		{
+			if ( this.CurrentLockOptions != BufferLocking.ReadOnly )
+			{
+				//From buffer to card, only upload if was locked for writing
+				this.Upload( currentLock, lockedBox );
+			}
+			this.FreeBuffer();
 		}
 
 		public override void BlitFromMemory( Media.PixelBox src, Media.BasicBox dstBox )
 		{
-			if ( this.buffer.Contains( dstBox ) == false )
+			if ( this.Buffer.Contains( dstBox ) == false )
 			{
-				throw new Core.AxiomException( "Destination box out of range" );
+				throw new ArgumentOutOfRangeException( "dstBox", "Destination box out of range" );
 			}
 
 			PixelBox scaled;
@@ -136,29 +150,31 @@ namespace Axiom.RenderSystems.OpenGLES2
 				//Scale to destination size
 				//This also does pixel format conversion if needed
 				this.AllocateBuffer();
-				scaled = this.buffer.GetSubVolume( dstBox );
+				scaled = this.Buffer.GetSubVolume( dstBox );
 				Image.Scale( src, scaled, ImageFilter.Bilinear );
 			}
-			else if ( ( src.Format != format ) || ( ( GLES2PixelUtil.GetOriginFormat( src.Format ) == 0 ) && ( src.Format != PixelFormat.R8G8B8 ) ) )
+			else if ( ( src.Format != format ) || ( ( GLES2PixelUtil.GetGLOriginFormat( src.Format ) == 0 ) && ( src.Format != PixelFormat.R8G8B8 ) ) )
 			{
 				//Extents match, but format is not accepted as valid source format for GL
 				//do conversion in temporary buffer
 				this.AllocateBuffer();
-				scaled = this.buffer.GetSubVolume( dstBox );
-				GLES2PixelUtil.ConvertToGLFormat( ref scaled, ref scaled );
-
-
+				scaled = this.Buffer.GetSubVolume( dstBox );
+				PixelConverter.BulkPixelConversion( src, scaled );
+				if ( src.Format == PixelFormat.A4R4G4B4 )
+				{
+					// ARGB->BGRA
+					GLES2PixelUtil.ConvertToGLFormat( ref scaled, ref scaled );
+				}
 			}
 			else
 			{
 				this.AllocateBuffer();
-				scaled = src;
+				scaled = src.Clone();
 
 				if ( src.Format == PixelFormat.R8G8B8 )
 				{
 					scaled.Format = PixelFormat.B8G8R8;
-					//todo
-					PixelUtil.BulkPixelConversion( src, scaled );
+					PixelConverter.BulkPixelConversion( src, scaled );
 				}
 			}
 
@@ -168,12 +184,12 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		public override void BlitToMemory( Media.BasicBox srcBox, Media.PixelBox dst )
 		{
-			if ( !this.buffer.Contains( srcBox ) )
+			if ( !this.Buffer.Contains( srcBox ) )
 			{
-				throw new Core.AxiomException( "source box out of range" );
+				throw new ArgumentOutOfRangeException( "srcBox","source box out of range." );
 			}
 
-			if ( srcBox.Left == 0 && srcBox.Right == width && srcBox.Top == 0 && srcBox.Bottom == height && srcBox.Front = 0 && srcBox.Back == depth && dst.Width == width && dst.Height == height && dst.Depth = depth && GLES2PixelUtil.GetGLOriginFormat( dst.Format ) != 0 )
+			if ( srcBox.Left == 0 && srcBox.Right == width && srcBox.Top == 0 && srcBox.Bottom == height && srcBox.Front == 0  && srcBox.Back == depth && dst.Width == width && dst.Height == height && dst.Depth == depth && GLES2PixelUtil.GetGLOriginFormat( dst.Format ) != 0 )
 			{
 				//The direct case: the user wants the entire texture in a format supported by GL
 				//so we don't need an intermediate buffer
@@ -184,36 +200,25 @@ namespace Axiom.RenderSystems.OpenGLES2
 				//Use buffer for intermediate copy
 				this.AllocateBuffer();
 				//Download entire buffer
-				this.Download( this.buffer );
+				this.Download( this.Buffer );
 				if ( srcBox.Width != dst.Width || srcBox.Height != dst.Height || srcBox.Depth != dst.Depth )
 				{
 					//We need scaling
-					Image.Scale( this.buffer.GetSubVolume( srcBox ), dst, ImageFilter.Bilinear );
+					Image.Scale( this.Buffer.GetSubVolume( srcBox ), dst, ImageFilter.Bilinear );
 				}
 				else
 				{
 					//Just copy the bit that we need
-					//todo
-					//PixelConverter.BulkPixelConversion(buffer.GetSubVolume(srcBox, dst));
+					PixelConverter.BulkPixelConversion( Buffer.GetSubVolume( srcBox) , dst );
 				}
 
 				this.FreeBuffer();
 			}
 		}
 
-		protected override void UnlockImpl()
-		{
-			if ( this.currentLockOptions != BufferLocking.ReadOnly )
-			{
-				//From buffer to card, only upload if was locked for writing
-				this.Upload( currentLock, lockedBox );
-			}
-			this.FreeBuffer();
-		}
-
 		public Glenum GLFormat
 		{
-			get { return this.glInternalFormat; }
+			get { return this.GlInternalFormat; }
 		}
 	}
 
@@ -228,7 +233,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		private List<RenderTexture> sliceTRT;
 
-		public GLES2TextureBuffer( string baseName, Glenum target, int id, int width, int height, Glenum internalFormat, int format, int face, int level, BufferUsage usage, bool crappyCard, bool writeGamma, int fsaa )
+		public GLES2TextureBuffer( string baseName, Glenum target, int id, int width, int height, Glenum internalFormat, Glenum format, int face, int level, BufferUsage usage, bool crappyCard, bool writeGamma, int fsaa )
 			: base( 0, 0, 0, PixelFormat.Unknown, usage )
 		{
 			this.target = target;
@@ -246,8 +251,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 				this.faceTarget = Glenum.TextureCubeMapPositiveX + face;
 			}
 			//Calculate the width and height of the texture at this mip level
-			width = this.level == 0 ? width : width / Math.Utility.Pow( 2, level );
-			height = this.level == 0 ? height : height / Math.Utility.Pow( 2, level );
+			width = this.level == 0 ? width : (int)(width / Math.Utility.Pow( 2, level ));
+			height = this.level == 0 ? height : (int)(height / Math.Utility.Pow( 2, level ));
 
 			if ( width < 1 )
 			{
@@ -261,7 +266,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			//Only 2D is supporte so depth is always 1
 			depth = 1;
 
-			glInternalFormat = internalFormat;
+			GlInternalFormat = internalFormat;
 			this.format = GLES2PixelUtil.GetClosestAxiomFormat( internalFormat, format );
 
 			rowPitch = width;
@@ -269,7 +274,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			sizeInBytes = PixelUtil.GetMemorySize( width, height, depth, this.format );
 
 			//Setup a pixel box
-			buffer = new PixelBox( width, height, depth, this.format );
+			Buffer = new PixelBox( width, height, depth, this.format );
 
 			if ( width == 0 || height == 0 || depth == 0 )
 			{
@@ -277,20 +282,15 @@ namespace Axiom.RenderSystems.OpenGLES2
 				return;
 			}
 
-			//todo
-			if ( true ) //(usage & TextureUsage.RenderTarget) == TextureUsage.RenderTarget
+			if ( ( (TextureUsage)usage & TextureUsage.RenderTarget) == TextureUsage.RenderTarget )
 			{
 				//Create render target for each slice
 
 				for ( int zoffset = 0; zoffset < depth; zoffset++ )
 				{
-					string name;
-					name = "rtt/ " + Size.ToString() + "/" + baseName;
-					GLES2SurfaceDesc rtarget;
-					rtarget = new GLES2SurfaceDesc();
-					rtarget.buffer = this;
-					rtarget.zoffset = zoffset;
-					RenderTexture trt = GLES2RTTManager.Instance.CreateRenderTexture( name, rtarget, writeGamma, fsaa );
+					var name = "rtt/ " + Size.ToString() + "/" + baseName;
+					var rtarget = new GLES2SurfaceDesc { buffer = this, zoffset = zoffset };
+					var trt = GLES2RTTManager.Instance.CreateRenderTexture( name, rtarget, writeGamma, fsaa );
 					this.sliceTRT.Add( trt );
 					Core.Root.Instance.RenderSystem.AttachRenderTarget( this.sliceTRT[ zoffset ] );
 				}
@@ -337,7 +337,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				Glenum glFormat = GLES2PixelUtil.GetGLOriginFormat( scaled.Format );
 				Glenum dataType = GLES2PixelUtil.GetGLOriginDataType( scaled.Format );
 
-				GL.TexImage2D( this.faceTarget, mip, glFormat, width, height, 0, glFormat, dataType, scaled.Data );
+				GL.TexImage2D( this.faceTarget, mip, (int)glFormat, width, height, 0, glFormat, dataType, scaled.Data.Pin() );
 
 				if ( mip != 0 )
 				{
@@ -355,7 +355,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 				int sizeInBytes = PixelUtil.GetMemorySize( width, height, 1, data.Format );
 				scaled = new PixelBox( width, height, 1, data.Format );
-				scaled.Data = new BufferBase( sizeInBytes );
+				scaled.Data = BufferBase.Wrap( new byte[sizeInBytes] );
 				Image.Scale( data, scaled, ImageFilter.Linear );
 			}
 
@@ -375,7 +375,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				if ( data.Format != format || !data.IsConsecutive )
 				{
 					throw new Core.AxiomException( "Compressed images must be consecutive, in the source format" );
-
+					/*
 					Glenum format = GLES2PixelUtil.GetClosestGLInternalFormat( this.format );
 					//Data must be consecutive and at beginning of buffer as PixelStore is not allowed
 					//for compressed formats
@@ -387,6 +387,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 					{
 						GL.CompressedTexImage2D( this.faceTarget, this.level, dest.Left, dest.Top, dest.Width, dest.Height, format, data.ConsecutiveSize, data.Data );
 					}
+					*/
 				}
 			}
 			else if ( this.softwareMipmap )
@@ -513,7 +514,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				return;
 			}
 
-			if ( !buffer.Contains( dstBox ) )
+			if ( !Buffer.Contains( dstBox ) )
 			{
 				throw new Core.AxiomException( "Destination box out of range" );
 			}
@@ -577,7 +578,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		public GLES2RenderBuffer( Glenum format, int width, int height, int numSamples )
 			: base( width, height, 1, GLES2PixelUtil.GetClosestAxiomFormat( format, PixelFormat.A8R8G8B8 ), BufferUsage.WriteOnly )
 		{
-			glInternalFormat = format;
+			GlInternalFormat = format;
 			//Genearte renderbuffer
 			GL.GenRenderbuffers( 1, ref this.renderBufferID );
 			//Bind it to FBO
