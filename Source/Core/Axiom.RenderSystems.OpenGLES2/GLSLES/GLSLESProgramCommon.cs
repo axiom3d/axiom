@@ -2,182 +2,186 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using GL = OpenTK.Graphics.ES20.GL;
 using GLenum = OpenTK.Graphics.ES20.All;
+
 using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 {
-    abstract class GLSLESProgramCommon
-    {
-        protected List<GLSLESProgramManagerCommon.GLUniformReference> glUniformReferences;
+	internal abstract class GLSLESProgramCommon
+	{
+		protected List<GLSLESProgramManagerCommon.GLUniformReference> glUniformReferences;
 
-        protected GLSLESGpuProgram vertexProgram, fragmentProgram;
+		protected GLSLESGpuProgram vertexProgram, fragmentProgram;
 
-        protected bool uniformRefsBuilt;
-        protected int glProgramHandle;
-        protected int linked;
-        protected bool triedToLinkAndFailed;
-        protected bool skeletalAnimation;
+		protected bool uniformRefsBuilt;
+		protected int glProgramHandle;
+		protected int linked;
+		protected bool triedToLinkAndFailed;
+		protected bool skeletalAnimation;
 
-        protected int[,] customAttribues = new int[9, Configuration.Config.MaxTextureCoordSets];
-        protected static int NullCustomAttributesIndex = -2;
-        protected static int NotFoundCustomAttributesIndex = -1;
-        protected Dictionary<string, VertexElementSemantic> semanticTypeMap;
+		protected int[ , ] customAttribues = new int[ 9,Configuration.Config.MaxTextureCoordSets ];
+		protected static int NullCustomAttributesIndex = -2;
+		protected static int NotFoundCustomAttributesIndex = -1;
+		protected Dictionary<string, VertexElementSemantic> semanticTypeMap;
 
-        public GLSLESProgramCommon(GLSLESGpuProgram vertexProgram, GLSLESGpuProgram fragmentProgram)
-        {
-            this.vertexProgram = vertexProgram;
-            this.fragmentProgram = fragmentProgram;
-            uniformRefsBuilt = false;
-            linked = 0;
-            triedToLinkAndFailed = false;
+		public GLSLESProgramCommon( GLSLESGpuProgram vertexProgram, GLSLESGpuProgram fragmentProgram )
+		{
+			this.vertexProgram = vertexProgram;
+			this.fragmentProgram = fragmentProgram;
+			this.uniformRefsBuilt = false;
+			this.linked = 0;
+			this.triedToLinkAndFailed = false;
 
-            //init customAttributeIndexes
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < Configuration.Config.MaxTextureCoordSets; j++)
-                {
-                    customAttribues[i, j] = NullCustomAttributesIndex;
-                }
-            }
+			//init customAttributeIndexes
+			for ( int i = 0; i < 9; i++ )
+			{
+				for ( int j = 0; j < Configuration.Config.MaxTextureCoordSets; j++ )
+				{
+					this.customAttribues[ i, j ] = NullCustomAttributesIndex;
+				}
+			}
 
-            //Initialize the attribute to semantic map
-            semanticTypeMap.Add("vertex", VertexElementSemantic.Position);
-            semanticTypeMap.Add("blendWeights", VertexElementSemantic.BlendWeights);
-            semanticTypeMap.Add("normal", VertexElementSemantic.Normal);
-            semanticTypeMap.Add("colour", VertexElementSemantic.Diffuse);
-            semanticTypeMap.Add("secondary_colour", VertexElementSemantic.Specular);
-            semanticTypeMap.Add("blendIndices", VertexElementSemantic.BlendIndices);
-            semanticTypeMap.Add("tangent", VertexElementSemantic.Tangent);
-            semanticTypeMap.Add("binormal", VertexElementSemantic.Binormal);
-            semanticTypeMap.Add("uv", VertexElementSemantic.TexCoords);
+			//Initialize the attribute to semantic map
+			this.semanticTypeMap.Add( "vertex", VertexElementSemantic.Position );
+			this.semanticTypeMap.Add( "blendWeights", VertexElementSemantic.BlendWeights );
+			this.semanticTypeMap.Add( "normal", VertexElementSemantic.Normal );
+			this.semanticTypeMap.Add( "colour", VertexElementSemantic.Diffuse );
+			this.semanticTypeMap.Add( "secondary_colour", VertexElementSemantic.Specular );
+			this.semanticTypeMap.Add( "blendIndices", VertexElementSemantic.BlendIndices );
+			this.semanticTypeMap.Add( "tangent", VertexElementSemantic.Tangent );
+			this.semanticTypeMap.Add( "binormal", VertexElementSemantic.Binormal );
+			this.semanticTypeMap.Add( "uv", VertexElementSemantic.TexCoords );
 
-            if ((vertexProgram == null || fragmentProgram == null) && false)//!Core.Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
-            {
-                throw new Core.AxiomException("Attempted to create a shader program without both a vertex and fragment program");
-            }
+			if ( ( vertexProgram == null || fragmentProgram == null ) && false ) //!Core.Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+			{
+				throw new Core.AxiomException( "Attempted to create a shader program without both a vertex and fragment program" );
+			}
+		}
 
-        }
-        ~GLSLESProgramCommon()
-        {
-            OpenTK.Graphics.ES20.GL.DeleteProgram(glProgramHandle);
-        }
+		~GLSLESProgramCommon()
+		{
+			OpenTK.Graphics.ES20.GL.DeleteProgram( this.glProgramHandle );
+		}
 
-        protected virtual void BuildGLUniformReferences()
-        { }
-        protected void GetMicroCodeFromCache()
-        {
-            /*Port notes
+		protected virtual void BuildGLUniformReferences() {}
+
+		protected void GetMicroCodeFromCache()
+		{
+			/*Port notes
              * Ogre attempts to get the code from a cache here,
              * but Axiom hasn't implemented the GpuManager.GetMicrocodeFromCache() function
              * Fortunately Ogre falls back on CompileAndLink(), which is what we're goint to do
              */
-            CompileAndLink();
-        }
-        protected abstract void CompileAndLink();
-        protected abstract void _useProgram();
+			this.CompileAndLink();
+		}
 
-        protected VertexElementSemantic GetAttributeSemanticEnum(string type)
-        {
-            if (semanticTypeMap.ContainsKey(type))
-            {
-                return semanticTypeMap[type];
-            }
-            else
-            {
-                return 0;
-            }
-        }
-        protected string GetAttributeSemanticString(VertexElementSemantic semantic)
-        {
-            foreach (var key in semanticTypeMap.Keys)
-            {
-                if (semanticTypeMap[key] == semantic)
-                {
-                    return key;
-                }
-            }
+		protected abstract void CompileAndLink();
+		protected abstract void _useProgram();
 
-            return string.Empty;
-        }
-        public abstract void Activate();
+		protected VertexElementSemantic GetAttributeSemanticEnum( string type )
+		{
+			if ( this.semanticTypeMap.ContainsKey( type ) )
+			{
+				return this.semanticTypeMap[ type ];
+			}
+			else
+			{
+				return 0;
+			}
+		}
 
-        public abstract void UpdateUniforms(GpuProgramParameters parms, int mask, GpuProgramType fromProgType);
+		protected string GetAttributeSemanticString( VertexElementSemantic semantic )
+		{
+			foreach ( var key in this.semanticTypeMap.Keys )
+			{
+				if ( this.semanticTypeMap[ key ] == semantic )
+				{
+					return key;
+				}
+			}
 
-        public abstract void UpdatePassIterationUniforms(GpuProgramParameters parms);
+			return string.Empty;
+		}
 
-        public virtual int GetAttributeIndex(VertexElementSemantic semantic, int index)
-        {
-            int res = customAttribues[(int)semantic - 1, index];
-            if (res == NullCustomAttributesIndex)
-            {
-                string attString = GetAttributeSemanticString(semantic);
-                int attrib = GL.GetAttribLocation(glProgramHandle, attString);
+		public abstract void Activate();
 
-                //sadly position is a special case
-                if (attrib == NotFoundCustomAttributesIndex && semantic == VertexElementSemantic.Position)
-                {
-                    attrib = GL.GetAttribLocation(glProgramHandle, "position");
-                }
+		public abstract void UpdateUniforms( GpuProgramParameters parms, int mask, GpuProgramType fromProgType );
 
-                //for uv and other case the index is a part of the name
-                if (attrib == NotFoundCustomAttributesIndex)
-                {
-                    string attStringWithSemantic = attString + index.ToString();
-                    attrib = GL.GetAttribLocation(glProgramHandle, attStringWithSemantic);
-                }
+		public abstract void UpdatePassIterationUniforms( GpuProgramParameters parms );
 
-                //update customAttributes with the index we found (or didnt' find)
-                customAttribues[(int)semantic - 1, index] = attrib;
-                res = attrib;
-            }
-            return res;
-        }
-        public bool IsAttributeValid(VertexElementSemantic semantic, int index)
-        {
-            return GetAttributeIndex(semantic, index) != NotFoundCustomAttributesIndex;
-        }
-        public int GLProgramHandle
-        {
-            get { return glProgramHandle; }
-        }
-        public bool SkeletalAnimationIncluded
-        {
-            get { return skeletalAnimation; }
-            set { skeletalAnimation = value; }
-        }
-        public GLSLESGpuProgram VertexProgram
-        {
-            get
-            {
-                return vertexProgram;
-            }
-            set
-            {
-                vertexProgram = value;
-            }
-        }
-        protected string CombinedName
-        {
-            get
-            {
-                string name = string.Empty;
+		public virtual int GetAttributeIndex( VertexElementSemantic semantic, int index )
+		{
+			int res = this.customAttribues[ (int) semantic - 1, index ];
+			if ( res == NullCustomAttributesIndex )
+			{
+				string attString = this.GetAttributeSemanticString( semantic );
+				int attrib = GL.GetAttribLocation( this.glProgramHandle, attString );
 
-                if (vertexProgram != null)
-                {
-                    name += "Vertex Program:";
-                    name += vertexProgram.Name;
-                }
-                if (fragmentProgram != null)
-                {
-                    name += " Fragment Program:";
-                    name += fragmentProgram.Name;
-                }
-                name += '\n';
+				//sadly position is a special case
+				if ( attrib == NotFoundCustomAttributesIndex && semantic == VertexElementSemantic.Position )
+				{
+					attrib = GL.GetAttribLocation( this.glProgramHandle, "position" );
+				}
 
-                return name;
-            }
-        }
-    }
+				//for uv and other case the index is a part of the name
+				if ( attrib == NotFoundCustomAttributesIndex )
+				{
+					string attStringWithSemantic = attString + index.ToString();
+					attrib = GL.GetAttribLocation( this.glProgramHandle, attStringWithSemantic );
+				}
+
+				//update customAttributes with the index we found (or didnt' find)
+				this.customAttribues[ (int) semantic - 1, index ] = attrib;
+				res = attrib;
+			}
+			return res;
+		}
+
+		public bool IsAttributeValid( VertexElementSemantic semantic, int index )
+		{
+			return this.GetAttributeIndex( semantic, index ) != NotFoundCustomAttributesIndex;
+		}
+
+		public int GLProgramHandle
+		{
+			get { return this.glProgramHandle; }
+		}
+
+		public bool SkeletalAnimationIncluded
+		{
+			get { return this.skeletalAnimation; }
+			set { this.skeletalAnimation = value; }
+		}
+
+		public GLSLESGpuProgram VertexProgram
+		{
+			get { return this.vertexProgram; }
+			set { this.vertexProgram = value; }
+		}
+
+		protected string CombinedName
+		{
+			get
+			{
+				string name = string.Empty;
+
+				if ( this.vertexProgram != null )
+				{
+					name += "Vertex Program:";
+					name += this.vertexProgram.Name;
+				}
+				if ( this.fragmentProgram != null )
+				{
+					name += " Fragment Program:";
+					name += this.fragmentProgram.Name;
+				}
+				name += '\n';
+
+				return name;
+			}
+		}
+	}
 }

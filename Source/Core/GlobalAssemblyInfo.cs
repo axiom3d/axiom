@@ -42,9 +42,7 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible( false )]
 [assembly: CLSCompliant( false )]
-[assembly:
-	AssemblyConfiguration(
-		"https://axiomengine.svn.sourceforge.net/svnroot/axiomengine, Mixed Revisions, Local Modifications, Debug" )]
+[assembly: AssemblyConfiguration( "https://axiomengine.svn.sourceforge.net/svnroot/axiomengine, Mixed Revisions, Local Modifications, Debug" )]
 [assembly: AssemblyCompanyAttribute( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
 [assembly: AssemblyProductAttribute( "Axiom Rendering Engine" )]
 [assembly: AssemblyCopyrightAttribute( "Copyright © 2003-2012 Axiom Rendering Engine Project Team." )]

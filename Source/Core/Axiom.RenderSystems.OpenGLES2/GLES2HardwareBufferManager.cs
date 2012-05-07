@@ -2,99 +2,93 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using Axiom.Graphics;
+
 using GL = OpenTK.Graphics.ES20.GL;
 using GLenum = OpenTK.Graphics.ES20.All;
 
 namespace Axiom.RenderSystems.OpenGLES2
 {
-    class GLES2HardwareBufferManagerBase : HardwareBufferManagerBase
-    {
-        string scratchBufferPool;
-        object scratchMutex;
-        int mapBufferThreshold;
+	internal class GLES2HardwareBufferManagerBase : HardwareBufferManagerBase
+	{
+		private string scratchBufferPool;
+		private object scratchMutex;
+		private int mapBufferThreshold;
 
-        public GLES2HardwareBufferManagerBase()
-        { }
-        public override HardwareVertexBuffer CreateVertexBuffer(VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer)
-        {
-            throw new NotImplementedException();
-        }
+		public GLES2HardwareBufferManagerBase() {}
 
-        public override HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer)
-        {
-            
-            throw new NotImplementedException();
-        }
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		{
+			throw new NotImplementedException();
+		}
 
-        public static GLenum GetGLUsage(int usage)
-        { }
-        public static GLenum GetGLType(VertexElementType type)
-        {
-            switch (type)
-            {
-                case VertexElementType.Float1:
-                case VertexElementType.Float2:
-                case VertexElementType.Float3:
-                case VertexElementType.Float4:
-                    return GLenum.Float;
-                case VertexElementType.Short1:
-                case VertexElementType.Short2:
-                case VertexElementType.Short3:
-                case VertexElementType.Short4:
-                    return GLenum.Short;
-                case VertexElementType.Color:
-                case VertexElementType.Color_ARGB:
-                case VertexElementType.Color_ABGR:
-                case VertexElementType.UByte4:
-                    return GLenum.UnsignedByte;
-                default:
-                    return 0;
-            }
-        }
+		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+		{
+			throw new NotImplementedException();
+		}
 
-        public void AllocateScratch(int size)
-        { }
-        public void DeallocateScratch(IntPtr ptr)
-        { }
+		public static GLenum GetGLUsage( int usage ) {}
 
-        public int GLMapBufferThreshold
-        {
-            get;
-            set;
-        }
-       
-        
-    }
-    class GLES2HardwareBufferManager : HardwareBufferManager
-    {
-        static GLES2HardwareBufferManager _instance = null;
+		public static GLenum GetGLType( VertexElementType type )
+		{
+			switch ( type )
+			{
+				case VertexElementType.Float1:
+				case VertexElementType.Float2:
+				case VertexElementType.Float3:
+				case VertexElementType.Float4:
+					return GLenum.Float;
+				case VertexElementType.Short1:
+				case VertexElementType.Short2:
+				case VertexElementType.Short3:
+				case VertexElementType.Short4:
+					return GLenum.Short;
+				case VertexElementType.Color:
+				case VertexElementType.Color_ARGB:
+				case VertexElementType.Color_ABGR:
+				case VertexElementType.UByte4:
+					return GLenum.UnsignedByte;
+				default:
+					return 0;
+			}
+		}
 
-        public GLES2HardwareBufferManager()
-            : base(new GLES2HardwareBufferManagerBase())
-        {
-        }
-        protected override void dispose(bool disposeManagedResources)
-        {
-            _instance = null;
-            base.dispose(disposeManagedResources);
-        }
+		public void AllocateScratch( int size ) {}
+		public void DeallocateScratch( IntPtr ptr ) {}
 
-        public static GLenum GetGLUsage(int usage)
-        {
-            return GLES2HardwareBufferManagerBase.GetGLUsage(usage);
-        }
-        public static GLenum GetGLType(VertexElementType type)
-        {
-            return GLES2HardwareBufferManagerBase.GetGLType(type);
-        }
-        /// <summary>
-        /// Allows us to use a pool of memory as a scratch 
-        /// area for hardware buffers. This is because GL.MapBuffer is incredibly inefficient,
-        /// seemingly no matter what options we give it. So for the period of lock/unlock, we will instead allocate a section of a local memory pool, and use GL.BufferSubDataARB / GL.GetBufferSubDataARB instead.
-        /// </summary>
-        /// <param name="size"></param>
-        public void AllocateScratch(int size)
-        { }
-    }
+		public int GLMapBufferThreshold { get; set; }
+	}
+
+	internal class GLES2HardwareBufferManager : HardwareBufferManager
+	{
+		private static GLES2HardwareBufferManager _instance = null;
+
+		public GLES2HardwareBufferManager()
+			: base( new GLES2HardwareBufferManagerBase() ) {}
+
+		protected override void dispose( bool disposeManagedResources )
+		{
+			_instance = null;
+			base.dispose( disposeManagedResources );
+		}
+
+		public static GLenum GetGLUsage( int usage )
+		{
+			return GLES2HardwareBufferManagerBase.GetGLUsage( usage );
+		}
+
+		public static GLenum GetGLType( VertexElementType type )
+		{
+			return GLES2HardwareBufferManagerBase.GetGLType( type );
+		}
+
+		/// <summary>
+		/// Allows us to use a pool of memory as a scratch 
+		/// area for hardware buffers. This is because GL.MapBuffer is incredibly inefficient,
+		/// seemingly no matter what options we give it. So for the period of lock/unlock, we will instead allocate a section of a local memory pool, and use GL.BufferSubDataARB / GL.GetBufferSubDataARB instead.
+		/// </summary>
+		/// <param name="size"></param>
+		public void AllocateScratch( int size ) {}
+	}
 }
