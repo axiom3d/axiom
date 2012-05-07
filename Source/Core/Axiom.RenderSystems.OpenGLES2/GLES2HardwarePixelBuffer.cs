@@ -108,7 +108,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				//do conversion in temporary buffer
 				this.AllocateBuffer();
 				scaled = this.buffer.GetSubVolume( dstBox );
-				GLES2PixelUtil.ConvertToGLFormat( scaled, out scaled );
+				GLES2PixelUtil.ConvertToGLFormat( ref scaled, ref scaled );
 			}
 			else
 			{
@@ -455,9 +455,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 		private void BlitFromTexture( GLES2TextureBuffer src, BasicBox srcBox, BasicBox dstBox )
 		{
 			/*Port notes
-             * Ogre immediately returns void, yet much code is provided below
-             * The remaining code will ported if/when Ogre makes use of it
-             */
+			 * Ogre immediately returns void, yet much code is provided below
+			 * The remaining code will ported if/when Ogre makes use of it
+			 */
 			return; //Ogre todo add a shader attach...
 		}
 

@@ -9,6 +9,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 {
 	internal class GLES2HardwareIndexBuffer : HardwareIndexBuffer
 	{
+		public GLES2HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+			: base( manager, type, numIndices, usage, false, useShadowBuffer ) {}
+
 		protected override Core.BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{
 			throw new NotImplementedException();

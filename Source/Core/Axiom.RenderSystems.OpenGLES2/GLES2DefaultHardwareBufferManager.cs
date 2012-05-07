@@ -47,13 +47,19 @@ namespace Axiom.RenderSystems.OpenGLES2
 {
 	internal class GLES2DefaultHardwareBufferManager : HardwareBufferManagerBase
 	{
-		private static GLES2DefaultHardwareBufferManager _instance = null;
 		public GLES2DefaultHardwareBufferManager() {}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			DestroyAllDeclarations();
-			DestroyAllBindings();
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					DestroyAllDeclarations();
+					DestroyAllBindings();
+				}
+			}
+
 			base.dispose( disposeManagedResources );
 		}
 
@@ -67,23 +73,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 			return new GLES2DefaultHardwareIndexBuffer( type, numIndices, usage );
 		}
 
-		//Ogre throws an Exception saying RenderToVertexBuffer is not supported
-		//Which is good seeing as we don't have RenderToVertex buffer support either
-		//public RenderToVertexBuffer CreateRenderToVertexBuffer()
+		//public override RenderToVertexBuffer CreateRenderToVertexBuffer()
 		//{
-
+		//    throw new AxiomException("Cannot create RenderToVertexBuffer in GLES2DefaultHardwareBufferManagerBase);
 		//}
 
-		public GLES2DefaultHardwareBufferManager Instance
-		{
-			get
-			{
-				if ( _instance == null )
-				{
-					_instance = new GLES2DefaultHardwareBufferManager();
-				}
-				return _instance;
-			}
-		}
 	}
 }

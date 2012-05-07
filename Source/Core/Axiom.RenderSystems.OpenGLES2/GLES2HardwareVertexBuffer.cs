@@ -18,8 +18,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 		private IntPtr _scratchPtr;
 		private bool _scratchUploadOnUnlock;
 
-		public GLES2HardwareVertexBuffer( HardwareBufferManagerBase manager, int vertexSize, int numVertices, BufferUsage usage, bool useShadowBuffer )
-			: base( manager, vertexSize, numVertices, usage, false, useShadowBuffer )
+		public GLES2HardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage, bool useShadowBuffer )
+			: base( manager, vertexDeclaration, numVertices, usage, false, useShadowBuffer )
 		{
 			if ( !useShadowBuffer )
 			{
