@@ -425,7 +425,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 					GL.PixelStore( Glenum.UnpackAlignment, 1 );
 				}
 			}
-			GL.TexSubImage2D( this.faceTarget, this.level, dest.Left, dest.Top, dest.Width, dest.Height, GLES2PixelUtil.GetGLOriginFormat( data.Format ), GLES2PixelUtil.GetGLOriginFormat( data.Format ), data.Data );
+
+			GL.TexSubImage2D( this.faceTarget, this.level, dest.Left, dest.Top, dest.Width, dest.Height, GLES2PixelUtil.GetGLOriginFormat( data.Format ), GLES2PixelUtil.GetGLOriginFormat( data.Format ), data.Data.Pin() );
 		}
 
 		protected override void Download( PixelBox data )
@@ -527,7 +528,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			if ( GLES2PixelUtil.GetGLOriginFormat( src.Format ) == 0 )
 			{
 				//Conver to buffer intenral format
-				buf = new BufferBase( PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, this.format ) );
+				buf = BufferBase.Wrap( new byte[ PixelUtil.GetMemorySize( src.Width, src.Height, src.Depth, this.format ) ] );
 
 				srcPB = new PixelBox( src.Width, src.Height, src.Depth, this.format, buf );
 			}
@@ -576,7 +577,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		private int renderBufferID;
 
 		public GLES2RenderBuffer( Glenum format, int width, int height, int numSamples )
-			: base( width, height, 1, GLES2PixelUtil.GetClosestAxiomFormat( format, PixelFormat.A8R8G8B8 ), BufferUsage.WriteOnly )
+			: base( width, height, 1, GLES2PixelUtil.GetClosestAxiomFormat( format, (Glenum)PixelFormat.A8R8G8B8 ), BufferUsage.WriteOnly )
 		{
 			GlInternalFormat = format;
 			//Genearte renderbuffer
