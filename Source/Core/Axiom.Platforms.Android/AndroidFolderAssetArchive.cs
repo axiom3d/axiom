@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,31 +25,25 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
+using Android.Content.Res;
 
 using Axiom.FileSystem;
-using Android.Content.Res;
 
 #endregion Namespace Declarations
 
@@ -57,7 +52,7 @@ namespace Axiom.Platform.Android
 	public class AndroidFolderAssetArchive : FileSystemArchive
 	{
 		private string _type;
-		private AssetManager _assets;
+		private readonly AssetManager _assets;
 
 		public AndroidFolderAssetArchive( AssetManager assets, string name, string type )
 			: base( name, type )
@@ -69,20 +64,12 @@ namespace Axiom.Platform.Android
 
 		public override bool IsCaseSensitive
 		{
-			get
-			{
-				return true;
-			}
+			get { return true; }
 		}
 
-		public override void Load()
-		{
-			
-		}
+		public override void Load() {}
 
-		public override void Unload()
-		{
-		}
+		public override void Unload() {}
 
 		public override System.IO.Stream Open( string filename, bool readOnly )
 		{
@@ -91,7 +78,7 @@ namespace Axiom.Platform.Android
 
 		public override List<string> List( bool recursive )
 		{
-			_assets.List( Name );
+			this._assets.List( Name );
 			return new List<string>();
 		}
 
@@ -120,10 +107,9 @@ namespace Axiom.Platform.Android
 
 	public class AndroidFolderAssetArchiveFactory : ArchiveFactory
 	{
-
 		private const string _type = "AndroidFolderAsset";
 
-		private AssetManager _assets;
+		private readonly AssetManager _assets;
 
 		public AndroidFolderAssetArchiveFactory( AssetManager assets )
 		{
@@ -134,15 +120,12 @@ namespace Axiom.Platform.Android
 
 		public override string Type
 		{
-			get
-			{
-				return _type;
-			}
+			get { return _type; }
 		}
 
 		public override Archive CreateInstance( string name )
 		{
-			return new AndroidFolderAssetArchive( _assets, name, _type );
+			return new AndroidFolderAssetArchive( this._assets, name, _type );
 		}
 
 		public override void DestroyInstance( ref Archive obj )
@@ -155,6 +138,5 @@ namespace Axiom.Platform.Android
 		}
 
 		#endregion ArchiveFactory Implementation
-
 	}
 }
