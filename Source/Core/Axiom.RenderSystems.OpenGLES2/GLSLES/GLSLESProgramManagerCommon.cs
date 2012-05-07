@@ -329,7 +329,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 								{
 									if ( trim[ k ] == ']' )
 									{
-										arrayEnd == k;
+										arrayEnd = k;
 										break;
 									}
 								}

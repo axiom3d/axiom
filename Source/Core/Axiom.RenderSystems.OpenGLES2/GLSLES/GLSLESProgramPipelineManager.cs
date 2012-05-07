@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 					if ( !this.programPipelines.ContainsKey( activeKey ) )
 					{
 						this.activeProgramPipeline = new GLSLESProgramPipeline( activeVertexGpuProgram, activeFragmentGpuProgram );
-						this.programPipelines.Add( activeKey, new GLSLESProgramPipeline( activeVertexGpuProgram, activeFragmentGpuProgram );
+						this.programPipelines.Add( activeKey, new GLSLESProgramPipeline( activeVertexGpuProgram, activeFragmentGpuProgram ) );
 					}
 					else
 					{
