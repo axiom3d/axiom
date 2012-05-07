@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,114 +25,101 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: GLES2DefaultHardwareVertexBuffer.cs 2805 2011-08-17 16:26:56Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
-using Axiom.Graphics;
+
 using Axiom.Core;
+using Axiom.Graphics;
 using Axiom.Utilities;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	/// <summary>
-	/// 
 	/// </summary>
 	[OgreVersion( 1, 8, 0, "It's from trunk rev.'b0d2092773fb'" )]
 	public class GLES2DefaultHardwareVertexBuffer : HardwareVertexBuffer
 	{
 		/// <summary>
-		/// 
 		/// </summary>
-		protected IntPtr _dataPtr;
+		protected BufferBase _dataPtr;
+
 		protected byte[] _data;
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVertices"></param>
-		/// <param name="usage"></param>
+		/// <param name="vertexSize"> </param>
+		/// <param name="numVertices"> </param>
+		/// <param name="usage"> </param>
 		public GLES2DefaultHardwareVertexBuffer( VertexDeclaration declaration, int numVertices, BufferUsage usage )
 			: base( null, declaration, numVertices, usage, true, false )
 		{
-			_data = new byte[ declaration.GetVertexSize() * numVertices ];
-			_dataPtr = Memory.PinObject( _data );
+			this._data = new byte[ declaration.GetVertexSize() * numVertices ];
+			this._dataPtr = BufferBase.Wrap( this._data );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <returns></returns>
-		public IntPtr GetData( int offset )
-		{
-			return new IntPtr( _dataPtr.ToInt32() + offset );
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="src"></param>
-		/// <param name="discardWholeBuffer"></param>
+		/// <param name="offset"> </param>
+		/// <param name="length"> </param>
+		/// <param name="src"> </param>
+		/// <param name="discardWholeBuffer"> </param>
 		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
 		{
 			Contract.Requires( ( offset + length ) <= sizeInBytes );
 			// ignore discard, memory is not guaranteed to be zeroised
-			Memory.Copy( src, GetData( offset ), length );
+			Memory.Copy( src, this._dataPtr + offset, length );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="dest"></param>
+		/// <param name="offset"> </param>
+		/// <param name="length"> </param>
+		/// <param name="dest"> </param>
 		public override void ReadData( int offset, int length, BufferBase dest )
 		{
 			Contract.Requires( ( offset + length ) <= sizeInBytes );
-			Memory.Copy( GetData( offset ), dest, length );
+			Memory.Copy( this._dataPtr + offset, dest, length );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="locking"></param>
-		/// <returns></returns>
+		/// <param name="offset"> </param>
+		/// <param name="length"> </param>
+		/// <param name="locking"> </param>
+		/// <returns> </returns>
 		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{
-			LogManager.Instance.Write( "WRONG LOCK" );
-			return GetData( offset );
+			return this._dataPtr + offset;
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="locking"></param>
-		/// <returns></returns>
+		/// <param name="offset"> </param>
+		/// <param name="length"> </param>
+		/// <param name="locking"> </param>
+		/// <returns> </returns>
 		public override BufferBase Lock( int offset, int length, BufferLocking locking )
 		{
-			LogManager.Instance.Write( "WRONG LOCK" );
 			isLocked = true;
-			return GetData( offset );
+			return this._dataPtr + offset;
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected override void UnlockImpl()
 		{
@@ -139,7 +127,6 @@ namespace Axiom.RenderSystems.OpenGLES2
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public override void Unlock()
 		{
@@ -148,18 +135,18 @@ namespace Axiom.RenderSystems.OpenGLES2
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="disposeManagedResources"></param>
+		/// <param name="disposeManagedResources"> </param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( _data != null )
+					if ( this._data != null )
 					{
-						Memory.UnpinObject( _data );
+						this._dataPtr.SafeDispose();
+						this._data = null;
 					}
 				}
 			}
@@ -170,4 +157,3 @@ namespace Axiom.RenderSystems.OpenGLES2
 		}
 	}
 }
-
