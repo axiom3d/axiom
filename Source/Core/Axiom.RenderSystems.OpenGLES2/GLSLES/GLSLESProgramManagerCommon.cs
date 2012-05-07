@@ -265,7 +265,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 			// NOTE this relies on the source already having been preprocessed
 			// which is done in GLSLESProgram::loadFromSource
 			string line;
-			int currPos = GLSLESProgram.Find( src, "uniform" );
+            int currPos = src.IndexOf("uniform");
 			while ( currPos != -1 )
 			{
 				var def = new GpuProgramParameters.GpuConstantDefinition();
@@ -314,7 +314,8 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 
 					//remove spaces before opening square braces, otherwise the following split() can split the line at inapppropriate
 					//places (e.g. "vec3 sometihng [3]" won't work).
-					for ( int sqp = GLSLESProgram.Find( line, " [" ); sqp != -1; sqp = GLSLESProgram.Find( line, " [" ) )
+
+                    for (int sqp = line.IndexOf("["); sqp != -1; sqp = line.IndexOf(" ["))
 					{
 						line.Remove( sqp, 1 );
 					}
@@ -412,7 +413,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 					}
 				}
 				//Find next one
-				currPos = GLSLESProgram.Find( src, "uniform" );
+                currPos = src.IndexOf("uniform");
 			}
 		}
 	}
