@@ -2,423 +2,440 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using Axiom.Graphics;
 using Axiom.Core;
+
 using GLenum = OpenTK.Graphics.ES20.All;
 using GL = OpenTK.Graphics.ES20.GL;
 
 namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 {
-    class GLSLESProgram : HighLevelGpuProgram
-    {
-        #region NestedTypes
-        public class CmdOptimization
-        {
-            public string DoGet(GLSLESProgram target)
-            {
-                return target.optimizerEnabled.ToString();
-            }
-            public void DoSet(GLSLESProgram target, string val)
-            {
-                target.OptimizerEnabled = bool.Parse(val);
-            }
-        }
-        public class CmdPreprocessorDefines
-        {
-            public string DoGet(GLSLESProgram target)
-            {
-                return target.PreprocessorDefines;
-            }
-            public void DoSet(GLSLESProgram target, string val)
-            {
-                target.PreprocessorDefines = val;
-            }
-        } 
-        #endregion
+	internal class GLSLESProgram : HighLevelGpuProgram
+	{
+		#region NestedTypes
 
+		public class CmdOptimization
+		{
+			public string DoGet( GLSLESProgram target )
+			{
+				return target.optimizerEnabled.ToString();
+			}
 
-        private int glShaderHandle, glProgramHandle;
-        int compiled;
-        bool isOptimized;
-        string preprocessorDefines;
-        bool optimizerEnabled;
+			public void DoSet( GLSLESProgram target, string val )
+			{
+				target.OptimizerEnabled = bool.Parse( val );
+			}
+		}
 
-        protected static CmdPreprocessorDefines cmdPreprocessorDefines;
-        static CmdOptimization cmdOptimization;
+		public class CmdPreprocessorDefines
+		{
+			public string DoGet( GLSLESProgram target )
+			{
+				return target.PreprocessorDefines;
+			}
 
-        public GLSLESProgram(ResourceManager creator, string name, ulong handle,
-            string group, bool isManual, IManualResourceLoader loader)
-            :base(creator, name, handle, group, isManual, loader)
-        {
-            glShaderHandle = 0;
-            glProgramHandle = 0;
-            compiled = 0;
-            isOptimized = false;
-            optimizerEnabled = true;
+			public void DoSet( GLSLESProgram target, string val )
+			{
+				target.PreprocessorDefines = val;
+			}
+		}
 
-            //todo: ogre does something funky with a dictionary here...
-          
-            syntaxCode = "glsles";
-        }
-        protected override void dispose(bool disposeManagedResources)
-        {
-            // Have to call this here reather than in Resource destructor
-            // since calling virtual methods in base destructors causes crash
-            if (IsLoaded)
-            {
-                Unload();
-            }
-            else
-            {
-                UnloadHighLevel();
-            }
-            base.dispose(disposeManagedResources);
-        }
-        protected override void CreateLowLevelImpl()
-        {
-            assemblerProgram = new GLSLESProgram(Creator, Name, Handle, Group, IsManuallyLoaded, loader);
-        }
+		#endregion
 
-        protected override void UnloadHighLevelImpl()
-        {
-            if (IsSupported)
-            {
-                GL.DeleteShader(glShaderHandle);
+		private int glShaderHandle, glProgramHandle;
+		private int compiled;
+		private string preprocessorDefines;
+		private bool optimizerEnabled;
 
-                if (false)//Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
-                {
-                    GL.DeleteProgram(glProgramHandle);
-                }
-            }
-        }
-        protected override void LoadFromSource()
-        {
-            GLSLESPreprocessor cpp = new GLSLESPreprocessor();
+		protected static CmdPreprocessorDefines cmdPreprocessorDefines;
+		private static CmdOptimization cmdOptimization;
 
-            //Pass all user-defined macros to preprocessor
-            if (preprocessorDefines.Length > 0)
-            {
-                int pos = 0;
-                while (pos != preprocessorDefines.Length)
-                {
-                    //Find delims
-                    int endpos = FindFirstOf(preprocessorDefines, ";,=", pos);
+		public GLSLESProgram( ResourceManager creator, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader )
+			: base( creator, name, handle, group, isManual, loader )
+		{
+			this.glShaderHandle = 0;
+			this.glProgramHandle = 0;
+			this.compiled = 0;
+			this.IsOptimized = false;
+			this.optimizerEnabled = true;
 
-                    if (endpos != -1)
-                    {
-                        int macroNameStart = pos;
-                        int macroNameLen = endpos - pos;
-                        pos = endpos;
+			//todo: ogre does something funky with a dictionary here...
 
-                        //Check definition part
-                        if (preprocessorDefines[pos] == '=')
-                        {
-                            //Set up a definition, skip delim
-                            ++pos;
-                            int macroValStart = pos;
-                            int macroValLen;
+			syntaxCode = "glsles";
+		}
 
-                            endpos = FindFirstOf(preprocessorDefines, ";,", pos);
-                            if (endpos == -1)
-                            {
-                                macroValLen = preprocessorDefines.Length - pos;
-                                pos = endpos;
-                            }
-                            else
-                            {
-                                macroValLen = endpos - pos;
-                                pos = endpos + 1;
-                            }
-                            cpp.Define(preprocessorDefines + macroNameStart, macroNameLen, preprocessorDefines + macroValStart, macroValLen);
-                        }
-                        else
-                        {
-                            //No definition part, define as "1"
-                            ++pos;
-                            cpp.Define(preprocessorDefines + macroNameStart, macroNameLen, 1);
-                        }
-                    }
-                    else
-                    {
-                        pos = endpos;
-                    }
-                }
-                int outSize = 0;
-                string src = source;
-                int srcLen = source.Length;
-                string outVal = cpp.Parse(src, srcLen, out outSize);
-                if (outVal == null || outSize == 0)
-                {
-                    //Failed to preprocess, break out
-                    throw new AxiomException("Failed to preprocess shader " + base.Name);
-                }
+		protected override void dispose( bool disposeManagedResources )
+		{
+			// Have to call this here reather than in Resource destructor
+			// since calling virtual methods in base destructors causes crash
+			if ( IsLoaded )
+			{
+				Unload();
+			}
+			else
+			{
+				UnloadHighLevel();
+			}
+			base.dispose( disposeManagedResources );
+		}
 
-                source = new string(outVal.ToCharArray(), 0, outSize);
+		protected override void CreateLowLevelImpl()
+		{
+			assemblerProgram = new GLSLESProgram( Creator, Name, Handle, Group, IsManuallyLoaded, loader );
+		}
 
-            }
-        }
-        public override GpuProgramParameters CreateParameters()
-        {
-            var parms = base.CreateParameters();
-            parms.TransposeMatrices = true;
-            return parms;
-        }
-        protected override void unload()
-        {
-            // We didn't create mAssemblerProgram through a manager, so override this
-            // implementation so that we don't try to remove it from one. Since getCreator()
-            // is used, it might target a different matching handle!
-            assemblerProgram = null;
+		protected override void UnloadHighLevelImpl()
+		{
+			if ( IsSupported )
+			{
+				GL.DeleteShader( this.glShaderHandle );
 
-            UnloadHighLevel();
-            base.unload();
-        }
-        protected override void PopulateParameterNames(GpuProgramParameters parms)
-        {
-            
-            parms.NamedConstants = ConstantDefinitions;
-            // Don't set logical / physical maps here, as we can't access parameters by logical index in GLHL.
-        }
-        protected OperationType ParseOperationType(string val)
-        {
-            if (val == "point_list")
-            {
-                return OperationType.PointList;
-            }
-            else if (val == "line_list")
-            {
-                return OperationType.LineList;
-            }
-            else if (val == "line_strip")
-            {
-                return OperationType.LineStrip;
-            }
-            else if (val == "triangle_strip")
-            {
-                return OperationType.TriangleStrip;
-            }
-            else if (val == "triangle_fan")
-            {
-                return OperationType.TriangleFan;
-            }
-            else
-            {
-                return OperationType.TriangleList;
-            }
-        }
-        protected string OperationTypeToString(OperationType val)
-        {
-            switch (val)
-            {
-                case OperationType.PointList:
-                    return "point_list";
-                case OperationType.LineList:
-                    return "line_list";
-                case OperationType.LineStrip:
-                    return "line_strip";
-                case OperationType.TriangleList:
-                    return "triangle_list";
-                case OperationType.TriangleStrip:
-                    return "triangle_strip";
-                case OperationType.TriangleFan:
-                    return "triangle_fan";
-                default:
-                    return "triangle_list";
-            }
-        }
-        protected override void BuildConstantDefinitions()
-        {
-            // We need an accurate list of all the uniforms in the shader, but we
-            // can't get at them until we link all the shaders into a program object.
+				if ( false ) //Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+				{
+					GL.DeleteProgram( this.glProgramHandle );
+				}
+			}
+		}
 
-            // Therefore instead, parse the source code manually and extract the uniforms
-            CreateParameterMappingStructures(true);
-            if (false)//Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
-            {
-                GLSLESProgramPipelineManager.Instance.ExtractConstantDefs(source, constantDefs, Name);
-            }
-            else
-            {
-                GLSLESLinkProgramManager.Instance.ExtractConstantDefs(source, constantDefs, Name);
-            }
-        }
-        public void CheckAndFixInvalidDefaultPrecisionError(string message)
-        {
-            string precisionQualifierErrorString = ": 'Default Precision Qualifier' : invalid type Type for default precision qualifier can be only float or int";
-            string[] los = source.Split('\n');
-            List<string> linesOfSource = new List<string>(los);
-            if (message.Contains(precisionQualifierErrorString))
-            {
-                LogManager.Instance.Write("Fixing invalid type Type fore default precision qualifier by deleting bad lines then re-compiling");
+		protected override void LoadFromSource()
+		{
+			var cpp = new GLSLESPreprocessor();
 
-                //remove releavant lines from source
-                string[] errors = message.Split('\n');
-                
-                //going from the end so when we delete a line the numbers of the lines beforew will not change
-                for (int i = errors.Length - 1; i >= 0; i--)
-                {
-                    string curError = errors[i];
-                    int foundPos = Find(curError, precisionQualifierErrorString);
-                    if (foundPos != -1)
-                    {
-                        string lineNumber = curError.Substring(0, foundPos);
-                        int posOfStartOfNumber = FindLastOf(lineNumber, ':');
-                        if (posOfStartOfNumber != -1)
-                        {
-                            lineNumber = lineNumber.Substring(posOfStartOfNumber + 1, lineNumber.Length - (posOfStartOfNumber + 1));
-                            int numLine = -1;
-                            if (int.TryParse(lineNumber, out numLine))
-                            {
-                                linesOfSource.RemoveAt(numLine - 1);
-                            }
-                        }
-                    }
+			//Pass all user-defined macros to preprocessor
+			if ( this.preprocessorDefines.Length > 0 )
+			{
+				int pos = 0;
+				while ( pos != this.preprocessorDefines.Length )
+				{
+					//Find delims
+					int endpos = FindFirstOf( this.preprocessorDefines, ";,=", pos );
 
-                }
-                //rebuild source
-                StringBuilder newSource = new StringBuilder();
-                for (int i = 0; i < linesOfSource.Count; i++)
-                {
-                    newSource.AppendLine(linesOfSource[i]);
-                }
-                source = newSource.ToString();
+					if ( endpos != -1 )
+					{
+						int macroNameStart = pos;
+						int macroNameLen = endpos - pos;
+						pos = endpos;
 
-                int r = 0;
-                string[] sourceArray = new string[] { source };
-                GL.ShaderSource(glShaderHandle, 1, sourceArray, ref r);
+						//Check definition part
+						if ( this.preprocessorDefines[ pos ] == '=' )
+						{
+							//Set up a definition, skip delim
+							++pos;
+							int macroValStart = pos;
+							int macroValLen;
 
-                if (Compile())
-                {
-                    LogManager.Instance.Write("The removing of the lines fixed the invalid type Type for default precision qualifier error.");
+							endpos = FindFirstOf( this.preprocessorDefines, ";,", pos );
+							if ( endpos == -1 )
+							{
+								macroValLen = this.preprocessorDefines.Length - pos;
+								pos = endpos;
+							}
+							else
+							{
+								macroValLen = endpos - pos;
+								pos = endpos + 1;
+							}
+							cpp.Define( this.preprocessorDefines + macroNameStart, macroNameLen, this.preprocessorDefines + macroValStart, macroValLen );
+						}
+						else
+						{
+							//No definition part, define as "1"
+							++pos;
+							cpp.Define( this.preprocessorDefines + macroNameStart, macroNameLen, 1 );
+						}
+					}
+					else
+					{
+						pos = endpos;
+					}
+				}
+				int outSize = 0;
+				string src = source;
+				int srcLen = source.Length;
+				string outVal = cpp.Parse( src, srcLen, out outSize );
+				if ( outVal == null || outSize == 0 )
+				{
+					//Failed to preprocess, break out
+					throw new AxiomException( "Failed to preprocess shader " + base.Name );
+				}
 
-                }
-                else
-                {
-                    LogManager.Instance.Write("The removing of the lines didn't help.");
-                }
+				source = new string( outVal.ToCharArray(), 0, outSize );
+			}
+		}
 
-            }
-        }
-        public bool Compile()
-        {
-           return this.Compile(false);
-        }
-        public bool Compile(bool checkErrors)
-        {
-            if (compiled == 1)
-                return true;
+		public override GpuProgramParameters CreateParameters()
+		{
+			var parms = base.CreateParameters();
+			parms.TransposeMatrices = true;
+			return parms;
+		}
 
-            //ONly creaet a shader object if glsl es is supported
-            if (IsSupported)
-            {
-                //Create shader object
-                GLenum shaderType = GLenum.None;
-                if (type == GpuProgramType.Vertex)
-                {
-                    shaderType = GLenum.VertexShader;
-                }
-                else
-                {
-                    shaderType = GLenum.FragmentShader;
-                }
-                glShaderHandle = GL.CreateShader(shaderType);
+		protected override void unload()
+		{
+			// We didn't create mAssemblerProgram through a manager, so override this
+			// implementation so that we don't try to remove it from one. Since getCreator()
+			// is used, it might target a different matching handle!
+			assemblerProgram = null;
 
-                if (false)//Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
-                {
-                    glProgramHandle = GL.CreateProgram();
-                }
-            }
+			UnloadHighLevel();
+			base.unload();
+		}
 
-            //Add preprocessor extras and main source
-            if (source.Length > 0)
-            {
-                string[] sourceArray = new string[] { source };
-                int r = 0;
-                GL.ShaderSource(glShaderHandle, 1, sourceArray, ref r);
-            }
-            if (checkErrors)
-            {
-                LogManager.Instance.Write("GLSL ES compiling: " + Name);
-            }
-            GL.CompileShader(glShaderHandle);
-            
-            //check for compile errors
-            GL.GetShader(glShaderHandle, GLenum.CompileStatus, ref compiled);
-            if (compiled == 0 && checkErrors)
-            {
-                string message = "GLSL ES compile log: " + Name;
-                CheckAndFixInvalidDefaultPrecisionError(message);
-            }
+		protected override void PopulateParameterNames( GpuProgramParameters parms )
+		{
+			parms.NamedConstants = ConstantDefinitions;
+			// Don't set logical / physical maps here, as we can't access parameters by logical index in GLHL.
+		}
 
-            //Log a message that the shader compiled successfully.
-            if (compiled == 1 && checkErrors)
-                LogManager.Instance.Write("GLSL ES compiled: " + Name);
+		protected OperationType ParseOperationType( string val )
+		{
+			if ( val == "point_list" )
+			{
+				return OperationType.PointList;
+			}
+			else if ( val == "line_list" )
+			{
+				return OperationType.LineList;
+			}
+			else if ( val == "line_strip" )
+			{
+				return OperationType.LineStrip;
+			}
+			else if ( val == "triangle_strip" )
+			{
+				return OperationType.TriangleStrip;
+			}
+			else if ( val == "triangle_fan" )
+			{
+				return OperationType.TriangleFan;
+			}
+			else
+			{
+				return OperationType.TriangleList;
+			}
+		}
 
-            return (compiled == 1);
-        }
-        public void AttachToProgramObject(int programObject)
-        {
-            GL.AttachShader(programObject, glShaderHandle);
-        }
-        public void DetachFromProgramObject(int programObject)
-        {
-            GL.DetachShader(programObject, glShaderHandle);
-        }
+		protected string OperationTypeToString( OperationType val )
+		{
+			switch ( val )
+			{
+				case OperationType.PointList:
+					return "point_list";
+				case OperationType.LineList:
+					return "line_list";
+				case OperationType.LineStrip:
+					return "line_strip";
+				case OperationType.TriangleList:
+					return "triangle_list";
+				case OperationType.TriangleStrip:
+					return "triangle_strip";
+				case OperationType.TriangleFan:
+					return "triangle_fan";
+				default:
+					return "triangle_list";
+			}
+		}
 
-        public int GLShaderHandle
-        {
-            get { return glShaderHandle; }
-        }
-        public int GLProgramHandle
-        {
-            get { return glProgramHandle; }
-        }
-        public string PreprocessorDefines
-        {
-            get { return preprocessorDefines; }
-            set { preprocessorDefines = value; }
-        }
-        public bool OptimizerEnabled
-        {
-            get { return optimizerEnabled; }
-            set { optimizerEnabled = value; }
-        }
-        public bool IsOptimized
-        {
-            get { return isOptimized; }
-            set { isOptimized = value; }
-        }
+		protected override void BuildConstantDefinitions()
+		{
+			// We need an accurate list of all the uniforms in the shader, but we
+			// can't get at them until we link all the shaders into a program object.
 
-        public override bool PassTransformStates
-        {
-            get
-            {
-                //Scenemanager should pass on transform state to the render system
-                return true;
-            }
-        }
-        public override bool PassSurfaceAndLightStates
-        {
-            get
-            {
-                //scenemanager should pass on light & material state to the rendersystem
-                return true;
-            }
-        }
-        public override bool PassFogStates
-        {
-            get
-            {
-                //Scenemanager should pass on fog state to the rendersystem
-                return true;
-            }
-        }
-        public override string Language
-        {
-            get
-            {
-                return "glsles";
-            }
-        }
-    }
+			// Therefore instead, parse the source code manually and extract the uniforms
+			CreateParameterMappingStructures( true );
+			if ( false ) //Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+			{
+				GLSLESProgramPipelineManager.Instance.ExtractConstantDefs( source, constantDefs, Name );
+			}
+			else
+			{
+				GLSLESLinkProgramManager.Instance.ExtractConstantDefs( source, constantDefs, Name );
+			}
+		}
+
+		public void CheckAndFixInvalidDefaultPrecisionError( string message )
+		{
+			string precisionQualifierErrorString = ": 'Default Precision Qualifier' : invalid type Type for default precision qualifier can be only float or int";
+			string[] los = source.Split( '\n' );
+			var linesOfSource = new List<string>( los );
+			if ( message.Contains( precisionQualifierErrorString ) )
+			{
+				LogManager.Instance.Write( "Fixing invalid type Type fore default precision qualifier by deleting bad lines then re-compiling" );
+
+				//remove releavant lines from source
+				string[] errors = message.Split( '\n' );
+
+				//going from the end so when we delete a line the numbers of the lines beforew will not change
+				for ( int i = errors.Length - 1; i >= 0; i-- )
+				{
+					string curError = errors[ i ];
+					int foundPos = Find( curError, precisionQualifierErrorString );
+					if ( foundPos != -1 )
+					{
+						string lineNumber = curError.Substring( 0, foundPos );
+						int posOfStartOfNumber = FindLastOf( lineNumber, ':' );
+						if ( posOfStartOfNumber != -1 )
+						{
+							lineNumber = lineNumber.Substring( posOfStartOfNumber + 1, lineNumber.Length - ( posOfStartOfNumber + 1 ) );
+							int numLine = -1;
+							if ( int.TryParse( lineNumber, out numLine ) )
+							{
+								linesOfSource.RemoveAt( numLine - 1 );
+							}
+						}
+					}
+				}
+				//rebuild source
+				var newSource = new StringBuilder();
+				for ( int i = 0; i < linesOfSource.Count; i++ )
+				{
+					newSource.AppendLine( linesOfSource[ i ] );
+				}
+				source = newSource.ToString();
+
+				int r = 0;
+				var sourceArray = new string[] { source };
+				GL.ShaderSource( this.glShaderHandle, 1, sourceArray, ref r );
+
+				if ( this.Compile() )
+				{
+					LogManager.Instance.Write( "The removing of the lines fixed the invalid type Type for default precision qualifier error." );
+				}
+				else
+				{
+					LogManager.Instance.Write( "The removing of the lines didn't help." );
+				}
+			}
+		}
+
+		public bool Compile()
+		{
+			return this.Compile( false );
+		}
+
+		public bool Compile( bool checkErrors )
+		{
+			if ( this.compiled == 1 )
+			{
+				return true;
+			}
+
+			//ONly creaet a shader object if glsl es is supported
+			if ( IsSupported )
+			{
+				//Create shader object
+				GLenum shaderType = GLenum.None;
+				if ( type == GpuProgramType.Vertex )
+				{
+					shaderType = GLenum.VertexShader;
+				}
+				else
+				{
+					shaderType = GLenum.FragmentShader;
+				}
+				this.glShaderHandle = GL.CreateShader( shaderType );
+
+				if ( false ) //Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+				{
+					this.glProgramHandle = GL.CreateProgram();
+				}
+			}
+
+			//Add preprocessor extras and main source
+			if ( source.Length > 0 )
+			{
+				var sourceArray = new string[] { source };
+				int r = 0;
+				GL.ShaderSource( this.glShaderHandle, 1, sourceArray, ref r );
+			}
+			if ( checkErrors )
+			{
+				LogManager.Instance.Write( "GLSL ES compiling: " + Name );
+			}
+			GL.CompileShader( this.glShaderHandle );
+
+			//check for compile errors
+			GL.GetShader( this.glShaderHandle, GLenum.CompileStatus, ref this.compiled );
+			if ( this.compiled == 0 && checkErrors )
+			{
+				string message = "GLSL ES compile log: " + Name;
+				this.CheckAndFixInvalidDefaultPrecisionError( message );
+			}
+
+			//Log a message that the shader compiled successfully.
+			if ( this.compiled == 1 && checkErrors )
+			{
+				LogManager.Instance.Write( "GLSL ES compiled: " + Name );
+			}
+
+			return ( this.compiled == 1 );
+		}
+
+		public void AttachToProgramObject( int programObject )
+		{
+			GL.AttachShader( programObject, this.glShaderHandle );
+		}
+
+		public void DetachFromProgramObject( int programObject )
+		{
+			GL.DetachShader( programObject, this.glShaderHandle );
+		}
+
+		public int GLShaderHandle
+		{
+			get { return this.glShaderHandle; }
+		}
+
+		public int GLProgramHandle
+		{
+			get { return this.glProgramHandle; }
+		}
+
+		public string PreprocessorDefines
+		{
+			get { return this.preprocessorDefines; }
+			set { this.preprocessorDefines = value; }
+		}
+
+		public bool OptimizerEnabled
+		{
+			get { return this.optimizerEnabled; }
+			set { this.optimizerEnabled = value; }
+		}
+
+		public bool IsOptimized { get; set; }
+
+		public override bool PassTransformStates
+		{
+			get
+			{
+				//Scenemanager should pass on transform state to the render system
+				return true;
+			}
+		}
+
+		public override bool PassSurfaceAndLightStates
+		{
+			get
+			{
+				//scenemanager should pass on light & material state to the rendersystem
+				return true;
+			}
+		}
+
+		public override bool PassFogStates
+		{
+			get
+			{
+				//Scenemanager should pass on fog state to the rendersystem
+				return true;
+			}
+		}
+
+		public override string Language
+		{
+			get { return "glsles"; }
+		}
+	}
 }
