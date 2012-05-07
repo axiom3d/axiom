@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,43 +25,37 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.Graphics;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
-
-using Axiom.FileSystem;
-using Axiom.Core;
 using System.Runtime.InteropServices;
+
+using Android.Graphics;
+
+using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Platform.Android
 {
-	class AndroidImageCodec : Media.ImageCodec
+	internal class AndroidImageCodec : Media.ImageCodec
 	{
 		#region Fields and Properties
-		private string _imageType;
+
+		private readonly string _imageType;
 
 		#endregion Fields and Properties
 
@@ -95,7 +90,6 @@ namespace Axiom.Platform.Android
 				}
 			}
 			return Media.PixelFormat.Unknown;
-
 		}
 
 		#endregion Methods
@@ -104,15 +98,12 @@ namespace Axiom.Platform.Android
 
 		public override string Type
 		{
-			get
-			{
-				return _imageType;
-			}
+			get { return this._imageType; }
 		}
 
-		public override Media.Codec.DecodeResult Decode(System.IO.Stream input)
+		public override Media.Codec.DecodeResult Decode( System.IO.Stream input )
 		{
-			ImageData data = new ImageData();
+			var data = new ImageData();
 
 			Bitmap bitmap = null;
 
@@ -130,7 +121,7 @@ namespace Axiom.Platform.Android
 
 				if ( config != null )
 				{
-					data.format = Convert( config );
+					data.format = this.Convert( config );
 
 					pixels = new int[ bitmap.Width * bitmap.Height ];
 				}
@@ -140,24 +131,26 @@ namespace Axiom.Platform.Android
 
 					pixels = new int[ bitmap.Width * bitmap.Height ];
 
-					for( int x = 0; x < bitmap.Width; x++)
+					for ( int x = 0; x < bitmap.Width; x++ )
+					{
 						for ( int y = 0; y < bitmap.Height; y++ )
 						{
 							int color = x % 2 * y % 2;
 							pixels[ x * y + x ] = color * Int32.MaxValue;
 						}
+					}
 				}
 				// Start writing from bottom row, to effectively flip it in Y-axis
 				bitmap.GetPixels( pixels, pixels.Length - bitmap.Width, -bitmap.Width, 0, 0, bitmap.Width, bitmap.Height );
 
 				var sourcePtr = Memory.PinObject( pixels );
-				byte[] outputBytes = new byte[ bitmap.Width * bitmap.Height * Marshal.SizeOf( typeof( int ) ) ];
+				var outputBytes = new byte[ bitmap.Width * bitmap.Height * Marshal.SizeOf( typeof ( int ) ) ];
 
 				var destPtr = Memory.PinObject( outputBytes );
 
 				Memory.Copy( sourcePtr, destPtr, outputBytes.Length );
 
-				var output = new MemoryStream( outputBytes );				
+				var output = new MemoryStream( outputBytes );
 
 				return new DecodeResult( output, data );
 			}
@@ -170,18 +163,18 @@ namespace Axiom.Platform.Android
 			}
 		}
 
-		public override System.IO.Stream Encode(System.IO.Stream input, Media.Codec.CodecData data)
+		public override System.IO.Stream Encode( System.IO.Stream input, Media.Codec.CodecData data )
 		{
 			throw new NotImplementedException();
 		}
 
-		public override void EncodeToFile(System.IO.Stream input, string outFileName, Media.Codec.CodecData data)
+		public override void EncodeToFile( System.IO.Stream input, string outFileName, Media.Codec.CodecData data )
 		{
 			throw new NotImplementedException();
 		}
 
 
-		public override string MagicNumberToFileExt(byte[] magicNumberBuf, int maxBytes)
+		public override string MagicNumberToFileExt( byte[] magicNumberBuf, int maxBytes )
 		{
 			throw new NotImplementedException();
 		}
