@@ -53,10 +53,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 {
 	public abstract class GLES2Support : IDisposable
 	{
-		private string version, vendor;
+		private string _version, _vendor;
 
-		protected Dictionary<string, ConfigOption> options;
-		protected string extensionList;
+		protected Dictionary<string, ConfigOption> Options;
+		protected string ExtensionList;
 
 		public GLES2Support() {}
 
@@ -84,7 +84,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		internal virtual bool CheckExtension( string ext )
 		{
-			return this.extensionList.Contains( ext );
+			return this.ExtensionList.Contains( ext );
 		}
 
 		internal virtual void Stop() {}
@@ -107,11 +107,11 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 			if ( spacePos != -1 )
 			{
-				this.version = tmpStr.Substring( 0, spacePos );
+				this._version = tmpStr.Substring( 0, spacePos );
 			}
 			else
 			{
-				this.version = tmpStr.Remove( ' ' );
+				this._version = tmpStr.Remove( ' ' );
 			}
 
 			//Get vendor
@@ -128,11 +128,11 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 			if ( spacePos != -1 )
 			{
-				this.vendor = tmpStr.Substring( 0, spacePos );
+				this._vendor = tmpStr.Substring( 0, spacePos );
 			}
 			else
 			{
-				this.vendor = tmpStr.Remove( ' ' );
+				this._vendor = tmpStr.Remove( ' ' );
 			}
 
 			//Get renderer
@@ -143,19 +143,19 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			var pcExt = GL.GetString( OpenTK.Graphics.ES20.All.Extensions );
 			LogManager.Instance.Write( "GL_EXTENSIONS = " + pcExt );
-			this.extensionList = pcExt;
+			this.ExtensionList = pcExt;
 		}
 
 		public virtual void Dispose() {}
 
 		public string GLVersion
 		{
-			get { return this.version; }
+			get { return this._version; }
 		}
 
 		public string GLVendor
 		{
-			get { return this.vendor; }
+			get { return this._vendor; }
 		}
 
 		public string ShaderCachePath { get; set; }
@@ -167,8 +167,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 		/// </summary>
 		public virtual ConfigOptionMap ConfigOptions
 		{
-			get { return (ConfigOptionMap) this.options; }
-			set { this.options = value; }
+			get { return (ConfigOptionMap) this.Options; }
+			set { this.Options = value; }
 		}
 
 		public virtual int DisplayMonitorCount
