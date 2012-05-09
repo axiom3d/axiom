@@ -184,13 +184,13 @@ namespace Axiom.Core
 				this.name = name;
 			}
 
-			isVisible = true;
+			this.isVisible = true;
 			// set default RenderQueueGroupID for this movable object
-			renderQueueID = RenderQueueGroupID.Main;
-			queryFlags = DefaultQueryFlags;
-			visibilityFlags = DefaultVisibilityFlags;
-			worldAABB = AxisAlignedBox.Null;
-			castShadows = true;
+			this.renderQueueID = RenderQueueGroupID.Main;
+			this.queryFlags = DefaultQueryFlags;
+			this.visibilityFlags = DefaultVisibilityFlags;
+			this.worldAABB = AxisAlignedBox.Null;
+			this.castShadows = true;
 		}
 
 		/// <summary>
@@ -222,11 +222,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return userData;
+				return this.userData;
 			}
 			set
 			{
-				userData = value;
+				this.userData = value;
 			}
 		}
 
@@ -237,7 +237,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return parentNode;
+				return this.parentNode;
 			}
 		}
 
@@ -245,14 +245,14 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( parentIsTagPoint )
+				if ( this.parentIsTagPoint )
 				{
-					var tp = (TagPoint)parentNode;
+					var tp = (TagPoint)this.parentNode;
 					return tp.ParentEntity.ParentSceneNode;
 				}
 				else
 				{
-					return (SceneNode)parentNode;
+					return (SceneNode)this.parentNode;
 				}
 			}
 		}
@@ -265,7 +265,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return ( parentNode != null );
+				return ( this.parentNode != null );
 			}
 		}
 
@@ -276,17 +276,17 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( !isVisible || beyondFarDistance || renderingDisabled )
+				if ( !this.isVisible || this.beyondFarDistance || this.renderingDisabled )
 				{
 					return false;
 				}
 
 				var sm = Root.Instance.SceneManager;
-				return ( sm != null ) && ( ( visibilityFlags & sm.CombinedVisibilityMask ) != 0 );
+				return ( sm != null ) && ( ( this.visibilityFlags & sm.CombinedVisibilityMask ) != 0 );
 			}
 			set
 			{
-				isVisible = value;
+				this.isVisible = value;
 			}
 		}
 
@@ -297,12 +297,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 			set
 			{
-				var oldName = name;
-				name = value;
+				var oldName = this.name;
+				this.name = value;
 				if ( ObjectRenamed != null )
 				{
 					ObjectRenamed( this, oldName );
@@ -317,10 +317,10 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( parentNode != null )
+				if ( this.parentNode != null )
 				{
 					// object is attached to a node, so return the nodes transform
-					return parentNode.FullTransform;
+					return this.parentNode.FullTransform;
 				}
 
 				// fallback
@@ -352,11 +352,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return ( (SceneNode)parentNode ).ShowBoundingBox;
+				return ( (SceneNode)this.parentNode ).ShowBoundingBox;
 			}
 			set
 			{
-				( (SceneNode)parentNode ).ShowBoundingBox = value;
+				( (SceneNode)this.parentNode ).ShowBoundingBox = value;
 			}
 		}
 
@@ -374,12 +374,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return renderQueueID;
+				return this.renderQueueID;
 			}
 			set
 			{
-				renderQueueID = value;
-				renderQueueIDSet = true;
+				this.renderQueueID = value;
+				this.renderQueueIDSet = true;
 			}
 		}
 
@@ -392,9 +392,9 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( parentNode != null )
+				if ( this.parentNode != null )
 				{
-					if ( parentIsTagPoint )
+					if ( this.parentIsTagPoint )
 					{
 						var tp = (TagPoint)ParentNode;
 						return tp.ParentEntity.IsInScene;
@@ -423,14 +423,14 @@ namespace Axiom.Core
 		{
 			if ( IsInScene )
 			{
-				if ( parentIsTagPoint )
+				if ( this.parentIsTagPoint )
 				{
-					var tp = (TagPoint)parentNode;
+					var tp = (TagPoint)this.parentNode;
 					tp.ParentEntity.DetachObjectFromBone( this );
 				}
 				else
 				{
-					var sn = (SceneNode)parentNode;
+					var sn = (SceneNode)this.parentNode;
 					sn.DetachObject( this );
 				}
 			}
@@ -440,7 +440,7 @@ namespace Axiom.Core
 		{
 			// Mark light list being dirty, simply decrease
 			// counter by one for minimize overhead
-			--lightListUpdated;
+			--this.lightListUpdated;
 
 			// Notify listener if exists
 			if ( ObjectMoved != null )
@@ -454,42 +454,42 @@ namespace Axiom.Core
 			// Try listener first
 			if ( ObjectQueryLights != null )
 			{
-				lightList = ObjectQueryLights( this );
-				if ( lightList != null )
+				this.lightList = ObjectQueryLights( this );
+				if ( this.lightList != null )
 				{
-					return lightList;
+					return this.lightList;
 				}
 			}
 
 			// Query from parent entity if exists
-			if ( parentIsTagPoint )
+			if ( this.parentIsTagPoint )
 			{
-				var tp = (TagPoint)parentNode;
+				var tp = (TagPoint)this.parentNode;
 				return tp.ParentEntity.QueryLights();
 			}
 
-			if ( parentNode != null )
+			if ( this.parentNode != null )
 			{
-				var sn = (SceneNode)parentNode;
+				var sn = (SceneNode)this.parentNode;
 
 				// Make sure we only update this only if need.
 				var frame = sn.Creator.LightsDirtyCounter;
-				if ( lightListUpdated != frame )
+				if ( this.lightListUpdated != frame )
 				{
-					lightListUpdated = frame;
+					this.lightListUpdated = frame;
 
-					lightList = sn.FindLights( BoundingRadius );
+					this.lightList = sn.FindLights( BoundingRadius );
 				}
 			}
 			else
 			{
-				if ( lightList != null )
+				if ( this.lightList != null )
 				{
-					lightList.Clear();
+					this.lightList.Clear();
 				}
 			}
 
-			return lightList;
+			return this.lightList;
 		}
 
 		/// <summary>
@@ -499,12 +499,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return upperDistance;
+				return this.upperDistance;
 			}
 			set
 			{
-				upperDistance = value;
-				squaredUpperDistance = upperDistance*upperDistance;
+				this.upperDistance = value;
+				this.squaredUpperDistance = this.upperDistance*this.upperDistance;
 			}
 		}
 
@@ -516,11 +516,11 @@ namespace Axiom.Core
 		{
 			if ( derive )
 			{
-				worldAABB = BoundingBox;
-				worldAABB.Transform( ParentNodeFullTransform );
+				this.worldAABB = BoundingBox;
+				this.worldAABB.Transform( ParentNodeFullTransform );
 			}
 
-			return worldAABB;
+			return this.worldAABB;
 		}
 
 		/// <summary>
@@ -541,11 +541,11 @@ namespace Axiom.Core
 		{
 			if ( derive )
 			{
-				worldBoundingSphere.Radius = BoundingRadius;
-				worldBoundingSphere.Center = parentNode.DerivedPosition;
+				this.worldBoundingSphere.Radius = BoundingRadius;
+				this.worldBoundingSphere.Center = this.parentNode.DerivedPosition;
 			}
 
-			return worldBoundingSphere;
+			return this.worldBoundingSphere;
 		}
 
 		#endregion Methods
@@ -569,11 +569,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return defaultQueryFlags;
+				return this.defaultQueryFlags;
 			}
 			set
 			{
-				defaultQueryFlags = value;
+				this.defaultQueryFlags = value;
 			}
 		}
 
@@ -590,11 +590,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return queryFlags;
+				return this.queryFlags;
 			}
 			set
 			{
-				queryFlags = value;
+				this.queryFlags = value;
 			}
 		}
 
@@ -604,7 +604,7 @@ namespace Axiom.Core
 		/// <param name="flags"></param>
 		public void AddQueryFlags( uint flags )
 		{
-			queryFlags |= flags;
+			this.queryFlags |= flags;
 		}
 
 		/// <summary>
@@ -613,7 +613,7 @@ namespace Axiom.Core
 		/// <param name="flags"></param>
 		public void RemoveQueryFlags( uint flags )
 		{
-			queryFlags ^= flags;
+			this.queryFlags ^= flags;
 		}
 
 		#endregion QueryFlags
@@ -657,11 +657,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return visibilityFlags;
+				return this.visibilityFlags;
 			}
 			set
 			{
-				visibilityFlags = value;
+				this.visibilityFlags = value;
 			}
 		}
 
@@ -671,7 +671,7 @@ namespace Axiom.Core
 		/// <param name="flags"></param>
 		public void AddVisibilityFlags( uint flags )
 		{
-			visibilityFlags |= flags;
+			this.visibilityFlags |= flags;
 		}
 
 		/// <summary>
@@ -680,7 +680,7 @@ namespace Axiom.Core
 		/// <param name="flags"></param>
 		public void RemoveVisibilityFlags( uint flags )
 		{
-			visibilityFlags ^= flags;
+			this.visibilityFlags ^= flags;
 		}
 
 		#endregion VisibilityFlags
@@ -692,11 +692,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return castShadows;
+				return this.castShadows;
 			}
 			set
 			{
-				castShadows = value;
+				this.castShadows = value;
 			}
 		}
 
@@ -714,11 +714,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return debugDisplay;
+				return this.debugDisplay;
 			}
 			set
 			{
-				debugDisplay = value;
+				this.debugDisplay = value;
 			}
 		}
 
@@ -738,11 +738,11 @@ namespace Axiom.Core
 		{
 			// Extrude own light cap bounds
 			// need a clone to avoid modifying the original bounding box
-			worldDarkCapBounds = (AxisAlignedBox)GetLightCapBounds().Clone();
+			this.worldDarkCapBounds = (AxisAlignedBox)GetLightCapBounds().Clone();
 
-			ExtrudeBounds( worldDarkCapBounds, light.GetAs4DVector(), extrusionDistance );
+			ExtrudeBounds( this.worldDarkCapBounds, light.GetAs4DVector(), extrusionDistance );
 
-			return worldDarkCapBounds;
+			return this.worldDarkCapBounds;
 		}
 
 		/// <summary>
@@ -757,12 +757,12 @@ namespace Axiom.Core
 		                                                                 HardwareIndexBuffer indexBuffer, bool extrudeVertices,
 		                                                                 float extrusionDistance, int flags )
 		{
-			return dummyList.GetEnumerator();
+			return this.dummyList.GetEnumerator();
 		}
 
 		public override IEnumerator GetLastShadowVolumeRenderableEnumerator()
 		{
-			return dummyList.GetEnumerator();
+			return this.dummyList.GetEnumerator();
 		}
 
 		/// <summary>
@@ -772,9 +772,9 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public override float GetPointExtrusionDistance( Light light )
 		{
-			if ( parentNode != null )
+			if ( this.parentNode != null )
 			{
-				return GetExtrusionDistance( parentNode.DerivedPosition, light );
+				return GetExtrusionDistance( this.parentNode.DerivedPosition, light );
 			}
 			else
 			{
@@ -885,14 +885,14 @@ namespace Axiom.Core
 		///<param name="isTagPoint"></param>
 		internal virtual void NotifyAttached( Node node, bool isTagPoint )
 		{
-			var parentChanged = ( node != parentNode );
-			parentNode = node;
-			parentIsTagPoint = isTagPoint;
+			var parentChanged = ( node != this.parentNode );
+			this.parentNode = node;
+			this.parentIsTagPoint = isTagPoint;
 			// Mark light list being dirty, simply decrease
 			// counter by one for minimise overhead
-			--lightListUpdated;
+			--this.lightListUpdated;
 
-			if ( parentChanged && parentNode != null )
+			if ( parentChanged && this.parentNode != null )
 			{
 				if ( ObjectAttached != null )
 				{
@@ -921,36 +921,36 @@ namespace Axiom.Core
 		/// <param name="camera">Reference to the Camera being used for the current rendering operation.</param>
 		public virtual void NotifyCurrentCamera( Camera camera )
 		{
-			if ( parentNode != null )
+			if ( this.parentNode != null )
 			{
-				if ( camera.UseRenderingDistance && upperDistance > 0 )
+				if ( camera.UseRenderingDistance && this.upperDistance > 0 )
 				{
 					var rad = BoundingRadius;
-					var squaredDepth = parentNode.GetSquaredViewDepth( camera.LodCamera );
+					var squaredDepth = this.parentNode.GetSquaredViewDepth( camera.LodCamera );
 					// Max distance to still render
-					var maxDist = upperDistance + rad;
+					var maxDist = this.upperDistance + rad;
 					if ( squaredDepth > Utility.Sqr( maxDist ) )
 					{
-						beyondFarDistance = true;
+						this.beyondFarDistance = true;
 					}
 					else
 					{
-						beyondFarDistance = false;
+						this.beyondFarDistance = false;
 					}
 				}
 				else
 				{
-					beyondFarDistance = false;
+					this.beyondFarDistance = false;
 				}
 			}
 
 			if ( ObjectRendering != null )
 			{
-				renderingDisabled = ObjectRendering( this, camera );
+				this.renderingDisabled = ObjectRendering( this, camera );
 			}
 			else
 			{
-				renderingDisabled = false;
+				this.renderingDisabled = false;
 			}
 		}
 
@@ -993,8 +993,8 @@ namespace Axiom.Core
 
 		protected MovableObjectFactory()
 		{
-			_typeFlag = 0xFFFFFFFF;
-			_type = MovableObjectFactory.TypeName;
+			this._typeFlag = 0xFFFFFFFF;
+			this._type = MovableObjectFactory.TypeName;
 		}
 
 		/// <summary>
@@ -1013,11 +1013,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _typeFlag;
+				return this._typeFlag;
 			}
 			set
 			{
-				_typeFlag = value;
+				this._typeFlag = value;
 			}
 		}
 
@@ -1071,11 +1071,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _type;
+				return this._type;
 			}
 			protected set
 			{
-				_type = value;
+				this._type = value;
 			}
 		}
 

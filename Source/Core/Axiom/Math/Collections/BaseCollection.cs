@@ -72,7 +72,7 @@ namespace Axiom.Math.Collections
 		/// </summary>
 		public BaseCollection()
 		{
-			objectList = new ArrayList( INITIAL_CAPACITY );
+			this.objectList = new ArrayList( INITIAL_CAPACITY );
 		}
 
 		#endregion
@@ -84,11 +84,11 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return objectList[ index ];
+				return this.objectList[ index ];
 			}
 			set
 			{
-				objectList[ index ] = value;
+				this.objectList[ index ] = value;
 			}
 		}
 
@@ -98,7 +98,7 @@ namespace Axiom.Math.Collections
 		/// <param name="item"></param>
 		protected void Add( object item )
 		{
-			objectList.Add( item );
+			this.objectList.Add( item );
 		}
 
 		/// <summary>
@@ -106,7 +106,7 @@ namespace Axiom.Math.Collections
 		/// </summary>
 		public void Clear()
 		{
-			objectList.Clear();
+			this.objectList.Clear();
 		}
 
 		/// <summary>
@@ -115,11 +115,11 @@ namespace Axiom.Math.Collections
 		/// <param name="item"></param>
 		public void Remove( object item )
 		{
-			var index = objectList.IndexOf( item );
+			var index = this.objectList.IndexOf( item );
 
 			if ( index != -1 )
 			{
-				objectList.RemoveAt( index );
+				this.objectList.RemoveAt( index );
 			}
 		}
 
@@ -132,7 +132,7 @@ namespace Axiom.Math.Collections
 		/// <param name="index"></param>
 		public void CopyTo( System.Array array, int index )
 		{
-			objectList.CopyTo( array, index );
+			this.objectList.CopyTo( array, index );
 		}
 
 		/// <summary>
@@ -142,7 +142,7 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return objectList.IsSynchronized;
+				return this.objectList.IsSynchronized;
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return objectList.Count;
+				return this.objectList.Count;
 			}
 		}
 
@@ -164,7 +164,7 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return objectList.SyncRoot;
+				return this.objectList.SyncRoot;
 			}
 		}
 
@@ -189,7 +189,7 @@ namespace Axiom.Math.Collections
 		public void Reset()
 		{
 			// reset the enumerator position
-			position = -1;
+			this.position = -1;
 		}
 
 		/// <summary>
@@ -198,9 +198,9 @@ namespace Axiom.Math.Collections
 		/// <returns></returns>
 		public bool MoveNext()
 		{
-			position += 1;
+			this.position += 1;
 
-			if ( position >= objectList.Count )
+			if ( this.position >= this.objectList.Count )
 			{
 				return false;
 			}
@@ -217,7 +217,7 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return objectList[ position ];
+				return this.objectList[ this.position ];
 			}
 		}
 

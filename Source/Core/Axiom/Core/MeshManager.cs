@@ -124,11 +124,11 @@ namespace Axiom.Core
 		{
 			add
 			{
-				_processMaterialNameEvent.EventSinks += value;
+				this._processMaterialNameEvent.EventSinks += value;
 			}
 			remove
 			{
-				_processMaterialNameEvent.EventSinks -= value;
+				this._processMaterialNameEvent.EventSinks -= value;
 			}
 		}
 
@@ -144,11 +144,11 @@ namespace Axiom.Core
 		{
 			add
 			{
-				_processSkeletonNameEvent.EventSinks += value;
+				this._processSkeletonNameEvent.EventSinks += value;
 			}
 			remove
 			{
-				_processSkeletonNameEvent.EventSinks -= value;
+				this._processSkeletonNameEvent.EventSinks -= value;
 			}
 		}
 
@@ -318,7 +318,7 @@ namespace Axiom.Core
 			meshParams.IndexBufferUsage = indexBufferUsage;
 			meshParams.VertexShadowBuffer = vertexShadowBuffer;
 			meshParams.IndexShadowBuffer = indexShadowBuffer;
-			_meshBuildParams.Add( mesh, meshParams );
+			this._meshBuildParams.Add( mesh, meshParams );
 
 			// to preserve previous behaviour, load immediately
 			mesh.Load();
@@ -377,7 +377,7 @@ namespace Axiom.Core
 			meshParams.IndexBufferUsage = indexBufferUsage;
 			meshParams.VertexShadowBuffer = vertexShadowBuffer;
 			meshParams.IndexShadowBuffer = indexShadowBuffer;
-			_meshBuildParams.Add( mesh, meshParams );
+			this._meshBuildParams.Add( mesh, meshParams );
 
 			// to preserve previous behaviour, load immediately
 			mesh.Load();
@@ -447,7 +447,7 @@ namespace Axiom.Core
 			meshParams.VertexShadowBuffer = vertexShadowBuffer;
 			meshParams.IndexShadowBuffer = indexShadowBuffer;
 			meshParams.YSegmentsToKeep = ySegmentsToKeep;
-			_meshBuildParams.Add( mesh, meshParams );
+			this._meshBuildParams.Add( mesh, meshParams );
 
 			// to preserve previous behaviour, load immediately
 			mesh.Load();
@@ -1008,20 +1008,20 @@ namespace Axiom.Core
 
 		protected internal void FireProcessMaterialName( Mesh mesh, string name )
 		{
-			_processMaterialNameEvent.Fire( this, new MeshSerializerArgs
-			                                      {
-			                                      	Mesh = mesh,
-			                                      	Name = name
-			                                      }, ( args ) => { return true; } );
+			this._processMaterialNameEvent.Fire( this, new MeshSerializerArgs
+			                                           {
+			                                           	Mesh = mesh,
+			                                           	Name = name
+			                                           }, ( args ) => { return true; } );
 		}
 
 		protected internal void FireProcessSkeletonName( Mesh mesh, string name )
 		{
-			_processSkeletonNameEvent.Fire( this, new MeshSerializerArgs
-			                                      {
-			                                      	Mesh = mesh,
-			                                      	Name = name
-			                                      }, ( args ) => { return true; } );
+			this._processSkeletonNameEvent.Fire( this, new MeshSerializerArgs
+			                                           {
+			                                           	Mesh = mesh,
+			                                           	Name = name
+			                                           }, ( args ) => { return true; } );
 		}
 
 		#endregion Methods
@@ -1186,12 +1186,12 @@ namespace Axiom.Core
 			if ( !prefab )
 			{
 				// Find build parameters
-				if ( !_meshBuildParams.ContainsKey( mesh ) )
+				if ( !this._meshBuildParams.ContainsKey( mesh ) )
 				{
 					throw new AxiomException( "Cannot find build parameters for {0}", mesh.Name );
 				}
 
-				var parameters = _meshBuildParams[ mesh ];
+				var parameters = this._meshBuildParams[ mesh ];
 
 				switch ( parameters.Type )
 				{

@@ -57,7 +57,7 @@ namespace Axiom.Media
 
 			public Float32( int count )
 			{
-				_count = count;
+				this._count = count;
 			}
 
 			public void Scale( PixelBox src, PixelBox dst )

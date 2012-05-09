@@ -138,11 +138,11 @@ namespace Axiom.Graphics
 			public AutoConstantEntry( AutoConstantType type, int index, int data, GpuParamVariability variability,
 			                          int elementCount )
 			{
-				Type = type;
-				PhysicalIndex = index;
-				Data = data;
-				Variability = variability;
-				ElementCount = elementCount;
+				this.Type = type;
+				this.PhysicalIndex = index;
+				this.Data = data;
+				this.Variability = variability;
+				this.ElementCount = elementCount;
 
 				// this is likeley obsolete in as ogre doesnt have this (anymore?)
 				System.Diagnostics.Debug.Assert( type != AutoConstantType.SinTime_0_X );
@@ -174,11 +174,11 @@ namespace Axiom.Graphics
 			public AutoConstantEntry( AutoConstantType type, int index, float fdata, GpuParamVariability variability,
 			                          int elementCount )
 			{
-				Type = type;
-				PhysicalIndex = index;
-				FData = fdata;
-				Variability = variability;
-				ElementCount = elementCount;
+				this.Type = type;
+				this.PhysicalIndex = index;
+				this.FData = fdata;
+				this.Variability = variability;
+				this.ElementCount = elementCount;
 			}
 
 			#endregion
@@ -188,8 +188,8 @@ namespace Axiom.Graphics
 			[AxiomHelper( 0, 8 )]
 			public AutoConstantEntry Clone()
 			{
-				var n = new AutoConstantEntry( Type, PhysicalIndex, FData, Variability, ElementCount );
-				n.Data = Data;
+				var n = new AutoConstantEntry( this.Type, this.PhysicalIndex, this.FData, this.Variability, this.ElementCount );
+				n.Data = this.Data;
 				return n;
 			}
 

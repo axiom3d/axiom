@@ -94,7 +94,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return assemblerProgram;
+				return this.assemblerProgram;
 			}
 		}
 
@@ -121,14 +121,14 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected virtual void LoadHighLevel()
 		{
-			if ( highLevelLoaded )
+			if ( this.highLevelLoaded )
 			{
 				return;
 			}
 			try
 			{
 				LoadHighLevelImpl();
-				highLevelLoaded = true;
+				this.highLevelLoaded = true;
 				if ( defaultParams != null )
 				{
 					// Keep a reference to old ones to copy
@@ -189,17 +189,17 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected virtual void UnloadHighLevel()
 		{
-			if ( !highLevelLoaded )
+			if ( !this.highLevelLoaded )
 			{
 				return;
 			}
 
 			UnloadHighLevelImpl();
 			// Clear saved constant defs
-			constantDefsBuilt = false;
+			this.constantDefsBuilt = false;
 			CreateParameterMappingStructures( true );
 
-			highLevelLoaded = false;
+			this.highLevelLoaded = false;
 		}
 
 		#endregion
@@ -265,10 +265,10 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( !constantDefsBuilt )
+				if ( !this.constantDefsBuilt )
 				{
 					BuildConstantDefinitions();
-					constantDefsBuilt = true;
+					this.constantDefsBuilt = true;
 				}
 
 				return constantDefs;
@@ -359,9 +359,9 @@ namespace Axiom.Graphics
 			// create low-level implementation
 			CreateLowLevelImpl();
 			// load constructed assembler program (if it exists)
-			if ( assemblerProgram != null && assemblerProgram != this )
+			if ( this.assemblerProgram != null && this.assemblerProgram != this )
 			{
-				assemblerProgram.Load();
+				this.assemblerProgram.Load();
 			}
 		}
 
@@ -375,10 +375,10 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void unload()
 		{
-			if ( assemblerProgram != null && assemblerProgram != this )
+			if ( this.assemblerProgram != null && this.assemblerProgram != this )
 			{
-				assemblerProgram.Creator.Remove( assemblerProgram.Handle );
-				assemblerProgram = null;
+				this.assemblerProgram.Creator.Remove( this.assemblerProgram.Handle );
+				this.assemblerProgram = null;
 			}
 
 			UnloadHighLevel();

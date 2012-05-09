@@ -127,19 +127,19 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _camera;
+				return this._camera;
 			}
 			set
 			{
-				if ( _camera != null )
+				if ( this._camera != null )
 				{
-					if ( _camera.Viewport == this )
+					if ( this._camera.Viewport == this )
 					{
-						_camera.NotifyViewport( null );
+						this._camera.NotifyViewport( null );
 					}
 				}
 
-				_camera = value;
+				this._camera = value;
 
 				if ( value != null )
 				{
@@ -468,12 +468,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _rqSequenceName;
+				return this._rqSequenceName;
 			}
 			set
 			{
-				_rqSequenceName = value;
-				if ( _rqSequenceName == string.Empty )
+				this._rqSequenceName = value;
+				if ( this._rqSequenceName == string.Empty )
 				{
 					RenderQueueInvocationSequence = null;
 				}

@@ -108,12 +108,12 @@ namespace Axiom.Graphics
 		internal RenderPriorityGroup( RenderQueueGroup parent, bool splitPassesByLightingType, bool splitNoShadowPasses,
 		                              bool shadowCastersCannotBeReceivers )
 		{
-			_parent = parent;
+			this._parent = parent;
 			// sorted list, using Pass as a key (sorted based on hashcode), and IRenderable as the value
-			solidPasses = new SortedList( new SolidSort(), 50 );
-			solidPassesDiffuseSpecular = new SortedList( new SolidSort(), 50 );
-			solidPassesDecal = new SortedList( new SolidSort(), 50 );
-			solidPassesNoShadow = new SortedList( new SolidSort(), 50 );
+			this.solidPasses = new SortedList( new SolidSort(), 50 );
+			this.solidPassesDiffuseSpecular = new SortedList( new SolidSort(), 50 );
+			this.solidPassesDecal = new SortedList( new SolidSort(), 50 );
+			this.solidPassesNoShadow = new SortedList( new SolidSort(), 50 );
 			this.splitPassesByLightingType = splitPassesByLightingType;
 			this.splitNoShadowPasses = splitNoShadowPasses;
 			this.shadowCastersCannotBeReceivers = shadowCastersCannotBeReceivers;
@@ -140,15 +140,15 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				if ( splitNoShadowPasses && _parent.ShadowsEnabled &&
-				     ( !technique.Parent.ReceiveShadows || renderable.CastsShadows && shadowCastersCannotBeReceivers ) )
+				if ( this.splitNoShadowPasses && this._parent.ShadowsEnabled &&
+				     ( !technique.Parent.ReceiveShadows || renderable.CastsShadows && this.shadowCastersCannotBeReceivers ) )
 				{
 					// Add solid renderable and add passes to no-shadow group
 					AddSolidRenderable( technique, renderable, true );
 				}
 				else
 				{
-					if ( splitPassesByLightingType && _parent.ShadowsEnabled )
+					if ( this.splitPassesByLightingType && this._parent.ShadowsEnabled )
 					{
 						AddSolidRenderableSplitByLightType( technique, renderable );
 					}
@@ -172,11 +172,11 @@ namespace Axiom.Graphics
 
 			if ( noShadows )
 			{
-				passMap = solidPassesNoShadow;
+				passMap = this.solidPassesNoShadow;
 			}
 			else
 			{
-				passMap = solidPasses;
+				passMap = this.solidPasses;
 			}
 
 			for ( var i = 0; i < technique.PassCount; i++ )
@@ -213,13 +213,13 @@ namespace Axiom.Graphics
 				switch ( illpass.Stage )
 				{
 					case IlluminationStage.Ambient:
-						passMap = solidPasses;
+						passMap = this.solidPasses;
 						break;
 					case IlluminationStage.PerLight:
-						passMap = solidPassesDiffuseSpecular;
+						passMap = this.solidPassesDiffuseSpecular;
 						break;
 					case IlluminationStage.Decal:
-						passMap = solidPassesDecal;
+						passMap = this.solidPassesDecal;
 						break;
 				}
 
@@ -246,7 +246,7 @@ namespace Axiom.Graphics
 			for ( var i = 0; i < technique.PassCount; i++ )
 			{
 				// add to transparent list
-				transparentPasses.Add( new RenderablePass( renderable, technique.GetPass( i ) ) );
+				this.transparentPasses.Add( new RenderablePass( renderable, technique.GetPass( i ) ) );
 			}
 		}
 
@@ -284,13 +284,13 @@ namespace Axiom.Graphics
 
 			// We do not clear the unchanged solid pass maps, only the contents of each list
 			// This is because we assume passes are reused a lot and it saves resorting
-			ClearSolidPassMap( solidPasses );
-			ClearSolidPassMap( solidPassesDiffuseSpecular );
-			ClearSolidPassMap( solidPassesDecal );
-			ClearSolidPassMap( solidPassesNoShadow );
+			ClearSolidPassMap( this.solidPasses );
+			ClearSolidPassMap( this.solidPassesDiffuseSpecular );
+			ClearSolidPassMap( this.solidPassesDecal );
+			ClearSolidPassMap( this.solidPassesNoShadow );
 
 			// Always empty the transparents list
-			transparentPasses.Clear();
+			this.transparentPasses.Clear();
 		}
 
 		public void ClearSolidPassMap( SortedList list )
@@ -309,8 +309,8 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public Pass GetSolidPass( int index )
 		{
-			Debug.Assert( index < solidPasses.Count, "index < solidPasses.Count" );
-			return (Pass)solidPasses.GetKey( index );
+			Debug.Assert( index < this.solidPasses.Count, "index < solidPasses.Count" );
+			return (Pass)this.solidPasses.GetKey( index );
 		}
 
 		/// <summary>
@@ -320,8 +320,8 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public RenderableList GetSolidPassRenderables( int index )
 		{
-			Debug.Assert( index < solidPasses.Count, "index < solidPasses.Count" );
-			return (RenderableList)solidPasses.GetByIndex( index );
+			Debug.Assert( index < this.solidPasses.Count, "index < solidPasses.Count" );
+			return (RenderableList)this.solidPasses.GetByIndex( index );
 		}
 
 		/// <summary>
@@ -331,8 +331,8 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public RenderablePass GetTransparentPass( int index )
 		{
-			Debug.Assert( index < transparentPasses.Count, "index < transparentPasses.Count" );
-			return (RenderablePass)transparentPasses[ index ];
+			Debug.Assert( index < this.transparentPasses.Count, "index < transparentPasses.Count" );
+			return (RenderablePass)this.transparentPasses[ index ];
 		}
 
 		/// <summary>
@@ -347,7 +347,7 @@ namespace Axiom.Graphics
 		public void Sort( Camera camera )
 		{
 			// sort the transparent objects using the custom IComparer
-			transparentPasses.Sort( new TransparencySort( camera ) );
+			this.transparentPasses.Sort( new TransparencySort( camera ) );
 		}
 
 		/// <summary>
@@ -356,24 +356,24 @@ namespace Axiom.Graphics
 		/// <param name="pass">Reference to the pass to remove.</param>
 		public void RemoveSolidPassEntry( Pass pass )
 		{
-			if ( solidPasses[ pass ] != null )
+			if ( this.solidPasses[ pass ] != null )
 			{
-				solidPasses.Remove( pass );
+				this.solidPasses.Remove( pass );
 			}
 
-			if ( solidPassesDecal[ pass ] != null )
+			if ( this.solidPassesDecal[ pass ] != null )
 			{
-				solidPassesDecal.Remove( pass );
+				this.solidPassesDecal.Remove( pass );
 			}
 
-			if ( solidPassesDiffuseSpecular[ pass ] != null )
+			if ( this.solidPassesDiffuseSpecular[ pass ] != null )
 			{
-				solidPassesDiffuseSpecular.Remove( pass );
+				this.solidPassesDiffuseSpecular.Remove( pass );
 			}
 
-			if ( solidPassesNoShadow[ pass ] != null )
+			if ( this.solidPassesNoShadow[ pass ] != null )
 			{
-				solidPassesNoShadow.Remove( pass );
+				this.solidPassesNoShadow.Remove( pass );
 			}
 		}
 
@@ -388,7 +388,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return solidPasses.Count;
+				return this.solidPasses.Count;
 			}
 		}
 
@@ -399,7 +399,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return transparentPasses.Count;
+				return this.transparentPasses.Count;
 			}
 		}
 
@@ -411,11 +411,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return splitPassesByLightingType;
+				return this.splitPassesByLightingType;
 			}
 			set
 			{
-				splitPassesByLightingType = value;
+				this.splitPassesByLightingType = value;
 			}
 		}
 
@@ -428,11 +428,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return splitNoShadowPasses;
+				return this.splitNoShadowPasses;
 			}
 			set
 			{
-				splitNoShadowPasses = value;
+				this.splitNoShadowPasses = value;
 			}
 		}
 
@@ -444,11 +444,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return shadowCastersCannotBeReceivers;
+				return this.shadowCastersCannotBeReceivers;
 			}
 			set
 			{
-				shadowCastersCannotBeReceivers = value;
+				this.shadowCastersCannotBeReceivers = value;
 			}
 		}
 
@@ -522,8 +522,8 @@ namespace Axiom.Graphics
 					return 0;
 				}
 
-				var adepth = x.renderable.GetSquaredViewDepth( camera );
-				var bdepth = y.renderable.GetSquaredViewDepth( camera );
+				var adepth = x.renderable.GetSquaredViewDepth( this.camera );
+				var bdepth = y.renderable.GetSquaredViewDepth( this.camera );
 
 				if ( adepth == bdepth )
 				{

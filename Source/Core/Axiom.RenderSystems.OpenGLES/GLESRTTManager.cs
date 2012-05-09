@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,43 +25,47 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-using System;
+
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
+
 using OpenTK.Graphics.ES11;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
 	/// <summary>
-	/// Manager/factory for RenderTextures.
+	///   Manager/factory for RenderTextures.
 	/// </summary>
 	public abstract class GLESRTTManager
 	{
 		#region Singleton implementation
 
 		/// <summary>
-		///     Singleton instance of this class.
+		///   Singleton instance of this class.
 		/// </summary>
 		private static GLESRTTManager instance;
 
 		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
+		///   Internal constructor. This class cannot be instantiated externally.
 		/// </summary>
 		/// <remarks>
-		///     Protected internal because this singleton will actually hold the instance of a subclass
-		///     created by a render system plugin.
+		///   Protected internal because this singleton will actually hold the instance of a subclass created by a render system plugin.
 		/// </remarks>
 		protected GLESRTTManager()
 		{
@@ -71,55 +76,49 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		///     Gets the singleton instance of this class.
+		///   Gets the singleton instance of this class.
 		/// </summary>
 		public static GLESRTTManager Instance
 		{
-			get
-			{
-				return instance;
-			}
+			get { return instance; }
 		}
 
 		#endregion Singleton implementation
 
 		/// <summary>
-		/// Create a texture rendertarget object
+		///   Create a texture rendertarget object
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="target"></param>
-		/// <param name="writeGame"></param>
-		/// <param name="fsaa"></param>
-		/// <returns></returns>
+		/// <param name="name"> </param>
+		/// <param name="target"> </param>
+		/// <param name="writeGame"> </param>
+		/// <param name="fsaa"> </param>
+		/// <returns> </returns>
 		public abstract RenderTexture CreateRenderTexture( string name, GLESSurfaceDescription target, bool writeGama, int fsaa );
 
 		/// <summary>
-		/// Check if a certain format is usable as rendertexture format
+		///   Check if a certain format is usable as rendertexture format
 		/// </summary>
-		/// <param name="format"></param>
-		/// <returns></returns>
+		/// <param name="format"> </param>
+		/// <returns> </returns>
 		public abstract bool CheckFormat( Media.PixelFormat format );
 
 		/// <summary>
-		/// Bind a certain render target.
+		///   Bind a certain render target.
 		/// </summary>
-		/// <param name="target"></param>
+		/// <param name="target"> </param>
 		public abstract void Bind( RenderTarget target );
 
 		/// <summary>
-		/// Unbind a certain render target. This is called before binding another RenderTarget, and
-		/// before the context is switched. It can be used to do a copy, or just be a noop if direct
-		/// binding is used.
+		///   Unbind a certain render target. This is called before binding another RenderTarget, and before the context is switched. It can be used to do a copy, or just be a noop if direct binding is used.
 		/// </summary>
-		/// <param name="target"></param>
+		/// <param name="target"> </param>
 		public abstract void Unbind( RenderTarget target );
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="internalFormat"></param>
-		/// <param name="depthFormat"></param>
-		/// <param name="stencilFormat"></param>
+		/// <param name="internalFormat"> </param>
+		/// <param name="depthFormat"> </param>
+		/// <param name="stencilFormat"> </param>
 		public virtual void GetBestDepthStencil( All internalFormat, out All depthFormat, out All stencilFormat )
 		{
 			depthFormat = 0;
@@ -127,10 +126,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// Create a multi render target
+		///   Create a multi render target
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
+		/// <param name="name"> </param>
+		/// <returns> </returns>
 		public virtual MultiRenderTarget CreateMultiRenderTarget( string name )
 		{
 			// TODO: Check rendersystem capabilities before throwing the exception
@@ -138,10 +137,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="format"></param>
-		/// <returns></returns>
+		/// <param name="format"> </param>
+		/// <returns> </returns>
 		public virtual Media.PixelFormat GetSupportedAlternative( Media.PixelFormat format )
 		{
 			if ( CheckFormat( format ) )
@@ -171,7 +169,9 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 
 			if ( CheckFormat( format ) )
+			{
 				return format;
+			}
 
 			// If none at all, return to default
 			return Media.PixelFormat.A8R8G8B8;

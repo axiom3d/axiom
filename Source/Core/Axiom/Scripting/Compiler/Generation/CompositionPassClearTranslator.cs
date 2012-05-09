@@ -65,7 +65,7 @@ namespace Axiom.Scripting.Compiler
 			{
 				var obj = (ObjectAbstractNode)node;
 
-				_Pass = (CompositionPass)obj.Parent.Context;
+				this._Pass = (CompositionPass)obj.Parent.Context;
 
 				// Should be no parameters, just children
 				if ( obj.Values.Count != 0 )
@@ -117,7 +117,7 @@ namespace Axiom.Scripting.Compiler
 										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 									}
 								}
-								_Pass.ClearBuffers = buffers;
+								this._Pass.ClearBuffers = buffers;
 							}
 								break;
 
@@ -136,7 +136,7 @@ namespace Axiom.Scripting.Compiler
 								var val = ColorEx.White;
 								if ( getColor( prop.Values, 0, out val ) )
 								{
-									_Pass.ClearColor = val;
+									this._Pass.ClearColor = val;
 								}
 								else
 								{
@@ -159,7 +159,7 @@ namespace Axiom.Scripting.Compiler
 								Real val = 0;
 								if ( getReal( prop.Values[ 0 ], out val ) )
 								{
-									_Pass.ClearDepth = val;
+									this._Pass.ClearDepth = val;
 								}
 								else
 								{
@@ -183,7 +183,7 @@ namespace Axiom.Scripting.Compiler
 								var val = 0;
 								if ( getInt( prop.Values[ 0 ], out val ) )
 								{
-									_Pass.ClearStencil = val;
+									this._Pass.ClearStencil = val;
 								}
 								else
 								{

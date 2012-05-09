@@ -98,7 +98,7 @@ namespace Axiom.Graphics
 		/// <param name="vertexData">Vertex data to consider for edge detection.</param>
 		public void AddVertexData( VertexData vertexData )
 		{
-			vertexDataList.Add( vertexData );
+			this.vertexDataList.Add( vertexData );
 		}
 
 		/// <summary>
@@ -134,9 +134,9 @@ namespace Axiom.Graphics
 		/// <param name="opType"></param>
 		public void AddIndexData( IndexData indexData, int vertexSet, OperationType opType )
 		{
-			indexDataList.Add( indexData );
-			indexDataVertexDataSetList.Add( vertexSet );
-			operationTypes.Add( opType );
+			this.indexDataList.Add( indexData );
+			this.indexDataVertexDataSetList.Add( vertexSet );
+			this.operationTypes.Add( opType );
 		}
 
 		/// <summary>
@@ -169,7 +169,7 @@ namespace Axiom.Graphics
 				var itype = vertexCount > UInt16.MaxValue ? IndexType.Size32 : IndexType.Size16;
 
 				var ibuf = new DefaultHardwareIndexBuffer( itype, vertexCount, BufferUsage.Static );
-				customIndexBufferList.Add( ibuf ); //to be disposed later
+				this.customIndexBufferList.Add( ibuf ); //to be disposed later
 
 				indexData = new IndexData();
 				indexData.indexBuffer = ibuf;
@@ -206,7 +206,7 @@ namespace Axiom.Graphics
 			}
 
 			AddVertexData( renderOp.vertexData );
-			AddIndexData( indexData, vertexDataList.Count - 1, renderOp.operationType );
+			AddIndexData( indexData, this.vertexDataList.Count - 1, renderOp.operationType );
 		}
 
 
@@ -232,7 +232,7 @@ namespace Axiom.Graphics
 			//TODO: find out whether custom index buffer needs to be created in cases (like in the AddObject(IRenderable)).
 			//Borrilis, do you know?
 
-			var vertexSetCount = vertexDataList.Count;
+			var vertexSetCount = this.vertexDataList.Count;
 			var indexOfSharedVertexSet = vertexSetCount;
 
 			if ( mesh.SharedVertexData != null )
@@ -291,7 +291,7 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					foreach ( var buf in customIndexBufferList )
+					foreach ( var buf in this.customIndexBufferList )
 					{
 						buf.SafeDispose();
 						DefaultHardwareBufferManager.Instance.NotifyIndexBufferDestroyed( buf );

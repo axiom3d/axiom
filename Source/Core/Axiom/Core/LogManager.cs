@@ -72,16 +72,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( defaultLog == null )
+				if ( this.defaultLog == null )
 				{
 					throw new AxiomException( "No logs have been created yet." );
 				}
 
-				return defaultLog;
+				return this.defaultLog;
 			}
 			set
 			{
-				defaultLog = value;
+				this.defaultLog = value;
 			}
 		}
 
@@ -151,16 +151,16 @@ namespace Axiom.Core
 			var newLog = new Log( name, debuggerOutput );
 
 			// set as the default log if need be
-			if ( defaultLog == null || isDefaultLog )
+			if ( this.defaultLog == null || isDefaultLog )
 			{
-				defaultLog = newLog;
+				this.defaultLog = newLog;
 			}
 
 			if ( name == null )
 			{
 				name = string.Empty;
 			}
-			logList.Add( name, newLog );
+			this.logList.Add( name, newLog );
 
 			return newLog;
 		}
@@ -172,12 +172,12 @@ namespace Axiom.Core
 		/// <returns>Log with the specified name.</returns>
 		public Log GetLog( string name )
 		{
-			if ( logList[ name ] == null )
+			if ( this.logList[ name ] == null )
 			{
 				throw new AxiomException( "Log with the name '{0}' not found.", name );
 			}
 
-			return (Log)logList[ name ];
+			return (Log)this.logList[ name ];
 		}
 
 		/// <summary>
@@ -267,12 +267,12 @@ namespace Axiom.Core
 				{
 					// Dispose managed resources.
 					// dispose of all the logs
-					foreach ( IDisposable o in logList.Values )
+					foreach ( IDisposable o in this.logList.Values )
 					{
 						o.Dispose();
 					}
 
-					logList.Clear();
+					this.logList.Clear();
 				}
 
 				// There are no unmanaged resources to release, but

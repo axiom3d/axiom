@@ -55,7 +55,7 @@ namespace Axiom.Scripting.Compiler
 			public CompositionTechniqueTranslator()
 				: base()
 			{
-				_Technique = null;
+				this._Technique = null;
 			}
 
 			#region Translator Implementation
@@ -72,8 +72,8 @@ namespace Axiom.Scripting.Compiler
 				var obj = (ObjectAbstractNode)node;
 
 				var compositor = (Compositor)obj.Parent.Context;
-				_Technique = compositor.CreateTechnique();
-				obj.Context = _Technique;
+				this._Technique = compositor.CreateTechnique();
+				obj.Context = this._Technique;
 
 				foreach ( var i in obj.Children )
 				{
@@ -237,7 +237,7 @@ namespace Axiom.Scripting.Compiler
 								}
 
 								// No errors, create
-								var def = _Technique.CreateTextureDefinition( atom0.Value );
+								var def = this._Technique.CreateTextureDefinition( atom0.Value );
 								def.Width = width;
 								def.Height = height;
 								def.WidthFactor = widthFactor;
@@ -289,7 +289,7 @@ namespace Axiom.Scripting.Compiler
 										                   "texture_ref must have 3 string arguments" );
 									}
 
-									var refTexDef = _Technique.CreateTextureDefinition( texName );
+									var refTexDef = this._Technique.CreateTextureDefinition( texName );
 
 									refTexDef.ReferenceCompositorName = refCompName;
 									refTexDef.ReferenceTextureName = refTexName;
@@ -317,7 +317,7 @@ namespace Axiom.Scripting.Compiler
 
 									if ( getString( i0, out scheme ) )
 									{
-										_Technique.SchemeName = scheme;
+										this._Technique.SchemeName = scheme;
 									}
 									else
 									{
@@ -348,7 +348,7 @@ namespace Axiom.Scripting.Compiler
 
 									if ( getString( i0, out logicName ) )
 									{
-										_Technique.CompositorLogicName = logicName;
+										this._Technique.CompositorLogicName = logicName;
 									}
 									else
 									{

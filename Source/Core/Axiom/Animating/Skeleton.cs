@@ -111,11 +111,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return _blendMode;
+				return this._blendMode;
 			}
 			set
 			{
-				_blendMode = value;
+				this._blendMode = value;
 			}
 		}
 
@@ -137,7 +137,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return boneList.Values;
+				return this.boneList.Values;
 			}
 		}
 
@@ -148,7 +148,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return boneList.Count;
+				return this.boneList.Count;
 			}
 		}
 
@@ -176,12 +176,12 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				if ( rootBones.Count == 0 )
+				if ( this.rootBones.Count == 0 )
 				{
 					DeriveRootBone();
 				}
 
-				return rootBones[ 0 ];
+				return this.rootBones[ 0 ];
 			}
 		}
 
@@ -192,12 +192,12 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				if ( rootBones.Count == 0 )
+				if ( this.rootBones.Count == 0 )
 				{
 					DeriveRootBone();
 				}
 
-				return rootBones.Count;
+				return this.rootBones.Count;
 			}
 		}
 
@@ -221,11 +221,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return _nextAutoHandle++;
+				return this._nextAutoHandle++;
 			}
 			set
 			{
-				_nextAutoHandle = value;
+				this._nextAutoHandle = value;
 			}
 		}
 
@@ -243,7 +243,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return animationList.Values;
+				return this.animationList.Values;
 			}
 		}
 
@@ -258,7 +258,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return attachmentPoints;
+				return this.attachmentPoints;
 			}
 		}
 
@@ -310,14 +310,14 @@ namespace Axiom.Animating
 		public virtual Animation CreateAnimation( string name, float length )
 		{
 			// Check name not used
-			if ( animationList.ContainsKey( name ) )
+			if ( this.animationList.ContainsKey( name ) )
 			{
 				throw new Exception( "An animation with the name already exists" );
 			}
 
 			var anim = new Animation( name, length );
 
-			animationList.Add( name, anim );
+			this.animationList.Add( name, anim );
 
 			return anim;
 		}
@@ -363,15 +363,15 @@ namespace Axiom.Animating
 		/// </param>
 		public virtual Bone CreateBone( string name )
 		{
-			if ( boneList.Count == MAX_BONE_COUNT )
+			if ( this.boneList.Count == MAX_BONE_COUNT )
 			{
 				throw new Exception( "Skeleton exceeded the maximum amount of bones." );
 			}
 
 			// create the new bone, and add it to both lookup lists
 			var bone = new Bone( name, nextAutoHandle, this );
-			boneList.Add( bone.Handle, bone );
-			namedBoneList.Add( bone.Name, bone );
+			this.boneList.Add( bone.Handle, bone );
+			this.namedBoneList.Add( bone.Name, bone );
 
 			return bone;
 		}
@@ -388,15 +388,15 @@ namespace Axiom.Animating
 		/// </param>
 		public virtual Bone CreateBone( ushort handle )
 		{
-			if ( boneList.Count == MAX_BONE_COUNT )
+			if ( this.boneList.Count == MAX_BONE_COUNT )
 			{
 				throw new Exception( "Skeleton exceeded the maximum amount of bones." );
 			}
 
 			// create the new bone, and add it to both lookup lists
 			var bone = new Bone( nextAutoHandle, this );
-			boneList.Add( bone.Handle, bone );
-			namedBoneList.Add( bone.Name, bone );
+			this.boneList.Add( bone.Handle, bone );
+			this.namedBoneList.Add( bone.Name, bone );
 
 			return bone;
 		}
@@ -420,15 +420,15 @@ namespace Axiom.Animating
 		/// </param>
 		public virtual Bone CreateBone( string name, ushort handle )
 		{
-			if ( boneList.Count == MAX_BONE_COUNT )
+			if ( this.boneList.Count == MAX_BONE_COUNT )
 			{
 				throw new Exception( "Skeleton exceeded the maximum amount of bones." );
 			}
 
 			// create the new bone, and add it to both lookup lists
 			var bone = new Bone( name, handle, this );
-			boneList.Add( bone.Handle, bone );
-			namedBoneList.Add( bone.Name, bone );
+			this.boneList.Add( bone.Handle, bone );
+			this.namedBoneList.Add( bone.Name, bone );
 
 			return bone;
 		}
@@ -440,21 +440,21 @@ namespace Axiom.Animating
 		/// </summary>
 		protected void DeriveRootBone()
 		{
-			if ( boneList.Count == 0 )
+			if ( this.boneList.Count == 0 )
 			{
 				throw new Exception( "Cannot derive the root bone for a skeleton that has no bones." );
 			}
 
-			rootBones.Clear();
+			this.rootBones.Clear();
 
 			// get the first bone in the list
-			var currentBone = boneList[ 0 ];
+			var currentBone = this.boneList[ 0 ];
 
-			foreach ( var bone in boneList.Values )
+			foreach ( var bone in this.boneList.Values )
 			{
 				if ( bone.Parent == null )
 				{
-					rootBones.Add( bone );
+					this.rootBones.Add( bone );
 				}
 			}
 		}
@@ -468,20 +468,20 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public virtual Animation GetAnimation( string name )
 		{
-			if ( !animationList.ContainsKey( name ) )
+			if ( !this.animationList.ContainsKey( name ) )
 			{
 				return null;
 				// throw new Exception("Animation named '" + name + "' is not part of this skeleton.");
 			}
 
-			return animationList[ name ];
+			return this.animationList[ name ];
 		}
 
 		#endregion GetAnimation Method
 
 		public virtual bool ContainsAnimation( string name )
 		{
-			return animationList.ContainsKey( name );
+			return this.animationList.ContainsKey( name );
 		}
 
 		#region GetBone Method
@@ -493,12 +493,12 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public virtual Bone GetBone( ushort handle )
 		{
-			if ( !boneList.ContainsKey( handle ) )
+			if ( !this.boneList.ContainsKey( handle ) )
 			{
 				throw new Exception( "Bone with the handle " + handle + " not found." );
 			}
 
-			return (Bone)boneList[ handle ];
+			return (Bone)this.boneList[ handle ];
 		}
 
 		/// <summary>
@@ -508,13 +508,13 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public virtual Bone GetBone( string name )
 		{
-			if ( !namedBoneList.ContainsKey( name ) )
+			if ( !this.namedBoneList.ContainsKey( name ) )
 			{
 				//throw new Exception( "Bone with the name '" + name + "' not found." );
 				return null;
 			}
 
-			return (Bone)namedBoneList[ name ];
+			return (Bone)this.namedBoneList[ name ];
 		}
 
 		#endregion GetBone Method
@@ -526,7 +526,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public virtual bool ContainsBone( string name )
 		{
-			return namedBoneList.ContainsKey( name );
+			return this.namedBoneList.ContainsKey( name );
 		}
 
 		/// <summary>
@@ -536,9 +536,9 @@ namespace Axiom.Animating
 		/// <returns>Root bone at the specified index, or null if the index is out of bounds.</returns>
 		public virtual Bone GetRootBone( int index )
 		{
-			if ( index < rootBones.Count )
+			if ( index < this.rootBones.Count )
 			{
-				return rootBones[ index ];
+				return this.rootBones[ index ];
 			}
 
 			return null;
@@ -568,7 +568,7 @@ namespace Axiom.Animating
 				by the new derived position / orientation.
 			*/
 			var i = 0;
-			foreach ( var bone in boneList.Values )
+			foreach ( var bone in this.boneList.Values )
 			{
 				matrices[ i++ ] = bone.FullTransform*bone.BindDerivedInverseTransform;
 			}
@@ -584,7 +584,7 @@ namespace Axiom.Animating
 		public virtual void InitAnimationState( AnimationStateSet animSet )
 		{
 			animSet.RemoveAllAnimationStates();
-			foreach ( var anim in animationList.Values )
+			foreach ( var anim in this.animationList.Values )
 			{
 				animSet.CreateAnimationState( anim.Name, 0, anim.Length );
 			}
@@ -597,7 +597,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public virtual void RemoveAnimation( string name )
 		{
-			animationList.Remove( name );
+			this.animationList.Remove( name );
 		}
 
 		/// <summary>
@@ -624,11 +624,11 @@ namespace Axiom.Animating
 		public virtual void Reset( bool resetManualBones )
 		{
 			// set all bones back to their binding pose
-			for ( var i = 0; i < boneList.Count; i++ )
+			for ( var i = 0; i < this.boneList.Count; i++ )
 			{
-				if ( !boneList.Values[ i ].IsManuallyControlled || resetManualBones )
+				if ( !this.boneList.Values[ i ].IsManuallyControlled || resetManualBones )
 				{
-					boneList.Values[ i ].Reset();
+					this.boneList.Values[ i ].Reset();
 				}
 			}
 		}
@@ -655,7 +655,7 @@ namespace Axiom.Animating
 				// tolerate state entries for animations we're not aware of
 				if ( anim != null )
 				{
-					anim.Apply( this, animState.Time, animState.Weight, _blendMode == SkeletalAnimBlendMode.Cumulative, 1.0f );
+					anim.Apply( this, animState.Time, animState.Weight, this._blendMode == SkeletalAnimBlendMode.Cumulative, 1.0f );
 				}
 			} // foreach
 		}
@@ -670,9 +670,9 @@ namespace Axiom.Animating
 			UpdateTransforms();
 
 			// set all bones back to their binding pose
-			for ( var i = 0; i < boneList.Count; i++ )
+			for ( var i = 0; i < this.boneList.Count; i++ )
 			{
-				boneList.Values[ i ].SetBindingPose();
+				this.boneList.Values[ i ].SetBindingPose();
 			}
 		}
 
@@ -681,9 +681,9 @@ namespace Axiom.Animating
 		/// </summary>
 		public virtual void UpdateTransforms()
 		{
-			for ( var i = 0; i < rootBones.Count; i++ )
+			for ( var i = 0; i < this.rootBones.Count; i++ )
 			{
-				rootBones[ i ].Update( true, false );
+				this.rootBones[ i ].Update( true, false );
 			}
 		}
 
@@ -698,9 +698,9 @@ namespace Axiom.Animating
 		public virtual AttachmentPoint CreateAttachmentPoint( string name, ushort parentHandle, Quaternion rotation,
 		                                                      Vector3 translation )
 		{
-			var parentBone = boneList[ parentHandle ];
+			var parentBone = this.boneList[ parentHandle ];
 			var ap = new AttachmentPoint( name, parentBone.Name, rotation, translation );
-			attachmentPoints.Add( ap );
+			this.attachmentPoints.Add( ap );
 			return ap;
 		}
 
@@ -717,14 +717,14 @@ namespace Axiom.Animating
 			writer.WriteLine( "-= Debug output of skeleton  {0} =-", Name );
 			writer.WriteLine( "" );
 			writer.WriteLine( "== Bones ==" );
-			writer.WriteLine( "Number of bones: {0}", boneList.Count );
+			writer.WriteLine( "Number of bones: {0}", this.boneList.Count );
 
 			var q = new Quaternion();
 			Real angle = 0;
 			var axis = new Vector3();
 
 			// write each bone out
-			foreach ( var bone in boneList.Values )
+			foreach ( var bone in this.boneList.Values )
 			{
 				writer.WriteLine( "-- Bone {0} --", bone.Handle );
 				writer.Write( "Position: {0}", bone.Position );
@@ -737,10 +737,10 @@ namespace Axiom.Animating
 			}
 
 			writer.WriteLine( "== Animations ==" );
-			writer.WriteLine( "Number of animations: {0}", animationList.Count );
+			writer.WriteLine( "Number of animations: {0}", this.animationList.Count );
 
 			// animations
-			foreach ( var anim in animationList.Values )
+			foreach ( var anim in this.animationList.Values )
 			{
 				writer.WriteLine( "-- Animation '{0}' (length {1}) --", anim.Name, anim.Length );
 				writer.WriteLine( "Number of tracks: {0}", anim.NodeTracks.Count );
@@ -813,9 +813,9 @@ namespace Axiom.Animating
 		protected override void unload()
 		{
 			// clear the internal lists
-			animationList.Clear();
-			boneList.Clear();
-			namedBoneList.Clear();
+			this.animationList.Clear();
+			this.boneList.Clear();
+			this.namedBoneList.Clear();
 
 			//base.Unload();
 		}

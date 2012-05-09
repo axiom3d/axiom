@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,22 +25,27 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-using System;
-using Axiom.Media;
+
 using Axiom.Graphics;
+
 using OpenTK.Graphics.ES11;
+
 using OpenGL = OpenTK.Graphics.ES11.GL;
 using OpenGLOES = OpenTK.Graphics.ES11.GL.Oes;
+
 #endregion
 
 namespace Axiom.RenderSystems.OpenGLES
@@ -47,26 +53,25 @@ namespace Axiom.RenderSystems.OpenGLES
 	public class GLESRenderBuffer : GLESHardwarePixelBuffer
 	{
 		/// <summary>
-		/// In case this is a render buffer
+		///   In case this is a render buffer
 		/// </summary>
 		protected int _renderbufferID;
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="format"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="numSamples"></param>
+		/// <param name="format"> </param>
+		/// <param name="width"> </param>
+		/// <param name="height"> </param>
+		/// <param name="numSamples"> </param>
 		public GLESRenderBuffer( All format, int width, int height, int numSamples )
 			: base( width, height, 1, GLESPixelUtil.GetClosestAxiomFormat( format ), BufferUsage.WriteOnly )
 		{
 			_glInternalFormat = format;
 			/// Generate renderbuffer
-			OpenGLOES.GenRenderbuffers( 1, ref _renderbufferID );
+			OpenGLOES.GenRenderbuffers( 1, ref this._renderbufferID );
 			GLESConfig.GlCheckError( this );
 			/// Bind it to FBO
-			OpenGLOES.BindRenderbuffer( All.RenderbufferOes, _renderbufferID );
+			OpenGLOES.BindRenderbuffer( All.RenderbufferOes, this._renderbufferID );
 			GLESConfig.GlCheckError( this );
 
 			/// Allocate storage for depth buffer
@@ -78,9 +83,8 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="disposeManagedResources"></param>
+		/// <param name="disposeManagedResources"> </param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
@@ -89,7 +93,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				{
 					if ( data != null )
 					{
-						OpenGLOES.DeleteRenderbuffers( 1, ref _renderbufferID );
+						OpenGLOES.DeleteRenderbuffers( 1, ref this._renderbufferID );
 						GLESConfig.GlCheckError( this );
 					}
 				}
@@ -101,16 +105,14 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="attachment"></param>
-		/// <param name="zOffset"></param>
+		/// <param name="attachment"> </param>
+		/// <param name="zOffset"> </param>
 		public override void BindToFramebuffer( All attachment, int zOffset )
 		{
 			Utilities.Contract.Requires( zOffset < Depth );
-			OpenGLOES.FramebufferRenderbuffer( All.FramebufferOes, attachment, All.RenderbufferOes, _renderbufferID );
+			OpenGLOES.FramebufferRenderbuffer( All.FramebufferOes, attachment, All.RenderbufferOes, this._renderbufferID );
 			GLESConfig.GlCheckError( this );
 		}
-
 	}
 }

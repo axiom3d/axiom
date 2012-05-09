@@ -58,11 +58,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return data.First;
+				return this.data.First;
 			}
 			set
 			{
-				data = new Axiom.Math.Tuple<T, T>( value, data.Second );
+				this.data = new Axiom.Math.Tuple<T, T>( value, this.data.Second );
 			}
 		}
 
@@ -70,24 +70,24 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return data.Second;
+				return this.data.Second;
 			}
 			set
 			{
-				data = new Axiom.Math.Tuple<T, T>( data.First, value );
+				this.data = new Axiom.Math.Tuple<T, T>( this.data.First, value );
 			}
 		}
 
 		public Pair( T first, T second )
 		{
-			data = new Axiom.Math.Tuple<T, T>( first, second );
+			this.data = new Axiom.Math.Tuple<T, T>( first, second );
 		}
 
 		#region IEquatable<Pair<T>> Implementation
 
 		public bool Equals( Pair<T> other )
 		{
-			return data.Equals( other.data );
+			return this.data.Equals( other.data );
 		}
 
 

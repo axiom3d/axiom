@@ -78,7 +78,7 @@ namespace Axiom.Graphics
 			{
 				get
 				{
-					return IsFloatConst( ConstantType );
+					return IsFloatConst( this.ConstantType );
 				}
 			}
 
@@ -120,7 +120,7 @@ namespace Axiom.Graphics
 			{
 				get
 				{
-					return IsSamplerConst( ConstantType );
+					return IsSamplerConst( this.ConstantType );
 				}
 			}
 
@@ -247,11 +247,11 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public GpuConstantDefinition()
 			{
-				ConstantType = GpuConstantType.Unknown;
+				this.ConstantType = GpuConstantType.Unknown;
 				PhysicalIndex = Int32.MaxValue;
-				ElementSize = 0;
-				ArraySize = 1;
-				Variability = GpuParamVariability.Global;
+				this.ElementSize = 0;
+				this.ArraySize = 1;
+				this.Variability = GpuParamVariability.Global;
 			}
 
 			#endregion
@@ -259,12 +259,12 @@ namespace Axiom.Graphics
 			public GpuConstantDefinition Clone()
 			{
 				var result = new GpuConstantDefinition();
-				result.ConstantType = ConstantType;
+				result.ConstantType = this.ConstantType;
 				result.PhysicalIndex = PhysicalIndex;
-				result.LogicalIndex = LogicalIndex;
-				result.ElementSize = ElementSize;
-				result.ArraySize = ArraySize;
-				result.Variability = Variability;
+				result.LogicalIndex = this.LogicalIndex;
+				result.ElementSize = this.ElementSize;
+				result.ArraySize = this.ArraySize;
+				result.Variability = this.Variability;
 				return result;
 			}
 		}

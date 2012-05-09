@@ -54,8 +54,8 @@ namespace Axiom.Math
 
 		public Tuple( A first, B second )
 		{
-			First = first;
-			Second = second;
+			this.First = first;
+			this.Second = second;
 		}
 
 		#endregion Construction and Destruction
@@ -64,7 +64,7 @@ namespace Axiom.Math
 
 		public bool Equals( Tuple<A, B> other )
 		{
-			return First.Equals( other.First ) && Second.Equals( other.Second );
+			return this.First.Equals( other.First ) && this.Second.Equals( other.Second );
 		}
 
 		public override bool Equals( object other )
@@ -104,8 +104,8 @@ namespace Axiom.Math
 
 		public Tuple( A first, B second, C Third )
 		{
-			First = first;
-			Second = second;
+			this.First = first;
+			this.Second = second;
 			this.Third = Third;
 		}
 
@@ -115,7 +115,7 @@ namespace Axiom.Math
 
 		public bool Equals( Tuple<A, B, C> other )
 		{
-			return First.Equals( other.First ) && Second.Equals( other.Second ) && Third.Equals( other.Third );
+			return this.First.Equals( other.First ) && this.Second.Equals( other.Second ) && this.Third.Equals( other.Third );
 		}
 
 		public override bool Equals( object other )
@@ -159,10 +159,10 @@ namespace Axiom.Math
 
 		public Tuple( A first, B second, C third, D fourth )
 		{
-			First = first;
-			Second = second;
-			Third = third;
-			Fourth = fourth;
+			this.First = first;
+			this.Second = second;
+			this.Third = third;
+			this.Fourth = fourth;
 		}
 
 		#endregion Construction and Destruction
@@ -171,7 +171,7 @@ namespace Axiom.Math
 
 		public bool Equals( Tuple<A, B, C, D> other )
 		{
-			return First.Equals( other.First ) && Second.Equals( other.Second ) && Third.Equals( other.Third );
+			return this.First.Equals( other.First ) && this.Second.Equals( other.Second ) && this.Third.Equals( other.Third );
 		}
 
 		public override bool Equals( object other )

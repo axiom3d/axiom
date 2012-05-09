@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,97 +25,95 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-using System;
+
 using Axiom.Graphics;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
 	/// <summary>
-	/// MultiRenderTarget for GL ES. Requires the FBO extension.
+	///   MultiRenderTarget for GL ES. Requires the FBO extension.
 	/// </summary>
 	public class GLESFBOMultiRenderTarget : MultiRenderTarget
 	{
 		/// <summary>
-		/// 
 		/// </summary>
-		private GLESFrameBufferObject _fbo;
+		private readonly GLESFrameBufferObject _fbo;
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public override bool RequiresTextureFlipping
 		{
-			get
-			{
-				return true;
-			}
+			get { return true; }
 		}
+
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="manager"></param>
-		/// <param name="name"></param>
+		/// <param name="manager"> </param>
+		/// <param name="name"> </param>
 		public GLESFBOMultiRenderTarget( GLESFBORTTManager manager, string name )
 			: base( name )
 		{
-			_fbo = new GLESFrameBufferObject( manager, 0 );
+			this._fbo = new GLESFrameBufferObject( manager, 0 );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="attachment"></param>
-		/// <param name="target"></param>
+		/// <param name="attachment"> </param>
+		/// <param name="target"> </param>
 		public override void BindSurface( int attachment, RenderTexture target )
 		{
 			/// Check if the render target is in the rendertarget->FBO map
-			GLESFrameBufferObject fbobj = target[ "FBO" ] as GLESFrameBufferObject;
+			var fbobj = target[ "FBO" ] as GLESFrameBufferObject;
 			Utilities.Contract.Requires( fbobj != null );
-			_fbo.BindSurface( attachment, fbobj.GetSurface( 0 ) );
+			this._fbo.BindSurface( attachment, fbobj.GetSurface( 0 ) );
 			GLESConfig.GlCheckError( this );
 
-			Width = _fbo.Width;
-			Height = _fbo.Height;
+			Width = this._fbo.Width;
+			Height = this._fbo.Height;
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="attachment"></param>
+		/// <param name="attachment"> </param>
 		public override void UnbindSurface( int attachment )
 		{
-			_fbo.UnbindSurface( attachment );
+			this._fbo.UnbindSurface( attachment );
 			GLESConfig.GlCheckError( attachment );
 
-			Width = _fbo.Width;
-			Height = _fbo.Height;
+			Width = this._fbo.Width;
+			Height = this._fbo.Height;
 		}
+
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="attribute"></param>
-		/// <returns></returns>
+		/// <param name="attribute"> </param>
+		/// <returns> </returns>
 		public override object this[ string attribute ]
 		{
 			get
 			{
 				if ( attribute == "FBO" )
-					return _fbo;
+				{
+					return this._fbo;
+				}
 
 				return base[ attribute ];
 			}
 		}
 	}
 }
-

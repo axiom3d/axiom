@@ -48,13 +48,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return mValue;
+				return this.mValue;
 			}
 		}
 
 		public RequestID( uint reqId )
 		{
-			mValue = reqId;
+			this.mValue = reqId;
 		}
 
 		public static bool operator ==( RequestID lr, RequestID rr )
@@ -84,7 +84,7 @@ namespace Axiom.Core
 
 		public override string ToString()
 		{
-			return mValue.ToString();
+			return this.mValue.ToString();
 		}
 	};
 }

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,61 +25,54 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
+
 using Axiom.Media;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
 	/// <summary>
-	/// An off-screen rendering context. These contexts are always RGBA for simplicity, speed and
-	/// convience, but the component format is configurable.
+	///   An off-screen rendering context. These contexts are always RGBA for simplicity, speed and convience, but the component format is configurable.
 	/// </summary>
 	public class GLESPBuffer
 	{
 		/// <summary>
-		/// Format of the PBuffer
+		///   Format of the PBuffer
 		/// </summary>
-		public PixelComponentType Format
-		{
-			get;
-			protected set;
-		}
+		public PixelComponentType Format { get; protected set; }
 
 		/// <summary>
-		/// Get's the width of the PBuffer
+		///   Get's the width of the PBuffer
 		/// </summary>
-		public int Width
-		{
-			get;
-			protected set;
-		}
+		public int Width { get; protected set; }
 
 		/// <summary>
-		/// Get's the height of the PBuffer
+		///   Get's the height of the PBuffer
 		/// </summary>
-		public int Height
-		{
-			get;
-			protected set;
-		}
+		public int Height { get; protected set; }
 
 		/// <summary>
-		/// Default ctor.
+		///   Default ctor.
 		/// </summary>
-		/// <param name="format"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
+		/// <param name="format"> </param>
+		/// <param name="width"> </param>
+		/// <param name="height"> </param>
 		public GLESPBuffer( PixelComponentType format, int width, int height )
 		{
 			Format = format;
@@ -87,14 +81,12 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="fmt"></param>
-		/// <returns></returns>
+		/// <param name="fmt"> </param>
+		/// <returns> </returns>
 		public static PixelComponentType GetPixelComponentType( PixelFormat fmt )
 		{
 			throw new NotImplementedException();
 		}
 	}
 }
-

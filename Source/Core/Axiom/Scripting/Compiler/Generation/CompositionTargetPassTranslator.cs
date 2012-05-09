@@ -53,7 +53,7 @@ namespace Axiom.Scripting.Compiler
 			public CompositionTargetPassTranslator()
 				: base()
 			{
-				_Target = null;
+				this._Target = null;
 			}
 
 			#region Translator Implementation
@@ -72,17 +72,17 @@ namespace Axiom.Scripting.Compiler
 				var technique = (CompositionTechnique)obj.Parent.Context;
 				if ( obj.Id == (uint)Keywords.ID_TARGET )
 				{
-					_Target = technique.CreateTargetPass();
+					this._Target = technique.CreateTargetPass();
 					if ( !string.IsNullOrEmpty( obj.Name ) )
 					{
-						_Target.OutputName = obj.Name;
+						this._Target.OutputName = obj.Name;
 					}
 				}
 				else if ( obj.Id == (uint)Keywords.ID_TARGET_OUTPUT )
 				{
-					_Target = technique.OutputTarget;
+					this._Target = technique.OutputTarget;
 				}
-				obj.Context = _Target;
+				obj.Context = this._Target;
 
 				foreach ( var i in obj.Children )
 				{
@@ -116,11 +116,11 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_NONE:
-												_Target.InputMode = CompositorInputMode.None;
+												this._Target.InputMode = CompositorInputMode.None;
 												break;
 
 											case Keywords.ID_PREVIOUS:
-												_Target.InputMode = CompositorInputMode.Previous;
+												this._Target.InputMode = CompositorInputMode.Previous;
 												break;
 
 											default:
@@ -155,7 +155,7 @@ namespace Axiom.Scripting.Compiler
 									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										_Target.OnlyInitial = val;
+										this._Target.OnlyInitial = val;
 									}
 									else
 									{
@@ -184,7 +184,7 @@ namespace Axiom.Scripting.Compiler
 									uint val;
 									if ( getUInt( prop.Values[ 0 ], out val ) )
 									{
-										_Target.VisibilityMask = val;
+										this._Target.VisibilityMask = val;
 									}
 									else
 									{
@@ -213,7 +213,7 @@ namespace Axiom.Scripting.Compiler
 									float val;
 									if ( getFloat( prop.Values[ 0 ], out val ) )
 									{
-										_Target.LodBias = val;
+										this._Target.LodBias = val;
 									}
 									else
 									{
@@ -242,7 +242,7 @@ namespace Axiom.Scripting.Compiler
 									string val;
 									if ( getString( prop.Values[ 0 ], out val ) )
 									{
-										_Target.MaterialScheme = val;
+										this._Target.MaterialScheme = val;
 									}
 									else
 									{
@@ -271,7 +271,7 @@ namespace Axiom.Scripting.Compiler
 									bool val;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										_Target.ShadowsEnabled = val;
+										this._Target.ShadowsEnabled = val;
 									}
 									else
 									{

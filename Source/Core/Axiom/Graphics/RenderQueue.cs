@@ -109,12 +109,12 @@ namespace Axiom.Graphics
 		public RenderQueue()
 		{
 			// set the default queue group for this queue
-			defaultGroup = RenderQueueGroupID.Main;
+			this.defaultGroup = RenderQueueGroupID.Main;
 
 			// create the main queue group up front
-			renderGroups.Add( RenderQueueGroupID.Main,
-			                  new RenderQueueGroup( this, splitPassesByLightingType, splitNoShadowPasses,
-			                                        shadowCastersCannotBeReceivers ) );
+			this.renderGroups.Add( RenderQueueGroupID.Main,
+			                       new RenderQueueGroup( this, this.splitPassesByLightingType, this.splitNoShadowPasses,
+			                                             this.shadowCastersCannotBeReceivers ) );
 		}
 
 		#endregion
@@ -128,11 +128,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return defaultGroup;
+				return this.defaultGroup;
 			}
 			set
 			{
-				defaultGroup = value;
+				this.defaultGroup = value;
 			}
 		}
 
@@ -143,11 +143,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return defaultRenderablePriority;
+				return this.defaultRenderablePriority;
 			}
 			set
 			{
-				defaultRenderablePriority = value;
+				this.defaultRenderablePriority = value;
 			}
 		}
 
@@ -158,7 +158,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return renderGroups.Count;
+				return this.renderGroups.Count;
 			}
 		}
 
@@ -170,16 +170,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return splitPassesByLightingType;
+				return this.splitPassesByLightingType;
 			}
 			set
 			{
-				splitPassesByLightingType = value;
+				this.splitPassesByLightingType = value;
 
 				// set the value for all render groups as well
-				for ( var i = 0; i < renderGroups.Count; i++ )
+				for ( var i = 0; i < this.renderGroups.Count; i++ )
 				{
-					GetQueueGroupByIndex( i ).SplitPassesByLightingType = splitPassesByLightingType;
+					GetQueueGroupByIndex( i ).SplitPassesByLightingType = this.splitPassesByLightingType;
 				}
 			}
 		}
@@ -193,16 +193,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return splitNoShadowPasses;
+				return this.splitNoShadowPasses;
 			}
 			set
 			{
-				splitNoShadowPasses = value;
+				this.splitNoShadowPasses = value;
 
 				// set the value for all render groups as well
-				for ( var i = 0; i < renderGroups.Count; i++ )
+				for ( var i = 0; i < this.renderGroups.Count; i++ )
 				{
-					GetQueueGroupByIndex( i ).SplitNoShadowPasses = splitNoShadowPasses;
+					GetQueueGroupByIndex( i ).SplitNoShadowPasses = this.splitNoShadowPasses;
 				}
 			}
 		}
@@ -216,16 +216,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return shadowCastersCannotBeReceivers;
+				return this.shadowCastersCannotBeReceivers;
 			}
 			set
 			{
-				shadowCastersCannotBeReceivers = value;
+				this.shadowCastersCannotBeReceivers = value;
 
 				// set the value for all render groups as well
-				for ( var i = 0; i < renderGroups.Count; i++ )
+				for ( var i = 0; i < this.renderGroups.Count; i++ )
 				{
-					GetQueueGroupByIndex( i ).ShadowCastersCannotBeReceivers = shadowCastersCannotBeReceivers;
+					GetQueueGroupByIndex( i ).ShadowCastersCannotBeReceivers = this.shadowCastersCannotBeReceivers;
 				}
 			}
 		}
@@ -285,7 +285,7 @@ namespace Axiom.Graphics
 		/// <param name="priority"></param>
 		public void AddRenderable( IRenderable item, ushort priority )
 		{
-			AddRenderable( item, priority, defaultGroup );
+			AddRenderable( item, priority, this.defaultGroup );
 		}
 
 
@@ -295,7 +295,7 @@ namespace Axiom.Graphics
 		/// <param name="item"></param>
 		public void AddRenderable( IRenderable item )
 		{
-			AddRenderable( item, defaultRenderablePriority );
+			AddRenderable( item, this.defaultRenderablePriority );
 		}
 
 		/// <summary>
@@ -313,9 +313,9 @@ namespace Axiom.Graphics
 		{
 			// loop through each queue and clear it's items.  We don't wanna clear the group
 			// list because it probably won't change frame by frame.
-			for ( var i = 0; i < renderGroups.Count; i++ )
+			for ( var i = 0; i < this.renderGroups.Count; i++ )
 			{
-				var group = (RenderQueueGroup)renderGroups.GetByIndex( i );
+				var group = (RenderQueueGroup)this.renderGroups.GetByIndex( i );
 
 				// clear the RenderQueueGroup
 				group.Clear( dispose );
@@ -341,16 +341,17 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public RenderQueueGroup GetQueueGroup( RenderQueueGroupID queueID )
 		{
-			var group = renderGroups[ queueID ] as RenderQueueGroup;
+			var group = this.renderGroups[ queueID ] as RenderQueueGroup;
 
 			// see if there is a current queue group for this group id
 			if ( group == null )
 			{
 				// create a new queue group for this group id
-				group = new RenderQueueGroup( this, splitPassesByLightingType, splitNoShadowPasses, shadowCastersCannotBeReceivers );
+				group = new RenderQueueGroup( this, this.splitPassesByLightingType, this.splitNoShadowPasses,
+				                              this.shadowCastersCannotBeReceivers );
 
 				// add the new group to cached render group
-				renderGroups.Add( queueID, group );
+				this.renderGroups.Add( queueID, group );
 			}
 
 			return group;
@@ -363,16 +364,16 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		internal RenderQueueGroup GetQueueGroupByIndex( int index )
 		{
-			Debug.Assert( index < renderGroups.Count, "index < renderGroups.Count" );
+			Debug.Assert( index < this.renderGroups.Count, "index < renderGroups.Count" );
 
-			return (RenderQueueGroup)renderGroups.GetByIndex( index );
+			return (RenderQueueGroup)this.renderGroups.GetByIndex( index );
 		}
 
 		internal RenderQueueGroupID GetRenderQueueGroupID( int index )
 		{
-			Debug.Assert( index < renderGroups.Count, "index < renderGroups.Count" );
+			Debug.Assert( index < this.renderGroups.Count, "index < renderGroups.Count" );
 
-			return (RenderQueueGroupID)renderGroups.GetKey( index );
+			return (RenderQueueGroupID)this.renderGroups.GetKey( index );
 		}
 
 		#endregion

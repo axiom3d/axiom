@@ -88,7 +88,7 @@ namespace Axiom.Core
 		///  special case list. Nothing happens if the queue is already in the list.</param>
 		public virtual void AddRenderQueue( RenderQueueGroupID queueId )
 		{
-			_queue.Add( queueId );
+			this._queue.Add( queueId );
 		}
 
 		/// <summary>
@@ -98,7 +98,7 @@ namespace Axiom.Core
 		/// special case list. Nothing happens if the queue is not in the list.</param>
 		public virtual void RemoveRenderQueue( RenderQueueGroupID queueId )
 		{
-			_queue.Remove( queueId );
+			this._queue.Remove( queueId );
 		}
 
 		/// <summary>
@@ -106,7 +106,7 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void ClearRenderQueues()
 		{
-			_queue.Clear();
+			this._queue.Clear();
 		}
 
 		/// <summary>
@@ -117,12 +117,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _mode;
+				return this._mode;
 			}
 
 			set
 			{
-				_mode = value;
+				this._mode = value;
 			}
 		}
 
@@ -134,9 +134,9 @@ namespace Axiom.Core
 		/// <returns>true if the queue will be rendered, false otherwise</returns>
 		public virtual bool IsRenderQueueToBeProcessed( RenderQueueGroupID queueId )
 		{
-			var inList = _queue.Contains( queueId );
-			return ( inList && _mode == SpecialCaseRenderQueueMode.Include ) ||
-			       ( !inList && _mode == SpecialCaseRenderQueueMode.Exclude );
+			var inList = this._queue.Contains( queueId );
+			return ( inList && this._mode == SpecialCaseRenderQueueMode.Include ) ||
+			       ( !inList && this._mode == SpecialCaseRenderQueueMode.Exclude );
 		}
 	}
 }

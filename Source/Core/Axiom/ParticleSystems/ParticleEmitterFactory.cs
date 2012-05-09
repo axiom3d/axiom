@@ -105,7 +105,7 @@ namespace Axiom.ParticleSystems
 		public virtual void Destroy( ParticleEmitter emitter )
 		{
 			// remove the emitter from the list
-			emitterList.Remove( emitter );
+			this.emitterList.Remove( emitter );
 		}
 
 		#endregion

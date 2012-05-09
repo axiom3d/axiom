@@ -111,14 +111,14 @@ namespace Axiom.Animating
 		internal AnimationTrack( Animation parent )
 		{
 			this.parent = parent;
-			maxKeyFrameTime = -1;
+			this.maxKeyFrameTime = -1;
 		}
 
 		internal AnimationTrack( Animation parent, ushort handle )
 		{
 			this.parent = parent;
 			this.handle = handle;
-			maxKeyFrameTime = -1;
+			this.maxKeyFrameTime = -1;
 		}
 
 		#endregion Constructors
@@ -132,11 +132,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return handle;
+				return this.handle;
 			}
 			set
 			{
-				handle = value;
+				this.handle = value;
 			}
 		}
 
@@ -147,7 +147,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return keyFrameList;
+				return this.keyFrameList;
 			}
 		}
 
@@ -209,7 +209,7 @@ namespace Axiom.Animating
 		public float GetKeyFramesAtTime( float time, out KeyFrame keyFrame1, out KeyFrame keyFrame2, out short firstKeyIndex )
 		{
 			short firstIndex = -1;
-			var totalLength = parent.Length;
+			var totalLength = this.parent.Length;
 
 			// wrap time
 			while ( time > totalLength )
@@ -223,9 +223,9 @@ namespace Axiom.Animating
 			keyFrame1 = null;
 
 			// find the last keyframe before or on current time
-			for ( i = 0; i < keyFrameList.Count; i++ )
+			for ( i = 0; i < this.keyFrameList.Count; i++ )
 			{
-				var keyFrame = keyFrameList[ i ];
+				var keyFrame = this.keyFrameList[ i ];
 
 				// kick out now if the current frames time is greater than the current time
 				if ( keyFrame.Time > time )
@@ -241,7 +241,7 @@ namespace Axiom.Animating
 			// use the first key anyway and pretend it's time index 0
 			if ( firstIndex == -1 )
 			{
-				keyFrame1 = keyFrameList[ 0 ];
+				keyFrame1 = this.keyFrameList[ 0 ];
 				++firstIndex;
 			}
 
@@ -256,14 +256,14 @@ namespace Axiom.Animating
 			// find first keyframe after the time
 			// if no next keyframe, wrap back to first
 			// TODO: Verify logic
-			if ( firstIndex == ( keyFrameList.Count - 1 ) )
+			if ( firstIndex == ( this.keyFrameList.Count - 1 ) )
 			{
-				keyFrame2 = keyFrameList[ 0 ];
+				keyFrame2 = this.keyFrameList[ 0 ];
 				t2 = totalLength;
 			}
 			else
 			{
-				keyFrame2 = keyFrameList[ firstIndex + 1 ];
+				keyFrame2 = this.keyFrameList[ firstIndex + 1 ];
 				t2 = keyFrame2.Time;
 			}
 
@@ -302,22 +302,22 @@ namespace Axiom.Animating
 		{
 			var keyFrame = CreateKeyFrameImpl( time );
 
-			if ( time > maxKeyFrameTime || ( time == 0 && keyFrameList.Count == 0 ) )
+			if ( time > this.maxKeyFrameTime || ( time == 0 && this.keyFrameList.Count == 0 ) )
 			{
-				keyFrameList.Add( keyFrame );
-				maxKeyFrameTime = time;
+				this.keyFrameList.Add( keyFrame );
+				this.maxKeyFrameTime = time;
 			}
 			else
 			{
 				// search for the correct place to insert the keyframe
 				var i = 0;
 
-				while ( keyFrameList[ i ].Time < time && i != keyFrameList.Count )
+				while ( this.keyFrameList[ i ].Time < time && i != this.keyFrameList.Count )
 				{
 					i++;
 				}
 
-				keyFrameList.Insert( i, keyFrame );
+				this.keyFrameList.Insert( i, keyFrame );
 			}
 
 			// ensure a spline rebuild takes place
@@ -332,9 +332,9 @@ namespace Axiom.Animating
 		/// <param name="index">Index of the keyframe to remove from this track.</param>
 		public void RemoveKeyFrame( int index )
 		{
-			Debug.Assert( index < keyFrameList.Count, "Index out of bounds when removing a key frame." );
+			Debug.Assert( index < this.keyFrameList.Count, "Index out of bounds when removing a key frame." );
 
-			keyFrameList.RemoveAt( index );
+			this.keyFrameList.RemoveAt( index );
 
 			// ensure a spline rebuild takes place
 			OnKeyFrameDataChanged();
@@ -345,7 +345,7 @@ namespace Axiom.Animating
 		/// </summary>
 		public void RemoveAllKeyFrames()
 		{
-			keyFrameList.Clear();
+			this.keyFrameList.Clear();
 
 			// ensure a spline rebuild takes place
 			OnKeyFrameDataChanged();
@@ -368,12 +368,12 @@ namespace Axiom.Animating
 		public virtual void OnKeyFrameDataChanged()
 		{
 			// we also need to rebuild the maxKeyFrameTime
-			maxKeyFrameTime = -1;
+			this.maxKeyFrameTime = -1;
 			foreach ( var keyFrame in KeyFrames )
 			{
-				if ( keyFrame.Time > maxKeyFrameTime )
+				if ( keyFrame.Time > this.maxKeyFrameTime )
 				{
-					maxKeyFrameTime = keyFrame.Time;
+					this.maxKeyFrameTime = keyFrame.Time;
 				}
 			}
 		}
@@ -431,11 +431,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return targetAnimable;
+				return this.targetAnimable;
 			}
 			set
 			{
-				targetAnimable = value;
+				this.targetAnimable = value;
 			}
 		}
 
@@ -469,14 +469,14 @@ namespace Axiom.Animating
 			else
 			{
 				// Interpolate by t
-				kret.NumericValue = AnimableValue.InterpolateValues( t, targetAnimable.Type, k1.NumericValue, k2.NumericValue );
+				kret.NumericValue = AnimableValue.InterpolateValues( t, this.targetAnimable.Type, k1.NumericValue, k2.NumericValue );
 			}
 			return kf;
 		}
 
 		public override void Apply( float timePos, float weight, bool accumulate, float scale )
 		{
-			ApplyToAnimable( targetAnimable, timePos, weight, scale );
+			ApplyToAnimable( this.targetAnimable, timePos, weight, scale );
 		}
 
 		/// <summary> Applies an animation track to a given animable value. </summary>
@@ -573,7 +573,7 @@ namespace Axiom.Animating
 		public NodeAnimationTrack( Animation parent )
 			: base( parent )
 		{
-			target = null;
+			this.target = null;
 		}
 
 		#endregion Constructors
@@ -587,11 +587,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return target;
+				return this.target;
 			}
 			set
 			{
-				target = value;
+				this.target = value;
 			}
 		}
 
@@ -652,11 +652,11 @@ namespace Axiom.Animating
 						// Interpolate to nearest rotation if mUseShortestPath set
 						if ( rim == RotationInterpolationMode.Linear )
 						{
-							result.Rotation = Quaternion.Nlerp( t, k1.Rotation, k2.Rotation, useShortestPath );
+							result.Rotation = Quaternion.Nlerp( t, k1.Rotation, k2.Rotation, this.useShortestPath );
 						}
 						else // RotationInterpolationMode.Spherical
 						{
-							result.Rotation = Quaternion.Slerp( t, k1.Rotation, k2.Rotation, useShortestPath );
+							result.Rotation = Quaternion.Slerp( t, k1.Rotation, k2.Rotation, this.useShortestPath );
 						}
 						result.Translate = k1.Translate + ( ( k2.Translate - k1.Translate )*t );
 						result.Scale = k1.Scale + ( ( k2.Scale - k1.Scale )*t );
@@ -665,14 +665,14 @@ namespace Axiom.Animating
 					case InterpolationMode.Spline:
 					{
 						// spline interpolation
-						if ( isSplineRebuildNeeded )
+						if ( this.isSplineRebuildNeeded )
 						{
 							BuildInterpolationSplines();
 						}
 
-						result.Rotation = rotationSpline.Interpolate( firstKeyIndex, t, useShortestPath );
-						result.Translate = positionSpline.Interpolate( firstKeyIndex, t );
-						result.Scale = scaleSpline.Interpolate( firstKeyIndex, t );
+						result.Rotation = this.rotationSpline.Interpolate( firstKeyIndex, t, this.useShortestPath );
+						result.Translate = this.positionSpline.Interpolate( firstKeyIndex, t );
+						result.Scale = this.scaleSpline.Interpolate( firstKeyIndex, t );
 					}
 						break;
 				}
@@ -697,7 +697,7 @@ namespace Axiom.Animating
 		public override void Apply( float time, float weight, bool accumulate, float scale )
 		{
 			// call ApplyToNode with our target node
-			ApplyToNode( target, time, weight, accumulate, scale );
+			ApplyToNode( this.target, time, weight, accumulate, scale );
 		}
 
 		private readonly TransformKeyFrame kf = new TransformKeyFrame( null, 0.0f );
@@ -707,20 +707,20 @@ namespace Axiom.Animating
 		/// </summary>
 		public void ApplyToNode( Node node, float time, float weight, bool accumulate, float scale )
 		{
-			GetInterpolatedKeyFrame( time, kf );
+			GetInterpolatedKeyFrame( time, this.kf );
 
 			if ( accumulate )
 			{
 				// add to existing. Weights are not relative, but treated as absolute multipliers for the animation
-				var translate = kf.Translate*weight*scale;
+				var translate = this.kf.Translate*weight*scale;
 				node.Translate( translate );
 
 				// interpolate between not rotation and full rotation, to point weight, so 0 = no rotate, and 1 = full rotation
-				var rotate = Quaternion.Slerp( weight, Quaternion.Identity, kf.Rotation );
+				var rotate = Quaternion.Slerp( weight, Quaternion.Identity, this.kf.Rotation );
 				node.Rotate( rotate );
 
 				// TODO: not yet sure how to modify scale for cumulative animations
-				var scaleVector = kf.Scale;
+				var scaleVector = this.kf.Scale;
 				// Not sure how to modify scale for cumulative anims... leave it alone
 				//scaleVector = ((Vector3::UNIT_SCALE - kf.getScale()) * weight) + Vector3::UNIT_SCALE;
 				if ( scale != 1.0f && scaleVector != Vector3.UnitScale )
@@ -732,7 +732,7 @@ namespace Axiom.Animating
 			else
 			{
 				// apply using weighted transform method
-				node.WeightedTransform( weight, kf.Translate, kf.Rotation, kf.Scale );
+				node.WeightedTransform( weight, this.kf.Translate, this.kf.Rotation, this.kf.Scale );
 			}
 		}
 
@@ -746,7 +746,7 @@ namespace Axiom.Animating
 		/// </summary>
 		public override void OnKeyFrameDataChanged()
 		{
-			isSplineRebuildNeeded = true;
+			this.isSplineRebuildNeeded = true;
 			base.OnKeyFrameDataChanged();
 		}
 
@@ -754,30 +754,30 @@ namespace Axiom.Animating
 		protected void BuildInterpolationSplines()
 		{
 			// dont calculate on the fly, wait till the end when we do it manually
-			positionSpline.AutoCalculate = false;
-			rotationSpline.AutoCalculate = false;
-			scaleSpline.AutoCalculate = false;
+			this.positionSpline.AutoCalculate = false;
+			this.rotationSpline.AutoCalculate = false;
+			this.scaleSpline.AutoCalculate = false;
 
-			positionSpline.Clear();
-			rotationSpline.Clear();
-			scaleSpline.Clear();
+			this.positionSpline.Clear();
+			this.rotationSpline.Clear();
+			this.scaleSpline.Clear();
 
 			// add spline control points for each keyframe in the list
 			for ( var i = 0; i < keyFrameList.Count; i++ )
 			{
 				var keyFrame = (TransformKeyFrame)keyFrameList[ i ];
 
-				positionSpline.AddPoint( keyFrame.Translate );
-				rotationSpline.AddPoint( keyFrame.Rotation );
-				scaleSpline.AddPoint( keyFrame.Scale );
+				this.positionSpline.AddPoint( keyFrame.Translate );
+				this.rotationSpline.AddPoint( keyFrame.Rotation );
+				this.scaleSpline.AddPoint( keyFrame.Scale );
 			}
 
 			// recalculate all spline tangents now
-			positionSpline.RecalculateTangents();
-			rotationSpline.RecalculateTangents();
-			scaleSpline.RecalculateTangents();
+			this.positionSpline.RecalculateTangents();
+			this.rotationSpline.RecalculateTangents();
+			this.scaleSpline.RecalculateTangents();
 
-			isSplineRebuildNeeded = false;
+			this.isSplineRebuildNeeded = false;
 		}
 
 		/// <summary>
@@ -949,11 +949,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return animationType;
+				return this.animationType;
 			}
 			set
 			{
-				animationType = value;
+				this.animationType = value;
 			}
 		}
 
@@ -964,11 +964,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return targetVertexData;
+				return this.targetVertexData;
 			}
 			set
 			{
-				targetVertexData = value;
+				this.targetVertexData = value;
 			}
 		}
 
@@ -979,11 +979,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return targetMode;
+				return this.targetMode;
 			}
 			set
 			{
-				targetMode = value;
+				this.targetMode = value;
 			}
 		}
 
@@ -1000,7 +1000,7 @@ namespace Axiom.Animating
 		/// <param name="time">The time from which this KeyFrame will apply.</param>
 		public VertexMorphKeyFrame CreateVertexMorphKeyFrame( float time )
 		{
-			if ( animationType != VertexAnimationType.Morph )
+			if ( this.animationType != VertexAnimationType.Morph )
 			{
 				throw new Exception(
 					"Morph keyframes can only be created on vertex tracks of type morph; in VertexAnimationTrack::createVertexMorphKeyFrame" );
@@ -1010,7 +1010,7 @@ namespace Axiom.Animating
 
 		public override void Apply( float time, float weight, bool accumulate, float scale )
 		{
-			ApplyToVertexData( targetVertexData, time, weight, null );
+			ApplyToVertexData( this.targetVertexData, time, weight, null );
 		}
 
 		/// <summary>
@@ -1030,12 +1030,12 @@ namespace Axiom.Animating
 			short firstKeyIndex;
 			var t = GetKeyFramesAtTime( time, out kf1, out kf2, out firstKeyIndex );
 
-			if ( animationType == VertexAnimationType.Morph )
+			if ( this.animationType == VertexAnimationType.Morph )
 			{
 				var vkf1 = (VertexMorphKeyFrame)kf1;
 				var vkf2 = (VertexMorphKeyFrame)kf2;
 
-				if ( targetMode == VertexAnimationTargetMode.Hardware )
+				if ( this.targetMode == VertexAnimationTargetMode.Hardware )
 				{
 					// If target mode is hardware, need to bind our 2 keyframe buffers,
 					// one to main pos, one to morph target texcoord
@@ -1124,7 +1124,7 @@ namespace Axiom.Animating
 		/// <summary> Creates the single pose KeyFrame and adds it to this animation. </summary>
 		public VertexPoseKeyFrame CreateVertexPoseKeyFrame( float time )
 		{
-			if ( animationType != VertexAnimationType.Pose )
+			if ( this.animationType != VertexAnimationType.Pose )
 			{
 				throw new Exception(
 					"Pose keyframes can only be created on vertex tracks of type pose; in VertexAnimationTrack::createVertexPoseKeyFrame" );
@@ -1144,7 +1144,7 @@ namespace Axiom.Animating
 		/// <summary> Utility method for applying pose animation </summary>
 		public void ApplyPoseToVertexData( Pose pose, VertexData data, float influence )
 		{
-			if ( targetMode == VertexAnimationTargetMode.Hardware )
+			if ( this.targetMode == VertexAnimationTargetMode.Hardware )
 			{
 				// Hardware
 				// If target mode is hardware, need to bind our pose buffer
@@ -1173,7 +1173,7 @@ namespace Axiom.Animating
 		/// <summary> Returns the morph KeyFrame at the specified index. </summary>
 		public VertexMorphKeyFrame GetVertexMorphKeyFrame( ushort index )
 		{
-			if ( animationType != VertexAnimationType.Morph )
+			if ( this.animationType != VertexAnimationType.Morph )
 			{
 				throw new Exception(
 					"Morph keyframes can only be created on vertex tracks of type morph, in VertexAnimationTrack::getVertexMorphKeyFrame" );
@@ -1184,7 +1184,7 @@ namespace Axiom.Animating
 		/// <summary> Returns the pose KeyFrame at the specified index. </summary>
 		public VertexPoseKeyFrame GetVertexPoseKeyFrame( ushort index )
 		{
-			if ( animationType != VertexAnimationType.Pose )
+			if ( this.animationType != VertexAnimationType.Pose )
 			{
 				throw new Exception(
 					"Pose keyframes can only be created on vertex tracks of type pose, in VertexAnimationTrack::getVertexPoseKeyFrame" );
@@ -1194,7 +1194,7 @@ namespace Axiom.Animating
 
 		public override KeyFrame CreateKeyFrameImpl( float time )
 		{
-			switch ( animationType )
+			switch ( this.animationType )
 			{
 				default:
 				case VertexAnimationType.Morph:
@@ -1211,7 +1211,7 @@ namespace Axiom.Animating
 		/// </summary>
 		public override bool HasNonZeroKeyFrames()
 		{
-			if ( animationType == VertexAnimationType.Morph )
+			if ( this.animationType == VertexAnimationType.Morph )
 			{
 				return KeyFrames.Count > 0;
 			}

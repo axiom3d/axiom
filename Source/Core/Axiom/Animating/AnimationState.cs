@@ -116,7 +116,7 @@ namespace Axiom.Animating
 
 			// set using the Length property
 			Length = length;
-			loop = true;
+			this.loop = true;
 
 			parent.NotifyDirty();
 		}
@@ -157,11 +157,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return animationName;
+				return this.animationName;
 			}
 			set
 			{
-				animationName = value;
+				this.animationName = value;
 			}
 		}
 
@@ -172,30 +172,30 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return time;
+				return this.time;
 			}
 			set
 			{
-				time = value;
-				if ( loop )
+				this.time = value;
+				if ( this.loop )
 				{
 					// Wrap
-					time = (float)System.Math.IEEERemainder( time, length );
-					if ( time < 0 )
+					this.time = (float)System.Math.IEEERemainder( this.time, this.length );
+					if ( this.time < 0 )
 					{
-						time += length;
+						this.time += this.length;
 					}
 				}
 				else
 				{
 					// Clamp
-					if ( time < 0 )
+					if ( this.time < 0 )
 					{
-						time = 0;
+						this.time = 0;
 					}
-					else if ( time > length )
+					else if ( this.time > this.length )
 					{
-						time = length;
+						this.time = this.length;
 					}
 				}
 			}
@@ -208,20 +208,20 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return length;
+				return this.length;
 			}
 			set
 			{
-				length = value;
+				this.length = value;
 
 				// update the inverse length of the animation
-				if ( length != 0 )
+				if ( this.length != 0 )
 				{
-					inverseLength = 1.0f/length;
+					this.inverseLength = 1.0f/this.length;
 				}
 				else
 				{
-					inverseLength = 0.0f;
+					this.inverseLength = 0.0f;
 				}
 			}
 		}
@@ -233,11 +233,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return weight;
+				return this.weight;
 			}
 			set
 			{
-				weight = value;
+				this.weight = value;
 			}
 		}
 
@@ -248,12 +248,12 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return isEnabled;
+				return this.isEnabled;
 			}
 			set
 			{
-				isEnabled = value;
-				parent.NotifyAnimationStateEnabled( this, isEnabled );
+				this.isEnabled = value;
+				this.parent.NotifyAnimationStateEnabled( this, this.isEnabled );
 			}
 		}
 
@@ -261,11 +261,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return loop;
+				return this.loop;
 			}
 			set
 			{
-				loop = value;
+				this.loop = value;
 			}
 		}
 
@@ -276,11 +276,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return parent;
+				return this.parent;
 			}
 			set
 			{
-				parent = value;
+				this.parent = value;
 			}
 		}
 
@@ -304,13 +304,13 @@ namespace Axiom.Animating
 		/// <param name="source">animation state which will use as source.</param>
 		public void CopyFrom( AnimationState source )
 		{
-			source.isEnabled = isEnabled;
-			source.inverseLength = inverseLength;
-			source.length = length;
-			source.time = time;
-			source.weight = weight;
-			source.loop = loop;
-			parent.NotifyDirty();
+			source.isEnabled = this.isEnabled;
+			source.inverseLength = this.inverseLength;
+			source.length = this.length;
+			source.time = this.time;
+			source.weight = this.weight;
+			source.loop = this.loop;
+			this.parent.NotifyDirty();
 		}
 
 		#endregion
@@ -324,11 +324,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return time*inverseLength;
+				return this.time*this.inverseLength;
 			}
 			set
 			{
-				time = value*length;
+				this.time = value*this.length;
 			}
 		}
 
@@ -376,7 +376,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return animationName.GetHashCode();
+			return this.animationName.GetHashCode();
 		}
 
 		#endregion Object overloads
@@ -392,8 +392,8 @@ namespace Axiom.Animating
 		{
 			var other = obj as AnimationState;
 
-			if ( animationName == other.animationName && isEnabled == other.isEnabled && time == other.time &&
-			     weight == other.weight && length == other.length )
+			if ( this.animationName == other.animationName && this.isEnabled == other.isEnabled && this.time == other.time &&
+			     this.weight == other.weight && this.length == other.length )
 			{
 				return 0;
 			}

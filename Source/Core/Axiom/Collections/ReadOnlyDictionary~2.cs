@@ -62,7 +62,7 @@ namespace Axiom.Collections
 		{
 			get
 			{
-				return dictionary[ index ];
+				return this.dictionary[ index ];
 			}
 		}
 	}

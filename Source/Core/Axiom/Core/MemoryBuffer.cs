@@ -82,15 +82,15 @@ namespace Axiom.Core
 		public MemoryBuffer<T> Allocate<T>( long size ) where T : struct
 		{
 			var buffer = new MemoryBuffer<T>( this, size );
-			_memoryPool.Add( buffer );
+			this._memoryPool.Add( buffer );
 			return buffer;
 		}
 
 		public void Deallocate( IMemoryBuffer buffer )
 		{
-			if ( _memoryPool.Contains( buffer ) )
+			if ( this._memoryPool.Contains( buffer ) )
 			{
-				_memoryPool.Remove( buffer );
+				this._memoryPool.Remove( buffer );
 				buffer.Dispose();
 			}
 		}
@@ -142,12 +142,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _buffer[ index ];
+				return this._buffer[ index ];
 			}
 
 			set
 			{
-				_buffer[ index ] = value;
+				this._buffer[ index ] = value;
 			}
 		}
 
@@ -160,14 +160,14 @@ namespace Axiom.Core
 		internal MemoryBuffer( MemoryManager owner, long size )
 			: this( owner )
 		{
-			_buffer = new T[size];
+			this._buffer = new T[size];
 		}
 
 		public TDestType[] AsArray<TDestType>()
 		{
 			if ( Owner.BitConverters.ContainsKey( typeof ( TDestType ) ) )
 			{
-				return (TDestType[])( Owner.BitConverters[ typeof ( TDestType ) ].Convert( _buffer, 0 ) );
+				return (TDestType[])( Owner.BitConverters[ typeof ( TDestType ) ].Convert( this._buffer, 0 ) );
 			}
 			return new TDestType[0];
 		}
@@ -180,7 +180,7 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-					_buffer = null;
+					this._buffer = null;
 				}
 
 				// There are no unmanaged resources to release, but

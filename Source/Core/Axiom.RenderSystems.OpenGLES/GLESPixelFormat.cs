@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,22 +25,26 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-using System;
-using System.Collections.Generic;
-using GLES = OpenTK.Graphics.ES11;
-using Axiom.Media;
+
 using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Media;
+
+using GLES = OpenTK.Graphics.ES11;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
@@ -47,11 +52,10 @@ namespace Axiom.RenderSystems.OpenGLES
 	public class GLESPixelUtil
 	{
 		/// <summary>
-		/// Takes the Axiom pixel format and returns the appropriate GL one
+		///   Takes the Axiom pixel format and returns the appropriate GL one
 		/// </summary>
-		/// <param name="fm"></param>
-		/// <returns>a GLenum describing the format, or 0 if there is no exactly matching 
-		/// one (and conversion is needed)</returns>
+		/// <param name="fm"> </param>
+		/// <returns> a GLenum describing the format, or 0 if there is no exactly matching one (and conversion is needed) </returns>
 		public static GLES.All GetGLOriginFormat( PixelFormat fmt )
 		{
 			switch ( fmt )
@@ -71,7 +75,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				case PixelFormat.FLOAT32_GR:
 					return GLES.All.LuminanceAlpha;
 
-				// PVRTC compressed formats
+					// PVRTC compressed formats
 #if GL_IMG_texture_compression_pvrtc
 			case PixelFormat.PVRTC_RGB2:
 				return GLES.All.COMPRESSED_RGB_PVRTC_2BPPV1_IMG;
@@ -95,8 +99,8 @@ namespace Axiom.RenderSystems.OpenGLES
 				case PixelFormat.A1R5G5B5:
 				case PixelFormat.A4R4G4B4:
 				case PixelFormat.A2R10G10B10:
-				// This case in incorrect, swaps R & B channels
-				//return GLES.All.BGRA;
+					// This case in incorrect, swaps R & B channels
+					//return GLES.All.BGRA;
 
 				case PixelFormat.X8B8G8R8:
 				case PixelFormat.A8B8G8R8:
@@ -107,8 +111,8 @@ namespace Axiom.RenderSystems.OpenGLES
 					return GLES.All.Rgba;
 
 #if AXIOM_ENDIAN_BIG
-				// Formats are in native endian, so R8G8B8 on little endian is
-				// BGR, on big endian it is RGB.
+	// Formats are in native endian, so R8G8B8 on little endian is
+	// BGR, on big endian it is RGB.
 				case PixelFormat.R8G8B8:
 					return GLES.All.Rgb;
 				case PixelFormat.B8G8R8:
@@ -129,12 +133,11 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// Takes the Axiom pixel format and returns the type that must be provided
-		/// to GL as internal format. 0 if no match exists.
+		///   Takes the Axiom pixel format and returns the type that must be provided to GL as internal format. 0 if no match exists.
 		/// </summary>
-		/// <param name="fmt"></param>
-		/// <param name="hwGamma"></param>
-		/// <returns></returns>
+		/// <param name="fmt"> </param>
+		/// <param name="hwGamma"> </param>
+		/// <returns> </returns>
 		public static GLES.All GetGLInternalFormat( PixelFormat fmt, bool hwGamma )
 		{
 			switch ( fmt )
@@ -152,12 +155,12 @@ namespace Axiom.RenderSystems.OpenGLES
 				case PixelFormat.A8R8G8B8:
 				case PixelFormat.A8B8G8R8:
 				case PixelFormat.B8G8R8A8:
+				{
+					if ( !hwGamma )
 					{
-						if ( !hwGamma )
-						{
-							return GLES.All.Rgba;
-						}
+						return GLES.All.Rgba;
 					}
+				}
 					return 0;
 				case PixelFormat.A4L4:
 				case PixelFormat.L16:
@@ -188,12 +191,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// Takes the Axiom pixel format and returns type that must be provided
-		/// to GL as data type for reading it into the GPU
+		///   Takes the Axiom pixel format and returns type that must be provided to GL as data type for reading it into the GPU
 		/// </summary>
-		/// <param name="mFormat"></param>
-		/// <returns>returns a GLenum describing the data type, or 0 if there is no exactly matching 
-		/// one (and conversion is needed)</returns>
+		/// <param name="mFormat"> </param>
+		/// <returns> returns a GLenum describing the data type, or 0 if there is no exactly matching one (and conversion is needed) </returns>
 		public static GLES.All GetGLOriginDataType( PixelFormat mFormat )
 		{
 			switch ( mFormat )
@@ -228,7 +229,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				case PixelFormat.A8B8G8R8:
 				case PixelFormat.X8R8G8B8:
 				case PixelFormat.A8R8G8B8:
-					return GLES.All.UnsignedByte;//GL_UNSIGNED_BYTE;
+					return GLES.All.UnsignedByte; //GL_UNSIGNED_BYTE;
 				case PixelFormat.B8G8R8A8:
 				case PixelFormat.R8G8B8A8:
 					return 0;
@@ -238,11 +239,11 @@ namespace Axiom.RenderSystems.OpenGLES
 				case PixelFormat.FLOAT32_GR:
 				case PixelFormat.FLOAT32_RGB:
 				case PixelFormat.FLOAT32_RGBA:
-					return GLES.All.Flat;//GL_FLOAT;
+					return GLES.All.Flat; //GL_FLOAT;
 				case PixelFormat.SHORT_RGBA:
 				case PixelFormat.SHORT_RGB:
 				case PixelFormat.SHORT_GR:
-					return GLES.All.Float;//GL_UNSIGNED_SHORT;
+					return GLES.All.Float; //GL_UNSIGNED_SHORT;
 
 				case PixelFormat.A2R10G10B10:
 				case PixelFormat.A2B10G10R10:
@@ -253,19 +254,18 @@ namespace Axiom.RenderSystems.OpenGLES
 				case PixelFormat.R3G3B2:
 				case PixelFormat.A1R5G5B5:
 				case PixelFormat.A4R4G4B4:
-				// TODO not supported
+					// TODO not supported
 				default:
 					return 0;
 			}
 		}
 
 		/// <summary>
-		/// Takes the Axiom pixel format and returns the type that must be provided
-		/// to GL as internal format. If no match exists, returns the closest match.
+		///   Takes the Axiom pixel format and returns the type that must be provided to GL as internal format. If no match exists, returns the closest match.
 		/// </summary>
-		/// <param name="mFormat">mFormat The pixel format</param>
-		/// <param name="hwGamma">hwGamma Whether a hardware gamma-corrected version is requested</param>
-		/// <returns></returns>
+		/// <param name="mFormat"> mFormat The pixel format </param>
+		/// <param name="hwGamma"> hwGamma Whether a hardware gamma-corrected version is requested </param>
+		/// <returns> </returns>
 		public static GLES.All GetClosestGLInternalFormat( PixelFormat mFormat, bool hwGamma = false )
 		{
 			GLES.All format = GetGLInternalFormat( mFormat, hwGamma );
@@ -288,13 +288,13 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		///  Function to get the closest matching Axiom format to an internal GL format. To be
-		/// precise, the format will be chosen that is most efficient to transfer to the card 
-		/// without losing precision.
-		/// <remarks>It is valid for this function to always return PixelFormat.A8R8G8B8.</remarks>
+		///   Function to get the closest matching Axiom format to an internal GL format. To be precise, the format will be chosen that is most efficient to transfer to the card without losing precision.
+		///   <remarks>
+		///     It is valid for this function to always return PixelFormat.A8R8G8B8.
+		///   </remarks>
 		/// </summary>
-		/// <param name="fmt"></param>
-		/// <returns></returns>
+		/// <param name="fmt"> </param>
+		/// <returns> </returns>
 		public static PixelFormat GetClosestAxiomFormat( GLES.All fmt )
 		{
 			switch ( fmt )
@@ -320,7 +320,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					return PixelFormat.A8R8G8B8;
 				case GLES.All.Rgba:
 #if (AXIOM_PLATFORM_IPHONE)
-				// seems that in iPhone we need this value to get the right color
+	// seems that in iPhone we need this value to get the right color
 				return PixelFormat.A8R8G8B8;
 #else
 					return PixelFormat.X8B8G8R8;
@@ -328,28 +328,25 @@ namespace Axiom.RenderSystems.OpenGLES
 #if GL_BGRA
 			case GLES.All.Rgba:
 #endif
-				//                return PixelFormat.X8B8G8R8;
+					//                return PixelFormat.X8B8G8R8;
 				default:
 					//TODO: not supported
 					return PixelFormat.A8R8G8B8;
-			};
+			}
+			;
 		}
 
 		/// <summary>
-		/// Returns the maximum number of Mipmaps that can be generated until we reach
-		/// the mininum format possible. This does not count the base level.
+		///   Returns the maximum number of Mipmaps that can be generated until we reach the mininum format possible. This does not count the base level.
 		/// </summary>
 		/// <remarks>
-		/// In case that the format is non-compressed, this simply returns
-		/// how many times we can divide this texture in 2 until we reach 1x1.
-		/// For compressed formats, constraints apply on minimum size and alignment
-		///  so this might differ.
+		///   In case that the format is non-compressed, this simply returns how many times we can divide this texture in 2 until we reach 1x1. For compressed formats, constraints apply on minimum size and alignment so this might differ.
 		/// </remarks>
-		/// <param name="width">The width of the area</param>
-		/// <param name="height">The height of the area</param>
-		/// <param name="depth">The depth of the area</param>
-		/// <param name="format">The format of the area</param>
-		/// <returns>the maximum number of Mipmaps that can be generated </returns>
+		/// <param name="width"> The width of the area </param>
+		/// <param name="height"> The height of the area </param>
+		/// <param name="depth"> The depth of the area </param>
+		/// <param name="format"> The format of the area </param>
+		/// <returns> the maximum number of Mipmaps that can be generated </returns>
 		public static int GetMaxMipmaps( int width, int height, int depth, PixelFormat format )
 		{
 			int count = 0;
@@ -382,22 +379,20 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// Returns next power-of-two size if required by render system, in case
-		/// RSC_NON_POWER_OF_2_TEXTURES is supported it returns value as-is.
+		///   Returns next power-of-two size if required by render system, in case RSC_NON_POWER_OF_2_TEXTURES is supported it returns value as-is.
 		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value"> </param>
+		/// <returns> </returns>
 		public static int OptionalPO2( int value )
 		{
-			RenderSystemCapabilities caps =
-			Root.Instance.RenderSystem.HardwareCapabilities;
+			RenderSystemCapabilities caps = Root.Instance.RenderSystem.HardwareCapabilities;
 			if ( caps.HasCapability( Capabilities.NonPowerOf2Textures ) )
 			{
 				return value;
 			}
 			else
 			{
-				uint n = (uint)value;
+				var n = (uint) value;
 				--n;
 				n |= n >> 16;
 				n |= n >> 8;
@@ -405,16 +400,15 @@ namespace Axiom.RenderSystems.OpenGLES
 				n |= n >> 2;
 				n |= n >> 1;
 				++n;
-				return (int)n;
+				return (int) n;
 			}
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="data"></param>
-		/// <param name="outputFormat"></param>
-		/// <returns></returns>
+		/// <param name="data"> </param>
+		/// <param name="outputFormat"> </param>
+		/// <returns> </returns>
 		public static PixelBox ConvertToGLformat( PixelBox data, out GLES.All outputFormat )
 		{
 			GLES.All glFormat = GetGLOriginFormat( data.Format );
@@ -437,13 +431,11 @@ namespace Axiom.RenderSystems.OpenGLES
 				converted.Data = data.Data;
 				unsafe
 				{
-					uint* dataptr = (uint*)converted.Data;
+					var dataptr = (uint*) converted.Data;
 					for ( uint i = 0; i < converted.Width * converted.Height; i++ )
 					{
 						uint* color = dataptr;
-						*color = ( *color & 0x000000ff ) << 16 |
-								 ( *color & 0x0000FF00 ) |
-								 ( *color & 0x00FF0000 ) >> 16;
+						*color = ( *color & 0x000000ff ) << 16 | ( *color & 0x0000FF00 ) | ( *color & 0x00FF0000 ) >> 16;
 						dataptr += 1;
 					}
 				}
@@ -453,4 +445,3 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 	}
 }
-

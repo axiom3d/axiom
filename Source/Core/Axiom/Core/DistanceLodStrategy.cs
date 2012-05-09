@@ -79,14 +79,14 @@ namespace Axiom.Core
 				// Ensure reference value has been set before being enabled
 				if ( value )
 				{
-					Debug.Assert( ReferenceViewValue != float.NaN, "Reference view must be set before being enabled!" );
+					Debug.Assert( this.ReferenceViewValue != float.NaN, "Reference view must be set before being enabled!" );
 				}
 
-				_referenceViewEnabled = value;
+				this._referenceViewEnabled = value;
 			}
 			get
 			{
-				return _referenceViewEnabled;
+				return this._referenceViewEnabled;
 			}
 		}
 
@@ -101,7 +101,7 @@ namespace Axiom.Core
 			if ( instance == null )
 			{
 				instance = this;
-				ReferenceViewValue = float.NaN;
+				this.ReferenceViewValue = float.NaN;
 			}
 			else
 			{
@@ -129,10 +129,10 @@ namespace Axiom.Core
 			var viewportArea = viewportHeight*viewportWidth;
 
 			// Compute reference view value based on viewport area and FOVs
-			ReferenceViewValue = viewportArea*MathHelper.Tan( fovX*(Real)0.5f )*MathHelper.Tan( fovY*(Real)0.5f );
+			this.ReferenceViewValue = viewportArea*MathHelper.Tan( fovX*(Real)0.5f )*MathHelper.Tan( fovY*(Real)0.5f );
 
 			// Enable use of reference view
-			_referenceViewEnabled = true;
+			this._referenceViewEnabled = true;
 		}
 
 		#region LodStrategy Implemention
@@ -156,7 +156,7 @@ namespace Axiom.Core
 			                    MathHelper.Sqr( movableObject.BoundingRadius );
 
 			// Check if reference view needs to be taken into account
-			if ( _referenceViewEnabled )
+			if ( this._referenceViewEnabled )
 			{
 				// Reference view only applicable to perspective projection
 				System.Diagnostics.Debug.Assert( cam.ProjectionType == Projection.Perspective,
@@ -175,7 +175,7 @@ namespace Axiom.Core
 				Real biasValue = viewportArea*projectionMatrix[ 0, 0 ]*projectionMatrix[ 1, 1 ];
 
 				// Scale squared depth appropriately
-				squaredDepth *= ( ReferenceViewValue/biasValue );
+				squaredDepth *= ( this.ReferenceViewValue/biasValue );
 			}
 
 			// Squared depth should never be below 0, so clamp

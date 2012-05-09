@@ -122,7 +122,7 @@ namespace Axiom.Controllers.Canned
 
 		public override Real Execute( Real sourceValue )
 		{
-			var input = AdjustInput( sourceValue*frequency )%1f;
+			var input = AdjustInput( sourceValue*this.frequency )%1f;
 			var output = 0.0f;
 
 			//For simplicity, factor input down to {0,1}
@@ -137,7 +137,7 @@ namespace Axiom.Controllers.Canned
 			}
 
 			// first, get output in range [-1,1] (typical for waveforms)
-			switch ( type )
+			switch ( this.type )
 			{
 				case WaveformType.Sine:
 					output = Utility.Sin( input*Utility.TWO_PI );
@@ -178,7 +178,7 @@ namespace Axiom.Controllers.Canned
 					output = -( ( input*2 ) - 1 );
 					break;
 				case WaveformType.PulseWidthModulation:
-					if ( input <= dutyCycle )
+					if ( input <= this.dutyCycle )
 					{
 						output = 1.0f;
 					}
@@ -190,7 +190,7 @@ namespace Axiom.Controllers.Canned
 			} // end switch
 
 			// scale final output to range [0,1], and then by base and amplitude
-			return baseVal + ( ( output + 1.0f )*0.5f*amplitude );
+			return this.baseVal + ( ( output + 1.0f )*0.5f*this.amplitude );
 		}
 
 		protected override Real AdjustInput( Real input )
@@ -200,7 +200,7 @@ namespace Axiom.Controllers.Canned
 			// if not using delta accumulation, adjust by phase value
 			if ( !useDeltaInput )
 			{
-				adjusted += phase;
+				adjusted += this.phase;
 			}
 
 			return adjusted;

@@ -114,7 +114,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -125,7 +125,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return description;
+				return this.description;
 			}
 		}
 
@@ -136,7 +136,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return target;
+				return this.target;
 			}
 		}
 

@@ -104,9 +104,9 @@ namespace Axiom.Core
 		/// <param name="owner"></param>
 		public Billboard( Vector3 position, BillboardSet owner )
 		{
-			Position = position;
-			ParentSet = owner;
-			Color = ColorEx.White;
+			this.Position = position;
+			this.ParentSet = owner;
+			this.Color = ColorEx.White;
 		}
 
 		/// <summary>
@@ -117,9 +117,9 @@ namespace Axiom.Core
 		/// <param name="color"></param>
 		public Billboard( Vector3 position, BillboardSet owner, ColorEx color )
 		{
-			Color = color;
-			Position = position;
-			ParentSet = owner;
+			this.Color = color;
+			this.Position = position;
+			this.ParentSet = owner;
 		}
 
 		#endregion Constructor
@@ -133,13 +133,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return width;
+				return this.width;
 			}
 			set
 			{
-				hasOwnDimensions = true;
-				width = value;
-				ParentSet.NotifyBillboardResized();
+				this.hasOwnDimensions = true;
+				this.width = value;
+				this.ParentSet.NotifyBillboardResized();
 			}
 		}
 
@@ -150,13 +150,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return height;
+				return this.height;
 			}
 			set
 			{
-				hasOwnDimensions = true;
-				height = value;
-				ParentSet.NotifyBillboardResized();
+				this.hasOwnDimensions = true;
+				this.height = value;
+				this.ParentSet.NotifyBillboardResized();
 			}
 		}
 
@@ -167,11 +167,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return hasOwnDimensions;
+				return this.hasOwnDimensions;
 			}
 			set
 			{
-				hasOwnDimensions = value;
+				this.hasOwnDimensions = value;
 			}
 		}
 
@@ -184,7 +184,7 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void ResetDimensions()
 		{
-			hasOwnDimensions = false;
+			this.hasOwnDimensions = false;
 		}
 
 		/// <summary>
@@ -194,10 +194,10 @@ namespace Axiom.Core
 		/// <param name="height">Height of the billboard.</param>
 		public virtual void SetDimensions( float width, float height )
 		{
-			hasOwnDimensions = true;
+			this.hasOwnDimensions = true;
 			this.width = width;
 			this.height = height;
-			ParentSet.NotifyBillboardResized();
+			this.ParentSet.NotifyBillboardResized();
 		}
 
 		/// <summary>
@@ -206,7 +206,7 @@ namespace Axiom.Core
 		/// <param name="owner"></param>
 		internal void NotifyOwner( BillboardSet owner )
 		{
-			ParentSet = owner;
+			this.ParentSet = owner;
 		}
 
 		/// <summary>
@@ -216,14 +216,14 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return rotationInRadians*Utility.DEGREES_PER_RADIAN;
+				return this.rotationInRadians*Utility.DEGREES_PER_RADIAN;
 			}
 			set
 			{
-				rotationInRadians = value*Utility.RADIANS_PER_DEGREE;
-				if ( rotationInRadians != 0 )
+				this.rotationInRadians = value*Utility.RADIANS_PER_DEGREE;
+				if ( this.rotationInRadians != 0 )
 				{
-					ParentSet.NotifyBillboardRotated();
+					this.ParentSet.NotifyBillboardRotated();
 				}
 			}
 		}
@@ -232,12 +232,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return texcoordRect;
+				return this.texcoordRect;
 			}
 			set
 			{
-				texcoordRect = value;
-				useTexcoordRect = true;
+				this.texcoordRect = value;
+				this.useTexcoordRect = true;
 			}
 		}
 
@@ -245,11 +245,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return useTexcoordRect;
+				return this.useTexcoordRect;
 			}
 			set
 			{
-				useTexcoordRect = value;
+				this.useTexcoordRect = value;
 			}
 		}
 
@@ -257,12 +257,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return texcoordIndex;
+				return this.texcoordIndex;
 			}
 			set
 			{
-				texcoordIndex = value;
-				useTexcoordRect = false;
+				this.texcoordIndex = value;
+				this.useTexcoordRect = false;
 			}
 		}
 

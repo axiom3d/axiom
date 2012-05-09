@@ -70,17 +70,17 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return names;
+				return this.names;
 			}
 			set
 			{
-				names = value;
-				values.Clear();
+				this.names = value;
+				this.values.Clear();
 				for ( int i = 0; i < value.Count; i++ )
 				{
-					values.Add( "" );
+					this.values.Add( "" );
 				}
-				element.Height = namesArea.Top*2 + names.Count*namesArea.CharHeight;
+				element.Height = this.namesArea.Top*2 + this.names.Count*this.namesArea.CharHeight;
 				UpdateText();
 			}
 		}
@@ -92,12 +92,12 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				values = value;
+				this.values = value;
 				UpdateText();
 			}
 			get
 			{
-				return values;
+				return this.values;
 			}
 		}
 
@@ -113,11 +113,11 @@ namespace Axiom.Samples
 		{
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/ParamsPanel", "BorderPanel", name );
 			var c = (OverlayElementContainer)element;
-			namesArea = (TextArea)c.Children[ Name + "/ParamsPanelNames" ];
-			valuesArea = (TextArea)c.Children[ Name + "/ParamsPanelValues" ];
+			this.namesArea = (TextArea)c.Children[ Name + "/ParamsPanelNames" ];
+			this.valuesArea = (TextArea)c.Children[ Name + "/ParamsPanelValues" ];
 			element.Width = width;
-			element.Height = namesArea.Top*2 + lines*namesArea.CharHeight;
-			values = new List<string>();
+			element.Height = this.namesArea.Top*2 + lines*this.namesArea.CharHeight;
+			this.values = new List<string>();
 		}
 
 		/// <summary>
@@ -127,11 +127,11 @@ namespace Axiom.Samples
 		/// <param name="paramValue"></param>
 		public void SetParamValue( String paramName, String paramValue )
 		{
-			for ( int i = 0; i < names.Count; i++ )
+			for ( int i = 0; i < this.names.Count; i++ )
 			{
-				if ( names[ i ] == paramName )
+				if ( this.names[ i ] == paramName )
 				{
-					values[ i ] = paramValue;
+					this.values[ i ] = paramValue;
 					UpdateText();
 					return;
 				}
@@ -148,18 +148,18 @@ namespace Axiom.Samples
 		/// <param name="paramValue"></param>
 		public void SetParamValue( int index, String paramValue )
 		{
-			if ( index < 0 || index >= names.Count )
+			if ( index < 0 || index >= this.names.Count )
 			{
 				String desc = "ParamsPanel \"" + Name + "\" has no parameter at position " + index + ".";
 				throw new System.IndexOutOfRangeException( desc );
 			}
-			if ( values.Count < index )
+			if ( this.values.Count < index )
 			{
-				values.Insert( index, paramValue );
+				this.values.Insert( index, paramValue );
 			}
 			else
 			{
-				values[ index ] = paramValue;
+				this.values[ index ] = paramValue;
 			}
 			UpdateText();
 		}
@@ -171,11 +171,11 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public String GetParamValue( String paramName )
 		{
-			for ( int i = 0; i < names.Count; i++ )
+			for ( int i = 0; i < this.names.Count; i++ )
 			{
-				if ( names[ i ] == paramName )
+				if ( this.names[ i ] == paramName )
 				{
-					return values[ i ];
+					return this.values[ i ];
 				}
 			}
 
@@ -190,13 +190,13 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		public String GetParamValue( int index )
 		{
-			if ( index < 0 || index >= names.Count )
+			if ( index < 0 || index >= this.names.Count )
 			{
 				String desc = "ParamsPanel \"" + Name + "\" has no parameter at position " + index + ".";
 				throw new System.IndexOutOfRangeException( desc );
 			}
 
-			return values[ index ];
+			return this.values[ index ];
 		}
 
 		/// <summary>
@@ -207,14 +207,14 @@ namespace Axiom.Samples
 			var namesDS = new StringBuilder();
 			var valuesDS = new StringBuilder();
 
-			for ( int i = 0; i < names.Count; i++ )
+			for ( int i = 0; i < this.names.Count; i++ )
 			{
-				namesDS.Append( names[ i ] + ":\n" );
-				valuesDS.Append( values[ i ] + "\n" );
+				namesDS.Append( this.names[ i ] + ":\n" );
+				valuesDS.Append( this.values[ i ] + "\n" );
 			}
 
-			namesArea.Text = namesDS.ToString();
-			valuesArea.Text = valuesDS.ToString();
+			this.namesArea.Text = namesDS.ToString();
+			this.valuesArea.Text = valuesDS.ToString();
 		}
 	}
 }

@@ -101,7 +101,7 @@ namespace Axiom.Graphics
 		                         bool shadowCastersCannotBeReceivers )
 		{
 			// shadows enabled by default
-			shadowsEnabled = true;
+			this.shadowsEnabled = true;
 
 			this.splitPassesByLightingType = splitPassesByLightingType;
 			this.splitNoShadowPasses = splitNoShadowPasses;
@@ -123,7 +123,8 @@ namespace Axiom.Graphics
 			if ( !PriorityGroups.ContainsKey( priority ) )
 			{
 				// create a new queue group for this group id
-				group = new RenderPriorityGroup( this, splitPassesByLightingType, splitNoShadowPasses, splitPassesByLightingType );
+				group = new RenderPriorityGroup( this, this.splitPassesByLightingType, this.splitNoShadowPasses,
+				                                 this.splitPassesByLightingType );
 
 				// add the new group to cached render group
 				PriorityGroups.Add( priority, group );
@@ -186,7 +187,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return priorityGroups;
+				return this.priorityGroups;
 			}
 		}
 
@@ -207,11 +208,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return shadowsEnabled;
+				return this.shadowsEnabled;
 			}
 			set
 			{
-				shadowsEnabled = value;
+				this.shadowsEnabled = value;
 			}
 		}
 
@@ -223,16 +224,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return splitPassesByLightingType;
+				return this.splitPassesByLightingType;
 			}
 			set
 			{
-				splitPassesByLightingType = value;
+				this.splitPassesByLightingType = value;
 
 				// set the value for all priority groups as well
 				foreach ( var item in PriorityGroups )
 				{
-					item.Value.SplitPassesByLightingType = splitPassesByLightingType;
+					item.Value.SplitPassesByLightingType = this.splitPassesByLightingType;
 				}
 			}
 		}
@@ -246,16 +247,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return splitNoShadowPasses;
+				return this.splitNoShadowPasses;
 			}
 			set
 			{
-				splitNoShadowPasses = value;
+				this.splitNoShadowPasses = value;
 
 				// set the value for all priority groups as well
 				foreach ( var group in PriorityGroups.Values )
 				{
-					group.SplitNoShadowPasses = splitNoShadowPasses;
+					group.SplitNoShadowPasses = this.splitNoShadowPasses;
 				}
 			}
 		}
@@ -268,16 +269,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return shadowCastersCannotBeReceivers;
+				return this.shadowCastersCannotBeReceivers;
 			}
 			set
 			{
-				shadowCastersCannotBeReceivers = value;
+				this.shadowCastersCannotBeReceivers = value;
 
 				// set the value for all priority groups as well
 				foreach ( var group in PriorityGroups.Values )
 				{
-					group.ShadowCastersCannotBeReceivers = shadowCastersCannotBeReceivers;
+					group.ShadowCastersCannotBeReceivers = this.shadowCastersCannotBeReceivers;
 				}
 			}
 		}

@@ -79,8 +79,8 @@ namespace Axiom.Scripting.Compiler.AST
 		/// <param name="parent">the parent AbstractNode in the tree</param>
 		protected AbstractNode( AbstractNode parent )
 		{
-			Parent = parent;
-			Line = 0;
+			this.Parent = parent;
+			this.Line = 0;
 		}
 
 		/// <summary>
@@ -112,7 +112,7 @@ namespace Axiom.Scripting.Compiler.AST
 
 		public override int GetHashCode()
 		{
-			return File.GetHashCode() | Line.GetHashCode();
+			return this.File.GetHashCode() | this.Line.GetHashCode();
 		}
 
 		#endregion System.Object Implementation

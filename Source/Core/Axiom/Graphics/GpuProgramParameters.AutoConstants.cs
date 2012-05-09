@@ -876,11 +876,11 @@ namespace Axiom.Graphics
 			public AutoConstantDefinition( AutoConstantType autoConstantType, string name, int elementCount,
 			                               ElementType elementType, AutoConstantDataType dataType )
 			{
-				AutoConstantType = autoConstantType;
-				Name = name;
-				ElementCount = elementCount;
-				ElementType = elementType;
-				DataType = dataType;
+				this.AutoConstantType = autoConstantType;
+				this.Name = name;
+				this.ElementCount = elementCount;
+				this.ElementType = elementType;
+				this.DataType = dataType;
 			}
 		}
 

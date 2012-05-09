@@ -137,13 +137,13 @@ namespace Axiom.Overlays
 			: base()
 		{
 			Name = name;
-			scaleX = 1.0f;
-			scaleY = 1.0f;
-			isTransformOutOfDate = true;
-			isTransformUpdated = true;
-			zOrder = 100;
-			isInitialised = false;
-			rootNode = new SceneNode( null );
+			this.scaleX = 1.0f;
+			this.scaleY = 1.0f;
+			this.isTransformOutOfDate = true;
+			this.isTransformUpdated = true;
+			this.zOrder = 100;
+			this.isInitialised = false;
+			this.rootNode = new SceneNode( null );
 		}
 
 		#endregion Constructors
@@ -164,17 +164,17 @@ namespace Axiom.Overlays
 		/// <param name="element"></param>
 		public void AddElement( OverlayElementContainer element )
 		{
-			elementList.Add( element );
-			elementLookup.Add( element.Name, element );
+			this.elementList.Add( element );
+			this.elementLookup.Add( element.Name, element );
 
 			// notify the parent
 			element.NotifyParent( null, this );
 
 			AssignZOrders();
 
-			GetWorldTransforms( xform );
+			GetWorldTransforms( this.xform );
 
-			element.NotifyWorldTransforms( xform );
+			element.NotifyWorldTransforms( this.xform );
 			element.NotifyViewport();
 		}
 
@@ -212,7 +212,7 @@ namespace Axiom.Overlays
 		public void AddElement( SceneNode node )
 		{
 			// add the scene node as a child of the root node
-			rootNode.AddChild( node );
+			this.rootNode.AddChild( node );
 		}
 
 		/// <summary>
@@ -235,13 +235,13 @@ namespace Axiom.Overlays
 		/// <param name="element"></param>
 		public void RemoveElement( OverlayElementContainer element )
 		{
-			if ( elementList.Contains( element ) )
+			if ( this.elementList.Contains( element ) )
 			{
-				elementList.Remove( element );
+				this.elementList.Remove( element );
 			}
-			if ( elementLookup.ContainsKey( element.Name ) )
+			if ( this.elementLookup.ContainsKey( element.Name ) )
 			{
-				elementLookup.Remove( element.Name );
+				this.elementLookup.Remove( element.Name );
 			}
 
 			AssignZOrders();
@@ -254,7 +254,7 @@ namespace Axiom.Overlays
 		/// <param name="node"></param>
 		public void RemoveElement( SceneNode node )
 		{
-			rootNode.RemoveChild( node );
+			this.rootNode.RemoveChild( node );
 		}
 
 		/// <summary>
@@ -262,8 +262,8 @@ namespace Axiom.Overlays
 		/// </summary>
 		public void Clear()
 		{
-			rootNode.Clear();
-			elementList.Clear();
+			this.rootNode.Clear();
+			this.elementList.Clear();
 		}
 
 		/// <summary>
@@ -285,12 +285,12 @@ namespace Axiom.Overlays
 		protected void Initialize()
 		{
 			// add 2d elements
-			for ( var i = 0; i < elementList.Count; i++ )
+			for ( var i = 0; i < this.elementList.Count; i++ )
 			{
-				var container = (OverlayElementContainer)elementList[ i ];
+				var container = (OverlayElementContainer)this.elementList[ i ];
 				container.Initialize();
 			}
-			isInitialised = true;
+			this.isInitialised = true;
 		}
 
 		/// <summary>
@@ -302,48 +302,48 @@ namespace Axiom.Overlays
 		{
 			if ( OverlayManager.Instance.HasViewportChanged )
 			{
-				for ( var i = 0; i < elementList.Count; i++ )
+				for ( var i = 0; i < this.elementList.Count; i++ )
 				{
-					var container = (OverlayElementContainer)elementList[ i ];
+					var container = (OverlayElementContainer)this.elementList[ i ];
 					container.NotifyViewport();
 				}
 			}
 
-			if ( isVisible )
+			if ( this.isVisible )
 			{
 				// update transform of elements
-				if ( isTransformUpdated )
+				if ( this.isTransformUpdated )
 				{
-					GetWorldTransforms( xform );
-					for ( var i = 0; i < elementList.Count; i++ )
+					GetWorldTransforms( this.xform );
+					for ( var i = 0; i < this.elementList.Count; i++ )
 					{
-						var container = (OverlayElementContainer)elementList[ i ];
-						container.NotifyWorldTransforms( xform );
+						var container = (OverlayElementContainer)this.elementList[ i ];
+						container.NotifyWorldTransforms( this.xform );
 					}
-					isTransformUpdated = false;
+					this.isTransformUpdated = false;
 				}
 
 				// add 3d elements
-				rootNode.Position = camera.DerivedPosition;
-				rootNode.Orientation = camera.DerivedOrientation;
-				rootNode.Update( true, false );
+				this.rootNode.Position = camera.DerivedPosition;
+				this.rootNode.Orientation = camera.DerivedOrientation;
+				this.rootNode.Update( true, false );
 
 				// set up the default queue group for the objects about to be added
 				var oldGroupID = queue.DefaultRenderGroup;
 				var oldPriority = queue.DefaultRenderablePriority;
 
 				queue.DefaultRenderGroup = RenderQueueGroupID.Overlay;
-				queue.DefaultRenderablePriority = (ushort)( ( zOrder*100 ) - 1 );
-				rootNode.FindVisibleObjects( camera, queue, true, false );
+				queue.DefaultRenderablePriority = (ushort)( ( this.zOrder*100 ) - 1 );
+				this.rootNode.FindVisibleObjects( camera, queue, true, false );
 
 				// reset the group
 				queue.DefaultRenderGroup = oldGroupID;
 				queue.DefaultRenderablePriority = oldPriority;
 
 				// add 2d elements
-				for ( var i = 0; i < elementList.Count; i++ )
+				for ( var i = 0; i < this.elementList.Count; i++ )
 				{
-					var container = (OverlayElementContainer)elementList[ i ];
+					var container = (OverlayElementContainer)this.elementList[ i ];
 					container.Update();
 					container.UpdateRenderQueue( queue );
 				}
@@ -361,9 +361,9 @@ namespace Axiom.Overlays
 			OverlayElement ret = null;
 			var currZ = -1;
 
-			for ( var i = 0; i < elementList.Count; i++ )
+			for ( var i = 0; i < this.elementList.Count; i++ )
 			{
-				var container = (OverlayElementContainer)elementList[ i ];
+				var container = (OverlayElementContainer)this.elementList[ i ];
 				var z = container.ZOrder;
 				if ( z > currZ )
 				{
@@ -385,7 +385,7 @@ namespace Axiom.Overlays
 		/// <returns></returns>
 		public OverlayElementContainer GetChild( string name )
 		{
-			return (OverlayElementContainer)elementLookup[ name ];
+			return (OverlayElementContainer)this.elementLookup[ name ];
 		}
 
 		/// <summary>
@@ -396,12 +396,12 @@ namespace Axiom.Overlays
 		/// </param>
 		public void GetWorldTransforms( Matrix4[] xform )
 		{
-			if ( isTransformOutOfDate )
+			if ( this.isTransformOutOfDate )
 			{
 				UpdateTransforms();
 			}
 
-			xform[ 0 ] = transform;
+			xform[ 0 ] = this.transform;
 		}
 
 		public Quaternion GetWorldOrientation()
@@ -421,7 +421,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		public void Rotate( float degrees )
 		{
-			Rotation = ( rotate += degrees );
+			Rotation = ( this.rotate += degrees );
 		}
 
 		/// <summary>
@@ -436,10 +436,10 @@ namespace Axiom.Overlays
 		/// <param name="yOffset"></param>
 		public void Scroll( float xOffset, float yOffset )
 		{
-			scrollX += xOffset;
-			scrollY += yOffset;
-			isTransformOutOfDate = true;
-			isTransformUpdated = true;
+			this.scrollX += xOffset;
+			this.scrollY += yOffset;
+			this.isTransformOutOfDate = true;
+			this.isTransformUpdated = true;
 		}
 
 		/// <summary>
@@ -452,10 +452,10 @@ namespace Axiom.Overlays
 		/// <param name="y">Vertical scale value, where 1.0 = normal, 0.5 = half size etc</param>
 		public void SetScale( float x, float y )
 		{
-			scaleX = x;
-			scaleY = y;
-			isTransformOutOfDate = true;
-			isTransformUpdated = true;
+			this.scaleX = x;
+			this.scaleY = y;
+			this.isTransformOutOfDate = true;
+			this.isTransformUpdated = true;
 		}
 
 		/// <summary>
@@ -475,10 +475,10 @@ namespace Axiom.Overlays
 		/// </param>
 		public void SetScroll( float x, float y )
 		{
-			scrollX = x;
-			scrollY = y;
-			isTransformOutOfDate = true;
-			isTransformUpdated = true;
+			this.scrollX = x;
+			this.scrollY = y;
+			this.isTransformOutOfDate = true;
+			this.isTransformUpdated = true;
 		}
 
 		/// <summary>
@@ -493,15 +493,15 @@ namespace Axiom.Overlays
 			var rot3x3 = Matrix3.Identity;
 			var scale3x3 = Matrix3.Zero;
 
-			rot3x3.FromEulerAnglesXYZ( 0.0f, 0.0f, Utility.DegreesToRadians( (Real)rotate ) );
-			scale3x3.m00 = scaleX;
-			scale3x3.m11 = scaleY;
+			rot3x3.FromEulerAnglesXYZ( 0.0f, 0.0f, Utility.DegreesToRadians( (Real)this.rotate ) );
+			scale3x3.m00 = this.scaleX;
+			scale3x3.m11 = this.scaleY;
 			scale3x3.m22 = 1.0f;
 
-			transform = rot3x3*scale3x3;
-			transform.Translation = new Vector3( scrollX, scrollY, 0 );
+			this.transform = rot3x3*scale3x3;
+			this.transform.Translation = new Vector3( this.scrollX, this.scrollY, 0 );
 
-			isTransformOutOfDate = false;
+			this.isTransformOutOfDate = false;
 		}
 
 		/// <summary>
@@ -509,11 +509,11 @@ namespace Axiom.Overlays
 		/// </summary>
 		protected void AssignZOrders()
 		{
-			var zorder = zOrder*100;
+			var zorder = this.zOrder*100;
 			// notify attached 2d elements
-			for ( var i = 0; i < elementList.Count; i++ )
+			for ( var i = 0; i < this.elementList.Count; i++ )
 			{
-				zorder = ( (OverlayElementContainer)elementList[ i ] ).NotifyZOrder( zorder );
+				zorder = ( (OverlayElementContainer)this.elementList[ i ] ).NotifyZOrder( zorder );
 			}
 		}
 
@@ -528,12 +528,12 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return isVisible;
+				return this.isVisible;
 			}
 			set
 			{
-				isVisible = value;
-				if ( isVisible && !isInitialised )
+				this.isVisible = value;
+				if ( this.isVisible && !this.isInitialised )
 				{
 					Initialize();
 				}
@@ -544,7 +544,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return isInitialised;
+				return this.isInitialised;
 			}
 		}
 
@@ -555,13 +555,13 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return rotate;
+				return this.rotate;
 			}
 			set
 			{
-				rotate = value;
-				isTransformOutOfDate = true;
-				isTransformUpdated = true;
+				this.rotate = value;
+				this.isTransformOutOfDate = true;
+				this.isTransformUpdated = true;
 			}
 		}
 
@@ -572,7 +572,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return scaleX;
+				return this.scaleX;
 			}
 		}
 
@@ -583,7 +583,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return scaleY;
+				return this.scaleY;
 			}
 		}
 
@@ -594,7 +594,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return scrollX;
+				return this.scrollX;
 			}
 		}
 
@@ -605,7 +605,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return scrollY;
+				return this.scrollY;
 			}
 		}
 
@@ -616,12 +616,12 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return zOrder;
+				return this.zOrder;
 			}
 			set
 			{
 				Contract.Requires( value < 650, "ZOrder", "Overlay ZOrder cannot be greater than 650!" );
-				zOrder = value;
+				this.zOrder = value;
 				AssignZOrders();
 			}
 		}

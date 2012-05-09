@@ -81,7 +81,7 @@ namespace Axiom.Controllers.Canned
 		public AnimationControllerFunction( Real sequenceTime, Real timeOffset )
 		{
 			this.sequenceTime = sequenceTime;
-			time = timeOffset;
+			this.time = timeOffset;
 		}
 
 		#endregion
@@ -96,16 +96,16 @@ namespace Axiom.Controllers.Canned
 		public Real Execute( Real sourceValue )
 		{
 			// assuming source if the time since the last update
-			time += sourceValue;
+			this.time += sourceValue;
 
 			// wrap
-			while ( time >= sequenceTime )
+			while ( this.time >= this.sequenceTime )
 			{
-				time -= sequenceTime;
+				this.time -= this.sequenceTime;
 			}
 
 			// return parametric
-			return time/sequenceTime;
+			return this.time/this.sequenceTime;
 		}
 
 		#endregion ControllerFunction Members

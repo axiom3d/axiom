@@ -85,7 +85,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return children;
+				return this.children;
 			}
 		}
 
@@ -100,7 +100,7 @@ namespace Axiom.Overlays
 		protected internal OverlayElementContainer( string name )
 			: base( name )
 		{
-			childrenProcessEvents = true;
+			this.childrenProcessEvents = true;
 		}
 
 		#endregion
@@ -109,12 +109,12 @@ namespace Axiom.Overlays
 
 		public override void Initialize()
 		{
-			foreach ( OverlayElementContainer container in childContainers.Values )
+			foreach ( OverlayElementContainer container in this.childContainers.Values )
 			{
 				container.Initialize();
 			}
 
-			foreach ( var child in children.Values )
+			foreach ( var child in this.children.Values )
 			{
 				child.Initialize();
 			}
@@ -130,25 +130,25 @@ namespace Axiom.Overlays
 			{
 				if ( disposeManagedResources )
 				{
-					foreach ( var currentChild in children.Values )
+					foreach ( var currentChild in this.children.Values )
 					{
 						if ( !currentChild.IsDisposed )
 						{
 							currentChild.Dispose();
 						}
 					}
-					children.Clear();
-					children = null;
+					this.children.Clear();
+					this.children = null;
 
-					foreach ( var currentChild in childContainers.Values )
+					foreach ( var currentChild in this.childContainers.Values )
 					{
 						if ( !currentChild.IsDisposed )
 						{
 							currentChild.Dispose();
 						}
 					}
-					childContainers.Clear();
-					childContainers = null;
+					this.childContainers.Clear();
+					this.childContainers = null;
 				}
 			}
 
@@ -177,11 +177,11 @@ namespace Axiom.Overlays
 		/// <param name="element"></param>
 		public virtual void AddChildElement( OverlayElement element )
 		{
-			Debug.Assert( !children.ContainsKey( element.Name ),
+			Debug.Assert( !this.children.ContainsKey( element.Name ),
 			              string.Format( "Child with name '{0}' already defined.", element.Name ) );
 
 			// add to lookup table and list
-			children.Add( element.Name, element );
+			this.children.Add( element.Name, element );
 
 			// inform this child about his/her parent and zorder
 			element.NotifyParent( this, overlay );
@@ -201,7 +201,7 @@ namespace Axiom.Overlays
 			AddChildElement( element );
 
 			// now add the container to the container collection
-			childContainers.Add( container.Name, container );
+			this.childContainers.Add( container.Name, container );
 		}
 
 		/// <summary>
@@ -211,12 +211,12 @@ namespace Axiom.Overlays
 		public virtual void RemoveChild( string name )
 		{
 			var element = GetChild( name );
-			children.Remove( name );
+			this.children.Remove( name );
 
 			// remove from container list (if found)
-			if ( childContainers.ContainsKey( name ) )
+			if ( this.childContainers.ContainsKey( name ) )
 			{
-				childContainers.Remove( name );
+				this.childContainers.Remove( name );
 			}
 			element.Parent = null;
 		}
@@ -227,9 +227,9 @@ namespace Axiom.Overlays
 		/// <param name="name"></param>
 		public virtual OverlayElement GetChild( string name )
 		{
-			Debug.Assert( children.ContainsKey( name ), string.Format( "Child with name '{0}' not found.", name ) );
+			Debug.Assert( this.children.ContainsKey( name ), string.Format( "Child with name '{0}' not found.", name ) );
 
-			return children[ name ];
+			return this.children[ name ];
 		}
 
 		/// <summary>
@@ -240,7 +240,7 @@ namespace Axiom.Overlays
 			// call baseclass method
 			base.PositionsOutOfDate();
 
-			foreach ( var child in children.Values )
+			foreach ( var child in this.children.Values )
 			{
 				child.PositionsOutOfDate();
 			}
@@ -251,7 +251,7 @@ namespace Axiom.Overlays
 			// call base class method
 			base.Update();
 
-			foreach ( var child in children.Values )
+			foreach ( var child in this.children.Values )
 			{
 				child.Update();
 			}
@@ -265,7 +265,7 @@ namespace Axiom.Overlays
 			//One for us
 			zOrder++;
 
-			foreach ( var child in children.Values )
+			foreach ( var child in this.children.Values )
 			{
 				zOrder = child.NotifyZOrder( zOrder );
 			}
@@ -279,7 +279,7 @@ namespace Axiom.Overlays
 			base.NotifyWorldTransforms( xform );
 
 			// Update children
-			foreach ( var child in children.Values )
+			foreach ( var child in this.children.Values )
 			{
 				child.NotifyWorldTransforms( xform );
 			}
@@ -289,7 +289,7 @@ namespace Axiom.Overlays
 		{
 			base.NotifyViewport();
 			// Update children
-			foreach ( var child in children.Values )
+			foreach ( var child in this.children.Values )
 			{
 				child.NotifyViewport();
 			}
@@ -300,7 +300,7 @@ namespace Axiom.Overlays
 			// call the base class method
 			base.NotifyParent( parent, overlay );
 
-			foreach ( var child in children.Values )
+			foreach ( var child in this.children.Values )
 			{
 				child.NotifyParent( this, overlay );
 			}
@@ -315,7 +315,7 @@ namespace Axiom.Overlays
 
 				if ( updateChildren )
 				{
-					foreach ( var child in children.Values )
+					foreach ( var child in this.children.Values )
 					{
 						child.UpdateRenderQueue( queue );
 					}
@@ -337,9 +337,9 @@ namespace Axiom.Overlays
 			if ( isVisible )
 			{
 				ret = base.FindElementAt( x, y ); //default to the current container if no others are found
-				if ( ret != null && childrenProcessEvents )
+				if ( ret != null && this.childrenProcessEvents )
 				{
-					foreach ( var currentOverlayElement in children.Values )
+					foreach ( var currentOverlayElement in this.children.Values )
 					{
 						if ( currentOverlayElement.IsVisible && currentOverlayElement.Enabled )
 						{
@@ -386,7 +386,7 @@ namespace Axiom.Overlays
 			}
 			set
 			{
-				childrenProcessEvents = value;
+				this.childrenProcessEvents = value;
 			}
 		}
 

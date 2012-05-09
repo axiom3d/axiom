@@ -74,24 +74,24 @@ namespace Axiom.Math
 
 		public Degree( Real r )
 		{
-			_value = r;
+			this._value = r;
 		}
 
 		public Degree( Degree d )
 		{
-			_value = d._value;
+			this._value = d._value;
 		}
 
 		public Degree( Radian r )
 		{
-			_value = r.InDegrees;
+			this._value = r.InDegrees;
 		}
 
 		public Radian InRadians
 		{
 			get
 			{
-				return _value*_degreesToRadians;
+				return this._value*_degreesToRadians;
 			}
 		}
 
@@ -220,7 +220,7 @@ namespace Axiom.Math
 
 		public override int GetHashCode()
 		{
-			return _value.GetHashCode();
+			return this._value.GetHashCode();
 		}
 
 #if !( XBOX || XBOX360 )
@@ -229,13 +229,13 @@ namespace Axiom.Math
 
 		private Degree( SerializationInfo info, StreamingContext context )
 		{
-			_value = (Real)info.GetValue( "value", typeof ( Real ) );
+			this._value = (Real)info.GetValue( "value", typeof ( Real ) );
 		}
 
 		[SecurityPermission( SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter )]
 		public void GetObjectData( SerializationInfo info, StreamingContext context )
 		{
-			info.AddValue( "value", _value );
+			info.AddValue( "value", this._value );
 		}
 
 		#endregion ISerializableImplementation
@@ -246,17 +246,17 @@ namespace Axiom.Math
 
 		public int CompareTo( Degree other )
 		{
-			return _value.CompareTo( other );
+			return this._value.CompareTo( other );
 		}
 
 		public int CompareTo( Radian other )
 		{
-			return _value.CompareTo( other.InDegrees );
+			return this._value.CompareTo( other.InDegrees );
 		}
 
 		public int CompareTo( Real other )
 		{
-			return _value.CompareTo( other );
+			return this._value.CompareTo( other );
 		}
 
 		#endregion

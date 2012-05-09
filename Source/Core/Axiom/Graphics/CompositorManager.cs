@@ -106,7 +106,7 @@ namespace Axiom.Graphics
 				pass.FirstRenderQueue = RenderQueueGroupID.Background;
 				pass.LastRenderQueue = RenderQueueGroupID.SkiesLate;
 			}
-			chains = new Dictionary<Viewport, CompositorChain>();
+			this.chains = new Dictionary<Viewport, CompositorChain>();
 
 			return true;
 		}
@@ -125,8 +125,9 @@ namespace Axiom.Graphics
 			// in Root.ctor(), this does change the order in which things are initialized.
 			//Initialize();
 
-			customCompositionPassesIndex = new ReadOnlyDictionary<string, ICustomCompositionPass>( customCompositionPasses );
-			compositorLogicIndex = new ReadOnlyDictionary<string, ICompositorLogic>( compositorLogics );
+			this.customCompositionPassesIndex =
+				new ReadOnlyDictionary<string, ICustomCompositionPass>( this.customCompositionPasses );
+			this.compositorLogicIndex = new ReadOnlyDictionary<string, ICompositorLogic>( this.compositorLogics );
 			//Load right after materials
 			LoadingOrder = 110.0f;
 
@@ -187,12 +188,12 @@ namespace Axiom.Graphics
 			/// <param name="srgb"></param>
 			public TextureDefinition( int width, int height, PixelFormat format, int aa, string aaHint, bool srgb )
 			{
-				Width = width;
-				Height = height;
-				Format = format;
-				FSAA = aa;
-				FSAAHint = aaHint;
-				SRGBWrite = srgb;
+				this.Width = width;
+				this.Height = height;
+				this.Format = format;
+				this.FSAA = aa;
+				this.FSAAHint = aaHint;
+				this.SRGBWrite = srgb;
 			}
 		}
 
@@ -279,7 +280,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return compositorLogicIndex;
+				return this.compositorLogicIndex;
 			}
 		}
 
@@ -298,7 +299,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return customCompositionPassesIndex;
+				return this.customCompositionPassesIndex;
 			}
 		}
 
@@ -309,17 +310,17 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( rectangle == null )
+				if ( this.rectangle == null )
 				{
-					rectangle = new Rectangle2D( true );
+					this.rectangle = new Rectangle2D( true );
 				}
 
 				var rs = Root.Instance.RenderSystem;
 				var vp = rs.Viewport;
 				float hOffset = rs.HorizontalTexelOffset/( 0.5f*vp.ActualWidth );
 				float vOffset = rs.VerticalTexelOffset/( 0.5f*vp.ActualHeight );
-				rectangle.SetCorners( -1f + hOffset, 1f - vOffset, 1f + hOffset, -1f - vOffset );
-				return rectangle;
+				this.rectangle.SetCorners( -1f + hOffset, 1f - vOffset, 1f + hOffset, -1f - vOffset );
+				return this.rectangle;
 			}
 		}
 
@@ -336,7 +337,7 @@ namespace Axiom.Graphics
 		public CompositorChain GetCompositorChain( Viewport vp )
 		{
 			CompositorChain chain;
-			if ( chains.TryGetValue( vp, out chain ) )
+			if ( this.chains.TryGetValue( vp, out chain ) )
 			{
 				// Make sure we have the right viewport
 				// It's possible that this chain may have outlived a viewport and another
@@ -346,7 +347,7 @@ namespace Axiom.Graphics
 			else
 			{
 				chain = new CompositorChain( vp );
-				chains[ vp ] = chain;
+				this.chains[ vp ] = chain;
 			}
 			return chain;
 		}
@@ -356,7 +357,7 @@ namespace Axiom.Graphics
 		///</summary>
 		public bool HasCompositorChain( Viewport vp )
 		{
-			return chains.ContainsKey( vp );
+			return this.chains.ContainsKey( vp );
 		}
 
 		///<summary>
@@ -364,7 +365,7 @@ namespace Axiom.Graphics
 		///</summary>
 		public void RemoveCompositorChain( Viewport vp )
 		{
-			chains.Remove( vp );
+			this.chains.Remove( vp );
 		}
 
 		///<summary>
@@ -386,7 +387,7 @@ namespace Axiom.Graphics
 			//    item.Dispose();
 			//}
 
-			chains.Clear();
+			this.chains.Clear();
 		}
 
 		///<summary>
@@ -475,12 +476,12 @@ namespace Axiom.Graphics
 			{
 				throw new AxiomException( "Compositor logic name must not be empty." );
 			}
-			if ( compositorLogics.ContainsKey( name ) )
+			if ( this.compositorLogics.ContainsKey( name ) )
 			{
 				throw new AxiomException( "Compositor logic '" + name + "' already exists." );
 			}
 
-			compositorLogics.Add( name, compositorLogic );
+			this.compositorLogics.Add( name, compositorLogic );
 		}
 
 		public void RegisterCustomCompositorPass( string name, ICustomCompositionPass compositionPass )
@@ -489,12 +490,12 @@ namespace Axiom.Graphics
 			{
 				throw new AxiomException( "Pass name must not be empty." );
 			}
-			if ( compositorLogics.ContainsKey( name ) )
+			if ( this.compositorLogics.ContainsKey( name ) )
 			{
 				throw new AxiomException( "Pass '" + name + "' already exists." );
 			}
 
-			customCompositionPasses.Add( name, compositionPass );
+			this.customCompositionPasses.Add( name, compositionPass );
 		}
 
 		#region Pooled Textures
@@ -528,7 +529,7 @@ namespace Axiom.Graphics
 			{
 				var pair = new Pair<string>( instance.Compositor.Name, localName );
 				SortedList<TextureDefinition, Texture> defMap = null;
-				if ( chainTexturesByRef.TryGetValue( pair, out defMap ) )
+				if ( this.chainTexturesByRef.TryGetValue( pair, out defMap ) )
 				{
 					Texture tex;
 					if ( defMap.TryGetValue( def, out tex ) )
@@ -548,23 +549,23 @@ namespace Axiom.Graphics
 
 				defMap.Add( def, newTex );
 
-				if ( chainTexturesByRef.ContainsKey( pair ) )
+				if ( this.chainTexturesByRef.ContainsKey( pair ) )
 				{
-					chainTexturesByRef[ pair ] = defMap;
+					this.chainTexturesByRef[ pair ] = defMap;
 				}
 				else
 				{
-					chainTexturesByRef.Add( pair, defMap );
+					this.chainTexturesByRef.Add( pair, defMap );
 				}
 
 				return newTex;
 			} //end if scope
 
 			List<Texture> i = null;
-			if ( !texturesByDef.TryGetValue( def, out i ) )
+			if ( !this.texturesByDef.TryGetValue( def, out i ) )
 			{
 				i = new List<Texture>();
-				texturesByDef.Add( def, i );
+				this.texturesByDef.Add( def, i );
 			}
 
 			var previous = instance.Chain.GetPreviousInstance( instance );
@@ -617,7 +618,7 @@ namespace Axiom.Graphics
 				                                            width, height, 0, format, TextureUsage.RenderTarget, null, srgb, aa,
 				                                            aaHint );
 				i.Add( ret );
-				texturesByDef[ def ] = i;
+				this.texturesByDef[ def ] = i;
 			}
 
 			// record that we used this one in the requester's list
@@ -642,7 +643,7 @@ namespace Axiom.Graphics
 		{
 			if ( onlyIfUnreferenced )
 			{
-				foreach ( var i in texturesByDef )
+				foreach ( var i in this.texturesByDef )
 				{
 					var texList = i.Value;
 					// if the resource system, plus this class, are the only ones to have a reference..
@@ -657,7 +658,7 @@ namespace Axiom.Graphics
 						}
 					}
 				}
-				foreach ( var i in chainTexturesByRef )
+				foreach ( var i in this.chainTexturesByRef )
 				{
 					var texMap = i.Value;
 					foreach ( var j in texMap )
@@ -674,7 +675,7 @@ namespace Axiom.Graphics
 			else
 			{
 				// destroy all
-				foreach ( var i in texturesByDef )
+				foreach ( var i in this.texturesByDef )
 				{
 					var texList = i.Value;
 					for ( var j = 0; j < texList.Count; j++ )
@@ -683,8 +684,8 @@ namespace Axiom.Graphics
 						texList.Remove( texList[ 0 ] );
 					}
 				}
-				texturesByDef.Clear();
-				chainTexturesByRef.Clear();
+				this.texturesByDef.Clear();
+				this.chainTexturesByRef.Clear();
 			}
 		}
 
@@ -804,7 +805,7 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					foreach ( var item in chains )
+					foreach ( var item in this.chains )
 					{
 						item.Value.RemoveAllCompositors();
 					}
@@ -819,8 +820,8 @@ namespace Axiom.Graphics
 					Singleton<CompositorManager>.Destroy();
 
 					return;
-					rectangle.Dispose();
-					rectangle = null;
+					this.rectangle.Dispose();
+					this.rectangle = null;
 				}
 
 				// There are no unmanaged resources to release, but
@@ -837,7 +838,7 @@ namespace Axiom.Graphics
 		public void ReconstructAllCompositorResources()
 		{
 			var instancesToReenable = new List<CompositorInstance>();
-			foreach ( var i in chains )
+			foreach ( var i in this.chains )
 			{
 				var chain = i.Value;
 				foreach ( var inst in chain.Instances )

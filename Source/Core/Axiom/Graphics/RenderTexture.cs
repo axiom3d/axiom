@@ -63,7 +63,7 @@ namespace Axiom.Graphics
 		public RenderTexture( HardwarePixelBuffer buffer, int zOffset )
 			: base()
 		{
-			pixelBuffer = buffer;
+			this.pixelBuffer = buffer;
 			this.zOffset = zOffset;
 			Priority = RenderTargetPriority.RenderToTexture;
 			width = buffer.Width;
@@ -86,12 +86,12 @@ namespace Axiom.Graphics
 				throw new Exception( "Invalid buffer." );
 			}
 
-			pixelBuffer.BlitToMemory( dst );
+			this.pixelBuffer.BlitToMemory( dst );
 		}
 
 		public override PixelFormat SuggestPixelFormat()
 		{
-			return pixelBuffer.Format;
+			return this.pixelBuffer.Format;
 		}
 
 		/// <summary>
@@ -103,7 +103,7 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					pixelBuffer.ClearSliceRTT( 0 );
+					this.pixelBuffer.ClearSliceRTT( 0 );
 				}
 			}
 

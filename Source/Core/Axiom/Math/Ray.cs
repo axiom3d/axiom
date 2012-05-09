@@ -69,8 +69,8 @@ namespace Axiom.Math
 		/// </summary>
 		public Ray()
 		{
-			origin = Vector3.Zero;
-			direction = Vector3.UnitZ;
+			this.origin = Vector3.Zero;
+			this.direction = Vector3.UnitZ;
 		}
 
 		/// <summary>
@@ -95,7 +95,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Vector3 GetPoint( Real t )
 		{
-			return origin + ( direction*t );
+			return this.origin + ( this.direction*t );
 		}
 
 		/// <summary>
@@ -107,7 +107,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return origin + ( direction*t );
+				return this.origin + ( this.direction*t );
 			}
 		}
 
@@ -199,7 +199,7 @@ namespace Axiom.Math
 
 		public override int GetHashCode()
 		{
-			return direction.GetHashCode() ^ origin.GetHashCode();
+			return this.direction.GetHashCode() ^ this.origin.GetHashCode();
 		}
 
 		#endregion Operator Overloads
@@ -213,11 +213,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return origin;
+				return this.origin;
 			}
 			set
 			{
-				origin = value;
+				this.origin = value;
 			}
 		}
 
@@ -231,11 +231,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return direction;
+				return this.direction;
 			}
 			set
 			{
-				direction = value;
+				this.direction = value;
 			}
 		}
 

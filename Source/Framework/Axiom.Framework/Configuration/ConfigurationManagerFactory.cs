@@ -39,7 +39,7 @@ namespace Axiom.Framework.Configuration
 				case PlatformID.MacOSX:
 #endif
 				case PlatformID.Unix:
-#if SILVERLIGHT
+#if SILVERLIGHT && WINDOWS_PHONE
 				case PlatformID.NokiaS60:
 #endif
 				case PlatformID.WinCE:
@@ -48,7 +48,7 @@ namespace Axiom.Framework.Configuration
 				case PlatformID.Win32S:
 				case PlatformID.Win32Windows:
 				default:
-#if !(XBOX || XBOX360 || WINDOWS_PHONE)
+#if !(XBOX || XBOX360 || WINDOWS_PHONE || SILVERLIGHT || ANDROID)
 					return new DefaultConfigurationManager();
 #else
 					return null;

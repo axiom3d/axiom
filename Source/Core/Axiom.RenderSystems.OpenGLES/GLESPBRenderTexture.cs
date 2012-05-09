@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,21 +25,20 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Axiom.Media;
 
 #endregion Namespace Declarations
@@ -50,25 +50,24 @@ namespace Axiom.RenderSystems.OpenGLES
 		#region Fields and Properties
 
 		private GLESPBRTTManager _manager;
-		private PixelComponentType _pbFormat;
+		private readonly PixelComponentType _pbFormat;
 
 		#endregion Fields and Properties
 
 		#region Construction and Destruction
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="target"></param>
-		/// <param name="writeGamma"></param>
-		/// <param name="fsaa"></param>
+		/// <param name="name"> </param>
+		/// <param name="target"> </param>
+		/// <param name="writeGamma"> </param>
+		/// <param name="fsaa"> </param>
 		public GLESPBRenderTexture( GLESPBRTTManager manager, string name, GLESSurfaceDescription target, bool writeGamma, int fsaa )
 			: base( name, target, writeGamma, fsaa )
 		{
 			this._manager = manager;
 			this._pbFormat = PixelUtil.GetComponentType( target.Buffer.Format );
-			this._manager.RequestPBuffer( _pbFormat, Width, Height );
+			this._manager.RequestPBuffer( this._pbFormat, Width, Height );
 		}
 
 		#endregion Construction and Destruction
@@ -82,8 +81,8 @@ namespace Axiom.RenderSystems.OpenGLES
 				switch ( attribute.ToLower() )
 				{
 					case "target":
-						GLESSurfaceDescription target = new GLESSurfaceDescription();
-						target.Buffer = (GLESHardwarePixelBuffer)pixelBuffer;
+						var target = new GLESSurfaceDescription();
+						target.Buffer = (GLESHardwarePixelBuffer) pixelBuffer;
 						target.ZOffset = zOffset;
 						return target;
 				}
@@ -97,8 +96,8 @@ namespace Axiom.RenderSystems.OpenGLES
 			{
 				if ( disposeManagedResources )
 				{
-					this._manager.ReleasePBuffer( _pbFormat );
-					_manager = null;
+					this._manager.ReleasePBuffer( this._pbFormat );
+					this._manager = null;
 				}
 			}
 			base.dispose( disposeManagedResources );
@@ -107,4 +106,3 @@ namespace Axiom.RenderSystems.OpenGLES
 		#endregion GLESRenderTexture Implementation
 	}
 }
-

@@ -92,22 +92,22 @@ namespace Axiom.Core
 			// Init patch builder
 			// define the surface
 			// NB clone the declaration to make it independent
-			vertexDeclaration = (VertexDeclaration)declaration.Clone();
-			patchSurface.DefineSurface( controlPointArray, vertexDeclaration, width, height, PatchSurfaceType.Bezier,
-			                            uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
+			this.vertexDeclaration = (VertexDeclaration)declaration.Clone();
+			this.patchSurface.DefineSurface( controlPointArray, this.vertexDeclaration, width, height, PatchSurfaceType.Bezier,
+			                                 uMaxSubdivisionLevel, vMaxSubdivisionLevel, visibleSide );
 		}
 
 		public float Subdivision
 		{
 			get
 			{
-				return patchSurface.SubdivisionFactor;
+				return this.patchSurface.SubdivisionFactor;
 			}
 			set
 			{
-				patchSurface.SubdivisionFactor = value;
+				this.patchSurface.SubdivisionFactor = value;
 				var sm = GetSubMesh( 0 );
-				sm.indexData.indexCount = patchSurface.CurrentIndexCount;
+				sm.indexData.indexCount = this.patchSurface.CurrentIndexCount;
 			}
 		}
 
@@ -119,10 +119,10 @@ namespace Axiom.Core
 
 			// Set up the vertex buffer
 			sm.vertexData.vertexStart = 0;
-			sm.vertexData.vertexCount = patchSurface.RequiredVertexCount;
-			sm.vertexData.vertexDeclaration = vertexDeclaration;
+			sm.vertexData.vertexCount = this.patchSurface.RequiredVertexCount;
+			sm.vertexData.vertexDeclaration = this.vertexDeclaration;
 
-			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( vertexDeclaration.Clone( 0 ),
+			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( this.vertexDeclaration.Clone( 0 ),
 			                                                                sm.vertexData.vertexCount, VertexBufferUsage,
 			                                                                UseVertexShadowBuffer );
 
@@ -131,17 +131,17 @@ namespace Axiom.Core
 
 			// create the index buffer
 			sm.indexData.indexStart = 0;
-			sm.indexData.indexCount = patchSurface.RequiredIndexCount;
+			sm.indexData.indexCount = this.patchSurface.RequiredIndexCount;
 			sm.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16,
 			                                                                             sm.indexData.indexCount,
 			                                                                             IndexBufferUsage, UseIndexShadowBuffer );
 
 			// build the path
-			patchSurface.Build( buffer, 0, sm.indexData.indexBuffer, 0 );
+			this.patchSurface.Build( buffer, 0, sm.indexData.indexBuffer, 0 );
 
 			// set the bounds
-			BoundingBox = patchSurface.Bounds;
-			BoundingSphereRadius = patchSurface.BoundingSphereRadius;
+			BoundingBox = this.patchSurface.Bounds;
+			BoundingSphereRadius = this.patchSurface.BoundingSphereRadius;
 		}
 	}
 }

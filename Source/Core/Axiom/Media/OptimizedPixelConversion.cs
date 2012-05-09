@@ -103,9 +103,9 @@ namespace Axiom.Media
 
 		public Col3b( uint a, uint b, uint c )
 		{
-			x = (byte)a;
-			y = (byte)b;
-			z = (byte)c;
+			this.x = (byte)a;
+			this.y = (byte)b;
+			this.z = (byte)c;
 		}
 	}
 
@@ -937,14 +937,14 @@ namespace Axiom.Media
 			{
 				get
 				{
-					return ( (int)_srcFormat << 8 ) + (int)_dstFormat;
+					return ( (int)this._srcFormat << 8 ) + (int)this._dstFormat;
 				}
 			}
 
 			public PixelConverterAttribute( PixelFormat srcFormat, PixelFormat dstFormat )
 			{
-				_srcFormat = srcFormat;
-				_dstFormat = dstFormat;
+				this._srcFormat = srcFormat;
+				this._dstFormat = dstFormat;
 			}
 		}
 

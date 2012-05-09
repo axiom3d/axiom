@@ -585,19 +585,19 @@ namespace Axiom.Core
 
 		public Lazy()
 		{
-			newT = New;
+			this.newT = New;
 		}
 
 		public Lazy( Func<T> newFunc )
 		{
-			newT = newFunc;
+			this.newT = newFunc;
 		}
 
 		public T Value
 		{
 			get
 			{
-				return Interlocked.CompareExchange( ref instance, newT(), null );
+				return Interlocked.CompareExchange( ref this.instance, this.newT(), null );
 			}
 		}
 	}

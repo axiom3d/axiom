@@ -110,9 +110,9 @@ namespace Axiom.Core
 		{
 			//this.name = name;
 
-			useSharedVertices = true;
+			this.useSharedVertices = true;
 
-			operationType = OperationType.TriangleList;
+			this.operationType = OperationType.TriangleList;
 		}
 
 		#endregion Constructor
@@ -131,12 +131,12 @@ namespace Axiom.Core
 		/// <param name="boneAssignment"></param>
 		public void AddBoneAssignment( VertexBoneAssignment boneAssignment )
 		{
-			if ( !boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
+			if ( !this.boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
 			{
-				boneAssignmentList[ boneAssignment.vertexIndex ] = new List<VertexBoneAssignment>();
+				this.boneAssignmentList[ boneAssignment.vertexIndex ] = new List<VertexBoneAssignment>();
 			}
-			boneAssignmentList[ boneAssignment.vertexIndex ].Add( boneAssignment );
-			boneAssignmentsOutOfDate = true;
+			this.boneAssignmentList[ boneAssignment.vertexIndex ].Add( boneAssignment );
+			this.boneAssignmentsOutOfDate = true;
 		}
 
 		/// <summary>
@@ -148,8 +148,8 @@ namespace Axiom.Core
 		/// </remarks>
 		public void ClearBoneAssignments()
 		{
-			boneAssignmentList.Clear();
-			boneAssignmentsOutOfDate = true;
+			this.boneAssignmentList.Clear();
+			this.boneAssignmentsOutOfDate = true;
 		}
 
 		/// <summary>
@@ -157,7 +157,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected internal void CompileBoneAssignments()
 		{
-			var maxBones = parent.RationalizeBoneAssignments( vertexData.vertexCount, boneAssignmentList );
+			var maxBones = this.parent.RationalizeBoneAssignments( this.vertexData.vertexCount, this.boneAssignmentList );
 
 			// return if no bone assigments
 			if ( maxBones != 0 )
@@ -165,14 +165,14 @@ namespace Axiom.Core
 				// FIXME: For now, to support hardware skinning with a single shader,
 				// we always want to have 4 bones. (robin@multiverse.net)
 				// maxBones = 4;
-				parent.CompileBoneAssignments( boneAssignmentList, maxBones, vertexData );
+				this.parent.CompileBoneAssignments( this.boneAssignmentList, maxBones, this.vertexData );
 			}
-			boneAssignmentsOutOfDate = false;
+			this.boneAssignmentsOutOfDate = false;
 		}
 
 		public void RemoveLodLevels()
 		{
-			lodFaceList.Clear();
+			this.lodFaceList.Clear();
 		}
 
 		#endregion Methods
@@ -186,11 +186,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 			set
 			{
-				name = value;
+				this.name = value;
 			}
 		}
 
@@ -201,12 +201,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return materialName;
+				return this.materialName;
 			}
 			set
 			{
-				materialName = value;
-				isMaterialInitialized = true;
+				this.materialName = value;
+				this.isMaterialInitialized = true;
 			}
 		}
 
@@ -217,11 +217,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return parent;
+				return this.parent;
 			}
 			set
 			{
-				parent = value;
+				this.parent = value;
 			}
 		}
 
@@ -247,21 +247,21 @@ namespace Axiom.Core
 			op.useIndices = true;
 
 			// use lod face list if requested, else pass the normal face list
-			if ( lodIndex > 0 && ( lodIndex - 1 ) < lodFaceList.Count )
+			if ( lodIndex > 0 && ( lodIndex - 1 ) < this.lodFaceList.Count )
 			{
 				// Use the set of indices defined for this LOD level
-				op.indexData = lodFaceList[ lodIndex - 1 ];
+				op.indexData = this.lodFaceList[ lodIndex - 1 ];
 			}
 			else
 			{
-				op.indexData = indexData;
+				op.indexData = this.indexData;
 			}
 
 			// set the operation type
-			op.operationType = operationType;
+			op.operationType = this.operationType;
 
 			// set the vertex data correctly
-			op.vertexData = useSharedVertices ? parent.SharedVertexData : vertexData;
+			op.vertexData = this.useSharedVertices ? this.parent.SharedVertexData : this.vertexData;
 		}
 
 		/// <summary>
@@ -271,7 +271,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return isMaterialInitialized;
+				return this.isMaterialInitialized;
 			}
 		}
 
@@ -282,7 +282,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return boneAssignmentList;
+				return this.boneAssignmentList;
 			}
 		}
 
@@ -291,17 +291,17 @@ namespace Axiom.Core
 			get
 			{
 				var numFaces = 0;
-				if ( indexData == null )
+				if ( this.indexData == null )
 				{
 					return 0;
 				}
-				if ( operationType == OperationType.TriangleList )
+				if ( this.operationType == OperationType.TriangleList )
 				{
-					numFaces = indexData.indexCount/3;
+					numFaces = this.indexData.indexCount/3;
 				}
 				else
 				{
-					numFaces = indexData.indexCount - 2;
+					numFaces = this.indexData.indexCount - 2;
 				}
 				return numFaces;
 			}
@@ -311,11 +311,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return operationType;
+				return this.operationType;
 			}
 			set
 			{
-				operationType = value;
+				this.operationType = value;
 			}
 		}
 
@@ -323,15 +323,15 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( parent.AnimationTypesDirty )
+				if ( this.parent.AnimationTypesDirty )
 				{
-					parent.DetermineAnimationTypes();
+					this.parent.DetermineAnimationTypes();
 				}
-				return vertexAnimationType;
+				return this.vertexAnimationType;
 			}
 			set
 			{
-				vertexAnimationType = value;
+				this.vertexAnimationType = value;
 			}
 		}
 
@@ -339,7 +339,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return vertexAnimationType;
+				return this.vertexAnimationType;
 			}
 		}
 
@@ -347,7 +347,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return lodFaceList;
+				return this.lodFaceList;
 			}
 		}
 
@@ -355,7 +355,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return vertexData;
+				return this.vertexData;
 			}
 		}
 
@@ -363,7 +363,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return indexData;
+				return this.indexData;
 			}
 		}
 
@@ -378,23 +378,23 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( indexData != null )
+					if ( this.indexData != null )
 					{
-						if ( !indexData.IsDisposed )
+						if ( !this.indexData.IsDisposed )
 						{
-							indexData.Dispose();
+							this.indexData.Dispose();
 						}
 					}
 
-					if ( vertexData != null )
+					if ( this.vertexData != null )
 					{
-						if ( !vertexData.IsDisposed )
+						if ( !this.vertexData.IsDisposed )
 						{
-							vertexData.Dispose();
+							this.vertexData.Dispose();
 						}
 					}
 
-					foreach ( var data in lodFaceList )
+					foreach ( var data in this.lodFaceList )
 					{
 						if ( !data.IsDisposed )
 						{

@@ -189,13 +189,13 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return new Vector3( m03, m13, m23 );
+				return new Vector3( this.m03, this.m13, this.m23 );
 			}
 			set
 			{
-				m03 = value.x;
-				m13 = value.y;
-				m23 = value.z;
+				this.m03 = value.x;
+				this.m13 = value.y;
+				this.m23 = value.z;
 			}
 		}
 
@@ -215,13 +215,13 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return new Vector3( m00, m11, m22 );
+				return new Vector3( this.m00, this.m11, this.m22 );
 			}
 			set
 			{
-				m00 = value.x;
-				m11 = value.y;
-				m22 = value.z;
+				this.m00 = value.x;
+				this.m11 = value.y;
+				this.m22 = value.z;
 			}
 		}
 
@@ -236,7 +236,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return m30 == 0 && m31 == 0 && m32 == 0 && m33 == 1;
+				return this.m30 == 0 && this.m31 == 0 && this.m32 == 0 && this.m33 == 1;
 			}
 		}
 
@@ -248,10 +248,22 @@ namespace Axiom.Math
 			get
 			{
 				// note: this is an expanded version of the Ogre determinant() method, to give better performance in C#. Generated using a script
-				var result = m00*( m11*( m22*m33 - m32*m23 ) - m12*( m21*m33 - m31*m23 ) + m13*( m21*m32 - m31*m22 ) ) -
-				             m01*( m10*( m22*m33 - m32*m23 ) - m12*( m20*m33 - m30*m23 ) + m13*( m20*m32 - m30*m22 ) ) +
-				             m02*( m10*( m21*m33 - m31*m23 ) - m11*( m20*m33 - m30*m23 ) + m13*( m20*m31 - m30*m21 ) ) -
-				             m03*( m10*( m21*m32 - m31*m22 ) - m11*( m20*m32 - m30*m22 ) + m12*( m20*m31 - m30*m21 ) );
+				var result = this.m00*
+				             ( this.m11*( this.m22*this.m33 - this.m32*this.m23 ) -
+				               this.m12*( this.m21*this.m33 - this.m31*this.m23 ) +
+				               this.m13*( this.m21*this.m32 - this.m31*this.m22 ) ) -
+				             this.m01*
+				             ( this.m10*( this.m22*this.m33 - this.m32*this.m23 ) -
+				               this.m12*( this.m20*this.m33 - this.m30*this.m23 ) +
+				               this.m13*( this.m20*this.m32 - this.m30*this.m22 ) ) +
+				             this.m02*
+				             ( this.m10*( this.m21*this.m33 - this.m31*this.m23 ) -
+				               this.m11*( this.m20*this.m33 - this.m30*this.m23 ) +
+				               this.m13*( this.m20*this.m31 - this.m30*this.m21 ) ) -
+				             this.m03*
+				             ( this.m10*( this.m21*this.m32 - this.m31*this.m22 ) -
+				               this.m11*( this.m20*this.m32 - this.m30*this.m22 ) +
+				               this.m12*( this.m20*this.m31 - this.m30*this.m21 ) );
 
 				return result;
 			}
@@ -376,7 +388,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Matrix3 GetMatrix3()
 		{
-			return new Matrix3( m00, m01, m02, m10, m11, m12, m20, m21, m22 );
+			return new Matrix3( this.m00, this.m01, this.m02, this.m10, this.m11, this.m12, this.m20, this.m21, this.m22 );
 		}
 
 		/// <summary>
@@ -396,35 +408,35 @@ namespace Axiom.Math
 		{
 			Debug.Assert( IsAffine );
 
-			var t00 = m22*m11 - m21*m12;
-			var t10 = m20*m12 - m22*m10;
-			var t20 = m21*m10 - m20*m11;
+			var t00 = this.m22*this.m11 - this.m21*this.m12;
+			var t10 = this.m20*this.m12 - this.m22*this.m10;
+			var t20 = this.m21*this.m10 - this.m20*this.m11;
 
-			var invDet = 1/( m00*t00 + m01*t10 + m02*t20 );
+			var invDet = 1/( this.m00*t00 + this.m01*t10 + this.m02*t20 );
 
 			t00 *= invDet;
 			t10 *= invDet;
 			t20 *= invDet;
 
-			m00 *= invDet;
-			m01 *= invDet;
-			m02 *= invDet;
+			this.m00 *= invDet;
+			this.m01 *= invDet;
+			this.m02 *= invDet;
 
 			var r00 = t00;
-			var r01 = m02*m21 - m01*m22;
-			var r02 = m01*m12 - m02*m11;
+			var r01 = this.m02*this.m21 - this.m01*this.m22;
+			var r02 = this.m01*this.m12 - this.m02*this.m11;
 
 			var r10 = t10;
-			var r11 = m00*m22 - m02*m20;
-			var r12 = m02*m10 - m00*m12;
+			var r11 = this.m00*this.m22 - this.m02*this.m20;
+			var r12 = this.m02*this.m10 - this.m00*this.m12;
 
 			var r20 = t20;
-			var r21 = m01*m20 - m00*m21;
-			var r22 = m00*m11 - m01*m10;
+			var r21 = this.m01*this.m20 - this.m00*this.m21;
+			var r22 = this.m00*this.m11 - this.m01*this.m10;
 
-			var r03 = -( r00*m03 + r01*m13 + r02*m23 );
-			var r13 = -( r10*m03 + r11*m13 + r12*m23 );
-			var r23 = -( r20*m03 + r21*m13 + r22*m23 );
+			var r03 = -( r00*this.m03 + r01*this.m13 + r02*this.m23 );
+			var r13 = -( r10*this.m03 + r11*this.m13 + r12*this.m23 );
+			var r23 = -( r20*this.m03 + r21*this.m13 + r22*this.m23 );
 
 			return new Matrix4( r00, r01, r02, r03, r10, r11, r12, r13, r20, r21, r22, r23, 0, 0, 0, 1 );
 		}
@@ -435,7 +447,8 @@ namespace Axiom.Math
 		/// <returns>A transposed Matrix.</returns>
 		public Matrix4 Transpose()
 		{
-			return new Matrix4( m00, m10, m20, m30, m01, m11, m21, m31, m02, m12, m22, m32, m03, m13, m23, m33 );
+			return new Matrix4( this.m00, this.m10, this.m20, this.m30, this.m01, this.m11, this.m21, this.m31, this.m02,
+			                    this.m12, this.m22, this.m32, this.m03, this.m13, this.m23, this.m33 );
 		}
 
 		/// <summary>
@@ -452,8 +465,9 @@ namespace Axiom.Math
 		{
 			Debug.Assert( IsAffine );
 
-			return new Vector3( m00*v.x + m01*v.y + m02*v.z + m03, m10*v.x + m11*v.y + m12*v.z + m13,
-			                    m20*v.x + m21*v.y + m22*v.z + m23 );
+			return new Vector3( this.m00*v.x + this.m01*v.y + this.m02*v.z + this.m03,
+			                    this.m10*v.x + this.m11*v.y + this.m12*v.z + this.m13,
+			                    this.m20*v.x + this.m21*v.y + this.m22*v.z + this.m23 );
 		}
 
 		/// <summary>
@@ -468,8 +482,9 @@ namespace Axiom.Math
 		{
 			Debug.Assert( IsAffine );
 
-			return new Vector4( m00*v.x + m01*v.y + m02*v.z + m03*v.w, m10*v.x + m11*v.y + m12*v.z + m13*v.w,
-			                    m20*v.x + m21*v.y + m22*v.z + m23*v.w, v.w );
+			return new Vector4( this.m00*v.x + this.m01*v.y + this.m02*v.z + this.m03*v.w,
+			                    this.m10*v.x + this.m11*v.y + this.m12*v.z + this.m13*v.w,
+			                    this.m20*v.x + this.m21*v.y + this.m22*v.z + this.m23*v.w, v.w );
 		}
 
 		/// <summary>
@@ -478,62 +493,62 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public void MakeRealArray( Real[] reals )
 		{
-			reals[ 0 ] = m00;
-			reals[ 1 ] = m01;
-			reals[ 2 ] = m02;
-			reals[ 3 ] = m03;
-			reals[ 4 ] = m10;
-			reals[ 5 ] = m11;
-			reals[ 6 ] = m12;
-			reals[ 7 ] = m13;
-			reals[ 8 ] = m20;
-			reals[ 9 ] = m21;
-			reals[ 10 ] = m22;
-			reals[ 11 ] = m23;
-			reals[ 12 ] = m30;
-			reals[ 13 ] = m31;
-			reals[ 14 ] = m32;
-			reals[ 15 ] = m33;
+			reals[ 0 ] = this.m00;
+			reals[ 1 ] = this.m01;
+			reals[ 2 ] = this.m02;
+			reals[ 3 ] = this.m03;
+			reals[ 4 ] = this.m10;
+			reals[ 5 ] = this.m11;
+			reals[ 6 ] = this.m12;
+			reals[ 7 ] = this.m13;
+			reals[ 8 ] = this.m20;
+			reals[ 9 ] = this.m21;
+			reals[ 10 ] = this.m22;
+			reals[ 11 ] = this.m23;
+			reals[ 12 ] = this.m30;
+			reals[ 13 ] = this.m31;
+			reals[ 14 ] = this.m32;
+			reals[ 15 ] = this.m33;
 		}
 
 		public void MakeFloatArray( float[] floats )
 		{
-			floats[ 0 ] = m00;
-			floats[ 1 ] = m01;
-			floats[ 2 ] = m02;
-			floats[ 3 ] = m03;
-			floats[ 4 ] = m10;
-			floats[ 5 ] = m11;
-			floats[ 6 ] = m12;
-			floats[ 7 ] = m13;
-			floats[ 8 ] = m20;
-			floats[ 9 ] = m21;
-			floats[ 10 ] = m22;
-			floats[ 11 ] = m23;
-			floats[ 12 ] = m30;
-			floats[ 13 ] = m31;
-			floats[ 14 ] = m32;
-			floats[ 15 ] = m33;
+			floats[ 0 ] = this.m00;
+			floats[ 1 ] = this.m01;
+			floats[ 2 ] = this.m02;
+			floats[ 3 ] = this.m03;
+			floats[ 4 ] = this.m10;
+			floats[ 5 ] = this.m11;
+			floats[ 6 ] = this.m12;
+			floats[ 7 ] = this.m13;
+			floats[ 8 ] = this.m20;
+			floats[ 9 ] = this.m21;
+			floats[ 10 ] = this.m22;
+			floats[ 11 ] = this.m23;
+			floats[ 12 ] = this.m30;
+			floats[ 13 ] = this.m31;
+			floats[ 14 ] = this.m32;
+			floats[ 15 ] = this.m33;
 		}
 
 		public void MakeFloatArray( float[] floats, int offset )
 		{
-			floats[ offset++ ] = m00;
-			floats[ offset++ ] = m01;
-			floats[ offset++ ] = m02;
-			floats[ offset++ ] = m03;
-			floats[ offset++ ] = m10;
-			floats[ offset++ ] = m11;
-			floats[ offset++ ] = m12;
-			floats[ offset++ ] = m13;
-			floats[ offset++ ] = m20;
-			floats[ offset++ ] = m21;
-			floats[ offset++ ] = m22;
-			floats[ offset++ ] = m23;
-			floats[ offset++ ] = m30;
-			floats[ offset++ ] = m31;
-			floats[ offset++ ] = m32;
-			floats[ offset ] = m33;
+			floats[ offset++ ] = this.m00;
+			floats[ offset++ ] = this.m01;
+			floats[ offset++ ] = this.m02;
+			floats[ offset++ ] = this.m03;
+			floats[ offset++ ] = this.m10;
+			floats[ offset++ ] = this.m11;
+			floats[ offset++ ] = this.m12;
+			floats[ offset++ ] = this.m13;
+			floats[ offset++ ] = this.m20;
+			floats[ offset++ ] = this.m21;
+			floats[ offset++ ] = this.m22;
+			floats[ offset++ ] = this.m23;
+			floats[ offset++ ] = this.m30;
+			floats[ offset++ ] = this.m31;
+			floats[ offset++ ] = this.m32;
+			floats[ offset ] = this.m33;
 		}
 
 		/// <summary>
@@ -544,25 +559,25 @@ namespace Axiom.Math
 			var axis = Vector3.Zero;
 			var rotation = Matrix3.Identity;
 
-			axis.x = m00;
-			axis.y = m10;
-			axis.z = m20;
+			axis.x = this.m00;
+			axis.y = this.m10;
+			axis.z = this.m20;
 			axis.Normalize();
 			rotation.m00 = axis.x;
 			rotation.m10 = axis.y;
 			rotation.m20 = axis.z;
 
-			axis.x = m01;
-			axis.y = m11;
-			axis.z = m21;
+			axis.x = this.m01;
+			axis.y = this.m11;
+			axis.z = this.m21;
 			axis.Normalize();
 			rotation.m01 = axis.x;
 			rotation.m11 = axis.y;
 			rotation.m21 = axis.z;
 
-			axis.x = m02;
-			axis.y = m12;
-			axis.z = m22;
+			axis.x = this.m02;
+			axis.y = this.m12;
+			axis.z = this.m22;
 			axis.Normalize();
 			rotation.m02 = axis.x;
 			rotation.m12 = axis.y;
@@ -580,19 +595,19 @@ namespace Axiom.Math
 			var scale = Vector3.UnitScale;
 			var axis = Vector3.Zero;
 
-			axis.x = m00;
-			axis.y = m10;
-			axis.z = m20;
+			axis.x = this.m00;
+			axis.y = this.m10;
+			axis.z = this.m20;
 			scale.x = axis.Length;
 
-			axis.x = m01;
-			axis.y = m11;
-			axis.z = m21;
+			axis.x = this.m01;
+			axis.y = this.m11;
+			axis.z = this.m21;
 			scale.y = axis.Length;
 
-			axis.x = m02;
-			axis.y = m12;
-			axis.z = m22;
+			axis.x = this.m02;
+			axis.y = this.m12;
+			axis.z = this.m22;
 			scale.z = axis.Length;
 
 			return scale;
@@ -610,25 +625,25 @@ namespace Axiom.Math
 			var rotation = Matrix3.Identity;
 			var axis = Vector3.Zero;
 
-			axis.x = m00;
-			axis.y = m10;
-			axis.z = m20;
+			axis.x = this.m00;
+			axis.y = this.m10;
+			axis.z = this.m20;
 			scale.x = axis.Normalize(); // Normalize() returns the vector's length before it was normalized
 			rotation.m00 = axis.x;
 			rotation.m10 = axis.y;
 			rotation.m20 = axis.z;
 
-			axis.x = m01;
-			axis.y = m11;
-			axis.z = m21;
+			axis.x = this.m01;
+			axis.y = this.m11;
+			axis.z = this.m21;
 			scale.y = axis.Normalize();
 			rotation.m01 = axis.x;
 			rotation.m11 = axis.y;
 			rotation.m21 = axis.z;
 
-			axis.x = m02;
-			axis.y = m12;
-			axis.z = m22;
+			axis.x = this.m02;
+			axis.y = this.m12;
+			axis.z = this.m22;
 			scale.z = axis.Normalize();
 			rotation.m02 = axis.x;
 			rotation.m12 = axis.y;
@@ -659,22 +674,46 @@ namespace Axiom.Math
 		private Matrix4 Adjoint()
 		{
 			// note: this is an expanded version of the Ogre adjoint() method, to give better performance in C#. Generated using a script
-			var val0 = m11*( m22*m33 - m32*m23 ) - m12*( m21*m33 - m31*m23 ) + m13*( m21*m32 - m31*m22 );
-			var val1 = -( m01*( m22*m33 - m32*m23 ) - m02*( m21*m33 - m31*m23 ) + m03*( m21*m32 - m31*m22 ) );
-			var val2 = m01*( m12*m33 - m32*m13 ) - m02*( m11*m33 - m31*m13 ) + m03*( m11*m32 - m31*m12 );
-			var val3 = -( m01*( m12*m23 - m22*m13 ) - m02*( m11*m23 - m21*m13 ) + m03*( m11*m22 - m21*m12 ) );
-			var val4 = -( m10*( m22*m33 - m32*m23 ) - m12*( m20*m33 - m30*m23 ) + m13*( m20*m32 - m30*m22 ) );
-			var val5 = m00*( m22*m33 - m32*m23 ) - m02*( m20*m33 - m30*m23 ) + m03*( m20*m32 - m30*m22 );
-			var val6 = -( m00*( m12*m33 - m32*m13 ) - m02*( m10*m33 - m30*m13 ) + m03*( m10*m32 - m30*m12 ) );
-			var val7 = m00*( m12*m23 - m22*m13 ) - m02*( m10*m23 - m20*m13 ) + m03*( m10*m22 - m20*m12 );
-			var val8 = m10*( m21*m33 - m31*m23 ) - m11*( m20*m33 - m30*m23 ) + m13*( m20*m31 - m30*m21 );
-			var val9 = -( m00*( m21*m33 - m31*m23 ) - m01*( m20*m33 - m30*m23 ) + m03*( m20*m31 - m30*m21 ) );
-			var val10 = m00*( m11*m33 - m31*m13 ) - m01*( m10*m33 - m30*m13 ) + m03*( m10*m31 - m30*m11 );
-			var val11 = -( m00*( m11*m23 - m21*m13 ) - m01*( m10*m23 - m20*m13 ) + m03*( m10*m21 - m20*m11 ) );
-			var val12 = -( m10*( m21*m32 - m31*m22 ) - m11*( m20*m32 - m30*m22 ) + m12*( m20*m31 - m30*m21 ) );
-			var val13 = m00*( m21*m32 - m31*m22 ) - m01*( m20*m32 - m30*m22 ) + m02*( m20*m31 - m30*m21 );
-			var val14 = -( m00*( m11*m32 - m31*m12 ) - m01*( m10*m32 - m30*m12 ) + m02*( m10*m31 - m30*m11 ) );
-			var val15 = m00*( m11*m22 - m21*m12 ) - m01*( m10*m22 - m20*m12 ) + m02*( m10*m21 - m20*m11 );
+			var val0 = this.m11*( this.m22*this.m33 - this.m32*this.m23 ) - this.m12*( this.m21*this.m33 - this.m31*this.m23 ) +
+			           this.m13*( this.m21*this.m32 - this.m31*this.m22 );
+			var val1 =
+				-( this.m01*( this.m22*this.m33 - this.m32*this.m23 ) - this.m02*( this.m21*this.m33 - this.m31*this.m23 ) +
+				   this.m03*( this.m21*this.m32 - this.m31*this.m22 ) );
+			var val2 = this.m01*( this.m12*this.m33 - this.m32*this.m13 ) - this.m02*( this.m11*this.m33 - this.m31*this.m13 ) +
+			           this.m03*( this.m11*this.m32 - this.m31*this.m12 );
+			var val3 =
+				-( this.m01*( this.m12*this.m23 - this.m22*this.m13 ) - this.m02*( this.m11*this.m23 - this.m21*this.m13 ) +
+				   this.m03*( this.m11*this.m22 - this.m21*this.m12 ) );
+			var val4 =
+				-( this.m10*( this.m22*this.m33 - this.m32*this.m23 ) - this.m12*( this.m20*this.m33 - this.m30*this.m23 ) +
+				   this.m13*( this.m20*this.m32 - this.m30*this.m22 ) );
+			var val5 = this.m00*( this.m22*this.m33 - this.m32*this.m23 ) - this.m02*( this.m20*this.m33 - this.m30*this.m23 ) +
+			           this.m03*( this.m20*this.m32 - this.m30*this.m22 );
+			var val6 =
+				-( this.m00*( this.m12*this.m33 - this.m32*this.m13 ) - this.m02*( this.m10*this.m33 - this.m30*this.m13 ) +
+				   this.m03*( this.m10*this.m32 - this.m30*this.m12 ) );
+			var val7 = this.m00*( this.m12*this.m23 - this.m22*this.m13 ) - this.m02*( this.m10*this.m23 - this.m20*this.m13 ) +
+			           this.m03*( this.m10*this.m22 - this.m20*this.m12 );
+			var val8 = this.m10*( this.m21*this.m33 - this.m31*this.m23 ) - this.m11*( this.m20*this.m33 - this.m30*this.m23 ) +
+			           this.m13*( this.m20*this.m31 - this.m30*this.m21 );
+			var val9 =
+				-( this.m00*( this.m21*this.m33 - this.m31*this.m23 ) - this.m01*( this.m20*this.m33 - this.m30*this.m23 ) +
+				   this.m03*( this.m20*this.m31 - this.m30*this.m21 ) );
+			var val10 = this.m00*( this.m11*this.m33 - this.m31*this.m13 ) - this.m01*( this.m10*this.m33 - this.m30*this.m13 ) +
+			            this.m03*( this.m10*this.m31 - this.m30*this.m11 );
+			var val11 =
+				-( this.m00*( this.m11*this.m23 - this.m21*this.m13 ) - this.m01*( this.m10*this.m23 - this.m20*this.m13 ) +
+				   this.m03*( this.m10*this.m21 - this.m20*this.m11 ) );
+			var val12 =
+				-( this.m10*( this.m21*this.m32 - this.m31*this.m22 ) - this.m11*( this.m20*this.m32 - this.m30*this.m22 ) +
+				   this.m12*( this.m20*this.m31 - this.m30*this.m21 ) );
+			var val13 = this.m00*( this.m21*this.m32 - this.m31*this.m22 ) - this.m01*( this.m20*this.m32 - this.m30*this.m22 ) +
+			            this.m02*( this.m20*this.m31 - this.m30*this.m21 );
+			var val14 =
+				-( this.m00*( this.m11*this.m32 - this.m31*this.m12 ) - this.m01*( this.m10*this.m32 - this.m30*this.m12 ) +
+				   this.m02*( this.m10*this.m31 - this.m30*this.m11 ) );
+			var val15 = this.m00*( this.m11*this.m22 - this.m21*this.m12 ) - this.m01*( this.m10*this.m22 - this.m20*this.m12 ) +
+			            this.m02*( this.m10*this.m21 - this.m20*this.m11 );
 
 			return new Matrix4( val0, val1, val2, val3, val4, val5, val6, val7, val8, val9, val10, val11, val12, val13, val14,
 			                    val15 );
@@ -1031,7 +1070,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pM = &m00 )
+					fixed ( Real* pM = &this.m00 )
 					{
 						return *( pM + ( ( 4*row ) + col ) );
 					}
@@ -1085,7 +1124,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pM = &m00 )
+					fixed ( Real* pM = &this.m00 )
 					{
 						*( pM + ( ( 4*row ) + col ) ) = value;
 					}
@@ -1131,7 +1170,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pMatrix = &m00 )
+					fixed ( Real* pMatrix = &this.m00 )
 					{
 						return *( pMatrix + index );
 					}
@@ -1165,7 +1204,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pMatrix = &m00 )
+					fixed ( Real* pMatrix = &this.m00 )
 					{
 						*( pMatrix + index ) = value;
 					}
@@ -1187,10 +1226,10 @@ namespace Axiom.Math
 		{
 			var sb = new StringBuilder();
 
-			sb.AppendFormat( " | {0} {1} {2} {3} |\n", m00, m01, m02, m03 );
-			sb.AppendFormat( " | {0} {1} {2} {3} |\n", m10, m11, m12, m13 );
-			sb.AppendFormat( " | {0} {1} {2} {3} |\n", m20, m21, m22, m23 );
-			sb.AppendFormat( " | {0} {1} {2} {3} |\n", m30, m31, m32, m33 );
+			sb.AppendFormat( " | {0} {1} {2} {3} |\n", this.m00, this.m01, this.m02, this.m03 );
+			sb.AppendFormat( " | {0} {1} {2} {3} |\n", this.m10, this.m11, this.m12, this.m13 );
+			sb.AppendFormat( " | {0} {1} {2} {3} |\n", this.m20, this.m21, this.m22, this.m23 );
+			sb.AppendFormat( " | {0} {1} {2} {3} |\n", this.m30, this.m31, this.m32, this.m33 );
 
 			return sb.ToString();
 		}
@@ -1215,7 +1254,7 @@ namespace Axiom.Math
 			var hashCode = 0;
 			unsafe
 			{
-				fixed ( Real* pM = &m00 )
+				fixed ( Real* pM = &this.m00 )
 				{
 					for ( var i = 0; i < 16; i++ )
 					{
@@ -1242,15 +1281,15 @@ namespace Axiom.Math
 
 		public void Extract3x3Matrix( out Matrix3 m3 )
 		{
-			m3.m00 = m00;
-			m3.m01 = m01;
-			m3.m02 = m02;
-			m3.m10 = m10;
-			m3.m11 = m11;
-			m3.m12 = m12;
-			m3.m20 = m20;
-			m3.m21 = m21;
-			m3.m22 = m22;
+			m3.m00 = this.m00;
+			m3.m01 = this.m01;
+			m3.m02 = this.m02;
+			m3.m10 = this.m10;
+			m3.m11 = this.m11;
+			m3.m12 = this.m12;
+			m3.m20 = this.m20;
+			m3.m21 = this.m21;
+			m3.m22 = this.m22;
 		}
 	}
 }

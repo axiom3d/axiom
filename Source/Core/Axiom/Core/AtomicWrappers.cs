@@ -63,7 +63,7 @@ namespace Axiom.Core
 		public AtomicScalar()
 		{
 			var type = typeof ( T );
-			_size = type.IsEnum ? 4 : Memory.SizeOf( type );
+			this._size = type.IsEnum ? 4 : Memory.SizeOf( type );
 		}
 
 		public AtomicScalar( T initial )
@@ -84,7 +84,7 @@ namespace Axiom.Core
 
 		public bool Cas( T old, T nu )
 		{
-			if ( _size == 2 || _size == 4 || _size == 8 )
+			if ( this._size == 2 || this._size == 4 || this._size == 8 )
 			{
 				var f = Convert.ToInt64( Value );
 				var o = Convert.ToInt64( old );

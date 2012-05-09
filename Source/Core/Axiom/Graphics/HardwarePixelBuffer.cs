@@ -72,7 +72,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return width;
+				return this.width;
 			}
 		}
 
@@ -82,7 +82,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return height;
+				return this.height;
 			}
 		}
 
@@ -92,7 +92,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return depth;
+				return this.depth;
 			}
 		}
 
@@ -106,7 +106,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return rowPitch;
+				return this.rowPitch;
 			}
 		}
 
@@ -116,7 +116,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return slicePitch;
+				return this.slicePitch;
 			}
 		}
 
@@ -129,7 +129,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return format;
+				return this.format;
 			}
 		}
 
@@ -149,7 +149,7 @@ namespace Axiom.Graphics
 			get
 			{
 				Debug.Assert( IsLocked, "Cannot get current lock: buffer not locked" );
-				return currentLock;
+				return this.currentLock;
 			}
 		}
 
@@ -170,8 +170,8 @@ namespace Axiom.Graphics
 			this.depth = depth;
 			this.format = format;
 			// Default
-			rowPitch = width;
-			slicePitch = height*width;
+			this.rowPitch = width;
+			this.slicePitch = height*width;
 			sizeInBytes = height*width*PixelUtil.GetNumElemBytes( format );
 		}
 
@@ -252,16 +252,16 @@ namespace Axiom.Graphics
 					// and tag for sync on unlock()
 					shadowUpdated = true;
 				}
-				currentLock = ( (HardwarePixelBuffer)shadowBuffer ).Lock( lockBox, options );
+				this.currentLock = ( (HardwarePixelBuffer)shadowBuffer ).Lock( lockBox, options );
 			}
 			else
 			{
 				// Lock the real buffer if there is no shadow buffer 
-				currentLock = LockImpl( lockBox, options );
+				this.currentLock = LockImpl( lockBox, options );
 				isLocked = true;
 			}
 
-			return currentLock;
+			return this.currentLock;
 		}
 
 		///<summary>
@@ -293,8 +293,9 @@ namespace Axiom.Graphics
 			var srclock = src.Lock( srcBox, BufferLocking.ReadOnly );
 
 			var method = BufferLocking.Normal;
-			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 && dstBox.Right == width && dstBox.Bottom == height &&
-			     dstBox.Back == depth )
+			if ( dstBox.Left == 0 && dstBox.Top == 0 && dstBox.Front == 0 && dstBox.Right == this.width &&
+			     dstBox.Bottom == this.height &&
+			     dstBox.Back == this.depth )
 			{
 				// Entire buffer -- we can discard the previous contents
 				method = BufferLocking.Discard;
@@ -327,7 +328,8 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void Blit( HardwarePixelBuffer src )
 		{
-			Blit( src, new BasicBox( 0, 0, 0, src.Width, src.Height, src.Depth ), new BasicBox( 0, 0, 0, width, height, depth ) );
+			Blit( src, new BasicBox( 0, 0, 0, src.Width, src.Height, src.Depth ),
+			      new BasicBox( 0, 0, 0, this.width, this.height, this.depth ) );
 		}
 
 		/// <summary>
@@ -410,7 +412,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void BlitFromMemory( PixelBox src )
 		{
-			BlitFromMemory( src, new BasicBox( 0, 0, 0, width, height, depth ) );
+			BlitFromMemory( src, new BasicBox( 0, 0, 0, this.width, this.height, this.depth ) );
 		}
 
 
@@ -425,7 +427,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void BlitToMemory( PixelBox dst )
 		{
-			BlitToMemory( new BasicBox( 0, 0, 0, width, height, depth ), dst );
+			BlitToMemory( new BasicBox( 0, 0, 0, this.width, this.height, this.depth ), dst );
 		}
 
 		#endregion Methods

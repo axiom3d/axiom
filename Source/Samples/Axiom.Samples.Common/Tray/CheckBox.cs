@@ -84,14 +84,14 @@ namespace Axiom.Samples
 		/// <param name="width"></param>
 		public CheckBox( String name, String caption, Real width )
 		{
-			IsCursorOver = false;
-			isFitToContents = width <= 0;
+			this.IsCursorOver = false;
+			this.isFitToContents = width <= 0;
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/CheckBox", "BorderPanel", name );
 			var c = (OverlayElementContainer)element;
-			textArea = (TextArea)c.Children[ Name + "/CheckBoxCaption" ];
-			square = (BorderPanel)c.Children[ Name + "/CheckBoxSquare" ];
-			x = square.Children[ square.Name + "/CheckBoxX" ];
-			x.Hide();
+			this.textArea = (TextArea)c.Children[ Name + "/CheckBoxCaption" ];
+			this.square = (BorderPanel)c.Children[ Name + "/CheckBoxSquare" ];
+			this.x = this.square.Children[ this.square.Name + "/CheckBoxX" ];
+			this.x.Hide();
 			element.Width = width;
 			Caption = caption;
 		}
@@ -107,14 +107,14 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return textArea.Text;
+				return this.textArea.Text;
 			}
 			set
 			{
-				textArea.Text = value;
-				if ( isFitToContents )
+				this.textArea.Text = value;
+				if ( this.isFitToContents )
 				{
-					element.Width = GetCaptionWidth( value, textArea ) + square.Width + 23;
+					element.Width = GetCaptionWidth( value, this.textArea ) + this.square.Width + 23;
 				}
 			}
 		}
@@ -126,7 +126,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return x.IsVisible;
+				return this.x.IsVisible;
 			}
 			set
 			{
@@ -147,11 +147,11 @@ namespace Axiom.Samples
 		{
 			if ( check )
 			{
-				x.Show();
+				this.x.Show();
 			}
 			else
 			{
-				x.Hide();
+				this.x.Hide();
 			}
 			if ( listener != null && notifyListener )
 			{
@@ -219,7 +219,7 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorPressed( Vector2 cursorPos )
 		{
-			if ( IsCursorOver )
+			if ( this.IsCursorOver )
 			{
 				Toggle();
 				base.OnCursorPressed( cursorPos );
@@ -232,22 +232,22 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorMoved( Vector2 cursorPos )
 		{
-			if ( IsCursorOver( square, cursorPos, 5 ) )
+			if ( IsCursorOver( this.square, cursorPos, 5 ) )
 			{
-				if ( !IsCursorOver )
+				if ( !this.IsCursorOver )
 				{
-					IsCursorOver = true;
-					square.MaterialName = "SdkTrays/MiniTextBox/Over";
-					square.BorderMaterialName = "SdkTrays/MiniTextBox/Over";
+					this.IsCursorOver = true;
+					this.square.MaterialName = "SdkTrays/MiniTextBox/Over";
+					this.square.BorderMaterialName = "SdkTrays/MiniTextBox/Over";
 				}
 			}
 			else
 			{
-				if ( IsCursorOver )
+				if ( this.IsCursorOver )
 				{
-					IsCursorOver = false;
-					square.MaterialName = "SdkTrays/MiniTextBox";
-					square.BorderMaterialName = "SdkTrays/MiniTextBox";
+					this.IsCursorOver = false;
+					this.square.MaterialName = "SdkTrays/MiniTextBox";
+					this.square.BorderMaterialName = "SdkTrays/MiniTextBox";
 				}
 			}
 
@@ -259,9 +259,9 @@ namespace Axiom.Samples
 		/// </summary>
 		public override void OnLostFocus()
 		{
-			square.MaterialName = "SdkTrays/MiniTextBox";
-			square.BorderMaterialName = "SdkTrays/MiniTextBox";
-			IsCursorOver = false;
+			this.square.MaterialName = "SdkTrays/MiniTextBox";
+			this.square.BorderMaterialName = "SdkTrays/MiniTextBox";
+			this.IsCursorOver = false;
 
 			base.OnLostFocus();
 		}

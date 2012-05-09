@@ -79,11 +79,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( _chosenDelegate == null )
+				if ( this._chosenDelegate == null )
 				{
 					chooseDelegate();
 				}
-				return _chosenDelegate;
+				return this._chosenDelegate;
 			}
 		}
 
@@ -109,13 +109,13 @@ namespace Axiom.Graphics
 		/// Choose the delegate to use
 		protected virtual void chooseDelegate()
 		{
-			_chosenDelegate = null;
-			foreach ( var delegateName in _delegateNames )
+			this._chosenDelegate = null;
+			foreach ( var delegateName in this._delegateNames )
 			{
 				var program = HighLevelGpuProgramManager.Instance[ delegateName ];
 				if ( program != null && program.IsSupported )
 				{
-					_chosenDelegate = program;
+					this._chosenDelegate = program;
 					break;
 				}
 			}
@@ -134,9 +134,9 @@ namespace Axiom.Graphics
 		/// <param name="delegateName"></param>
 		public void AddDelegateProgram( string delegateName )
 		{
-			_delegateNames.Add( delegateName );
+			this._delegateNames.Add( delegateName );
 			// Invalidate current selection
-			_chosenDelegate = null;
+			this._chosenDelegate = null;
 		}
 
 		/// <summary>
@@ -144,9 +144,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void ClearDelegatePrograms()
 		{
-			_delegateNames.Clear();
+			this._delegateNames.Clear();
 			// Invalidate current selection
-			_chosenDelegate = null;
+			this._chosenDelegate = null;
 		}
 
 		#endregion Methods

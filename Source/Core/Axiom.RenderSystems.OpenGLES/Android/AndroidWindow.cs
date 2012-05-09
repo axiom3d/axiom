@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,31 +25,38 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
+
 using Axiom.Graphics;
 using Axiom.Media;
+
 using Javax.Microedition.Khronos.Egl;
-using NativeWindowType = System.IntPtr;
-using NativeDisplayType = System.IntPtr;
+
 using OpenTK.Graphics;
 using OpenTK.Platform.Android;
+
+using NativeWindowType = System.IntPtr;
+using NativeDisplayType = System.IntPtr;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES.Android
 {
-	class AndroidWindow : RenderWindow
+	internal class AndroidWindow : RenderWindow
 	{
 		private bool _isClosed;
 		private bool _isVisible;
@@ -66,11 +74,10 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		private EGLSurface _eglSurface;
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="display"></param>
-		/// <param name="win"></param>
-		/// <returns></returns>
+		/// <param name="display"> </param>
+		/// <param name="win"> </param>
+		/// <returns> </returns>
 		protected EGLSurface CreateSurfaceFromWindow( EGLDisplay display, NativeWindowType win )
 		{
 			throw new NotImplementedException();
@@ -90,11 +97,11 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 				switch ( attribute.ToLower() )
 				{
 					case "glcontext":
-						return _glContext;
+						return this._glContext;
 					case "window":
-						return _window;
+						return this._window;
 					case "nativewindow":
-						return _window;
+						return this._window;
 					default:
 						return null;
 				}
@@ -103,10 +110,7 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 
 		public override bool IsClosed
 		{
-			get
-			{
-				return _window == null && _glContext == null;
-			}
+			get { return this._window == null && this._glContext == null; }
 		}
 
 		public override void Reposition( int left, int right )
@@ -120,13 +124,12 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="fullScreen"></param>
-		/// <param name="miscParams"></param>
+		/// <param name="name"> </param>
+		/// <param name="width"> </param>
+		/// <param name="height"> </param>
+		/// <param name="fullScreen"> </param>
+		/// <param name="miscParams"> </param>
 		public override void Create( string name, int width, int height, bool fullScreen, Collections.NamedParameterList miscParams )
 		{
 			string title = name;
@@ -135,11 +138,11 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 			float displayFrequency = 60f;
 			string border = "resizable";
 
-			this.Name = name;
-			this.Width = width;
-			this.Height = height;
-			this.ColorDepth = 32;
-			this.IsFullScreen = fullScreen;
+			Name = name;
+			Width = width;
+			Height = height;
+			ColorDepth = 32;
+			IsFullScreen = fullScreen;
 
 			#region Parameter Handling
 
@@ -179,22 +182,22 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 							break;
 
 						case "externalWindowInfo":
-							var androidContext = (AndroidGraphicsContext)entry.Value;
-							_glContext = new AndroidContext( androidContext, _glSupport );
+							var androidContext = (AndroidGraphicsContext) entry.Value;
+							this._glContext = new AndroidContext( androidContext, this._glSupport );
 							break;
 
 						case "externalWindowHandle":
 							object handle = entry.Value;
 							IntPtr ptr = IntPtr.Zero;
-							if ( handle.GetType() == typeof( IntPtr ) )
+							if ( handle.GetType() == typeof ( IntPtr ) )
 							{
-								ptr = (IntPtr)handle;
+								ptr = (IntPtr) handle;
 							}
-							else if ( handle.GetType() == typeof( System.Int32 ) )
+							else if ( handle.GetType() == typeof ( System.Int32 ) )
 							{
-								ptr = new IntPtr( (int)handle );
+								ptr = new IntPtr( (int) handle );
 							}
-							_window = ptr;
+							this._window = ptr;
 
 							fullScreen = false;
 							IsActive = true;
@@ -212,14 +215,12 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 			}
 
 			#endregion Parameter Handling
-
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="pb"></param>
-		/// <param name="buffer"></param>
+		/// <param name="pb"> </param>
+		/// <param name="buffer"> </param>
 		public override void CopyContentsToMemory( PixelBox pb, RenderTarget.FrameBuffer buffer )
 		{
 			throw new NotImplementedException();
@@ -257,6 +258,5 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		}
 
 		#endregion RenderWindow Members
-
 	}
 }

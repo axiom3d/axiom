@@ -98,9 +98,9 @@ namespace Axiom.Fonts
 
 			public GlyphInfo( CodePoint id, UVRect rect, Real aspect )
 			{
-				codePoint = id;
-				uvRect = rect;
-				aspectRatio = aspect;
+				this.codePoint = id;
+				this.uvRect = rect;
+				this.aspectRatio = aspect;
 			}
 		}
 
@@ -140,11 +140,11 @@ namespace Axiom.Fonts
 		{
 			get
 			{
-				return _fontType;
+				return this._fontType;
 			}
 			set
 			{
-				_fontType = value;
+				this._fontType = value;
 			}
 		}
 
@@ -173,11 +173,11 @@ namespace Axiom.Fonts
 		{
 			get
 			{
-				return _ttfSize;
+				return this._ttfSize;
 			}
 			set
 			{
-				_ttfSize = value;
+				this._ttfSize = value;
 			}
 		}
 
@@ -197,11 +197,11 @@ namespace Axiom.Fonts
 		{
 			get
 			{
-				return _ttfResolution;
+				return this._ttfResolution;
 			}
 			set
 			{
-				_ttfResolution = value;
+				this._ttfResolution = value;
 			}
 		}
 
@@ -221,11 +221,11 @@ namespace Axiom.Fonts
 		{
 			get
 			{
-				return _material;
+				return this._material;
 			}
 			protected set
 			{
-				_material = value;
+				this._material = value;
 			}
 		}
 
@@ -245,11 +245,11 @@ namespace Axiom.Fonts
 		{
 			get
 			{
-				return _texture;
+				return this._texture;
 			}
 			set
 			{
-				_texture = value;
+				this._texture = value;
 			}
 		}
 
@@ -282,7 +282,7 @@ namespace Axiom.Fonts
 		{
 			get
 			{
-				return codePoints;
+				return this.codePoints;
 			}
 		}
 
@@ -373,9 +373,9 @@ namespace Axiom.Fonts
 		[Obsolete( "Use Glyphs property" )]
 		public void GetGlyphTexCoords( CodePoint c, out Real u1, out Real v1, out Real u2, out Real v2 )
 		{
-			if ( codePoints.ContainsKey( c ) )
+			if ( this.codePoints.ContainsKey( c ) )
 			{
-				var glyph = codePoints[ c ];
+				var glyph = this.codePoints[ c ];
 				u1 = glyph.uvRect.Top;
 				v1 = glyph.uvRect.Left;
 				u2 = glyph.uvRect.Bottom;
@@ -424,13 +424,13 @@ namespace Axiom.Fonts
 		public void SetGlyphTexCoords( CodePoint c, Real u1, Real v1, Real u2, Real v2, Real aspect )
 		{
 			var glyph = new GlyphInfo( c, new UVRect( v1, u1, v2, u2 ), aspect*( u2 - u1 )/( v2 - v1 ) );
-			if ( codePoints.ContainsKey( c ) )
+			if ( this.codePoints.ContainsKey( c ) )
 			{
-				codePoints[ c ] = glyph;
+				this.codePoints[ c ] = glyph;
 			}
 			else
 			{
-				codePoints.Add( c, glyph );
+				this.codePoints.Add( c, glyph );
 			}
 		}
 
@@ -442,9 +442,9 @@ namespace Axiom.Fonts
 		[Obsolete( "Use Glyphs property" )]
 		public float GetGlyphAspectRatio( char c )
 		{
-			if ( codePoints.ContainsKey( c ) )
+			if ( this.codePoints.ContainsKey( c ) )
 			{
-				return codePoints[ c ].aspectRatio;
+				return this.codePoints[ c ].aspectRatio;
 			}
 
 			return 1.0f;
@@ -461,24 +461,24 @@ namespace Axiom.Fonts
 			// creating a new one. Allows more flexibility, but also specifically allows us to
 			// solve the problem of XNA not having fixed function support
 
-			_material = (Material)MaterialManager.Instance.GetByName( "Fonts/" + _name );
+			this._material = (Material)MaterialManager.Instance.GetByName( "Fonts/" + _name );
 
-			if ( _material == null )
+			if ( this._material == null )
 			{
 				// create a material for this font
-				_material = (Material)MaterialManager.Instance.Create( "Fonts/" + _name, Group );
+				this._material = (Material)MaterialManager.Instance.Create( "Fonts/" + _name, Group );
 
 				TextureUnitState unitState = null;
 				var blendByAlpha = false;
 
-				if ( _fontType == FontType.TrueType )
+				if ( this._fontType == FontType.TrueType )
 				{
 #if !( XBOX || XBOX360 )
 					// create the font bitmap on the fly
 					createTexture();
 
 					// a texture layer was added in CreateTexture
-					unitState = _material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 );
+					unitState = this._material.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 );
 
 					blendByAlpha = true;
 #endif
@@ -488,7 +488,7 @@ namespace Axiom.Fonts
 					// load this texture
 					// TODO In general, modify any methods like this that throw their own exception rather than returning null, so the caller can decide how to handle a missing resource.
 
-					_texture = TextureManager.Instance.Load( Source, Group, TextureType.TwoD, 0 );
+					this._texture = TextureManager.Instance.Load( Source, Group, TextureType.TwoD, 0 );
 
 					blendByAlpha = texture.HasAlpha;
 					// pre-created font images
@@ -496,7 +496,7 @@ namespace Axiom.Fonts
 				}
 
 				// Make sure material is aware of colour per vertex.
-				_material.GetTechnique( 0 ).GetPass( 0 ).VertexColorTracking = TrackVertexColor.Diffuse;
+				this._material.GetTechnique( 0 ).GetPass( 0 ).VertexColorTracking = TrackVertexColor.Diffuse;
 
 				if ( unitState != null )
 				{
@@ -509,30 +509,30 @@ namespace Axiom.Fonts
 				// set up blending mode
 				if ( blendByAlpha )
 				{
-					_material.SetSceneBlending( SceneBlendType.TransparentAlpha );
+					this._material.SetSceneBlending( SceneBlendType.TransparentAlpha );
 				}
 				else
 				{
 					// assume black background here
-					_material.SetSceneBlending( SceneBlendType.Add );
+					this._material.SetSceneBlending( SceneBlendType.Add );
 				}
 			}
 		}
 
 		protected override void unload()
 		{
-			if ( _material != null )
+			if ( this._material != null )
 			{
-				MaterialManager.Instance.Remove( _material );
-				_material.Unload();
-				_material = null;
+				MaterialManager.Instance.Remove( this._material );
+				this._material.Unload();
+				this._material = null;
 			}
 
-			if ( _texture != null )
+			if ( this._texture != null )
 			{
-				TextureManager.Instance.Remove( _texture );
-				_texture.Unload();
-				_texture = null;
+				TextureManager.Instance.Remove( this._texture );
+				this._texture.Unload();
+				this._texture = null;
 			}
 		}
 
@@ -582,9 +582,9 @@ namespace Axiom.Fonts
 			}
 
 			// Convert our point size to freetype 26.6 fixed point format
-			var ftSize = _ttfSize*( 1 << 6 );
+			var ftSize = this._ttfSize*( 1 << 6 );
 
-			if ( FT.FT_Set_Char_Size( face, ftSize, 0, (uint)_ttfResolution, (uint)_ttfResolution ) != 0 )
+			if ( FT.FT_Set_Char_Size( face, ftSize, 0, (uint)this._ttfResolution, (uint)this._ttfResolution ) != 0 )
 			{
 				throw new AxiomException( "Could not set char size!" );
 			}
@@ -592,14 +592,14 @@ namespace Axiom.Fonts
 			int max_height = 0, max_width = 0;
 
 			// Backwards compatibility - if codepoints not supplied, assume 33-166
-			if ( codePointRange.Count == 0 )
+			if ( this.codePointRange.Count == 0 )
 			{
-				codePointRange.Add( new KeyValuePair<int, int>( 33, 166 ) );
+				this.codePointRange.Add( new KeyValuePair<int, int>( 33, 166 ) );
 			}
 
 			// Calculate maximum width, height and bearing
 			var glyphCount = 0;
-			foreach ( var r in codePointRange )
+			foreach ( var r in this.codePointRange )
 			{
 				var range = r;
 				for ( var cp = range.Key; cp <= range.Value; ++cp, ++glyphCount )
@@ -613,9 +613,9 @@ namespace Axiom.Fonts
 					{
 						max_height = ( 2*( glyp.bitmap.rows << 6 ) - glyp.metrics.horiBearingY );
 					}
-					if ( glyp.metrics.horiBearingY > maxBearingY )
+					if ( glyp.metrics.horiBearingY > this.maxBearingY )
 					{
-						maxBearingY = glyp.metrics.horiBearingY;
+						this.maxBearingY = glyp.metrics.horiBearingY;
 					}
 
 					if ( ( glyp.advance.x >> 6 ) + ( glyp.metrics.horiBearingX >> 6 ) > max_width )
@@ -665,7 +665,7 @@ namespace Axiom.Fonts
 			}
 
 			int l = 0, m = 0;
-			foreach ( var r in codePointRange )
+			foreach ( var r in this.codePointRange )
 			{
 				var range = r;
 				for ( var cp = range.Key; cp <= range.Value; ++cp )
@@ -711,7 +711,7 @@ namespace Axiom.Fonts
 						var idx = 0;
 						var imageDataBuffer = BufferBase.Wrap( imageData );
 						var imageDataPtr = imageDataBuffer.ToBytePointer();
-						var y_bearing = ( ( maxBearingY >> 6 ) - ( glyp.metrics.horiBearingY >> 6 ) );
+						var y_bearing = ( ( this.maxBearingY >> 6 ) - ( glyp.metrics.horiBearingY >> 6 ) );
 						var x_bearing = glyp.metrics.horiBearingX >> 6;
 
 						for ( var j = 0; j < glyp.bitmap.rows; j++ )

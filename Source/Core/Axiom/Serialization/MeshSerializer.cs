@@ -84,11 +84,11 @@ namespace Axiom.Serialization
 		public MeshSerializer()
 		{
 			// add the supported .mesh versions
-			implementations.Add( "[MeshSerializer_v1.10]", new MeshSerializerImplv11() );
-			implementations.Add( "[MeshSerializer_v1.20]", new MeshSerializerImplv12() );
-			implementations.Add( "[MeshSerializer_v1.30]", new MeshSerializerImplv13() );
-			implementations.Add( "[MeshSerializer_v1.40]", new MeshSerializerImplv14() );
-			implementations.Add( currentVersion, new MeshSerializerImpl() );
+			this.implementations.Add( "[MeshSerializer_v1.10]", new MeshSerializerImplv11() );
+			this.implementations.Add( "[MeshSerializer_v1.20]", new MeshSerializerImplv12() );
+			this.implementations.Add( "[MeshSerializer_v1.30]", new MeshSerializerImplv13() );
+			this.implementations.Add( "[MeshSerializer_v1.40]", new MeshSerializerImplv14() );
+			this.implementations.Add( currentVersion, new MeshSerializerImpl() );
 		}
 
 		#endregion Constructor
@@ -103,7 +103,7 @@ namespace Axiom.Serialization
 		public void ExportMesh( Mesh mesh, string fileName )
 		{
 			// call implementation
-			var serializer = (MeshSerializerImpl)implementations[ currentVersion ];
+			var serializer = (MeshSerializerImpl)this.implementations[ currentVersion ];
 			serializer.ExportMesh( mesh, fileName );
 		}
 
@@ -131,7 +131,7 @@ namespace Axiom.Serialization
 			Seek( reader, 0, SeekOrigin.Begin );
 
 			// barf if there specified version is not supported
-			if ( !implementations.ContainsKey( fileVersion ) )
+			if ( !this.implementations.ContainsKey( fileVersion ) )
 			{
 				throw new AxiomException( "Cannot find serializer implementation for version '{0}'.", fileVersion );
 			}
@@ -139,7 +139,7 @@ namespace Axiom.Serialization
 			LogManager.Instance.Write( "Mesh: Loading '{0}'...", mesh.Name );
 
 			// call implementation
-			var serializer = (MeshSerializerImpl)implementations[ fileVersion ];
+			var serializer = (MeshSerializerImpl)this.implementations[ fileVersion ];
 			serializer.ImportMesh( stream, mesh );
 
 			// warn on old version of mesh
@@ -170,7 +170,7 @@ namespace Axiom.Serialization
 			Seek( reader, 0, SeekOrigin.Begin );
 
 			// barf if there specified version is not supported
-			if ( !implementations.ContainsKey( fileVersion ) )
+			if ( !this.implementations.ContainsKey( fileVersion ) )
 			{
 				throw new AxiomException( "Cannot find serializer implementation for version '{0}'.", fileVersion );
 			}
@@ -178,7 +178,7 @@ namespace Axiom.Serialization
 			LogManager.Instance.Write( "Mesh: Fetching dependency info '{0}'...", mesh.Name );
 
 			// call implementation
-			var serializer = (MeshSerializerImpl)implementations[ fileVersion ];
+			var serializer = (MeshSerializerImpl)this.implementations[ fileVersion ];
 			var rv = serializer.GetDependencyInfo( stream, mesh );
 
 			// warn on old version of mesh

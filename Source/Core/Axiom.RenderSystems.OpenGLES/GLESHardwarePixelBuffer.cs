@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,21 +25,28 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
+
+using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-using Axiom.Core;
+
 using TK = OpenTK.Graphics.ES11;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
@@ -46,35 +54,32 @@ namespace Axiom.RenderSystems.OpenGLES
 	public class GLESHardwarePixelBuffer : HardwarePixelBuffer
 	{
 		/// <summary>
-		/// Internal buffer; either on-card or in system memory, freed/allocated on demand
-		/// depending on buffer usage
+		///   Internal buffer; either on-card or in system memory, freed/allocated on demand depending on buffer usage
 		/// </summary>
 		protected PixelBox _buffer;
+
 		protected TK.All _glInternalFormat;
 		protected BufferLocking _currentLocking;
 		protected byte[] data;
+
 		/// <summary>
-		/// 
 		/// </summary>
 		public TK.All GLFormat
 		{
-			get
-			{
-				return _glInternalFormat;
-			}
+			get { return this._glInternalFormat; }
 		}
+
 		public GLESHardwarePixelBuffer( int width, int height, int depth, PixelFormat format, BufferUsage usage )
 			: base( width, height, depth, format, usage, false, false )
 		{
-			_buffer = new PixelBox( width, height, depth, format );
-			_glInternalFormat = 0;
+			this._buffer = new PixelBox( width, height, depth, format );
+			this._glInternalFormat = 0;
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="value"> </param>
+		/// <returns> </returns>
 		public static int ComputeLog( int value )
 		{
 			int i;
@@ -83,15 +88,19 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			/* Error! */
 			if ( value == 0 )
+			{
 				return -1;
+			}
 
-			for ( ; ; )
+			for ( ;; )
 			{
 				if ( ( value & 1 ) != 0 )
 				{
 					/* Error! */
 					if ( value != 1 )
+					{
 						return -1;
+					}
 					return i;
 				}
 				value = value >> 1;
@@ -100,89 +109,85 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected void AllocateBuffer()
 		{
-			if ( _buffer.Data != IntPtr.Zero )
+			if ( this._buffer.Data != IntPtr.Zero )
+			{
 				return; //allready allocated
+			}
 
-			data = new byte[ sizeInBytes ];
-			_buffer.Data = Memory.PinObject( data );
+			this.data = new byte[ sizeInBytes ];
+			this._buffer.Data = Memory.PinObject( this.data );
 			// TODO use PBO if we're HBU_DYNAMIC
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected void FreeBuffer()
 		{
-			if ( _buffer.Data == IntPtr.Zero )
+			if ( this._buffer.Data == IntPtr.Zero )
+			{
 				return; //not allocated
+			}
 
 			// Free buffer if we're STATIC to save memory
 			if ( ( Usage & BufferUsage.Static ) == BufferUsage.Static )
 			{
-				Memory.UnpinObject( data );
-				data = null;
-				_buffer.Data = IntPtr.Zero;
+				Memory.UnpinObject( this.data );
+				this.data = null;
+				this._buffer.Data = IntPtr.Zero;
 			}
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="data"></param>
-		/// <param name="dest"></param>
+		/// <param name="data"> </param>
+		/// <param name="dest"> </param>
 		protected virtual void Upload( PixelBox data, BasicBox dest )
 		{
 			throw new AxiomException( "Upload not possible for this pixelbuffer type" );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="data"></param>
+		/// <param name="data"> </param>
 		protected virtual void Download( PixelBox data )
 		{
 			throw new AxiomException( "Download not possible for this pixelbuffer type" );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="attachment"></param>
-		/// <param name="zOffset"></param>
+		/// <param name="attachment"> </param>
+		/// <param name="zOffset"> </param>
 		public virtual void BindToFramebuffer( TK.All attachment, int zOffset )
 		{
 			throw new AxiomException( "Framebuffer bind not possible for this pixelbuffer type" );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="lockBox"></param>
-		/// <param name="options"></param>
-		/// <returns></returns>
+		/// <param name="lockBox"> </param>
+		/// <param name="options"> </param>
+		/// <returns> </returns>
 		protected override PixelBox LockImpl( BasicBox lockBox, BufferLocking options )
 		{
 			AllocateBuffer();
-			if ( options != BufferLocking.Discard &&
-				( Usage & BufferUsage.WriteOnly ) == 0 )
+			if ( options != BufferLocking.Discard && ( Usage & BufferUsage.WriteOnly ) == 0 )
 			{
 				// Download the old contents of the texture
-				Download( _buffer );
+				Download( this._buffer );
 			}
-			_currentLocking = options;
-			return _buffer.GetSubVolume( lockBox );
+			this._currentLocking = options;
+			return this._buffer.GetSubVolume( lockBox );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected override void UnlockImpl()
 		{
-			if ( _currentLocking != BufferLocking.ReadOnly )
+			if ( this._currentLocking != BufferLocking.ReadOnly )
 			{
 				// From buffer to card, only upload if was locked for writing
 				Upload( base.CurrentLock, new BasicBox( 0, 0, 0, Width, Height, Depth ) );
@@ -191,24 +196,17 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="srcBox"></param>
-		/// <param name="dst"></param>
+		/// <param name="srcBox"> </param>
+		/// <param name="dst"> </param>
 		public override void BlitToMemory( BasicBox srcBox, PixelBox dst )
 		{
-			if ( !_buffer.Contains( srcBox ) )
+			if ( !this._buffer.Contains( srcBox ) )
 			{
 				throw new ArgumentOutOfRangeException( "source boux out of range" );
 			}
 
-			if ( srcBox.Left == 0 && srcBox.Right == Width &&
-				srcBox.Top == 0 && srcBox.Bottom == Height &&
-				srcBox.Front == 0 && srcBox.Back == Depth &&
-				dst.Width == Width &&
-				dst.Height == Height &&
-				dst.Depth == Depth &&
-				GLESPixelUtil.GetGLOriginFormat( dst.Format ) != 0 )
+			if ( srcBox.Left == 0 && srcBox.Right == Width && srcBox.Top == 0 && srcBox.Bottom == Height && srcBox.Front == 0 && srcBox.Back == Depth && dst.Width == Width && dst.Height == Height && dst.Depth == Depth && GLESPixelUtil.GetGLOriginFormat( dst.Format ) != 0 )
 			{
 				// The direct case: the user wants the entire texture in a format supported by GL
 				// so we don't need an intermediate buffer
@@ -219,58 +217,52 @@ namespace Axiom.RenderSystems.OpenGLES
 				// Use buffer for intermediate copy
 				AllocateBuffer();
 				//download entire buffer
-				Download( _buffer );
-				if ( srcBox.Width != dst.Width ||
-					srcBox.Height != dst.Height ||
-					srcBox.Depth != dst.Depth )
+				Download( this._buffer );
+				if ( srcBox.Width != dst.Width || srcBox.Height != dst.Height || srcBox.Depth != dst.Depth )
 				{
 					// we need scaling
-					Image.Scale( _buffer.GetSubVolume( srcBox ), dst, ImageFilter.Bilinear );
+					Image.Scale( this._buffer.GetSubVolume( srcBox ), dst, ImageFilter.Bilinear );
 				}
 				else
 				{
 					// Just copy the bit that we need
-					PixelConverter.BulkPixelConversion( _buffer.GetSubVolume( srcBox ), dst );
+					PixelConverter.BulkPixelConversion( this._buffer.GetSubVolume( srcBox ), dst );
 				}
 				FreeBuffer();
 			}
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="dstBox"></param>
+		/// <param name="src"> </param>
+		/// <param name="dstBox"> </param>
 		public override void BlitFromMemory( PixelBox src, Media.BasicBox dstBox )
 		{
-			if ( !_buffer.Contains( dstBox ) )
+			if ( !this._buffer.Contains( dstBox ) )
 			{
 				throw new ArgumentOutOfRangeException( "Destination box out of range, GLESHardwarePixelBuffer.BlitToMemory" );
 			}
 
 			PixelBox scaled;
 
-			if ( src.Width != dstBox.Width ||
-				 src.Height != dstBox.Height ||
-				 src.Depth != dstBox.Depth )
+			if ( src.Width != dstBox.Width || src.Height != dstBox.Height || src.Depth != dstBox.Depth )
 			{
 				LogManager.Instance.Write( "[GLESHardwarePixelBuffer] Scale to destination size." );
 				// Scale to destination size. Use DevIL and not iluScale because ILU screws up for 
 				// floating point textures and cannot cope with 3D images.
 				// This also does pixel format conversion if needed
 				AllocateBuffer();
-				scaled = _buffer.GetSubVolume( dstBox );
+				scaled = this._buffer.GetSubVolume( dstBox );
 				Image.Scale( src, scaled, ImageFilter.Bilinear );
 			}
-			else if ( ( src.Format != Format ) ||
-					( ( GLESPixelUtil.GetGLOriginFormat( src.Format ) == 0 ) && ( src.Format != PixelFormat.R8G8B8 ) ) )
+			else if ( ( src.Format != Format ) || ( ( GLESPixelUtil.GetGLOriginFormat( src.Format ) == 0 ) && ( src.Format != PixelFormat.R8G8B8 ) ) )
 			{
 				LogManager.Instance.Write( "[GLESHardwarePixelBuffer] Extents match, but format is not accepted as valid source format for GL." );
 				LogManager.Instance.Write( "[GLESHardwarePixelBuffer] Source.Format = {0}, Format = {1}, GLOriginFormat = {2}", src.Format, Format, GLESPixelUtil.GetGLOriginFormat( src.Format ) );
 				// Extents match, but format is not accepted as valid source format for GL
 				// do conversion in temporary buffer
 				AllocateBuffer();
-				scaled = _buffer.GetSubVolume( dstBox );
+				scaled = this._buffer.GetSubVolume( dstBox );
 
 				PixelConverter.BulkPixelConversion( src, scaled );
 			}
@@ -298,7 +290,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		///     Called to destroy this buffer.
+		///   Called to destroy this buffer.
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )
 		{
@@ -306,12 +298,12 @@ namespace Axiom.RenderSystems.OpenGLES
 			{
 				if ( disposeManagedResources )
 				{
-					if ( data != null )
+					if ( this.data != null )
 					{
-						Memory.UnpinObject( data );
-						data = null;
-						_buffer.Data = IntPtr.Zero;
-						_buffer = null;
+						Memory.UnpinObject( this.data );
+						this.data = null;
+						this._buffer.Data = IntPtr.Zero;
+						this._buffer = null;
 					}
 				}
 			}
@@ -320,7 +312,5 @@ namespace Axiom.RenderSystems.OpenGLES
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
 		}
-
 	}
 }
-

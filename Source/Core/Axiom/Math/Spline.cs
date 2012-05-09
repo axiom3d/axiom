@@ -69,11 +69,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return autoCalculateTangents;
+				return this.autoCalculateTangents;
 			}
 			set
 			{
-				autoCalculateTangents = value;
+				this.autoCalculateTangents = value;
 			}
 		}
 
@@ -84,7 +84,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return pointList.Count;
+				return this.pointList.Count;
 			}
 		}
 
@@ -95,11 +95,11 @@ namespace Axiom.Math
 		public Spline()
 		{
 			// intialize the vector collections
-			pointList = new List<T>();
-			tangentList = new List<T>();
+			this.pointList = new List<T>();
+			this.tangentList = new List<T>();
 
 			// do not auto calculate tangents by default
-			autoCalculateTangents = false;
+			this.autoCalculateTangents = false;
 		}
 
 		#endregion Construction and Destruction
@@ -112,10 +112,10 @@ namespace Axiom.Math
 		/// <param name="point"></param>
 		public void AddPoint( T point )
 		{
-			pointList.Add( point );
+			this.pointList.Add( point );
 
 			// recalc tangents if necessary
-			if ( autoCalculateTangents )
+			if ( this.autoCalculateTangents )
 			{
 				RecalculateTangents();
 			}
@@ -126,8 +126,8 @@ namespace Axiom.Math
 		/// </summary>
 		public void Clear()
 		{
-			pointList.Clear();
-			tangentList.Clear();
+			this.pointList.Clear();
+			this.tangentList.Clear();
 		}
 
 		/// <summary>
@@ -137,9 +137,9 @@ namespace Axiom.Math
 		/// <returns>Vector3 containing the point data.</returns>
 		public T GetPoint( int index )
 		{
-			Contract.Requires( index < pointList.Count );
+			Contract.Requires( index < this.pointList.Count );
 
-			return pointList[ index ];
+			return this.pointList[ index ];
 		}
 
 

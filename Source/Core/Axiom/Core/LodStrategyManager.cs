@@ -128,7 +128,7 @@ namespace Axiom.Core
 			}
 
 			// Insert the strategy into the map with its name as the key
-			_strategies.Add( strategy.Name, strategy );
+			this._strategies.Add( strategy.Name, strategy );
 		}
 
 		/// <summary>
@@ -143,9 +143,9 @@ namespace Axiom.Core
 		public LodStrategy RemoveStrategy( string name )
 		{
 			LodStrategy ret = null;
-			if ( _strategies.TryGetValue( name, out ret ) )
+			if ( this._strategies.TryGetValue( name, out ret ) )
 			{
-				_strategies.Remove( name );
+				this._strategies.Remove( name );
 				return ret;
 			}
 			return ret;
@@ -160,7 +160,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public void RemoveAllStrategies()
 		{
-			_strategies.Clear();
+			this._strategies.Clear();
 		}
 
 		/// <summary>
@@ -177,7 +177,7 @@ namespace Axiom.Core
 			}
 
 			LodStrategy ret = null;
-			_strategies.TryGetValue( name, out ret );
+			this._strategies.TryGetValue( name, out ret );
 
 			return ret;
 		}

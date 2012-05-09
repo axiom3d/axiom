@@ -168,7 +168,7 @@ namespace Axiom.Media
 				// Get the file type identifier
 				var pvrTag = header.pvrTag;
 
-				if ( PVR_MAGIC != pvrTag )
+				if ( this.PVR_MAGIC != pvrTag )
 				{
 					throw new AxiomException( "This is not a PVR file!" );
 				}
@@ -261,7 +261,7 @@ namespace Axiom.Media
 					_flipEndian( data, sizeof ( int ), 1 );
 				}
 
-				if ( PVR_MAGIC == fileType )
+				if ( this.PVR_MAGIC == fileType )
 				{
 					return "pvr";
 				}

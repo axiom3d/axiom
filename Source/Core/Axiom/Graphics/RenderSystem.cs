@@ -215,14 +215,14 @@ namespace Axiom.Graphics
 		{
 			// This means CULL clockwise vertices, i.e. front of poly is counter-clockwise
 			// This makes it the same as OpenGL and other right-handed systems
-			cullingMode = CullingMode.Clockwise;
+			this.cullingMode = CullingMode.Clockwise;
 
 
-			vSync = true;
-			vSyncInterval = 1;
+			this.vSync = true;
+			this.vSyncInterval = 1;
 
-			globalNumberOfInstances = 1;
-			clipPlanesDirty = true;
+			this.globalNumberOfInstances = 1;
+			this.clipPlanesDirty = true;
 		}
 
 		#endregion
@@ -262,11 +262,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return vSync;
+				return this.vSync;
 			}
 			set
 			{
-				vSync = value;
+				this.vSync = value;
 			}
 		}
 
@@ -284,7 +284,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return globalInstanceVertexBuffer;
+				return this.globalInstanceVertexBuffer;
 			}
 			set
 			{
@@ -292,7 +292,7 @@ namespace Axiom.Graphics
 				{
 					throw new AxiomException( "A none instance data vertex buffer was set to be the global instance vertex buffer." );
 				}
-				globalInstanceVertexBuffer = value;
+				this.globalInstanceVertexBuffer = value;
 			}
 		}
 
@@ -310,11 +310,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return globalInstanceVertexBufferVertexDeclaration;
+				return this.globalInstanceVertexBufferVertexDeclaration;
 			}
 			set
 			{
-				globalInstanceVertexBufferVertexDeclaration = value;
+				this.globalInstanceVertexBufferVertexDeclaration = value;
 			}
 		}
 
@@ -332,11 +332,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return globalNumberOfInstances;
+				return this.globalNumberOfInstances;
 			}
 			set
 			{
-				globalNumberOfInstances = value;
+				this.globalNumberOfInstances = value;
 			}
 		}
 
@@ -381,7 +381,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return currentCapabilities;
+				return this.currentCapabilities;
 			}
 		}
 
@@ -393,7 +393,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return currentCapabilities;
+				return this.currentCapabilities;
 			}
 		}
 
@@ -412,7 +412,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return activeViewport;
+				return this.activeViewport;
 			}
 			set
 			{
@@ -444,7 +444,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return cullingMode;
+				return this.cullingMode;
 			}
 			set
 			{
@@ -499,7 +499,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return driverVersion;
+				return this.driverVersion;
 			}
 		}
 
@@ -539,10 +539,10 @@ namespace Axiom.Graphics
 				{
 					throw new ArgumentNullException(); // Ogre passes this as ref so must be non null
 				}
-				if ( !value.Equals( clipPlanes ) )
+				if ( !value.Equals( this.clipPlanes ) )
 				{
-					clipPlanes = value;
-					clipPlanesDirty = true;
+					this.clipPlanes = value;
+					this.clipPlanesDirty = true;
 				}
 			}
 		}
@@ -563,7 +563,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// return a COPY of the current config options
-				return configOptions;
+				return this.configOptions;
 			}
 		}
 
@@ -581,7 +581,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return faceCount;
+				return this.faceCount;
 			}
 		}
 
@@ -599,7 +599,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return batchCount;
+				return this.batchCount;
 			}
 		}
 
@@ -617,7 +617,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return vertexCount;
+				return this.vertexCount;
 			}
 		}
 
@@ -668,11 +668,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return currentPassIterationCount;
+				return this.currentPassIterationCount;
 			}
 			set
 			{
-				currentPassIterationCount = value;
+				this.currentPassIterationCount = value;
 			}
 		}
 
@@ -691,11 +691,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return invertVertexWinding;
+				return this.invertVertexWinding;
 			}
 			set
 			{
-				invertVertexWinding = value;
+				this.invertVertexWinding = value;
 			}
 		}
 
@@ -760,15 +760,15 @@ namespace Axiom.Graphics
 			                                            	}
 			                                            };
 			Listener += wrapper;
-			_namedEvents.Add( key, wrapper );
+			this._namedEvents.Add( key, wrapper );
 		}
 
 		[AxiomHelper( 0, 8 )]
 		public void RemoveEvent( string name, Action<NameValuePairList> handler )
 		{
 			var key = new Axiom.Math.Tuple<string, Action<NameValuePairList>>( name, handler );
-			Listener -= _namedEvents[ key ];
-			_namedEvents.Remove( key );
+			Listener -= this._namedEvents[ key ];
+			this._namedEvents.Remove( key );
 		}
 
 		#endregion
@@ -782,7 +782,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return eventNames;
+				return this.eventNames;
 			}
 		}
 
@@ -807,11 +807,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return wBuffer;
+				return this.wBuffer;
 			}
 			set
 			{
-				wBuffer = value;
+				this.wBuffer = value;
 			}
 		}
 
@@ -1101,13 +1101,13 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void UseCustomRenderSystemCapabilities( RenderSystemCapabilities capabilities )
 		{
-			if ( realCapabilities != null )
+			if ( this.realCapabilities != null )
 			{
 				throw new AxiomException( "Custom render capabilities must be set before the RenderSystem is initialized." );
 			}
 
-			currentCapabilities = capabilities;
-			useCustomCapabilities = true;
+			this.currentCapabilities = capabilities;
+			this.useCustomCapabilities = true;
 		}
 
 		#endregion
@@ -1236,10 +1236,10 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void SetDerivedDepthBias( bool derive, float baseValue, float multiplier, float slopeScale )
 		{
-			derivedDepthBias = derive;
-			derivedDepthBiasBase = baseValue;
-			derivedDepthBiasMultiplier = multiplier;
-			derivedDepthBiasSlopeScale = slopeScale;
+			this.derivedDepthBias = derive;
+			this.derivedDepthBiasBase = baseValue;
+			this.derivedDepthBiasMultiplier = multiplier;
+			this.derivedDepthBiasSlopeScale = slopeScale;
 		}
 
 		#endregion
@@ -1266,8 +1266,8 @@ namespace Axiom.Graphics
 		public virtual void AttachRenderTarget( RenderTarget target )
 		{
 			Debug.Assert( (int)target.Priority < NumRendertargetGroups );
-			renderTargets.Add( target.Name, target );
-			prioritizedRenderTargets.Add( target.Priority, target );
+			this.renderTargets.Add( target.Name, target );
+			this.prioritizedRenderTargets.Add( target.Priority, target );
 		}
 
 		#endregion
@@ -1280,7 +1280,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void BeginGeometryCount()
 		{
-			batchCount = vertexCount = faceCount = 0;
+			this.batchCount = this.vertexCount = this.faceCount = 0;
 		}
 
 		#endregion
@@ -1296,16 +1296,16 @@ namespace Axiom.Graphics
 		public virtual RenderTarget DetachRenderTarget( string name )
 		{
 			RenderTarget ret;
-			if ( renderTargets.TryGetValue( name, out ret ) )
+			if ( this.renderTargets.TryGetValue( name, out ret ) )
 			{
 				// Remove the render target from the priority groups.
-				prioritizedRenderTargets.RemoveWhere( ( k, v ) => v == ret );
+				this.prioritizedRenderTargets.RemoveWhere( ( k, v ) => v == ret );
 			}
 
 			// If detached render target is the active render target, reset active render target
-			if ( ret == activeRenderTarget )
+			if ( ret == this.activeRenderTarget )
 			{
-				activeRenderTarget = null;
+				this.activeRenderTarget = null;
 			}
 
 			return ret;
@@ -1351,11 +1351,11 @@ namespace Axiom.Graphics
 		public virtual void DisableTextureUnitsFrom( int texUnit )
 		{
 			var disableTo = Config.MaxTextureLayers;
-			if ( disableTo > disabledTexUnitsFrom )
+			if ( disableTo > this.disabledTexUnitsFrom )
 			{
-				disableTo = disabledTexUnitsFrom;
+				disableTo = this.disabledTexUnitsFrom;
 			}
-			disabledTexUnitsFrom = texUnit;
+			this.disabledTexUnitsFrom = texUnit;
 			for ( var i = texUnit; i < disableTo; ++i )
 			{
 				DisableTextureUnit( i );
@@ -1373,7 +1373,7 @@ namespace Axiom.Graphics
 		public virtual void InitRenderTargets()
 		{
 			// init stats for each render target
-			foreach ( var item in renderTargets )
+			foreach ( var item in this.renderTargets )
 			{
 				item.Value.ResetStatistics();
 			}
@@ -1389,8 +1389,8 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void AddClipPlane( Plane p )
 		{
-			clipPlanes.Add( p );
-			clipPlanesDirty = true;
+			this.clipPlanes.Add( p );
+			this.clipPlanesDirty = true;
 		}
 
 		#endregion
@@ -1416,10 +1416,10 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void ResetClipPlanes()
 		{
-			if ( clipPlanes.Count != 0 )
+			if ( this.clipPlanes.Count != 0 )
 			{
-				clipPlanes.Clear();
-				clipPlanesDirty = true;
+				this.clipPlanes.Clear();
+				this.clipPlanesDirty = true;
 			}
 		}
 
@@ -1435,7 +1435,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void NotifyCameraRemoved( Camera camera )
 		{
-			foreach ( var item in renderTargets )
+			foreach ( var item in this.renderTargets )
 			{
 				item.Value.NotifyCameraRemoved( camera );
 			}
@@ -1477,22 +1477,22 @@ namespace Axiom.Graphics
 			val *= op.numberOfInstances;
 
 			// account for a pass having multiple iterations
-			if ( currentPassIterationCount > 1 )
+			if ( this.currentPassIterationCount > 1 )
 			{
-				val *= currentPassIterationCount;
+				val *= this.currentPassIterationCount;
 			}
 
-			currentPassIterationNum = 0;
+			this.currentPassIterationNum = 0;
 
 			// calculate faces
 			switch ( op.operationType )
 			{
 				case OperationType.TriangleList:
-					faceCount += val/3;
+					this.faceCount += val/3;
 					break;
 				case OperationType.TriangleStrip:
 				case OperationType.TriangleFan:
-					faceCount += val - 2;
+					this.faceCount += val - 2;
 					break;
 				case OperationType.PointList:
 				case OperationType.LineList:
@@ -1501,15 +1501,15 @@ namespace Axiom.Graphics
 			}
 
 			// increment running vertex count
-			vertexCount += op.vertexData.vertexCount;
-			batchCount += currentPassIterationCount;
+			this.vertexCount += op.vertexData.vertexCount;
+			this.batchCount += this.currentPassIterationCount;
 
 			// sort out clip planes
 			// have to do it here in case of matrix issues
-			if ( clipPlanesDirty )
+			if ( this.clipPlanesDirty )
 			{
-				SetClipPlanesImpl( clipPlanes );
-				clipPlanesDirty = false;
+				SetClipPlanesImpl( this.clipPlanes );
+				this.clipPlanesDirty = false;
 			}
 		}
 
@@ -1524,26 +1524,26 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected bool UpdatePassIterationRenderState()
 		{
-			if ( currentPassIterationCount <= 1 )
+			if ( this.currentPassIterationCount <= 1 )
 			{
 				return false;
 			}
 
-			--currentPassIterationCount;
-			++currentPassIterationNum;
-			if ( activeVertexGpuProgramParameters != null )
+			--this.currentPassIterationCount;
+			++this.currentPassIterationNum;
+			if ( this.activeVertexGpuProgramParameters != null )
 			{
-				activeVertexGpuProgramParameters.IncPassIterationNumber();
+				this.activeVertexGpuProgramParameters.IncPassIterationNumber();
 				BindGpuProgramPassIterationParameters( GpuProgramType.Vertex );
 			}
-			if ( activeGeometryGpuProgramParameters != null )
+			if ( this.activeGeometryGpuProgramParameters != null )
 			{
-				activeGeometryGpuProgramParameters.IncPassIterationNumber();
+				this.activeGeometryGpuProgramParameters.IncPassIterationNumber();
 				BindGpuProgramPassIterationParameters( GpuProgramType.Geometry );
 			}
-			if ( activeFragmentGpuProgramParameters != null )
+			if ( this.activeFragmentGpuProgramParameters != null )
 			{
-				activeFragmentGpuProgramParameters.IncPassIterationNumber();
+				this.activeFragmentGpuProgramParameters.IncPassIterationNumber();
 				BindGpuProgramPassIterationParameters( GpuProgramType.Fragment );
 			}
 			return true;
@@ -1701,18 +1701,18 @@ namespace Axiom.Graphics
 		public virtual void Shutdown()
 		{
 			// Remove occlusion queries
-			foreach ( var i in hwOcclusionQueries )
+			foreach ( var i in this.hwOcclusionQueries )
 			{
 				i.SafeDispose();
 			}
-			hwOcclusionQueries.Clear();
+			this.hwOcclusionQueries.Clear();
 
 			CleanupDepthBuffers();
 
 			// Remove all the render targets.
 			// (destroy primary target last since others may depend on it)
 			RenderTarget primary = null;
-			foreach ( var it in renderTargets )
+			foreach ( var it in this.renderTargets )
 			{
 				if ( primary == null && it.Value.IsPrimary )
 				{
@@ -1725,8 +1725,8 @@ namespace Axiom.Graphics
 			}
 
 			primary.SafeDispose();
-			renderTargets.Clear();
-			prioritizedRenderTargets.Clear();
+			this.renderTargets.Clear();
+			this.prioritizedRenderTargets.Clear();
 		}
 
 		#endregion
@@ -1752,7 +1752,7 @@ namespace Axiom.Graphics
 		{
 			// Update all in order of priority
 			// This ensures render-to-texture targets get updated before render windows
-			foreach ( var targets in prioritizedRenderTargets )
+			foreach ( var targets in this.prioritizedRenderTargets )
 			{
 				foreach ( var target in targets.Value )
 				{
@@ -1788,7 +1788,7 @@ namespace Axiom.Graphics
 		{
 			// Update all in order of priority
 			// This ensures render-to-texture targets get updated before render windows
-			foreach ( var targets in prioritizedRenderTargets )
+			foreach ( var targets in this.prioritizedRenderTargets )
 			{
 				foreach ( var target in targets.Value )
 				{
@@ -1815,7 +1815,7 @@ namespace Axiom.Graphics
 		public virtual RenderTarget GetRenderTarget( string name )
 		{
 			RenderTarget ret;
-			renderTargets.TryGetValue( name, out ret );
+			this.renderTargets.TryGetValue( name, out ret );
 			return ret;
 		}
 
@@ -1882,18 +1882,18 @@ namespace Axiom.Graphics
 			{
 				case GpuProgramType.Vertex:
 					// mark clip planes dirty if changed (programmable can change space)
-					if ( !vertexProgramBound && clipPlanes.Count != 0 )
+					if ( !this.vertexProgramBound && this.clipPlanes.Count != 0 )
 					{
-						clipPlanesDirty = true;
+						this.clipPlanesDirty = true;
 					}
 
-					vertexProgramBound = true;
+					this.vertexProgramBound = true;
 					break;
 				case GpuProgramType.Geometry:
-					geometryProgramBound = true;
+					this.geometryProgramBound = true;
 					break;
 				case GpuProgramType.Fragment:
-					fragmentProgramBound = true;
+					this.fragmentProgramBound = true;
 					break;
 			}
 		}
@@ -2026,7 +2026,7 @@ namespace Axiom.Graphics
 
 				var renderWindowFound = false;
 
-				if ( renderTargets.ContainsKey( curDesc.Name ) )
+				if ( this.renderTargets.ContainsKey( curDesc.Name ) )
 				{
 					renderWindowFound = true;
 				}
@@ -2103,7 +2103,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void DestroyHardwareOcclusionQuery( HardwareOcclusionQuery hq )
 		{
-			if ( hwOcclusionQueries.Remove( hq ) )
+			if ( this.hwOcclusionQueries.Remove( hq ) )
 			{
 				hq.Dispose();
 			}
@@ -2145,9 +2145,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual RenderWindow Initialize( bool autoCreateWindow, string windowTitle )
 		{
-			vertexProgramBound = false;
-			geometryProgramBound = false;
-			fragmentProgramBound = false;
+			this.vertexProgramBound = false;
+			this.geometryProgramBound = false;
+			this.fragmentProgramBound = false;
 			return null;
 		}
 
@@ -2343,8 +2343,8 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void SetTextureProjectionRelativeTo( bool enabled, Vector3 pos )
 		{
-			texProjRelative = true;
-			texProjRelativeOrigin = pos;
+			this.texProjRelative = true;
+			this.texProjRelativeOrigin = pos;
 		}
 
 		#endregion
@@ -2395,7 +2395,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public void CleanupDepthBuffers( bool cleanManualBuffers )
 		{
-			foreach ( var itmap in depthBufferPool )
+			foreach ( var itmap in this.depthBufferPool )
 			{
 				var itor = itmap.Value.GetEnumerator();
 				while ( itor.MoveNext() )
@@ -2409,7 +2409,7 @@ namespace Axiom.Graphics
 				itmap.Value.Clear();
 			}
 
-			depthBufferPool.Clear();
+			this.depthBufferPool.Clear();
 		}
 
 		#endregion
@@ -3143,18 +3143,18 @@ namespace Axiom.Graphics
 			{
 				case GpuProgramType.Vertex:
 					// mark clip planes dirty if changed (programmable can change space)
-					if ( vertexProgramBound && clipPlanes.Count != 0 )
+					if ( this.vertexProgramBound && this.clipPlanes.Count != 0 )
 					{
-						clipPlanesDirty = true;
+						this.clipPlanesDirty = true;
 					}
 
-					vertexProgramBound = false;
+					this.vertexProgramBound = false;
 					break;
 				case GpuProgramType.Geometry:
-					geometryProgramBound = false;
+					this.geometryProgramBound = false;
 					break;
 				case GpuProgramType.Fragment:
-					fragmentProgramBound = false;
+					this.fragmentProgramBound = false;
 					break;
 			}
 		}
@@ -3172,11 +3172,11 @@ namespace Axiom.Graphics
 			switch ( type )
 			{
 				case GpuProgramType.Vertex:
-					return vertexProgramBound;
+					return this.vertexProgramBound;
 				case GpuProgramType.Geometry:
-					return geometryProgramBound;
+					return this.geometryProgramBound;
 				case GpuProgramType.Fragment:
-					return fragmentProgramBound;
+					return this.fragmentProgramBound;
 			}
 			return false;
 		}
@@ -3278,8 +3278,8 @@ namespace Axiom.Graphics
 				if ( disposeManagedResources )
 				{
 					Shutdown();
-					realCapabilities = null;
-					currentCapabilities = null;
+					this.realCapabilities = null;
+					this.currentCapabilities = null;
 				}
 
 				// There are no unmanaged resources to release, but

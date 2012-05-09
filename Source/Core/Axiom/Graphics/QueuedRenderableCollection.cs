@@ -191,8 +191,8 @@ namespace Axiom.Graphics
 					return 0;
 				}
 
-				var adepth = x.renderable.GetSquaredViewDepth( Camera );
-				var bdepth = y.renderable.GetSquaredViewDepth( Camera );
+				var adepth = x.renderable.GetSquaredViewDepth( this.Camera );
+				var bdepth = y.renderable.GetSquaredViewDepth( this.Camera );
 
 				if ( adepth == bdepth )
 				{
@@ -249,13 +249,13 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void Clear()
 		{
-			foreach ( var item in _grouped )
+			foreach ( var item in this._grouped )
 			{
 				// Clear the list associated with this pass, but leave the pass entry
 				item.Value.Clear();
 			}
 			// Clear sorted list
-			_sortedDescending.Clear();
+			this._sortedDescending.Clear();
 		}
 
 		/// <summary>
@@ -268,10 +268,10 @@ namespace Axiom.Graphics
 		/// <param name="pass"></param>
 		public void RemovePassGroup( Pass pass )
 		{
-			if ( _grouped.ContainsKey( pass ) )
+			if ( this._grouped.ContainsKey( pass ) )
 			{
-				_grouped[ pass ].Clear();
-				_grouped.Remove( pass );
+				this._grouped[ pass ].Clear();
+				this._grouped.Remove( pass );
 			}
 		}
 
@@ -284,7 +284,7 @@ namespace Axiom.Graphics
 		/// <see cref="OrganizationMode"/>
 		public void ResetOrganizationModes()
 		{
-			_organizationMode = 0;
+			this._organizationMode = 0;
 		}
 
 		/// <summary>
@@ -297,7 +297,7 @@ namespace Axiom.Graphics
 		/// <param name="om"></param>
 		public void AddOrganizationMode( OrganizationMode om )
 		{
-			_organizationMode |= om;
+			this._organizationMode |= om;
 		}
 
 		/// <summary>
@@ -306,22 +306,22 @@ namespace Axiom.Graphics
 		public void AddRenderable( Pass pass, IRenderable rend )
 		{
 			// ascending and descending sort both set bit 1
-			if ( (int)( _organizationMode & OrganizationMode.Descending ) != 0 )
+			if ( (int)( this._organizationMode & OrganizationMode.Descending ) != 0 )
 			{
-				_sortedDescending.Add( new RenderablePass( rend, pass ) );
+				this._sortedDescending.Add( new RenderablePass( rend, pass ) );
 			}
 
-			if ( (int)( _organizationMode & OrganizationMode.GroupByPass ) != 0 )
+			if ( (int)( this._organizationMode & OrganizationMode.GroupByPass ) != 0 )
 			{
-				if ( !_grouped.ContainsKey( pass ) )
+				if ( !this._grouped.ContainsKey( pass ) )
 				{
 					// Create new pass entry, build a new list
 					// Note that this pass and list are never destroyed until the 
 					// engine shuts down, or a pass is destroyed or has it's hash
 					// recalculated, although the lists will be cleared
-					_grouped.Add( pass, new List<IRenderable>() );
+					this._grouped.Add( pass, new List<IRenderable>() );
 				}
-				_grouped[ pass ].Add( rend );
+				this._grouped[ pass ].Add( rend );
 			}
 		}
 
@@ -332,7 +332,7 @@ namespace Axiom.Graphics
 		public void Sort( Camera camera )
 		{
 			// ascending and descending sort both set bit 1
-			if ( (int)( _organizationMode & OrganizationMode.Descending ) != 0 )
+			if ( (int)( this._organizationMode & OrganizationMode.Descending ) != 0 )
 			{
 				// We can either use a built-in_sort and the 'less' implementation,
 				// or a 2-pass radix sort (once by pass, then by distance, since
@@ -345,21 +345,22 @@ namespace Axiom.Graphics
 				// built-in_sorts best-case scenario O(NlogN) it would be much higher.
 				// Take a stab at 2000 items.
 
-				if ( _sortedDescending.Count > 2000 )
+				if ( this._sortedDescending.Count > 2000 )
 				{
 					// sort by pass
-					_radixSorter1.Sort( _sortedDescending, delegate( RenderablePass value ) { return (uint)value.pass.GetHashCode(); } );
+					_radixSorter1.Sort( this._sortedDescending,
+					                    delegate( RenderablePass value ) { return (uint)value.pass.GetHashCode(); } );
 					// sort by depth
-					_radixSorter2.Sort( _sortedDescending, delegate( RenderablePass value )
-					                                       {
-					                                       	// negated to force descending order
-					                                       	return -value.renderable.GetSquaredViewDepth( camera );
-					                                       } );
+					_radixSorter2.Sort( this._sortedDescending, delegate( RenderablePass value )
+					                                            {
+					                                            	// negated to force descending order
+					                                            	return -value.renderable.GetSquaredViewDepth( camera );
+					                                            } );
 				}
 				else
 				{
-					_defaultDepthSortComparer.Camera = camera;
-					_sortedDescending.Sort( _defaultDepthSortComparer );
+					this._defaultDepthSortComparer.Camera = camera;
+					this._sortedDescending.Sort( this._defaultDepthSortComparer );
 				}
 			}
 
@@ -377,7 +378,7 @@ namespace Axiom.Graphics
 		/// </param>
 		public void AcceptVisitor( IQueuedRenderableVisitor visitor, OrganizationMode organizationMode )
 		{
-			if ( (int)( organizationMode & _organizationMode ) == 0 )
+			if ( (int)( organizationMode & this._organizationMode ) == 0 )
 			{
 				throw new ArgumentException(
 					"Organization mode requested in AcceptVistor was not notified " +
@@ -401,7 +402,7 @@ namespace Axiom.Graphics
 		/// Internal visitor implementation
 		private void acceptVisitorGrouped( IQueuedRenderableVisitor visitor )
 		{
-			foreach ( var item in _grouped )
+			foreach ( var item in this._grouped )
 			{
 				// Fast bypass if this group is now empty
 				if ( item.Value.Count == 0 )
@@ -427,7 +428,7 @@ namespace Axiom.Graphics
 		private void acceptVisitorDescending( IQueuedRenderableVisitor visitor )
 		{
 			// List is already in descending order, so iterate forward
-			foreach ( var renderablePass in _sortedDescending )
+			foreach ( var renderablePass in this._sortedDescending )
 			{
 				visitor.Visit( renderablePass );
 			}
@@ -437,9 +438,9 @@ namespace Axiom.Graphics
 		private void acceptVisitorAscending( IQueuedRenderableVisitor visitor )
 		{
 			// List is in descending order, so iterate in reverse
-			for ( var index = _sortedDescending.Count - 1; index >= 0; ++index )
+			for ( var index = this._sortedDescending.Count - 1; index >= 0; ++index )
 			{
-				visitor.Visit( _sortedDescending[ index ] );
+				visitor.Visit( this._sortedDescending[ index ] );
 			}
 		}
 

@@ -224,7 +224,7 @@ namespace Axiom.Graphics
 		/// <param name="filtering"></param>
 		public virtual void SetDefaultTextureFiltering( TextureFiltering filtering )
 		{
-			_filtering = filtering;
+			this._filtering = filtering;
 			switch ( filtering )
 			{
 				case TextureFiltering.None:
@@ -249,15 +249,15 @@ namespace Axiom.Graphics
 			switch ( type )
 			{
 				case FilterType.Min:
-					_defaultMinFilter = options;
+					this._defaultMinFilter = options;
 					break;
 
 				case FilterType.Mag:
-					_defaultMagFilter = options;
+					this._defaultMagFilter = options;
 					break;
 
 				case FilterType.Mip:
-					_defaultMipFilter = options;
+					this._defaultMipFilter = options;
 					break;
 			}
 		}
@@ -268,9 +268,9 @@ namespace Axiom.Graphics
 		public virtual void SetDefaultTextureFiltering( FilterOptions minFilter, FilterOptions magFilter,
 		                                                FilterOptions mipFilter )
 		{
-			_defaultMinFilter = minFilter;
-			_defaultMagFilter = magFilter;
-			_defaultMipFilter = mipFilter;
+			this._defaultMinFilter = minFilter;
+			this._defaultMagFilter = magFilter;
+			this._defaultMipFilter = mipFilter;
 		}
 
 		#endregion SetDefaultTextureFiltering Method
@@ -287,13 +287,13 @@ namespace Axiom.Graphics
 			switch ( type )
 			{
 				case FilterType.Min:
-					return _defaultMinFilter;
+					return this._defaultMinFilter;
 
 				case FilterType.Mag:
-					return _defaultMagFilter;
+					return this._defaultMagFilter;
 
 				case FilterType.Mip:
-					return _defaultMipFilter;
+					return this._defaultMipFilter;
 			}
 
 			// make the compiler happy
@@ -305,7 +305,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual TextureFiltering GetDefaultTextureFiltering()
 		{
-			return _filtering;
+			return this._filtering;
 		}
 
 		#endregion GetDefaultTextureFiltering Method
@@ -326,12 +326,12 @@ namespace Axiom.Graphics
 		/// <seealso ref="Technique.SchemeName"/>
 		public ushort GetSchemeIndex( String name )
 		{
-			if ( !_schemes.ContainsKey( name ) )
+			if ( !this._schemes.ContainsKey( name ) )
 			{
-				_schemes.Add( name, (ushort)_schemes.Count );
+				this._schemes.Add( name, (ushort)this._schemes.Count );
 			}
 
-			return _schemes[ name ];
+			return this._schemes[ name ];
 		}
 
 
@@ -341,9 +341,9 @@ namespace Axiom.Graphics
 		/// <seealso ref="Technique.SchemeName"/>
 		public String GetSchemeName( ushort index )
 		{
-			if ( _schemes.ContainsValue( index ) )
+			if ( this._schemes.ContainsValue( index ) )
 			{
-				foreach ( var item in _schemes )
+				foreach ( var item in this._schemes )
 				{
 					if ( item.Value == index )
 					{
@@ -368,12 +368,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _activeSchemeName;
+				return this._activeSchemeName;
 			}
 			set
 			{
 				ActiveSchemeIndex = GetSchemeIndex( value );
-				_activeSchemeName = value;
+				this._activeSchemeName = value;
 			}
 		}
 
@@ -386,7 +386,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790, "Using delegate rather than an Listener interface" )]
 		public virtual void AddListener( SchemeNotFoundHandler l )
 		{
-			_listenerMap.Add( string.Empty, l );
+			this._listenerMap.Add( string.Empty, l );
 		}
 
 		/// <summary>
@@ -396,7 +396,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790, "Using delegate rather than an Listener interface" )]
 		public virtual void AddListener( SchemeNotFoundHandler l, string schemeName )
 		{
-			_listenerMap.Add( schemeName ?? string.Empty, l );
+			this._listenerMap.Add( schemeName ?? string.Empty, l );
 		}
 
 		/// <summary>
@@ -405,7 +405,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790, "Using delegate rather than an Listener interface" )]
 		public virtual void RemoveListener( SchemeNotFoundHandler l )
 		{
-			_listenerMap.RemoveWhere( ( x, y ) => x == String.Empty && y == l );
+			this._listenerMap.RemoveWhere( ( x, y ) => x == String.Empty && y == l );
 		}
 
 		/// <summary>
@@ -415,18 +415,18 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790, "Using delegate rather than an Listener interface" )]
 		public virtual void RemoveListener( SchemeNotFoundHandler l, string schemeName )
 		{
-			_listenerMap.RemoveWhere( ( x, y ) => x == schemeName && y == l );
+			this._listenerMap.RemoveWhere( ( x, y ) => x == schemeName && y == l );
 		}
 
 
 		/// <summary>Internal method for sorting out missing technique for a scheme</summary>
 		public Technique ArbitrateMissingTechniqueForActiveScheme( Material mat, int lodIndex, IRenderable rend )
 		{
-			var args = new SchemeNotFoundEventArgs( _activeSchemeIndex, _activeSchemeName, mat, lodIndex, rend );
+			var args = new SchemeNotFoundEventArgs( this._activeSchemeIndex, this._activeSchemeName, mat, lodIndex, rend );
 
 			//First, check the scheme specific listeners
 			List<SchemeNotFoundHandler> handlers;
-			if ( _listenerMap.TryGetValue( _activeSchemeName, out handlers ) )
+			if ( this._listenerMap.TryGetValue( this._activeSchemeName, out handlers ) )
 			{
 				foreach ( var i in handlers )
 				{
@@ -439,7 +439,7 @@ namespace Axiom.Graphics
 			}
 
 			//If no success, check generic listeners
-			if ( _listenerMap.TryGetValue( string.Empty, out handlers ) )
+			if ( this._listenerMap.TryGetValue( string.Empty, out handlers ) )
 			{
 				foreach ( var i in handlers )
 				{
@@ -501,7 +501,7 @@ namespace Axiom.Graphics
 #if AXIOM_USENEWCOMPILERS
 			Axiom.Scripting.Compiler.ScriptCompilerManager.Instance.ParseScript( stream, groupName, fileName );
 #else
-			_serializer.ParseScript( stream, groupName, fileName );
+			this._serializer.ParseScript( stream, groupName, fileName );
 #endif
 		}
 

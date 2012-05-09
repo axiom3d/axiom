@@ -1581,8 +1581,8 @@ namespace Axiom.Math
 		/// <param name="distance"></param>
 		public IntersectResult( bool hit, Real distance )
 		{
-			Hit = hit;
-			Distance = distance;
+			this.Hit = hit;
+			this.Distance = distance;
 		}
 	}
 

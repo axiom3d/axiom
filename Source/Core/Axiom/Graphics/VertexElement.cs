@@ -264,7 +264,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return source;
+				return this.source;
 			}
 		}
 
@@ -275,7 +275,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return offset;
+				return this.offset;
 			}
 		}
 
@@ -286,7 +286,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return type;
+				return this.type;
 			}
 		}
 
@@ -297,7 +297,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return semantic;
+				return this.semantic;
 			}
 		}
 
@@ -308,7 +308,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return index;
+				return this.index;
 			}
 		}
 
@@ -319,7 +319,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return GetTypeSize( type );
+				return GetTypeSize( this.type );
 			}
 		}
 

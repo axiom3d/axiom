@@ -127,11 +127,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _defaultMipmapCount;
+				return this._defaultMipmapCount;
 			}
 			set
 			{
-				_defaultMipmapCount = value;
+				this._defaultMipmapCount = value;
 			}
 		}
 
@@ -147,7 +147,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _preferredIntegerBitDepth;
+				return this._preferredIntegerBitDepth;
 			}
 			set
 			{
@@ -157,7 +157,7 @@ namespace Axiom.Core
 
 		public void SetPreferredIntegerBitDepth( ushort bits, bool reloadTextures )
 		{
-			_preferredIntegerBitDepth = bits;
+			this._preferredIntegerBitDepth = bits;
 
 			if ( reloadTextures )
 			{
@@ -189,7 +189,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _preferredFloatBitDepth;
+				return this._preferredFloatBitDepth;
 			}
 			set
 			{
@@ -199,7 +199,7 @@ namespace Axiom.Core
 
 		public void SetPreferredFloatBitDepth( ushort bits, bool reloadTextures )
 		{
-			_preferredFloatBitDepth = bits;
+			this._preferredFloatBitDepth = bits;
 
 			if ( reloadTextures )
 			{
@@ -225,8 +225,8 @@ namespace Axiom.Core
 
 		public void SetPreferredBitDepths( ushort integerBits, ushort floatBits, bool reloadTextures )
 		{
-			_preferredFloatBitDepth = floatBits;
-			_preferredIntegerBitDepth = integerBits;
+			this._preferredFloatBitDepth = floatBits;
+			this._preferredIntegerBitDepth = integerBits;
 
 			if ( reloadTextures )
 			{
@@ -304,7 +304,7 @@ namespace Axiom.Core
 			ret.Width = width;
 			ret.Height = height;
 			ret.Depth = depth;
-			ret.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
+			ret.MipmapCount = ( numMipMaps == -1 ) ? this._defaultMipmapCount : numMipMaps;
 			ret.SetFormat( format );
 			ret.Usage = usage;
 			ret.HardwareGammaEnabled = hwGammaCorrection;
@@ -486,7 +486,7 @@ namespace Axiom.Core
 			if ( result.Second == true )
 			{
 				texture.TextureType = type;
-				texture.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
+				texture.MipmapCount = ( numMipMaps == -1 ) ? this._defaultMipmapCount : numMipMaps;
 				// set bit depth and gamma
 				texture.Gamma = gamma;
 				texture.TreatLuminanceAsAlpha = isAlpha;
@@ -534,7 +534,7 @@ namespace Axiom.Core
 
 			texture.TextureType = texType;
 			// set the number of mipmaps to use for this texture
-			texture.MipmapCount = ( numMipMaps == -1 ) ? _defaultMipmapCount : numMipMaps;
+			texture.MipmapCount = ( numMipMaps == -1 ) ? this._defaultMipmapCount : numMipMaps;
 
 			// set bit depth and gamma
 			texture.Gamma = gamma;

@@ -99,7 +99,7 @@ namespace Axiom.Samples
 			{
 				if ( CurrentSample != null )
 				{
-					return IsSamplePaused;
+					return this.IsSamplePaused;
 				}
 				return false;
 			}
@@ -125,13 +125,13 @@ namespace Axiom.Samples
 		/// <param name="cfgManager"></param>
 		public SampleContext( IConfigurationManager cfgManager )
 		{
-			Root = null;
-			ConfigurationManager = cfgManager;
+			this.Root = null;
+			this.ConfigurationManager = cfgManager;
 			RenderWindow = null;
 			CurrentSample = null;
-			IsSamplePaused = false;
-			IsLastRun = false;
-			LastSample = null;
+			this.IsSamplePaused = false;
+			this.IsLastRun = false;
+			this.LastSample = null;
 		}
 
 		~SampleContext()
@@ -149,7 +149,7 @@ namespace Axiom.Samples
 			if ( CurrentSample != null )
 			{
 				CurrentSample.Shutdown(); // quit current sample
-				IsSamplePaused = false; // don't pause the next sample
+				this.IsSamplePaused = false; // don't pause the next sample
 			}
 
 			RenderWindow.RemoveAllViewports(); // wipe viewports
@@ -187,16 +187,16 @@ namespace Axiom.Samples
 				// throw an exception if samples requires the use of another renderer
 				errorMsg = String.Empty;
 				String rrs = s.RequiredRenderSystem;
-				if ( !String.IsNullOrEmpty( rrs ) && rrs != Root.RenderSystem.Name )
+				if ( !String.IsNullOrEmpty( rrs ) && rrs != this.Root.RenderSystem.Name )
 				{
 					String desc = "Sample only runs with renderer: {0}";
 					throw new AxiomException( desc, rrs );
 				}
 
 				// test system capabilities against sample requirements
-				s.TestCapabilities( Root.RenderSystem.Capabilities );
+				s.TestCapabilities( this.Root.RenderSystem.Capabilities );
 
-				s.Setup( RenderWindow, Keyboard, Mouse ); // start new sample
+				s.Setup( RenderWindow, this.Keyboard, this.Mouse ); // start new sample
 			}
 
 			CurrentSample = s;
@@ -218,9 +218,9 @@ namespace Axiom.Samples
 		{
 			bool firstRun = true;
 
-			while ( !IsLastRun )
+			while ( !this.IsLastRun )
 			{
-				IsLastRun = true; // assume this is our last run
+				this.IsLastRun = true; // assume this is our last run
 
 				CreateRoot();
 				if ( !OneTimeConfig() )
@@ -231,7 +231,7 @@ namespace Axiom.Samples
 				// if the context was reconfigured, set requested renderer
 				if ( !firstRun )
 				{
-					Root.RenderSystem = Root.RenderSystems[ NextRenderer ];
+					this.Root.RenderSystem = this.Root.RenderSystems[ this.NextRenderer ];
 				}
 
 				Setup();
@@ -246,14 +246,14 @@ namespace Axiom.Samples
 					RunSample( initialSample );
 				}
 
-				Root.StartRendering(); // start the render loop
+				this.Root.StartRendering(); // start the render loop
 
-				ConfigurationManager.SaveConfiguration( Root, NextRenderer );
+				this.ConfigurationManager.SaveConfiguration( this.Root, this.NextRenderer );
 
 				Shutdown();
-				if ( Root != null )
+				if ( this.Root != null )
 				{
-					Root.Dispose();
+					this.Root.Dispose();
 				}
 				firstRun = false;
 			}
@@ -264,9 +264,9 @@ namespace Axiom.Samples
 		/// </summary>
 		public virtual void PauseCurrentSample()
 		{
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
-				IsSamplePaused = true;
+				this.IsSamplePaused = true;
 				CurrentSample.Paused();
 			}
 		}
@@ -276,9 +276,9 @@ namespace Axiom.Samples
 		/// </summary>
 		public virtual void UnpauseCurrentSample()
 		{
-			if ( CurrentSample != null && IsSamplePaused )
+			if ( CurrentSample != null && this.IsSamplePaused )
 			{
-				IsSamplePaused = false;
+				this.IsSamplePaused = false;
 				CurrentSample.Unpaused();
 			}
 		}
@@ -293,7 +293,7 @@ namespace Axiom.Samples
 		{
 			CaptureInputDevices(); // capture input
 			// manually call sample callback to ensure correct order
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				CurrentSample.FrameStarted( evt );
 			}
@@ -307,7 +307,7 @@ namespace Axiom.Samples
 		public virtual void FrameRenderingQueued( object sender, FrameEventArgs evt )
 		{
 			// manually call sample callback to ensure correct order
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				CurrentSample.FrameRenderingQueued( evt );
 			}
@@ -322,7 +322,7 @@ namespace Axiom.Samples
 		public virtual void FrameEnded( object sender, FrameEventArgs evt )
 		{
 			// manually call sample callback to ensure correct order
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				CurrentSample.FrameStarted( evt );
 			}
@@ -347,13 +347,13 @@ namespace Axiom.Samples
 		public virtual void WindowResized( RenderWindow rw )
 		{
 			// manually call sample callback to ensure correct order
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				CurrentSample.WindowResized( rw );
 			}
-			if ( Mouse != null )
+			if ( this.Mouse != null )
 			{
-				SIS.MouseState ms = Mouse.MouseState;
+				SIS.MouseState ms = this.Mouse.MouseState;
 				ms.Width = rw.Width;
 				ms.Height = rw.Height;
 			}
@@ -363,7 +363,7 @@ namespace Axiom.Samples
 
 		public virtual void WindowMoved( RenderWindow rw )
 		{
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				CurrentSample.WindowMoved( rw );
 			}
@@ -371,7 +371,7 @@ namespace Axiom.Samples
 
 		public virtual bool WindowClosing( RenderWindow rw )
 		{
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				return CurrentSample.WindowClosing( rw );
 			}
@@ -380,7 +380,7 @@ namespace Axiom.Samples
 
 		public virtual void WindowClosed( RenderWindow rw )
 		{
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				CurrentSample.WindowClosed( rw );
 			}
@@ -388,7 +388,7 @@ namespace Axiom.Samples
 
 		public virtual void WindowFocusChange( RenderWindow rw )
 		{
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				CurrentSample.WindowFocusChange( rw );
 			}
@@ -398,7 +398,7 @@ namespace Axiom.Samples
 
 		public virtual bool KeyPressed( SIS.KeyEventArgs evt )
 		{
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				return CurrentSample.KeyPressed( evt );
 			}
@@ -407,7 +407,7 @@ namespace Axiom.Samples
 
 		public virtual bool KeyReleased( SIS.KeyEventArgs evt )
 		{
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				return CurrentSample.KeyReleased( evt );
 			}
@@ -416,7 +416,7 @@ namespace Axiom.Samples
 
 		public virtual bool MouseMoved( SIS.MouseEventArgs evt )
 		{
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				return CurrentSample.MouseMoved( evt );
 			}
@@ -425,7 +425,7 @@ namespace Axiom.Samples
 
 		public virtual bool MousePressed( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
 		{
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				return CurrentSample.MousePressed( evt, id );
 			}
@@ -434,7 +434,7 @@ namespace Axiom.Samples
 
 		public virtual bool MouseReleased( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
 		{
-			if ( CurrentSample != null && !IsSamplePaused )
+			if ( CurrentSample != null && !this.IsSamplePaused )
 			{
 				return CurrentSample.MouseReleased( evt, id );
 			}
@@ -446,7 +446,7 @@ namespace Axiom.Samples
 		/// </summary>
 		protected virtual void CreateRoot()
 		{
-			Root = new Root( ConfigurationManager.LogFilename );
+			this.Root = new Root( this.ConfigurationManager.LogFilename );
 		}
 
 		/// <summary>
@@ -457,12 +457,12 @@ namespace Axiom.Samples
 		/// <returns></returns>
 		protected virtual bool OneTimeConfig()
 		{
-			if ( ConfigurationManager.RestoreConfiguration( Root ) )
+			if ( this.ConfigurationManager.RestoreConfiguration( this.Root ) )
 			{
 				return true;
 			}
 
-			return ConfigurationManager.ShowConfigDialog( Root );
+			return this.ConfigurationManager.ShowConfigDialog( this.Root );
 		}
 
 		/// <summary>
@@ -478,9 +478,9 @@ namespace Axiom.Samples
 			TextureManager.Instance.DefaultMipmapCount = 5;
 
 			// adds context as listener to process context-level (above the sample level) events
-			Root.FrameStarted += FrameStarted;
-			Root.FrameEnded += FrameEnded;
-			Root.FrameRenderingQueued += FrameRenderingQueued;
+			this.Root.FrameStarted += FrameStarted;
+			this.Root.FrameEnded += FrameEnded;
+			this.Root.FrameRenderingQueued += FrameRenderingQueued;
 			WindowEventMonitor.Instance.RegisterListener( RenderWindow, this );
 		}
 
@@ -491,7 +491,7 @@ namespace Axiom.Samples
 		/// </summary>
 		protected virtual void CreateWindow()
 		{
-			RenderWindow = Root.Initialize( true );
+			RenderWindow = this.Root.Initialize( true );
 		}
 
 		/// <summary>
@@ -506,7 +506,7 @@ namespace Axiom.Samples
 			pl.Add( new SIS.Parameter( "w32_mouse", "CLF_NONEXCLUSIVE" ) );
 #endif
 #if !( WINDOWS_PHONE )
-			InputManager = SIS.InputManager.CreateInputSystem( pl );
+			this.InputManager = SIS.InputManager.CreateInputSystem( pl );
 #else
 			this.InputManager = SIS.InputManager.CreateInputSystem( typeof(SIS.Xna.XnaInputManagerFactory), pl );
 #endif
@@ -524,11 +524,11 @@ namespace Axiom.Samples
 		protected virtual void CreateInputDevices()
 		{
 #if !(XBOX || XBOX360 )
-			Keyboard = InputManager.CreateInputObject<SIS.Keyboard>( true, "" );
-			Mouse = InputManager.CreateInputObject<SIS.Mouse>( true, String.Empty );
+			this.Keyboard = this.InputManager.CreateInputObject<SIS.Keyboard>( true, "" );
+			this.Mouse = this.InputManager.CreateInputObject<SIS.Mouse>( true, String.Empty );
 
-			Keyboard.EventListener = this;
-			Mouse.EventListener = this;
+			this.Keyboard.EventListener = this;
+			this.Mouse.EventListener = this;
 #endif
 		}
 
@@ -557,14 +557,14 @@ namespace Axiom.Samples
 		protected virtual void Reconfigure( String renderer, NameValuePairList options )
 		{
 			// save current sample state
-			LastSample = CurrentSample;
+			this.LastSample = CurrentSample;
 			if ( CurrentSample != null )
 			{
-				CurrentSample.SaveState( LastSampleState );
+				CurrentSample.SaveState( this.LastSampleState );
 			}
 
-			NextRenderer = renderer;
-			Axiom.Graphics.RenderSystem rs = Root.RenderSystems[ renderer ];
+			this.NextRenderer = renderer;
+			Axiom.Graphics.RenderSystem rs = this.Root.RenderSystems[ renderer ];
 
 			// set all given render system options
 			foreach ( var option in options )
@@ -572,8 +572,8 @@ namespace Axiom.Samples
 				rs.ConfigOptions[ option.Key ].Value = option.Value;
 			}
 
-			IsLastRun = false; // we want to go again with the new settings
-			Root.QueueEndRendering(); // break from render loop
+			this.IsLastRun = false; // we want to go again with the new settings
+			this.Root.QueueEndRendering(); // break from render loop
 		}
 
 		/// <summary>
@@ -583,10 +583,10 @@ namespace Axiom.Samples
 		/// </summary>
 		protected virtual void RecoverLastSample()
 		{
-			RunSample( LastSample );
-			LastSample.RestoreState( LastSampleState );
-			LastSample = null;
-			LastSampleState.Clear();
+			RunSample( this.LastSample );
+			this.LastSample.RestoreState( this.LastSampleState );
+			this.LastSample = null;
+			this.LastSampleState.Clear();
 		}
 
 		/// <summary>
@@ -611,12 +611,12 @@ namespace Axiom.Samples
 		/// </summary>
 		protected virtual void ShutdownInput()
 		{
-			if ( InputManager != null )
+			if ( this.InputManager != null )
 			{
-				InputManager.DestroyInputObject( Keyboard );
-				InputManager.DestroyInputObject( Mouse );
+				this.InputManager.DestroyInputObject( this.Keyboard );
+				this.InputManager.DestroyInputObject( this.Mouse );
 
-				InputManager = null;
+				this.InputManager = null;
 			}
 		}
 
@@ -625,13 +625,13 @@ namespace Axiom.Samples
 		/// </summary>
 		protected virtual void CaptureInputDevices()
 		{
-			if ( Keyboard != null )
+			if ( this.Keyboard != null )
 			{
-				Keyboard.Capture();
+				this.Keyboard.Capture();
 			}
-			if ( Mouse != null )
+			if ( this.Mouse != null )
 			{
-				Mouse.Capture();
+				this.Mouse.Capture();
 			}
 		}
 

@@ -139,8 +139,8 @@ namespace Axiom.Core
 
 			public ResourceResponse( Resource r, ResourceRequest req )
 			{
-				Resource = r;
-				Request = req;
+				this.Resource = r;
+				this.Request = req;
 			}
 		};
 
@@ -182,9 +182,9 @@ namespace Axiom.Core
 		public virtual void ShutDown()
 		{
 			WorkQueue wq = Root.Instance.WorkQueue;
-			wq.AbortRequestByChannel( workQueueChannel );
-			wq.RemoveRequestHandler( workQueueChannel, this );
-			wq.RemoveResponseHandler( workQueueChannel, this );
+			wq.AbortRequestByChannel( this.workQueueChannel );
+			wq.RemoveRequestHandler( this.workQueueChannel, this );
+			wq.RemoveResponseHandler( this.workQueueChannel, this );
 		}
 
 		/// <summary>
@@ -624,7 +624,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual bool IsProcessComplete( RequestID ticket )
 		{
-			return !outstandingRequestSet.Contains( ticket );
+			return !this.outstandingRequestSet.Contains( ticket );
 		}
 
 		/// <summary>
@@ -641,8 +641,8 @@ namespace Axiom.Core
 		protected RequestID AddRequest( ResourceRequest req )
 		{
 			WorkQueue queue = Root.Instance.WorkQueue;
-			RequestID requestID = queue.AddRequest( workQueueChannel, (ushort)req.Type, req );
-			outstandingRequestSet.Add( requestID );
+			RequestID requestID = queue.AddRequest( this.workQueueChannel, (ushort)req.Type, req );
+			this.outstandingRequestSet.Add( requestID );
 			return requestID;
 		}
 
@@ -676,9 +676,9 @@ namespace Axiom.Core
 		public bool Initialize( params object[] args )
 		{
 			WorkQueue wq = Root.Instance.WorkQueue;
-			workQueueChannel = wq.GetChannel( "Axiom/ResourceBGQ" );
-			wq.AddResponseHandler( workQueueChannel, this );
-			wq.AddRequestHandler( workQueueChannel, this );
+			this.workQueueChannel = wq.GetChannel( "Axiom/ResourceBGQ" );
+			wq.AddResponseHandler( this.workQueueChannel, this );
+			wq.AddRequestHandler( this.workQueueChannel, this );
 
 			return true;
 		}
@@ -817,7 +817,7 @@ namespace Axiom.Core
 		{
 			if ( res.Request.Aborted )
 			{
-				outstandingRequestSet.Remove( res.Request.ID );
+				this.outstandingRequestSet.Remove( res.Request.ID );
 				return;
 			}
 
@@ -840,7 +840,7 @@ namespace Axiom.Core
 						ResourceGroupManager.Instance.LoadResourceGroup( req.GroupName );
 				}
 #endif
-				outstandingRequestSet.Remove( res.Request.ID );
+				this.outstandingRequestSet.Remove( res.Request.ID );
 
 				// Call resource listener
 				if ( resresp.Resource != null )

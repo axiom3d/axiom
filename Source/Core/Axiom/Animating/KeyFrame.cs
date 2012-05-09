@@ -90,7 +90,7 @@ namespace Axiom.Animating
 		/// <param name="time">Time at which this keyframe begins.</param>
 		public KeyFrame( AnimationTrack parent, float time )
 		{
-			parentTrack = parent;
+			this.parentTrack = parent;
 			this.time = time;
 		}
 
@@ -105,11 +105,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return time;
+				return this.time;
 			}
 			set
 			{
-				time = value;
+				this.time = value;
 			}
 		}
 
@@ -152,7 +152,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return numericValue;
+				return this.numericValue;
 			}
 			set
 			{
@@ -176,7 +176,7 @@ namespace Axiom.Animating
 						}
 					}
 				}
-				numericValue = value;
+				this.numericValue = value;
 			}
 		}
 
@@ -216,9 +216,9 @@ namespace Axiom.Animating
 		public TransformKeyFrame( AnimationTrack parent, float time )
 			: base( parent, time )
 		{
-			translate = new Vector3();
-			scale = Vector3.UnitScale;
-			rotation = Quaternion.Identity;
+			this.translate = new Vector3();
+			this.scale = Vector3.UnitScale;
+			this.rotation = Quaternion.Identity;
 		}
 
 		#endregion Constructors
@@ -234,11 +234,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return rotation;
+				return this.rotation;
 			}
 			set
 			{
-				rotation = value;
+				this.rotation = value;
 
 				if ( parentTrack != null )
 				{
@@ -257,11 +257,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return scale;
+				return this.scale;
 			}
 			set
 			{
-				scale = value;
+				this.scale = value;
 
 				if ( parentTrack != null )
 				{
@@ -281,11 +281,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return translate;
+				return this.translate;
 			}
 			set
 			{
-				translate = value;
+				this.translate = value;
 
 				if ( parentTrack != null )
 				{
@@ -329,11 +329,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return poseIndex;
+				return this.poseIndex;
 			}
 			set
 			{
-				poseIndex = value;
+				this.poseIndex = value;
 			}
 		}
 
@@ -341,11 +341,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return influence;
+				return this.influence;
 			}
 			set
 			{
-				influence = value;
+				this.influence = value;
 			}
 		}
 	}
@@ -385,11 +385,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return vertexBuffer;
+				return this.vertexBuffer;
 			}
 			set
 			{
-				vertexBuffer = value;
+				this.vertexBuffer = value;
 			}
 		}
 
@@ -432,7 +432,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return poseRefs;
+				return this.poseRefs;
 			}
 		}
 
@@ -443,7 +443,7 @@ namespace Axiom.Animating
 		/// <summary>Add a new pose reference.</summary>
 		public void AddPoseReference( ushort poseIndex, float influence )
 		{
-			poseRefs.Add( new PoseRef( poseIndex, influence ) );
+			this.poseRefs.Add( new PoseRef( poseIndex, influence ) );
 		}
 
 		/// <summary>Update the influence of a pose reference.</summary>
@@ -460,11 +460,11 @@ namespace Axiom.Animating
 		/// <param name="poseIndex">The pose index (not the index of the reference)</param>
 		public void RemovePoseReference( ushort poseIndex )
 		{
-			for ( var i = 0; i < poseRefs.Count; i++ )
+			for ( var i = 0; i < this.poseRefs.Count; i++ )
 			{
-				if ( poseRefs[ i ].poseIndex == poseIndex )
+				if ( this.poseRefs[ i ].poseIndex == poseIndex )
 				{
-					poseRefs.RemoveAt( i );
+					this.poseRefs.RemoveAt( i );
 					return;
 				}
 			}
@@ -473,7 +473,7 @@ namespace Axiom.Animating
 		/// <summary>Remove all pose references.</summary>
 		public void RemoveAllPoseReferences()
 		{
-			poseRefs.Clear();
+			this.poseRefs.Clear();
 		}
 
 		#endregion Public Methods

@@ -157,10 +157,10 @@ namespace Axiom.Graphics
 			this.usage = usage;
 			this.useSystemMemory = useSystemMemory;
 			this.useShadowBuffer = useShadowBuffer;
-			shadowBuffer = null;
-			shadowUpdated = false;
-			suppressHardwareUpdate = false;
-			ID = nextID++;
+			this.shadowBuffer = null;
+			this.shadowUpdated = false;
+			this.suppressHardwareUpdate = false;
+			this.ID = nextID++;
 
 			// If use shadow buffer, upgrade to WRITE_ONLY on hardware side
 			if ( useShadowBuffer && usage == BufferUsage.Dynamic )
@@ -181,12 +181,12 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					if ( shadowBuffer != null )
+					if ( this.shadowBuffer != null )
 					{
-						useShadowBuffer = false;
+						this.useShadowBuffer = false;
 
-						shadowBuffer.SafeDispose();
-						shadowBuffer = null;
+						this.shadowBuffer.SafeDispose();
+						this.shadowBuffer = null;
 					}
 				}
 			}
@@ -210,7 +210,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public BufferBase Lock( BufferLocking locking )
 		{
-			return Lock( 0, sizeInBytes, locking );
+			return Lock( 0, this.sizeInBytes, locking );
 		}
 
 		/// <summary>
@@ -224,30 +224,31 @@ namespace Axiom.Graphics
 		public virtual BufferBase Lock( int offset, int length, BufferLocking locking )
 		{
 			Debug.Assert( !IsLocked, "Cannot lock this buffer because it is already locked." );
-			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "The data area to be locked exceeds the buffer." );
+			Debug.Assert( offset >= 0 && ( offset + length ) <= this.sizeInBytes,
+			              "The data area to be locked exceeds the buffer." );
 
 			BufferBase ret; // = IntPtr.Zero;
 
-			if ( useShadowBuffer )
+			if ( this.useShadowBuffer )
 			{
 				if ( locking != BufferLocking.ReadOnly )
 				{
 					// we have to assume a read / write lock so we use the shadow buffer
 					// and tag for sync on Unlock()
-					shadowUpdated = true;
+					this.shadowUpdated = true;
 				}
 
-				ret = shadowBuffer.Lock( offset, length, locking );
+				ret = this.shadowBuffer.Lock( offset, length, locking );
 			}
 			else
 			{
 				// lock the real deal and flag it as locked
 				ret = LockImpl( offset, length, locking );
-				isLocked = true;
+				this.isLocked = true;
 			}
 
-			lockStart = offset;
-			lockSize = length;
+			this.lockStart = offset;
+			this.lockSize = length;
 			return ret;
 		}
 
@@ -271,9 +272,9 @@ namespace Axiom.Graphics
 			Contract.Requires( IsLocked, "HardwareBuffer.Unlock", "Cannot unlock this buffer, it is not locked!" );
 
 			// If we used the shadow buffer this time...
-			if ( useShadowBuffer && shadowBuffer.IsLocked )
+			if ( this.useShadowBuffer && this.shadowBuffer.IsLocked )
 			{
-				shadowBuffer.Unlock();
+				this.shadowBuffer.Unlock();
 
 				// potentially update the 'real' buffer from the shadow buffer
 				UpdateFromShadow();
@@ -282,7 +283,7 @@ namespace Axiom.Graphics
 			{
 				// unlock the real deal
 				UnlockImpl();
-				isLocked = false;
+				this.isLocked = false;
 			}
 		}
 
@@ -414,7 +415,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2, "Original name was CopyData" )]
 		public void CopyTo( HardwareBuffer srcBuffer )
 		{
-			int sz = System.Math.Min( sizeInBytes, srcBuffer.sizeInBytes );
+			int sz = System.Math.Min( this.sizeInBytes, srcBuffer.sizeInBytes );
 			CopyTo( srcBuffer, 0, 0, sz, true );
 		}
 
@@ -424,25 +425,27 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		protected virtual void UpdateFromShadow()
 		{
-			if ( useShadowBuffer && shadowUpdated && !suppressHardwareUpdate )
+			if ( this.useShadowBuffer && this.shadowUpdated && !this.suppressHardwareUpdate )
 			{
 				// do this manually to avoid locking problems
-				var src = shadowBuffer.LockImpl( lockStart, lockSize, BufferLocking.ReadOnly );
+				var src = this.shadowBuffer.LockImpl( this.lockStart, this.lockSize, BufferLocking.ReadOnly );
 
 				// Lock with discard if the whole buffer was locked, otherwise normal
-				var locking = ( lockStart == 0 && lockSize == sizeInBytes ) ? BufferLocking.Discard : BufferLocking.Normal;
+				var locking = ( this.lockStart == 0 && this.lockSize == this.sizeInBytes )
+				              	? BufferLocking.Discard
+				              	: BufferLocking.Normal;
 
-				using ( var dest = LockImpl( lockStart, lockSize, locking ) )
+				using ( var dest = LockImpl( this.lockStart, this.lockSize, locking ) )
 				{
 					// copy the data in directly
-					Memory.Copy( src, dest, lockSize );
+					Memory.Copy( src, dest, this.lockSize );
 
 					// unlock both buffers to commit the write
 					UnlockImpl();
-					shadowBuffer.UnlockImpl();
+					this.shadowBuffer.UnlockImpl();
 				}
 
-				shadowUpdated = false;
+				this.shadowUpdated = false;
 			}
 		}
 
@@ -453,7 +456,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void SuppressHardwareUpdate( bool suppress )
 		{
-			suppressHardwareUpdate = suppress;
+			this.suppressHardwareUpdate = suppress;
 
 			// if disabling future shadow updates, then update from what is current in the buffer now
 			// this is needed for shadow volumes
@@ -475,7 +478,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return isLocked || ( useShadowBuffer && shadowBuffer.IsLocked );
+				return this.isLocked || ( this.useShadowBuffer && this.shadowBuffer.IsLocked );
 			}
 		}
 
@@ -486,7 +489,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return useSystemMemory;
+				return this.useSystemMemory;
 			}
 		}
 
@@ -497,7 +500,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return sizeInBytes;
+				return this.sizeInBytes;
 			}
 		}
 
@@ -508,7 +511,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return usage;
+				return this.usage;
 			}
 		}
 
@@ -519,7 +522,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return useShadowBuffer;
+				return this.useShadowBuffer;
 			}
 		}
 

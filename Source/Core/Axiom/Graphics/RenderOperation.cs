@@ -97,7 +97,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public RenderOperation()
 		{
-			numberOfInstances = 1;
+			this.numberOfInstances = 1;
 		}
 
 		#endregion
@@ -112,24 +112,24 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					if ( vertexData != null )
+					if ( this.vertexData != null )
 					{
-						if ( !vertexData.IsDisposed )
+						if ( !this.vertexData.IsDisposed )
 						{
-							vertexData.Dispose();
+							this.vertexData.Dispose();
 						}
 
-						vertexData = null;
+						this.vertexData = null;
 					}
 
-					if ( indexData != null )
+					if ( this.indexData != null )
 					{
-						if ( !indexData.IsDisposed )
+						if ( !this.indexData.IsDisposed )
 						{
-							indexData.Dispose();
+							this.indexData.Dispose();
 						}
 
-						indexData = null;
+						this.indexData = null;
 					}
 				}
 			}

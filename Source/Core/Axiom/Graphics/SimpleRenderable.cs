@@ -92,17 +92,17 @@ namespace Axiom.Graphics
 		public SimpleRenderable( string name )
 			: base( name )
 		{
-			materialName = "BaseWhite";
-			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
+			this.materialName = "BaseWhite";
+			this.material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 			name = "SimpleRenderable" + nextAutoGenName++;
-			material.Load();
+			this.material.Load();
 		}
 
 		private void LoadDefaultMaterial()
 		{
-			materialName = "BaseWhite";
-			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
-			material.Load();
+			this.materialName = "BaseWhite";
+			this.material = (Material)MaterialManager.Instance[ "BaseWhite" ];
+			this.material.Load();
 		}
 
 		#endregion Constructor
@@ -116,7 +116,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return (AxisAlignedBox)box.Clone();
+				return (AxisAlignedBox)this.box.Clone();
 			}
 		}
 
@@ -158,14 +158,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return material;
+				return this.material;
 			}
 			set
 			{
-				material = value;
-				if ( material != null )
+				this.material = value;
+				if ( this.material != null )
 				{
-					materialName = material.Name;
+					this.materialName = this.material.Name;
 				}
 			}
 		}
@@ -174,7 +174,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return material.GetBestTechnique();
+				return this.material.GetBestTechnique();
 			}
 		}
 
@@ -182,7 +182,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return renderOperation;
+				return this.renderOperation;
 			}
 		}
 
@@ -192,7 +192,7 @@ namespace Axiom.Graphics
 		/// <param name="matrices"></param>
 		public virtual void GetWorldTransforms( Matrix4[] matrices )
 		{
-			matrices[ 0 ] = worldTransform*parentNode.FullTransform;
+			matrices[ 0 ] = this.worldTransform*parentNode.FullTransform;
 		}
 
 		public bool NormalizeNormals
@@ -283,30 +283,30 @@ namespace Axiom.Graphics
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( customParams[ index ] == null )
+			if ( this.customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
 			else
 			{
-				return (Vector4)customParams[ index ];
+				return (Vector4)this.customParams[ index ];
 			}
 		}
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
+			while ( this.customParams.Count <= index )
 			{
-				customParams.Add( Vector4.Zero );
+				this.customParams.Add( Vector4.Zero );
 			}
-			customParams[ index ] = val;
+			this.customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( customParams.Count > entry.Data && customParams[ entry.Data ] != null )
+			if ( this.customParams.Count > entry.Data && this.customParams[ entry.Data ] != null )
 			{
-				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
+				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)this.customParams[ entry.Data ] );
 			}
 		}
 
@@ -345,34 +345,34 @@ namespace Axiom.Graphics
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if ( this.renderOperation != null )
 					{
-						if ( !renderOperation.IsDisposed )
+						if ( !this.renderOperation.IsDisposed )
 						{
-							renderOperation.Dispose();
+							this.renderOperation.Dispose();
 						}
 
-						renderOperation = null;
+						this.renderOperation = null;
 					}
 
-					if ( indexData != null )
+					if ( this.indexData != null )
 					{
-						if ( !indexData.IsDisposed )
+						if ( !this.indexData.IsDisposed )
 						{
-							indexData.Dispose();
+							this.indexData.Dispose();
 						}
 
-						indexData = null;
+						this.indexData = null;
 					}
 
-					if ( vertexData != null )
+					if ( this.vertexData != null )
 					{
-						if ( !vertexData.IsDisposed )
+						if ( !this.vertexData.IsDisposed )
 						{
-							vertexData.Dispose();
+							this.vertexData.Dispose();
 						}
 
-						vertexData = null;
+						this.vertexData = null;
 					}
 				}
 

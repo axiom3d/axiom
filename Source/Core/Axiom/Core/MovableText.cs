@@ -87,20 +87,20 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _fontName;
+				return this._fontName;
 			}
 
 			set
 			{
-				if ( _fontName != value || material == null || _font == null )
+				if ( this._fontName != value || material == null || this._font == null )
 				{
-					_fontName = value;
-					_font = (Font)FontManager.Instance[ _fontName ];
-					if ( _font == null )
+					this._fontName = value;
+					this._font = (Font)FontManager.Instance[ this._fontName ];
+					if ( this._font == null )
 					{
-						throw new AxiomException( String.Format( "Could not find font '{0}'.", _fontName ) );
+						throw new AxiomException( String.Format( "Could not find font '{0}'.", this._fontName ) );
 					}
-					_font.Load();
+					this._font.Load();
 					if ( material != null )
 					{
 						if ( material.Name != "BaseWhite" )
@@ -109,14 +109,14 @@ namespace Axiom.Core
 						}
 						material = null;
 					}
-					material = _font.Material.Clone( name + "Material", false, _font.Material.Group );
+					material = this._font.Material.Clone( name + "Material", false, this._font.Material.Group );
 					if ( material.IsLoaded == true )
 					{
 						material.Load();
 					}
-					material.DepthCheck = !_onTop;
+					material.DepthCheck = !this._onTop;
 					material.Lighting = false;
-					_needUpdate = true;
+					this._needUpdate = true;
 				}
 			}
 		}
@@ -127,12 +127,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _caption;
+				return this._caption;
 			}
 			set
 			{
-				_caption = value;
-				_needUpdate = true;
+				this._caption = value;
+				this._needUpdate = true;
 			}
 		}
 
@@ -142,12 +142,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _color;
+				return this._color;
 			}
 			set
 			{
-				_color = value;
-				_updateColor = true;
+				this._color = value;
+				this._updateColor = true;
 			}
 		}
 
@@ -157,12 +157,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _characterHeight;
+				return this._characterHeight;
 			}
 			set
 			{
-				_characterHeight = value;
-				_needUpdate = true;
+				this._characterHeight = value;
+				this._needUpdate = true;
 			}
 		}
 
@@ -172,12 +172,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _spaceWidth;
+				return this._spaceWidth;
 			}
 			set
 			{
-				_spaceWidth = value;
-				_needUpdate = true;
+				this._spaceWidth = value;
+				this._needUpdate = true;
 			}
 		}
 
@@ -185,15 +185,15 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _horizontalAlignment;
+				return this._horizontalAlignment;
 			}
 			set
 			{
-				if ( _horizontalAlignment != value )
+				if ( this._horizontalAlignment != value )
 				{
-					_needUpdate = true;
+					this._needUpdate = true;
 				}
-				_horizontalAlignment = value;
+				this._horizontalAlignment = value;
 			}
 		}
 
@@ -201,30 +201,30 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _verticalAlignment;
+				return this._verticalAlignment;
 			}
 			set
 			{
-				if ( _verticalAlignment != value )
+				if ( this._verticalAlignment != value )
 				{
-					_needUpdate = true;
+					this._needUpdate = true;
 				}
-				_verticalAlignment = value;
+				this._verticalAlignment = value;
 			}
 		}
 
 		public void SetTextAlignment( HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment )
 		{
-			if ( _horizontalAlignment != horizontalAlignment )
+			if ( this._horizontalAlignment != horizontalAlignment )
 			{
-				_horizontalAlignment = horizontalAlignment;
-				_needUpdate = true;
+				this._horizontalAlignment = horizontalAlignment;
+				this._needUpdate = true;
 			}
 
-			if ( _verticalAlignment != verticalAlignment )
+			if ( this._verticalAlignment != verticalAlignment )
 			{
-				_verticalAlignment = verticalAlignment;
-				_needUpdate = true;
+				this._verticalAlignment = verticalAlignment;
+				this._needUpdate = true;
 			}
 		}
 
@@ -232,15 +232,15 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _additionalHeight;
+				return this._additionalHeight;
 			}
 			set
 			{
-				if ( _additionalHeight != value )
+				if ( this._additionalHeight != value )
 				{
-					_needUpdate = true;
+					this._needUpdate = true;
 				}
-				_additionalHeight = value;
+				this._additionalHeight = value;
 			}
 		}
 
@@ -250,14 +250,14 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _onTop;
+				return this._onTop;
 			}
 			set
 			{
-				_onTop = value;
+				this._onTop = value;
 				if ( material != null )
 				{
-					material.DepthCheck = !_onTop;
+					material.DepthCheck = !this._onTop;
 				}
 			}
 		}
@@ -283,13 +283,13 @@ namespace Axiom.Core
 				throw new AxiomException( "Trying to create MovableText without caption." );
 			}
 
-			_caption = caption;
-			_characterHeight = charHeight;
-			_color = color;
-			_spaceWidth = 0;
-			_updateColor = true;
-			_onTop = true;
-			_horizontalAlignment = HorizontalAlignment.Center;
+			this._caption = caption;
+			this._characterHeight = charHeight;
+			this._color = color;
+			this._spaceWidth = 0;
+			this._updateColor = true;
+			this._onTop = true;
+			this._horizontalAlignment = HorizontalAlignment.Center;
 
 			FontName = fontName;
 			_setupGeometry();
@@ -316,11 +316,11 @@ namespace Axiom.Core
 
 		private void _setupGeometry()
 		{
-			var vertexCount = _caption.Length*6;
+			var vertexCount = this._caption.Length*6;
 			if ( renderOperation.vertexData != null )
 			{
 				renderOperation.vertexData = null;
-				_updateColor = true;
+				this._updateColor = true;
 			}
 
 			if ( renderOperation.vertexData == null )
@@ -365,16 +365,16 @@ namespace Axiom.Core
 			                                                              BufferUsage.DynamicWriteOnly );
 			bind.SetBinding( COLOR_BINDING, cbuf );
 
-			var charlen = _caption.Length;
+			var charlen = this._caption.Length;
 
 			var largestWidth = 0.0f;
 			var left = 0f*2.0f - 1.0f;
 			var top = -( ( 0f*2.0f ) - 1.0f );
 
 			// Derive space with from a capital A
-			if ( _spaceWidth == 0 )
+			if ( this._spaceWidth == 0 )
 			{
-				_spaceWidth = (int)( _font.GetGlyphAspectRatio( 'A' )*_characterHeight*2.0f );
+				this._spaceWidth = (int)( this._font.GetGlyphAspectRatio( 'A' )*this._characterHeight*2.0f );
 			}
 
 			// for calculation of AABB
@@ -387,15 +387,15 @@ namespace Axiom.Core
 			var newLine = true;
 			var len = 0.0f;
 
-			if ( _verticalAlignment == VerticalAlignment.Above )
+			if ( this._verticalAlignment == VerticalAlignment.Above )
 			{
 				// Raise the first line of the caption
-				top += _characterHeight;
+				top += this._characterHeight;
 				for ( var i = 0; i != charlen; i++ )
 				{
-					if ( _caption[ i ] == '\n' )
+					if ( this._caption[ i ] == '\n' )
 					{
-						top += _characterHeight*2.0f;
+						top += this._characterHeight*2.0f;
 					}
 				}
 			}
@@ -414,47 +414,47 @@ namespace Axiom.Core
 					if ( newLine )
 					{
 						len = 0.0f;
-						for ( var j = i; j != charlen && _caption[ j ] != '\n'; j++ )
+						for ( var j = i; j != charlen && this._caption[ j ] != '\n'; j++ )
 						{
-							if ( _caption[ j ] == ' ' )
+							if ( this._caption[ j ] == ' ' )
 							{
-								len += _spaceWidth;
+								len += this._spaceWidth;
 							}
 							else
 							{
-								len += _font.GetGlyphAspectRatio( _caption[ j ] )*_characterHeight*2.0f;
+								len += this._font.GetGlyphAspectRatio( this._caption[ j ] )*this._characterHeight*2.0f;
 							}
 						}
 						newLine = false;
 					}
 
-					if ( _caption[ i ] == '\n' )
+					if ( this._caption[ i ] == '\n' )
 					{
 						left = 0f*2.0f - 1.0f;
-						top -= _characterHeight*2.0f;
+						top -= this._characterHeight*2.0f;
 						newLine = true;
 						continue;
 					}
 
-					if ( _caption[ i ] == ' ' )
+					if ( this._caption[ i ] == ' ' )
 					{
 						// Just leave a gap, no tris
-						left += _spaceWidth;
+						left += this._spaceWidth;
 						// Also reduce tri count
 						renderOperation.vertexData.vertexCount -= 6;
 						continue;
 					}
 
-					var horiz_height = _font.GetGlyphAspectRatio( _caption[ i ] );
+					var horiz_height = this._font.GetGlyphAspectRatio( this._caption[ i ] );
 					Real u1, u2, v1, v2;
-					_font.GetGlyphTexCoords( _caption[ i ], out u1, out v1, out u2, out v2 );
+					this._font.GetGlyphTexCoords( this._caption[ i ], out u1, out v1, out u2, out v2 );
 
 					// each vert is (x, y, z, u, v)
 					//-------------------------------------------------------------------------------------
 					// First tri
 					//
 					// Upper left
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
+					if ( this._horizontalAlignment == HorizontalAlignment.Left )
 					{
 						pPCBuff[ cntPos++ ] = left;
 					}
@@ -468,7 +468,7 @@ namespace Axiom.Core
 					pPCBuff[ cntPos++ ] = v1;
 
 					// Deal with bounds
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
+					if ( this._horizontalAlignment == HorizontalAlignment.Left )
 					{
 						currPos = new Vector3( left, top, -1.0f );
 					}
@@ -490,10 +490,10 @@ namespace Axiom.Core
 						maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 					}
 
-					top -= _characterHeight*2.0f;
+					top -= this._characterHeight*2.0f;
 
 					// Bottom left
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
+					if ( this._horizontalAlignment == HorizontalAlignment.Left )
 					{
 						pPCBuff[ cntPos++ ] = left;
 					}
@@ -507,7 +507,7 @@ namespace Axiom.Core
 					pPCBuff[ cntPos++ ] = v2;
 
 					// Deal with bounds
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
+					if ( this._horizontalAlignment == HorizontalAlignment.Left )
 					{
 						currPos = new Vector3( left, top, -1.0f );
 					}
@@ -520,11 +520,11 @@ namespace Axiom.Core
 					max.Ceil( currPos );
 					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
-					top += _characterHeight*2.0f;
-					left += horiz_height*_characterHeight*2.0f;
+					top += this._characterHeight*2.0f;
+					left += horiz_height*this._characterHeight*2.0f;
 
 					// Top right
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
+					if ( this._horizontalAlignment == HorizontalAlignment.Left )
 					{
 						pPCBuff[ cntPos++ ] = left;
 					}
@@ -539,7 +539,7 @@ namespace Axiom.Core
 					//-------------------------------------------------------------------------------------
 
 					// Deal with bounds
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
+					if ( this._horizontalAlignment == HorizontalAlignment.Left )
 					{
 						currPos = new Vector3( left, top, -1.0f );
 					}
@@ -555,7 +555,7 @@ namespace Axiom.Core
 					// Second tri
 					//
 					// Top right (again)
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
+					if ( this._horizontalAlignment == HorizontalAlignment.Left )
 					{
 						pPCBuff[ cntPos++ ] = left;
 					}
@@ -573,11 +573,11 @@ namespace Axiom.Core
 					max.Ceil( currPos );
 					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
-					top -= _characterHeight*2.0f;
-					left -= horiz_height*_characterHeight*2.0f;
+					top -= this._characterHeight*2.0f;
+					left -= horiz_height*this._characterHeight*2.0f;
 
 					// Bottom left (again)
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
+					if ( this._horizontalAlignment == HorizontalAlignment.Left )
 					{
 						pPCBuff[ cntPos++ ] = left;
 					}
@@ -595,10 +595,10 @@ namespace Axiom.Core
 					max.Ceil( currPos );
 					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
-					left += horiz_height*_characterHeight*2.0f;
+					left += horiz_height*this._characterHeight*2.0f;
 
 					// Bottom right
-					if ( _horizontalAlignment == HorizontalAlignment.Left )
+					if ( this._horizontalAlignment == HorizontalAlignment.Left )
 					{
 						pPCBuff[ cntPos++ ] = left;
 					}
@@ -618,7 +618,7 @@ namespace Axiom.Core
 					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
 
 					// Go back up with top
-					top += _characterHeight*2.0f;
+					top += this._characterHeight*2.0f;
 
 					var currentWidth = ( left + 1.0f )/2.0f - 0.0f;
 					if ( currentWidth > largestWidth )
@@ -632,14 +632,14 @@ namespace Axiom.Core
 
 			// update AABB/Sphere radius
 			box = new AxisAlignedBox( min, max );
-			_radius = Utility.Sqrt( maxSquaredRadius );
+			this._radius = Utility.Sqrt( maxSquaredRadius );
 
-			if ( _updateColor )
+			if ( this._updateColor )
 			{
 				_updateColors();
 			}
 
-			_needUpdate = false;
+			this._needUpdate = false;
 		}
 
 		private void _updateColors()
@@ -649,7 +649,7 @@ namespace Axiom.Core
 
 			// Convert to system-specific
 			int color;
-			color = Root.Instance.ConvertColor( _color );
+			color = Root.Instance.ConvertColor( this._color );
 			var cbuf = renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
 			var ipPos = cbuf.Lock( BufferLocking.Discard );
 #if !AXIOM_SAFE_ONLY
@@ -663,7 +663,7 @@ namespace Axiom.Core
 				}
 			}
 			cbuf.Unlock();
-			_updateColor = false;
+			this._updateColor = false;
 		}
 
 		#region Implementation of SimpleRenderable
@@ -678,7 +678,7 @@ namespace Axiom.Core
 				var rot3x3 = camera.DerivedOrientation.ToRotationMatrix();
 
 				// parent node position
-				var ppos = ParentNode.DerivedPosition + Vector3.UnitY*_additionalHeight;
+				var ppos = ParentNode.DerivedPosition + Vector3.UnitY*this._additionalHeight;
 
 				// apply scale
 				scale3x3.m00 = ParentNode.DerivedScale.x/2.0f;
@@ -700,7 +700,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _radius;
+				return this._radius;
 			}
 		}
 
@@ -708,11 +708,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( _needUpdate )
+				if ( this._needUpdate )
 				{
 					_setupGeometry();
 				}
-				if ( _updateColor )
+				if ( this._updateColor )
 				{
 					_updateColors();
 				}

@@ -102,11 +102,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return type;
+				return this.type;
 			}
 			set
 			{
-				type = value;
+				this.type = value;
 			}
 		}
 
@@ -129,10 +129,10 @@ namespace Axiom.ParticleSystems
 		public virtual void CopyTo( ParticleAffector affector )
 		{
 			// loop through all registered commands and copy from this instance to the target instance
-			foreach ( var key in commandTable.Keys )
+			foreach ( var key in this.commandTable.Keys )
 			{
 				// get the value of the param from this instance
-				var val = ( (IPropertyCommand)commandTable[ key ] ).Get( this );
+				var val = ( (IPropertyCommand)this.commandTable[ key ] ).Get( this );
 
 				// set the param on the target instance
 				affector.SetParam( key, val );
@@ -162,9 +162,9 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		public bool SetParam( string name, string val )
 		{
-			if ( commandTable.ContainsKey( name ) )
+			if ( this.commandTable.ContainsKey( name ) )
 			{
-				var command = (IPropertyCommand)commandTable[ name ];
+				var command = (IPropertyCommand)this.commandTable[ name ];
 
 				command.Set( this, val );
 
@@ -203,7 +203,7 @@ namespace Axiom.ParticleSystems
 					{
 						var commandAtt = commandAtts[ j ];
 
-						commandTable.Add( commandAtt.ScriptPropertyName, (IPropertyCommand)Activator.CreateInstance( type ) );
+						this.commandTable.Add( commandAtt.ScriptPropertyName, (IPropertyCommand)Activator.CreateInstance( type ) );
 					} // for
 				} // for
 

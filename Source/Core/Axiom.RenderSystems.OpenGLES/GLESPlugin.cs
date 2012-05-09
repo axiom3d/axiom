@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,47 +25,50 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using Axiom.Core;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
 	/// <summary>
-	/// Plugin instance for GL Manager
+	///   Plugin instance for GL Manager
 	/// </summary>
 	public class GLESPlugin : IPlugin
 	{
 		/// <summary>
-		/// 
 		/// </summary>
 		protected GLESRenderSystem _renderSystem;
 
 		/// <summary>
-		/// Stops the plugin
+		///   Stops the plugin
 		/// </summary>
 		public void Shutdown()
 		{
-			_renderSystem.Shutdown();
+			this._renderSystem.Shutdown();
 		}
 
 		/// <summary>
-		/// Initializes the plugin.
+		///   Initializes the plugin.
 		/// </summary>
 		public void Initialize()
 		{
-			_renderSystem = new GLESRenderSystem();
-			Root.Instance.RenderSystems.Add( "OpenGLES", _renderSystem );
+			this._renderSystem = new GLESRenderSystem();
+			Root.Instance.RenderSystems.Add( "OpenGLES", this._renderSystem );
 		}
 	}
 }
-

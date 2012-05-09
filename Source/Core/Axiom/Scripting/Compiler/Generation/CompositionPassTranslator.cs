@@ -54,7 +54,7 @@ namespace Axiom.Scripting.Compiler
 			public CompositionPassTranslator()
 				: base()
 			{
-				_Pass = null;
+				this._Pass = null;
 			}
 
 			#region Translator Implementation
@@ -71,8 +71,8 @@ namespace Axiom.Scripting.Compiler
 				var obj = (ObjectAbstractNode)node;
 
 				var target = (CompositionTargetPass)obj.Parent.Context;
-				_Pass = target.CreatePass();
-				obj.Context = _Pass;
+				this._Pass = target.CreatePass();
+				obj.Context = this._Pass;
 
 				// The name is the type of the pass
 				if ( obj.Values.Count == 0 )
@@ -87,8 +87,8 @@ namespace Axiom.Scripting.Compiler
 					return;
 				}
 
-				_Pass.Type = (CompositorPassType)ScriptEnumAttribute.Lookup( type, typeof ( CompositorPassType ) );
-				if ( _Pass.Type == CompositorPassType.RenderCustom )
+				this._Pass.Type = (CompositorPassType)ScriptEnumAttribute.Lookup( type, typeof ( CompositorPassType ) );
+				if ( this._Pass.Type == CompositorPassType.RenderCustom )
 				{
 					var customType = string.Empty;
 					//This is the ugly one liner for safe access to the second parameter.
@@ -97,7 +97,7 @@ namespace Axiom.Scripting.Compiler
 						compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
 						return;
 					}
-					_Pass.CustomType = customType;
+					this._Pass.CustomType = customType;
 				}
 				else
 				{
@@ -139,7 +139,7 @@ namespace Axiom.Scripting.Compiler
 											new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material, val );
 
 										compiler._fireEvent( ref evt );
-										_Pass.MaterialName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
+										this._Pass.MaterialName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
 									}
 									else
 									{
@@ -180,7 +180,7 @@ namespace Axiom.Scripting.Compiler
 											return;
 										}
 
-										_Pass.SetInput( id, name, index );
+										this._Pass.SetInput( id, name, index );
 									}
 									else
 									{
@@ -209,7 +209,7 @@ namespace Axiom.Scripting.Compiler
 									uint val;
 									if ( getUInt( prop.Values[ 0 ], out val ) )
 									{
-										_Pass.Identifier = val;
+										this._Pass.Identifier = val;
 									}
 									else
 									{
@@ -238,7 +238,7 @@ namespace Axiom.Scripting.Compiler
 									uint val;
 									if ( getUInt( prop.Values[ 0 ], out val ) )
 									{
-										_Pass.FirstRenderQueue = (RenderQueueGroupID)val;
+										this._Pass.FirstRenderQueue = (RenderQueueGroupID)val;
 									}
 									else
 									{
@@ -267,7 +267,7 @@ namespace Axiom.Scripting.Compiler
 									uint val;
 									if ( getUInt( prop.Values[ 0 ], out val ) )
 									{
-										_Pass.LastRenderQueue = (RenderQueueGroupID)val;
+										this._Pass.LastRenderQueue = (RenderQueueGroupID)val;
 									}
 									else
 									{
@@ -296,7 +296,7 @@ namespace Axiom.Scripting.Compiler
 									string val;
 									if ( getString( prop.Values[ 0 ], out val ) )
 									{
-										_Pass.MaterialScheme = val;
+										this._Pass.MaterialScheme = val;
 									}
 									else
 									{
@@ -327,11 +327,11 @@ namespace Axiom.Scripting.Compiler
 										var atom = (AtomAbstractNode)prop.Values[ 0 ];
 										if ( atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_VIEW_SPACE )
 										{
-											_Pass.SetQuadFarCorners( true, true );
+											this._Pass.SetQuadFarCorners( true, true );
 										}
 										else if ( atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_WORLD_SPACE )
 										{
-											_Pass.SetQuadFarCorners( true, false );
+											this._Pass.SetQuadFarCorners( true, false );
 										}
 										else
 										{

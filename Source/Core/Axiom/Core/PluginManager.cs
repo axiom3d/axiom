@@ -148,7 +148,12 @@ namespace Axiom.Core
 		/// </summary>
 		protected IList<ObjectCreator> ScanForPlugins()
 		{
-			return ScanForPlugins( "." );
+#if !(SILVERLIGHT|| XBOX || XBOX360 || WINDOWS_PHONE )
+			var cwd = Assembly.GetExecutingAssembly().CodeBase;
+#else
+			var cwd = ".";
+#endif
+			return ScanForPlugins( cwd );
 		}
 
 		/// <summary>

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,26 +25,33 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
-using Axiom.Graphics;
+
 using Axiom.Core;
+using Axiom.Graphics;
+
 using OpenTK.Graphics.ES11;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
 	/// <summary>
-	/// Implementation of HardwareBufferManager for OpenGL ES.
+	///   Implementation of HardwareBufferManager for OpenGL ES.
 	/// </summary>
 	public class GLESHardwareBufferManager : HardwareBufferManager
 	{
@@ -54,34 +62,35 @@ namespace Axiom.RenderSystems.OpenGLES
 		public const int ScratchAlignment = 32;
 		private readonly object _vertexBufferLock = new object();
 		private readonly object _indexBufferLock = new object();
+
 		/// <summary>
-		/// Scratch pool management (32 bit structure)
+		///   Scratch pool management (32 bit structure)
 		/// </summary>
 		public struct GLESScratchBufferAlloc
 		{
 			public int Size;
 			public int Free;
 		}
+
 		/// <summary>
-		/// 
 		/// </summary>
 		public GLESHardwareBufferManager()
 		{
-			_scratchBufferPool = new byte[ ScratchPoolSize ];
+			this._scratchBufferPool = new byte[ ScratchPoolSize ];
 			unsafe
 			{
-				_scratchBufferPoolPtr = Memory.PinObject( _scratchBufferPool );
-				GLESScratchBufferAlloc* ptrAlloc = (GLESScratchBufferAlloc*)_scratchBufferPoolPtr;
-				ptrAlloc->Size = ScratchPoolSize - sizeof( GLESScratchBufferAlloc );
+				this._scratchBufferPoolPtr = Memory.PinObject( this._scratchBufferPool );
+				var ptrAlloc = (GLESScratchBufferAlloc*) this._scratchBufferPoolPtr;
+				ptrAlloc->Size = ScratchPoolSize - sizeof ( GLESScratchBufferAlloc );
 				ptrAlloc->Free = 1;
 			}
 		}
 
 		/// <summary>
-		/// Utility function to get the correct GL usage based on BU's
+		///   Utility function to get the correct GL usage based on BU's
 		/// </summary>
-		/// <param name="usage"></param>
-		/// <returns></returns>
+		/// <param name="usage"> </param>
+		/// <returns> </returns>
 		public static All GetGLUsage( BufferUsage usage )
 		{
 			switch ( usage )
@@ -98,10 +107,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="type"></param>
-		/// <returns></returns>
+		/// <param name="type"> </param>
+		/// <returns> </returns>
 		public static All GetGLType( VertexElementType type )
 		{
 			switch ( type )
@@ -127,30 +135,28 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="numIndices"></param>
-		/// <param name="usage"></param>
-		/// <returns></returns>
+		/// <param name="type"> </param>
+		/// <param name="numIndices"> </param>
+		/// <param name="usage"> </param>
+		/// <returns> </returns>
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
 		{
 			return CreateIndexBuffer( type, numIndices, usage, true );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="numIndices"></param>
-		/// <param name="usage"></param>
-		/// <param name="useShadowBuffer"></param>
-		/// <returns></returns>
+		/// <param name="type"> </param>
+		/// <param name="numIndices"> </param>
+		/// <param name="usage"> </param>
+		/// <param name="useShadowBuffer"> </param>
+		/// <returns> </returns>
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
 		{
 			// always use shadowBuffer
-			GLESHardwareIndexBuffer buf = new GLESHardwareIndexBuffer( this, type, numIndices, usage, true );
-			lock ( _indexBufferLock )
+			var buf = new GLESHardwareIndexBuffer( this, type, numIndices, usage, true );
+			lock ( this._indexBufferLock )
 			{
 				indexBuffers.Add( buf );
 			}
@@ -158,30 +164,28 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVerts"></param>
-		/// <param name="usage"></param>
-		/// <returns></returns>
+		/// <param name="vertexSize"> </param>
+		/// <param name="numVerts"> </param>
+		/// <param name="usage"> </param>
+		/// <returns> </returns>
 		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
 		{
 			return CreateVertexBuffer( vertexSize, numVerts, usage, true );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVerts"></param>
-		/// <param name="usage"></param>
-		/// <param name="useShadowBuffer"></param>
-		/// <returns></returns>
+		/// <param name="vertexSize"> </param>
+		/// <param name="numVerts"> </param>
+		/// <param name="usage"> </param>
+		/// <param name="useShadowBuffer"> </param>
+		/// <returns> </returns>
 		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
 			// always use shadowBuffer
-			GLESHardwareVertexBuffer buf = new GLESHardwareVertexBuffer( this, vertexSize, numVerts, usage, true );
-			lock ( _vertexBufferLock )
+			var buf = new GLESHardwareVertexBuffer( this, vertexSize, numVerts, usage, true );
+			lock ( this._vertexBufferLock )
 			{
 				vertexBuffers.Add( buf );
 			}
@@ -189,15 +193,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// Allocator method to allow us to use a pool of memory as a scratch
-		/// area for hardware buffers. This is because glMapBuffer is incredibly
-		/// inefficient, seemingly no matter what options we give it. So for the
-		/// period of lock/unlock, we will instead allocate a section of a local
-		/// memory pool, and use glBufferSubDataARB / glGetBufferSubDataARB
-		/// instead.
+		///   Allocator method to allow us to use a pool of memory as a scratch area for hardware buffers. This is because glMapBuffer is incredibly inefficient, seemingly no matter what options we give it. So for the period of lock/unlock, we will instead allocate a section of a local memory pool, and use glBufferSubDataARB / glGetBufferSubDataARB instead.
 		/// </summary>
-		/// <param name="size"></param>
-		/// <returns></returns>
+		/// <param name="size"> </param>
+		/// <returns> </returns>
 		public IntPtr AllocateScratch( int size )
 		{
 			unsafe
@@ -206,7 +205,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				// simple forward link search based on alloc sizes
 				// not that fast but the list should never get that long since not many
 				// locks at once (hopefully)
-				lock ( _scratchLock )
+				lock ( this._scratchLock )
 				{
 					// Alignment - round up the size to 32 bits
 					// control blocks are 32 bits too so this packs nicely
@@ -215,24 +214,24 @@ namespace Axiom.RenderSystems.OpenGLES
 						size += 4 - ( size % 4 );
 					}
 					int bufferPos = 0;
-					byte* dataPtr = (byte*)_scratchBufferPoolPtr;
+					var dataPtr = (byte*) this._scratchBufferPoolPtr;
 					while ( bufferPos < ScratchPoolSize )
 					{
 						LogManager.Instance.Write( "Bufferpos " + bufferPos );
-						GLESScratchBufferAlloc* pNext = (GLESScratchBufferAlloc*)( dataPtr + bufferPos );
+						var pNext = (GLESScratchBufferAlloc*) ( dataPtr + bufferPos );
 						// Big enough?
 						if ( pNext->Free != 0 && pNext->Size >= size )
 						{
 							LogManager.Instance.Write( "Was big enough!" );
 							// split? And enough space for control block
-							if ( pNext->Size > size + sizeof( GLESScratchBufferAlloc ) )
+							if ( pNext->Size > size + sizeof ( GLESScratchBufferAlloc ) )
 							{
 								LogManager.Instance.Write( "Split! " + pNext->Size.ToString() );
-								int offset = sizeof( GLESScratchBufferAlloc ) + size;
-								GLESScratchBufferAlloc* pSplitAlloc = (GLESScratchBufferAlloc*)( dataPtr + bufferPos + offset );
+								int offset = sizeof ( GLESScratchBufferAlloc ) + size;
+								var pSplitAlloc = (GLESScratchBufferAlloc*) ( dataPtr + bufferPos + offset );
 								pSplitAlloc->Free = 1;
 								// split size is remainder minus new control block
-								pSplitAlloc->Size = pNext->Size - size - sizeof( GLESScratchBufferAlloc );
+								pSplitAlloc->Size = pNext->Size - size - sizeof ( GLESScratchBufferAlloc );
 								// New size of current
 								pNext->Size = size;
 							}
@@ -240,71 +239,68 @@ namespace Axiom.RenderSystems.OpenGLES
 							pNext->Free = 0;
 
 							// return pointer just after this control block (++ will do that for us)
-							return (IntPtr)( ++pNext );
+							return (IntPtr) ( ++pNext );
 						}
 
-						bufferPos += sizeof( GLESScratchBufferAlloc ) + pNext->Size;
-					}//end while
+						bufferPos += sizeof ( GLESScratchBufferAlloc ) + pNext->Size;
+					} //end while
 					return IntPtr.Zero;
-				}//end lock
-			}//end unsafe
+				} //end lock
+			} //end unsafe
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="ptr"></param>
+		/// <param name="ptr"> </param>
 		public void DeallocateScratch( IntPtr ptr )
 		{
 			unsafe
 			{
-				lock ( _scratchLock )
+				lock ( this._scratchLock )
 				{
 					// Simple linear search dealloc
 					int bufferPos = 0;
-					GLESScratchBufferAlloc* pLast = (GLESScratchBufferAlloc*)IntPtr.Zero;
-					byte* dataPtr = (byte*)_scratchBufferPoolPtr;
-					GLESScratchBufferAlloc* pToDelete = (GLESScratchBufferAlloc*)ptr;
+					var pLast = (GLESScratchBufferAlloc*) IntPtr.Zero;
+					var dataPtr = (byte*) this._scratchBufferPoolPtr;
+					var pToDelete = (GLESScratchBufferAlloc*) ptr;
 					while ( bufferPos < ScratchPoolSize )
 					{
-						GLESScratchBufferAlloc* pCurrent = (GLESScratchBufferAlloc*)( dataPtr + bufferPos );
+						var pCurrent = (GLESScratchBufferAlloc*) ( dataPtr + bufferPos );
 						// Pointers match?
-						if ( ( dataPtr + bufferPos + sizeof( GLESScratchBufferAlloc ) ) == pToDelete )
+						if ( ( dataPtr + bufferPos + sizeof ( GLESScratchBufferAlloc ) ) == pToDelete )
 						{
 							// dealloc
 							pCurrent->Free = 1;
 							// merge with previous
-							if ( pLast != (GLESScratchBufferAlloc*)IntPtr.Zero && pLast->Free != 0 )
+							if ( pLast != (GLESScratchBufferAlloc*) IntPtr.Zero && pLast->Free != 0 )
 							{
 								// adjust buffer pos
-								bufferPos -= ( pLast->Size + sizeof( GLESScratchBufferAlloc ) );
+								bufferPos -= ( pLast->Size + sizeof ( GLESScratchBufferAlloc ) );
 								// merge free space
-								pLast->Size += pCurrent->Size + sizeof( GLESScratchBufferAlloc );
+								pLast->Size += pCurrent->Size + sizeof ( GLESScratchBufferAlloc );
 								pCurrent = pLast;
 							}
 							// merge with next
-							int offset = bufferPos + pCurrent->Size + sizeof( GLESScratchBufferAlloc );
+							int offset = bufferPos + pCurrent->Size + sizeof ( GLESScratchBufferAlloc );
 							if ( offset < ScratchPoolSize )
 							{
-								GLESScratchBufferAlloc* pNext = (GLESScratchBufferAlloc*)( dataPtr + offset );
+								var pNext = (GLESScratchBufferAlloc*) ( dataPtr + offset );
 								if ( pNext->Free != 0 )
 								{
-									pCurrent->Size += pNext->Size + sizeof( GLESScratchBufferAlloc );
+									pCurrent->Size += pNext->Size + sizeof ( GLESScratchBufferAlloc );
 								}
 							}
 							//done
 							return;
 						}
 
-						bufferPos += sizeof( GLESScratchBufferAlloc ) + pCurrent->Size;
+						bufferPos += sizeof ( GLESScratchBufferAlloc ) + pCurrent->Size;
 						pLast = pCurrent;
-					}//end while
-
-				}//end lock
-			}//end unsafe
+					} //end while
+				} //end lock
+			} //end unsafe
 			// Should never get here unless there's a corruption
 			Utilities.Contract.Requires( false, "Memory deallocation error" );
 		}
 	}
 }
-

@@ -71,9 +71,9 @@ namespace Axiom.Controllers
 			//frameTime = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0,  left here for clarity
 
 			// default to 1 for standard timing
-			timeFactor = 1;
-			frameDelay = 0;
-			elapsedTime = 0;
+			this.timeFactor = 1;
+			this.frameDelay = 0;
+			this.elapsedTime = 0;
 		}
 
 		#region IControllerValue Members
@@ -85,7 +85,7 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return frameTime;
+				return this.frameTime;
 			}
 			set
 			{
@@ -106,14 +106,14 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return timeFactor;
+				return this.timeFactor;
 			}
 			set
 			{
 				if ( value >= 0 )
 				{
-					timeFactor = value;
-					frameDelay = 0;
+					this.timeFactor = value;
+					this.frameDelay = 0;
 				}
 			}
 		}
@@ -122,12 +122,12 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return frameDelay;
+				return this.frameDelay;
 			}
 			set
 			{
-				timeFactor = 0;
-				frameDelay = value;
+				this.timeFactor = 0;
+				this.frameDelay = value;
 			}
 		}
 
@@ -135,11 +135,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return elapsedTime;
+				return this.elapsedTime;
 			}
 			set
 			{
-				elapsedTime = value;
+				this.elapsedTime = value;
 			}
 		}
 
@@ -154,19 +154,19 @@ namespace Axiom.Controllers
 		/// <returns></returns>
 		private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
 		{
-			if ( frameDelay != 0 )
+			if ( this.frameDelay != 0 )
 			{
 				// Fixed frame time
-				frameTime = frameDelay;
-				timeFactor = frameDelay/e.TimeSinceLastFrame;
+				this.frameTime = this.frameDelay;
+				this.timeFactor = this.frameDelay/e.TimeSinceLastFrame;
 			}
 			else
 			{
 				// Save the time value after applying time factor
-				frameTime = timeFactor*e.TimeSinceLastFrame;
+				this.frameTime = this.timeFactor*e.TimeSinceLastFrame;
 			}
 			// Accumulate the elapsed time
-			elapsedTime += frameTime;
+			this.elapsedTime += this.frameTime;
 		}
 	}
 }

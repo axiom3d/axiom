@@ -115,15 +115,15 @@ namespace Axiom.Math
 		/// <param name="zAxis"></param>
 		public Matrix3( Vector3 xAxis, Vector3 yAxis, Vector3 zAxis )
 		{
-			m00 = xAxis.x;
-			m01 = yAxis.x;
-			m02 = zAxis.x;
-			m10 = xAxis.y;
-			m11 = yAxis.y;
-			m12 = zAxis.y;
-			m20 = xAxis.z;
-			m21 = yAxis.z;
-			m22 = zAxis.z;
+			this.m00 = xAxis.x;
+			this.m01 = yAxis.x;
+			this.m02 = zAxis.x;
+			this.m10 = xAxis.y;
+			this.m11 = yAxis.y;
+			this.m12 = zAxis.y;
+			this.m20 = xAxis.z;
+			this.m21 = yAxis.z;
+			this.m22 = zAxis.z;
 		}
 
 		#endregion
@@ -162,7 +162,7 @@ namespace Axiom.Math
 		/// <returns>A transposed Matrix.</returns>
 		public Matrix3 Transpose()
 		{
-			return new Matrix3( m00, m10, m20, m01, m11, m21, m02, m12, m22 );
+			return new Matrix3( this.m00, this.m10, this.m20, this.m01, this.m11, this.m21, this.m02, this.m12, this.m22 );
 		}
 
 		/// <summary>
@@ -185,7 +185,7 @@ namespace Axiom.Math
 #else
 			unsafe
 			{
-				fixed ( Real* pM = &m00 )
+				fixed ( Real* pM = &this.m00 )
 				{
 					return new Vector3( *( pM + col ), //m[0,col], 
 					                    *( pM + 3 + col ), //m[1,col], 
@@ -252,18 +252,18 @@ namespace Axiom.Math
 			Real rAngle;
 			Real pAngle;
 
-			pAngle = Utility.ASin( m01 );
+			pAngle = Utility.ASin( this.m01 );
 			if ( pAngle < Utility.PI/2 )
 			{
 				if ( pAngle > -Utility.PI/2 )
 				{
-					yAngle = Utility.ATan2( m21, m11 );
-					rAngle = Utility.ATan2( m02, m00 );
+					yAngle = Utility.ATan2( this.m21, this.m11 );
+					rAngle = Utility.ATan2( this.m02, this.m00 );
 				}
 				else
 				{
 					// WARNING. Not a unique solution.
-					var fRmY = (Real)Utility.ATan2( -m20, m22 );
+					var fRmY = (Real)Utility.ATan2( -this.m20, this.m22 );
 					rAngle = 0.0f; // any angle works
 					yAngle = rAngle - fRmY;
 				}
@@ -271,7 +271,7 @@ namespace Axiom.Math
 			else
 			{
 				// WARNING. Not a unique solution.
-				var fRpY = Utility.ATan2( -m20, m22 );
+				var fRpY = Utility.ATan2( -this.m20, this.m22 );
 				rAngle = 0.0f; // any angle works
 				yAngle = fRpY - rAngle;
 			}
@@ -603,7 +603,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pM = &m00 )
+					fixed ( Real* pM = &this.m00 )
 					{
 						return *( pM + ( ( 3*row ) + col ) );
 					}
@@ -645,7 +645,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pM = &m00 )
+					fixed ( Real* pM = &this.m00 )
 					{
 						*( pM + ( ( 3*row ) + col ) ) = value;
 					}
@@ -680,7 +680,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pMatrix = &m00 )
+					fixed ( Real* pMatrix = &this.m00 )
 					{
 						return *( pMatrix + index );
 					}
@@ -707,7 +707,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pMatrix = &m00 )
+					fixed ( Real* pMatrix = &this.m00 )
 					{
 						*( pMatrix + index ) = value;
 					}
@@ -724,11 +724,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				var cofactor00 = m11*m22 - m12*m21;
-				var cofactor10 = m12*m20 - m10*m22;
-				var cofactor20 = m10*m21 - m11*m20;
+				var cofactor00 = this.m11*this.m22 - this.m12*this.m21;
+				var cofactor10 = this.m12*this.m20 - this.m10*this.m22;
+				var cofactor20 = this.m10*this.m21 - this.m11*this.m20;
 
-				var result = m00*cofactor00 + m01*cofactor10 + m02*cofactor20;
+				var result = this.m00*cofactor00 + this.m01*cofactor10 + this.m02*cofactor20;
 
 				return result;
 			}
@@ -747,9 +747,9 @@ namespace Axiom.Math
 		{
 			var builder = new StringBuilder();
 
-			builder.AppendFormat( " | {0} {1} {2} |\n", m00, m01, m02 );
-			builder.AppendFormat( " | {0} {1} {2} |\n", m10, m11, m12 );
-			builder.AppendFormat( " | {0} {1} {2} |", m20, m21, m22 );
+			builder.AppendFormat( " | {0} {1} {2} |\n", this.m00, this.m01, this.m02 );
+			builder.AppendFormat( " | {0} {1} {2} |\n", this.m10, this.m11, this.m12 );
+			builder.AppendFormat( " | {0} {1} {2} |", this.m20, this.m21, this.m22 );
 
 			return builder.ToString();
 		}
@@ -773,7 +773,7 @@ namespace Axiom.Math
 			var hashCode = 0;
 			unsafe
 			{
-				fixed ( Real* pM = &m00 )
+				fixed ( Real* pM = &this.m00 )
 				{
 					for ( var i = 0; i < 9; i++ )
 					{

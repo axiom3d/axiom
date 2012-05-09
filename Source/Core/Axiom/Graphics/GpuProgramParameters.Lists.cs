@@ -73,7 +73,7 @@ namespace Axiom.Graphics
 
 				public void Dispose()
 				{
-					Memory.UnpinObject( Owner );
+					Memory.UnpinObject( this.Owner );
 				}
 			};
 
@@ -89,7 +89,7 @@ namespace Axiom.Graphics
 			{
 				if ( !IsDisposed && disposeManagedResources )
 				{
-					_ptr.SafeDispose();
+					this._ptr.SafeDispose();
 				}
 
 				base.dispose( disposeManagedResources );
@@ -97,9 +97,9 @@ namespace Axiom.Graphics
 
 			public FixedPointer Fix( int offset )
 			{
-				_ptr.Owner = Data;
-				_ptr.Pointer = Memory.PinObject( _ptr.Owner ).Offset( _size*offset );
-				return _ptr;
+				this._ptr.Owner = Data;
+				this._ptr.Pointer = Memory.PinObject( this._ptr.Owner ).Offset( this._size*offset );
+				return this._ptr;
 			}
 
 			public IEnumerator<T> GetEnumerator()

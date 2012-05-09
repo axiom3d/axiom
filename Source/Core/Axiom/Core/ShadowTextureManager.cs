@@ -66,16 +66,16 @@ namespace Axiom.Core
 
 		public ShadowTextureConfig()
 		{
-			width = 512;
-			height = 512;
-			format = PixelFormat.X8R8G8B8;
+			this.width = 512;
+			this.height = 512;
+			this.format = PixelFormat.X8R8G8B8;
 		}
 
 		#region System.Object Implementation
 
 		public bool Equals( ShadowTextureConfig other )
 		{
-			return width == other.width && height == other.height && format == other.format;
+			return this.width == other.width && this.height == other.height && this.format == other.format;
 		}
 
 		public override bool Equals( object obj )
@@ -144,7 +144,7 @@ namespace Axiom.Core
 			foreach ( var config in configList )
 			{
 				var found = false;
-				foreach ( var wr in textureList )
+				foreach ( var wr in this.textureList )
 				{
 					if ( wr.IsAlive )
 					{
@@ -168,14 +168,14 @@ namespace Axiom.Core
 				{
 					// Create a new texture
 					var baseName = "Axiom/ShadowTexture";
-					var targName = baseName + count++;
+					var targName = baseName + this.count++;
 					var shadowTex = TextureManager.Instance.CreateManual( targName, "", TextureType.TwoD, config.width, config.height,
 					                                                      1, 0, TextureUsage.RenderTarget );
 					// Ensure texture loaded
 					shadowTex.Load();
 					listToPopulate.Add( shadowTex );
 					usedTextures.Add( shadowTex );
-					textureList.Add( new WeakReference( shadowTex ) );
+					this.textureList.Add( new WeakReference( shadowTex ) );
 				}
 			}
 		}
@@ -185,7 +185,7 @@ namespace Axiom.Core
 		/// </summary>
 		public Texture GetNullShadowTexture( PixelFormat format )
 		{
-			foreach ( var wr in nullTextureList )
+			foreach ( var wr in this.nullTextureList )
 			{
 				if ( wr.IsAlive )
 				{
@@ -201,10 +201,10 @@ namespace Axiom.Core
 			// not found, create a new one
 			// A 1x1 texture of the correct format, not a render target
 			var baseName = "Axiom/ShadowTextureNull";
-			var targName = baseName + count++;
+			var targName = baseName + this.count++;
 			var shadowTex = TextureManager.Instance.CreateManual( targName, "", TextureType.TwoD, 1, 1, 1, 0,
 			                                                      TextureUsage.Default );
-			nullTextureList.Add( new WeakReference( shadowTex ) );
+			this.nullTextureList.Add( new WeakReference( shadowTex ) );
 
 			// Populate the texture based on format
 			shadowTex.GetBuffer().Lock( BufferLocking.Discard );
@@ -268,14 +268,14 @@ namespace Axiom.Core
 		/// </summary>
 		public void ClearAll()
 		{
-			foreach ( var wr in textureList )
+			foreach ( var wr in this.textureList )
 			{
 				if ( wr.IsAlive )
 				{
 					TextureManager.Instance.Remove( (Resource)wr.Target );
 				}
 			}
-			textureList.Clear();
+			this.textureList.Clear();
 		}
 
 		#endregion Public Methods

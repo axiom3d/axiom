@@ -67,7 +67,7 @@ namespace Axiom.Scripting.Compiler
 		{
 			get
 			{
-				return _translatorManagers;
+				return this._translatorManagers;
 			}
 		}
 
@@ -84,14 +84,14 @@ namespace Axiom.Scripting.Compiler
 			this._scriptPatterns.Add( "*.particle" );
 			this._scriptPatterns.Add( "*.compositor" );
 #endif
-			_scriptPatterns.Add( "*.os" );
+			this._scriptPatterns.Add( "*.os" );
 
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
 
-			_compiler = new ScriptCompiler();
+			this._compiler = new ScriptCompiler();
 
-			_builtinTranslatorManager = new BuiltinScriptTranslatorManager();
-			_translatorManagers.Add( _builtinTranslatorManager );
+			this._builtinTranslatorManager = new BuiltinScriptTranslatorManager();
+			this._translatorManagers.Add( this._builtinTranslatorManager );
 		}
 
 		#endregion Construction and Destruction
@@ -108,11 +108,11 @@ namespace Axiom.Scripting.Compiler
 			ScriptCompiler.Translator translator = null;
 
 			// Start looking from the back
-			if ( _translatorManagers.Count > 0 )
+			if ( this._translatorManagers.Count > 0 )
 			{
-				for ( var i = _translatorManagers.Count - 1; i >= 0; i-- )
+				for ( var i = this._translatorManagers.Count - 1; i >= 0; i-- )
 				{
-					translator = _translatorManagers[ i ].GetTranslator( node );
+					translator = this._translatorManagers[ i ].GetTranslator( node );
 					if ( translator != null )
 					{
 						break;
@@ -134,7 +134,7 @@ namespace Axiom.Scripting.Compiler
 		{
 			get
 			{
-				return _scriptPatterns;
+				return this._scriptPatterns;
 			}
 		}
 
@@ -146,7 +146,7 @@ namespace Axiom.Scripting.Compiler
 
 			var rdr = new System.IO.StreamReader( stream );
 			var script = rdr.ReadToEnd();
-			_compiler.Compile( script, fileName, groupName );
+			this._compiler.Compile( script, fileName, groupName );
 
 			// Unset events in order to avoid that compiler's events will be called twice next time
 			_unsetCompilerEvents();
@@ -157,31 +157,31 @@ namespace Axiom.Scripting.Compiler
 		/// </summary>
 		private void _setCompilerEvents()
 		{
-			Contract.RequiresNotNull( _compiler, "_compiler" );
+			Contract.RequiresNotNull( this._compiler, "_compiler" );
 
 			if ( OnImportFile != null )
 			{
-				_compiler.OnImportFile += OnImportFile;
+				this._compiler.OnImportFile += OnImportFile;
 			}
 
 			if ( OnPreConversion != null )
 			{
-				_compiler.OnPreConversion += OnPreConversion;
+				this._compiler.OnPreConversion += OnPreConversion;
 			}
 
 			if ( OnPostConversion != null )
 			{
-				_compiler.OnPostConversion += OnPostConversion;
+				this._compiler.OnPostConversion += OnPostConversion;
 			}
 
 			if ( OnCompileError != null )
 			{
-				_compiler.OnCompileError += OnCompileError;
+				this._compiler.OnCompileError += OnCompileError;
 			}
 
 			if ( OnCompilerEvent != null )
 			{
-				_compiler.OnCompilerEvent += OnCompilerEvent;
+				this._compiler.OnCompilerEvent += OnCompilerEvent;
 			}
 		}
 
@@ -190,31 +190,31 @@ namespace Axiom.Scripting.Compiler
 		/// </summary>
 		private void _unsetCompilerEvents()
 		{
-			Contract.RequiresNotNull( _compiler, "_compiler" );
+			Contract.RequiresNotNull( this._compiler, "_compiler" );
 
 			if ( OnImportFile != null )
 			{
-				_compiler.OnImportFile -= OnImportFile;
+				this._compiler.OnImportFile -= OnImportFile;
 			}
 
 			if ( OnPreConversion != null )
 			{
-				_compiler.OnPreConversion -= OnPreConversion;
+				this._compiler.OnPreConversion -= OnPreConversion;
 			}
 
 			if ( OnPostConversion != null )
 			{
-				_compiler.OnPostConversion -= OnPostConversion;
+				this._compiler.OnPostConversion -= OnPostConversion;
 			}
 
 			if ( OnCompileError != null )
 			{
-				_compiler.OnCompileError -= OnCompileError;
+				this._compiler.OnCompileError -= OnCompileError;
 			}
 
 			if ( OnCompilerEvent != null )
 			{
-				_compiler.OnCompilerEvent -= OnCompilerEvent;
+				this._compiler.OnCompilerEvent -= OnCompilerEvent;
 			}
 		}
 
@@ -247,7 +247,7 @@ namespace Axiom.Scripting.Compiler
 		{
 			get
 			{
-				return _translators.Count;
+				return this._translators.Count;
 			}
 		}
 
@@ -264,7 +264,7 @@ namespace Axiom.Scripting.Compiler
 				var parent = obj.Parent != null ? (ObjectAbstractNode)obj.Parent : null;
 				var parentId = parent != null ? (Keywords)parent.Id : Keywords.ID_ZERO;
 
-				foreach ( var currentTranslator in _translators )
+				foreach ( var currentTranslator in this._translators )
 				{
 					if ( currentTranslator.CheckFor( (Keywords)obj.Id, parentId ) )
 					{

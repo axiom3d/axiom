@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
 using Axiom.Graphics;
 using Axiom.Media;
 
@@ -15,7 +10,8 @@ namespace Axiom.RenderSystems.OpenGLES
 			public GLESPBuffer Buffer;
 			public int ReferenceCount;
 		}
-		PBRef[] _pixelBuffers = new PBRef[ (int)PixelComponentType.Count ];
+
+		private readonly PBRef[] _pixelBuffers = new PBRef[ (int) PixelComponentType.Count ];
 
 		private GLESSupport _support;
 		private RenderTarget _mainWindow;
@@ -23,19 +19,18 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		public void GLESRTTManager( GLESSupport support, RenderTarget mainWindow )
 		{
-			_support = support;
-			_mainWindow = mainWindow;
-			_mainContext = (GLESContext)_mainWindow[ "glcontext" ];
+			this._support = support;
+			this._mainWindow = mainWindow;
+			this._mainContext = (GLESContext) this._mainWindow[ "glcontext" ];
 		}
 
 		public void RequestPBuffer( PixelComponentType ctype, int width, int height )
 		{
-			PBRef current = _pixelBuffers[ (int)ctype ];
+			PBRef current = this._pixelBuffers[ (int) ctype ];
 			// Check size
 			if ( current.Buffer != null )
 			{
-				if ( current.Buffer.Width < width ||
-					current.Buffer.Height < height )
+				if ( current.Buffer.Width < width || current.Buffer.Height < height )
 				{
 					// If the current PBuffer is too small, destroy it and create a new one					
 					//current.Buffer.Dispose();
@@ -49,18 +44,17 @@ namespace Axiom.RenderSystems.OpenGLES
 				current.Buffer = this._support.CreatePixelBuffer( ctype, width, height );
 			}
 			++current.ReferenceCount;
-			_pixelBuffers[ (int)ctype ] = current;
+			this._pixelBuffers[ (int) ctype ] = current;
 		}
 
 		public void ReleasePBuffer( PixelComponentType ctype )
 		{
-			--_pixelBuffers[ (int)ctype ].ReferenceCount;
-			if ( _pixelBuffers[ (int)ctype ].ReferenceCount == 0 )
+			--this._pixelBuffers[ (int) ctype ].ReferenceCount;
+			if ( this._pixelBuffers[ (int) ctype ].ReferenceCount == 0 )
 			{
 				//_pixelBuffers[ (int)ctype ].Buffer.Dispose();
-				_pixelBuffers[ (int)ctype ].Buffer = null;
+				this._pixelBuffers[ (int) ctype ].Buffer = null;
 			}
-
 		}
 
 		#region GLESRTTManager Implementation
@@ -86,15 +80,13 @@ namespace Axiom.RenderSystems.OpenGLES
 			// Copy on unbind
 			GLESSurfaceDescription surface;
 			surface.Buffer = null;
-			surface = (GLESSurfaceDescription)target[ "TARGET" ];
+			surface = (GLESSurfaceDescription) target[ "TARGET" ];
 			if ( surface.Buffer != null )
 			{
-				( (GLESTextureBuffer)surface.Buffer ).CopyFromFramebuffer( surface.ZOffset );
-
+				( (GLESTextureBuffer) surface.Buffer ).CopyFromFramebuffer( surface.ZOffset );
 			}
 		}
 
 		#endregion GLESRTTManager Implementation
-
 	}
 }

@@ -112,14 +112,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return fileName;
+				return this.fileName;
 			}
 			set
 			{
-				fileName = value;
-				source = "";
+				this.fileName = value;
+				this.source = "";
 				LoadFromFile = true;
-				compileError = false;
+				this.compileError = false;
 			}
 		}
 
@@ -143,14 +143,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return source;
+				return this.source;
 			}
 			set
 			{
-				source = value;
-				fileName = "";
+				this.source = value;
+				this.fileName = "";
 				LoadFromFile = false;
-				compileError = false;
+				this.compileError = false;
 			}
 		}
 
@@ -168,11 +168,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return syntaxCode;
+				return this.syntaxCode;
 			}
 			set
 			{
-				syntaxCode = value;
+				this.syntaxCode = value;
 			}
 		}
 
@@ -190,11 +190,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return type;
+				return this.type;
 			}
 			set
 			{
-				type = value;
+				this.type = value;
 			}
 		}
 
@@ -212,11 +212,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return isSkeletalAnimationIncluded;
+				return this.isSkeletalAnimationIncluded;
 			}
 			set
 			{
-				isSkeletalAnimationIncluded = value;
+				this.isSkeletalAnimationIncluded = value;
 			}
 		}
 
@@ -238,11 +238,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return morphAnimation;
+				return this.morphAnimation;
 			}
 			set
 			{
-				morphAnimation = value;
+				this.morphAnimation = value;
 			}
 		}
 
@@ -264,11 +264,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return vertexTextureFetchRequired;
+				return this.vertexTextureFetchRequired;
 			}
 			set
 			{
-				vertexTextureFetchRequired = value;
+				this.vertexTextureFetchRequired = value;
 			}
 		}
 
@@ -290,11 +290,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return needsAdjacencyInfo;
+				return this.needsAdjacencyInfo;
 			}
 			set
 			{
-				needsAdjacencyInfo = value;
+				this.needsAdjacencyInfo = value;
 			}
 		}
 
@@ -316,11 +316,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return poseAnimation;
+				return this.poseAnimation;
 			}
 			set
 			{
-				poseAnimation = value;
+				this.poseAnimation = value;
 			}
 		}
 
@@ -336,7 +336,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return poseAnimation > 0;
+				return this.poseAnimation > 0;
 			}
 		}
 
@@ -364,7 +364,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return defaultParams ?? ( defaultParams = CreateParameters() );
+				return this.defaultParams ?? ( this.defaultParams = CreateParameters() );
 			}
 		}
 
@@ -377,7 +377,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return defaultParams != null;
+				return this.defaultParams != null;
 			}
 		}
 
@@ -462,7 +462,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( compileError || !IsRequiredCapabilitiesSupported() )
+				if ( this.compileError || !IsRequiredCapabilitiesSupported() )
 				{
 					return false;
 				}
@@ -488,7 +488,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return compileError;
+				return this.compileError;
 			}
 		}
 
@@ -497,7 +497,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void ResetCompileError()
 		{
-			compileError = false;
+			this.compileError = false;
 		}
 
 		#endregion CompilerError Property
@@ -534,7 +534,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return constantDefs;
+				return this.constantDefs;
 			}
 		}
 
@@ -558,15 +558,15 @@ namespace Axiom.Graphics
 			set
 			{
 				CreateParameterMappingStructures();
-				constantDefs = value;
+				this.constantDefs = value;
 
-				floatLogicalToPhysical.BufferSize = constantDefs.FloatBufferSize;
-				intLogicalToPhysical.BufferSize = constantDefs.IntBufferSize;
-				floatLogicalToPhysical.Map.Clear();
-				intLogicalToPhysical.Map.Clear();
+				this.floatLogicalToPhysical.BufferSize = this.constantDefs.FloatBufferSize;
+				this.intLogicalToPhysical.BufferSize = this.constantDefs.IntBufferSize;
+				this.floatLogicalToPhysical.Map.Clear();
+				this.intLogicalToPhysical.Map.Clear();
 
 				// need to set up logical mappings too for some rendersystems
-				foreach ( var pair in constantDefs.Map )
+				foreach ( var pair in this.constantDefs.Map )
 				{
 					var name = pair.Key;
 					var def = pair.Value;
@@ -580,11 +580,11 @@ namespace Axiom.Graphics
 					                                                       def.Variability );
 					if ( def.IsFloat )
 					{
-						floatLogicalToPhysical.Map.Add( def.LogicalIndex, val );
+						this.floatLogicalToPhysical.Map.Add( def.LogicalIndex, val );
 					}
 					else
 					{
-						intLogicalToPhysical.Map.Add( def.LogicalIndex, val );
+						this.intLogicalToPhysical.Map.Add( def.LogicalIndex, val );
 					}
 				}
 			}
@@ -596,7 +596,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return constantDefs;
+				return this.constantDefs;
 			}
 		}
 
@@ -624,12 +624,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return manualNamedConstantsFile;
+				return this.manualNamedConstantsFile;
 			}
 			set
 			{
-				manualNamedConstantsFile = value;
-				_loadedManualNamedConstants = false;
+				this.manualNamedConstantsFile = value;
+				this._loadedManualNamedConstants = false;
 			}
 		}
 
@@ -649,15 +649,15 @@ namespace Axiom.Graphics
 		                      IManualResourceLoader loader )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-			type = GpuProgramType.Vertex;
+			this.type = GpuProgramType.Vertex;
 			LoadFromFile = true;
-			isSkeletalAnimationIncluded = false;
-			morphAnimation = false;
-			poseAnimation = 0;
-			vertexTextureFetchRequired = false;
-			needsAdjacencyInfo = false;
-			compileError = false;
-			_loadedManualNamedConstants = false;
+			this.isSkeletalAnimationIncluded = false;
+			this.morphAnimation = false;
+			this.poseAnimation = 0;
+			this.vertexTextureFetchRequired = false;
+			this.needsAdjacencyInfo = false;
+			this.compileError = false;
+			this._loadedManualNamedConstants = false;
 
 			CreateParameterMappingStructures();
 		}
@@ -685,12 +685,12 @@ namespace Axiom.Graphics
 			var ret = GpuProgramManager.Instance.CreateParameters();
 
 			// optionally load manually supplied named constants
-			if ( !String.IsNullOrEmpty( manualNamedConstantsFile ) && !_loadedManualNamedConstants )
+			if ( !String.IsNullOrEmpty( this.manualNamedConstantsFile ) && !this._loadedManualNamedConstants )
 			{
 				try
 				{
 					var namedConstants = new GpuProgramParameters.GpuNamedConstants();
-					var stream = ResourceGroupManager.Instance.OpenResource( manualNamedConstantsFile, Group, true, this );
+					var stream = ResourceGroupManager.Instance.OpenResource( this.manualNamedConstantsFile, Group, true, this );
 					namedConstants.Load( stream );
 					ManualNamedConstants = namedConstants;
 				}
@@ -699,22 +699,22 @@ namespace Axiom.Graphics
 					LogManager.Instance.Write( "Unable to load manual named constants for GpuProgram {0} : {1}", Name,
 					                           LogManager.BuildExceptionString( ex ) );
 				}
-				_loadedManualNamedConstants = true;
+				this._loadedManualNamedConstants = true;
 			}
 
 			// set up named parameters, if any
-			if ( constantDefs != null && constantDefs.Map.Count > 0 )
+			if ( this.constantDefs != null && this.constantDefs.Map.Count > 0 )
 			{
-				ret.NamedConstants = constantDefs;
+				ret.NamedConstants = this.constantDefs;
 			}
 			// link shared logical / physical map for low-level use
-			ret.SetLogicalIndexes( floatLogicalToPhysical, intLogicalToPhysical );
+			ret.SetLogicalIndexes( this.floatLogicalToPhysical, this.intLogicalToPhysical );
 
 
 			// Copy in default parameters if present
-			if ( defaultParams != null )
+			if ( this.defaultParams != null )
 			{
-				ret.CopyConstantsFrom( defaultParams );
+				ret.CopyConstantsFrom( this.defaultParams );
 			}
 
 			return ret;
@@ -733,9 +733,9 @@ namespace Axiom.Graphics
 			// load from file and get the source string from it
 			if ( LoadFromFile )
 			{
-				var stream = ResourceGroupManager.Instance.OpenResource( fileName, Group, true, this );
+				var stream = ResourceGroupManager.Instance.OpenResource( this.fileName, Group, true, this );
 				var reader = new StreamReader( stream, System.Text.Encoding.UTF8 );
-				source = reader.ReadToEnd();
+				this.source = reader.ReadToEnd();
 			}
 
 			// Call polymorphic load
@@ -743,26 +743,26 @@ namespace Axiom.Graphics
 			{
 				LoadFromSource();
 
-				if ( defaultParams != null )
+				if ( this.defaultParams != null )
 				{
 					// Keep a reference to old ones to copy
-					var savedParams = defaultParams;
+					var savedParams = this.defaultParams;
 					// reset params to stop them being referenced in the next create
 					// _defaultParams.SetNull();
 
 					// Create new params
-					defaultParams = CreateParameters();
+					this.defaultParams = CreateParameters();
 
 					// Copy old (matching) values across
 					// Don't use copyConstantsFrom since program may be different
-					defaultParams.CopyMatchingNamedConstantsFrom( savedParams );
+					this.defaultParams.CopyMatchingNamedConstantsFrom( savedParams );
 				}
 			}
 			catch ( Exception ex )
 			{
 				LogManager.Instance.Write(
 					"Gpu program {0} encountered an error during loading and is thus not supported. Details: {1}", Name, ex.Message );
-				compileError = true;
+				this.compileError = true;
 			}
 		}
 
@@ -828,13 +828,13 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected void CreateLogicalParameterMappingStructures( bool recreateIfExists )
 		{
-			if ( recreateIfExists || floatLogicalToPhysical == null )
+			if ( recreateIfExists || this.floatLogicalToPhysical == null )
 			{
-				floatLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
+				this.floatLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
 			}
-			if ( recreateIfExists || intLogicalToPhysical == null )
+			if ( recreateIfExists || this.intLogicalToPhysical == null )
 			{
-				intLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
+				this.intLogicalToPhysical = new GpuProgramParameters.GpuLogicalBufferStruct();
 			}
 		}
 
@@ -848,9 +848,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		private void CreateNamedParameterMappingStructures( bool recreateIfExists )
 		{
-			if ( recreateIfExists || constantDefs == null )
+			if ( recreateIfExists || this.constantDefs == null )
 			{
-				constantDefs = new GpuProgramParameters.GpuNamedConstants();
+				this.constantDefs = new GpuProgramParameters.GpuNamedConstants();
 			}
 		}
 

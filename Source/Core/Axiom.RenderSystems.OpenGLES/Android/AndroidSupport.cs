@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,31 +25,32 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Runtime.InteropServices;
-using System.Drawing;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Runtime.InteropServices;
+
 using Axiom.Collections;
-using Axiom.Graphics;
-using Axiom.Graphics.Collections;
 using Axiom.Configuration;
 using Axiom.Core;
-using OpenTK.Graphics.ES20;
-
-using OpenTK;
+using Axiom.Graphics;
 
 using Javax.Microedition.Khronos.Egl;
+
 using NativeDisplayType = Java.Lang.Object;
 using EGLCONTEXT = Javax.Microedition.Khronos.Egl.EGLContext;
 
@@ -56,91 +58,87 @@ using EGLCONTEXT = Javax.Microedition.Khronos.Egl.EGLContext;
 
 namespace Axiom.RenderSystems.OpenGLES.Android
 {
-	class AndroidSupport : GLESSupport
+	internal class AndroidSupport : GLESSupport
 	{
 		protected EGLDisplay _glDisplay;
 		protected NativeDisplayType _nativeDislpay;
 		protected bool _isExternalDisplay;
 		protected bool _randr;
 
-		private List<KeyValuePair<Size, short>> _videoModes;
+		private readonly List<KeyValuePair<Size, short>> _videoModes;
 		private KeyValuePair<Size, short> _originalMode;
 		private KeyValuePair<Size, short> _currentMode;
-		private List<string> _sampleLevels;
+		private readonly List<string> _sampleLevels;
+
 		/// <summary>
-		/// 
 		/// </summary>
 		public EGLDisplay GLDisplay
 		{
 			get
 			{
-				int[] majorMinor = new int[ 2 ];
-				_glDisplay = Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglGetDisplay( _nativeDislpay );
-				if ( _glDisplay == Javax.Microedition.Khronos.Egl.EGL10Consts.EglNoDisplay )
+				var majorMinor = new int[ 2 ];
+				this._glDisplay = Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglGetDisplay( this._nativeDislpay );
+				if ( this._glDisplay == Javax.Microedition.Khronos.Egl.EGL10Consts.EglNoDisplay )
 				{
 					throw new AxiomException( "Couldn't open EGLDisplay " + DisplayName );
 				}
 
-				if ( !Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglInitialize( _glDisplay, majorMinor ) )
+				if ( !Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglInitialize( this._glDisplay, majorMinor ) )
 				{
 					throw new AxiomException( "Couldn't open EGLDisplay " + DisplayName );
 				}
-				return _glDisplay;
+				return this._glDisplay;
 			}
-			set
-			{
-				_glDisplay = value;
-			}
+			set { this._glDisplay = value; }
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public string DisplayName
 		{
-			get
-			{
-				return "TODO";
-			}
+			get { return "TODO"; }
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public AndroidSupport()
 			: base()
 		{
-			_videoModes = new List<KeyValuePair<Size, short>>();
-			_originalMode = new KeyValuePair<Size, short>();
-			_sampleLevels = new List<string>();
-			_currentMode = new KeyValuePair<Size, short>();
+			this._videoModes = new List<KeyValuePair<Size, short>>();
+			this._originalMode = new KeyValuePair<Size, short>();
+			this._sampleLevels = new List<string>();
+			this._currentMode = new KeyValuePair<Size, short>();
 		}
 
 		public override void AddConfig()
 		{
-			ConfigOption optFullsreen = new ConfigOption( "Full Screen", "No", false );
-			ConfigOption optVideoMode = new ConfigOption( "Video Mode", "640 x 320", false );
-			ConfigOption optDisplayFrequenzy = new ConfigOption( "Display Frequency", "60", false );
-			ConfigOption optFSAA = new ConfigOption( "FSAA", "1", false );
-			ConfigOption optRTTMode = new ConfigOption( "RTT Preferred Mode", "FBO", false );
+			var optFullsreen = new ConfigOption( "Full Screen", "No", false );
+			var optVideoMode = new ConfigOption( "Video Mode", "640 x 320", false );
+			var optDisplayFrequenzy = new ConfigOption( "Display Frequency", "60", false );
+			var optFSAA = new ConfigOption( "FSAA", "1", false );
+			var optRTTMode = new ConfigOption( "RTT Preferred Mode", "FBO", false );
 			optFullsreen.PossibleValues.Add( 0, "Yes" );
 			optFullsreen.PossibleValues.Add( 1, "No" );
 
 			optFullsreen.Value = optFullsreen.PossibleValues[ 0 ];
 			int index = 0;
-			foreach ( KeyValuePair<Size, short> mode in _videoModes )
+			foreach ( var mode in this._videoModes )
 			{
 				string resolution = mode.Key.Width + " x " + mode.Key.Height;
 				if ( !optVideoMode.PossibleValues.ContainsValue( resolution ) )
+				{
 					optVideoMode.PossibleValues.Add( index++, resolution );
+				}
 			}
 			index = 0;
-			optVideoMode.Value = _currentMode.Key.Width + " x " + _currentMode.Key.Height;
+			optVideoMode.Value = this._currentMode.Key.Width + " x " + this._currentMode.Key.Height;
 
-			if ( _sampleLevels.Count > 0 )
+			if ( this._sampleLevels.Count > 0 )
 			{
-				foreach ( string fssa in _sampleLevels )
+				foreach ( string fssa in this._sampleLevels )
+				{
 					optFSAA.PossibleValues.Add( index++, fssa );
+				}
 
 				optFSAA.Value = optFSAA.PossibleValues[ 0 ];
 			}
@@ -160,15 +158,16 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="value"></param>
+		/// <param name="name"> </param>
+		/// <param name="value"> </param>
 		public override void SetConfigOption( string name, string value )
 		{
 			base.SetConfigOption( name, value );
 			if ( name == "Video Mode" )
+			{
 				RefreshConfig();
+			}
 		}
 
 		public override GLESPBuffer CreatePixelBuffer( Media.PixelComponentType ctype, int width, int height )
@@ -177,7 +176,6 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected void RefreshConfig()
 		{
@@ -190,7 +188,7 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 			while ( vidIndex < optVideoMode.PossibleValues.Count && freqIndex < optDisplayFrequency.PossibleValues.Count )
 			{
 				optDisplayFrequency.PossibleValues.Clear();
-				foreach ( KeyValuePair<Size, short> value in _videoModes )
+				foreach ( var value in this._videoModes )
 				{
 					string mode = value.Key.Width + " x " + value.Key.Height;
 					if ( mode == optVideoMode.Value )
@@ -205,8 +203,8 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 				}
 				else
 				{
-					optVideoMode.Value = _videoModes[ 0 ].Key.Width + " x " + _videoModes[ 0 ].Key.Height;
-					optDisplayFrequency.Value = _videoModes[ 0 ].Value.ToString() + " MHz";
+					optVideoMode.Value = this._videoModes[ 0 ].Key.Width + " x " + this._videoModes[ 0 ].Key.Height;
+					optDisplayFrequency.Value = this._videoModes[ 0 ].Value.ToString() + " MHz";
 				}
 				vidIndex++;
 				freqIndex++;
@@ -214,21 +212,20 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="attribList"></param>
-		/// <param name="elements"></param>
-		/// <returns></returns>
+		/// <param name="attribList"> </param>
+		/// <param name="elements"> </param>
+		/// <returns> </returns>
 		public EGLConfig[] ChooseGLConfig( int[] attribList, int[] elements )
 		{
 			EGLConfig[] configs;
-			if ( Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglChooseConfig( _glDisplay, attribList, null, 0, elements ) == false )
+			if ( Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglChooseConfig( this._glDisplay, attribList, null, 0, elements ) == false )
 			{
 				throw new AxiomException( "Failed to choose config" );
 			}
 
-			configs = new EGLConfig[ Marshal.SizeOf( typeof( EGLConfig ) ) * elements.Length ];
-			if ( Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglChooseConfig( _glDisplay, attribList, configs, configs.Length, elements ) == false )
+			configs = new EGLConfig[ Marshal.SizeOf( typeof ( EGLConfig ) ) * elements.Length ];
+			if ( Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglChooseConfig( this._glDisplay, attribList, configs, configs.Length, elements ) == false )
 			{
 				throw new AxiomException( "Failed to choose config" );
 			}
@@ -237,34 +234,31 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="glConfig"></param>
-		/// <param name="attribute"></param>
-		/// <param name="value"></param>
-		/// <returns></returns>
+		/// <param name="glConfig"> </param>
+		/// <param name="attribute"> </param>
+		/// <param name="value"> </param>
+		/// <returns> </returns>
 		public bool GetGLConfigAttrib( EGLConfig glConfig, int attribute, int[] value )
 		{
 			bool status = false;
-			status = Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglGetConfigAttrib( _glDisplay, glConfig, attribute, value );
+			status = Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglGetConfigAttrib( this._glDisplay, glConfig, attribute, value );
 			return status;
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="procname"></param>
-		/// <returns></returns>
+		/// <param name="procname"> </param>
+		/// <returns> </returns>
 		public override IntPtr GetProcAddress( string procname )
 		{
 			return IntPtr.Zero;
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="context"></param>
-		/// <returns></returns>
+		/// <param name="context"> </param>
+		/// <returns> </returns>
 		public EGLConfig GetGLConfigFromContext( EGLCONTEXT context )
 		{
 #warning CAN NOT CAST EGLCONFIG > INT[], how's that possible? :S
@@ -294,24 +288,22 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="eglDisplay"></param>
-		/// <param name="glConfig"></param>
-		/// <param name="shareList"></param>
-		/// <returns></returns>
+		/// <param name="eglDisplay"> </param>
+		/// <param name="glConfig"> </param>
+		/// <param name="shareList"> </param>
+		/// <returns> </returns>
 		public EGLCONTEXT CreateNewContext( EGLDisplay eglDisplay, EGLConfig glConfig, EGLCONTEXT shareList )
 		{
-
-			int[] contexAttrs = new int[] { 1, 2, EGL10Consts.EglNone };
+			var contexAttrs = new int[] { 1, 2, EGL10Consts.EglNone };
 			EGLCONTEXT context = null;
 			if ( eglDisplay == null )
 			{
-				context = EGLCONTEXT.EGL11.EglCreateContext( _glDisplay, glConfig, shareList, contexAttrs );
+				context = EGLCONTEXT.EGL11.EglCreateContext( this._glDisplay, glConfig, shareList, contexAttrs );
 			}
 			else
 			{
-				context = EGLCONTEXT.EGL11.EglCreateContext( _glDisplay, glConfig, null, contexAttrs );
+				context = EGLCONTEXT.EGL11.EglCreateContext( this._glDisplay, glConfig, null, contexAttrs );
 			}
 
 			if ( context == null )
@@ -323,9 +315,8 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		public override string ValidateConfig()
 		{
 			//TODO
@@ -333,18 +324,17 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="autoCreateWindow"></param>
-		/// <param name="renderSystem"></param>
-		/// <param name="windowTitle"></param>
-		/// <returns></returns>
+		/// <param name="autoCreateWindow"> </param>
+		/// <param name="renderSystem"> </param>
+		/// <param name="windowTitle"> </param>
+		/// <returns> </returns>
 		public override RenderWindow CreateWindow( bool autoCreateWindow, GLESRenderSystem renderSystem, string windowTitle )
 		{
 			RenderWindow window = null;
 			if ( autoCreateWindow )
 			{
-				NamedParameterList miscParams = new NamedParameterList();
+				var miscParams = new NamedParameterList();
 				bool fullScreen = false;
 				int width = 640;
 				int height = 480;
@@ -379,13 +369,12 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 
 		public override Graphics.RenderWindow NewWindow( string name, int width, int height, bool fullScreen, Collections.NamedParameterList miscParams = null )
 		{
-			AndroidWindow window = new AndroidWindow();
+			var window = new AndroidWindow();
 			window.Create( name, width, height, fullScreen, miscParams );
 			return window;
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public override void Start()
 		{
@@ -393,7 +382,6 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public override void Stop()
 		{

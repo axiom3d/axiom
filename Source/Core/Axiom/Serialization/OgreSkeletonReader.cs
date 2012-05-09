@@ -133,7 +133,7 @@ namespace Axiom.Serialization
 			var length = ReadFloat( reader );
 
 			// create an animation from the skeleton
-			var anim = skeleton.CreateAnimation( name, length );
+			var anim = this.skeleton.CreateAnimation( name, length );
 
 			// keep reading all keyframes for this track
 			if ( !IsEOF( reader ) )
@@ -167,7 +167,7 @@ namespace Axiom.Serialization
 			var boneHandle = ReadUShort( reader );
 
 			// get a reference to the target bone
-			var targetBone = skeleton.GetBone( boneHandle );
+			var targetBone = this.skeleton.GetBone( boneHandle );
 
 			// create an animation track for this bone
 			var track = anim.CreateNodeTrack( boneHandle, targetBone );
@@ -206,7 +206,7 @@ namespace Axiom.Serialization
 			var handle = ReadUShort( reader );
 
 			// create a new bone
-			var bone = skeleton.CreateBone( name, handle );
+			var bone = this.skeleton.CreateBone( name, handle );
 
 			// read and set the position of the bone
 			var position = ReadVector3( reader );
@@ -233,8 +233,8 @@ namespace Axiom.Serialization
 			parentHandle = ReadUShort( reader );
 
 			// get references to father and son bones
-			parent = skeleton.GetBone( parentHandle );
-			child = skeleton.GetBone( childHandle );
+			parent = this.skeleton.GetBone( parentHandle );
+			child = this.skeleton.GetBone( childHandle );
 
 			// attach the child to the parent
 			parent.AddChild( child );
@@ -287,7 +287,7 @@ namespace Axiom.Serialization
 			var q = ReadQuat( reader );
 
 			// create the attachment point
-			var ap = skeleton.CreateAttachmentPoint( name, boneHandle, q, position );
+			var ap = this.skeleton.CreateAttachmentPoint( name, boneHandle, q, position );
 		}
 
 		public void ExportSkeleton( Skeleton skeleton, string fileName )
@@ -311,30 +311,30 @@ namespace Axiom.Serialization
 
 		protected void WriteSkeleton( BinaryWriter writer )
 		{
-			for ( ushort i = 0; i < skeleton.BoneCount; ++i )
+			for ( ushort i = 0; i < this.skeleton.BoneCount; ++i )
 			{
-				var bone = skeleton.GetBone( i );
+				var bone = this.skeleton.GetBone( i );
 				WriteBone( writer, bone );
 			}
 
-			for ( ushort i = 0; i < skeleton.BoneCount; ++i )
+			for ( ushort i = 0; i < this.skeleton.BoneCount; ++i )
 			{
-				var bone = skeleton.GetBone( i );
+				var bone = this.skeleton.GetBone( i );
 				if ( bone.Parent != null )
 				{
 					WriteBoneParent( writer, bone, (Bone)bone.Parent );
 				}
 			}
 
-			foreach ( var anim in skeleton.Animations )
+			foreach ( var anim in this.skeleton.Animations )
 			{
 				WriteAnimation( writer, anim );
 			}
 
-			for ( var i = 0; i < skeleton.AttachmentPoints.Count; ++i )
+			for ( var i = 0; i < this.skeleton.AttachmentPoints.Count; ++i )
 			{
-				var ap = skeleton.AttachmentPoints[ i ];
-				WriteAttachmentPoint( writer, ap, skeleton.GetBone( ap.ParentBone ) );
+				var ap = this.skeleton.AttachmentPoints[ i ];
+				WriteAttachmentPoint( writer, ap, this.skeleton.GetBone( ap.ParentBone ) );
 			}
 		}
 

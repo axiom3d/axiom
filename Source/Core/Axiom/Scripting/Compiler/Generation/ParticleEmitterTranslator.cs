@@ -53,7 +53,7 @@ namespace Axiom.Scripting.Compiler
 			public ParticleEmitterTranslator()
 				: base()
 			{
-				_Emitter = null;
+				this._Emitter = null;
 			}
 
 			#region Translator Implementation
@@ -84,7 +84,7 @@ namespace Axiom.Scripting.Compiler
 				}
 
 				var system = (ParticleSystem)obj.Parent.Context;
-				_Emitter = system.AddEmitter( type );
+				this._Emitter = system.AddEmitter( type );
 
 				foreach ( var i in obj.Children )
 				{
@@ -114,7 +114,7 @@ namespace Axiom.Scripting.Compiler
 							}
 						}
 
-						if ( !_Emitter.SetParam( prop.Name, value ) )
+						if ( !this._Emitter.SetParam( prop.Name, value ) )
 						{
 							compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 						}

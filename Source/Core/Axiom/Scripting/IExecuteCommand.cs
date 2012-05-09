@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2006 Axiom Project Team
@@ -22,44 +23,40 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id: IExecuteCommand.cs 1087 2007-08-13 21:09:10Z borrillis $"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Scripting
 {
+	/// <summary>
+	///   Provides an interface for executing a method via a Command Pattern on an Object.
+	/// </summary>
+	public interface IExecuteCommand : IExecuteCommand<object> {}
 
 	/// <summary>
-	/// Provides an interface for executing a method via a Command Pattern on an Object.
+	///   Provides an interface for executing a method via a Command Pattern.
 	/// </summary>
-	public interface IExecuteCommand : IExecuteCommand<object>
+	/// <typeparam name="T"> Type of the object to operate on. </typeparam>
+	public interface IExecuteCommand<T>
 	{
-	}
-
-	/// <summary>
-	/// Provides an interface for executing a method via a Command Pattern.
-	/// </summary>
-	/// <typeparam name="T">Type of the object to operate on.</typeparam>
-    public interface IExecuteCommand<T>
-    {
-        /// <summary>
-        /// Executes a command on the target
-        /// </summary>
-        /// <param name="target"></param>
-        /// <returns></returns>
+		/// <summary>
+		///   Executes a command on the target
+		/// </summary>
+		/// <param name="target"> </param>
+		/// <returns> </returns>
 		void Execute( T target );
-
-    }
-
+	}
 }

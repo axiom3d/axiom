@@ -97,18 +97,18 @@ namespace Axiom.FileSystem
 		public Archive Load( string filename, string archiveType )
 		{
 			Archive arch = null;
-			if ( !_archives.TryGetValue( filename, out arch ) )
+			if ( !this._archives.TryGetValue( filename, out arch ) )
 			{
 				// Search factories
 				ArchiveFactory fac = null;
-				if ( !_factories.TryGetValue( archiveType, out fac ) )
+				if ( !this._factories.TryGetValue( archiveType, out fac ) )
 				{
 					throw new AxiomException( "Cannot find an archive factory to deal with archive of type {0}", archiveType );
 				}
 
 				arch = fac.CreateInstance( filename );
 				arch.Load();
-				_archives.Add( filename, arch );
+				this._archives.Add( filename, arch );
 			}
 			return arch;
 		}
@@ -136,18 +136,18 @@ namespace Axiom.FileSystem
 		/// <param name="filename">The Archive to unload</param>
 		public void Unload( string filename )
 		{
-			var arch = _archives[ filename ];
+			var arch = this._archives[ filename ];
 
 			if ( arch != null )
 			{
 				arch.Unload();
 
-				var fac = _factories[ arch.Type ];
+				var fac = this._factories[ arch.Type ];
 				if ( fac == null )
 				{
 					throw new AxiomException( "Cannot find an archive factory to deal with archive of type {0}", arch.Type );
 				}
-				_archives.Remove( arch.Name );
+				this._archives.Remove( arch.Name );
 				fac.DestroyInstance( ref arch );
 			}
 		}
@@ -160,12 +160,12 @@ namespace Axiom.FileSystem
 		/// <param name="factory">The factory itself</param>
 		public void AddArchiveFactory( ArchiveFactory factory )
 		{
-			if ( _factories.ContainsKey( factory.Type ) == true )
+			if ( this._factories.ContainsKey( factory.Type ) == true )
 			{
 				throw new AxiomException( "Attempted to add the {0} factory to ArchiveManager more than once.", factory.Type );
 			}
 
-			_factories.Add( factory.Type, factory );
+			this._factories.Add( factory.Type, factory );
 			LogManager.Instance.Write( "ArchiveFactory for archive type {0} registered.", factory.Type );
 		}
 
@@ -183,13 +183,13 @@ namespace Axiom.FileSystem
 				if ( disposeManagedResources )
 				{
 					// Unload & delete resources in turn
-					foreach ( var arch in _archives )
+					foreach ( var arch in this._archives )
 					{
 						// Unload
 						arch.Value.Unload();
 
 						// Find factory to destroy
-						var fac = _factories[ arch.Value.Type ];
+						var fac = this._factories[ arch.Value.Type ];
 						if ( fac == null )
 						{
 							// Factory not found
@@ -200,7 +200,7 @@ namespace Axiom.FileSystem
 					}
 
 					// Empty the list
-					_archives.Clear();
+					this._archives.Clear();
 				}
 
 				// There are no unmanaged resources to release, but

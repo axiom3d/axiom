@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,35 +25,27 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using OpenTK.Graphics.ES11;
-
-using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.Utilities;
-using Axiom.Collections;
-using Axiom.Graphics.Collections;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
-	class GLESCopyingRTTManager : GLESRTTManager
+	internal class GLESCopyingRTTManager : GLESRTTManager
 	{
 		#region GLESRTTManager Implementation
 
@@ -76,10 +69,10 @@ namespace Axiom.RenderSystems.OpenGLES
 			// Copy on unbind
 			GLESSurfaceDescription surface;
 			surface.Buffer = null;
-			surface = (GLESSurfaceDescription)target[ "TARGET" ];
+			surface = (GLESSurfaceDescription) target[ "TARGET" ];
 			if ( surface.Buffer != null )
 			{
-				( (GLESTextureBuffer)surface.Buffer ).CopyFromFramebuffer( surface.ZOffset );
+				( (GLESTextureBuffer) surface.Buffer ).CopyFromFramebuffer( surface.ZOffset );
 			}
 		}
 

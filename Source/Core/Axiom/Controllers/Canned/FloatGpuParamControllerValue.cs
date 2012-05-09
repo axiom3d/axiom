@@ -103,15 +103,15 @@ namespace Axiom.Controllers.Canned
 		{
 			get
 			{
-				return parms.GetFloatConstant( index );
+				return this.parms.GetFloatConstant( this.index );
 			}
 			set
 			{
 				// set the x component, since this is a single value only
-				vec4.x = value;
+				this.vec4.x = value;
 
 				// send the vector along to the gpu program params
-				parms.SetConstant( index, vec4 );
+				this.parms.SetConstant( this.index, this.vec4 );
 			}
 		}
 

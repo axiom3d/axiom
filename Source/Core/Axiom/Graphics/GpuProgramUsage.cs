@@ -133,7 +133,7 @@ namespace Axiom.Graphics
 		{
 			this.type = type;
 			this.parent = parent;
-			recreateParams = false;
+			this.recreateParams = false;
 		}
 
 		/// <summary>
@@ -143,12 +143,12 @@ namespace Axiom.Graphics
 		public GpuProgramUsage( GpuProgramUsage oth, Pass parent )
 			: base()
 		{
-			type = oth.type;
+			this.type = oth.type;
 			this.parent = parent;
-			program = oth.Program;
+			this.program = oth.Program;
 			// nfz: parameters should be copied not just use a shared ptr to the original
-			parameters = new GpuProgramParameters( oth.parameters );
-			recreateParams = false;
+			this.parameters = new GpuProgramParameters( oth.parameters );
+			this.recreateParams = false;
 		}
 
 		#endregion
@@ -162,9 +162,9 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					if ( program != null )
+					if ( this.program != null )
 					{
-						program.RemoveListener( this );
+						this.program.RemoveListener( this );
 					}
 				}
 			}
@@ -184,22 +184,22 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		internal void Load()
 		{
-			if ( !program.IsLoaded )
+			if ( !this.program.IsLoaded )
 			{
-				program.Load();
+				this.program.Load();
 			}
 
 			// check type
-			if ( program.IsLoaded && program.Type != type )
+			if ( this.program.IsLoaded && this.program.Type != this.type )
 			{
-				var myType = type.ToString();
-				var yourType = program.Type.ToString();
+				var myType = this.type.ToString();
+				var yourType = this.program.Type.ToString();
 				throw new AxiomException( "{0} is a {1} program, but you are assigning it to a {2} program slot. This is invalid.",
-				                          program.Name, yourType, myType );
+				                          this.program.Name, yourType, myType );
 			}
 
 			// hackaround as Listener::loadingComplete is not in place, yet
-			if ( recreateParams )
+			if ( this.recreateParams )
 			{
 				RecreateParameters();
 			}
@@ -218,7 +218,7 @@ namespace Axiom.Graphics
 			// TODO?
 
 			// hackaround as Listener::unloadingComplete is not in place, yet
-			recreateParams = true;
+			this.recreateParams = true;
 		}
 
 		#endregion
@@ -229,19 +229,19 @@ namespace Axiom.Graphics
 		protected void RecreateParameters()
 		{
 			// Keep a reference to old ones to copy
-			var savedParams = parameters;
+			var savedParams = this.parameters;
 
 			// Create new params
-			parameters = program.CreateParameters();
+			this.parameters = this.program.CreateParameters();
 
 			// Copy old (matching) values across
 			// Don't use copyConstantsFrom since program may be different
 			if ( savedParams != null )
 			{
-				parameters.CopyMatchingNamedConstantsFrom( savedParams );
+				this.parameters.CopyMatchingNamedConstantsFrom( savedParams );
 			}
 
-			recreateParams = false;
+			this.recreateParams = false;
 		}
 
 		#endregion
@@ -271,29 +271,31 @@ namespace Axiom.Graphics
 		public void SetProgramName( string name, bool resetParams )
 #endif
 		{
-			if ( program != null )
+			if ( this.program != null )
 			{
-				program.RemoveListener( this );
-				recreateParams = true;
+				this.program.RemoveListener( this );
+				this.recreateParams = true;
 			}
 
 			// get a reference to the gpu program
-			program = GpuProgramManager.Instance.GetByName( name );
+			this.program = GpuProgramManager.Instance.GetByName( name );
 
-			if ( program == null )
+			if ( this.program == null )
 			{
-				var progType = type == GpuProgramType.Vertex ? "vertex" : type == GpuProgramType.Geometry ? "geometry" : "fragment";
+				var progType = this.type == GpuProgramType.Vertex
+				               	? "vertex"
+				               	: this.type == GpuProgramType.Geometry ? "geometry" : "fragment";
 				throw new AxiomException( "Unable to locate {0} program called '{1}'", progType, name );
 			}
 
 			// Reset parameters 
-			if ( resetParams || parameters == null || recreateParams )
+			if ( resetParams || this.parameters == null || this.recreateParams )
 			{
 				RecreateParameters();
 			}
 
 			// Listen in on reload events so we can regenerate params
-			program.AddListener( this );
+			this.program.AddListener( this );
 		}
 
 #if !NET_40
@@ -316,7 +318,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return program.Name;
+				return this.program.Name;
 			}
 		}
 
@@ -338,14 +340,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return program;
+				return this.program;
 			}
 			set
 			{
-				program = value;
+				this.program = value;
 
 				// create program specific parameters
-				parameters = program.CreateParameters();
+				this.parameters = this.program.CreateParameters();
 			}
 		}
 
@@ -363,16 +365,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( parameters == null )
+				if ( this.parameters == null )
 				{
 					throw new AxiomException( "A program must be loaded before its parameters can be retreived." );
 				}
 
-				return parameters;
+				return this.parameters;
 			}
 			set
 			{
-				parameters = value;
+				this.parameters = value;
 			}
 		}
 
@@ -388,7 +390,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return type;
+				return this.type;
 			}
 		}
 
@@ -412,7 +414,7 @@ namespace Axiom.Graphics
 		public void LoadingComplete( Resource res )
 		{
 			// Need to re-create parameters
-			if ( recreateParams )
+			if ( this.recreateParams )
 			{
 				RecreateParameters();
 			}
@@ -426,7 +428,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void UnloadingComplete( Resource res )
 		{
-			recreateParams = true;
+			this.recreateParams = true;
 		}
 
 		#endregion Resource.IListener Members

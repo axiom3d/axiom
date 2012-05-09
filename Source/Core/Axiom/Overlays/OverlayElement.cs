@@ -147,30 +147,30 @@ namespace Axiom.Overlays
 			: base()
 		{
 			this.name = name;
-			isVisible = true;
-			isCloneable = true;
-			left = 0.0f;
-			top = 0.0f;
-			width = 1.0f;
-			height = 1.0f;
-			metricsMode = MetricsMode.Relative;
-			horzAlign = HorizontalAlignment.Left;
-			vertAlign = VerticalAlignment.Top;
-			pixelTop = 0.0f;
-			pixelLeft = 0.0f;
-			pixelWidth = 1.0f;
-			pixelHeight = 1.0f;
-			pixelScaleX = 1.0f;
-			pixelScaleY = 1.0f;
-			parent = null;
-			overlay = null;
-			isDerivedOutOfDate = true;
-			isGeomPositionsOutOfDate = true;
-			isGeomUVsOutOfDate = true;
-			zOrder = 0;
-			isEnabled = true;
-			isInitialized = false;
-			sourceTemplate = null;
+			this.isVisible = true;
+			this.isCloneable = true;
+			this.left = 0.0f;
+			this.top = 0.0f;
+			this.width = 1.0f;
+			this.height = 1.0f;
+			this.metricsMode = MetricsMode.Relative;
+			this.horzAlign = HorizontalAlignment.Left;
+			this.vertAlign = VerticalAlignment.Top;
+			this.pixelTop = 0.0f;
+			this.pixelLeft = 0.0f;
+			this.pixelWidth = 1.0f;
+			this.pixelHeight = 1.0f;
+			this.pixelScaleX = 1.0f;
+			this.pixelScaleY = 1.0f;
+			this.parent = null;
+			this.overlay = null;
+			this.isDerivedOutOfDate = true;
+			this.isGeomPositionsOutOfDate = true;
+			this.isGeomUVsOutOfDate = true;
+			this.zOrder = 0;
+			this.isEnabled = true;
+			this.isInitialized = false;
+			this.sourceTemplate = null;
 		}
 
 		#endregion Constructors
@@ -185,7 +185,7 @@ namespace Axiom.Overlays
 		public virtual void CopyFromTemplate( OverlayElement template )
 		{
 			template.CopyParametersTo( this );
-			sourceTemplate = template;
+			this.sourceTemplate = template;
 		}
 
 		public void CopyParametersTo( OverlayElement instance )
@@ -199,7 +199,7 @@ namespace Axiom.Overlays
 
 		public virtual OverlayElement Clone( string instanceName )
 		{
-			var newElement = OverlayElementManager.Instance.CreateElement( GetType().Name, instanceName + "/" + name );
+			var newElement = OverlayElementManager.Instance.CreateElement( GetType().Name, instanceName + "/" + this.name );
 			CopyParametersTo( newElement );
 
 			return newElement;
@@ -210,7 +210,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		public void Hide()
 		{
-			isVisible = false;
+			this.isVisible = false;
 		}
 
 		/// <summary>
@@ -228,12 +228,12 @@ namespace Axiom.Overlays
 			this.parent = parent;
 			this.overlay = overlay;
 
-			if ( overlay != null && overlay.IsInitialized && !isInitialized )
+			if ( overlay != null && overlay.IsInitialized && !this.isInitialized )
 			{
 				Initialize();
 			}
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 		}
 
 		/// <summary>
@@ -273,7 +273,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		public virtual void NotifyViewport()
 		{
-			switch ( metricsMode )
+			switch ( this.metricsMode )
 			{
 				case MetricsMode.Pixels:
 				{
@@ -285,8 +285,8 @@ namespace Axiom.Overlays
 					vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 					vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-					pixelScaleX = 1.0f/vpWidth;
-					pixelScaleY = 1.0f/vpHeight;
+					this.pixelScaleX = 1.0f/vpWidth;
+					this.pixelScaleY = 1.0f/vpHeight;
 				}
 					break;
 
@@ -300,27 +300,27 @@ namespace Axiom.Overlays
 					vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 					vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-					pixelScaleX = 1.0f/( 10000.0f*( vpWidth/vpHeight ) );
-					pixelScaleY = 1.0f/10000.0f;
+					this.pixelScaleX = 1.0f/( 10000.0f*( vpWidth/vpHeight ) );
+					this.pixelScaleY = 1.0f/10000.0f;
 				}
 					break;
 
 				case MetricsMode.Relative:
-					pixelScaleX = 1.0f;
-					pixelScaleY = 1.0f;
-					pixelLeft = left;
-					pixelTop = top;
-					pixelWidth = width;
-					pixelHeight = height;
+					this.pixelScaleX = 1.0f;
+					this.pixelScaleY = 1.0f;
+					this.pixelLeft = this.left;
+					this.pixelTop = this.top;
+					this.pixelWidth = this.width;
+					this.pixelHeight = this.height;
 					break;
 			}
 
-			left = pixelLeft*pixelScaleX;
-			top = pixelTop*pixelScaleY;
-			width = pixelWidth*pixelScaleX;
-			height = pixelHeight*pixelScaleY;
+			this.left = this.pixelLeft*this.pixelScaleX;
+			this.top = this.pixelTop*this.pixelScaleY;
+			this.width = this.pixelWidth*this.pixelScaleX;
+			this.height = this.pixelHeight*this.pixelScaleY;
 
-			isGeomPositionsOutOfDate = true;
+			this.isGeomPositionsOutOfDate = true;
 		}
 
 		/// <summary>
@@ -328,7 +328,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		public virtual void PositionsOutOfDate()
 		{
-			isGeomPositionsOutOfDate = true;
+			this.isGeomPositionsOutOfDate = true;
 		}
 
 		/// <summary>
@@ -338,10 +338,10 @@ namespace Axiom.Overlays
 		/// <param name="height">The height.</param>
 		public void SetDimensions( float width, float height )
 		{
-			if ( metricsMode != MetricsMode.Relative )
+			if ( this.metricsMode != MetricsMode.Relative )
 			{
-				pixelWidth = (int)width;
-				pixelHeight = (int)height;
+				this.pixelWidth = (int)width;
+				this.pixelHeight = (int)height;
 			}
 			else
 			{
@@ -349,7 +349,7 @@ namespace Axiom.Overlays
 				this.height = height;
 			}
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -372,10 +372,10 @@ namespace Axiom.Overlays
 		/// <param name="top">The top.</param>
 		public void SetPosition( float left, float top )
 		{
-			if ( metricsMode != MetricsMode.Relative )
+			if ( this.metricsMode != MetricsMode.Relative )
 			{
-				pixelLeft = (int)left;
-				pixelTop = (int)top;
+				this.pixelLeft = (int)left;
+				this.pixelTop = (int)top;
 			}
 			else
 			{
@@ -383,7 +383,7 @@ namespace Axiom.Overlays
 				this.top = top;
 			}
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -392,7 +392,7 @@ namespace Axiom.Overlays
 		/// </summary>
 		public void Show()
 		{
-			isVisible = true;
+			this.isVisible = true;
 		}
 
 		/// <summary>
@@ -401,10 +401,10 @@ namespace Axiom.Overlays
 		public virtual void Update()
 		{
 			// Check size if pixel-based
-			switch ( metricsMode )
+			switch ( this.metricsMode )
 			{
 				case MetricsMode.Pixels:
-					if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
+					if ( OverlayManager.Instance.HasViewportChanged || this.isGeomPositionsOutOfDate )
 					{
 						var oMgr = OverlayManager.Instance;
 						float vpWidth = oMgr.ViewportWidth;
@@ -414,18 +414,18 @@ namespace Axiom.Overlays
 						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f/vpWidth;
-						pixelScaleY = 1.0f/vpHeight;
+						this.pixelScaleX = 1.0f/vpWidth;
+						this.pixelScaleY = 1.0f/vpHeight;
 
-						left = pixelLeft*pixelScaleX;
-						top = pixelTop*pixelScaleY;
-						width = pixelWidth*pixelScaleX;
-						height = pixelHeight*pixelScaleY;
+						this.left = this.pixelLeft*this.pixelScaleX;
+						this.top = this.pixelTop*this.pixelScaleY;
+						this.width = this.pixelWidth*this.pixelScaleX;
+						this.height = this.pixelHeight*this.pixelScaleY;
 					}
 					break;
 
 				case MetricsMode.Relative_Aspect_Adjusted:
-					if ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate )
+					if ( OverlayManager.Instance.HasViewportChanged || this.isGeomPositionsOutOfDate )
 					{
 						var oMgr = OverlayManager.Instance;
 						float vpWidth = oMgr.ViewportWidth;
@@ -435,13 +435,13 @@ namespace Axiom.Overlays
 						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f/( 10000.0f*( vpWidth/vpHeight ) );
-						pixelScaleY = 1.0f/10000.0f;
+						this.pixelScaleX = 1.0f/( 10000.0f*( vpWidth/vpHeight ) );
+						this.pixelScaleY = 1.0f/10000.0f;
 
-						left = pixelLeft*pixelScaleX;
-						top = pixelTop*pixelScaleY;
-						width = pixelWidth*pixelScaleX;
-						height = pixelHeight*pixelScaleY;
+						this.left = this.pixelLeft*this.pixelScaleX;
+						this.top = this.pixelTop*this.pixelScaleY;
+						this.width = this.pixelWidth*this.pixelScaleX;
+						this.height = this.pixelHeight*this.pixelScaleY;
 					}
 					break;
 				default:
@@ -452,16 +452,16 @@ namespace Axiom.Overlays
 			UpdateFromParent();
 
 			// update our own position geometry
-			if ( isGeomPositionsOutOfDate && isInitialized )
+			if ( this.isGeomPositionsOutOfDate && this.isInitialized )
 			{
 				UpdatePositionGeometry();
-				isGeomPositionsOutOfDate = false;
+				this.isGeomPositionsOutOfDate = false;
 			}
 			// Tell self to update own texture geometry
-			if ( isGeomUVsOutOfDate && isInitialized )
+			if ( this.isGeomUVsOutOfDate && this.isInitialized )
 			{
 				UpdateTextureGeometry();
-				isGeomUVsOutOfDate = false;
+				this.isGeomUVsOutOfDate = false;
 			}
 		}
 
@@ -473,7 +473,7 @@ namespace Axiom.Overlays
 		/// <returns></returns>
 		public virtual bool Contains( float x, float y )
 		{
-			return clippingRegion.Contains( (int)x, (int)y );
+			return this.clippingRegion.Contains( (int)x, (int)y );
 		}
 
 		/// <summary>
@@ -501,20 +501,20 @@ namespace Axiom.Overlays
 
 			parentLeft = parentTop = parentBottom = parentRight = 0;
 
-			if ( parent != null )
+			if ( this.parent != null )
 			{
-				parentLeft = parent.DerivedLeft;
-				parentTop = parent.DerivedTop;
+				parentLeft = this.parent.DerivedLeft;
+				parentTop = this.parent.DerivedTop;
 
 				// derive right position
-				if ( horzAlign == HorizontalAlignment.Center || horzAlign == HorizontalAlignment.Right )
+				if ( this.horzAlign == HorizontalAlignment.Center || this.horzAlign == HorizontalAlignment.Right )
 				{
-					parentRight = parentLeft + parent.width;
+					parentRight = parentLeft + this.parent.width;
 				}
 				// derive bottom position
-				if ( vertAlign == VerticalAlignment.Center || vertAlign == VerticalAlignment.Bottom )
+				if ( this.vertAlign == VerticalAlignment.Center || this.vertAlign == VerticalAlignment.Bottom )
 				{
-					parentBottom = parentTop + parent.height;
+					parentBottom = parentTop + this.parent.height;
 				}
 			}
 			else
@@ -541,52 +541,54 @@ namespace Axiom.Overlays
 			// all we do is derived the origin, we don't automatically sort out the position
 			// This is more flexible than forcing absolute right & middle
 
-			switch ( horzAlign )
+			switch ( this.horzAlign )
 			{
 				case HorizontalAlignment.Center:
-					derivedLeft = ( ( parentLeft + parentRight )*0.5f ) + left;
+					this.derivedLeft = ( ( parentLeft + parentRight )*0.5f ) + this.left;
 					break;
 
 				case HorizontalAlignment.Left:
-					derivedLeft = parentLeft + left;
+					this.derivedLeft = parentLeft + this.left;
 					break;
 
 				case HorizontalAlignment.Right:
-					derivedLeft = parentRight + left;
+					this.derivedLeft = parentRight + this.left;
 					break;
 			}
 
-			switch ( vertAlign )
+			switch ( this.vertAlign )
 			{
 				case VerticalAlignment.Center:
-					derivedTop = ( ( parentTop + parentBottom )*0.5f ) + top;
+					this.derivedTop = ( ( parentTop + parentBottom )*0.5f ) + this.top;
 					break;
 
 				case VerticalAlignment.Top:
-					derivedTop = parentTop + top;
+					this.derivedTop = parentTop + this.top;
 					break;
 
 				case VerticalAlignment.Bottom:
-					derivedTop = parentBottom + top;
+					this.derivedTop = parentBottom + this.top;
 					break;
 			}
 
-			isDerivedOutOfDate = false;
-			if ( parent != null )
+			this.isDerivedOutOfDate = false;
+			if ( this.parent != null )
 			{
 				Rectangle parentRect;
 
-				parentRect = parent.ClippingRegion;
+				parentRect = this.parent.ClippingRegion;
 
-				var childRect = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)( derivedLeft + width ),
-				                               (long)( derivedTop + height ) );
+				var childRect = new Rectangle( (long)this.derivedLeft, (long)this.derivedTop,
+				                               (long)( this.derivedLeft + this.width ),
+				                               (long)( this.derivedTop + this.height ) );
 
-				clippingRegion = Rectangle.Intersect( parentRect, childRect );
+				this.clippingRegion = Rectangle.Intersect( parentRect, childRect );
 			}
 			else
 			{
-				clippingRegion = new Rectangle( (long)derivedLeft, (long)derivedTop, (long)( derivedLeft + width ),
-				                                (long)( derivedTop + height ) );
+				this.clippingRegion = new Rectangle( (long)this.derivedLeft, (long)this.derivedTop,
+				                                     (long)( this.derivedLeft + this.width ),
+				                                     (long)( this.derivedTop + this.height ) );
 			}
 		}
 
@@ -598,9 +600,9 @@ namespace Axiom.Overlays
 		public void ScreenLeft( float left )
 		{
 			this.left = left;
-			pixelLeft = left/pixelScaleX;
+			this.pixelLeft = left/this.pixelScaleX;
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -612,9 +614,9 @@ namespace Axiom.Overlays
 		public void ScreenTop( float top )
 		{
 			this.top = top;
-			pixelTop = top/pixelScaleY;
+			this.pixelTop = top/this.pixelScaleY;
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -626,9 +628,9 @@ namespace Axiom.Overlays
 		public void ScreenWidth( float width )
 		{
 			this.width = width;
-			pixelWidth = width/pixelScaleX;
+			this.pixelWidth = width/this.pixelScaleX;
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -640,9 +642,9 @@ namespace Axiom.Overlays
 		public void ScreenHeight( float height )
 		{
 			this.height = height;
-			pixelHeight = height/pixelScaleY;
+			this.pixelHeight = height/this.pixelScaleY;
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -656,10 +658,10 @@ namespace Axiom.Overlays
 		{
 			this.left = left;
 			this.top = top;
-			pixelLeft = left/pixelScaleX;
-			pixelTop = top/pixelScaleY;
+			this.pixelLeft = left/this.pixelScaleX;
+			this.pixelTop = top/this.pixelScaleY;
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -673,10 +675,10 @@ namespace Axiom.Overlays
 		{
 			this.width = width;
 			this.height = height;
-			pixelWidth = width/pixelScaleX;
-			pixelHeight = height/pixelScaleY;
+			this.pixelWidth = width/this.pixelScaleX;
+			this.pixelHeight = height/this.pixelScaleY;
 
-			isDerivedOutOfDate = true;
+			this.isDerivedOutOfDate = true;
 			PositionsOutOfDate();
 		}
 
@@ -700,9 +702,9 @@ namespace Axiom.Overlays
 		/// <param name="queue">Current render queue.</param>
 		public virtual void UpdateRenderQueue( RenderQueue queue )
 		{
-			if ( isVisible )
+			if ( this.isVisible )
 			{
-				queue.AddRenderable( this, (ushort)zOrder, RenderQueueGroupID.Overlay );
+				queue.AddRenderable( this, (ushort)this.zOrder, RenderQueueGroupID.Overlay );
 			}
 		}
 
@@ -722,7 +724,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return sourceTemplate;
+				return this.sourceTemplate;
 			}
 		}
 
@@ -736,11 +738,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return color;
+				return this.color;
 			}
 			set
 			{
-				color = value;
+				this.color = value;
 			}
 		}
 
@@ -751,11 +753,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( isDerivedOutOfDate )
+				if ( this.isDerivedOutOfDate )
 				{
 					UpdateFromParent();
 				}
-				return derivedLeft;
+				return this.derivedLeft;
 			}
 		}
 
@@ -766,11 +768,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( isDerivedOutOfDate )
+				if ( this.isDerivedOutOfDate )
 				{
 					UpdateFromParent();
 				}
-				return derivedTop;
+				return this.derivedTop;
 			}
 		}
 
@@ -781,11 +783,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return isEnabled;
+				return this.isEnabled;
 			}
 			set
 			{
-				isEnabled = value;
+				this.isEnabled = value;
 			}
 		}
 
@@ -796,26 +798,26 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					return pixelHeight;
+					return this.pixelHeight;
 				}
 				else
 				{
-					return height;
+					return this.height;
 				}
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					pixelHeight = (int)value;
+					this.pixelHeight = (int)value;
 				}
 				else
 				{
-					height = value;
+					this.height = value;
 				}
-				isDerivedOutOfDate = true;
+				this.isDerivedOutOfDate = true;
 				PositionsOutOfDate();
 			}
 		}
@@ -841,11 +843,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return horzAlign;
+				return this.horzAlign;
 			}
 			set
 			{
-				horzAlign = value;
+				this.horzAlign = value;
 				PositionsOutOfDate();
 			}
 		}
@@ -868,11 +870,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return isCloneable;
+				return this.isCloneable;
 			}
 			set
 			{
-				isCloneable = value;
+				this.isCloneable = value;
 			}
 		}
 
@@ -883,11 +885,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return isVisible;
+				return this.isVisible;
 			}
 			set
 			{
-				isVisible = value;
+				this.isVisible = value;
 			}
 		}
 
@@ -898,27 +900,27 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					return pixelLeft;
+					return this.pixelLeft;
 				}
 				else
 				{
-					return left;
+					return this.left;
 				}
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					pixelLeft = (int)value;
+					this.pixelLeft = (int)value;
 				}
 				else
 				{
-					left = value;
+					this.left = value;
 				}
 
-				isDerivedOutOfDate = true;
+				this.isDerivedOutOfDate = true;
 				PositionsOutOfDate();
 			}
 		}
@@ -930,27 +932,27 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return materialName;
+				return this.materialName;
 			}
 			set
 			{
-				materialName = value;
-				material = (Material)MaterialManager.Instance[ materialName ];
+				this.materialName = value;
+				this.material = (Material)MaterialManager.Instance[ this.materialName ];
 
-				if ( material == null )
+				if ( this.material == null )
 				{
-					throw new Exception( string.Format( "Could not find material '{0}'.", materialName ) );
+					throw new Exception( string.Format( "Could not find material '{0}'.", this.materialName ) );
 				}
 
-				if ( !material.IsLoaded )
+				if ( !this.material.IsLoaded )
 				{
-					material.Load();
+					this.material.Load();
 				}
 
 
 				// Set some prerequisites to be sure
-				material.Lighting = false;
-				material.DepthCheck = false;
+				this.material.Lighting = false;
+				this.material.DepthCheck = false;
 			}
 		}
 
@@ -970,7 +972,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return metricsMode;
+				return this.metricsMode;
 			}
 			set
 			{
@@ -988,15 +990,15 @@ namespace Axiom.Overlays
 						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f/vpWidth;
-						pixelScaleY = 1.0f/vpHeight;
+						this.pixelScaleX = 1.0f/vpWidth;
+						this.pixelScaleY = 1.0f/vpHeight;
 
-						if ( metricsMode == MetricsMode.Relative )
+						if ( this.metricsMode == MetricsMode.Relative )
 						{
-							pixelLeft = left;
-							pixelTop = top;
-							pixelWidth = width;
-							pixelHeight = height;
+							this.pixelLeft = this.left;
+							this.pixelTop = this.top;
+							this.pixelWidth = this.width;
+							this.pixelHeight = this.height;
 						}
 					}
 						break;
@@ -1012,36 +1014,36 @@ namespace Axiom.Overlays
 						vpWidth = vpWidth == 0.0f ? 1.0f : vpWidth;
 						vpHeight = vpHeight == 0.0f ? 1.0f : vpHeight;
 
-						pixelScaleX = 1.0f/( 10000.0f*( vpWidth/vpHeight ) );
-						pixelScaleY = 1.0f/10000.0f;
+						this.pixelScaleX = 1.0f/( 10000.0f*( vpWidth/vpHeight ) );
+						this.pixelScaleY = 1.0f/10000.0f;
 
-						if ( metricsMode == MetricsMode.Relative )
+						if ( this.metricsMode == MetricsMode.Relative )
 						{
-							pixelLeft = left;
-							pixelTop = top;
-							pixelWidth = width;
-							pixelHeight = height;
+							this.pixelLeft = this.left;
+							this.pixelTop = this.top;
+							this.pixelWidth = this.width;
+							this.pixelHeight = this.height;
 						}
 					}
 						break;
 
 					case MetricsMode.Relative:
-						pixelScaleX = 1.0f;
-						pixelScaleY = 1.0f;
-						pixelLeft = left;
-						pixelTop = top;
-						pixelWidth = width;
-						pixelHeight = height;
+						this.pixelScaleX = 1.0f;
+						this.pixelScaleY = 1.0f;
+						this.pixelLeft = this.left;
+						this.pixelTop = this.top;
+						this.pixelWidth = this.width;
+						this.pixelHeight = this.height;
 						break;
 				}
 
-				left = pixelLeft*pixelScaleX;
-				top = pixelTop*pixelScaleY;
-				width = pixelWidth*pixelScaleX;
-				height = pixelHeight*pixelScaleY;
+				this.left = this.pixelLeft*this.pixelScaleX;
+				this.top = this.pixelTop*this.pixelScaleY;
+				this.width = this.pixelWidth*this.pixelScaleX;
+				this.height = this.pixelHeight*this.pixelScaleY;
 
-				metricsMode = value;
-				isDerivedOutOfDate = true;
+				this.metricsMode = value;
+				this.isDerivedOutOfDate = true;
 				PositionsOutOfDate();
 			}
 		}
@@ -1053,7 +1055,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -1064,11 +1066,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( isDerivedOutOfDate )
+				if ( this.isDerivedOutOfDate )
 				{
 					UpdateFromParent();
 				}
-				return clippingRegion;
+				return this.clippingRegion;
 			}
 		}
 
@@ -1079,11 +1081,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return parent;
+				return this.parent;
 			}
 			set
 			{
-				parent = value;
+				this.parent = value;
 			}
 		}
 
@@ -1098,11 +1100,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return text;
+				return this.text;
 			}
 			set
 			{
-				text = value;
+				this.text = value;
 				PositionsOutOfDate();
 			}
 		}
@@ -1114,27 +1116,27 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					return pixelTop;
+					return this.pixelTop;
 				}
 				else
 				{
-					return top;
+					return this.top;
 				}
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					pixelTop = (int)value;
+					this.pixelTop = (int)value;
 				}
 				else
 				{
-					top = value;
+					this.top = value;
 				}
 
-				isDerivedOutOfDate = true;
+				this.isDerivedOutOfDate = true;
 				PositionsOutOfDate();
 			}
 		}
@@ -1160,11 +1162,11 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return vertAlign;
+				return this.vertAlign;
 			}
 			set
 			{
-				vertAlign = value;
+				this.vertAlign = value;
 				PositionsOutOfDate();
 			}
 		}
@@ -1176,26 +1178,26 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					return pixelWidth;
+					return this.pixelWidth;
 				}
 				else
 				{
-					return width;
+					return this.width;
 				}
 			}
 			set
 			{
-				if ( metricsMode != MetricsMode.Relative )
+				if ( this.metricsMode != MetricsMode.Relative )
 				{
-					pixelWidth = (int)value;
+					this.pixelWidth = (int)value;
 				}
 				else
 				{
-					width = value;
+					this.width = value;
 				}
-				isDerivedOutOfDate = true;
+				this.isDerivedOutOfDate = true;
 				PositionsOutOfDate();
 			}
 		}
@@ -1207,7 +1209,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return zOrder;
+				return this.zOrder;
 			}
 		}
 
@@ -1227,7 +1229,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return material;
+				return this.material;
 			}
 		}
 
@@ -1243,7 +1245,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return material.GetBestTechnique();
+				return this.material.GetBestTechnique();
 			}
 		}
 
@@ -1257,7 +1259,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return renderOperation;
+				return this.renderOperation;
 			}
 		}
 
@@ -1267,7 +1269,7 @@ namespace Axiom.Overlays
 		/// <param name="matrices"></param>
 		public void GetWorldTransforms( Matrix4[] matrices )
 		{
-			overlay.GetWorldTransforms( matrices );
+			this.overlay.GetWorldTransforms( matrices );
 		}
 
 		/// <summary>
@@ -1276,12 +1278,12 @@ namespace Axiom.Overlays
 		/// <returns></returns>
 		public Quaternion GetWorldOrientation()
 		{
-			return overlay.GetWorldOrientation();
+			return this.overlay.GetWorldOrientation();
 		}
 
 		public Vector3 GetWorldPosition()
 		{
-			return overlay.GetWorldPosition();
+			return this.overlay.GetWorldPosition();
 		}
 
 		/// <summary>
@@ -1342,7 +1344,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return overlay.DerivedOrientation;
+				return this.overlay.DerivedOrientation;
 			}
 		}
 
@@ -1353,7 +1355,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return overlay.DerivedPosition;
+				return this.overlay.DerivedPosition;
 			}
 		}
 
@@ -1361,36 +1363,36 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return emptyLightList;
+				return this.emptyLightList;
 			}
 		}
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( customParams[ index ] == null )
+			if ( this.customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
 			else
 			{
-				return (Vector4)customParams[ index ];
+				return (Vector4)this.customParams[ index ];
 			}
 		}
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
+			while ( this.customParams.Count <= index )
 			{
-				customParams.Add( Vector4.Zero );
+				this.customParams.Add( Vector4.Zero );
 			}
-			customParams[ index ] = val;
+			this.customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( customParams[ entry.Data ] != null )
+			if ( this.customParams[ entry.Data ] != null )
 			{
-				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
+				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)this.customParams[ entry.Data ] );
 			}
 		}
 
@@ -1429,14 +1431,14 @@ namespace Axiom.Overlays
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if ( this.renderOperation != null )
 					{
-						if ( !renderOperation.IsDisposed )
+						if ( !this.renderOperation.IsDisposed )
 						{
-							renderOperation.Dispose();
+							this.renderOperation.Dispose();
 						}
 
-						renderOperation = null;
+						this.renderOperation = null;
 					}
 				}
 

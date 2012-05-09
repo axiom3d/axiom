@@ -81,8 +81,8 @@ namespace Axiom.Collections
 		public AxiomCollection()
 			: base()
 		{
-			parent = null;
-			typeName = typeof ( T ).Name;
+			this.parent = null;
+			this.typeName = typeof ( T ).Name;
 		}
 
 		protected AxiomCollection( Object parent )
@@ -93,7 +93,7 @@ namespace Axiom.Collections
 #endif
 		{
 			this.parent = parent;
-			typeName = typeof ( T ).Name;
+			this.typeName = typeof ( T ).Name;
 		}
 
 		public AxiomCollection( AxiomCollection<int> copy )
@@ -149,7 +149,7 @@ namespace Axiom.Collections
 		/// <param name="item">The object to add.</param>
 		public virtual void Add( T item )
 		{
-			Add( typeName + ( nextUniqueKeyCounter++ ), item );
+			Add( this.typeName + ( nextUniqueKeyCounter++ ), item );
 		}
 
 		/// <summary>
@@ -228,7 +228,7 @@ namespace Axiom.Collections
 		public AxiomSortedCollection()
 			: base( InitialCapacity )
 		{
-			parent = null;
+			this.parent = null;
 		}
 
 		/// <summary>

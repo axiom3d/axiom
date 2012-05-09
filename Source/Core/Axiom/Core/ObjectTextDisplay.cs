@@ -66,18 +66,18 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return enabled;
+				return this.enabled;
 			}
 			set
 			{
-				enabled = value;
+				this.enabled = value;
 				if ( value )
 				{
-					parentOverlay.Show();
+					this.parentOverlay.Show();
 				}
 				else
 				{
-					parentOverlay.Hide();
+					this.parentOverlay.Hide();
 				}
 			}
 		}
@@ -88,12 +88,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return text;
+				return this.text;
 			}
 			set
 			{
-				text = value;
-				parentText.Text = text;
+				this.text = value;
+				this.parentText.Text = this.text;
 			}
 		}
 
@@ -103,63 +103,63 @@ namespace Axiom.Core
 
 		public ObjectTextDisplay( MovableObject p, Camera c, string shapeName )
 		{
-			parent = p;
-			camera = c;
-			enabled = false;
-			text = "";
+			this.parent = p;
+			this.camera = c;
+			this.enabled = false;
+			this.text = "";
 
 			// create an overlay that we can use for later
 
 			// = Ogre.OverlayManager.getSingleton().create("shapeName");
-			parentOverlay = (Overlay)OverlayManager.Instance.Create( "shapeName" );
+			this.parentOverlay = (Overlay)OverlayManager.Instance.Create( "shapeName" );
 
 			// (Ogre.OverlayContainer)(Ogre.OverlayManager.getSingleton().createOverlayElement("Panel", "container1"));
-			parentContainer =
+			this.parentContainer =
 				(OverlayElementContainer)( OverlayElementManager.Instance.CreateElement( "Panel", "container1", false ) );
 
 			//parentOverlay.add2D(parentContainer);
-			parentOverlay.AddElement( parentContainer );
+			this.parentOverlay.AddElement( this.parentContainer );
 
 			//parentText = Ogre.OverlayManager.getSingleton().createOverlayElement("TextArea", "shapeNameText");
-			parentText = OverlayElementManager.Instance.CreateElement( "TextArea", shapeName, false );
+			this.parentText = OverlayElementManager.Instance.CreateElement( "TextArea", shapeName, false );
 
-			parentText.SetDimensions( 1.0f, 1.0f );
+			this.parentText.SetDimensions( 1.0f, 1.0f );
 
 			//parentText.setMetricsMode(Ogre.GMM_PIXELS);
-			parentText.MetricsMode = MetricsMode.Pixels;
+			this.parentText.MetricsMode = MetricsMode.Pixels;
 
 
-			parentText.SetPosition( 1.0f, 1.0f );
+			this.parentText.SetPosition( 1.0f, 1.0f );
 
 
-			parentText.SetParam( "font_name", "Arial" );
-			parentText.SetParam( "char_height", "25" );
-			parentText.SetParam( "horz_align", "center" );
-			parentText.Color = new ColorEx( 1.0f, 1.0f, 1.0f );
+			this.parentText.SetParam( "font_name", "Arial" );
+			this.parentText.SetParam( "char_height", "25" );
+			this.parentText.SetParam( "horz_align", "center" );
+			this.parentText.Color = new ColorEx( 1.0f, 1.0f, 1.0f );
 			//parentText.setColour(Ogre.ColourValue(1.0, 1.0, 1.0));
 
 
-			parentContainer.AddChild( parentText );
+			this.parentContainer.AddChild( this.parentText );
 
-			parentOverlay.Show();
+			this.parentOverlay.Show();
 		}
 
 		#endregion Construction and Destruction
 
 		public void Update()
 		{
-			if ( !enabled )
+			if ( !this.enabled )
 			{
 				return;
 			}
 
 			// get the projection of the object's AABB into screen space
-			var bbox = parent.GetWorldBoundingBox( true );
+			var bbox = this.parent.GetWorldBoundingBox( true );
 			//new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
 
 
 			//Ogre.Matrix4 mat = camera.getViewMatrix();
-			var mat = camera.ViewMatrix;
+			var mat = this.camera.ViewMatrix;
 			//const Ogre.Vector3 corners = bbox.getAllCorners();
 			var corners = bbox.Corners;
 
@@ -211,8 +211,8 @@ namespace Axiom.Core
 			// this top edge is (min_x, min_y) to (max_x, min_y)
 
 			//parentContainer->setPosition(min_x, min_y);
-			parentContainer.SetPosition( 1 - max_x, min_y ); // Edited by alberts: This code works for me
-			parentContainer.SetDimensions( max_x - min_x, 0.1f ); // 0.1, just "because"
+			this.parentContainer.SetPosition( 1 - max_x, min_y ); // Edited by alberts: This code works for me
+			this.parentContainer.SetDimensions( max_x - min_x, 0.1f ); // 0.1, just "because"
 		}
 	}
 }

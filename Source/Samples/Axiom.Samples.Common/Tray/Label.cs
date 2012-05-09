@@ -57,11 +57,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return textArea.Text;
+				return this.textArea.Text;
 			}
 			set
 			{
-				textArea.Text = value;
+				this.textArea.Text = value;
 			}
 		}
 
@@ -72,7 +72,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return isFitToTray;
+				return this.isFitToTray;
 			}
 		}
 
@@ -87,16 +87,16 @@ namespace Axiom.Samples
 		public Label( String name, String caption, Real width )
 		{
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Label", "BorderPanel", name );
-			textArea = (TextArea)( (OverlayElementContainer)element ).Children[ Name + "/LabelCaption" ];
-			textArea.Text = caption;
+			this.textArea = (TextArea)( (OverlayElementContainer)element ).Children[ Name + "/LabelCaption" ];
+			this.textArea.Text = caption;
 			Caption = caption;
 			if ( width <= 0 )
 			{
-				isFitToTray = true;
+				this.isFitToTray = true;
 			}
 			else
 			{
-				isFitToTray = false;
+				this.isFitToTray = false;
 				element.Width = width;
 			}
 		}

@@ -98,16 +98,16 @@ namespace Axiom.Overlays.Elements
 			: base( name )
 		{
 			//isTransparent = false; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to false, left here for clarity
-			textAlign = HorizontalAlignment.Center;
+			this.textAlign = HorizontalAlignment.Center;
 
 
-			colorTop = ColorEx.White;
-			colorBottom = ColorEx.White;
-			haveColorsChanged = true;
+			this.colorTop = ColorEx.White;
+			this.colorBottom = ColorEx.White;
+			this.haveColorsChanged = true;
 
-			charHeight = 0.02f;
-			pixelCharHeight = 12;
-			viewportAspectCoef = 1f;
+			this.charHeight = 0.02f;
+			this.pixelCharHeight = 12;
+			this.viewportAspectCoef = 1f;
 		}
 
 		#endregion
@@ -118,7 +118,7 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		protected void CheckMemoryAllocation( int numChars )
 		{
-			if ( allocSize < numChars )
+			if ( this.allocSize < numChars )
 			{
 				// Create and bind new buffers
 				// Note that old buffers will be deleted automatically through reference counting
@@ -147,9 +147,9 @@ namespace Axiom.Overlays.Elements
 				// bind the color buffer
 				binding.SetBinding( COLOR_BINDING, buffer );
 
-				allocSize = numChars;
+				this.allocSize = numChars;
 				// force color buffer regeneration
-				haveColorsChanged = true;
+				this.haveColorsChanged = true;
 			}
 		}
 
@@ -196,23 +196,23 @@ namespace Axiom.Overlays.Elements
 		{
 			float vpWidth = OverlayManager.Instance.ViewportWidth;
 			float vpHeight = OverlayManager.Instance.ViewportHeight;
-			viewportAspectCoef = vpHeight/vpWidth;
+			this.viewportAspectCoef = vpHeight/vpWidth;
 
 			if ( metricsMode != MetricsMode.Relative &&
 			     ( OverlayManager.Instance.HasViewportChanged || isGeomPositionsOutOfDate ) )
 			{
-				charHeight = (float)pixelCharHeight/vpHeight;
-				spaceWidth = (float)pixelSpaceWidth/vpHeight;
+				this.charHeight = (float)this.pixelCharHeight/vpHeight;
+				this.spaceWidth = (float)this.pixelSpaceWidth/vpHeight;
 
 				isGeomPositionsOutOfDate = true;
 			}
 
 			base.Update();
 
-			if ( haveColorsChanged && isInitialized )
+			if ( this.haveColorsChanged && isInitialized )
 			{
 				UpdateColors();
-				haveColorsChanged = false;
+				this.haveColorsChanged = false;
 			}
 		}
 
@@ -222,8 +222,8 @@ namespace Axiom.Overlays.Elements
 		protected void UpdateColors()
 		{
 			// convert to API specific color values
-			var topColor = Root.Instance.ConvertColor( colorTop );
-			var bottomColor = Root.Instance.ConvertColor( colorBottom );
+			var topColor = Root.Instance.ConvertColor( this.colorTop );
+			var bottomColor = Root.Instance.ConvertColor( this.colorBottom );
 
 			// get the seperate color buffer
 			var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( COLOR_BINDING );
@@ -236,7 +236,7 @@ namespace Axiom.Overlays.Elements
 				var colPtr = data.ToIntPointer();
 				var index = 0;
 
-				for ( var i = 0; i < allocSize; i++ )
+				for ( var i = 0; i < this.allocSize; i++ )
 				{
 					// first tri (top, bottom, top);
 					colPtr[ index++ ] = topColor;
@@ -258,7 +258,7 @@ namespace Axiom.Overlays.Elements
 		/// </summary>
 		protected void UpdateGeometry()
 		{
-			if ( font == null || text == null || !isGeomPositionsOutOfDate )
+			if ( this.font == null || text == null || !isGeomPositionsOutOfDate )
 			{
 				// must not be initialized yet, probably due to order of creation in a template
 				return;
@@ -278,9 +278,9 @@ namespace Axiom.Overlays.Elements
 			var top = -( ( DerivedTop*2.0f ) - 1.0f );
 
 			// derive space width from the size of a capital A
-			if ( spaceWidth == 0 )
+			if ( this.spaceWidth == 0 )
 			{
-				spaceWidth = font.GetGlyphAspectRatio( 'A' )*charHeight*2.0f*viewportAspectCoef;
+				this.spaceWidth = this.font.GetGlyphAspectRatio( 'A' )*this.charHeight*2.0f*this.viewportAspectCoef;
 			}
 
 
@@ -301,11 +301,11 @@ namespace Axiom.Overlays.Elements
 					{
 						if ( text[ j ] == ' ' )
 						{
-							length += spaceWidth;
+							length += this.spaceWidth;
 						}
 						else
 						{
-							length += font.GetGlyphAspectRatio( text[ j ] )*charHeight*2f*viewportAspectCoef;
+							length += this.font.GetGlyphAspectRatio( text[ j ] )*this.charHeight*2f*this.viewportAspectCoef;
 						}
 					} // for j
 
@@ -324,7 +324,7 @@ namespace Axiom.Overlays.Elements
 				if ( c == '\n' )
 				{
 					left = DerivedLeft*2.0f - 1.0f;
-					top -= charHeight*2.0f;
+					top -= this.charHeight*2.0f;
 					newLine = true;
 					// reduce tri count
 					renderOperation.vertexData.vertexCount -= 6;
@@ -334,17 +334,17 @@ namespace Axiom.Overlays.Elements
 				if ( c == ' ' )
 				{
 					// leave a gap, no tris required
-					left += spaceWidth;
+					left += this.spaceWidth;
 					// reduce tri count
 					renderOperation.vertexData.vertexCount -= 6;
 					continue;
 				}
 
-				var horizHeight = font.GetGlyphAspectRatio( c )*viewportAspectCoef;
+				var horizHeight = this.font.GetGlyphAspectRatio( c )*this.viewportAspectCoef;
 				Real u1, u2, v1, v2;
 
 				// get the texcoords for the specified character
-				font.GetGlyphTexCoords( c, out u1, out v1, out u2, out v2 );
+				this.font.GetGlyphTexCoords( c, out u1, out v1, out u2, out v2 );
 
 #if !AXIOM_SAFE_ONLY
 				unsafe
@@ -360,7 +360,7 @@ namespace Axiom.Overlays.Elements
 					vertPtr[ index++ ] = u1;
 					vertPtr[ index++ ] = v1;
 
-					top -= charHeight*2.0f;
+					top -= this.charHeight*2.0f;
 
 					// bottom left
 					vertPtr[ index++ ] = left;
@@ -369,8 +369,8 @@ namespace Axiom.Overlays.Elements
 					vertPtr[ index++ ] = u1;
 					vertPtr[ index++ ] = v2;
 
-					top += charHeight*2.0f;
-					left += horizHeight*charHeight*2.0f;
+					top += this.charHeight*2.0f;
+					left += horizHeight*this.charHeight*2.0f;
 
 					// top right
 					vertPtr[ index++ ] = left;
@@ -388,8 +388,8 @@ namespace Axiom.Overlays.Elements
 					vertPtr[ index++ ] = u2;
 					vertPtr[ index++ ] = v1;
 
-					top -= charHeight*2.0f;
-					left -= horizHeight*charHeight*2.0f;
+					top -= this.charHeight*2.0f;
+					left -= horizHeight*this.charHeight*2.0f;
 
 					// bottom left (again)
 					vertPtr[ index++ ] = left;
@@ -398,7 +398,7 @@ namespace Axiom.Overlays.Elements
 					vertPtr[ index++ ] = u1;
 					vertPtr[ index++ ] = v2;
 
-					left += horizHeight*charHeight*2.0f;
+					left += horizHeight*this.charHeight*2.0f;
 
 					// bottom right
 					vertPtr[ index++ ] = left;
@@ -409,7 +409,7 @@ namespace Axiom.Overlays.Elements
 				}
 
 				// go back up with top
-				top += charHeight*2.0f;
+				top += this.charHeight*2.0f;
 
 				var currentWidth = ( left + 1 )/2 - DerivedLeft;
 
@@ -463,22 +463,22 @@ namespace Axiom.Overlays.Elements
 			{
 				if ( metricsMode == MetricsMode.Pixels )
 				{
-					return (float)pixelCharHeight;
+					return (float)this.pixelCharHeight;
 				}
 				else
 				{
-					return charHeight;
+					return this.charHeight;
 				}
 			}
 			set
 			{
 				if ( metricsMode != MetricsMode.Relative )
 				{
-					pixelCharHeight = value;
+					this.pixelCharHeight = value;
 				}
 				else
 				{
-					charHeight = value;
+					this.charHeight = value;
 				}
 				isGeomPositionsOutOfDate = true;
 			}
@@ -492,13 +492,13 @@ namespace Axiom.Overlays.Elements
 			get
 			{
 				// doesnt matter if they are both the same
-				return colorTop;
+				return this.colorTop;
 			}
 			set
 			{
-				colorTop = value;
-				colorBottom = value;
-				haveColorsChanged = true;
+				this.colorTop = value;
+				this.colorBottom = value;
+				this.haveColorsChanged = true;
 			}
 		}
 
@@ -509,12 +509,12 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return colorTop;
+				return this.colorTop;
 			}
 			set
 			{
-				colorTop = value;
-				haveColorsChanged = true;
+				this.colorTop = value;
+				this.haveColorsChanged = true;
 			}
 		}
 
@@ -525,12 +525,12 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return colorBottom;
+				return this.colorBottom;
 			}
 			set
 			{
-				colorBottom = value;
-				haveColorsChanged = true;
+				this.colorBottom = value;
+				this.haveColorsChanged = true;
 			}
 		}
 
@@ -541,19 +541,19 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return font != null ? font.Name : null;
+				return this.font != null ? this.font.Name : null;
 			}
 			set
 			{
-				font = (Font)FontManager.Instance[ value ];
-				if ( font == null )
+				this.font = (Font)FontManager.Instance[ value ];
+				if ( this.font == null )
 				{
 					throw new Exception( "Could not find font " + value );
 				}
-				font.Load();
+				this.font.Load();
 
 				// note: font materials are created with lighting and depthcheck disabled by default
-				material = font.Material;
+				material = this.font.Material;
 
 				// TODO See if this can be eliminated
 
@@ -593,7 +593,7 @@ namespace Axiom.Overlays.Elements
 			{
 				float vpWidth = OverlayManager.Instance.ViewportWidth;
 				float vpHeight = OverlayManager.Instance.ViewportHeight;
-				viewportAspectCoef = vpHeight/vpWidth;
+				this.viewportAspectCoef = vpHeight/vpWidth;
 				base.MetricsMode = value;
 
 				// configure pixel variables based on current viewport
@@ -601,13 +601,13 @@ namespace Axiom.Overlays.Elements
 				{
 					case MetricsMode.Pixels:
 						// set pixel variables multiplied by the viewport multipliers
-						pixelCharHeight = (int)( charHeight*vpHeight );
-						pixelSpaceWidth = (int)( spaceWidth*vpHeight );
+						this.pixelCharHeight = (int)( this.charHeight*vpHeight );
+						this.pixelSpaceWidth = (int)( this.spaceWidth*vpHeight );
 						break;
 					case MetricsMode.Relative:
 						// set pixel variables multiplied by the height constant
-						pixelCharHeight = (int)( charHeight*10000.0 );
-						pixelSpaceWidth = (int)( spaceWidth*10000.0 );
+						this.pixelCharHeight = (int)( this.charHeight*10000.0 );
+						this.pixelSpaceWidth = (int)( this.spaceWidth*10000.0 );
 						break;
 				}
 			}
@@ -622,22 +622,22 @@ namespace Axiom.Overlays.Elements
 			{
 				if ( metricsMode == MetricsMode.Pixels )
 				{
-					return (float)pixelSpaceWidth;
+					return (float)this.pixelSpaceWidth;
 				}
 				else
 				{
-					return spaceWidth;
+					return this.spaceWidth;
 				}
 			}
 			set
 			{
 				if ( metricsMode != MetricsMode.Relative )
 				{
-					pixelSpaceWidth = (int)value;
+					this.pixelSpaceWidth = (int)value;
 				}
 				else
 				{
-					spaceWidth = value;
+					this.spaceWidth = value;
 				}
 
 				isGeomPositionsOutOfDate = true;
@@ -651,11 +651,11 @@ namespace Axiom.Overlays.Elements
 		{
 			get
 			{
-				return textAlign;
+				return this.textAlign;
 			}
 			set
 			{
-				textAlign = value;
+				this.textAlign = value;
 				isGeomPositionsOutOfDate = true;
 			}
 		}

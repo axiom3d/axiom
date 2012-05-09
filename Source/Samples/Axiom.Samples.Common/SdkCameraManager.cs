@@ -52,11 +52,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return mCamera;
+				return this.mCamera;
 			}
 			set
 			{
-				mCamera = value;
+				this.mCamera = value;
 			}
 		}
 
@@ -72,16 +72,16 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				if ( mStyle == CameraStyle.Orbit )
+				if ( this.mStyle == CameraStyle.Orbit )
 				{
-					mTarget = value ?? mCamera.SceneManager.RootSceneNode;
+					this.mTarget = value ?? this.mCamera.SceneManager.RootSceneNode;
 					SetYawPitchDist( new Degree( Real.Zero ), new Degree( new Real( 15f ) ), 150 );
-					mCamera.SetAutoTracking( true, mTarget );
+					this.mCamera.SetAutoTracking( true, this.mTarget );
 				}
 			}
 			get
 			{
-				return mTarget ?? mCamera.SceneManager.RootSceneNode;
+				return this.mTarget ?? this.mCamera.SceneManager.RootSceneNode;
 			}
 		}
 
@@ -103,18 +103,18 @@ namespace Axiom.Samples
 
 		public SdkCameraManager( Camera cam )
 		{
-			mTarget = null;
-			mOrbiting = false;
-			mZooming = false;
-			mCamera = null;
+			this.mTarget = null;
+			this.mOrbiting = false;
+			this.mZooming = false;
+			this.mCamera = null;
 			TopSpeed = 150;
-			mGoingForward = false;
-			mGoingBack = false;
-			mGoingLeft = false;
-			mGoingRight = false;
-			mGoingUp = false;
-			mGoingDown = false;
-			mVelocity = Vector3.Zero;
+			this.mGoingForward = false;
+			this.mGoingBack = false;
+			this.mGoingLeft = false;
+			this.mGoingRight = false;
+			this.mGoingUp = false;
+			this.mGoingDown = false;
+			this.mVelocity = Vector3.Zero;
 
 			Camera = cam;
 			setStyle( CameraStyle.FreeLook );
@@ -128,13 +128,13 @@ namespace Axiom.Samples
 		/// <param name="dist"></param>
 		public virtual void SetYawPitchDist( Radian yaw, Radian pitch, Real dist )
 		{
-			if ( mStyle == CameraStyle.Orbit )
+			if ( this.mStyle == CameraStyle.Orbit )
 			{
-				mCamera.Position = mTarget.DerivedPosition;
-				mCamera.Orientation = mTarget.DerivedOrientation;
-				mCamera.Yaw( (Real)yaw );
-				mCamera.Pitch( (Real)( -pitch ) );
-				mCamera.MoveRelative( new Vector3( 0, 0, dist ) );
+				this.mCamera.Position = this.mTarget.DerivedPosition;
+				this.mCamera.Orientation = this.mTarget.DerivedOrientation;
+				this.mCamera.Yaw( (Real)yaw );
+				this.mCamera.Pitch( (Real)( -pitch ) );
+				this.mCamera.MoveRelative( new Vector3( 0, 0, dist ) );
 			}
 		}
 
@@ -145,29 +145,29 @@ namespace Axiom.Samples
 
 		public virtual void setStyle( CameraStyle style )
 		{
-			if ( mStyle != CameraStyle.Orbit && style == CameraStyle.Orbit )
+			if ( this.mStyle != CameraStyle.Orbit && style == CameraStyle.Orbit )
 			{
-				mStyle = CameraStyle.Orbit;
+				this.mStyle = CameraStyle.Orbit;
 				Target = Target;
-				mCamera.FixedYawAxis = Vector3.UnitY;
+				this.mCamera.FixedYawAxis = Vector3.UnitY;
 			}
-			else if ( mStyle != CameraStyle.FreeLook && style == CameraStyle.FreeLook )
+			else if ( this.mStyle != CameraStyle.FreeLook && style == CameraStyle.FreeLook )
 			{
-				mStyle = CameraStyle.FreeLook;
-				mCamera.AutoTrackingTarget = null;
-				mCamera.FixedYawAxis = Vector3.UnitY;
+				this.mStyle = CameraStyle.FreeLook;
+				this.mCamera.AutoTrackingTarget = null;
+				this.mCamera.FixedYawAxis = Vector3.UnitY;
 			}
-			else if ( mStyle != CameraStyle.Manual && style == CameraStyle.Manual )
+			else if ( this.mStyle != CameraStyle.Manual && style == CameraStyle.Manual )
 			{
-				mStyle = CameraStyle.Manual;
-				mCamera.AutoTrackingTarget = null;
-				mCamera.FixedYawAxis = Vector3.UnitY;
+				this.mStyle = CameraStyle.Manual;
+				this.mCamera.AutoTrackingTarget = null;
+				this.mCamera.FixedYawAxis = Vector3.UnitY;
 			}
 		}
 
 		public virtual CameraStyle getStyle()
 		{
-			return mStyle;
+			return this.mStyle;
 		}
 
 		/*-----------------------------------------------------------------------------
@@ -176,75 +176,75 @@ namespace Axiom.Samples
 
 		public virtual void manualStop()
 		{
-			if ( mStyle == CameraStyle.FreeLook )
+			if ( this.mStyle == CameraStyle.FreeLook )
 			{
-				mGoingForward = false;
-				mGoingBack = false;
-				mGoingLeft = false;
-				mGoingRight = false;
-				mGoingUp = false;
-				mGoingDown = false;
-				mVelocity = Vector3.Zero;
+				this.mGoingForward = false;
+				this.mGoingBack = false;
+				this.mGoingLeft = false;
+				this.mGoingRight = false;
+				this.mGoingUp = false;
+				this.mGoingDown = false;
+				this.mVelocity = Vector3.Zero;
 			}
 		}
 
 		public virtual bool frameRenderingQueued( FrameEventArgs evt )
 		{
-			if ( mStyle == CameraStyle.FreeLook )
+			if ( this.mStyle == CameraStyle.FreeLook )
 			{
 				// build our acceleration vector based on keyboard input composite
 				Vector3 accel = Vector3.Zero;
-				if ( mGoingForward )
+				if ( this.mGoingForward )
 				{
-					accel += mCamera.Direction;
+					accel += this.mCamera.Direction;
 				}
-				if ( mGoingBack )
+				if ( this.mGoingBack )
 				{
-					accel -= mCamera.Direction;
+					accel -= this.mCamera.Direction;
 				}
-				if ( mGoingRight )
+				if ( this.mGoingRight )
 				{
-					accel += mCamera.Right;
+					accel += this.mCamera.Right;
 				}
-				if ( mGoingLeft )
+				if ( this.mGoingLeft )
 				{
-					accel -= mCamera.Right;
+					accel -= this.mCamera.Right;
 				}
-				if ( mGoingUp )
+				if ( this.mGoingUp )
 				{
-					accel += mCamera.Up;
+					accel += this.mCamera.Up;
 				}
-				if ( mGoingDown )
+				if ( this.mGoingDown )
 				{
-					accel -= mCamera.Up;
+					accel -= this.mCamera.Up;
 				}
 
 				// if accelerating, try to reach top speed in a certain time
 				if ( accel.LengthSquared != 0 )
 				{
 					accel.Normalize();
-					mVelocity += accel*TopSpeed*evt.TimeSinceLastFrame*10;
+					this.mVelocity += accel*TopSpeed*evt.TimeSinceLastFrame*10;
 				}
 					// if not accelerating, try to stop in a certain time
 				else
 				{
-					mVelocity -= mVelocity*evt.TimeSinceLastFrame*10;
+					this.mVelocity -= this.mVelocity*evt.TimeSinceLastFrame*10;
 				}
 
 				// keep camera velocity below top speed and above zero
-				if ( mVelocity.LengthSquared > TopSpeed*TopSpeed )
+				if ( this.mVelocity.LengthSquared > TopSpeed*TopSpeed )
 				{
-					mVelocity.Normalize();
-					mVelocity *= TopSpeed;
+					this.mVelocity.Normalize();
+					this.mVelocity *= TopSpeed;
 				}
-				else if ( mVelocity.LengthSquared < 0.1 )
+				else if ( this.mVelocity.LengthSquared < 0.1 )
 				{
-					mVelocity = Vector3.Zero;
+					this.mVelocity = Vector3.Zero;
 				}
 
-				if ( mVelocity != Vector3.Zero )
+				if ( this.mVelocity != Vector3.Zero )
 				{
-					mCamera.Move( mVelocity*evt.TimeSinceLastFrame );
+					this.mCamera.Move( this.mVelocity*evt.TimeSinceLastFrame );
 				}
 			}
 
@@ -257,31 +257,31 @@ namespace Axiom.Samples
 
 		public virtual void injectKeyDown( SIS.KeyEventArgs evt )
 		{
-			if ( mStyle == CameraStyle.FreeLook )
+			if ( this.mStyle == CameraStyle.FreeLook )
 			{
 				if ( evt.Key == SIS.KeyCode.Key_W || evt.Key == SIS.KeyCode.Key_UP )
 				{
-					mGoingForward = true;
+					this.mGoingForward = true;
 				}
 				else if ( evt.Key == SIS.KeyCode.Key_S || evt.Key == SIS.KeyCode.Key_DOWN )
 				{
-					mGoingBack = true;
+					this.mGoingBack = true;
 				}
 				else if ( evt.Key == SIS.KeyCode.Key_A || evt.Key == SIS.KeyCode.Key_LEFT )
 				{
-					mGoingLeft = true;
+					this.mGoingLeft = true;
 				}
 				else if ( evt.Key == SIS.KeyCode.Key_D || evt.Key == SIS.KeyCode.Key_RIGHT )
 				{
-					mGoingRight = true;
+					this.mGoingRight = true;
 				}
 				else if ( evt.Key == SIS.KeyCode.Key_PGUP )
 				{
-					mGoingUp = true;
+					this.mGoingUp = true;
 				}
 				else if ( evt.Key == SIS.KeyCode.Key_PGDOWN )
 				{
-					mGoingDown = true;
+					this.mGoingDown = true;
 				}
 			}
 		}
@@ -292,31 +292,31 @@ namespace Axiom.Samples
 
 		public virtual void injectKeyUp( SIS.KeyEventArgs evt )
 		{
-			if ( mStyle == CameraStyle.FreeLook )
+			if ( this.mStyle == CameraStyle.FreeLook )
 			{
 				if ( evt.Key == SIS.KeyCode.Key_W || evt.Key == SIS.KeyCode.Key_UP )
 				{
-					mGoingForward = false;
+					this.mGoingForward = false;
 				}
 				else if ( evt.Key == SIS.KeyCode.Key_S || evt.Key == SIS.KeyCode.Key_DOWN )
 				{
-					mGoingBack = false;
+					this.mGoingBack = false;
 				}
 				else if ( evt.Key == SIS.KeyCode.Key_A || evt.Key == SIS.KeyCode.Key_LEFT )
 				{
-					mGoingLeft = false;
+					this.mGoingLeft = false;
 				}
 				else if ( evt.Key == SIS.KeyCode.Key_D || evt.Key == SIS.KeyCode.Key_RIGHT )
 				{
-					mGoingRight = false;
+					this.mGoingRight = false;
 				}
 				else if ( evt.Key == SIS.KeyCode.Key_PGUP )
 				{
-					mGoingUp = false;
+					this.mGoingUp = false;
 				}
 				else if ( evt.Key == SIS.KeyCode.Key_PGDOWN )
 				{
-					mGoingDown = false;
+					this.mGoingDown = false;
 				}
 			}
 		}
@@ -327,36 +327,36 @@ namespace Axiom.Samples
 
 		public virtual void injectMouseMove( SIS.MouseEventArgs evt )
 		{
-			if ( mStyle == CameraStyle.Orbit )
+			if ( this.mStyle == CameraStyle.Orbit )
 			{
-				Real dist = ( mCamera.Position - mTarget.DerivedPosition ).Length;
+				Real dist = ( this.mCamera.Position - this.mTarget.DerivedPosition ).Length;
 
-				if ( mOrbiting ) // yaw around the target, and pitch locally
+				if ( this.mOrbiting ) // yaw around the target, and pitch locally
 				{
-					mCamera.Position = mTarget.DerivedPosition;
+					this.mCamera.Position = this.mTarget.DerivedPosition;
 
-					mCamera.Yaw( (Real)( new Degree( (Real)( -evt.State.X.Relative*0.25f ) ) ) );
-					mCamera.Pitch( (Real)( new Degree( (Real)( -evt.State.Y.Relative*0.25f ) ) ) );
+					this.mCamera.Yaw( (Real)( new Degree( (Real)( -evt.State.X.Relative*0.25f ) ) ) );
+					this.mCamera.Pitch( (Real)( new Degree( (Real)( -evt.State.Y.Relative*0.25f ) ) ) );
 
-					mCamera.MoveRelative( new Vector3( 0, 0, dist ) );
+					this.mCamera.MoveRelative( new Vector3( 0, 0, dist ) );
 
 					// don't let the camera go over the top or around the bottom of the target
 				}
-				else if ( mZooming ) // move the camera toward or away from the target
+				else if ( this.mZooming ) // move the camera toward or away from the target
 				{
 					// the further the camera is, the faster it moves
-					mCamera.MoveRelative( new Vector3( 0, 0, evt.State.Y.Relative*0.004f*dist ) );
+					this.mCamera.MoveRelative( new Vector3( 0, 0, evt.State.Y.Relative*0.004f*dist ) );
 				}
 				else if ( evt.State.Z.Relative != 0 ) // move the camera toward or away from the target
 				{
 					// the further the camera is, the faster it moves
-					mCamera.MoveRelative( new Vector3( 0, 0, -evt.State.Z.Relative*0.0008f*dist ) );
+					this.mCamera.MoveRelative( new Vector3( 0, 0, -evt.State.Z.Relative*0.0008f*dist ) );
 				}
 			}
-			else if ( mStyle == CameraStyle.FreeLook )
+			else if ( this.mStyle == CameraStyle.FreeLook )
 			{
-				mCamera.Yaw( (Real)( new Degree( (Real)( -evt.State.X.Relative*0.15f ) ) ) );
-				mCamera.Pitch( (Real)( new Degree( (Real)( -evt.State.Y.Relative*0.15f ) ) ) );
+				this.mCamera.Yaw( (Real)( new Degree( (Real)( -evt.State.X.Relative*0.15f ) ) ) );
+				this.mCamera.Pitch( (Real)( new Degree( (Real)( -evt.State.Y.Relative*0.15f ) ) ) );
 			}
 		}
 
@@ -367,15 +367,15 @@ namespace Axiom.Samples
 
 		public virtual void injectMouseDown( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
 		{
-			if ( mStyle == CameraStyle.Orbit )
+			if ( this.mStyle == CameraStyle.Orbit )
 			{
 				if ( id == SIS.MouseButtonID.Left )
 				{
-					mOrbiting = true;
+					this.mOrbiting = true;
 				}
 				else if ( id == SIS.MouseButtonID.Right )
 				{
-					mZooming = true;
+					this.mZooming = true;
 				}
 			}
 		}
@@ -387,15 +387,15 @@ namespace Axiom.Samples
 
 		public virtual void injectMouseUp( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
 		{
-			if ( mStyle == CameraStyle.Orbit )
+			if ( this.mStyle == CameraStyle.Orbit )
 			{
 				if ( id == SIS.MouseButtonID.Left )
 				{
-					mOrbiting = false;
+					this.mOrbiting = false;
 				}
 				else if ( id == SIS.MouseButtonID.Right )
 				{
-					mZooming = false;
+					this.mZooming = false;
 				}
 			}
 		}

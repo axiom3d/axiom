@@ -116,7 +116,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _resourceHandleMap;
+				return this._resourceHandleMap;
 			}
 		}
 
@@ -139,11 +139,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _memoryBudget;
+				return this._memoryBudget;
 			}
 			set
 			{
-				_memoryBudget = value;
+				this._memoryBudget = value;
 				checkUsage();
 			}
 		}
@@ -161,7 +161,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _memoryUsage;
+				return this._memoryUsage;
 			}
 		}
 
@@ -223,12 +223,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				Debug.Assert( _resourceHandleMap != null, "A resource was being retrieved, but the list of Resources is null.", "" );
+				Debug.Assert( this._resourceHandleMap != null, "A resource was being retrieved, but the list of Resources is null.",
+				              "" );
 
 				Resource resource;
 
 				// try to obtain the resource
-				if ( _resourceHandleMap.TryGetValue( handle, out resource ) )
+				if ( this._resourceHandleMap.TryGetValue( handle, out resource ) )
 				{
 					resource.Touch();
 				}
@@ -250,9 +251,9 @@ namespace Axiom.Core
 		protected ResourceManager()
 			: base()
 		{
-			_memoryBudget = long.MaxValue;
-			_memoryUsage = 0;
-			_loadingOrder = 0;
+			this._memoryBudget = long.MaxValue;
+			this._memoryUsage = 0;
+			this._loadingOrder = 0;
 		}
 
 		#endregion Constructors and Destructors
@@ -514,10 +515,10 @@ namespace Axiom.Core
 			resource.Unload();
 
 			// remove the resource
-			_resources.Remove( resource.Name );
+			this._resources.Remove( resource.Name );
 
 			// update memory usage
-			_memoryUsage -= resource.Size;
+			this._memoryUsage -= resource.Size;
 		}
 
 		#endregion Unload Method
@@ -532,7 +533,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void UnloadAll()
 		{
-			foreach ( var res in _resources.Values )
+			foreach ( var res in this._resources.Values )
 			{
 				res.Unload();
 			}
@@ -546,7 +547,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void ReloadAll()
 		{
-			foreach ( var res in _resources.Values )
+			foreach ( var res in this._resources.Values )
 			{
 				res.Reload();
 			}
@@ -624,15 +625,15 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void RemoveAll()
 		{
-			foreach ( var resource in _resources.Values )
+			foreach ( var resource in this._resources.Values )
 			{
 				if ( !resource.IsDisposed )
 				{
 					resource.Dispose();
 				}
 			}
-			_resources.Clear();
-			_resourceHandleMap.Clear();
+			this._resources.Clear();
+			this._resourceHandleMap.Clear();
 
 			ResourceGroupManager.Instance.notifyAllResourcesRemoved( this );
 		}
@@ -670,7 +671,7 @@ namespace Axiom.Core
 		{
 			lock ( _autoMutex )
 			{
-				_memoryUsage += res.Size;
+				this._memoryUsage += res.Size;
 			}
 		}
 
@@ -681,7 +682,7 @@ namespace Axiom.Core
 		{
 			lock ( _autoMutex )
 			{
-				_memoryUsage -= res.Size;
+				this._memoryUsage -= res.Size;
 			}
 		}
 
@@ -721,9 +722,9 @@ namespace Axiom.Core
 		/// <param name="res"></param>
 		protected virtual void _add( Resource res )
 		{
-			if ( !_resourceHandleMap.ContainsKey( res.Handle ) )
+			if ( !this._resourceHandleMap.ContainsKey( res.Handle ) )
 			{
-				_resourceHandleMap.Add( res.Handle, res );
+				this._resourceHandleMap.Add( res.Handle, res );
 			}
 			else
 			{
@@ -737,14 +738,14 @@ namespace Axiom.Core
 		/// <param name="res"></param>
 		protected virtual void _remove( Resource res )
 		{
-			if ( _resources.ContainsKey( res.Name ) )
+			if ( this._resources.ContainsKey( res.Name ) )
 			{
-				_resources.Remove( res.Name );
+				this._resources.Remove( res.Name );
 			}
 
-			if ( _resourceHandleMap.ContainsKey( res.Handle ) )
+			if ( this._resourceHandleMap.ContainsKey( res.Handle ) )
 			{
-				_resourceHandleMap.Remove( res.Handle );
+				this._resourceHandleMap.Remove( res.Handle );
 			}
 
 			ResourceGroupManager.Instance.notifyResourceRemoved( res );
@@ -824,11 +825,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _scriptPatterns;
+				return this._scriptPatterns;
 			}
 			protected set
 			{
-				_scriptPatterns = value;
+				this._scriptPatterns = value;
 			}
 		}
 
@@ -868,11 +869,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _loadingOrder;
+				return this._loadingOrder;
 			}
 			protected set
 			{
-				_loadingOrder = value;
+				this._loadingOrder = value;
 			}
 		}
 

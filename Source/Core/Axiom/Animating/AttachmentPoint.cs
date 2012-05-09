@@ -74,7 +74,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -82,7 +82,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return parentBone;
+				return this.parentBone;
 			}
 		}
 
@@ -90,7 +90,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return orientation;
+				return this.orientation;
 			}
 		}
 
@@ -98,7 +98,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return position;
+				return this.position;
 			}
 		}
 	}

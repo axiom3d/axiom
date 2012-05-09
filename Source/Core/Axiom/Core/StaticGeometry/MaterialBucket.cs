@@ -73,7 +73,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return materialName;
+					return this.materialName;
 				}
 			}
 
@@ -81,7 +81,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return parent;
+					return this.parent;
 				}
 			}
 
@@ -89,7 +89,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return material;
+					return this.material;
 				}
 			}
 
@@ -97,7 +97,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return technique;
+					return this.technique;
 				}
 			}
 
@@ -105,7 +105,7 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return geometryBucketList;
+					return this.geometryBucketList;
 				}
 			}
 
@@ -118,8 +118,8 @@ namespace Axiom.Core
 			{
 				this.parent = parent;
 				this.materialName = materialName;
-				geometryBucketList = new List<GeometryBucket>();
-				currentGeometryMap = new Dictionary<string, GeometryBucket>();
+				this.geometryBucketList = new List<GeometryBucket>();
+				this.currentGeometryMap = new Dictionary<string, GeometryBucket>();
 			}
 
 			#endregion
@@ -155,9 +155,9 @@ namespace Axiom.Core
 				// Look up any current geometry
 				var formatString = GetGeometryFormatString( qgeom.geometry );
 				var newBucket = true;
-				if ( currentGeometryMap.ContainsKey( formatString ) )
+				if ( this.currentGeometryMap.ContainsKey( formatString ) )
 				{
-					var gbucket = currentGeometryMap[ formatString ];
+					var gbucket = this.currentGeometryMap[ formatString ];
 					// Found existing geometry, try to assign
 					newBucket = !gbucket.Assign( qgeom );
 					// Note that this bucket will be replaced as the 'current'
@@ -168,9 +168,9 @@ namespace Axiom.Core
 				{
 					var gbucket = new GeometryBucket( this, formatString, qgeom.geometry.vertexData, qgeom.geometry.indexData );
 					// Add to main list
-					geometryBucketList.Add( gbucket );
+					this.geometryBucketList.Add( gbucket );
 					// Also index in 'current' list
-					currentGeometryMap[ formatString ] = gbucket;
+					this.currentGeometryMap[ formatString ] = gbucket;
 					if ( !gbucket.Assign( qgeom ) )
 					{
 						throw new AxiomException( "Somehow we couldn't fit the requested geometry even in a " +
@@ -183,16 +183,16 @@ namespace Axiom.Core
 			{
 				if ( logLevel <= 1 )
 				{
-					LogManager.Instance.Write( "MaterialBucket.Build: Building material {0}", materialName );
+					LogManager.Instance.Write( "MaterialBucket.Build: Building material {0}", this.materialName );
 				}
-				material = (Material)MaterialManager.Instance[ materialName ];
-				if ( null == material )
+				this.material = (Material)MaterialManager.Instance[ this.materialName ];
+				if ( null == this.material )
 				{
-					throw new AxiomException( "Material '{0}' not found.", materialName );
+					throw new AxiomException( "Material '{0}' not found.", this.materialName );
 				}
-				material.Load();
+				this.material.Load();
 				// tell the geometry buckets to build
-				foreach ( var gbucket in geometryBucketList )
+				foreach ( var gbucket in this.geometryBucketList )
 				{
 					gbucket.Build( stencilShadows, logLevel );
 				}
@@ -213,8 +213,8 @@ namespace Axiom.Core
 				//    lodValue = materialLodStrategy.GetValue( batchInstance, batchInstance.Camera );
 
 				// determine the current material technique
-				technique = material.GetBestTechnique( material.GetLodIndex( lodValue ) );
-				foreach ( var gbucket in geometryBucketList )
+				this.technique = this.material.GetBestTechnique( this.material.GetLodIndex( lodValue ) );
+				foreach ( var gbucket in this.geometryBucketList )
 				{
 					queue.AddRenderable( gbucket, RenderQueue.DEFAULT_PRIORITY, group );
 				}
@@ -222,10 +222,10 @@ namespace Axiom.Core
 
 			public void Dump()
 			{
-				LogManager.Instance.Write( "Material Bucket {0}", materialName );
+				LogManager.Instance.Write( "Material Bucket {0}", this.materialName );
 				LogManager.Instance.Write( "--------------------------------------------------" );
-				LogManager.Instance.Write( "Geometry buckets: {0}", geometryBucketList.Count );
-				foreach ( var gbucket in geometryBucketList )
+				LogManager.Instance.Write( "Geometry buckets: {0}", this.geometryBucketList.Count );
+				foreach ( var gbucket in this.geometryBucketList )
 				{
 					gbucket.Dump();
 				}
@@ -241,28 +241,28 @@ namespace Axiom.Core
 				{
 					if ( disposeManagedResources )
 					{
-						if ( geometryBucketList != null )
+						if ( this.geometryBucketList != null )
 						{
-							foreach ( var gbucket in geometryBucketList )
+							foreach ( var gbucket in this.geometryBucketList )
 							{
 								if ( !gbucket.IsDisposed )
 								{
 									gbucket.Dispose();
 								}
 							}
-							geometryBucketList.Clear();
-							geometryBucketList = null;
+							this.geometryBucketList.Clear();
+							this.geometryBucketList = null;
 						}
 
 
-						if ( material != null )
+						if ( this.material != null )
 						{
-							if ( !material.IsDisposed )
+							if ( !this.material.IsDisposed )
 							{
-								material.Dispose();
+								this.material.Dispose();
 							}
 
-							material = null;
+							this.material = null;
 						}
 					}
 				}

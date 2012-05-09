@@ -69,7 +69,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return source;
+				return this.source;
 			}
 		}
 
@@ -90,7 +90,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return viewport;
+				return this.viewport;
 			}
 		}
 
@@ -219,13 +219,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return depthBufferPoolId;
+				return this.depthBufferPoolId;
 			}
 			set
 			{
-				if ( depthBufferPoolId != value )
+				if ( this.depthBufferPoolId != value )
 				{
-					depthBufferPoolId = value;
+					this.depthBufferPoolId = value;
 					DetachDepthBuffer();
 				}
 			}
@@ -248,7 +248,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return height;
+				return this.height;
 			}
 		}
 
@@ -269,7 +269,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return width;
+				return this.width;
 			}
 		}
 
@@ -290,7 +290,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return colorDepth;
+				return this.colorDepth;
 			}
 		}
 
@@ -308,7 +308,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return depthBuffer;
+				return this.depthBuffer;
 			}
 		}
 
@@ -329,11 +329,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return priority;
+				return this.priority;
 			}
 			set
 			{
-				priority = value;
+				this.priority = value;
 			}
 		}
 
@@ -354,7 +354,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -387,11 +387,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return active && !IsDisposed;
+				return this.active && !IsDisposed;
 			}
 			set
 			{
-				active = value;
+				this.active = value;
 			}
 		}
 
@@ -438,11 +438,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return autoUpdate;
+				return this.autoUpdate;
 			}
 			set
 			{
-				autoUpdate = value;
+				this.autoUpdate = value;
 			}
 		}
 
@@ -456,11 +456,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _isDepthBuffered;
+				return this._isDepthBuffered;
 			}
 			set
 			{
-				_isDepthBuffered = value;
+				this._isDepthBuffered = value;
 			}
 		}
 
@@ -482,7 +482,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return hwGamma;
+				return this.hwGamma;
 			}
 		}
 
@@ -502,7 +502,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return fsaa;
+				return this.fsaa;
 			}
 		}
 
@@ -520,7 +520,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return fsaaHint;
+				return this.fsaaHint;
 			}
 		}
 
@@ -536,7 +536,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return ViewportList.Count;
+				return this.ViewportList.Count;
 			}
 		}
 
@@ -549,10 +549,10 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected RenderTarget()
 		{
-			priority = RenderTargetPriority.Default;
-			active = true;
-			autoUpdate = true;
-			_timer = Root.Instance.Timer;
+			this.priority = RenderTargetPriority.Default;
+			this.active = true;
+			this.autoUpdate = true;
+			this._timer = Root.Instance.Timer;
 			ResetStatistics();
 		}
 
@@ -687,9 +687,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual Viewport GetViewport( int index )
 		{
-			Debug.Assert( index >= 0 && index < ViewportList.Count );
+			Debug.Assert( index >= 0 && index < this.ViewportList.Count );
 
-			return ViewportList.Values[ index ];
+			return this.ViewportList.Values[ index ];
 		}
 
 		#endregion
@@ -706,7 +706,7 @@ namespace Axiom.Graphics
 		public virtual Viewport GetViewportByZOrder( int zOrder )
 		{
 			Viewport viewport;
-			if ( !ViewportList.TryGetValue( zOrder, out viewport ) )
+			if ( !this.ViewportList.TryGetValue( zOrder, out viewport ) )
 			{
 				throw new AxiomException( "No viewport with given zorder : {0}", zOrder );
 			}
@@ -724,7 +724,7 @@ namespace Axiom.Graphics
 		/// <returns>true if and only if a viewport exists at the given ZOrder.</returns>
 		public virtual bool HasViewportWithZOrder( int zOrder )
 		{
-			return ViewportList.ContainsKey( zOrder );
+			return this.ViewportList.ContainsKey( zOrder );
 		}
 
 		#endregion
@@ -758,16 +758,17 @@ namespace Axiom.Graphics
 		public virtual Viewport AddViewport( Camera camera, float left, float top, float nwidth, float nheight, int zOrder )
 #endif
 		{
-			if ( ViewportList.ContainsKey( zOrder ) )
+			if ( this.ViewportList.ContainsKey( zOrder ) )
 			{
 				throw new AxiomException(
-					"Can't create another viewport for {0} with Z-Order {1} because a viewport exists with this Z-Order already.", name,
+					"Can't create another viewport for {0} with Z-Order {1} because a viewport exists with this Z-Order already.",
+					this.name,
 					zOrder );
 			}
 
 			// create a new camera and add it to our internal collection
 			var viewport = new Viewport( camera, this, left, top, nwidth, nheight, zOrder );
-			ViewportList.Add( viewport );
+			this.ViewportList.Add( viewport );
 
 			FireViewportAdded( viewport );
 
@@ -796,13 +797,13 @@ namespace Axiom.Graphics
 		public virtual void RemoveViewport( int zOrder )
 		{
 			Viewport viewport;
-			if ( !ViewportList.TryGetValue( zOrder, out viewport ) )
+			if ( !this.ViewportList.TryGetValue( zOrder, out viewport ) )
 			{
 				return;
 			}
 			FireViewportRemoved( viewport );
 			viewport.SafeDispose();
-			ViewportList.Remove( zOrder );
+			this.ViewportList.Remove( zOrder );
 		}
 
 		#endregion RemoveViewport
@@ -815,13 +816,13 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void RemoveAllViewports()
 		{
-			foreach ( var it in ViewportList.Values )
+			foreach ( var it in this.ViewportList.Values )
 			{
 				FireViewportRemoved( it );
 				it.SafeDispose();
 			}
 
-			ViewportList.Clear();
+			this.ViewportList.Clear();
 		}
 
 		#endregion
@@ -846,10 +847,10 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void GetStatistics( out float lastFPS, out float avgFPS, out float bestFPS, out float worstFPS )
 		{
-			lastFPS = stats.LastFPS;
-			avgFPS = stats.AverageFPS;
-			bestFPS = stats.BestFPS;
-			worstFPS = stats.WorstFPS;
+			lastFPS = this.stats.LastFPS;
+			avgFPS = this.stats.AverageFPS;
+			bestFPS = this.stats.BestFPS;
+			worstFPS = this.stats.WorstFPS;
 		}
 
 		#endregion GetStatistics
@@ -864,7 +865,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return stats;
+				return this.stats;
 			}
 		}
 
@@ -880,7 +881,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return stats.LastFPS;
+				return this.stats.LastFPS;
 			}
 		}
 
@@ -896,7 +897,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return stats.AverageFPS;
+				return this.stats.AverageFPS;
 			}
 		}
 
@@ -912,7 +913,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return stats.BestFPS;
+				return this.stats.BestFPS;
 			}
 		}
 
@@ -928,7 +929,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return stats.WorstFPS;
+				return this.stats.WorstFPS;
 			}
 		}
 
@@ -944,7 +945,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return stats.BestFrameTime;
+				return this.stats.BestFrameTime;
 			}
 		}
 
@@ -960,7 +961,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return stats.WorstFrameTime;
+				return this.stats.WorstFrameTime;
 			}
 		}
 
@@ -976,7 +977,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return stats.TriangleCount;
+				return this.stats.TriangleCount;
 			}
 		}
 
@@ -992,7 +993,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return stats.BatchCount;
+				return this.stats.BatchCount;
 			}
 		}
 
@@ -1006,18 +1007,18 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void ResetStatistics()
 		{
-			stats.AverageFPS = 0.0F;
-			stats.BestFPS = 0.0F;
-			stats.LastFPS = 0.0F;
-			stats.WorstFPS = 999.0F;
-			stats.TriangleCount = 0;
-			stats.BatchCount = 0;
-			stats.BestFrameTime = 999999;
-			stats.WorstFrameTime = 0;
+			this.stats.AverageFPS = 0.0F;
+			this.stats.BestFPS = 0.0F;
+			this.stats.LastFPS = 0.0F;
+			this.stats.WorstFPS = 999.0F;
+			this.stats.TriangleCount = 0;
+			this.stats.BatchCount = 0;
+			this.stats.BestFrameTime = 999999;
+			this.stats.WorstFrameTime = 0;
 
-			lastTime = _timer.Milliseconds;
-			lastSecond = lastTime;
-			frameCount = 0;
+			this.lastTime = this._timer.Milliseconds;
+			this.lastSecond = this.lastTime;
+			this.frameCount = 0;
 		}
 
 		#endregion ResetStatistics
@@ -1027,39 +1028,39 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected void UpdateStatistics()
 		{
-			frameCount++;
-			var thisTime = _timer.Milliseconds;
+			this.frameCount++;
+			var thisTime = this._timer.Milliseconds;
 
 			// check frame time
-			var frameTime = thisTime - lastTime;
-			lastTime = thisTime;
+			var frameTime = thisTime - this.lastTime;
+			this.lastTime = thisTime;
 
-			stats.BestFrameTime = Math.Utility.Min( stats.BestFrameTime, frameTime );
-			stats.WorstFrameTime = Math.Utility.Max( stats.WorstFrameTime, frameTime );
+			this.stats.BestFrameTime = Math.Utility.Min( this.stats.BestFrameTime, frameTime );
+			this.stats.WorstFrameTime = Math.Utility.Max( this.stats.WorstFrameTime, frameTime );
 
 			// check if new second (update only once per second)
-			if ( thisTime - lastSecond <= 1000 )
+			if ( thisTime - this.lastSecond <= 1000 )
 			{
 				return;
 			}
 
 			// new second - not 100% precise
-			stats.LastFPS = (float)frameCount/( thisTime - lastSecond )*1000;
+			this.stats.LastFPS = (float)this.frameCount/( thisTime - this.lastSecond )*1000;
 
-			if ( stats.AverageFPS == 0 )
+			if ( this.stats.AverageFPS == 0 )
 			{
-				stats.AverageFPS = stats.LastFPS;
+				this.stats.AverageFPS = this.stats.LastFPS;
 			}
 			else
 			{
-				stats.AverageFPS = ( stats.AverageFPS + stats.LastFPS )/2; // not strictly correct, but good enough
+				this.stats.AverageFPS = ( this.stats.AverageFPS + this.stats.LastFPS )/2; // not strictly correct, but good enough
 			}
 
-			stats.BestFPS = Math.Utility.Max( stats.BestFPS, stats.LastFPS );
-			stats.WorstFPS = Math.Utility.Min( stats.WorstFPS, stats.LastFPS );
+			this.stats.BestFPS = Math.Utility.Max( this.stats.BestFPS, this.stats.LastFPS );
+			this.stats.WorstFPS = Math.Utility.Min( this.stats.WorstFPS, this.stats.LastFPS );
 
-			lastSecond = thisTime;
-			frameCount = 0;
+			this.lastSecond = thisTime;
+			this.frameCount = 0;
 		}
 
 		#endregion
@@ -1115,8 +1116,8 @@ namespace Axiom.Graphics
 			{
 				retVal = true;
 				DetachDepthBuffer();
-				depthBuffer = ndepthBuffer;
-				depthBuffer.NotifyRenderTargetAttached( this );
+				this.depthBuffer = ndepthBuffer;
+				this.depthBuffer.NotifyRenderTargetAttached( this );
 			}
 
 			return retVal;
@@ -1129,13 +1130,13 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void DetachDepthBuffer()
 		{
-			if ( depthBuffer == null )
+			if ( this.depthBuffer == null )
 			{
 				return;
 			}
 
-			depthBuffer.NotifyRenderTargetDetached( this );
-			depthBuffer = null;
+			this.depthBuffer.NotifyRenderTargetDetached( this );
+			this.depthBuffer = null;
 		}
 
 		#endregion DetachDepthBuffer
@@ -1150,7 +1151,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void _DetachDepthBuffer()
 		{
-			depthBuffer = null;
+			this.depthBuffer = null;
 		}
 
 		#endregion _DetachDepthBuffer
@@ -1249,8 +1250,8 @@ namespace Axiom.Graphics
 			// notify listeners (pre)
 			FirePreUpdate();
 
-			stats.TriangleCount = 0;
-			stats.BatchCount = 0;
+			this.stats.TriangleCount = 0;
+			this.stats.BatchCount = 0;
 		}
 
 		#endregion BeginUpdate
@@ -1277,8 +1278,8 @@ namespace Axiom.Graphics
 			viewport.Update();
 			if ( updateStatistics )
 			{
-				stats.TriangleCount += viewport.RenderedFaceCount;
-				stats.BatchCount += viewport.RenderedBatchCount;
+				this.stats.TriangleCount += viewport.RenderedFaceCount;
+				this.stats.BatchCount += viewport.RenderedBatchCount;
 			}
 			FireViewportPostUpdate( viewport );
 		}
@@ -1297,7 +1298,7 @@ namespace Axiom.Graphics
 		public virtual void UpdateViewport( int zorder, bool updateStatistics )
 		{
 			Viewport viewport;
-			if ( ViewportList.TryGetValue( zorder, out viewport ) )
+			if ( this.ViewportList.TryGetValue( zorder, out viewport ) )
 			{
 				UpdateViewport( viewport, updateStatistics );
 			}
@@ -1329,7 +1330,7 @@ namespace Axiom.Graphics
 		{
 			// Go through viewports in Z-order
 			// Tell each to refresh
-			foreach ( var it in ViewportList )
+			foreach ( var it in this.ViewportList )
 			{
 				var viewport = it.Value;
 				if ( viewport.IsAutoUpdated )
@@ -1380,14 +1381,14 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		internal void NotifyCameraRemoved( Camera camera )
 		{
-			if ( ViewportList == null )
+			if ( this.ViewportList == null )
 			{
 				return;
 			}
 
-			for ( var i = 0; i < ViewportList.Count; i++ )
+			for ( var i = 0; i < this.ViewportList.Count; i++ )
 			{
-				var viewport = ViewportList.Values[ i ];
+				var viewport = this.ViewportList.Values[ i ];
 
 				// remove the link to this camera
 				if ( viewport.Camera == camera )
@@ -1407,9 +1408,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public void GetMetrics( out int nwidth, out int nheight, out int ncolorDepth )
 		{
-			nwidth = width;
-			nheight = height;
-			ncolorDepth = colorDepth;
+			nwidth = this.width;
+			nheight = this.height;
+			ncolorDepth = this.colorDepth;
 		}
 
 		#endregion GetMetrics
@@ -1445,7 +1446,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual String WriteContentsToTimestampedFile( String filenamePrefix, String filenameSuffix )
 		{
-			var filename = string.Format( "{2}{0:MMddyyyyHHmmss}{1:D3}{3}", DateTime.Now, _timer.Milliseconds%1000,
+			var filename = string.Format( "{2}{0:MMddyyyyHHmmss}{1:D3}{3}", DateTime.Now, this._timer.Milliseconds%1000,
 			                              filenamePrefix, filenameSuffix );
 			WriteContentsToFile( filename );
 			return filename;
@@ -1550,18 +1551,19 @@ namespace Axiom.Graphics
 				if ( disposeManagedResources )
 				{
 					// Delete viewports
-					foreach ( var i in ViewportList )
+					foreach ( var i in this.ViewportList )
 					{
 						FireViewportRemoved( i.Value );
 						i.Value.SafeDispose();
 					}
-					ViewportList.Clear();
+					this.ViewportList.Clear();
 
 					// Write final performance stats
 					if ( LogManager.Instance != null )
 					{
-						LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", name, stats.AverageFPS,
-						                           stats.BestFPS, stats.WorstFPS );
+						LogManager.Instance.Write( "Final Stats [{0}]: FPS <A,B,W> : {1:#.00} {2:#.00} {3:#.00}", this.name,
+						                           this.stats.AverageFPS,
+						                           this.stats.BestFPS, this.stats.WorstFPS );
 					}
 				}
 			}

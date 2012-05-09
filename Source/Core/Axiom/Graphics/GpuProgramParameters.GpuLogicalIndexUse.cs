@@ -42,17 +42,17 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public GpuLogicalIndexUse()
 			{
-				PhysicalIndex = 99999;
-				CurrentSize = 0;
-				Variability = GpuParamVariability.Global;
+				this.PhysicalIndex = 99999;
+				this.CurrentSize = 0;
+				this.Variability = GpuParamVariability.Global;
 			}
 
 			[OgreVersion( 1, 7, 2790 )]
 			public GpuLogicalIndexUse( int bufIdx, int curSz, GpuParamVariability v )
 			{
-				PhysicalIndex = bufIdx;
-				CurrentSize = curSz;
-				Variability = v;
+				this.PhysicalIndex = bufIdx;
+				this.CurrentSize = curSz;
+				this.Variability = v;
 			}
 
 			#endregion
@@ -61,9 +61,9 @@ namespace Axiom.Graphics
 			public GpuLogicalIndexUse Clone()
 			{
 				var p = new GpuLogicalIndexUse();
-				p.PhysicalIndex = PhysicalIndex;
-				p.CurrentSize = CurrentSize;
-				p.Variability = Variability;
+				p.PhysicalIndex = this.PhysicalIndex;
+				p.CurrentSize = this.CurrentSize;
+				p.Variability = this.Variability;
 				return p;
 			}
 		}

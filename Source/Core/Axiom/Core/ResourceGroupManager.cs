@@ -488,28 +488,28 @@ namespace Axiom.Core
 			public void Add( string filename, Archive arch )
 			{
 				// internal, assumes mutex lock has already been obtained
-				ResourceIndexCaseSensitive[ filename ] = arch;
+				this.ResourceIndexCaseSensitive[ filename ] = arch;
 
 				if ( !arch.IsCaseSensitive )
 				{
-					ResourceIndexCaseInsensitive[ filename.ToLower() ] = arch;
+					this.ResourceIndexCaseInsensitive[ filename.ToLower() ] = arch;
 				}
 			}
 
 			public void Remove( string filename, Archive arch )
 			{
 				// internal, assumes mutex lock has already been obtained
-				if ( ResourceIndexCaseSensitive.ContainsKey( filename ) )
+				if ( this.ResourceIndexCaseSensitive.ContainsKey( filename ) )
 				{
-					ResourceIndexCaseSensitive.Remove( filename );
+					this.ResourceIndexCaseSensitive.Remove( filename );
 				}
 
 				if ( !arch.IsCaseSensitive )
 				{
 					var lcase = filename.ToLower();
-					if ( ResourceIndexCaseInsensitive.ContainsKey( filename ) )
+					if ( this.ResourceIndexCaseInsensitive.ContainsKey( filename ) )
 					{
-						ResourceIndexCaseInsensitive.Remove( filename );
+						this.ResourceIndexCaseInsensitive.Remove( filename );
 					}
 				}
 			}
@@ -518,7 +518,7 @@ namespace Axiom.Core
 			{
 				var keys = new List<string>();
 				// Delete indexes
-				foreach ( var kvp in ResourceIndexCaseSensitive )
+				foreach ( var kvp in this.ResourceIndexCaseSensitive )
 				{
 					if ( kvp.Value == arch )
 					{
@@ -527,11 +527,11 @@ namespace Axiom.Core
 				}
 				foreach ( var key in keys )
 				{
-					ResourceIndexCaseSensitive.Remove( key );
+					this.ResourceIndexCaseSensitive.Remove( key );
 				}
 
 				keys.Clear();
-				foreach ( var kvp in ResourceIndexCaseInsensitive )
+				foreach ( var kvp in this.ResourceIndexCaseInsensitive )
 				{
 					if ( kvp.Value == arch )
 					{
@@ -540,7 +540,7 @@ namespace Axiom.Core
 				}
 				foreach ( var key in keys )
 				{
-					ResourceIndexCaseInsensitive.Remove( key );
+					this.ResourceIndexCaseInsensitive.Remove( key );
 				}
 			}
 
@@ -552,15 +552,15 @@ namespace Axiom.Core
 				{
 					if ( disposeManagedResources )
 					{
-						Initialized = false;
-						LocationList.Clear();
-						ResourceIndexCaseInsensitive.Clear();
-						ResourceIndexCaseSensitive.Clear();
-						ResourceDeclarations.Clear();
-						LoadResourceOrders.Clear();
-						WorldGeometrySceneManager = null;
-						WorldGeometry = "";
-						Name = "";
+						this.Initialized = false;
+						this.LocationList.Clear();
+						this.ResourceIndexCaseInsensitive.Clear();
+						this.ResourceIndexCaseSensitive.Clear();
+						this.ResourceDeclarations.Clear();
+						this.LoadResourceOrders.Clear();
+						this.WorldGeometrySceneManager = null;
+						this.WorldGeometry = "";
+						this.Name = "";
 					}
 				}
 
@@ -611,7 +611,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _resourceManagers;
+				return this._resourceManagers;
 			}
 		}
 
@@ -625,7 +625,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _scriptLoaderOrders;
+				return this._scriptLoaderOrders;
 			}
 		}
 
@@ -639,7 +639,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _resourceGroupListeners;
+				return this._resourceGroupListeners;
 			}
 		}
 
@@ -653,7 +653,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _resourceGroups;
+				return this._resourceGroups;
 			}
 		}
 
@@ -685,11 +685,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _currentGroup;
+				return this._currentGroup;
 			}
 			set
 			{
-				_currentGroup = value;
+				this._currentGroup = value;
 			}
 		}
 
@@ -727,9 +727,9 @@ namespace Axiom.Core
 		/// <param name="scriptCount"></param>
 		private void _fireResourceGroupScriptingStarted( string groupName, int scriptCount )
 		{
-			if ( _resourceGroupScriptingStarted != null )
+			if ( this._resourceGroupScriptingStarted != null )
 			{
-				_resourceGroupScriptingStarted( groupName, scriptCount );
+				this._resourceGroupScriptingStarted( groupName, scriptCount );
 			}
 		}
 
@@ -740,9 +740,9 @@ namespace Axiom.Core
 		/// <param name="skipThisScript"></param>
 		private void _fireScriptStarted( string scriptName, ref bool skipThisScript )
 		{
-			if ( _scriptParseStarted != null )
+			if ( this._scriptParseStarted != null )
 			{
-				_scriptParseStarted( scriptName, ref skipThisScript );
+				this._scriptParseStarted( scriptName, ref skipThisScript );
 			}
 		}
 
@@ -753,9 +753,9 @@ namespace Axiom.Core
 		/// <param name="skipped"></param>
 		private void _fireScriptEnded( string scriptName, bool skipped )
 		{
-			if ( _scriptParseEnded != null )
+			if ( this._scriptParseEnded != null )
 			{
-				_scriptParseEnded( scriptName, skipped );
+				this._scriptParseEnded( scriptName, skipped );
 			}
 		}
 
@@ -765,9 +765,9 @@ namespace Axiom.Core
 		/// <param name="groupName"></param>
 		private void _fireResourceGroupScriptingEnded( string groupName )
 		{
-			if ( _resourceGroupScriptingEnded != null )
+			if ( this._resourceGroupScriptingEnded != null )
 			{
-				_resourceGroupScriptingEnded( groupName );
+				this._resourceGroupScriptingEnded( groupName );
 			}
 		}
 
@@ -776,9 +776,9 @@ namespace Axiom.Core
 		/// <param name="resourceCount"></param>
 		private void _fireResourceGroupLoadStarted( string groupName, int resourceCount )
 		{
-			if ( _resourceGroupLoadStarted != null )
+			if ( this._resourceGroupLoadStarted != null )
 			{
-				_resourceGroupLoadStarted( groupName, resourceCount );
+				this._resourceGroupLoadStarted( groupName, resourceCount );
 			}
 		}
 
@@ -788,9 +788,9 @@ namespace Axiom.Core
 		/// <param name="resource"></param>
 		private void _fireResourceStarted( Resource resource )
 		{
-			if ( _resourceLoadStarted != null )
+			if ( this._resourceLoadStarted != null )
 			{
-				_resourceLoadStarted( resource );
+				this._resourceLoadStarted( resource );
 			}
 		}
 
@@ -799,9 +799,9 @@ namespace Axiom.Core
 		/// </summary>
 		private void _fireResourceEnded()
 		{
-			if ( _resourceLoadEnded != null )
+			if ( this._resourceLoadEnded != null )
 			{
-				_resourceLoadEnded();
+				this._resourceLoadEnded();
 			}
 		}
 
@@ -811,9 +811,9 @@ namespace Axiom.Core
 		/// <param name="groupName"></param>
 		private void _fireResourceGroupLoadEnded( string groupName )
 		{
-			if ( _resourceGroupLoadEnded != null )
+			if ( this._resourceGroupLoadEnded != null )
 			{
-				_resourceGroupLoadEnded( groupName );
+				this._resourceGroupLoadEnded( groupName );
 			}
 		}
 
@@ -976,12 +976,12 @@ namespace Axiom.Core
 			{
 				// Set current group
 				_parseResourceGroupScripts( grp );
-				_currentGroup = grp;
+				this._currentGroup = grp;
 				_createDeclaredResources( grp );
 				grp.Initialized = true;
 
 				// Reset current group
-				_currentGroup = null;
+				this._currentGroup = null;
 			}
 			LogManager.Instance.Write( "\t{0} initialized.", grp.Name );
 		}
@@ -1011,12 +1011,12 @@ namespace Axiom.Core
 					LogManager.Instance.Write( "Initializing resource group {0}.", grp.Name );
 					// Set current group
 					_parseResourceGroupScripts( grp );
-					_currentGroup = grp;
+					this._currentGroup = grp;
 					_createDeclaredResources( grp );
 					grp.Initialized = true;
 
 					// Reset current group
-					_currentGroup = null;
+					this._currentGroup = null;
 					LogManager.Instance.Write( "\t{0} initialized.", grp.Name );
 				}
 			}
@@ -1073,7 +1073,7 @@ namespace Axiom.Core
 			}
 
 			// Set current group
-			_currentGroup = grp;
+			this._currentGroup = grp;
 
 			// Count up resources for starting event
 			var resourceCount = 0;
@@ -1127,7 +1127,7 @@ namespace Axiom.Core
 			_fireResourceGroupPrepareEnded( name );
 
 			// reset current group
-			_currentGroup = null;
+			this._currentGroup = null;
 
 			LogManager.Instance.Write( "Finished preparing resource group " + name );
 		}
@@ -1174,7 +1174,7 @@ namespace Axiom.Core
 			}
 
 			// Set current group
-			_currentGroup = grp;
+			this._currentGroup = grp;
 
 			// Count up resources for starting event
 			var resourceCount = 0;
@@ -1232,7 +1232,7 @@ namespace Axiom.Core
 			//grp->groupStatus = ResourceGroup::LOADED;
 
 			// reset current group
-			_currentGroup = null;
+			this._currentGroup = null;
 
 			LogManager.Instance.Write( "Finished loading resource group {0}.", name );
 		}
@@ -1272,7 +1272,7 @@ namespace Axiom.Core
 				throw new AxiomException( "Cannot find a group named {0}", groupName );
 			}
 			// Set current group
-			_currentGroup = grp;
+			this._currentGroup = grp;
 
 			var grpKeys = new float[grp.LoadResourceOrders.Count];
 			grp.LoadResourceOrders.Keys.CopyTo( grpKeys, 0 );
@@ -1291,7 +1291,7 @@ namespace Axiom.Core
 			}
 
 			// reset current group
-			_currentGroup = null;
+			this._currentGroup = null;
 			LogManager.Instance.Write( "Finished unloading resource group {0}.", groupName );
 		}
 
@@ -1347,12 +1347,12 @@ namespace Axiom.Core
 				throw new AxiomException( "Cannot find a group named {0}", groupName );
 			}
 			// set current group
-			_currentGroup = grp;
+			this._currentGroup = grp;
 			_dropGroupContents( grp );
 			// clear initialised flag
 			grp.Initialized = false;
 			// reset current group
-			_currentGroup = null;
+			this._currentGroup = null;
 			LogManager.Instance.Write( "Finished clearing resource group {0}", groupName );
 		}
 
@@ -1371,13 +1371,13 @@ namespace Axiom.Core
 				throw new AxiomException( "Cannot find a group named {0}", groupName );
 			}
 			// set current group
-			_currentGroup = grp;
+			this._currentGroup = grp;
 			UnloadResourceGroup( groupName, false ); // will throw an exception if name not valid
 			_dropGroupContents( grp );
 			_deleteGroup( grp );
 			resourceGroups.Remove( groupName );
 			// reset current group
-			_currentGroup = null;
+			this._currentGroup = null;
 		}
 
 		#region AddResourceLocation Method
@@ -2260,17 +2260,17 @@ namespace Axiom.Core
 		{
 			if ( rgl != null )
 			{
-				_resourceGroupListeners.Add( rgl );
-				_resourceGroupScriptingStarted += new ResourceGroupScriptingStarted( rgl.ResourceGroupScriptingStarted );
-				_resourceGroupScriptingEnded += new ResourceGroupScriptingEnded( rgl.ResourceGroupScriptingEnded );
-				_resourceGroupLoadStarted += new ResourceGroupLoadStarted( rgl.ResourceGroupLoadStarted );
-				_resourceGroupLoadEnded += new ResourceGroupLoadEnded( rgl.ResourceGroupLoadEnded );
-				_resourceLoadStarted += new ResourceLoadStarted( rgl.ResourceLoadStarted );
-				_resourceLoadEnded += new ResourceLoadEnded( rgl.ResourceLoadEnded );
-				_scriptParseStarted += new ScriptParseStarted( rgl.ScriptParseStarted );
-				_scriptParseEnded += new ScriptParseEnded( rgl.ScriptParseEnded );
-				_worldGeometryStageStarted += new WorldGeometryStageStarted( rgl.WorldGeometryStageStarted );
-				_worldGeometryStageEnded += new WorldGeometryStageEnded( rgl.WorldGeometryStageEnded );
+				this._resourceGroupListeners.Add( rgl );
+				this._resourceGroupScriptingStarted += new ResourceGroupScriptingStarted( rgl.ResourceGroupScriptingStarted );
+				this._resourceGroupScriptingEnded += new ResourceGroupScriptingEnded( rgl.ResourceGroupScriptingEnded );
+				this._resourceGroupLoadStarted += new ResourceGroupLoadStarted( rgl.ResourceGroupLoadStarted );
+				this._resourceGroupLoadEnded += new ResourceGroupLoadEnded( rgl.ResourceGroupLoadEnded );
+				this._resourceLoadStarted += new ResourceLoadStarted( rgl.ResourceLoadStarted );
+				this._resourceLoadEnded += new ResourceLoadEnded( rgl.ResourceLoadEnded );
+				this._scriptParseStarted += new ScriptParseStarted( rgl.ScriptParseStarted );
+				this._scriptParseEnded += new ScriptParseEnded( rgl.ScriptParseEnded );
+				this._worldGeometryStageStarted += new WorldGeometryStageStarted( rgl.WorldGeometryStageStarted );
+				this._worldGeometryStageEnded += new WorldGeometryStageEnded( rgl.WorldGeometryStageEnded );
 			}
 		}
 
@@ -2282,17 +2282,17 @@ namespace Axiom.Core
 		{
 			if ( rgl != null )
 			{
-				_resourceGroupListeners.Remove( rgl );
-				_resourceGroupScriptingStarted -= new ResourceGroupScriptingStarted( rgl.ResourceGroupScriptingStarted );
-				_resourceGroupScriptingEnded -= new ResourceGroupScriptingEnded( rgl.ResourceGroupScriptingEnded );
-				_resourceGroupLoadStarted -= new ResourceGroupLoadStarted( rgl.ResourceGroupLoadStarted );
-				_resourceGroupLoadEnded -= new ResourceGroupLoadEnded( rgl.ResourceGroupLoadEnded );
-				_resourceLoadStarted -= new ResourceLoadStarted( rgl.ResourceLoadStarted );
-				_resourceLoadEnded -= new ResourceLoadEnded( rgl.ResourceLoadEnded );
-				_scriptParseStarted -= new ScriptParseStarted( rgl.ScriptParseStarted );
-				_scriptParseEnded -= new ScriptParseEnded( rgl.ScriptParseEnded );
-				_worldGeometryStageStarted -= new WorldGeometryStageStarted( rgl.WorldGeometryStageStarted );
-				_worldGeometryStageEnded -= new WorldGeometryStageEnded( rgl.WorldGeometryStageEnded );
+				this._resourceGroupListeners.Remove( rgl );
+				this._resourceGroupScriptingStarted -= new ResourceGroupScriptingStarted( rgl.ResourceGroupScriptingStarted );
+				this._resourceGroupScriptingEnded -= new ResourceGroupScriptingEnded( rgl.ResourceGroupScriptingEnded );
+				this._resourceGroupLoadStarted -= new ResourceGroupLoadStarted( rgl.ResourceGroupLoadStarted );
+				this._resourceGroupLoadEnded -= new ResourceGroupLoadEnded( rgl.ResourceGroupLoadEnded );
+				this._resourceLoadStarted -= new ResourceLoadStarted( rgl.ResourceLoadStarted );
+				this._resourceLoadEnded -= new ResourceLoadEnded( rgl.ResourceLoadEnded );
+				this._scriptParseStarted -= new ScriptParseStarted( rgl.ScriptParseStarted );
+				this._scriptParseEnded -= new ScriptParseEnded( rgl.ScriptParseEnded );
+				this._worldGeometryStageStarted -= new WorldGeometryStageStarted( rgl.WorldGeometryStageStarted );
+				this._worldGeometryStageEnded -= new WorldGeometryStageEnded( rgl.WorldGeometryStageEnded );
 			}
 		}
 
@@ -2347,7 +2347,7 @@ namespace Axiom.Core
 		/// </summary>
 		public void ShutdownAll()
 		{
-			foreach ( var pair in _resourceManagers )
+			foreach ( var pair in this._resourceManagers )
 			{
 				var rm = pair.Value;
 				rm.UnloadAll();
@@ -2365,7 +2365,7 @@ namespace Axiom.Core
 		{
 			var vec = new List<string>();
 
-			foreach ( var pair in _resourceGroups )
+			foreach ( var pair in this._resourceGroups )
 			{
 				var rg = pair.Value;
 				vec.Add( rg.Name );
@@ -2403,9 +2403,9 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected ResourceGroup getResourceGroup( string name )
 		{
-			if ( _resourceGroups.ContainsKey( name ) )
+			if ( this._resourceGroups.ContainsKey( name ) )
 			{
-				return _resourceGroups[ name ];
+				return this._resourceGroups[ name ];
 			}
 
 			return null;
@@ -2443,7 +2443,7 @@ namespace Axiom.Core
 		public void RegisterResourceManager( string resourceType, ResourceManager rm )
 		{
 			LogManager.Instance.Write( "Registering ResourceManager for type {0}", resourceType );
-			_resourceManagers[ resourceType ] = rm;
+			this._resourceManagers[ resourceType ] = rm;
 		}
 
 		/// <summary>
@@ -2456,9 +2456,9 @@ namespace Axiom.Core
 		public void UnregisterResourceManager( string resourceType )
 		{
 			LogManager.Instance.Write( "Unregistering ResourceManager for type {0}", resourceType );
-			if ( _resourceManagers.ContainsKey( resourceType ) )
+			if ( this._resourceManagers.ContainsKey( resourceType ) )
 			{
-				_resourceManagers.Remove( resourceType );
+				this._resourceManagers.Remove( resourceType );
 			}
 		}
 
@@ -2474,12 +2474,12 @@ namespace Axiom.Core
 				patterns.Append( pattern + " " );
 			}
 			LogManager.Instance.Write( "Registering ScriptLoader for patterns {0}", patterns );
-			if ( !_scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
+			if ( !this._scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
 			{
-				_scriptLoaderOrders.Add( su.LoadingOrder, new List<IScriptLoader>() );
+				this._scriptLoaderOrders.Add( su.LoadingOrder, new List<IScriptLoader>() );
 			}
 
-			_scriptLoaderOrders[ su.LoadingOrder ].Add( su );
+			this._scriptLoaderOrders[ su.LoadingOrder ].Add( su );
 		}
 
 		/// <summary>
@@ -2494,9 +2494,9 @@ namespace Axiom.Core
 				patterns.Append( pattern + " " );
 			}
 			LogManager.Instance.Write( "Unregistering ScriptLoader for patterns {0}", patterns.ToString() );
-			if ( _scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
+			if ( this._scriptLoaderOrders.ContainsKey( su.LoadingOrder ) )
 			{
-				_scriptLoaderOrders[ su.LoadingOrder ].Remove( su );
+				this._scriptLoaderOrders[ su.LoadingOrder ].Remove( su );
 			}
 		}
 
@@ -2504,10 +2504,10 @@ namespace Axiom.Core
 		/// <param name="res">reference to resource</param>
 		public void notifyResourceCreated( Resource res )
 		{
-			if ( _currentGroup != null )
+			if ( this._currentGroup != null )
 			{
 				// Use current group (batch loading)
-				_addCreatedResource( res, _currentGroup );
+				_addCreatedResource( res, this._currentGroup );
 			}
 			else
 			{
@@ -2524,7 +2524,7 @@ namespace Axiom.Core
 		/// <param name="res">reference to resource</param>
 		public void notifyResourceRemoved( Resource res )
 		{
-			if ( _currentGroup != null )
+			if ( this._currentGroup != null )
 			{
 				// Do nothing - we're batch unloading so list will be cleared
 			}
@@ -2559,7 +2559,7 @@ namespace Axiom.Core
 			// New group
 			var newGrp = getResourceGroup( resource.Group );
 			// find old entry
-			if ( _resourceGroups.TryGetValue( oldGroup, out oldGrp ) )
+			if ( this._resourceGroups.TryGetValue( oldGroup, out oldGrp ) )
 			{
 				var order = resource.Creator.LoadingOrder;
 				LoadUnloadResourceList loadList = null;
@@ -2584,7 +2584,7 @@ namespace Axiom.Core
 		{
 			int index;
 			// Iterate over all groups
-			foreach ( var rgPair in _resourceGroups )
+			foreach ( var rgPair in this._resourceGroups )
 			{
 				var rg = rgPair.Value;
 				// Iterate over all priorities
@@ -2620,9 +2620,9 @@ namespace Axiom.Core
 		/// <param name="description"></param>
 		public void notifyWorldGeometryStageStarted( string description )
 		{
-			if ( _worldGeometryStageStarted != null )
+			if ( this._worldGeometryStageStarted != null )
 			{
-				_worldGeometryStageStarted( description );
+				this._worldGeometryStageStarted( description );
 			}
 		}
 
@@ -2634,9 +2634,9 @@ namespace Axiom.Core
 		/// </remarks>
 		public void notifyWorldGeometryStageEnded()
 		{
-			if ( _worldGeometryStageStarted != null )
+			if ( this._worldGeometryStageStarted != null )
 			{
-				_worldGeometryStageEnded();
+				this._worldGeometryStageEnded();
 			}
 		}
 
@@ -2660,7 +2660,7 @@ namespace Axiom.Core
 
 			var scriptCount = 0;
 			// Iterate over script users in loading order and get streams
-			foreach ( var pairsl in _scriptLoaderOrders )
+			foreach ( var pairsl in this._scriptLoaderOrders )
 			{
 				var sl = pairsl.Value;
 
@@ -2771,10 +2771,10 @@ namespace Axiom.Core
 		private void _dropGroupContents( ResourceGroup grp )
 		{
 			var groupSet = false;
-			if ( _currentGroup != null )
+			if ( this._currentGroup != null )
 			{
 				// Set current group to indicate ignoring of notifications
-				_currentGroup = grp;
+				this._currentGroup = grp;
 				groupSet = true;
 			}
 			// delete all the load list entries
@@ -2790,7 +2790,7 @@ namespace Axiom.Core
 
 			if ( groupSet )
 			{
-				_currentGroup = null;
+				this._currentGroup = null;
 			}
 		}
 
@@ -2836,7 +2836,7 @@ namespace Axiom.Core
 			//OGRE_LOCK_AUTO_MUTEX
 
 			// Iterate over resource groups and find
-			foreach ( var grp in _resourceGroups.Values )
+			foreach ( var grp in this._resourceGroups.Values )
 			{
 				//OGRE_LOCK_MUTEX(grp->OGRE_AUTO_MUTEX_NAME) // lock group mutex
 
@@ -2906,7 +2906,7 @@ namespace Axiom.Core
 						_deleteGroup( rg );
 					}
 					resourceGroups.Clear();
-					_currentGroup = null;
+					this._currentGroup = null;
 
 					ResourceGroupManager.instance = null;
 				}
