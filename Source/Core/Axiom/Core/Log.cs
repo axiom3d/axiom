@@ -159,11 +159,11 @@ namespace Axiom.Core
 		public Log( string fileName, bool debugOutput )
 			: base()
 		{
-			mLogName = fileName;
+			this.mLogName = fileName;
 			MessageLogged = null;
 
 			this.debugOutput = debugOutput;
-			logLevel = LoggingLevel.Normal;
+			this.logLevel = LoggingLevel.Normal;
 
 			if ( fileName != null )
 			{
@@ -176,12 +176,12 @@ namespace Axiom.Core
 					file = IsolatedStorageFile.GetUserStoreForApplication();
 					log = file.OpenFile(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
 #else
-					log = File.Open( fileName, FileMode.Create, FileAccess.Write, FileShare.Read );
+					this.log = File.Open( fileName, FileMode.Create, FileAccess.Write, FileShare.Read );
 #endif
 
 					// get a stream writer using the file stream
-					writer = new StreamWriter( log );
-					writer.AutoFlush = true; //always flush after write
+					this.writer = new StreamWriter( this.log );
+					this.writer.AutoFlush = true; //always flush after write
 #endif
 				}
 				catch
@@ -202,11 +202,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return logLevel;
+				return this.logLevel;
 			}
 			set
 			{
-				logLevel = value;
+				this.logLevel = value;
 			}
 		}
 
@@ -268,7 +268,7 @@ namespace Axiom.Core
 			{
 				throw new ArgumentNullException( "The log message cannot be null" );
 			}
-			if ( ( (int)logLevel + (int)level ) > LogThreshold )
+			if ( ( (int)this.logLevel + (int)level ) > LogThreshold )
 			{
 				return; //too verbose a message to write
 			}
@@ -280,7 +280,7 @@ namespace Axiom.Core
 			}
 
 			// write the the debug output if requested
-			if ( debugOutput && !maskDebug )
+			if ( this.debugOutput && !maskDebug )
 			{
 #if MONO
 				if(System.Diagnostics.Debugger.IsAttached)
@@ -290,14 +290,14 @@ namespace Axiom.Core
 				System.Diagnostics.Debug.WriteLine( message );
 			}
 
-			if ( writer != null && writer.BaseStream != null )
+			if ( this.writer != null && this.writer.BaseStream != null )
 			{
 				// prepend the current time to the message
 				message = string.Format( "[{0}] {1}", DateTime.Now.ToString( "hh:mm:ss" ), message );
 
 				// write the message and flush the buffer
-				lock ( writer )
-					writer.WriteLine( message );
+				lock ( this.writer )
+					this.writer.WriteLine( message );
 				//writer auto-flushes
 			}
 
@@ -309,7 +309,7 @@ namespace Axiom.Core
 			// Now fire the MessageLogged event
 			if ( MessageLogged != null )
 			{
-				var args = new LogListenerEventArgs( message, level, maskDebug, mLogName );
+				var args = new LogListenerEventArgs( message, level, maskDebug, this.mLogName );
 				MessageLogged( this, args );
 			}
 		}
@@ -327,14 +327,14 @@ namespace Axiom.Core
 					// Dispose managed resources.
 					try
 					{
-						if ( writer != null )
+						if ( this.writer != null )
 						{
-							writer.Close();
+							this.writer.Close();
 						}
 
-						if ( log != null )
+						if ( this.log != null )
 						{
-							log.Close();
+							this.log.Close();
 						}
 
 #if SILVERLIGHT

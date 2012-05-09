@@ -104,7 +104,7 @@ namespace Axiom.Controllers
 			this.function = function;
 
 			// enabled by default, of course
-			isEnabled = true;
+			this.isEnabled = true;
 		}
 
 		#endregion
@@ -119,9 +119,9 @@ namespace Axiom.Controllers
 		{
 			// if we are enabled, set the destination value based on the return value of the
 			// controller function ran using the source value
-			if ( isEnabled )
+			if ( this.isEnabled )
 			{
-				destination.Value = function.Execute( source.Value );
+				this.destination.Value = this.function.Execute( this.source.Value );
 			}
 		}
 
@@ -136,11 +136,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return source;
+				return this.source;
 			}
 			set
 			{
-				source = value;
+				this.source = value;
 			}
 		}
 
@@ -151,11 +151,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return destination;
+				return this.destination;
 			}
 			set
 			{
-				destination = value;
+				this.destination = value;
 			}
 		}
 
@@ -166,11 +166,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return function;
+				return this.function;
 			}
 			set
 			{
-				function = value;
+				this.function = value;
 			}
 		}
 
@@ -181,11 +181,11 @@ namespace Axiom.Controllers
 		{
 			get
 			{
-				return isEnabled;
+				return this.isEnabled;
 			}
 			set
 			{
-				isEnabled = value;
+				this.isEnabled = value;
 			}
 		}
 

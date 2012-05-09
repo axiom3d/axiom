@@ -125,11 +125,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _techniques;
+				return this._techniques;
 			}
 			set
 			{
-				_techniques = value;
+				this._techniques = value;
 			}
 		}
 
@@ -147,7 +147,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _supportedTechniques;
+				return this._supportedTechniques;
 			}
 		}
 
@@ -165,11 +165,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _compilationRequired;
+				return this._compilationRequired;
 			}
 			set
 			{
-				_compilationRequired = value;
+				this._compilationRequired = value;
 			}
 		}
 
@@ -750,7 +750,7 @@ namespace Axiom.Graphics
 		{
 			ReceiveShadows = true;
 			TransparencyCastsShadows = false;
-			_compilationRequired = true;
+			this._compilationRequired = true;
 
 			// Override isManual, not applicable for Material (we always want to call loadImpl)
 			if ( isManual )
@@ -761,7 +761,7 @@ namespace Axiom.Graphics
 					name );
 			}
 
-			_lodValues.Add( 0.0f );
+			this._lodValues.Add( 0.0f );
 
 			ApplyDefaults();
 		}
@@ -831,7 +831,7 @@ namespace Axiom.Graphics
 				}
 			}
 
-			_compilationRequired = false;
+			this._compilationRequired = false;
 
 			// Did we find any?
 			if ( SupportedTechniques.Count == 0 )
@@ -848,11 +848,11 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		private void ClearBestTechniqueList()
 		{
-			foreach ( var pair in bestTechniquesByScheme )
+			foreach ( var pair in this.bestTechniquesByScheme )
 			{
 				pair.Value.Clear();
 			}
-			bestTechniquesByScheme.Clear();
+			this.bestTechniquesByScheme.Clear();
 		}
 
 		private void InsertSupportedTechnique( Technique technique )
@@ -861,14 +861,14 @@ namespace Axiom.Graphics
 			// get scheme
 			var schemeIndex = technique.SchemeIndex;
 			Dictionary<int, Technique> lodTechniques;
-			if ( !bestTechniquesByScheme.ContainsKey( schemeIndex ) )
+			if ( !this.bestTechniquesByScheme.ContainsKey( schemeIndex ) )
 			{
 				lodTechniques = new Dictionary<int, Technique>();
-				bestTechniquesByScheme.Add( schemeIndex, lodTechniques );
+				this.bestTechniquesByScheme.Add( schemeIndex, lodTechniques );
 			}
 			else
 			{
-				lodTechniques = bestTechniquesByScheme[ schemeIndex ];
+				lodTechniques = this.bestTechniquesByScheme[ schemeIndex ];
 			}
 
 			// Insert won't replace if supported technique for this scheme/lod is
@@ -903,7 +903,7 @@ namespace Axiom.Graphics
 		{
 			var t = new Technique( this );
 			techniques.Add( t );
-			_compilationRequired = true;
+			this._compilationRequired = true;
 			return t;
 		}
 
@@ -928,7 +928,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		internal void NotifyNeedsRecompile()
 		{
-			_compilationRequired = true;
+			this._compilationRequired = true;
 
 			// Also need to unload to ensure we loaded any new items
 			if ( IsLoaded ) // needed to stop this being called in 'loading' state
@@ -950,7 +950,7 @@ namespace Axiom.Graphics
 			techniques.Remove( t );
 			SupportedTechniques.Clear();
 			ClearBestTechniqueList();
-			_compilationRequired = true;
+			this._compilationRequired = true;
 		}
 
 		/// <summary>
@@ -962,7 +962,7 @@ namespace Axiom.Graphics
 			techniques.Clear();
 			SupportedTechniques.Clear();
 			ClearBestTechniqueList();
-			_compilationRequired = true;
+			this._compilationRequired = true;
 		}
 
 
@@ -1002,7 +1002,7 @@ namespace Axiom.Graphics
 				// copy properties from the default materials
 				defaultSettings.CopyTo( this, false );
 			}
-			_compilationRequired = true;
+			this._compilationRequired = true;
 		}
 
 		public bool ApplyTextureAliases( Dictionary<string, string> aliasList )
@@ -1023,7 +1023,7 @@ namespace Axiom.Graphics
 			// iterate through all techniques and apply texture aliases
 			var testResult = false;
 
-			foreach ( var t in _techniques )
+			foreach ( var t in this._techniques )
 			{
 				if ( t.ApplyTextureAliases( aliasList, apply ) )
 				{
@@ -1089,8 +1089,8 @@ namespace Axiom.Graphics
 			target.UserLodValues.Clear();
 
 			// copy LOD distances
-			target._lodValues.AddRange( _lodValues );
-			target.UserLodValues.AddRange( UserLodValues );
+			target._lodValues.AddRange( this._lodValues );
+			target.UserLodValues.AddRange( this.UserLodValues );
 
 			target.LodStrategy = LodStrategy;
 
@@ -1134,7 +1134,7 @@ namespace Axiom.Graphics
 
 			if ( SupportedTechniques.Count > 0 )
 			{
-				if ( !bestTechniquesByScheme.ContainsKey( MaterialManager.Instance.ActiveSchemeIndex ) )
+				if ( !this.bestTechniquesByScheme.ContainsKey( MaterialManager.Instance.ActiveSchemeIndex ) )
 				{
 					technique = MaterialManager.Instance.ArbitrateMissingTechniqueForActiveScheme( this, lodIndex, renderable );
 					if ( technique != null )
@@ -1145,7 +1145,7 @@ namespace Axiom.Graphics
 					// Nope, use default
 					// get the first item, will be 0 (the default) if default
 					// scheme techniques exist, otherwise the earliest defined
-					var iter = bestTechniquesByScheme.GetEnumerator();
+					var iter = this.bestTechniquesByScheme.GetEnumerator();
 					if ( iter.Current.Value == null )
 					{
 						iter.MoveNext();
@@ -1155,7 +1155,7 @@ namespace Axiom.Graphics
 				}
 				else
 				{
-					lodTechniques = bestTechniquesByScheme[ MaterialManager.Instance.ActiveSchemeIndex ];
+					lodTechniques = this.bestTechniquesByScheme[ MaterialManager.Instance.ActiveSchemeIndex ];
 				}
 
 				if ( !lodTechniques.ContainsKey( lodIndex ) )
@@ -1207,7 +1207,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _lodValues;
+				return this._lodValues;
 			}
 		}
 
@@ -1230,19 +1230,19 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _lodStrategy;
+				return this._lodStrategy;
 			}
 			set
 			{
-				_lodStrategy = value;
+				this._lodStrategy = value;
 
-				Debug.Assert( _lodValues.Count != 0 );
+				Debug.Assert( this._lodValues.Count != 0 );
 
-				_lodValues[ 0 ] = _lodStrategy.BaseValue;
+				this._lodValues[ 0 ] = this._lodStrategy.BaseValue;
 
-				for ( var index = 0; index < UserLodValues.Count; index++ )
+				for ( var index = 0; index < this.UserLodValues.Count; index++ )
 				{
-					_lodValues[ index ] = _lodStrategy.TransformUserValue( UserLodValues[ index ] );
+					this._lodValues[ index ] = this._lodStrategy.TransformUserValue( this.UserLodValues[ index ] );
 				}
 			}
 		}
@@ -1255,7 +1255,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return bestTechniquesByScheme.Count;
+				return this.bestTechniquesByScheme.Count;
 			}
 		}
 
@@ -1279,17 +1279,17 @@ namespace Axiom.Graphics
 		public void SetLodLevels( LodValueList lodDistanceList )
 		{
 			// clear and add the 0 distance entry
-			_lodValues.Clear();
-			UserLodValues.Clear();
-			UserLodValues.Add( float.NaN );
-			_lodValues.Add( LodStrategy.BaseValue );
+			this._lodValues.Clear();
+			this.UserLodValues.Clear();
+			this.UserLodValues.Add( float.NaN );
+			this._lodValues.Add( LodStrategy.BaseValue );
 
 			foreach ( var lodValue in lodDistanceList )
 			{
-				UserLodValues.Add( lodValue );
+				this.UserLodValues.Add( lodValue );
 				if ( LodStrategy != null )
 				{
-					_lodValues.Add( LodStrategy.TransformUserValue( lodValue ) );
+					this._lodValues.Add( LodStrategy.TransformUserValue( lodValue ) );
 				}
 			}
 		}
@@ -1307,7 +1307,7 @@ namespace Axiom.Graphics
 		/// <ogre name="getLodIndex" />
 		public int GetLodIndex( Real distance )
 		{
-			return LodStrategy.GetIndex( distance, _lodValues );
+			return LodStrategy.GetIndex( distance, this._lodValues );
 		}
 
 		#endregion Material Level of Detail

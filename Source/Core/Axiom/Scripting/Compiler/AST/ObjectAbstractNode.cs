@@ -59,7 +59,7 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				return _bases;
+				return this._bases;
 			}
 		}
 
@@ -80,7 +80,7 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				return _overrides;
+				return this._overrides;
 			}
 		}
 
@@ -92,7 +92,7 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				return _environment;
+				return this._environment;
 			}
 		}
 
@@ -101,26 +101,26 @@ namespace Axiom.Scripting.Compiler.AST
 		public ObjectAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			IsAbstract = false;
+			this.IsAbstract = false;
 		}
 
 		#region Methods
 
 		public void AddVariable( string name )
 		{
-			_environment.Add( name, "" );
+			this._environment.Add( name, "" );
 		}
 
 		public void SetVariable( string name, string value )
 		{
-			_environment[ name ] = value;
+			this._environment[ name ] = value;
 		}
 
 		public KeyValuePair<bool, string> GetVariable( string inName )
 		{
-			if ( _environment.ContainsKey( inName ) )
+			if ( this._environment.ContainsKey( inName ) )
 			{
-				return new KeyValuePair<bool, string>( true, _environment[ inName ] );
+				return new KeyValuePair<bool, string>( true, this._environment[ inName ] );
 			}
 
 			var parentNode = (ObjectAbstractNode)Parent;
@@ -147,23 +147,23 @@ namespace Axiom.Scripting.Compiler.AST
 			var node = new ObjectAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Name = Name;
-			node.Cls = Cls;
-			node.Id = Id;
-			node.IsAbstract = IsAbstract;
-			foreach ( var an in Children )
+			node.Name = this.Name;
+			node.Cls = this.Cls;
+			node.Id = this.Id;
+			node.IsAbstract = this.IsAbstract;
+			foreach ( var an in this.Children )
 			{
 				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
 				node.Children.Add( newNode );
 			}
-			foreach ( var an in Values )
+			foreach ( var an in this.Values )
 			{
 				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
 				node.Values.Add( newNode );
 			}
-			node._environment = new Dictionary<string, string>( _environment );
+			node._environment = new Dictionary<string, string>( this._environment );
 			return node;
 		}
 
@@ -172,11 +172,11 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				return Cls;
+				return this.Cls;
 			}
 			set
 			{
-				Cls = value;
+				this.Cls = value;
 			}
 		}
 

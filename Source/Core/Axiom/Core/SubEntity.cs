@@ -159,9 +159,9 @@ namespace Axiom.Core
 		internal SubEntity()
 			: base()
 		{
-			material = (Material)MaterialManager.Instance[ "BaseWhite" ];
+			this.material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 
-			isVisible = true;
+			this.isVisible = true;
 		}
 
 		#endregion Constructor
@@ -175,11 +175,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return isVisible;
+				return this.isVisible;
 			}
 			set
 			{
-				isVisible = value;
+				this.isVisible = value;
 			}
 		}
 
@@ -191,7 +191,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return subMesh.Name;
+				return this.subMesh.Name;
 			}
 		}
 
@@ -202,7 +202,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return materialName;
+				return this.materialName;
 			}
 			set
 			{
@@ -211,26 +211,27 @@ namespace Axiom.Core
 					throw new AxiomException( "Cannot set the subentity material to null." );
 				}
 
-				materialName = value;
+				this.materialName = value;
 
 				// load the material from the material manager (it should already exist)
-				material = (Material)MaterialManager.Instance[ materialName ];
+				this.material = (Material)MaterialManager.Instance[ this.materialName ];
 
-				if ( material == null )
+				if ( this.material == null )
 				{
 					LogManager.Instance.Write(
-						"Cannot assign material '{0}' to Entity.SubEntity '{1}.{2}' because the material doesn't exist.", materialName,
-						parent.Name, Name );
+						"Cannot assign material '{0}' to Entity.SubEntity '{1}.{2}' because the material doesn't exist.",
+						this.materialName,
+						this.parent.Name, Name );
 
 					// give it base white so we can continue
-					material = (Material)MaterialManager.Instance[ "BaseWhite" ];
+					this.material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 				}
 
 				// ensure the material is loaded.  It will skip it if it already is
-				material.Load();
+				this.material.Load();
 
 				// since the material has changed, re-evaulate its support of skeletal animation
-				parent.ReevaluateVertexProcessing();
+				this.parent.ReevaluateVertexProcessing();
 			}
 		}
 
@@ -241,11 +242,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return subMesh;
+				return this.subMesh;
 			}
 			set
 			{
-				subMesh = value;
+				this.subMesh = value;
 			}
 		}
 
@@ -256,11 +257,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return parent;
+				return this.parent;
 			}
 			set
 			{
-				parent = value;
+				this.parent = value;
 			}
 		}
 
@@ -268,7 +269,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return skelAnimVertexData;
+				return this.skelAnimVertexData;
 			}
 		}
 
@@ -276,7 +277,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return tempSkelAnimInfo;
+				return this.tempSkelAnimInfo;
 			}
 		}
 
@@ -284,7 +285,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return tempVertexAnimInfo;
+				return this.tempVertexAnimInfo;
 			}
 		}
 
@@ -292,7 +293,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return softwareVertexAnimVertexData;
+				return this.softwareVertexAnimVertexData;
 			}
 		}
 
@@ -300,7 +301,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return hardwareVertexAnimVertexData;
+				return this.hardwareVertexAnimVertexData;
 			}
 		}
 
@@ -308,11 +309,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return hardwarePoseCount;
+				return this.hardwarePoseCount;
 			}
 			set
 			{
-				hardwarePoseCount = value;
+				this.hardwarePoseCount = value;
 			}
 		}
 
@@ -323,7 +324,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return vertexAnimationAppliedThisFrame;
+				return this.vertexAnimationAppliedThisFrame;
 			}
 		}
 
@@ -337,47 +338,47 @@ namespace Axiom.Core
 		protected internal void PrepareTempBlendBuffers()
 		{
 			// Handle the case where we have no submesh vertex data (probably shared)
-			if ( subMesh.useSharedVertices )
+			if ( this.subMesh.useSharedVertices )
 			{
 				return;
 			}
-			if ( skelAnimVertexData != null )
+			if ( this.skelAnimVertexData != null )
 			{
-				skelAnimVertexData = null;
+				this.skelAnimVertexData = null;
 			}
-			if ( softwareVertexAnimVertexData != null )
+			if ( this.softwareVertexAnimVertexData != null )
 			{
-				softwareVertexAnimVertexData = null;
+				this.softwareVertexAnimVertexData = null;
 			}
-			if ( hardwareVertexAnimVertexData != null )
+			if ( this.hardwareVertexAnimVertexData != null )
 			{
-				hardwareVertexAnimVertexData = null;
+				this.hardwareVertexAnimVertexData = null;
 			}
 
-			if ( !subMesh.useSharedVertices )
+			if ( !this.subMesh.useSharedVertices )
 			{
-				if ( subMesh.VertexAnimationType != VertexAnimationType.None )
+				if ( this.subMesh.VertexAnimationType != VertexAnimationType.None )
 				{
 					// Create temporary vertex blend info
 					// Prepare temp vertex data if needed
 					// Clone without copying data, don't remove any blending info
 					// (since if we skeletally animate too, we need it)
-					softwareVertexAnimVertexData = subMesh.vertexData.Clone( false );
-					parent.ExtractTempBufferInfo( softwareVertexAnimVertexData, tempVertexAnimInfo );
+					this.softwareVertexAnimVertexData = this.subMesh.vertexData.Clone( false );
+					this.parent.ExtractTempBufferInfo( this.softwareVertexAnimVertexData, this.tempVertexAnimInfo );
 
 					// Also clone for hardware usage, don't remove blend info since we'll
 					// need it if we also hardware skeletally animate
-					hardwareVertexAnimVertexData = subMesh.vertexData.Clone( false );
+					this.hardwareVertexAnimVertexData = this.subMesh.vertexData.Clone( false );
 				}
 
-				if ( parent.HasSkeleton )
+				if ( this.parent.HasSkeleton )
 				{
 					// Create temporary vertex blend info
 					// Prepare temp vertex data if needed
 					// Clone without copying data, remove blending info
 					// (since blend is performed in software)
-					skelAnimVertexData = parent.CloneVertexDataRemoveBlendInfo( subMesh.vertexData );
-					parent.ExtractTempBufferInfo( skelAnimVertexData, tempSkelAnimInfo );
+					this.skelAnimVertexData = this.parent.CloneVertexDataRemoveBlendInfo( this.subMesh.vertexData );
+					this.parent.ExtractTempBufferInfo( this.skelAnimVertexData, this.tempSkelAnimInfo );
 				}
 			}
 		}
@@ -395,11 +396,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _materialLodIndex;
+				return this._materialLodIndex;
 			}
 			set
 			{
-				_materialLodIndex = value;
+				this._materialLodIndex = value;
 			}
 		}
 
@@ -411,7 +412,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return parent.CastShadows;
+				return this.parent.CastShadows;
 			}
 		}
 
@@ -428,14 +429,14 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return material;
+				return this.material;
 			}
 			set
 			{
-				material = value;
+				this.material = value;
 				// We may have switched to a material with a vertex shader
 				// or something similar.
-				parent.ReevaluateVertexProcessing();
+				this.parent.ReevaluateVertexProcessing();
 			}
 		}
 
@@ -452,7 +453,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return material.GetBestTechnique( _materialLodIndex, this );
+				return this.material.GetBestTechnique( this._materialLodIndex, this );
 			}
 		}
 
@@ -467,36 +468,36 @@ namespace Axiom.Core
 			get
 			{
 				// use LOD
-				subMesh.GetRenderOperation( renderOperation, parent.MeshLodIndex );
+				this.subMesh.GetRenderOperation( this.renderOperation, this.parent.MeshLodIndex );
 				// Deal with any vertex data overrides
-				renderOperation.vertexData = GetVertexDataForBinding();
-				return renderOperation;
+				this.renderOperation.vertexData = GetVertexDataForBinding();
+				return this.renderOperation;
 			}
 		}
 
 		public VertexData GetVertexDataForBinding()
 		{
-			if ( subMesh.useSharedVertices )
+			if ( this.subMesh.useSharedVertices )
 			{
-				return parent.GetVertexDataForBinding();
+				return this.parent.GetVertexDataForBinding();
 			}
 			else
 			{
-				var c = parent.ChooseVertexDataForBinding( subMesh.VertexAnimationType != VertexAnimationType.None );
+				var c = this.parent.ChooseVertexDataForBinding( this.subMesh.VertexAnimationType != VertexAnimationType.None );
 				switch ( c )
 				{
 					case VertexDataBindChoice.Original:
-						return subMesh.vertexData;
+						return this.subMesh.vertexData;
 					case VertexDataBindChoice.HardwareMorph:
-						return hardwareVertexAnimVertexData;
+						return this.hardwareVertexAnimVertexData;
 					case VertexDataBindChoice.SoftwareMorph:
-						return softwareVertexAnimVertexData;
+						return this.softwareVertexAnimVertexData;
 					case VertexDataBindChoice.SoftwareSkeletal:
-						return skelAnimVertexData;
+						return this.skelAnimVertexData;
 				}
 				;
 				// keep compiler happy
-				return subMesh.vertexData;
+				return this.subMesh.vertexData;
 			}
 		}
 
@@ -504,7 +505,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return material;
+				return this.material;
 			}
 		}
 
@@ -514,28 +515,28 @@ namespace Axiom.Core
 		/// <param name="matrices"></param>
 		public void GetWorldTransforms( Matrix4[] matrices )
 		{
-			if ( parent.numBoneMatrices == 0 || !parent.IsHardwareAnimationEnabled )
+			if ( this.parent.numBoneMatrices == 0 || !this.parent.IsHardwareAnimationEnabled )
 			{
-				matrices[ 0 ] = parent.ParentNodeFullTransform;
+				matrices[ 0 ] = this.parent.ParentNodeFullTransform;
 			}
 			else
 			{
 				// TODO : Look at OGRE version
 				// ??? In the ogre version, it chooses the transforms based on
 				// ??? an index map maintained by the mesh.  Is that appropriate here?
-				if ( parent.IsSkeletonAnimated )
+				if ( this.parent.IsSkeletonAnimated )
 				{
 					// use cached bone matrices of the parent entity
-					for ( var i = 0; i < parent.numBoneMatrices; i++ )
+					for ( var i = 0; i < this.parent.numBoneMatrices; i++ )
 					{
-						matrices[ i ] = parent.boneWorldMatrices[ i ];
+						matrices[ i ] = this.parent.boneWorldMatrices[ i ];
 					}
 				}
 				else
 				{
 					for ( var i = 0; i < matrices.Length; i++ )
 					{
-						matrices[ i ] = parent.ParentNodeFullTransform;
+						matrices[ i ] = this.parent.ParentNodeFullTransform;
 					}
 				}
 			}
@@ -548,13 +549,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( parent.numBoneMatrices == 0 )
+				if ( this.parent.numBoneMatrices == 0 )
 				{
 					return 1;
 				}
 				else
 				{
-					return (ushort)parent.numBoneMatrices;
+					return (ushort)this.parent.numBoneMatrices;
 				}
 			}
 		}
@@ -599,9 +600,9 @@ namespace Axiom.Core
 			// First of all, check the cached value
 			// NB this is manually invalidated by parent each _notifyCurrentCamera call
 			// Done this here rather than there since we only need this for transparent objects
-			if ( cachedCamera == camera )
+			if ( this.cachedCamera == camera )
 			{
-				return cachedCameraDist;
+				return this.cachedCameraDist;
 			}
 
 			var node = Parent.ParentNode;
@@ -626,8 +627,8 @@ namespace Axiom.Core
 			{
 				dist = node.GetSquaredViewDepth( camera );
 			}
-			cachedCameraDist = dist;
-			cachedCamera = camera;
+			this.cachedCameraDist = dist;
+			this.cachedCamera = camera;
 
 			return dist;
 		}
@@ -640,11 +641,11 @@ namespace Axiom.Core
 			get
 			{
 				// get the parent entitie's parent node
-				var node = parent.ParentNode;
+				var node = this.parent.ParentNode;
 
 				Debug.Assert( node != null );
 
-				return parent.ParentNode.DerivedOrientation;
+				return this.parent.ParentNode.DerivedOrientation;
 			}
 		}
 
@@ -656,11 +657,11 @@ namespace Axiom.Core
 			get
 			{
 				// get the parent entitie's parent node
-				var node = parent.ParentNode;
+				var node = this.parent.ParentNode;
 
 				Debug.Assert( node != null );
 
-				return parent.ParentNode.DerivedPosition;
+				return this.parent.ParentNode.DerivedPosition;
 			}
 		}
 
@@ -671,7 +672,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return parent.QueryLights();
+				return this.parent.QueryLights();
 			}
 		}
 
@@ -690,11 +691,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return useVertexProgram && hardwareSkinningEnabled;
+				return this.useVertexProgram && this.hardwareSkinningEnabled;
 			}
 			set
 			{
-				hardwareSkinningEnabled = value;
+				this.hardwareSkinningEnabled = value;
 			}
 		}
 
@@ -702,33 +703,33 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return useVertexProgram;
+				return this.useVertexProgram;
 			}
 			set
 			{
-				useVertexProgram = value;
+				this.useVertexProgram = value;
 			}
 		}
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( customParams[ index ] == null )
+			if ( this.customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
 			else
 			{
-				return (Vector4)customParams[ index ];
+				return (Vector4)this.customParams[ index ];
 			}
 		}
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
+			while ( this.customParams.Count <= index )
 			{
-				customParams.Add( Vector4.Zero );
+				this.customParams.Add( Vector4.Zero );
 			}
-			customParams[ index ] = val;
+			this.customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
@@ -741,28 +742,30 @@ namespace Axiom.Core
 				var val = Vector4.Zero;
 
 				var animIndex = entry.Data*4;
-				for ( var i = 0; i < 4 && animIndex < hardwareVertexAnimVertexData.HWAnimationDataList.Count; ++i, ++animIndex )
+				for ( var i = 0;
+				      i < 4 && animIndex < this.hardwareVertexAnimVertexData.HWAnimationDataList.Count;
+				      ++i, ++animIndex )
 				{
-					val[ i ] = hardwareVertexAnimVertexData.HWAnimationDataList[ animIndex ].Parametric;
+					val[ i ] = this.hardwareVertexAnimVertexData.HWAnimationDataList[ animIndex ].Parametric;
 				}
 				// set the parametric morph value
 				gpuParams.SetConstant( entry.PhysicalIndex, val );
 			}
-			else if ( customParams.Count > entry.Data && customParams[ entry.Data ] != null )
+			else if ( this.customParams.Count > entry.Data && this.customParams[ entry.Data ] != null )
 			{
-				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
+				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)this.customParams[ entry.Data ] );
 			}
 		}
 
 		// TODO : Make these two methods a property
 		public void MarkBuffersUnusedForAnimation()
 		{
-			vertexAnimationAppliedThisFrame = false;
+			this.vertexAnimationAppliedThisFrame = false;
 		}
 
 		public void MarkBuffersUsedForAnimation()
 		{
-			vertexAnimationAppliedThisFrame = true;
+			this.vertexAnimationAppliedThisFrame = true;
 		}
 
 		public void RestoreBuffersForUnusedAnimation( bool hardwareAnimation )
@@ -771,17 +774,17 @@ namespace Axiom.Core
 			//  We didn't apply any animation and
 			//    We're morph animated (hardware binds keyframe, software is missing)
 			//    or we're pose animated and software (hardware is fine, still bound)
-			if ( subMesh.VertexAnimationType != VertexAnimationType.None && !subMesh.useSharedVertices &&
-			     !vertexAnimationAppliedThisFrame &&
-			     ( !hardwareAnimation || subMesh.VertexAnimationType == VertexAnimationType.Morph ) )
+			if ( this.subMesh.VertexAnimationType != VertexAnimationType.None && !this.subMesh.useSharedVertices &&
+			     !this.vertexAnimationAppliedThisFrame &&
+			     ( !hardwareAnimation || this.subMesh.VertexAnimationType == VertexAnimationType.Morph ) )
 			{
-				var srcPosElem = subMesh.vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-				var srcBuf = subMesh.vertexData.vertexBufferBinding.GetBuffer( srcPosElem.Source );
+				var srcPosElem = this.subMesh.vertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+				var srcBuf = this.subMesh.vertexData.vertexBufferBinding.GetBuffer( srcPosElem.Source );
 
 				// Bind to software
 				var destPosElem =
-					softwareVertexAnimVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
-				softwareVertexAnimVertexData.vertexBufferBinding.SetBinding( destPosElem.Source, srcBuf );
+					this.softwareVertexAnimVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
+				this.softwareVertexAnimVertexData.vertexBufferBinding.SetBinding( destPosElem.Source, srcBuf );
 			}
 		}
 
@@ -820,22 +823,22 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if ( this.renderOperation != null )
 					{
 						//if (!this.renderOperation.IsDisposed)
 						//    this.renderOperation.Dispose();
 
-						renderOperation = null;
+						this.renderOperation = null;
 					}
 
-					if ( skelAnimVertexData != null )
+					if ( this.skelAnimVertexData != null )
 					{
-						if ( !skelAnimVertexData.IsDisposed )
+						if ( !this.skelAnimVertexData.IsDisposed )
 						{
-							skelAnimVertexData.Dispose();
+							this.skelAnimVertexData.Dispose();
 						}
 
-						skelAnimVertexData = null;
+						this.skelAnimVertexData = null;
 					}
 				}
 

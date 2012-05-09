@@ -72,7 +72,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return Utility.Sqrt( x*x + y*y );
+				return Utility.Sqrt( this.x*this.x + this.y*this.y );
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return x*x + y*y;
+				return this.x*this.x + this.y*this.y;
 			}
 		}
 
@@ -94,7 +94,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return new Vector2( y, -x );
+				return new Vector2( this.y, -this.x );
 			}
 		}
 
@@ -147,15 +147,15 @@ namespace Axiom.Math
 		///	<returns>The previous length of the vector.</returns>
 		public Real Normalize()
 		{
-			var length = Utility.Sqrt( x*x + y*y );
+			var length = Utility.Sqrt( this.x*this.x + this.y*this.y );
 
 			// Will also work for zero-sized vectors, but will change nothing
 			if ( length > Real.Epsilon )
 			{
 				var inverseLength = 1.0f/length;
 
-				x *= inverseLength;
-				y *= inverseLength;
+				this.x *= inverseLength;
+				this.y *= inverseLength;
 			}
 
 			return length;
@@ -183,7 +183,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Real Cross( Vector2 vector )
 		{
-			return x*vector.y - y*vector.x;
+			return this.x*vector.y - this.y*vector.x;
 		}
 
 		/// <summary>
@@ -195,7 +195,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Real Dot( Vector2 vector )
 		{
-			return x*vector.x + y*vector.y;
+			return this.x*vector.x + this.y*vector.y;
 		}
 
 		#endregion
@@ -338,12 +338,12 @@ namespace Axiom.Math
 
 		public override int GetHashCode()
 		{
-			return x.GetHashCode() ^ y.GetHashCode();
+			return this.x.GetHashCode() ^ this.y.GetHashCode();
 		}
 
 		public override string ToString()
 		{
-			return String.Format( CultureInfo.InvariantCulture, "Vector2({0}, {1})", x, y );
+			return String.Format( CultureInfo.InvariantCulture, "Vector2({0}, {1})", this.x, this.y );
 		}
 
 		#endregion

@@ -89,13 +89,13 @@ namespace Axiom.Controllers
 		/// <returns></returns>
 		protected virtual Real AdjustInput( Real input )
 		{
-			if ( useDeltaInput )
+			if ( this.useDeltaInput )
 			{
 				// wrap the value if it went past 1
-				deltaCount = ( deltaCount + input )%1.0f;
+				this.deltaCount = ( this.deltaCount + input )%1.0f;
 
 				// return the adjusted input value
-				return deltaCount;
+				return this.deltaCount;
 			}
 			else
 			{

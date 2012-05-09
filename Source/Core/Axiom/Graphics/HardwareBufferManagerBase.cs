@@ -117,7 +117,7 @@ namespace Axiom.Graphics
 		{
 			var decl = CreateVertexDeclarationImpl();
 			lock ( VertexDeclarationsMutex )
-				vertexDeclarations.Add( decl );
+				this.vertexDeclarations.Add( decl );
 
 			return decl;
 		}
@@ -135,7 +135,7 @@ namespace Axiom.Graphics
 		{
 			lock ( VertexDeclarationsMutex )
 			{
-				vertexDeclarations.Remove( decl );
+				this.vertexDeclarations.Remove( decl );
 				DestroyVertexDeclarationImpl( decl );
 			}
 		}
@@ -148,7 +148,7 @@ namespace Axiom.Graphics
 		{
 			var binding = CreateVertexBufferBindingImpl();
 			lock ( VertexBufferBindingsMutex )
-				vertexBufferBindings.Add( binding );
+				this.vertexBufferBindings.Add( binding );
 
 			return binding;
 		}
@@ -161,7 +161,7 @@ namespace Axiom.Graphics
 		{
 			lock ( VertexBufferBindingsMutex )
 			{
-				vertexBufferBindings.Remove( binding );
+				this.vertexBufferBindings.Remove( binding );
 				DestroyVertexBufferBindingImpl( binding );
 			}
 		}
@@ -210,12 +210,12 @@ namespace Axiom.Graphics
 		{
 			lock ( VertexDeclarationsMutex )
 			{
-				foreach ( var decl in vertexDeclarations )
+				foreach ( var decl in this.vertexDeclarations )
 				{
 					DestroyVertexDeclarationImpl( decl );
 				}
 
-				vertexDeclarations.Clear();
+				this.vertexDeclarations.Clear();
 			}
 		}
 
@@ -227,12 +227,12 @@ namespace Axiom.Graphics
 		{
 			lock ( VertexBufferBindingsMutex )
 			{
-				foreach ( var bind in vertexBufferBindings )
+				foreach ( var bind in this.vertexBufferBindings )
 				{
 					DestroyVertexBufferBindingImpl( bind );
 				}
 
-				vertexBufferBindings.Clear();
+				this.vertexBufferBindings.Clear();
 			}
 		}
 
@@ -249,7 +249,7 @@ namespace Axiom.Graphics
 			lock ( TempBuffersMutex )
 			{
 				// Add copy to free temporary vertex buffers
-				freeTempVertexBufferMap.Add( sourceBuffer, copy );
+				this.freeTempVertexBufferMap.Add( sourceBuffer, copy );
 			}
 		}
 
@@ -294,7 +294,7 @@ namespace Axiom.Graphics
 					HardwareVertexBuffer vbuf = null;
 
 					// Are there any free buffers?
-					if ( !freeTempVertexBufferMap.ContainsKey( sourceBuffer ) )
+					if ( !this.freeTempVertexBufferMap.ContainsKey( sourceBuffer ) )
 					{
 						// copy buffer, use shadow buffer and make dynamic
 						vbuf = MakeBufferCopy( sourceBuffer, BufferUsage.DynamicWriteOnlyDiscardable, true );
@@ -302,8 +302,8 @@ namespace Axiom.Graphics
 					else
 					{
 						// Allocate existing copy
-						vbuf = freeTempVertexBufferMap[ sourceBuffer ];
-						freeTempVertexBufferMap.Remove( sourceBuffer );
+						vbuf = this.freeTempVertexBufferMap[ sourceBuffer ];
+						this.freeTempVertexBufferMap.Remove( sourceBuffer );
 					}
 
 					// Copy data?
@@ -312,9 +312,10 @@ namespace Axiom.Graphics
 						vbuf.CopyTo( sourceBuffer, 0, 0, sourceBuffer.Size, true );
 					}
 					// Insert copy into licensee list
-					tempVertexBufferLicenses.Add( vbuf,
-					                              new VertexBufferLicense( sourceBuffer, licenseType, expiredDelayFrameThreshold, vbuf,
-					                                                       licensee ) );
+					this.tempVertexBufferLicenses.Add( vbuf,
+					                                   new VertexBufferLicense( sourceBuffer, licenseType, expiredDelayFrameThreshold,
+					                                                            vbuf,
+					                                                            licensee ) );
 
 					return vbuf;
 				}
@@ -348,13 +349,13 @@ namespace Axiom.Graphics
 		{
 			lock ( TempBuffersMutex )
 			{
-				if ( tempVertexBufferLicenses.ContainsKey( bufferCopy ) )
+				if ( this.tempVertexBufferLicenses.ContainsKey( bufferCopy ) )
 				{
-					var vbl = tempVertexBufferLicenses[ bufferCopy ];
+					var vbl = this.tempVertexBufferLicenses[ bufferCopy ];
 					vbl.licensee.LicenseExpired( vbl.buffer );
-					freeTempVertexBufferMap.Add( vbl.originalBuffer, vbl.buffer );
-					tempVertexBufferLicenses[ bufferCopy ].SafeDispose();
-					tempVertexBufferLicenses.Remove( bufferCopy );
+					this.freeTempVertexBufferMap.Add( vbl.originalBuffer, vbl.buffer );
+					this.tempVertexBufferLicenses[ bufferCopy ].SafeDispose();
+					this.tempVertexBufferLicenses.Remove( bufferCopy );
 				}
 			}
 		}
@@ -376,9 +377,9 @@ namespace Axiom.Graphics
 		{
 			lock ( TempBuffersMutex )
 			{
-				if ( tempVertexBufferLicenses.ContainsKey( bufferCopy ) )
+				if ( this.tempVertexBufferLicenses.ContainsKey( bufferCopy ) )
 				{
-					var vbl = tempVertexBufferLicenses[ bufferCopy ];
+					var vbl = this.tempVertexBufferLicenses[ bufferCopy ];
 					Contract.Requires( vbl.licenseType == BufferLicenseRelease.Automatic );
 					vbl.expiredDelay = expiredDelayFrameThreshold;
 				}
@@ -404,11 +405,11 @@ namespace Axiom.Graphics
 				var numFreed = 0;
 
 				// Free unused temporary buffers
-				for ( var i = 1; i < freeTempVertexBufferMap.Count; ++i )
+				for ( var i = 1; i < this.freeTempVertexBufferMap.Count; ++i )
 				{
-					var keys = new HardwareVertexBuffer[freeTempVertexBufferMap.Count];
-					freeTempVertexBufferMap.Keys.CopyTo( keys, 0 );
-					var icur = freeTempVertexBufferMap[ keys[ i ] ];
+					var keys = new HardwareVertexBuffer[this.freeTempVertexBufferMap.Count];
+					this.freeTempVertexBufferMap.Keys.CopyTo( keys, 0 );
+					var icur = this.freeTempVertexBufferMap[ keys[ i ] ];
 
 					// Free the temporary buffer that referenced by ourself only.
 					// TODO: Some temporary buffers are bound to vertex buffer bindings
@@ -416,8 +417,8 @@ namespace Axiom.Graphics
 					if ( icur.UseCount <= 1 )
 					{
 						++numFreed;
-						freeTempVertexBufferMap[ keys[ i ] ].SafeDispose();
-						freeTempVertexBufferMap.Remove( keys[ i ] );
+						this.freeTempVertexBufferMap[ keys[ i ] ].SafeDispose();
+						this.freeTempVertexBufferMap.Remove( keys[ i ] );
 						i--;
 					}
 				}
@@ -444,26 +445,26 @@ namespace Axiom.Graphics
 		{
 			lock ( TempBuffersMutex )
 			{
-				var numUnused = freeTempVertexBufferMap.Count;
-				var numUsed = tempVertexBufferLicenses.Count;
+				var numUnused = this.freeTempVertexBufferMap.Count;
+				var numUsed = this.tempVertexBufferLicenses.Count;
 
 				// Erase the copies which are automatic licensed out
-				for ( var i = 1; i < tempVertexBufferLicenses.Count; ++i )
+				for ( var i = 1; i < this.tempVertexBufferLicenses.Count; ++i )
 				{
-					var keys = new HardwareVertexBuffer[tempVertexBufferLicenses.Count];
-					tempVertexBufferLicenses.Keys.CopyTo( keys, 0 );
-					var vbl = tempVertexBufferLicenses[ keys[ i ] ];
+					var keys = new HardwareVertexBuffer[this.tempVertexBufferLicenses.Count];
+					this.tempVertexBufferLicenses.Keys.CopyTo( keys, 0 );
+					var vbl = this.tempVertexBufferLicenses[ keys[ i ] ];
 
 					// only release licenses set to auto release
 					if ( vbl.licenseType == BufferLicenseRelease.Automatic && ( forceFreeUnused || --vbl.expiredDelay <= 0 ) )
 					{
 						vbl.licensee.LicenseExpired( vbl.buffer );
 
-						freeTempVertexBufferMap.Add( vbl.originalBuffer, vbl.buffer );
+						this.freeTempVertexBufferMap.Add( vbl.originalBuffer, vbl.buffer );
 
 						// remove the license for this buffer
-						tempVertexBufferLicenses[ keys[ i ] ].SafeDispose();
-						tempVertexBufferLicenses.Remove( keys[ i ] );
+						this.tempVertexBufferLicenses[ keys[ i ] ].SafeDispose();
+						this.tempVertexBufferLicenses.Remove( keys[ i ] );
 						i--;
 					}
 				}
@@ -472,7 +473,7 @@ namespace Axiom.Graphics
 				if ( forceFreeUnused )
 				{
 					FreeUnusedBufferCopies();
-					underUsedFrameCount = 0;
+					this.underUsedFrameCount = 0;
 				}
 				else
 				{
@@ -481,16 +482,16 @@ namespace Axiom.Graphics
 						// Free temporary vertex buffers if too many unused for a long time.
 						// Do overall temporary vertex buffers instead of per source buffer
 						// to avoid overhead.
-						++underUsedFrameCount;
-						if ( underUsedFrameCount >= UnderUsedFrameThreshold )
+						++this.underUsedFrameCount;
+						if ( this.underUsedFrameCount >= UnderUsedFrameThreshold )
 						{
 							FreeUnusedBufferCopies();
-							underUsedFrameCount = 0;
+							this.underUsedFrameCount = 0;
 						}
 					}
 					else
 					{
-						underUsedFrameCount = 0;
+						this.underUsedFrameCount = 0;
 					}
 				}
 			}
@@ -510,11 +511,11 @@ namespace Axiom.Graphics
 			lock ( TempBuffersMutex )
 			{
 				// erase the copies which are licensed out
-				for ( var i = 1; i < tempVertexBufferLicenses.Count; ++i )
+				for ( var i = 1; i < this.tempVertexBufferLicenses.Count; ++i )
 				{
-					var keys = new HardwareVertexBuffer[tempVertexBufferLicenses.Count];
-					tempVertexBufferLicenses.Keys.CopyTo( keys, 0 );
-					var vbl = tempVertexBufferLicenses[ keys[ i ] ];
+					var keys = new HardwareVertexBuffer[this.tempVertexBufferLicenses.Count];
+					this.tempVertexBufferLicenses.Keys.CopyTo( keys, 0 );
+					var vbl = this.tempVertexBufferLicenses[ keys[ i ] ];
 
 					// only release licenses set to auto release
 					if ( vbl.originalBuffer == sourceBuffer )
@@ -523,21 +524,21 @@ namespace Axiom.Graphics
 						vbl.licensee.LicenseExpired( vbl.buffer );
 
 						// remove the license for this buffer
-						tempVertexBufferLicenses[ keys[ i ] ].SafeDispose();
-						tempVertexBufferLicenses.Remove( keys[ i ] );
+						this.tempVertexBufferLicenses[ keys[ i ] ].SafeDispose();
+						this.tempVertexBufferLicenses.Remove( keys[ i ] );
 						i--;
 					}
 				}
 
 				// Erase the free copies
-				var freeCopies = ( from m in freeTempVertexBufferMap
+				var freeCopies = ( from m in this.freeTempVertexBufferMap
 				                   where m.Key == sourceBuffer && m.Value.UseCount <= 1
 				                   select m.Key ).ToList();
 
 				foreach ( var v in freeCopies )
 				{
-					freeTempVertexBufferMap[ v ].SafeDispose();
-					freeTempVertexBufferMap.Remove( v );
+					this.freeTempVertexBufferMap[ v ].SafeDispose();
+					this.freeTempVertexBufferMap.Remove( v );
 				}
 			}
 		}
@@ -550,9 +551,9 @@ namespace Axiom.Graphics
 		{
 			lock ( VertexBuffersMutex )
 			{
-				if ( vertexBuffers.Contains( buffer ) )
+				if ( this.vertexBuffers.Contains( buffer ) )
 				{
-					vertexBuffers.Remove( buffer );
+					this.vertexBuffers.Remove( buffer );
 					ForceReleaseBufferCopies( buffer );
 				}
 			}
@@ -566,9 +567,9 @@ namespace Axiom.Graphics
 		{
 			lock ( IndexBuffersMutex )
 			{
-				if ( indexBuffers.Contains( buffer ) )
+				if ( this.indexBuffers.Contains( buffer ) )
 				{
-					indexBuffers.Remove( buffer );
+					this.indexBuffers.Remove( buffer );
 				}
 			}
 		}
@@ -677,14 +678,14 @@ namespace Axiom.Graphics
 					// No need to clear lists, 'cause every disposed buffer removes itself
 					// from its list when disposing via NotifyVertexBufferDestroyed ( or 
 					// NotifyIndexBufferDestroyed for index buffers ).
-					while ( vertexBuffers.Count > 0 )
+					while ( this.vertexBuffers.Count > 0 )
 					{
-						vertexBuffers[ 0 ].SafeDispose();
+						this.vertexBuffers[ 0 ].SafeDispose();
 					}
 
-					while ( indexBuffers.Count > 0 )
+					while ( this.indexBuffers.Count > 0 )
 					{
-						indexBuffers[ 0 ].SafeDispose();
+						this.indexBuffers[ 0 ].SafeDispose();
 					}
 
 					// Destroy everything

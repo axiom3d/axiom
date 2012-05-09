@@ -219,11 +219,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return _name;
+				return this._name;
 			}
 			set
 			{
-				_name = value;
+				this._name = value;
 			}
 		}
 
@@ -243,20 +243,20 @@ namespace Axiom.ParticleSystems
 		{
 			// set defaults
 			parentSystem = ps;
-			angle = 0.0f;
+			this.angle = 0.0f;
 			Direction = Vector3.UnitX;
-			emissionRate = 10;
-			fixedSpeed = 1;
-			minSpeed = float.NaN;
-			fixedTTL = 5;
-			minTTL = float.NaN;
-			position = Vector3.Zero;
-			colorFixed = ColorEx.White;
-			isEnabled = true;
-			durationFixed = 0;
-			durationMin = float.NaN;
-			repeatDelayFixed = 0;
-			repeatDelayMin = float.NaN;
+			this.emissionRate = 10;
+			this.fixedSpeed = 1;
+			this.minSpeed = float.NaN;
+			this.fixedTTL = 5;
+			this.minTTL = float.NaN;
+			this.position = Vector3.Zero;
+			this.colorFixed = ColorEx.White;
+			this.isEnabled = true;
+			this.durationFixed = 0;
+			this.durationMin = float.NaN;
+			this.repeatDelayFixed = 0;
+			this.repeatDelayMin = float.NaN;
 
 			RegisterCommands();
 		}
@@ -272,11 +272,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return position;
+				return this.position;
 			}
 			set
 			{
-				position = value;
+				this.position = value;
 			}
 		}
 
@@ -293,16 +293,16 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return direction;
+				return this.direction;
 			}
 			set
 			{
-				direction = value;
-				direction.Normalize();
+				this.direction = value;
+				this.direction.Normalize();
 
 				// generate an up vector
-				up = direction.Perpendicular();
-				up.Normalize();
+				this.up = this.direction.Perpendicular();
+				this.up.Normalize();
 			}
 		}
 
@@ -320,11 +320,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return Utility.RadiansToDegrees( (Real)angle );
+				return Utility.RadiansToDegrees( (Real)this.angle );
 			}
 			set
 			{
-				angle = Utility.DegreesToRadians( (Real)value );
+				this.angle = Utility.DegreesToRadians( (Real)value );
 			}
 		}
 
@@ -340,11 +340,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return float.IsNaN( minSpeed ) ? fixedSpeed : float.NaN;
+				return float.IsNaN( this.minSpeed ) ? this.fixedSpeed : float.NaN;
 			}
 			set
 			{
-				fixedSpeed = value;
+				this.fixedSpeed = value;
 			}
 		}
 
@@ -355,11 +355,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return minSpeed;
+				return this.minSpeed;
 			}
 			set
 			{
-				minSpeed = value;
+				this.minSpeed = value;
 			}
 		}
 
@@ -370,11 +370,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return maxSpeed;
+				return this.maxSpeed;
 			}
 			set
 			{
-				maxSpeed = value;
+				this.maxSpeed = value;
 			}
 		}
 
@@ -391,11 +391,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return emissionRate;
+				return this.emissionRate;
 			}
 			set
 			{
-				emissionRate = value;
+				this.emissionRate = value;
 			}
 		}
 
@@ -406,11 +406,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return emittedEmitter;
+				return this.emittedEmitter;
 			}
 			set
 			{
-				emittedEmitter = value;
+				this.emittedEmitter = value;
 			}
 		}
 
@@ -422,11 +422,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return emitted;
+				return this.emitted;
 			}
 			set
 			{
-				emitted = value;
+				this.emitted = value;
 			}
 		}
 
@@ -445,11 +445,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return float.IsNaN( minTTL ) ? fixedTTL : float.NaN;
+				return float.IsNaN( this.minTTL ) ? this.fixedTTL : float.NaN;
 			}
 			set
 			{
-				fixedTTL = value;
+				this.fixedTTL = value;
 			}
 		}
 
@@ -460,11 +460,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return minTTL;
+				return this.minTTL;
 			}
 			set
 			{
-				minTTL = value;
+				this.minTTL = value;
 			}
 		}
 
@@ -475,11 +475,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return maxTTL;
+				return this.maxTTL;
 			}
 			set
 			{
-				maxTTL = value;
+				this.maxTTL = value;
 			}
 		}
 
@@ -495,11 +495,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return colorRangeStart;
+				return this.colorRangeStart;
 			}
 			set
 			{
-				colorFixed = value;
+				this.colorFixed = value;
 			}
 		}
 
@@ -510,11 +510,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return colorRangeStart;
+				return this.colorRangeStart;
 			}
 			set
 			{
-				colorRangeStart = value;
+				this.colorRangeStart = value;
 			}
 		}
 
@@ -525,11 +525,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return colorRangeEnd;
+				return this.colorRangeEnd;
 			}
 			set
 			{
-				colorRangeEnd = value;
+				this.colorRangeEnd = value;
 			}
 		}
 
@@ -540,11 +540,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return type;
+				return this.type;
 			}
 			set
 			{
-				type = value;
+				this.type = value;
 			}
 		}
 
@@ -558,11 +558,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return isEnabled;
+				return this.isEnabled;
 			}
 			set
 			{
-				isEnabled = value;
+				this.isEnabled = value;
 				InitDurationRepeat();
 			}
 		}
@@ -579,12 +579,12 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return startTime;
+				return this.startTime;
 			}
 			set
 			{
 				IsEnabled = false;
-				startTime = value;
+				this.startTime = value;
 			}
 		}
 
@@ -604,11 +604,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return float.IsNaN( durationMin ) ? durationFixed : float.NaN;
+				return float.IsNaN( this.durationMin ) ? this.durationFixed : float.NaN;
 			}
 			set
 			{
-				durationFixed = value;
+				this.durationFixed = value;
 				InitDurationRepeat();
 			}
 		}
@@ -620,11 +620,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return durationMin;
+				return this.durationMin;
 			}
 			set
 			{
-				durationMin = value;
+				this.durationMin = value;
 				InitDurationRepeat();
 			}
 		}
@@ -636,11 +636,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return durationMax;
+				return this.durationMax;
 			}
 			set
 			{
-				durationMax = value;
+				this.durationMax = value;
 				InitDurationRepeat();
 			}
 		}
@@ -652,11 +652,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return repeatDelayMax;
+				return this.repeatDelayMax;
 			}
 			set
 			{
-				repeatDelayMax = value;
+				this.repeatDelayMax = value;
 				InitDurationRepeat();
 			}
 		}
@@ -668,11 +668,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return repeatDelayMin;
+				return this.repeatDelayMin;
 			}
 			set
 			{
-				repeatDelayMin = value;
+				this.repeatDelayMin = value;
 				InitDurationRepeat();
 			}
 		}
@@ -684,11 +684,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return float.IsNaN( repeatDelayMin ) ? repeatDelayFixed : float.NaN;
+				return float.IsNaN( this.repeatDelayMin ) ? this.repeatDelayFixed : float.NaN;
 			}
 			set
 			{
-				repeatDelayFixed = value;
+				this.repeatDelayFixed = value;
 				InitDurationRepeat();
 			}
 		}
@@ -744,17 +744,17 @@ namespace Axiom.ParticleSystems
 		/// <param name="dest">Normalized vector dictating new direction.</param>
 		protected virtual void GenerateEmissionDirection( ref Vector3 dest )
 		{
-			if ( angle != 0.0f )
+			if ( this.angle != 0.0f )
 			{
-				float tempAngle = Utility.UnitRandom()*angle;
+				float tempAngle = Utility.UnitRandom()*this.angle;
 
 				// randomize direction
-				dest = direction.RandomDeviant( tempAngle, up );
+				dest = this.direction.RandomDeviant( tempAngle, this.up );
 			}
 			else
 			{
 				// constant angle
-				dest = direction;
+				dest = this.direction;
 			}
 		}
 
@@ -766,13 +766,13 @@ namespace Axiom.ParticleSystems
 		{
 			float scalar;
 
-			if ( !float.IsNaN( minSpeed ) )
+			if ( !float.IsNaN( this.minSpeed ) )
 			{
-				scalar = minSpeed + ( Utility.UnitRandom()*( maxSpeed - minSpeed ) );
+				scalar = this.minSpeed + ( Utility.UnitRandom()*( this.maxSpeed - this.minSpeed ) );
 			}
 			else
 			{
-				scalar = fixedSpeed;
+				scalar = this.fixedSpeed;
 			}
 
 			dest *= scalar;
@@ -784,13 +784,13 @@ namespace Axiom.ParticleSystems
 		/// <returns></returns>
 		protected virtual float GenerateEmissionTTL()
 		{
-			if ( !float.IsNaN( minTTL ) )
+			if ( !float.IsNaN( this.minTTL ) )
 			{
-				return minTTL + ( Utility.UnitRandom()*( maxTTL - minTTL ) );
+				return this.minTTL + ( Utility.UnitRandom()*( this.maxTTL - this.minTTL ) );
 			}
 			else
 			{
-				return fixedTTL;
+				return this.fixedTTL;
 			}
 		}
 
@@ -802,21 +802,21 @@ namespace Axiom.ParticleSystems
 		public virtual ushort GenerateConstantEmissionCount( float timeElapsed )
 		{
 			ushort intRequest;
-			var durMax = float.IsNaN( durationMin ) ? durationFixed : durationMax;
-			var repDelMax = float.IsNaN( repeatDelayMin ) ? repeatDelayFixed : repeatDelayMax;
+			var durMax = float.IsNaN( this.durationMin ) ? this.durationFixed : this.durationMax;
+			var repDelMax = float.IsNaN( this.repeatDelayMin ) ? this.repeatDelayFixed : this.repeatDelayMax;
 
-			if ( isEnabled )
+			if ( this.isEnabled )
 			{
 				// Keep fractions, otherwise a high frame rate will result in zero emissions!
-				remainder += emissionRate*timeElapsed;
-				intRequest = (ushort)remainder;
-				remainder -= intRequest;
+				this.remainder += this.emissionRate*timeElapsed;
+				intRequest = (ushort)this.remainder;
+				this.remainder -= intRequest;
 
 				// Check duration
 				if ( durMax > 0.0f )
 				{
-					durationRemain -= timeElapsed;
-					if ( durationRemain <= 0.0f )
+					this.durationRemain -= timeElapsed;
+					if ( this.durationRemain <= 0.0f )
 					{
 						// Disable, duration is out (takes effect next time)
 						IsEnabled = false;
@@ -829,21 +829,21 @@ namespace Axiom.ParticleSystems
 				// Check repeat
 				if ( repDelMax > 0.0f )
 				{
-					repeatDelayRemain -= timeElapsed;
-					if ( repeatDelayRemain <= 0.0f )
+					this.repeatDelayRemain -= timeElapsed;
+					if ( this.repeatDelayRemain <= 0.0f )
 					{
 						// Enable, repeat delay is out (takes effect next time)
 						IsEnabled = true;
 					}
 				}
-				if ( startTime > 0.0f )
+				if ( this.startTime > 0.0f )
 				{
-					startTime -= timeElapsed;
+					this.startTime -= timeElapsed;
 
-					if ( startTime <= 0.0f )
+					if ( this.startTime <= 0.0f )
 					{
 						IsEnabled = true;
-						startTime = 0;
+						this.startTime = 0;
 					}
 				}
 
@@ -859,19 +859,19 @@ namespace Axiom.ParticleSystems
 		/// </param>
 		protected virtual void GenerateEmissionColor( ref ColorEx color )
 		{
-			if ( colorRangeStart != null )
+			if ( this.colorRangeStart != null )
 			{
-				color.r = colorRangeStart.r + Utility.UnitRandom()*( colorRangeEnd.r - colorRangeStart.r );
-				color.g = colorRangeStart.g + Utility.UnitRandom()*( colorRangeEnd.g - colorRangeStart.g );
-				color.b = colorRangeStart.b + Utility.UnitRandom()*( colorRangeEnd.b - colorRangeStart.b );
-				color.a = colorRangeStart.a + Utility.UnitRandom()*( colorRangeEnd.a - colorRangeStart.a );
+				color.r = this.colorRangeStart.r + Utility.UnitRandom()*( this.colorRangeEnd.r - this.colorRangeStart.r );
+				color.g = this.colorRangeStart.g + Utility.UnitRandom()*( this.colorRangeEnd.g - this.colorRangeStart.g );
+				color.b = this.colorRangeStart.b + Utility.UnitRandom()*( this.colorRangeEnd.b - this.colorRangeStart.b );
+				color.a = this.colorRangeStart.a + Utility.UnitRandom()*( this.colorRangeEnd.a - this.colorRangeStart.a );
 			}
 			else
 			{
-				color.r = colorFixed.r;
-				color.g = colorFixed.g;
-				color.b = colorFixed.b;
-				color.a = colorFixed.a;
+				color.r = this.colorFixed.r;
+				color.g = this.colorFixed.g;
+				color.b = this.colorFixed.b;
+				color.a = this.colorFixed.a;
 			}
 		}
 
@@ -880,27 +880,27 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		protected void InitDurationRepeat()
 		{
-			if ( isEnabled )
+			if ( this.isEnabled )
 			{
-				if ( float.IsNaN( durationMin ) )
+				if ( float.IsNaN( this.durationMin ) )
 				{
-					durationRemain = durationFixed;
+					this.durationRemain = this.durationFixed;
 				}
 				else
 				{
-					durationRemain = Utility.RangeRandom( durationMin, durationMax );
+					this.durationRemain = Utility.RangeRandom( this.durationMin, this.durationMax );
 				}
 			}
 			else
 			{
 				// reset repeat
-				if ( float.IsNaN( repeatDelayMin ) )
+				if ( float.IsNaN( this.repeatDelayMin ) )
 				{
-					repeatDelayRemain = repeatDelayFixed;
+					this.repeatDelayRemain = this.repeatDelayFixed;
 				}
 				else
 				{
-					repeatDelayRemain = Utility.RangeRandom( repeatDelayMin, repeatDelayMax );
+					this.repeatDelayRemain = Utility.RangeRandom( this.repeatDelayMin, this.repeatDelayMax );
 				}
 			}
 		}
@@ -912,8 +912,8 @@ namespace Axiom.ParticleSystems
 		/// <param name="max"></param>
 		public void SetDuration( float min, float max )
 		{
-			durationMin = min;
-			durationMax = max;
+			this.durationMin = min;
+			this.durationMax = max;
 			InitDurationRepeat();
 		}
 
@@ -924,10 +924,10 @@ namespace Axiom.ParticleSystems
 		public virtual void CopyTo( ParticleEmitter emitter )
 		{
 			// loop through all registered commands and copy from this instance to the target instance
-			foreach ( var key in commandTable.Keys )
+			foreach ( var key in this.commandTable.Keys )
 			{
 				// get the value of the param from this instance
-				var val = ( (IPropertyCommand)commandTable[ key ] ).Get( this );
+				var val = ( (IPropertyCommand)this.commandTable[ key ] ).Get( this );
 
 				// set the param on the target instance
 				emitter.SetParam( key, val );
@@ -939,8 +939,8 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		public void ScaleVelocity( float velocityMultiplier )
 		{
-			minSpeed *= velocityMultiplier;
-			maxSpeed *= velocityMultiplier;
+			this.minSpeed *= velocityMultiplier;
+			this.maxSpeed *= velocityMultiplier;
 		}
 
 		#endregion Methods
@@ -949,9 +949,9 @@ namespace Axiom.ParticleSystems
 
 		public bool SetParam( string name, string val )
 		{
-			if ( commandTable.ContainsKey( name ) )
+			if ( this.commandTable.ContainsKey( name ) )
 			{
-				var command = (IPropertyCommand)commandTable[ name ];
+				var command = (IPropertyCommand)this.commandTable[ name ];
 
 				command.Set( this, val );
 
@@ -992,7 +992,7 @@ namespace Axiom.ParticleSystems
 					{
 						var commandAtt = commandAtts[ j ];
 
-						commandTable.Add( commandAtt.ScriptPropertyName, (IPropertyCommand)Activator.CreateInstance( type ) );
+						this.commandTable.Add( commandAtt.ScriptPropertyName, (IPropertyCommand)Activator.CreateInstance( type ) );
 					} // for
 				} // for
 

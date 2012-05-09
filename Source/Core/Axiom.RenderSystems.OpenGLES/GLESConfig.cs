@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,21 +25,21 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 using OpenGL = OpenTK.Graphics.ES11.GL;
 
@@ -50,7 +51,7 @@ namespace Axiom.RenderSystems.OpenGLES
 	{
 		public static void GlCheckError( object caller )
 		{
-			int e = (int)OpenGL.GetError();
+			var e = (int) OpenGL.GetError();
 			if ( e != 0 )
 			{
 				throw new Exception( string.Format( "OpenGL error {0} from {1}", e, caller.ToString() ) );

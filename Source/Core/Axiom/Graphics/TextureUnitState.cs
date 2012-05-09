@@ -79,15 +79,15 @@ namespace Axiom.Graphics
 		public UVWAddressing( TextureAddressing u, TextureAddressing v, TextureAddressing w )
 			: this()
 		{
-			U = u;
-			V = v;
-			W = w;
+			this.U = u;
+			this.V = v;
+			this.W = w;
 		}
 
 		public UVWAddressing( TextureAddressing commonAddressing )
 			: this()
 		{
-			U = V = W = commonAddressing;
+			this.U = this.V = this.W = commonAddressing;
 		}
 
 		public override bool Equals( object obj )
@@ -104,12 +104,12 @@ namespace Axiom.Graphics
 
 			var a = (UVWAddressing)obj;
 
-			return ( a.U == U ) && ( a.V == V ) && ( a.W == W );
+			return ( a.U == this.U ) && ( a.V == this.V ) && ( a.W == this.W );
 		}
 
 		public override int GetHashCode()
 		{
-			return U.GetHashCode() ^ V.GetHashCode() ^ W.GetHashCode();
+			return this.U.GetHashCode() ^ this.V.GetHashCode() ^ this.W.GetHashCode();
 		}
 
 		#region Operators
@@ -172,13 +172,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return parent;
+				return this.parent;
 			}
 
 			[OgreVersion( 1, 7, 2, "Original name _notifyParent" )]
 			set
 			{
-				parent = value;
+				this.parent = value;
 			}
 		}
 
@@ -189,7 +189,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return parent.IsLoaded;
+				return this.parent.IsLoaded;
 			}
 		}
 
@@ -221,7 +221,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return texAddressingMode;
+				return this.texAddressingMode;
 			}
 		}
 
@@ -238,11 +238,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return texBorderColor;
+				return this.texBorderColor;
 			}
 			set
 			{
-				texBorderColor = value;
+				this.texBorderColor = value;
 			}
 		}
 
@@ -258,7 +258,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return colorBlendMode;
+				return this.colorBlendMode;
 			}
 		}
 
@@ -274,7 +274,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return alphaBlendMode;
+				return this.alphaBlendMode;
 			}
 		}
 
@@ -290,7 +290,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return colorBlendFallbackSrc;
+				return this.colorBlendFallbackSrc;
 			}
 		}
 
@@ -306,7 +306,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return colorBlendFallbackDest;
+				return this.colorBlendFallbackDest;
 			}
 		}
 
@@ -319,7 +319,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return colorOp;
+				return this.colorOp;
 			}
 			set
 			{
@@ -339,11 +339,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return isBlank;
+				return this.isBlank;
 			}
 			set
 			{
-				isBlank = value;
+				this.isBlank = value;
 			}
 		}
 
@@ -360,7 +360,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return isCubic;
+				return this.isCubic;
 			}
 		}
 
@@ -377,7 +377,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return numFrames;
+				return this.numFrames;
 			}
 		}
 
@@ -404,16 +404,16 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return currentFrame;
+				return this.currentFrame;
 			}
 			set
 			{
-				Debug.Assert( value < numFrames,
+				Debug.Assert( value < this.numFrames,
 				              "Cannot set the current frame of a texture layer to be greater than the number of frames in the layer." );
-				currentFrame = value;
+				this.currentFrame = value;
 
 				// this will affect the passes hashcode because of the texture name change
-				parent.DirtyHash();
+				this.parent.DirtyHash();
 			}
 		}
 
@@ -434,14 +434,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 			set
 			{
-				name = value;
-				if ( textureNameAlias == null )
+				this.name = value;
+				if ( this.textureNameAlias == null )
 				{
-					textureNameAlias = name;
+					this.textureNameAlias = this.name;
 				}
 			}
 		}
@@ -458,11 +458,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return textureNameAlias;
+				return this.textureNameAlias;
 			}
 			set
 			{
-				textureNameAlias = value;
+				this.textureNameAlias = value;
 			}
 		}
 
@@ -480,7 +480,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return frames[ currentFrame ];
+				return this.frames[ this.currentFrame ];
 			}
 		}
 
@@ -499,7 +499,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return transU;
+				return this.transU;
 			}
 			set
 			{
@@ -515,13 +515,13 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return GetTexture( currentFrame );
+				return GetTexture( this.currentFrame );
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				SetTexture( value, currentFrame );
+				SetTexture( value, this.currentFrame );
 			}
 		}
 
@@ -572,7 +572,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return transV;
+				return this.transV;
 			}
 			set
 			{
@@ -589,11 +589,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return scrollU;
+				return this.scrollU;
 			}
 			set
 			{
-				SetScrollAnimation( value, scrollV );
+				SetScrollAnimation( value, this.scrollV );
 			}
 		}
 
@@ -606,11 +606,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return scrollV;
+				return this.scrollV;
 			}
 			set
 			{
-				SetScrollAnimation( scrollU, value );
+				SetScrollAnimation( this.scrollU, value );
 			}
 		}
 
@@ -623,7 +623,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return scaleU;
+				return this.scaleU;
 			}
 			set
 			{
@@ -641,7 +641,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return scaleV;
+				return this.scaleV;
 			}
 			set
 			{
@@ -683,18 +683,18 @@ namespace Axiom.Graphics
 			get
 			{
 				// update the matrix before returning it if necessary
-				if ( recalcTexMatrix )
+				if ( this.recalcTexMatrix )
 				{
 					RecalcTextureMatrix();
 				}
-				return texMatrix;
+				return this.texMatrix;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				texMatrix = value;
-				recalcTexMatrix = false;
+				this.texMatrix = value;
+				this.recalcTexMatrix = false;
 			}
 		}
 
@@ -710,7 +710,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return effectList.Count;
+				return this.effectList.Count;
 			}
 		}
 
@@ -726,7 +726,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return textureType;
+				return this.textureType;
 			}
 		}
 
@@ -742,11 +742,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return desiredFormat;
+				return this.desiredFormat;
 			}
 			set
 			{
-				desiredFormat = value;
+				this.desiredFormat = value;
 			}
 		}
 
@@ -762,11 +762,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return textureSrcMipmaps;
+				return this.textureSrcMipmaps;
 			}
 			set
 			{
-				textureSrcMipmaps = value;
+				this.textureSrcMipmaps = value;
 			}
 		}
 
@@ -782,11 +782,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return isAlpha;
+				return this.isAlpha;
 			}
 			set
 			{
-				isAlpha = value;
+				this.isAlpha = value;
 			}
 		}
 
@@ -832,7 +832,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return envMapEnabled;
+				return this.envMapEnabled;
 			}
 		}
 
@@ -842,7 +842,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return rotationSpeed;
+				return this.rotationSpeed;
 			}
 			set
 			{
@@ -873,12 +873,12 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return isDefaultAniso ? MaterialManager.Instance.DefaultAnisotropy : maxAnisotropy;
+				return this.isDefaultAniso ? MaterialManager.Instance.DefaultAnisotropy : this.maxAnisotropy;
 			}
 			set
 			{
-				maxAnisotropy = value;
-				isDefaultAniso = false;
+				this.maxAnisotropy = value;
+				this.isDefaultAniso = false;
 			}
 		}
 
@@ -891,7 +891,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// TODO: Optimize this to hopefully eliminate the search every time
-				foreach ( var effect in effectList )
+				foreach ( var effect in this.effectList )
 				{
 					if ( effect.subtype == (System.Enum)EnvironmentMap.Reflection )
 					{
@@ -915,7 +915,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return textureType == TextureType.CubeMap;
+				return this.textureType == TextureType.CubeMap;
 			}
 		}
 
@@ -964,37 +964,37 @@ namespace Axiom.Graphics
 		public TextureUnitState( Pass parent, string textureName, int texCoordSet )
 		{
 			this.parent = parent;
-			isBlank = true;
+			this.isBlank = true;
 
-			colorBlendMode.blendType = LayerBlendType.Color;
+			this.colorBlendMode.blendType = LayerBlendType.Color;
 			SetColorOperation( LayerBlendOperation.Modulate );
 			SetTextureAddressingMode( TextureAddressing.Wrap );
 
 			// set alpha blending options
-			alphaBlendMode.operation = LayerBlendOperationEx.Modulate;
-			alphaBlendMode.blendType = LayerBlendType.Alpha;
-			alphaBlendMode.source1 = LayerBlendSource.Texture;
-			alphaBlendMode.source2 = LayerBlendSource.Current;
+			this.alphaBlendMode.operation = LayerBlendOperationEx.Modulate;
+			this.alphaBlendMode.blendType = LayerBlendType.Alpha;
+			this.alphaBlendMode.source1 = LayerBlendSource.Texture;
+			this.alphaBlendMode.source2 = LayerBlendSource.Current;
 
 			// default filtering and anisotropy
-			minFilter = FilterOptions.Linear;
-			magFilter = FilterOptions.Linear;
-			mipFilter = FilterOptions.Point;
-			maxAnisotropy = MaterialManager.Instance.DefaultAnisotropy;
-			isDefaultFiltering = true;
-			isDefaultAniso = true;
+			this.minFilter = FilterOptions.Linear;
+			this.magFilter = FilterOptions.Linear;
+			this.mipFilter = FilterOptions.Point;
+			this.maxAnisotropy = MaterialManager.Instance.DefaultAnisotropy;
+			this.isDefaultFiltering = true;
+			this.isDefaultAniso = true;
 
 			// texture modification params
-			scrollU = scrollV = 0;
-			transU = transV = 0;
-			scaleU = scaleV = 1;
-			rotate = 0;
-			texMatrix = Matrix4.Identity;
-			animDuration = 0;
+			this.scrollU = this.scrollV = 0;
+			this.transU = this.transV = 0;
+			this.scaleU = this.scaleV = 1;
+			this.rotate = 0;
+			this.texMatrix = Matrix4.Identity;
+			this.animDuration = 0;
 
-			textureType = TextureType.TwoD;
+			this.textureType = TextureType.TwoD;
 
-			textureSrcMipmaps = (int)TextureMipmap.Default;
+			this.textureSrcMipmaps = (int)TextureMipmap.Default;
 			// texture params
 			SetTextureName( textureName );
 			TextureCoordSet = texCoordSet;
@@ -1019,7 +1019,7 @@ namespace Axiom.Graphics
 		/// <param name="tam"></param>
 		public void SetTextureAddressingMode( TextureAddressing tam )
 		{
-			texAddressingMode = new UVWAddressing( tam );
+			this.texAddressingMode = new UVWAddressing( tam );
 		}
 
 		/// <summary>
@@ -1031,7 +1031,7 @@ namespace Axiom.Graphics
 		/// </remarks>
 		public void SetTextureAddressingMode( TextureAddressing u, TextureAddressing v, TextureAddressing w )
 		{
-			texAddressingMode = new UVWAddressing( u, v, w );
+			this.texAddressingMode = new UVWAddressing( u, v, w );
 		}
 
 		/// <summary>
@@ -1044,7 +1044,7 @@ namespace Axiom.Graphics
 		/// <param name="uvw"></param>
 		public void SetTextureAddressingMode( UVWAddressing uvw )
 		{
-			texAddressingMode = uvw;
+			this.texAddressingMode = uvw;
 		}
 
 		/// <summary>
@@ -1095,9 +1095,9 @@ namespace Axiom.Graphics
 		/// <returns>The TextureEffect at the specified index.</returns>
 		public TextureEffect GetEffect( int index )
 		{
-			Debug.Assert( index < effectList.Count, "index < effectList.Count" );
+			Debug.Assert( index < this.effectList.Count, "index < effectList.Count" );
 
-			return (TextureEffect)effectList[ index ];
+			return (TextureEffect)this.effectList[ index ];
 		}
 
 		/// <summary>
@@ -1105,7 +1105,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void RemoveAllEffects()
 		{
-			effectList.Clear();
+			this.effectList.Clear();
 		}
 
 		/// <summary>
@@ -1115,7 +1115,7 @@ namespace Axiom.Graphics
 		/// <param name="effect">Effect to remove.</param>
 		public void RemoveEffect( TextureEffect effect )
 		{
-			effectList.Remove( effect );
+			this.effectList.Remove( effect );
 		}
 
 		/// <summary>
@@ -1143,8 +1143,8 @@ namespace Axiom.Graphics
 		/// <param name="dest">How to affect the destination color during blending.</param>
 		public void SetColorOpMultipassFallback( SceneBlendFactor src, SceneBlendFactor dest )
 		{
-			colorBlendFallbackSrc = src;
-			colorBlendFallbackDest = dest;
+			this.colorBlendFallbackSrc = src;
+			this.colorBlendFallbackDest = dest;
 		}
 
 		/// <summary>
@@ -1281,18 +1281,18 @@ namespace Axiom.Graphics
 		/// </param>
 		public void SetCubicTextureName( string[] textureNames, bool forUVW )
 		{
-			numFrames = forUVW ? 1 : 6;
-			currentFrame = 0;
-			isCubic = true;
-			textureType = forUVW ? TextureType.CubeMap : TextureType.TwoD;
+			this.numFrames = forUVW ? 1 : 6;
+			this.currentFrame = 0;
+			this.isCubic = true;
+			this.textureType = forUVW ? TextureType.CubeMap : TextureType.TwoD;
 
-			for ( var i = 0; i < numFrames; i++ )
+			for ( var i = 0; i < this.numFrames; i++ )
 			{
-				frames[ i ] = textureNames[ i ];
+				this.frames[ i ] = textureNames[ i ];
 			}
 
 			// tell parent we need recompiling, will cause reload too
-			parent.NotifyNeedsRecompile();
+			this.parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -1318,7 +1318,7 @@ namespace Axiom.Graphics
 		/// <param name="operation">One of the LayerBlendOperation enumerated blending types.</param>
 		public void SetColorOperation( LayerBlendOperation operation )
 		{
-			colorOp = operation;
+			this.colorOp = operation;
 
 			// configure the multitexturing operations
 			switch ( operation )
@@ -1410,12 +1410,12 @@ namespace Axiom.Graphics
 		public void SetColorOperationEx( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2,
 		                                 ColorEx arg1, ColorEx arg2, float blendFactor )
 		{
-			colorBlendMode.operation = operation;
-			colorBlendMode.source1 = source1;
-			colorBlendMode.source2 = source2;
-			colorBlendMode.colorArg1 = arg1;
-			colorBlendMode.colorArg2 = arg2;
-			colorBlendMode.blendFactor = blendFactor;
+			this.colorBlendMode.operation = operation;
+			this.colorBlendMode.source1 = source1;
+			this.colorBlendMode.source2 = source2;
+			this.colorBlendMode.colorArg1 = arg1;
+			this.colorBlendMode.colorArg2 = arg2;
+			this.colorBlendMode.blendFactor = blendFactor;
 		}
 
 		/// <summary>
@@ -1473,12 +1473,12 @@ namespace Axiom.Graphics
 		public void SetAlphaOperation( LayerBlendOperationEx operation, LayerBlendSource source1, LayerBlendSource source2,
 		                               Real arg1, Real arg2, Real blendFactor )
 		{
-			alphaBlendMode.operation = operation;
-			alphaBlendMode.source1 = source1;
-			alphaBlendMode.source2 = source2;
-			alphaBlendMode.alphaArg1 = arg1;
-			alphaBlendMode.alphaArg2 = arg2;
-			alphaBlendMode.blendFactor = blendFactor;
+			this.alphaBlendMode.operation = operation;
+			this.alphaBlendMode.source1 = source1;
+			this.alphaBlendMode.source2 = source2;
+			this.alphaBlendMode.alphaArg1 = arg1;
+			this.alphaBlendMode.alphaArg2 = arg2;
+			this.alphaBlendMode.blendFactor = blendFactor;
 		}
 
 		/// <summary>
@@ -1492,7 +1492,7 @@ namespace Axiom.Graphics
 
 		public EnvironmentMap GetEnvironmentMap()
 		{
-			return environMap;
+			return this.environMap;
 		}
 
 		/// <summary>
@@ -1536,8 +1536,8 @@ namespace Axiom.Graphics
 		/// </param>
 		public void SetEnvironmentMap( bool enable, EnvironmentMap envMap )
 		{
-			environMap = envMap;
-			envMapEnabled = enable;
+			this.environMap = envMap;
+			this.envMapEnabled = enable;
 			if ( enable )
 			{
 				var effect = new TextureEffect();
@@ -1562,9 +1562,9 @@ namespace Axiom.Graphics
 		/// <returns>The name of the texture at the specified frame index.</returns>
 		public string GetFrameTextureName( int frame )
 		{
-			Debug.Assert( frame < numFrames, "Attempted to access a frame which is out of range." );
+			Debug.Assert( frame < this.numFrames, "Attempted to access a frame which is out of range." );
 
-			return frames[ frame ];
+			return this.frames[ frame ];
 		}
 
 		/// <summary>
@@ -1577,13 +1577,19 @@ namespace Axiom.Graphics
 			switch ( type )
 			{
 				case FilterType.Min:
-					return isDefaultFiltering ? MaterialManager.Instance.GetDefaultTextureFiltering( FilterType.Min ) : minFilter;
+					return this.isDefaultFiltering
+					       	? MaterialManager.Instance.GetDefaultTextureFiltering( FilterType.Min )
+					       	: this.minFilter;
 
 				case FilterType.Mag:
-					return isDefaultFiltering ? MaterialManager.Instance.GetDefaultTextureFiltering( FilterType.Mag ) : magFilter;
+					return this.isDefaultFiltering
+					       	? MaterialManager.Instance.GetDefaultTextureFiltering( FilterType.Mag )
+					       	: this.magFilter;
 
 				case FilterType.Mip:
-					return isDefaultFiltering ? MaterialManager.Instance.GetDefaultTextureFiltering( FilterType.Mip ) : mipFilter;
+					return this.isDefaultFiltering
+					       	? MaterialManager.Instance.GetDefaultTextureFiltering( FilterType.Mip )
+					       	: this.mipFilter;
 			}
 
 			// should never get here, but makes the compiler happy
@@ -1653,12 +1659,12 @@ namespace Axiom.Graphics
 			}
 
 			this.numFrames = numFrames;
-			animDuration = duration;
-			currentFrame = 0;
-			isCubic = false;
+			this.animDuration = duration;
+			this.currentFrame = 0;
+			this.isCubic = false;
 
 			// copy the texture names
-			Array.Copy( names, 0, frames, 0, numFrames );
+			Array.Copy( names, 0, this.frames, 0, numFrames );
 
 			// if material is already loaded, load this immediately
 			if ( IsLoaded )
@@ -1666,7 +1672,7 @@ namespace Axiom.Graphics
 				Load();
 
 				// tell parent to recalculate the hash
-				parent.DirtyHash();
+				this.parent.DirtyHash();
 			}
 		}
 
@@ -1684,9 +1690,9 @@ namespace Axiom.Graphics
 		/// <param name="v">The amount the texture should be moved vertically (v direction).</param>
 		public void SetTextureScroll( float u, float v )
 		{
-			transU = u;
-			transV = v;
-			recalcTexMatrix = true;
+			this.transU = u;
+			this.transV = v;
+			this.recalcTexMatrix = true;
 		}
 
 		/// <summary>
@@ -1698,8 +1704,8 @@ namespace Axiom.Graphics
 		/// <param name="u">The amount the texture should be moved horizontally (u direction).</param>
 		public void SetTextureScrollU( float u )
 		{
-			transU = u;
-			recalcTexMatrix = true;
+			this.transU = u;
+			this.recalcTexMatrix = true;
 		}
 
 		/// <summary>
@@ -1711,8 +1717,8 @@ namespace Axiom.Graphics
 		/// <param name="v">The amount the texture should be moved vertically (v direction).</param>
 		public void SetTextureScrollV( float v )
 		{
-			transV = v;
-			recalcTexMatrix = true;
+			this.transV = v;
+			this.recalcTexMatrix = true;
 		}
 
 		/// <summary>
@@ -1776,7 +1782,7 @@ namespace Axiom.Graphics
 		/// <param name="speed">The number of complete counter-clockwise revolutions per second (use -ve for clockwise)</param>
 		public void SetRotateAnimation( float speed )
 		{
-			rotationSpeed = speed;
+			this.rotationSpeed = speed;
 			var effect = new TextureEffect();
 			effect.type = TextureEffectType.Rotate;
 			effect.arg1 = speed;
@@ -1829,9 +1835,9 @@ namespace Axiom.Graphics
 		/// <param name="v">The value by which the texture is to be scaled vertically.</param>
 		public void SetTextureScale( float u, float v )
 		{
-			scaleU = u;
-			scaleV = v;
-			recalcTexMatrix = true;
+			this.scaleU = u;
+			this.scaleV = v;
+			this.recalcTexMatrix = true;
 		}
 
 		/// <summary>
@@ -1843,8 +1849,8 @@ namespace Axiom.Graphics
 		/// <param name="u">The value by which the texture is to be scaled horizontally.</param>
 		public void SetTextureScaleU( float u )
 		{
-			scaleU = u;
-			recalcTexMatrix = true;
+			this.scaleU = u;
+			this.recalcTexMatrix = true;
 		}
 
 		/// <summary>
@@ -1856,8 +1862,8 @@ namespace Axiom.Graphics
 		/// <param name="v">The value by which the texture is to be scaled vertically.</param>
 		public void SetTextureScaleV( float v )
 		{
-			scaleV = v;
-			recalcTexMatrix = true;
+			this.scaleV = v;
+			this.recalcTexMatrix = true;
 		}
 
 		/// <summary>
@@ -1895,7 +1901,7 @@ namespace Axiom.Graphics
 			}
 
 			// no longer set to current default
-			isDefaultFiltering = false;
+			this.isDefaultFiltering = false;
 		}
 
 		/// <summary>
@@ -1912,20 +1918,20 @@ namespace Axiom.Graphics
 			switch ( type )
 			{
 				case FilterType.Min:
-					minFilter = options;
+					this.minFilter = options;
 					break;
 
 				case FilterType.Mag:
-					magFilter = options;
+					this.magFilter = options;
 					break;
 
 				case FilterType.Mip:
-					mipFilter = options;
+					this.mipFilter = options;
 					break;
 			}
 
 			// no longer set to current default
-			isDefaultFiltering = false;
+			this.isDefaultFiltering = false;
 		}
 
 		/// <summary>
@@ -1947,7 +1953,7 @@ namespace Axiom.Graphics
 			SetTextureFiltering( FilterType.Mip, mipFilter );
 
 			// no longer set to current default
-			isDefaultFiltering = false;
+			this.isDefaultFiltering = false;
 		}
 
 		/// <summary>
@@ -1969,17 +1975,17 @@ namespace Axiom.Graphics
 			}
 			else
 			{
-				frames[ 0 ] = name;
-				numFrames = 1;
-				currentFrame = 0;
-				isCubic = false;
-				textureType = type;
-				textureSrcMipmaps = mipmaps;
-				isAlpha = alpha;
+				this.frames[ 0 ] = name;
+				this.numFrames = 1;
+				this.currentFrame = 0;
+				this.isCubic = false;
+				this.textureType = type;
+				this.textureSrcMipmaps = mipmaps;
+				this.isAlpha = alpha;
 
 				if ( name.Length == 0 )
 				{
-					isBlank = true;
+					this.isBlank = true;
 					return;
 				}
 
@@ -1988,7 +1994,7 @@ namespace Axiom.Graphics
 					Load(); // reload
 				}
 				// Tell parent to recalculate hash (for sorting)
-				parent.DirtyHash();
+				this.parent.DirtyHash();
 			}
 		}
 
@@ -2028,8 +2034,8 @@ namespace Axiom.Graphics
 		/// <param name="degrees">The angle of rotation in degrees (counter-clockwise).</param>
 		public void SetTextureRotate( float degrees )
 		{
-			rotate = degrees;
-			recalcTexMatrix = true;
+			this.rotate = degrees;
+			this.recalcTexMatrix = true;
 		}
 
 		/// <summary>
@@ -2040,11 +2046,11 @@ namespace Axiom.Graphics
 			var xform = Matrix4.Identity;
 
 			// texture scaling
-			if ( scaleU != 1 || scaleV != 1 )
+			if ( this.scaleU != 1 || this.scaleV != 1 )
 			{
 				// offset to the center of the texture
-				xform.m00 = 1/scaleU;
-				xform.m11 = 1/scaleV;
+				xform.m00 = 1/this.scaleU;
+				xform.m11 = 1/this.scaleV;
 
 				// skip matrix mult since first matrix update
 				xform.m03 = ( -0.5f*xform.m00 ) + 0.5f;
@@ -2052,22 +2058,22 @@ namespace Axiom.Graphics
 			}
 
 			// texture translation
-			if ( transU != 0 || transV != 0 )
+			if ( this.transU != 0 || this.transV != 0 )
 			{
 				var xlate = Matrix4.Identity;
 
-				xlate.m03 = transU;
-				xlate.m13 = transV;
+				xlate.m03 = this.transU;
+				xlate.m13 = this.transV;
 
 				// multiplt the transform by the translation
 				xform = xlate*xform;
 			}
 
-			if ( rotate != 0.0f )
+			if ( this.rotate != 0.0f )
 			{
 				var rotation = Matrix4.Identity;
 
-				float theta = Utility.DegreesToRadians( rotate );
+				float theta = Utility.DegreesToRadians( this.rotate );
 				float cosTheta = Utility.Cos( theta );
 				float sinTheta = Utility.Sin( theta );
 
@@ -2086,9 +2092,9 @@ namespace Axiom.Graphics
 			}
 
 			// store the transformation into the local texture matrix
-			texMatrix = xform;
+			this.texMatrix = xform;
 
-			recalcTexMatrix = false;
+			this.recalcTexMatrix = false;
 		}
 
 		/// <summary>
@@ -2112,11 +2118,11 @@ namespace Axiom.Graphics
 			     effect.type == TextureEffectType.UScroll || effect.type == TextureEffectType.VScroll ||
 			     effect.type == TextureEffectType.Rotate || effect.type == TextureEffectType.ProjectiveTexture )
 			{
-				for ( var i = 0; i < effectList.Count; i++ )
+				for ( var i = 0; i < this.effectList.Count; i++ )
 				{
-					if ( ( (TextureEffect)effectList[ i ] ).type == effect.type )
+					if ( ( (TextureEffect)this.effectList[ i ] ).type == effect.type )
 					{
-						effectList.RemoveAt( i );
+						this.effectList.RemoveAt( i );
 						break;
 					}
 				} // for
@@ -2129,7 +2135,7 @@ namespace Axiom.Graphics
 			}
 
 			// add to internal list
-			effectList.Add( effect );
+			this.effectList.Add( effect );
 		}
 
 		/// <summary>
@@ -2139,11 +2145,11 @@ namespace Axiom.Graphics
 		private void RemoveEffect( TextureEffectType type )
 		{
 			// TODO: Verify this works correctly since we are removing items during a loop
-			for ( var i = 0; i < effectList.Count; i++ )
+			for ( var i = 0; i < this.effectList.Count; i++ )
 			{
-				if ( ( (TextureEffect)effectList[ i ] ).type == type )
+				if ( ( (TextureEffect)this.effectList[ i ] ).type == type )
 				{
-					effectList.RemoveAt( i );
+					this.effectList.RemoveAt( i );
 					i--;
 				}
 			}
@@ -2154,7 +2160,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		private void CreateAnimationController()
 		{
-			animController = ControllerManager.Instance.CreateTextureAnimator( this, animDuration );
+			this.animController = ControllerManager.Instance.CreateTextureAnimator( this, this.animDuration );
 		}
 
 		/// <summary>
@@ -2206,35 +2212,35 @@ namespace Axiom.Graphics
 			Unload();
 
 			// load all textures
-			for ( var i = 0; i < numFrames; i++ )
+			for ( var i = 0; i < this.numFrames; i++ )
 			{
-				if ( frames[ i ].Length > 0 )
+				if ( this.frames[ i ].Length > 0 )
 				{
 					try
 					{
 						// ensure the texture is loaded
-						TextureManager.Instance.Load( frames[ i ], ResourceGroupManager.DefaultResourceGroupName, textureType,
-						                              textureSrcMipmaps, 1.0f, isAlpha, desiredFormat /*, hwGamma */ );
+						TextureManager.Instance.Load( this.frames[ i ], ResourceGroupManager.DefaultResourceGroupName, this.textureType,
+						                              this.textureSrcMipmaps, 1.0f, this.isAlpha, this.desiredFormat /*, hwGamma */ );
 
-						isBlank = false;
+						this.isBlank = false;
 					}
 					catch ( Exception ex )
 					{
-						LogManager.Instance.Write( "Error loading texture {0}.  Layer will be left blank.", frames[ i ] );
+						LogManager.Instance.Write( "Error loading texture {0}.  Layer will be left blank.", this.frames[ i ] );
 						LogManager.Instance.Write( ex.ToString() );
-						isBlank = true;
+						this.isBlank = true;
 					}
 				}
 			}
 
 			// Init animated textures
-			if ( animDuration != 0 )
+			if ( this.animDuration != 0 )
 			{
 				CreateAnimationController();
 			}
 
 			// initialize texture effects
-			foreach ( var effect in effectList )
+			foreach ( var effect in this.effectList )
 			{
 				CreateEffectController( effect );
 			}
@@ -2253,7 +2259,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void NotifyNeedsRecompile()
 		{
-			parent.NotifyNeedsRecompile();
+			this.parent.NotifyNeedsRecompile();
 		}
 
 		/// <summary>
@@ -2272,9 +2278,9 @@ namespace Axiom.Graphics
 		{
 			var testResult = false;
 			// if TUS has an alias, see if it's in the alias container
-			if ( !string.IsNullOrEmpty( textureNameAlias ) )
+			if ( !string.IsNullOrEmpty( this.textureNameAlias ) )
 			{
-				if ( aliasList.ContainsKey( textureNameAlias ) )
+				if ( aliasList.ContainsKey( this.textureNameAlias ) )
 				{
 					// match was found so change the texture name in frames
 					testResult = true;
@@ -2284,20 +2290,20 @@ namespace Axiom.Graphics
 						// currently assumes animated frames are sequentially numbered
 						// cubic, 1d, 2d, and 3d textures are determined from current TUS state
 
-						if ( isCubic )
+						if ( this.isCubic )
 						{
-							SetCubicTextureName( aliasList[ textureNameAlias ], textureType == TextureType.CubeMap );
+							SetCubicTextureName( aliasList[ this.textureNameAlias ], this.textureType == TextureType.CubeMap );
 						}
 						else
 						{
 							// if more than one frame, then assume animated frames
-							if ( numFrames > 1 )
+							if ( this.numFrames > 1 )
 							{
-								SetAnimatedTextureName( aliasList[ textureNameAlias ], numFrames, animDuration );
+								SetAnimatedTextureName( aliasList[ this.textureNameAlias ], this.numFrames, this.animDuration );
 							}
 							else
 							{
-								SetTextureName( aliasList[ textureNameAlias ], textureType, textureSrcMipmaps );
+								SetTextureName( aliasList[ this.textureNameAlias ], this.textureType, this.textureSrcMipmaps );
 							}
 						}
 					}
@@ -2337,17 +2343,17 @@ namespace Axiom.Graphics
 			// copy over animation frame texture names
 			for ( var i = 0; i < MaxAnimationFrames; i++ )
 			{
-				target.frames[ i ] = frames[ i ];
+				target.frames[ i ] = this.frames[ i ];
 			}
 
 			// must clone these references
-			target.colorBlendMode = colorBlendMode.Clone();
-			target.alphaBlendMode = alphaBlendMode.Clone();
+			target.colorBlendMode = this.colorBlendMode.Clone();
+			target.alphaBlendMode = this.alphaBlendMode.Clone();
 
 			target.effectList = new TextureEffectList();
 
 			// copy effects
-			foreach ( var effect in effectList )
+			foreach ( var effect in this.effectList )
 			{
 				target.effectList.Add( effect.Clone() );
 			}
@@ -2473,8 +2479,8 @@ namespace Axiom.Graphics
 			var blendMode = (LayerBlendModeEx)MemberwiseClone();
 
 			// clone the colors
-			blendMode.colorArg1 = colorArg1.Clone();
-			blendMode.colorArg2 = colorArg2.Clone();
+			blendMode.colorArg1 = this.colorArg1.Clone();
+			blendMode.colorArg2 = this.colorArg2.Clone();
 
 			return blendMode;
 		}
@@ -2502,9 +2508,11 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return blendType.GetHashCode() ^ operation.GetHashCode() ^ source1.GetHashCode() ^ source2.GetHashCode() ^
-			       colorArg1.GetHashCode() ^ colorArg2.GetHashCode() ^ alphaArg1.GetHashCode() ^ alphaArg2.GetHashCode() ^
-			       blendFactor.GetHashCode();
+			return this.blendType.GetHashCode() ^ this.operation.GetHashCode() ^ this.source1.GetHashCode() ^
+			       this.source2.GetHashCode() ^
+			       this.colorArg1.GetHashCode() ^ this.colorArg2.GetHashCode() ^ this.alphaArg1.GetHashCode() ^
+			       this.alphaArg2.GetHashCode() ^
+			       this.blendFactor.GetHashCode();
 		}
 
 		public override string ToString()
@@ -2512,7 +2520,8 @@ namespace Axiom.Graphics
 			return
 				( new System.Text.StringBuilder() ).AppendFormat(
 					"blendType : {0}; opertaion : {1}; source1 : {2}; source2 : {3}; colorArg1 : {4}; colorArg2 : {5}; alphaArg1 : {6}; alphaArg2 : {7}; blendType : {8};",
-					blendType, operation, source1, source2, colorArg1, colorArg2, alphaArg1, alphaArg2, blendFactor ).ToString();
+					this.blendType, this.operation, this.source1, this.source2, this.colorArg1, this.colorArg2, this.alphaArg1,
+					this.alphaArg2, this.blendFactor ).ToString();
 		}
 
 		#endregion Object overloads

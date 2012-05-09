@@ -98,7 +98,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -106,7 +106,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return target;
+				return this.target;
 			}
 		}
 
@@ -114,7 +114,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return vertexOffsetMap;
+				return this.vertexOffsetMap;
 			}
 		}
 
@@ -122,7 +122,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return vertexBuffer;
+				return this.vertexBuffer;
 			}
 		}
 
@@ -135,16 +135,16 @@ namespace Axiom.Animating
 		/// <param name="offset"> The position offset for this pose</param>
 		public void AddVertex( int index, Vector3 offset )
 		{
-			vertexOffsetMap[ index ] = offset;
+			this.vertexOffsetMap[ index ] = offset;
 			DisposeVertexBuffer();
 		}
 
 		/// <summary>Remove a vertex offset.</summary>
 		public void RemoveVertex( int index )
 		{
-			if ( vertexOffsetMap.ContainsKey( index ) )
+			if ( this.vertexOffsetMap.ContainsKey( index ) )
 			{
-				vertexOffsetMap.Remove( index );
+				this.vertexOffsetMap.Remove( index );
 			}
 			DisposeVertexBuffer();
 		}
@@ -152,33 +152,34 @@ namespace Axiom.Animating
 		/// <summary>Clear all vertex offsets.</summary>
 		public void ClearVertexOffsets()
 		{
-			vertexOffsetMap.Clear();
+			this.vertexOffsetMap.Clear();
 			DisposeVertexBuffer();
 		}
 
 		protected void DisposeVertexBuffer()
 		{
-			if ( vertexBuffer != null )
+			if ( this.vertexBuffer != null )
 			{
-				vertexBuffer.Dispose();
-				vertexBuffer = null;
+				this.vertexBuffer.Dispose();
+				this.vertexBuffer = null;
 			}
 		}
 
 		/// <summary>Get a hardware vertex buffer version of the vertex offsets.</summary>
 		public HardwareVertexBuffer GetHardwareVertexBuffer( int numVertices )
 		{
-			if ( vertexBuffer == null )
+			if ( this.vertexBuffer == null )
 			{
 				// Create buffer
 				var decl = HardwareBufferManager.Instance.CreateVertexDeclaration();
 				decl.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
 
-				vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, numVertices, BufferUsage.StaticWriteOnly,
-				                                                                  false );
+				this.vertexBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl, numVertices,
+				                                                                       BufferUsage.StaticWriteOnly,
+				                                                                       false );
 
 				// lock the vertex buffer
-				var ipBuf = vertexBuffer.Lock( BufferLocking.Discard );
+				var ipBuf = this.vertexBuffer.Lock( BufferLocking.Discard );
 
 #if !AXIOM_SAFE_ONLY
 				unsafe
@@ -191,7 +192,7 @@ namespace Axiom.Animating
 					}
 
 					// Set each vertex
-					foreach ( var pair in vertexOffsetMap )
+					foreach ( var pair in this.vertexOffsetMap )
 					{
 						var offset = 3*pair.Key;
 						var v = pair.Value;
@@ -199,10 +200,10 @@ namespace Axiom.Animating
 						buffer[ offset++ ] = v.y;
 						buffer[ offset ] = v.z;
 					}
-					vertexBuffer.Unlock();
+					this.vertexBuffer.Unlock();
 				}
 			}
-			return vertexBuffer;
+			return this.vertexBuffer;
 		}
 
 		#endregion Public Methods

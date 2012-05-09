@@ -89,7 +89,7 @@ namespace Axiom.Animating
 			: base()
 		{
 			this.handle = handle;
-			isManuallyControlled = false;
+			this.isManuallyControlled = false;
 			this.creator = creator;
 		}
 
@@ -100,7 +100,7 @@ namespace Axiom.Animating
 			: base( name )
 		{
 			this.handle = handle;
-			isManuallyControlled = false;
+			this.isManuallyControlled = false;
 			this.creator = creator;
 		}
 
@@ -114,7 +114,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		protected override Node CreateChildImpl()
 		{
-			return creator.CreateBone();
+			return this.creator.CreateBone();
 		}
 
 		/// <summary>
@@ -124,7 +124,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		protected override Node CreateChildImpl( string name )
 		{
-			return creator.CreateBone( name );
+			return this.creator.CreateBone( name );
 		}
 
 		/// <summary>
@@ -146,7 +146,7 @@ namespace Axiom.Animating
 		/// <returns></returns>
 		public Bone CreateChild( ushort handle, Vector3 translate, Quaternion rotate )
 		{
-			var bone = creator.CreateBone( handle );
+			var bone = this.creator.CreateBone( handle );
 			bone.Translate( translate );
 			bone.Rotate( rotate );
 			AddChild( bone );
@@ -176,7 +176,7 @@ namespace Axiom.Animating
 			SetInitialState();
 
 			// save inverse derived, used for mesh transform later (assumes Update has been called by Skeleton
-			MakeInverseTransform( DerivedPosition, Vector3.UnitScale, DerivedOrientation, ref bindDerivedInverseTransform );
+			MakeInverseTransform( DerivedPosition, Vector3.UnitScale, DerivedOrientation, ref this.bindDerivedInverseTransform );
 		}
 
 		#endregion
@@ -190,11 +190,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return isManuallyControlled;
+				return this.isManuallyControlled;
 			}
 			set
 			{
-				isManuallyControlled = value;
+				this.isManuallyControlled = value;
 			}
 		}
 
@@ -205,7 +205,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return bindDerivedInverseTransform;
+				return this.bindDerivedInverseTransform;
 			}
 		}
 
@@ -216,7 +216,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return handle;
+				return this.handle;
 			}
 		}
 
@@ -245,9 +245,9 @@ namespace Axiom.Animating
 
 		public VertexBoneAssignment( VertexBoneAssignment other )
 		{
-			vertexIndex = other.vertexIndex;
-			boneIndex = other.boneIndex;
-			weight = other.weight;
+			this.vertexIndex = other.vertexIndex;
+			this.boneIndex = other.boneIndex;
+			this.weight = other.weight;
 		}
 
 		#region IComparable Members
@@ -258,23 +258,23 @@ namespace Axiom.Animating
 			{
 				var v = (VertexBoneAssignment)obj;
 
-				if ( weight > v.weight )
+				if ( this.weight > v.weight )
 				{
 					return 1;
 				}
-				if ( weight < v.weight )
+				if ( this.weight < v.weight )
 				{
 					return -1;
 				}
 
-				if ( vertexIndex != v.vertexIndex )
+				if ( this.vertexIndex != v.vertexIndex )
 				{
-					return vertexIndex - v.vertexIndex;
+					return this.vertexIndex - v.vertexIndex;
 				}
 
-				if ( boneIndex != v.boneIndex )
+				if ( this.boneIndex != v.boneIndex )
 				{
-					return boneIndex - v.boneIndex;
+					return this.boneIndex - v.boneIndex;
 				}
 
 				return 0;

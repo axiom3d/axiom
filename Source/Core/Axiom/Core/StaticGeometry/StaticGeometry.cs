@@ -237,7 +237,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -245,7 +245,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return squaredUpperDistance;
+				return this.squaredUpperDistance;
 			}
 		}
 
@@ -253,12 +253,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return upperDistance;
+				return this.upperDistance;
 			}
 			set
 			{
-				upperDistance = value;
-				squaredUpperDistance = upperDistance*upperDistance;
+				this.upperDistance = value;
+				this.squaredUpperDistance = this.upperDistance*this.upperDistance;
 			}
 		}
 
@@ -266,13 +266,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return visible;
+				return this.visible;
 			}
 			set
 			{
-				visible = value;
+				this.visible = value;
 				// tell any existing regions
-				foreach ( var region in regionMap.Values )
+				foreach ( var region in this.regionMap.Values )
 				{
 					region.IsVisible = value;
 				}
@@ -283,13 +283,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return castShadows;
+				return this.castShadows;
 			}
 			set
 			{
-				castShadows = value;
+				this.castShadows = value;
 				// tell any existing regions
-				foreach ( var region in regionMap.Values )
+				foreach ( var region in this.regionMap.Values )
 				{
 					region.CastShadows = value;
 				}
@@ -300,12 +300,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return regionDimensions;
+				return this.regionDimensions;
 			}
 			set
 			{
-				regionDimensions = value;
-				halfRegionDimensions = value*0.5f;
+				this.regionDimensions = value;
+				this.halfRegionDimensions = value*0.5f;
 			}
 		}
 
@@ -325,11 +325,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return origin;
+				return this.origin;
 			}
 			set
 			{
-				origin = value;
+				this.origin = value;
 			}
 		}
 
@@ -337,14 +337,14 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return renderQueueID;
+				return this.renderQueueID;
 			}
 			set
 			{
-				renderQueueIDSet = true;
-				renderQueueID = value;
+				this.renderQueueIDSet = true;
+				this.renderQueueID = value;
 				// tell any existing regions
-				foreach ( var region in regionMap.Values )
+				foreach ( var region in this.regionMap.Values )
 				{
 					region.RenderQueueGroup = value;
 				}
@@ -355,7 +355,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return regionMap;
+				return this.regionMap;
 			}
 		}
 
@@ -368,21 +368,21 @@ namespace Axiom.Core
 			this.owner = owner;
 			this.name = name;
 			this.logLevel = logLevel;
-			built = false;
-			upperDistance = 0.0f;
-			squaredUpperDistance = 0.0f;
-			castShadows = false;
-			regionDimensions = new Vector3( regionSize, regionSize, regionSize );
-			halfRegionDimensions = regionDimensions*0.5f;
-			origin = Vector3.Zero;
-			visible = true;
-			renderQueueID = RenderQueueGroupID.Main;
-			renderQueueIDSet = false;
-			buildCount = 0;
-			subMeshGeometryLookup = new Dictionary<SubMesh, List<SubMeshLodGeometryLink>>();
-			queuedSubMeshes = new List<QueuedSubMesh>();
-			regionMap = new Dictionary<uint, Region>();
-			optimisedSubMeshGeometryList = new List<OptimisedSubMeshGeometry>();
+			this.built = false;
+			this.upperDistance = 0.0f;
+			this.squaredUpperDistance = 0.0f;
+			this.castShadows = false;
+			this.regionDimensions = new Vector3( regionSize, regionSize, regionSize );
+			this.halfRegionDimensions = this.regionDimensions*0.5f;
+			this.origin = Vector3.Zero;
+			this.visible = true;
+			this.renderQueueID = RenderQueueGroupID.Main;
+			this.renderQueueIDSet = false;
+			this.buildCount = 0;
+			this.subMeshGeometryLookup = new Dictionary<SubMesh, List<SubMeshLodGeometryLink>>();
+			this.queuedSubMeshes = new List<QueuedSubMesh>();
+			this.regionMap = new Dictionary<uint, Region>();
+			this.optimisedSubMeshGeometryList = new List<OptimisedSubMeshGeometry>();
 		}
 
 		#endregion Constructor
@@ -447,18 +447,19 @@ namespace Axiom.Core
 
 		protected AxisAlignedBox GetRegionBounds( ushort x, ushort y, ushort z )
 		{
-			var min = new Vector3( ( (float)x - regionHalfRange )*regionDimensions.x + origin.x,
-			                       ( (float)y - regionHalfRange )*regionDimensions.y + origin.y,
-			                       ( (float)z - regionHalfRange )*regionDimensions.z + origin.z );
-			var max = min + regionDimensions;
+			var min = new Vector3( ( (float)x - regionHalfRange )*this.regionDimensions.x + this.origin.x,
+			                       ( (float)y - regionHalfRange )*this.regionDimensions.y + this.origin.y,
+			                       ( (float)z - regionHalfRange )*this.regionDimensions.z + this.origin.z );
+			var max = min + this.regionDimensions;
 			return new AxisAlignedBox( min, max );
 		}
 
 		protected Vector3 GetRegionCenter( ushort x, ushort y, ushort z )
 		{
-			return new Vector3( ( (float)x - regionHalfRange )*regionDimensions.x + origin.x + halfRegionDimensions.x,
-			                    ( (float)y - regionHalfRange )*regionDimensions.y + origin.y + halfRegionDimensions.y,
-			                    ( (float)z - regionHalfRange )*regionDimensions.z + origin.z + halfRegionDimensions.z );
+			return
+				new Vector3( ( (float)x - regionHalfRange )*this.regionDimensions.x + this.origin.x + this.halfRegionDimensions.x,
+				             ( (float)y - regionHalfRange )*this.regionDimensions.y + this.origin.y + this.halfRegionDimensions.y,
+				             ( (float)z - regionHalfRange )*this.regionDimensions.z + this.origin.z + this.halfRegionDimensions.z );
 		}
 
 		protected Region GetRegion( ushort x, ushort y, ushort z, bool autoCreate )
@@ -468,27 +469,27 @@ namespace Axiom.Core
 			if ( region == null && autoCreate )
 			{
 				// Make a name
-				var str = string.Format( "{0}:{1}", name, index );
+				var str = string.Format( "{0}:{1}", this.name, index );
 				// Calculate the region center
 				var center = GetRegionCenter( x, y, z );
-				region = new Region( this, str, owner, index, center );
-				owner.InjectMovableObject( region );
-				region.IsVisible = visible;
-				region.CastShadows = castShadows;
-				if ( renderQueueIDSet )
+				region = new Region( this, str, this.owner, index, center );
+				this.owner.InjectMovableObject( region );
+				region.IsVisible = this.visible;
+				region.CastShadows = this.castShadows;
+				if ( this.renderQueueIDSet )
 				{
-					region.RenderQueueGroup = renderQueueID;
+					region.RenderQueueGroup = this.renderQueueID;
 				}
-				regionMap[ index ] = region;
+				this.regionMap[ index ] = region;
 			}
 			return region;
 		}
 
 		protected Region GetRegion( uint index )
 		{
-			if ( regionMap.ContainsKey( index ) )
+			if ( this.regionMap.ContainsKey( index ) )
 			{
-				return regionMap[ index ];
+				return this.regionMap[ index ];
 			}
 			else
 			{
@@ -499,7 +500,7 @@ namespace Axiom.Core
 		protected void GetRegionIndexes( Vector3 point, out ushort x, out ushort y, out ushort z )
 		{
 			// Scale the point into multiples of region and adjust for origin
-			var scaledPoint = ( point - origin )/regionDimensions;
+			var scaledPoint = ( point - this.origin )/this.regionDimensions;
 
 			// Round down to 'bottom left' point which represents the cell index
 			var ix = (int)System.Math.Floor( scaledPoint.x );
@@ -573,13 +574,13 @@ namespace Axiom.Core
 		{
 			// First, determine if we've already seen this submesh before
 			List<SubMeshLodGeometryLink> lodList;
-			if ( subMeshGeometryLookup.TryGetValue( sm, out lodList ) )
+			if ( this.subMeshGeometryLookup.TryGetValue( sm, out lodList ) )
 			{
 				return lodList;
 			}
 			// Otherwise, we have to create a new one
 			lodList = new List<SubMeshLodGeometryLink>();
-			subMeshGeometryLookup[ sm ] = lodList;
+			this.subMeshGeometryLookup[ sm ] = lodList;
 			var numLods = sm.Parent.IsLodManual ? 1 : sm.Parent.LodLevelCount;
 			for ( var lod = 0; lod < numLods; ++lod )
 			{
@@ -629,7 +630,7 @@ namespace Axiom.Core
 			unsafe
 #endif
 			{
-				if ( logLevel <= 1 )
+				if ( this.logLevel <= 1 )
 				{
 					LogManager.Instance.Write( "StaticGeometry.SplitGeometry called" );
 				}
@@ -749,7 +750,7 @@ namespace Axiom.Core
 				var optGeom = new OptimisedSubMeshGeometry();
 				optGeom.indexData = targetGeomLink.indexData;
 				optGeom.vertexData = targetGeomLink.vertexData;
-				optimisedSubMeshGeometryList.Add( optGeom );
+				this.optimisedSubMeshGeometryList.Add( optGeom );
 			}
 		}
 
@@ -801,7 +802,7 @@ namespace Axiom.Core
 				q.scale = scale;
 				// Determine the bounds based on the highest LOD
 				q.worldBounds = CalculateBounds( q.geometryLodList[ 0 ].vertexData, position, orientation, scale );
-				queuedSubMeshes.Add( q );
+				this.queuedSubMeshes.Add( q );
 			}
 		}
 
@@ -855,37 +856,37 @@ namespace Axiom.Core
 		/// </note>
 		public void Build()
 		{
-			if ( logLevel <= 1 )
+			if ( this.logLevel <= 1 )
 			{
-				LogManager.Instance.Write( "Building new static geometry {0}", name );
+				LogManager.Instance.Write( "Building new static geometry {0}", this.name );
 			}
 
-			buildCount++;
+			this.buildCount++;
 
 			// Make sure there's nothing from previous builds
 			Destroy();
 
 			// Firstly allocate meshes to regions
-			foreach ( var qsm in queuedSubMeshes )
+			foreach ( var qsm in this.queuedSubMeshes )
 			{
 				var region = GetRegion( qsm.worldBounds, true );
 				region.Assign( qsm );
 			}
 			var stencilShadows = false;
-			if ( castShadows && owner.IsShadowTechniqueStencilBased )
+			if ( this.castShadows && this.owner.IsShadowTechniqueStencilBased )
 			{
 				stencilShadows = true;
 			}
 
 			// Now tell each region to build itself
-			foreach ( var region in regionMap.Values )
+			foreach ( var region in this.regionMap.Values )
 			{
-				region.Build( stencilShadows, logLevel );
+				region.Build( stencilShadows, this.logLevel );
 			}
 
-			if ( logLevel <= 1 )
+			if ( this.logLevel <= 1 )
 			{
-				LogManager.Instance.Write( "Finished building new static geometry {0}", name );
+				LogManager.Instance.Write( "Finished building new static geometry {0}", this.name );
 				Dump();
 			}
 		}
@@ -899,12 +900,12 @@ namespace Axiom.Core
 		/// </remarks>
 		public void Destroy()
 		{
-			foreach ( var region in regionMap.Values )
+			foreach ( var region in this.regionMap.Values )
 			{
-				owner.ExtractMovableObject( region );
+				this.owner.ExtractMovableObject( region );
 				region.Dispose();
 			}
-			regionMap.Clear();
+			this.regionMap.Clear();
 		}
 
 		/// <summary>
@@ -914,29 +915,29 @@ namespace Axiom.Core
 		public void Reset()
 		{
 			Destroy();
-			queuedSubMeshes.Clear();
-			subMeshGeometryLookup.Clear();
+			this.queuedSubMeshes.Clear();
+			this.subMeshGeometryLookup.Clear();
 			var bm = HardwareBufferManager.Instance;
-			foreach ( var smg in optimisedSubMeshGeometryList )
+			foreach ( var smg in this.optimisedSubMeshGeometryList )
 			{
 				bm.DestroyVertexBufferBinding( smg.vertexData.vertexBufferBinding );
 				bm.DestroyVertexDeclaration( smg.vertexData.vertexDeclaration );
 			}
-			optimisedSubMeshGeometryList.Clear();
+			this.optimisedSubMeshGeometryList.Clear();
 		}
 
 		public void Dump()
 		{
-			LogManager.Instance.Write( "Static Geometry Report for {0}", name );
+			LogManager.Instance.Write( "Static Geometry Report for {0}", this.name );
 			LogManager.Instance.Write( "-------------------------------------------------" );
-			LogManager.Instance.Write( "Build Count: {0}", buildCount );
-			LogManager.Instance.Write( "Number of queued submeshes: {0}", queuedSubMeshes.Count );
-			LogManager.Instance.Write( "Number of regions: {0}", regionMap.Count );
-			LogManager.Instance.Write( "Region dimensions: {0}", regionDimensions );
-			LogManager.Instance.Write( "Origin: {0}", origin );
-			LogManager.Instance.Write( "Max distance: {0}", upperDistance );
-			LogManager.Instance.Write( "Casts shadows?: {0}", castShadows );
-			foreach ( var region in regionMap.Values )
+			LogManager.Instance.Write( "Build Count: {0}", this.buildCount );
+			LogManager.Instance.Write( "Number of queued submeshes: {0}", this.queuedSubMeshes.Count );
+			LogManager.Instance.Write( "Number of regions: {0}", this.regionMap.Count );
+			LogManager.Instance.Write( "Region dimensions: {0}", this.regionDimensions );
+			LogManager.Instance.Write( "Origin: {0}", this.origin );
+			LogManager.Instance.Write( "Max distance: {0}", this.upperDistance );
+			LogManager.Instance.Write( "Casts shadows?: {0}", this.castShadows );
+			foreach ( var region in this.regionMap.Values )
 			{
 				region.Dump();
 			}

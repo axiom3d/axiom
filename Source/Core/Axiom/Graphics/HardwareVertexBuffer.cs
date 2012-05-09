@@ -72,7 +72,7 @@ namespace Axiom.Graphics
 		{
 			this.vertexDeclaration = vertexDeclaration;
 			this.numVertices = numVertices;
-			Manager = manager;
+			this.Manager = manager;
 
 			// calculate the size in bytes of this buffer
 			sizeInBytes = vertexDeclaration.GetVertexSize()*numVertices;
@@ -80,10 +80,10 @@ namespace Axiom.Graphics
 			// create a shadow buffer if required
 			if ( useShadowBuffer )
 			{
-				shadowBuffer = new DefaultHardwareVertexBuffer( Manager, vertexDeclaration, numVertices, BufferUsage.Dynamic );
+				shadowBuffer = new DefaultHardwareVertexBuffer( this.Manager, vertexDeclaration, numVertices, BufferUsage.Dynamic );
 			}
 
-			useCount = 0;
+			this.useCount = 0;
 		}
 
 		[OgreVersion( 1, 7, 2, "~HardwareVertexBuffer" )]
@@ -93,9 +93,9 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					if ( Manager != null )
+					if ( this.Manager != null )
 					{
-						Manager.NotifyVertexBufferDestroyed( this );
+						this.Manager.NotifyVertexBufferDestroyed( this );
 					}
 
 					shadowBuffer.SafeDispose();
@@ -114,7 +114,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return vertexDeclaration;
+				return this.vertexDeclaration;
 			}
 		}
 
@@ -122,7 +122,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return vertexDeclaration.GetVertexSize();
+				return this.vertexDeclaration.GetVertexSize();
 			}
 		}
 
@@ -130,7 +130,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return numVertices;
+				return this.numVertices;
 			}
 		}
 
@@ -138,7 +138,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return useCount;
+				return this.useCount;
 			}
 		}
 
@@ -151,7 +151,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return isInstanceData;
+				return this.isInstanceData;
 			}
 			set
 			{
@@ -161,7 +161,7 @@ namespace Axiom.Graphics
 				}
 				// else
 				{
-					isInstanceData = value;
+					this.isInstanceData = value;
 				}
 			}
 		}
@@ -177,13 +177,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return instanceDataStepRate;
+				return this.instanceDataStepRate;
 			}
 			set
 			{
 				if ( value > 0 )
 				{
-					instanceDataStepRate = value;
+					this.instanceDataStepRate = value;
 				}
 				else
 				{

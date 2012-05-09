@@ -60,7 +60,7 @@ namespace Axiom.Graphics
 		public GpuConstantDefinition FindNamedConstantDefinition( string name, bool throwExceptionIfNotFound )
 #endif
 		{
-			if ( _namedConstants == null )
+			if ( this._namedConstants == null )
 			{
 				if ( throwExceptionIfNotFound )
 				{
@@ -71,7 +71,7 @@ namespace Axiom.Graphics
 			}
 
 			GpuConstantDefinition def;
-			if ( !_namedConstants.Map.TryGetValue( name, out def ) )
+			if ( !this._namedConstants.Map.TryGetValue( name, out def ) )
 			{
 				if ( throwExceptionIfNotFound )
 				{

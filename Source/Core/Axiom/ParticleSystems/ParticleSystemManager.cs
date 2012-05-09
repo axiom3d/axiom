@@ -98,7 +98,7 @@ namespace Axiom.ParticleSystems
 			}
 
 #if !AXIOM_USENEWCOMPILERS
-			_scriptPatterns.Add( "*.particle" );
+			this._scriptPatterns.Add( "*.particle" );
 			ResourceGroupManager.Instance.RegisterScriptLoader( this );
 #endif
 			// AXIOM_USENEWCOMPILERS
@@ -192,7 +192,7 @@ namespace Axiom.ParticleSystems
 		/// <param name="factory"></param>
 		public void AddEmitterFactory( ParticleEmitterFactory factory )
 		{
-			emitterFactoryList.Add( factory.Name.ToLower().GetHashCode(), factory );
+			this.emitterFactoryList.Add( factory.Name.ToLower().GetHashCode(), factory );
 
 			LogManager.Instance.Write( "Particle Emitter type '{0}' registered.", factory.Name );
 		}
@@ -213,7 +213,7 @@ namespace Axiom.ParticleSystems
 		/// <param name="factory"></param>
 		public void AddAffectorFactory( ParticleAffectorFactory factory )
 		{
-			affectorFactoryList.Add( factory.Name.ToLower().GetHashCode(), factory );
+			this.affectorFactoryList.Add( factory.Name.ToLower().GetHashCode(), factory );
 
 			LogManager.Instance.Write( "Particle Affector type '{0}' registered.", factory.Name );
 		}
@@ -231,7 +231,7 @@ namespace Axiom.ParticleSystems
 		/// </remarks>
 		public void AddRendererFactory( ParticleSystemRendererFactory factory )
 		{
-			rendererFactoryList.Add( factory.Type.ToLower().GetHashCode(), factory );
+			this.rendererFactoryList.Add( factory.Type.ToLower().GetHashCode(), factory );
 
 			LogManager.Instance.Write( "Particle Renderer type '{0}' registered.", factory.Type );
 		}
@@ -239,7 +239,7 @@ namespace Axiom.ParticleSystems
 		public ParticleSystemRenderer CreateRenderer( string rendererType )
 		{
 			ParticleSystemRendererFactory factory;
-			if ( rendererFactoryList.TryGetValue( rendererType.ToLower().GetHashCode(), out factory ) )
+			if ( this.rendererFactoryList.TryGetValue( rendererType.ToLower().GetHashCode(), out factory ) )
 			{
 				return factory.CreateInstance( rendererType );
 			}
@@ -262,7 +262,7 @@ namespace Axiom.ParticleSystems
 		/// <param name="system">A reference to a particle system to be used as a template.</param>
 		public void AddTemplate( string name, ParticleSystem system )
 		{
-			systemTemplateList.Add( name.ToLower().GetHashCode(), system );
+			this.systemTemplateList.Add( name.ToLower().GetHashCode(), system );
 		}
 
 		/// <summary>
@@ -278,7 +278,7 @@ namespace Axiom.ParticleSystems
 		/// <returns>returns a reference to a ParticleSystem template to be populated</returns>
 		public ParticleSystem CreateTemplate( string name, string resourceGroup )
 		{
-			if ( systemTemplateList.ContainsKey( name.ToLower().GetHashCode() ) )
+			if ( this.systemTemplateList.ContainsKey( name.ToLower().GetHashCode() ) )
 			{
 				throw new Exception( "ParticleSystem template with name '" + name + "' already exists." );
 			}
@@ -324,14 +324,14 @@ namespace Axiom.ParticleSystems
 		{
 			var system = new ParticleSystem( name );
 			system.ParticleQuota = quota;
-			systemList.Add( name.ToLower().GetHashCode(), system );
+			this.systemList.Add( name.ToLower().GetHashCode(), system );
 
 			return system;
 		}
 
 		public void RemoveSystem( string name )
 		{
-			systemList.Remove( name.ToLower().GetHashCode() );
+			this.systemList.Remove( name.ToLower().GetHashCode() );
 		}
 
 		/// <summary>
@@ -356,7 +356,7 @@ namespace Axiom.ParticleSystems
 		/// <returns></returns>
 		public ParticleSystem CreateSystem( string name, string templateName, int quota )
 		{
-			if ( !systemTemplateList.ContainsKey( templateName.ToLower().GetHashCode() ) )
+			if ( !this.systemTemplateList.ContainsKey( templateName.ToLower().GetHashCode() ) )
 			{
 				LogManager.Instance.Write(
 					"Cannot create a particle system with template '{0}' because it does not exist, using NullParticleSystem.",
@@ -364,7 +364,7 @@ namespace Axiom.ParticleSystems
 				return CreateSystem( name, "NullParticleSystem" );
 			}
 
-			var templateSystem = systemTemplateList[ templateName.ToLower().GetHashCode() ];
+			var templateSystem = this.systemTemplateList[ templateName.ToLower().GetHashCode() ];
 
 			var system = CreateSystem( name, quota );
 
@@ -388,7 +388,7 @@ namespace Axiom.ParticleSystems
 		{
 			ParticleEmitterFactory factory;
 
-			if ( !emitterFactoryList.TryGetValue( emitterType.ToLower().GetHashCode(), out factory ) )
+			if ( !this.emitterFactoryList.TryGetValue( emitterType.ToLower().GetHashCode(), out factory ) )
 			{
 				throw new AxiomException( "Cannot find requested emitter '{0}'.", emitterType );
 			}
@@ -409,7 +409,7 @@ namespace Axiom.ParticleSystems
 		[OgreVersion( 1, 7, 2 )]
 		internal ParticleAffector CreateAffector( string affectorType, ParticleSystem psys )
 		{
-			var factory = (ParticleAffectorFactory)affectorFactoryList[ affectorType.ToLower().GetHashCode() ];
+			var factory = (ParticleAffectorFactory)this.affectorFactoryList[ affectorType.ToLower().GetHashCode() ];
 
 			if ( factory == null )
 			{
@@ -561,28 +561,28 @@ namespace Axiom.ParticleSystems
 		public void Clear()
 		{
 			// clear all collections
-			emitterFactoryList.Clear();
-			affectorFactoryList.Clear();
+			this.emitterFactoryList.Clear();
+			this.affectorFactoryList.Clear();
 
-			foreach ( var system in systemList.Values )
+			foreach ( var system in this.systemList.Values )
 			{
 				if ( !system.IsDisposed )
 				{
 					system.Dispose();
 				}
 			}
-			systemList.Clear();
-			systemList = null;
+			this.systemList.Clear();
+			this.systemList = null;
 
-			foreach ( var system in systemTemplateList.Values )
+			foreach ( var system in this.systemTemplateList.Values )
 			{
 				if ( !system.IsDisposed )
 				{
 					system.Dispose();
 				}
 			}
-			systemTemplateList.Clear();
-			systemTemplateList = null;
+			this.systemTemplateList.Clear();
+			this.systemTemplateList = null;
 		}
 
 		#endregion Methods
@@ -602,11 +602,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return timeFactor;
+				return this.timeFactor;
 			}
 			set
 			{
-				timeFactor = value;
+				this.timeFactor = value;
 			}
 		}
 
@@ -617,7 +617,7 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return systemList;
+				return this.systemList;
 			}
 		}
 
@@ -628,7 +628,7 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return affectorFactoryList;
+				return this.affectorFactoryList;
 			}
 		}
 
@@ -639,7 +639,7 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return emitterFactoryList;
+				return this.emitterFactoryList;
 			}
 		}
 
@@ -656,10 +656,10 @@ namespace Axiom.ParticleSystems
 		private void RenderSystem_FrameStarted( object source, FrameEventArgs e )
 		{
 			// Apply time factor
-			var timeSinceLastFrame = timeFactor*e.TimeSinceLastFrame;
+			var timeSinceLastFrame = this.timeFactor*e.TimeSinceLastFrame;
 
 			// loop through and update each particle system
-			foreach ( var system in systemList.Values )
+			foreach ( var system in this.systemList.Values )
 			{
 				// ask the particle system to update itself based on the frame time
 				system.Update( timeSinceLastFrame );
@@ -702,7 +702,7 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return _scriptPatterns;
+				return this._scriptPatterns;
 			}
 		}
 

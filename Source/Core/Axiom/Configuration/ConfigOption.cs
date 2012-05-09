@@ -74,7 +74,7 @@ namespace Axiom.Configuration
 		{
 			get
 			{
-				return _name;
+				return this._name;
 			}
 		}
 
@@ -91,14 +91,14 @@ namespace Axiom.Configuration
 		{
 			get
 			{
-				return _value;
+				return this._value;
 			}
 			set
 			{
-				if ( _immutable != true )
+				if ( this._immutable != true )
 				{
-					_value = value;
-					OnValueChanged( _name, _value );
+					this._value = value;
+					OnValueChanged( this._name, this._value );
 				}
 			}
 		}
@@ -116,7 +116,7 @@ namespace Axiom.Configuration
 		{
 			get
 			{
-				return _possibleValues;
+				return this._possibleValues;
 			}
 		}
 
@@ -133,11 +133,11 @@ namespace Axiom.Configuration
 		{
 			set
 			{
-				_immutable = value;
+				this._immutable = value;
 			}
 			get
 			{
-				return _immutable;
+				return this._immutable;
 			}
 		}
 
@@ -145,9 +145,9 @@ namespace Axiom.Configuration
 
 		public ConfigOption( string name, T value, bool immutable )
 		{
-			_name = name;
-			_value = value;
-			_immutable = immutable;
+			this._name = name;
+			this._value = value;
+			this._immutable = immutable;
 		}
 
 		#region Events

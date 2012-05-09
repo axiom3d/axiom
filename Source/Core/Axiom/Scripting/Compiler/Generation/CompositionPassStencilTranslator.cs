@@ -53,7 +53,7 @@ namespace Axiom.Scripting.Compiler
 			public CompositionPassStencilTranslator()
 				: base()
 			{
-				_Pass = null;
+				this._Pass = null;
 			}
 
 			#region Translator Implementation
@@ -69,7 +69,7 @@ namespace Axiom.Scripting.Compiler
 			{
 				var obj = (ObjectAbstractNode)node;
 
-				_Pass = (CompositionPass)obj.Parent.Context;
+				this._Pass = (CompositionPass)obj.Parent.Context;
 
 				// Should be no parameters, just children
 				if ( obj.Values.Count != 0 )
@@ -101,7 +101,7 @@ namespace Axiom.Scripting.Compiler
 								var val = false;
 								if ( getBoolean( prop.Values[ 0 ], out val ) )
 								{
-									_Pass.StencilCheck = val;
+									this._Pass.StencilCheck = val;
 								}
 								else
 								{
@@ -125,7 +125,7 @@ namespace Axiom.Scripting.Compiler
 								CompareFunction func;
 								if ( getEnumeration<CompareFunction>( prop.Values[ 0 ], compiler, out func ) )
 								{
-									_Pass.StencilFunc = func;
+									this._Pass.StencilFunc = func;
 								}
 								else
 								{
@@ -149,7 +149,7 @@ namespace Axiom.Scripting.Compiler
 								int val;
 								if ( getInt( prop.Values[ 0 ], out val ) )
 								{
-									_Pass.StencilRefValue = val;
+									this._Pass.StencilRefValue = val;
 								}
 								else
 								{
@@ -172,7 +172,7 @@ namespace Axiom.Scripting.Compiler
 								int val;
 								if ( getInt( prop.Values[ 0 ], out val ) )
 								{
-									_Pass.StencilMask = val;
+									this._Pass.StencilMask = val;
 								}
 								else
 								{
@@ -196,7 +196,7 @@ namespace Axiom.Scripting.Compiler
 								StencilOperation val;
 								if ( getEnumeration<StencilOperation>( prop.Values[ 0 ], compiler, out val ) )
 								{
-									_Pass.StencilFailOp = val;
+									this._Pass.StencilFailOp = val;
 								}
 								else
 								{
@@ -220,7 +220,7 @@ namespace Axiom.Scripting.Compiler
 								StencilOperation val;
 								if ( getEnumeration<StencilOperation>( prop.Values[ 0 ], compiler, out val ) )
 								{
-									_Pass.StencilDepthFailOp = val;
+									this._Pass.StencilDepthFailOp = val;
 								}
 								else
 								{
@@ -244,7 +244,7 @@ namespace Axiom.Scripting.Compiler
 								StencilOperation val;
 								if ( getEnumeration<StencilOperation>( prop.Values[ 0 ], compiler, out val ) )
 								{
-									_Pass.StencilPassOp = val;
+									this._Pass.StencilPassOp = val;
 								}
 								else
 								{
@@ -268,7 +268,7 @@ namespace Axiom.Scripting.Compiler
 								bool val;
 								if ( getBoolean( prop.Values[ 0 ], out val ) )
 								{
-									_Pass.StencilTwoSidedOperation = val;
+									this._Pass.StencilTwoSidedOperation = val;
 								}
 								else
 								{

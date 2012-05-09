@@ -201,37 +201,37 @@ namespace Axiom.Math
 		/// <param name="value">an integer representation of the value to convert</param>
 		public Real( int value )
 		{
-			_value = value;
+			this._value = value;
 		}
 
 		/// <param name="value">a long representation of the value to convert</param>
 		public Real( long value )
 		{
-			_value = value;
+			this._value = value;
 		}
 
 		/// <param name="value">a float representation of the value to convert</param>
 		public Real( float value )
 		{
-			_value = value;
+			this._value = value;
 		}
 
 		/// <param name="value">a double representation of the value to convert</param>
 		public Real( double value )
 		{
-			_value = (Numeric)value;
+			this._value = (Numeric)value;
 		}
 
 		/// <param name="value">a decimal representation of the value to convert</param>
 		public Real( decimal value )
 		{
-			_value = (Numeric)value;
+			this._value = (Numeric)value;
 		}
 
 		/// <param name="value">a string representation of the value to convert</param>
 		public Real( string value )
 		{
-			_value = Numeric.Parse( value );
+			this._value = Numeric.Parse( value );
 		}
 
 		#endregion Constructors
@@ -622,7 +622,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Real Floor()
 		{
-			return System.Math.Floor( _value );
+			return System.Math.Floor( this._value );
 		}
 
 		/// <summary>
@@ -631,7 +631,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Real Ceiling()
 		{
-			return System.Math.Ceiling( _value );
+			return System.Math.Ceiling( this._value );
 		}
 
 		#endregion Methods
@@ -644,7 +644,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return _value.ToString( englishCulture );
+			return this._value.ToString( englishCulture );
 		}
 
 		/// <summary>
@@ -675,7 +675,7 @@ namespace Axiom.Math
 		/// </summary>
 		public override int GetHashCode()
 		{
-			return _value.GetHashCode();
+			return this._value.GetHashCode();
 		}
 
 		#endregion System.Object Overrides
@@ -691,7 +691,7 @@ namespace Axiom.Math
 		/// <param name="context"></param>
 		private Real( SerializationInfo info, StreamingContext context )
 		{
-			_value = (Numeric)info.GetValue( "value", typeof ( Numeric ) );
+			this._value = (Numeric)info.GetValue( "value", typeof ( Numeric ) );
 		}
 
 		/// <summary>
@@ -702,7 +702,7 @@ namespace Axiom.Math
 		[SecurityPermission( SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter )]
 		public void GetObjectData( SerializationInfo info, StreamingContext context )
 		{
-			info.AddValue( "value", _value );
+			info.AddValue( "value", this._value );
 		}
 
 		#endregion ISerializable Implementation
@@ -718,7 +718,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public int CompareTo( Real other )
 		{
-			return _value.CompareTo( other._value );
+			return this._value.CompareTo( other._value );
 		}
 
 		#endregion
@@ -887,7 +887,7 @@ namespace Axiom.Math
 
 		public void WriteXml( XmlWriter writer )
 		{
-			writer.WriteString( _value.ToString( CultureInfo.InvariantCulture ) );
+			writer.WriteString( this._value.ToString( CultureInfo.InvariantCulture ) );
 		}
 
 		public void ReadXml( XmlReader reader )
@@ -896,7 +896,7 @@ namespace Axiom.Math
 			try
 			{
 				var v = reader.ReadElementContentAsString();
-				_value = float.Parse( v, CultureInfo.InvariantCulture );
+				this._value = float.Parse( v, CultureInfo.InvariantCulture );
 			}
 			catch ( Exception e )
 			{

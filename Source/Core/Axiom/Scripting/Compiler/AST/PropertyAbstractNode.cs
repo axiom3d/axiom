@@ -62,7 +62,7 @@ namespace Axiom.Scripting.Compiler.AST
 		public PropertyAbstractNode( AbstractNode parent )
 			: base( parent )
 		{
-			Id = 0;
+			this.Id = 0;
 		}
 
 		#region AbstractNode Implementation
@@ -73,9 +73,9 @@ namespace Axiom.Scripting.Compiler.AST
 			var node = new PropertyAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Name = Name;
-			node.Id = Id;
-			foreach ( var an in Values )
+			node.Name = this.Name;
+			node.Id = this.Id;
+			foreach ( var an in this.Values )
 			{
 				var newNode = (AbstractNode)( an.Clone() );
 				newNode.Parent = node;
@@ -89,11 +89,11 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				return Name;
+				return this.Name;
 			}
 			set
 			{
-				Name = value;
+				this.Name = value;
 			}
 		}
 

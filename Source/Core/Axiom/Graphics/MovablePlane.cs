@@ -111,9 +111,9 @@ namespace Axiom.Graphics
 		public MovablePlane( string name )
 			: base( name )
 		{
-			lastTranslate = Vector3.Zero;
-			lastRotate = Quaternion.Identity;
-			isDirty = true;
+			this.lastTranslate = Vector3.Zero;
+			this.lastRotate = Quaternion.Identity;
+			this.isDirty = true;
 		}
 
 		#endregion Constructor
@@ -124,7 +124,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return containedPlane;
+				return this.containedPlane;
 			}
 		}
 
@@ -135,11 +135,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return containedPlane.D;
+				return this.containedPlane.D;
 			}
 			set
 			{
-				containedPlane.D = value;
+				this.containedPlane.D = value;
 			}
 		}
 
@@ -150,11 +150,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return containedPlane.Normal;
+				return this.containedPlane.Normal;
 			}
 			set
 			{
-				containedPlane.Normal = value;
+				this.containedPlane.Normal = value;
 			}
 		}
 
@@ -167,30 +167,31 @@ namespace Axiom.Graphics
 			{
 				if ( parentNode != null )
 				{
-					if ( isDirty || !( parentNode.DerivedOrientation == lastRotate && parentNode.DerivedPosition == lastTranslate ) )
+					if ( this.isDirty ||
+					     !( parentNode.DerivedOrientation == this.lastRotate && parentNode.DerivedPosition == this.lastTranslate ) )
 					{
 						// store off parent position/orientation
-						lastRotate = parentNode.DerivedOrientation;
-						lastTranslate = parentNode.DerivedPosition;
+						this.lastRotate = parentNode.DerivedOrientation;
+						this.lastTranslate = parentNode.DerivedPosition;
 
 						// rotate normal
-						derivedPlane.Normal = lastRotate*containedPlane.Normal;
+						this.derivedPlane.Normal = this.lastRotate*this.containedPlane.Normal;
 
 						// d remains the same in rotation, since rotation happens first
-						derivedPlane.D = containedPlane.D;
+						this.derivedPlane.D = this.containedPlane.D;
 
 						// add on the effect of the translation (project onto new normal)
-						derivedPlane.D -= derivedPlane.Normal.Dot( lastTranslate );
+						this.derivedPlane.D -= this.derivedPlane.Normal.Dot( this.lastTranslate );
 
-						isDirty = false;
+						this.isDirty = false;
 					}
 				}
 				else
 				{
-					return containedPlane;
+					return this.containedPlane;
 				}
 
-				return derivedPlane;
+				return this.derivedPlane;
 			}
 		}
 
@@ -202,7 +203,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return nullBB;
+				return this.nullBB;
 			}
 		}
 

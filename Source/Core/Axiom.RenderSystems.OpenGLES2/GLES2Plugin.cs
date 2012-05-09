@@ -40,7 +40,7 @@ using Axiom.Graphics;
 			
 namespace Axiom.RenderSystems.OpenGLES2
 {
-	internal class GLES2Plugin : IPlugin
+	public class GLES2Plugin : IPlugin
 	{
 		private RenderSystem _renderSystem;
 
@@ -48,7 +48,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			this._renderSystem = new GLES2RenderSystem();
 
-			Root.Instance.RenderSystems.Add( this._renderSystem );
+			Root.Instance.RenderSystems.Add( "OpenGLES2", this._renderSystem );
 		}
 
 		public void Shutdown()

@@ -66,11 +66,11 @@ namespace Axiom.Core
 			var continueChain = true;
 
 			// Assuming the multicast delegate is not null...
-			if ( EventSinks != null )
+			if ( this.EventSinks != null )
 			{
 				// Call the methods until one of them handles the event
 				// or all the methods in the delegate list are processed.
-				foreach ( EventHandler<T> sink in EventSinks.GetInvocationList() )
+				foreach ( EventHandler<T> sink in this.EventSinks.GetInvocationList() )
 				{
 					sink( sender, arg );
 					continueChain = compare( arg );

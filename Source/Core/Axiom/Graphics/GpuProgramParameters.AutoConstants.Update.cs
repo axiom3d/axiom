@@ -57,19 +57,19 @@ namespace Axiom.Graphics
 				return;
 			}
 
-			if ( ( mask & _combinedVariability ) == 0 )
+			if ( ( mask & this._combinedVariability ) == 0 )
 			{
 				return;
 			}
 
-			activePassIterationIndex = int.MaxValue;
+			this.activePassIterationIndex = int.MaxValue;
 
 			Matrix3 m3;
 			Vector4 vec4;
 			Vector3 vec3;
 
 			// loop through and update all constants based on their type
-			foreach ( var entry in autoConstants )
+			foreach ( var entry in this.autoConstants )
 			{
 				// Only update needed slots
 				if ( ( entry.Variability & mask ) == 0 )
@@ -337,7 +337,7 @@ namespace Axiom.Graphics
 					{
 						// this is actually just an initial set-up, it's bound separately, so still global
 						WriteRawConstant( entry.PhysicalIndex, 0.0f );
-						activePassIterationIndex = entry.PhysicalIndex;
+						this.activePassIterationIndex = entry.PhysicalIndex;
 					}
 						break;
 

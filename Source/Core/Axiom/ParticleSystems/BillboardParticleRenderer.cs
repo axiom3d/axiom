@@ -71,11 +71,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return billboardSet.BillboardType;
+				return this.billboardSet.BillboardType;
 			}
 			set
 			{
-				billboardSet.BillboardType = value;
+				this.billboardSet.BillboardType = value;
 			}
 		}
 
@@ -83,11 +83,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return billboardSet.BillboardOrigin;
+				return this.billboardSet.BillboardOrigin;
 			}
 			set
 			{
-				billboardSet.BillboardOrigin = value;
+				this.billboardSet.BillboardOrigin = value;
 			}
 		}
 
@@ -95,11 +95,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return billboardSet.UseAccurateFacing;
+				return this.billboardSet.UseAccurateFacing;
 			}
 			set
 			{
-				billboardSet.UseAccurateFacing = value;
+				this.billboardSet.UseAccurateFacing = value;
 			}
 		}
 
@@ -107,11 +107,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return billboardSet.BillboardRotationType;
+				return this.billboardSet.BillboardRotationType;
 			}
 			set
 			{
-				billboardSet.BillboardRotationType = value;
+				this.billboardSet.BillboardRotationType = value;
 			}
 		}
 
@@ -119,11 +119,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return billboardSet.CommonDirection;
+				return this.billboardSet.CommonDirection;
 			}
 			set
 			{
-				billboardSet.CommonDirection = value;
+				this.billboardSet.CommonDirection = value;
 			}
 		}
 
@@ -131,11 +131,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return billboardSet.CommonUpVector;
+				return this.billboardSet.CommonUpVector;
 			}
 			set
 			{
-				billboardSet.CommonUpVector = value;
+				this.billboardSet.CommonUpVector = value;
 			}
 		}
 
@@ -149,11 +149,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return billboardSet.PointRenderingEnabled;
+				return this.billboardSet.PointRenderingEnabled;
 			}
 			set
 			{
-				billboardSet.PointRenderingEnabled = value;
+				this.billboardSet.PointRenderingEnabled = value;
 			}
 		}
 
@@ -169,7 +169,7 @@ namespace Axiom.ParticleSystems
 		{
 			set
 			{
-				billboardSet.MaterialName = value.Name;
+				this.billboardSet.MaterialName = value.Name;
 			}
 		}
 
@@ -180,8 +180,8 @@ namespace Axiom.ParticleSystems
 		public BillboardParticleRenderer()
 			: base()
 		{
-			billboardSet = new BillboardSet( string.Empty, 0, true );
-			billboardSet.SetBillboardsInWorldSpace( true );
+			this.billboardSet = new BillboardSet( string.Empty, 0, true );
+			this.billboardSet.SetBillboardsInWorldSpace( true );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -190,17 +190,17 @@ namespace Axiom.ParticleSystems
 			{
 				if ( disposeManagedResources )
 				{
-					if ( billboardSet != null )
+					if ( this.billboardSet != null )
 					{
-						if ( !billboardSet.IsDisposed )
+						if ( !this.billboardSet.IsDisposed )
 						{
-							billboardSet.Dispose();
+							this.billboardSet.Dispose();
 						}
 
-						billboardSet = null;
+						this.billboardSet = null;
 					}
 
-					attribParsers.Clear();
+					this.attribParsers.Clear();
 				}
 			}
 
@@ -225,12 +225,12 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		public override bool SetParameter( string attr, string val )
 		{
-			if ( attribParsers.ContainsKey( attr ) )
+			if ( this.attribParsers.ContainsKey( attr ) )
 			{
 				var args = new object[2];
 				args[ 0 ] = val.Split( ' ' );
 				args[ 1 ] = this;
-				attribParsers[ attr ].Invoke( null, args );
+				this.attribParsers[ attr ].Invoke( null, args );
 				//ParticleSystemRendererAttributeParser parser =
 				//        (ParticleSystemRendererAttributeParser)attribParsers[attr];
 
@@ -243,16 +243,16 @@ namespace Axiom.ParticleSystems
 
 		public override void UpdateRenderQueue( RenderQueue queue, List<Particle> currentParticles, bool cullIndividually )
 		{
-			billboardSet.CullIndividual = cullIndividually;
+			this.billboardSet.CullIndividual = cullIndividually;
 
 			// Update billboard set geometry
-			billboardSet.BeginBillboards();
+			this.billboardSet.BeginBillboards();
 			var bb = new Billboard();
 			foreach ( var p in currentParticles )
 			{
 				bb.Position = p.Position;
-				if ( billboardSet.BillboardType == BillboardType.OrientedSelf ||
-				     billboardSet.BillboardType == BillboardType.PerpendicularSelf )
+				if ( this.billboardSet.BillboardType == BillboardType.OrientedSelf ||
+				     this.billboardSet.BillboardType == BillboardType.PerpendicularSelf )
 				{
 					// Normalise direction vector
 					bb.Direction = p.Direction;
@@ -266,56 +266,56 @@ namespace Axiom.ParticleSystems
 					bb.width = p.Width;
 					bb.height = p.Height;
 				}
-				billboardSet.InjectBillboard( bb );
+				this.billboardSet.InjectBillboard( bb );
 			}
 
-			billboardSet.EndBillboards();
+			this.billboardSet.EndBillboards();
 
 			// Update the queue
-			billboardSet.UpdateRenderQueue( queue );
+			this.billboardSet.UpdateRenderQueue( queue );
 		}
 
 		public override void NotifyCurrentCamera( Camera cam )
 		{
-			billboardSet.NotifyCurrentCamera( cam );
+			this.billboardSet.NotifyCurrentCamera( cam );
 		}
 
 		public override void NotifyParticleRotated()
 		{
-			billboardSet.NotifyBillboardRotated();
+			this.billboardSet.NotifyBillboardRotated();
 		}
 
 		public override void NotifyDefaultDimensions( float width, float height )
 		{
-			billboardSet.SetDefaultDimensions( width, height );
+			this.billboardSet.SetDefaultDimensions( width, height );
 		}
 
 		public override void NotifyParticleResized()
 		{
-			billboardSet.NotifyBillboardResized();
+			this.billboardSet.NotifyBillboardResized();
 		}
 
 		public override void NotifyParticleQuota( int quota )
 		{
-			billboardSet.PoolSize = quota;
+			this.billboardSet.PoolSize = quota;
 		}
 
 		public override void NotifyAttached( Node parent, bool isTagPoint )
 		{
-			billboardSet.NotifyAttached( parent, isTagPoint );
+			this.billboardSet.NotifyAttached( parent, isTagPoint );
 		}
 
 		public override RenderQueueGroupID RenderQueueGroup
 		{
 			set
 			{
-				billboardSet.RenderQueueGroup = value;
+				this.billboardSet.RenderQueueGroup = value;
 			}
 		}
 
 		public override void SetKeepParticlesInLocalSpace( bool keepLocal )
 		{
-			billboardSet.SetBillboardsInWorldSpace( !keepLocal );
+			this.billboardSet.SetBillboardsInWorldSpace( !keepLocal );
 		}
 
 		#endregion Methods

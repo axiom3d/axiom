@@ -206,7 +206,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return vertices;
+				return this.vertices;
 			}
 		}
 	}
@@ -244,9 +244,9 @@ namespace Axiom.Graphics
 			var where = Vector3.Zero;
 
 			// Iterate over the triangles
-			for ( var i = 0; i < triangles.Count; i++ )
+			for ( var i = 0; i < this.triangles.Count; i++ )
 			{
-				var t = triangles[ i ];
+				var t = this.triangles[ i ];
 				if ( RayIntersectsTriangle( ray, t.Vertices, ref modelBase, ref where ) )
 				{
 					float distSquared = ( where - ray.Origin ).LengthSquared;
@@ -270,9 +270,9 @@ namespace Axiom.Graphics
 			var where = Vector3.Zero;
 
 			// Iterate over the triangles
-			for ( var i = 0; i < triangles.Count; i++ )
+			for ( var i = 0; i < this.triangles.Count; i++ )
 			{
-				var t = triangles[ i ];
+				var t = this.triangles[ i ];
 				if ( RayIntersectsTriangle( ray, t.Vertices, ref transform, ref where ) )
 				{
 					float distSquared = ( where - ray.Origin ).LengthSquared;

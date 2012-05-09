@@ -99,11 +99,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return childObject;
+				return this.childObject;
 			}
 			set
 			{
-				childObject = value;
+				this.childObject = value;
 			}
 		}
 
@@ -114,11 +114,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return parentEntity;
+				return this.parentEntity;
 			}
 			set
 			{
-				parentEntity = value;
+				this.parentEntity = value;
 			}
 		}
 
@@ -129,7 +129,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return fullLocalTransform;
+				return this.fullLocalTransform;
 			}
 		}
 
@@ -140,7 +140,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return parentEntity.ParentNodeFullTransform;
+				return this.parentEntity.ParentNodeFullTransform;
 			}
 		}
 
@@ -194,9 +194,9 @@ namespace Axiom.Animating
 		{
 			needParentUpdate = true;
 			// // We need to tell parent entities node
-			if ( parentEntity != null )
+			if ( this.parentEntity != null )
 			{
-				var n = parentEntity.ParentNode;
+				var n = this.parentEntity.ParentNode;
 
 				if ( n != null )
 				{
@@ -210,12 +210,12 @@ namespace Axiom.Animating
 			base.UpdateFromParent();
 
 			// Save transform for local skeleton
-			MakeTransform( derivedPosition, derivedScale, derivedOrientation, ref fullLocalTransform );
+			MakeTransform( derivedPosition, derivedScale, derivedOrientation, ref this.fullLocalTransform );
 
 			// Include Entity transform
-			if ( parentEntity != null )
+			if ( this.parentEntity != null )
 			{
-				var entityParentNode = parentEntity.ParentNode;
+				var entityParentNode = this.parentEntity.ParentNode;
 				if ( entityParentNode != null )
 				{
 					var parentQ = entityParentNode.DerivedOrientation;
@@ -241,9 +241,9 @@ namespace Axiom.Animating
 				}
 			}
 
-			if ( childObject != null )
+			if ( this.childObject != null )
 			{
-				childObject.NotifyMoved();
+				this.childObject.NotifyMoved();
 			}
 		}
 

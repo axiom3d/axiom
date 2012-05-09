@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,20 +25,26 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
-using Axiom.Graphics;
+
 using Axiom.Core;
+using Axiom.Graphics;
 using Axiom.Utilities;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
@@ -45,41 +52,38 @@ namespace Axiom.RenderSystems.OpenGLES
 	public class GLESDefaultHardwareVertexBuffer : HardwareVertexBuffer
 	{
 		/// <summary>
-		/// 
 		/// </summary>
 		protected IntPtr _dataPtr;
+
 		protected byte[] _data;
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVertices"></param>
-		/// <param name="usage"></param>
+		/// <param name="vertexSize"> </param>
+		/// <param name="numVertices"> </param>
+		/// <param name="usage"> </param>
 		public GLESDefaultHardwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage )
 			: base( vertexSize, numVertices, usage, true, false )
 		{
-			_data = new byte[ numVertices ];
-			_dataPtr = Memory.PinObject( _data );
+			this._data = new byte[ numVertices ];
+			this._dataPtr = Memory.PinObject( this._data );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <returns></returns>
+		/// <param name="offset"> </param>
+		/// <returns> </returns>
 		public IntPtr GetData( int offset )
 		{
-			return new IntPtr( _dataPtr.ToInt32() + offset );
+			return new IntPtr( this._dataPtr.ToInt32() + offset );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="src"></param>
-		/// <param name="discardWholeBuffer"></param>
+		/// <param name="offset"> </param>
+		/// <param name="length"> </param>
+		/// <param name="src"> </param>
+		/// <param name="discardWholeBuffer"> </param>
 		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
 		{
 			Contract.Requires( ( offset + length ) <= sizeInBytes );
@@ -88,11 +92,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="dest"></param>
+		/// <param name="offset"> </param>
+		/// <param name="length"> </param>
+		/// <param name="dest"> </param>
 		public override void ReadData( int offset, int length, IntPtr dest )
 		{
 			Contract.Requires( ( offset + length ) <= sizeInBytes );
@@ -100,12 +103,11 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="locking"></param>
-		/// <returns></returns>
+		/// <param name="offset"> </param>
+		/// <param name="length"> </param>
+		/// <param name="locking"> </param>
+		/// <returns> </returns>
 		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
 		{
 			LogManager.Instance.Write( "WRONG LOCK" );
@@ -113,12 +115,11 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="locking"></param>
-		/// <returns></returns>
+		/// <param name="offset"> </param>
+		/// <param name="length"> </param>
+		/// <param name="locking"> </param>
+		/// <returns> </returns>
 		public override IntPtr Lock( int offset, int length, BufferLocking locking )
 		{
 			LogManager.Instance.Write( "WRONG LOCK" );
@@ -127,7 +128,6 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected override void UnlockImpl()
 		{
@@ -135,7 +135,6 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public override void Unlock()
 		{
@@ -144,18 +143,17 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="disposeManagedResources"></param>
+		/// <param name="disposeManagedResources"> </param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					if ( _data != null )
+					if ( this._data != null )
 					{
-						Memory.UnpinObject( _data );
+						Memory.UnpinObject( this._data );
 					}
 				}
 			}
@@ -166,4 +164,3 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 	}
 }
-

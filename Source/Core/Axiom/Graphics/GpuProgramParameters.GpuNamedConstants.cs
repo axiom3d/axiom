@@ -94,7 +94,7 @@ namespace Axiom.Graphics
 				for ( var i = 0; i < maxArrayIndex; i++ )
 				{
 					var arrayName = string.Format( "{0}[{1}]", paramName, i );
-					Map.Add( arrayName, arrayDef );
+					this.Map.Add( arrayName, arrayDef );
 					// increment location
 					arrayDef.PhysicalIndex += arrayDef.ElementSize;
 				}
@@ -135,9 +135,9 @@ namespace Axiom.Graphics
 			public GpuNamedConstants Clone()
 			{
 				var p = new GpuNamedConstants();
-				p.FloatBufferSize = FloatBufferSize;
-				p.IntBufferSize = IntBufferSize;
-				foreach ( var i in Map )
+				p.FloatBufferSize = this.FloatBufferSize;
+				p.IntBufferSize = this.IntBufferSize;
+				foreach ( var i in this.Map )
 				{
 					p.Map.Add( i.Key, i.Value );
 				}

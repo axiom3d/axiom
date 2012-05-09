@@ -77,7 +77,7 @@ namespace Axiom.Collections
 		/// </summary>
 		public Deque()
 		{
-			_data = new T[_capacity];
+			this._data = new T[this._capacity];
 		}
 
 		/// <summary>
@@ -88,7 +88,7 @@ namespace Axiom.Collections
 		public Deque( int capacity )
 			: this()
 		{
-			_capacity = capacity;
+			this._capacity = capacity;
 		}
 
 		/// <summary>
@@ -117,27 +117,27 @@ namespace Axiom.Collections
 		{
 			get
 			{
-				return _capacity;
+				return this._capacity;
 			}
 			set
 			{
-				var previousCapacity = _capacity;
-				_capacity = System.Math.Max( value, System.Math.Max( _count, MIN_CAPACITY ) );
-				var temp = new T[_capacity];
-				if ( _tail > _head )
+				var previousCapacity = this._capacity;
+				this._capacity = System.Math.Max( value, System.Math.Max( this._count, MIN_CAPACITY ) );
+				var temp = new T[this._capacity];
+				if ( this._tail > this._head )
 				{
-					Array.Copy( _data, _head, temp, 0, _tail + 1 - _head );
-					_tail -= _head;
-					_head = 0;
+					Array.Copy( this._data, this._head, temp, 0, this._tail + 1 - this._head );
+					this._tail -= this._head;
+					this._head = 0;
 				}
 				else
 				{
-					Array.Copy( _data, 0, temp, 0, _tail + 1 );
-					var length = previousCapacity - _head;
-					Array.Copy( _data, _head, temp, _capacity - length, length );
-					_head = _capacity - length;
+					Array.Copy( this._data, 0, temp, 0, this._tail + 1 );
+					var length = previousCapacity - this._head;
+					Array.Copy( this._data, this._head, temp, this._capacity - length, length );
+					this._head = this._capacity - length;
 				}
-				_data = temp;
+				this._data = temp;
 			}
 		}
 
@@ -154,11 +154,11 @@ namespace Axiom.Collections
 		{
 			get
 			{
-				if ( position >= _count )
+				if ( position >= this._count )
 				{
 					throw new ArgumentOutOfRangeException( "position" );
 				}
-				return _data[ ( _head + position )%_capacity ];
+				return this._data[ ( this._head + position )%this._capacity ];
 			}
 		}
 
@@ -172,16 +172,16 @@ namespace Axiom.Collections
 		/// <param name="item">The item to be added.</param>
 		public void AddToHead( T item )
 		{
-			_count++;
-			if ( _count > _capacity )
+			this._count++;
+			if ( this._count > this._capacity )
 			{
 				Capacity *= 2;
 			}
-			if ( _count > 1 )
+			if ( this._count > 1 )
 			{
-				_head = Decrement( _head );
+				this._head = Decrement( this._head );
 			}
-			_data[ _head ] = item;
+			this._data[ this._head ] = item;
 		}
 
 		/// <summary>
@@ -190,16 +190,16 @@ namespace Axiom.Collections
 		/// <param name="item">The item to be added.</param>
 		public void AddToTail( T item )
 		{
-			_count++;
-			if ( _count > _capacity )
+			this._count++;
+			if ( this._count > this._capacity )
 			{
 				Capacity *= 2;
 			}
-			if ( _count > 1 )
+			if ( this._count > 1 )
 			{
-				_tail = Increment( _tail );
+				this._tail = Increment( this._tail );
 			}
-			_data[ _tail ] = item;
+			this._data[ this._tail ] = item;
 		}
 
 		/// <summary>
@@ -208,7 +208,7 @@ namespace Axiom.Collections
 		/// <returns>An item of type T.</returns>
 		public T PeekHead()
 		{
-			return _data[ _head ];
+			return this._data[ this._head ];
 		}
 
 		/// <summary>
@@ -217,7 +217,7 @@ namespace Axiom.Collections
 		/// <returns>An item of type T.</returns>
 		public T PeekTail()
 		{
-			return _data[ _tail ];
+			return this._data[ this._tail ];
 		}
 
 		/// <summary>
@@ -227,25 +227,25 @@ namespace Axiom.Collections
 		/// <returns>An item of type T.</returns>
 		public T RemoveAt( int index )
 		{
-			if ( index >= _count )
+			if ( index >= this._count )
 			{
 				throw new ArgumentOutOfRangeException( "index" );
 			}
 
-			_count--;
-			var i = ( _head + index )%_capacity;
-			var item = _data[ i ];
-			if ( i < _head )
+			this._count--;
+			var i = ( this._head + index )%this._capacity;
+			var item = this._data[ i ];
+			if ( i < this._head )
 			{
-				Array.Copy( _data, i + 1, _data, i, _tail - i );
-				_data[ _tail ] = default( T );
-				_tail = Decrement( _tail );
+				Array.Copy( this._data, i + 1, this._data, i, this._tail - i );
+				this._data[ this._tail ] = default( T );
+				this._tail = Decrement( this._tail );
 			}
 			else
 			{
-				Array.Copy( _data, _head, _data, _head + 1, i - _head );
-				_data[ _head ] = default( T );
-				_head = Increment( _head );
+				Array.Copy( this._data, this._head, this._data, this._head + 1, i - this._head );
+				this._data[ this._head ] = default( T );
+				this._head = Increment( this._head );
 			}
 			return item;
 		}
@@ -256,14 +256,14 @@ namespace Axiom.Collections
 		/// <returns>An item of type T.</returns>
 		public T RemoveFromHead()
 		{
-			_count--;
-			if ( _count < 0 )
+			this._count--;
+			if ( this._count < 0 )
 			{
 				throw new InvalidOperationException( "DequeEmptyException" );
 			}
-			var item = _data[ _head ];
-			_data[ _head ] = default( T );
-			_head = Increment( _head );
+			var item = this._data[ this._head ];
+			this._data[ this._head ] = default( T );
+			this._head = Increment( this._head );
 			return item;
 		}
 
@@ -273,16 +273,16 @@ namespace Axiom.Collections
 		/// <returns>An item of type T.</returns>
 		public T RemoveFromTail()
 		{
-			_count--;
-			if ( _count < 0 )
+			this._count--;
+			if ( this._count < 0 )
 			{
 				throw new InvalidOperationException( "DequeEmptyException" );
 			}
-			var item = _data[ _tail ];
-			_data[ _tail ] = default( T );
-			if ( _count > 1 )
+			var item = this._data[ this._tail ];
+			this._data[ this._tail ] = default( T );
+			if ( this._count > 1 )
 			{
-				_tail = Decrement( _tail );
+				this._tail = Decrement( this._tail );
 			}
 			return item;
 		}
@@ -293,7 +293,7 @@ namespace Axiom.Collections
 		/// <returns>An array of type T.</returns>
 		public T[] ToArray()
 		{
-			var array = new T[_count];
+			var array = new T[this._count];
 			CopyTo( array, 0 );
 			return array;
 		}
@@ -305,7 +305,7 @@ namespace Axiom.Collections
 		/// <returns></returns>
 		private int Decrement( int index )
 		{
-			return ( index + _capacity - 1 )%_capacity;
+			return ( index + this._capacity - 1 )%this._capacity;
 		}
 
 		/// <summary>
@@ -315,7 +315,7 @@ namespace Axiom.Collections
 		/// <returns></returns>
 		private int Increment( int index )
 		{
-			return ( index + 1 )%_capacity;
+			return ( index + 1 )%this._capacity;
 		}
 
 		#endregion Instance Methods
@@ -329,7 +329,7 @@ namespace Axiom.Collections
 		{
 			get
 			{
-				return _count;
+				return this._count;
 			}
 		}
 
@@ -342,19 +342,19 @@ namespace Axiom.Collections
 		/// copying begins.</param>
 		public void CopyTo( T[] array, int arrayIndex )
 		{
-			if ( _count == 0 )
+			if ( this._count == 0 )
 			{
 				return;
 			}
-			if ( _head < _tail )
+			if ( this._head < this._tail )
 			{
-				Array.Copy( _data, _head, array, arrayIndex, _tail + 1 - _head );
+				Array.Copy( this._data, this._head, array, arrayIndex, this._tail + 1 - this._head );
 			}
 			else
 			{
-				var headLength = _capacity - _head;
-				Array.Copy( _data, _head, array, arrayIndex, headLength );
-				Array.Copy( _data, 0, array, arrayIndex + headLength, _tail + 1 );
+				var headLength = this._capacity - this._head;
+				Array.Copy( this._data, this._head, array, arrayIndex, headLength );
+				Array.Copy( this._data, 0, array, arrayIndex + headLength, this._tail + 1 );
 			}
 		}
 
@@ -363,10 +363,10 @@ namespace Axiom.Collections
 		/// </summary>
 		public void Clear()
 		{
-			Array.Clear( _data, 0, _capacity );
-			_head = 0;
-			_tail = 0;
-			_count = 0;
+			Array.Clear( this._data, 0, this._capacity );
+			this._head = 0;
+			this._tail = 0;
+			this._count = 0;
 		}
 
 		/// <summary>
@@ -375,7 +375,7 @@ namespace Axiom.Collections
 		/// <returns>An IEnumerator of type T.</returns>
 		public IEnumerator<T> GetEnumerator()
 		{
-			for ( var i = 0; i < _count; i++ )
+			for ( var i = 0; i < this._count; i++ )
 			{
 				yield return this[ i ];
 			}

@@ -81,14 +81,14 @@ namespace Axiom.Scripting
 		/// <param name="val">The value as it will appear when used in script files (.material, .overlay, etc).</param>
 		public ScriptEnumAttribute( string val )
 		{
-			scriptValue = val;
+			this.scriptValue = val;
 		}
 
 		public string ScriptValue
 		{
 			get
 			{
-				return scriptValue;
+				return this.scriptValue;
 			}
 		}
 

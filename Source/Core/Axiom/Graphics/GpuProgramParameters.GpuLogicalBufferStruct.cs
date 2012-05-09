@@ -20,7 +20,7 @@ namespace Axiom.Graphics
 			{
 				get
 				{
-					return Map;
+					return this.Map;
 				}
 			}
 
@@ -46,8 +46,8 @@ namespace Axiom.Graphics
 			public GpuLogicalBufferStruct Clone()
 			{
 				var p = new GpuLogicalBufferStruct();
-				p.BufferSize = BufferSize;
-				foreach ( var i in Map )
+				p.BufferSize = this.BufferSize;
+				foreach ( var i in this.Map )
 				{
 					p.Map.Add( i.Key, i.Value.Clone() );
 				}

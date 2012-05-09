@@ -107,7 +107,7 @@ namespace Axiom.FileSystem
 		{
 			if ( currentDir == "" )
 			{
-				currentDir = _zipDir;
+				currentDir = this._zipDir;
 			}
 
 			Load();
@@ -117,7 +117,7 @@ namespace Axiom.FileSystem
 			}
 			var ex = new Regex( pattern );
 
-			foreach ( var entry in _zipStream )
+			foreach ( var entry in this._zipStream )
 			{
 				// get the full path for the output file
 				var file = entry.FileName;
@@ -177,7 +177,7 @@ namespace Axiom.FileSystem
 		/// </summary>
 		public override void Load()
 		{
-			if ( _zipFile == null || _zipFile.Length == 0 || _zipStream == null )
+			if ( this._zipFile == null || this._zipFile.Length == 0 || this._zipStream == null )
 			{
 				// read the open the zip archive
 				Stream fs = null;
@@ -186,23 +186,23 @@ namespace Axiom.FileSystem
 				if (Application.Current.HasElevatedPermissions)
 #endif
 				{
-					_zipFile = Path.GetFullPath( Name );
-					if ( File.Exists( _zipFile ) )
+					this._zipFile = Path.GetFullPath( Name );
+					if ( File.Exists( this._zipFile ) )
 					{
-						fs = File.OpenRead( _zipFile );
+						fs = File.OpenRead( this._zipFile );
 					}
 				}
 
 				if ( fs == null )
 				{
-					_zipFile = Name.Replace( '/', '.' );
+					this._zipFile = Name.Replace( '/', '.' );
 
 					var assemblyContent = ( from assembly in AssemblyEx.Neighbors()
-					                        where _zipFile.StartsWith( assembly.FullName.Split( ',' )[ 0 ] )
+					                        where this._zipFile.StartsWith( assembly.FullName.Split( ',' )[ 0 ] )
 					                        select assembly ).FirstOrDefault();
 					if ( assemblyContent != null )
 					{
-						fs = assemblyContent.GetManifestResourceStream( _zipFile );
+						fs = assemblyContent.GetManifestResourceStream( this._zipFile );
 					}
 				}
 
@@ -232,7 +232,7 @@ namespace Axiom.FileSystem
 				fs.Position = 0;
 
 				// get a input stream from the zip file
-				_zipStream = ZipFile.Read( fs );
+				this._zipStream = ZipFile.Read( fs );
 				//ZipEntry entry = _zipStream.GetNextEntry();
 				//Regex ex = new Regex( pattern );
 
@@ -262,10 +262,10 @@ namespace Axiom.FileSystem
 		/// </summary>
 		public override void Unload()
 		{
-			if ( _zipStream != null )
+			if ( this._zipStream != null )
 			{
-				_zipStream.Dispose();
-				_zipStream = null;
+				this._zipStream.Dispose();
+				this._zipStream = null;
 			}
 		}
 
@@ -279,9 +279,9 @@ namespace Axiom.FileSystem
 		{
 			Load();
 
-			if ( _zipStream.ContainsEntry( filename ) )
+			if ( this._zipStream.ContainsEntry( filename ) )
 			{
-				var entry = _zipStream[ filename ];
+				var entry = this._zipStream[ filename ];
 				var output = new MemoryStream();
 				entry.Extract( output );
 

@@ -84,13 +84,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return poolId;
+				return this.poolId;
 			}
 
 			set
 			{
 				//Change the pool Id
-				poolId = value;
+				this.poolId = value;
 
 				//Render Targets were attached to us, but they have a different pool Id,
 				//so detach ourselves from them
@@ -108,7 +108,7 @@ namespace Axiom.Graphics
 		public void SetPoolId( PoolId id )
 		{
 			//Change the pool Id
-			poolId = id;
+			this.poolId = id;
 
 			//Render Targets were attached to us, but they have a different pool Id,
 			//so detach ourselves from them
@@ -120,7 +120,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return bitDepth;
+				return this.bitDepth;
 			}
 		}
 
@@ -129,7 +129,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return width;
+				return this.width;
 			}
 		}
 
@@ -138,7 +138,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return height;
+				return this.height;
 			}
 		}
 
@@ -147,7 +147,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return fsaa;
+				return this.fsaa;
 			}
 		}
 
@@ -156,7 +156,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return fsaaHint;
+				return this.fsaaHint;
 			}
 		}
 
@@ -169,7 +169,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return manual;
+				return this.manual;
 			}
 		}
 
@@ -203,8 +203,8 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void NotifyRenderTargetAttached( RenderTarget renderTarget )
 		{
-			Debug.Assert( !attachedRenderTargets.Contains( renderTarget ) );
-			attachedRenderTargets.Add( renderTarget );
+			Debug.Assert( !this.attachedRenderTargets.Contains( renderTarget ) );
+			this.attachedRenderTargets.Add( renderTarget );
 		}
 
 		/// <summary>
@@ -217,7 +217,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void NotifyRenderTargetDetached( RenderTarget renderTarget )
 		{
-			var success = attachedRenderTargets.Remove( renderTarget );
+			var success = this.attachedRenderTargets.Remove( renderTarget );
 			Debug.Assert( success );
 		}
 
@@ -242,11 +242,11 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected void DetachFromAllRenderTargets()
 		{
-			foreach ( var itor in attachedRenderTargets )
+			foreach ( var itor in this.attachedRenderTargets )
 			{
 				itor._DetachDepthBuffer();
 			}
-			attachedRenderTargets.Clear();
+			this.attachedRenderTargets.Clear();
 		}
 	}
 }

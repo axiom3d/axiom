@@ -88,7 +88,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return lightCap != null;
+				return this.lightCap != null;
 			}
 		}
 
@@ -99,7 +99,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return lightCap;
+				return this.lightCap;
 			}
 		}
 
@@ -120,9 +120,9 @@ namespace Axiom.Graphics
 
 		protected ShadowRenderable()
 		{
-			renderOperation = new RenderOperation();
-			renderOperation.useIndices = true;
-			renderOperation.operationType = OperationType.TriangleList;
+			this.renderOperation = new RenderOperation();
+			this.renderOperation.useIndices = true;
+			this.renderOperation.operationType = OperationType.TriangleList;
 		}
 
 		#endregion Construction and Destruction
@@ -135,7 +135,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public RenderOperation GetRenderOperationForUpdate()
 		{
-			return renderOperation;
+			return this.renderOperation;
 		}
 
 		#endregion Methods
@@ -160,11 +160,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return material;
+				return this.material;
 			}
 			set
 			{
-				material = value;
+				this.material = value;
 			}
 		}
 
@@ -186,7 +186,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return renderOperation;
+				return this.renderOperation;
 			}
 		}
 
@@ -196,7 +196,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return dummyLightList;
+				return this.dummyLightList;
 			}
 		}
 
@@ -251,30 +251,30 @@ namespace Axiom.Graphics
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( customParams[ index ] == null )
+			if ( this.customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
 			else
 			{
-				return (Vector4)customParams[ index ];
+				return (Vector4)this.customParams[ index ];
 			}
 		}
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
+			while ( this.customParams.Count <= index )
 			{
-				customParams.Add( Vector4.Zero );
+				this.customParams.Add( Vector4.Zero );
 			}
-			customParams[ index ] = val;
+			this.customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( customParams[ entry.Data ] != null )
+			if ( this.customParams[ entry.Data ] != null )
 			{
-				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
+				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)this.customParams[ entry.Data ] );
 			}
 		}
 
@@ -313,24 +313,24 @@ namespace Axiom.Graphics
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if ( this.renderOperation != null )
 					{
-						if ( !renderOperation.IsDisposed )
+						if ( !this.renderOperation.IsDisposed )
 						{
-							renderOperation.Dispose();
+							this.renderOperation.Dispose();
 						}
 
-						renderOperation = null;
+						this.renderOperation = null;
 					}
 
-					if ( material != null )
+					if ( this.material != null )
 					{
-						if ( !material.IsDisposed )
+						if ( !this.material.IsDisposed )
 						{
-							material.Dispose();
+							this.material.Dispose();
 						}
 
-						material = null;
+						this.material = null;
 					}
 				}
 

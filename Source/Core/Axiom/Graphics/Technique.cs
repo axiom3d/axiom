@@ -141,9 +141,9 @@ namespace Axiom.Graphics
 			public GPUDeviceNameRule( string pattern, bool ie, bool caseSen )
 				: this()
 			{
-				DevicePattern = pattern;
-				Include = ie;
-				CaseSensitive = caseSen;
+				this.DevicePattern = pattern;
+				this.Include = ie;
+				this.CaseSensitive = caseSen;
 			}
 
 			#region System.Object overrides
@@ -162,14 +162,15 @@ namespace Axiom.Graphics
 
 				var d = (GPUDeviceNameRule)obj;
 
-				return ( d.DevicePattern == DevicePattern ) && ( d.Include == Include ) && ( d.CaseSensitive == CaseSensitive );
+				return ( d.DevicePattern == this.DevicePattern ) && ( d.Include == this.Include ) &&
+				       ( d.CaseSensitive == this.CaseSensitive );
 			}
 
 			public override int GetHashCode()
 			{
-				if ( DevicePattern != null )
+				if ( this.DevicePattern != null )
 				{
-					return DevicePattern.GetHashCode();
+					return this.DevicePattern.GetHashCode();
 				}
 
 				return base.GetHashCode();
@@ -221,17 +222,17 @@ namespace Axiom.Graphics
 			get
 			{
 				var targetState = IlluminationPassesCompilationPhase.Compiled;
-				if ( _illuminationPassesCompilationPhase != targetState )
+				if ( this._illuminationPassesCompilationPhase != targetState )
 				{
 					// prevents parent->_notifyNeedsRecompile() call during compile
-					_illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.Disabled;
+					this._illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.Disabled;
 					// Splitting the passes into illumination passes
 					CompileIlluminationPasses();
 					// Mark that illumination passes compilation finished
-					_illuminationPassesCompilationPhase = targetState;
+					this._illuminationPassesCompilationPhase = targetState;
 				}
 
-				return _illuminationPasses;
+				return this._illuminationPasses;
 			}
 		}
 
@@ -251,11 +252,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _parent;
+				return this._parent;
 			}
 			protected set
 			{
-				_parent = value;
+				this._parent = value;
 			}
 		}
 
@@ -279,11 +280,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _isSupported;
+				return this._isSupported;
 			}
 			protected set
 			{
-				_isSupported = value;
+				this._isSupported = value;
 			}
 		}
 
@@ -327,11 +328,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _lodIndex;
+				return this._lodIndex;
 			}
 			set
 			{
-				_lodIndex = value;
+				this._lodIndex = value;
 				NotifyNeedsRecompile();
 			}
 		}
@@ -346,11 +347,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _compiledIlluminationPasses;
+				return this._compiledIlluminationPasses;
 			}
 			set
 			{
-				_compiledIlluminationPasses = value;
+				this._compiledIlluminationPasses = value;
 			}
 		}
 
@@ -365,11 +366,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( !_compiledIlluminationPasses )
+				if ( !this._compiledIlluminationPasses )
 				{
 					CompileIlluminationPasses();
 				}
-				return _illuminationPasses.Count;
+				return this._illuminationPasses.Count;
 			}
 		}
 
@@ -391,7 +392,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.PointSize = value;
 				}
@@ -412,7 +413,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.Ambient = value;
 				}
@@ -433,7 +434,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.Diffuse = value;
 				}
@@ -454,7 +455,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.Specular = value;
 				}
@@ -475,7 +476,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.Shininess = value;
 				}
@@ -496,7 +497,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.SelfIllumination = value;
 				}
@@ -517,7 +518,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.Emissive = value;
 				}
@@ -538,7 +539,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.CullingMode = value;
 				}
@@ -559,7 +560,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.ManualCullingMode = value;
 				}
@@ -580,7 +581,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.LightingEnabled = value;
 				}
@@ -601,7 +602,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.SetDepthBias( value );
 				}
@@ -622,7 +623,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.ShadingMode = value;
 				}
@@ -648,7 +649,7 @@ namespace Axiom.Graphics
 		public void SetFog( bool overrideScene, FogMode mode, ColorEx color, Real expDensity, Real linearStart, Real linearEnd )
 		{
 			// load each technique
-			foreach ( var p in _passes )
+			foreach ( var p in this._passes )
 			{
 				p.SetFog( overrideScene, mode, color, expDensity, linearStart, linearEnd );
 			}
@@ -668,21 +669,21 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.DepthCheck = value;
 				}
 			}
 			get
 			{
-				if ( _passes.Count == 0 )
+				if ( this._passes.Count == 0 )
 				{
 					return false;
 				}
 				else
 				{
 					// Base decision on the depth settings of the first pass
-					return _passes[ 0 ].DepthCheck;
+					return this._passes[ 0 ].DepthCheck;
 				}
 			}
 		}
@@ -701,7 +702,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.DepthFunction = value;
 				}
@@ -722,21 +723,21 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.DepthWrite = value;
 				}
 			}
 			get
 			{
-				if ( _passes.Count == 0 )
+				if ( this._passes.Count == 0 )
 				{
 					return false;
 				}
 				else
 				{
 					// Base decision on the depth settings of the first pass
-					return _passes[ 0 ].DepthWrite;
+					return this._passes[ 0 ].DepthWrite;
 				}
 			}
 		}
@@ -755,18 +756,18 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( _passes.Count == 0 )
+				if ( this._passes.Count == 0 )
 				{
 					return true;
 				}
 				else
 				{
-					return _passes[ 0 ].ColorWriteEnabled;
+					return this._passes[ 0 ].ColorWriteEnabled;
 				}
 			}
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.ColorWriteEnabled = value;
 				}
@@ -787,7 +788,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.TextureAnisotropy = value;
 				}
@@ -808,7 +809,7 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				foreach ( var p in _passes )
+				foreach ( var p in this._passes )
 				{
 					p.TextureFiltering = value;
 				}
@@ -826,13 +827,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _schemeName;
+				return this._schemeName;
 			}
 
 			set
 			{
-				_schemeName = value;
-				_schemeIndex = MaterialManager.Instance.GetSchemeIndex( _schemeName );
+				this._schemeName = value;
+				this._schemeIndex = MaterialManager.Instance.GetSchemeIndex( this._schemeName );
 			}
 		}
 
@@ -845,7 +846,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _parent.IsLoaded;
+				return this._parent.IsLoaded;
 			}
 		}
 
@@ -863,14 +864,14 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				if ( _passes.Count == 0 )
+				if ( this._passes.Count == 0 )
 				{
 					return false;
 				}
 				else
 				{
 					// based on the transparency of the first pass
-					return ( (Pass)_passes[ 0 ] ).IsTransparent;
+					return ( (Pass)this._passes[ 0 ] ).IsTransparent;
 				}
 			}
 		}
@@ -882,7 +883,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _passes.Count;
+				return this._passes.Count;
 			}
 		}
 
@@ -892,8 +893,8 @@ namespace Axiom.Graphics
 
 		public Technique( Material parent )
 		{
-			_parent = parent;
-			_compiledIlluminationPasses = false;
+			this._parent = parent;
+			this._compiledIlluminationPasses = false;
 		}
 
 		#endregion
@@ -905,9 +906,9 @@ namespace Axiom.Graphics
 		/// </summary>
 		protected void ClearIlluminationPasses()
 		{
-			for ( var i = 0; i < _illuminationPasses.Count; i++ )
+			for ( var i = 0; i < this._illuminationPasses.Count; i++ )
 			{
-				var iPass = (IlluminationPass)_illuminationPasses[ i ];
+				var iPass = (IlluminationPass)this._illuminationPasses[ i ];
 
 				if ( iPass.DestroyOnShutdown )
 				{
@@ -915,7 +916,7 @@ namespace Axiom.Graphics
 				}
 			}
 
-			_illuminationPasses.Clear();
+			this._illuminationPasses.Clear();
 		}
 
 		/// <summary>
@@ -938,23 +939,23 @@ namespace Axiom.Graphics
 		/// <param name="target"></param>
 		public void CopyTo( Technique target )
 		{
-			target._isSupported = _isSupported;
+			target._isSupported = this._isSupported;
 			target.SchemeIndex = SchemeIndex;
-			target._lodIndex = _lodIndex;
+			target._lodIndex = this._lodIndex;
 
 			target.RemoveAllPasses();
 
 			// clone each pass and add that to the new technique
-			for ( var i = 0; i < _passes.Count; i++ )
+			for ( var i = 0; i < this._passes.Count; i++ )
 			{
-				var pass = _passes[ i ];
+				var pass = this._passes[ i ];
 				var newPass = pass.Clone( target, pass.Index );
 				target._passes.Add( newPass );
 			}
 
 			// Compile for categorized illumination on demand
 			ClearIlluminationPasses();
-			_illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
+			this._illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
 		}
 
 		/// <summary>
@@ -969,15 +970,15 @@ namespace Axiom.Graphics
 		{
 			var compileErrors = new StringBuilder();
 
-			_isSupported = CheckGPURules( ref compileErrors );
-			if ( _isSupported )
+			this._isSupported = CheckGPURules( ref compileErrors );
+			if ( this._isSupported )
 			{
-				_isSupported = CheckHardwareSupport( autoManageTextureUnits, ref compileErrors );
+				this._isSupported = CheckHardwareSupport( autoManageTextureUnits, ref compileErrors );
 			}
 
 			// Compile for categorised illumination on demand
 			ClearIlluminationPasses();
-			_illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
+			this._illuminationPassesCompilationPhase = IlluminationPassesCompilationPhase.NotCompiled;
 
 			return compileErrors.ToString();
 		}
@@ -992,23 +993,23 @@ namespace Axiom.Graphics
 			ushort passNum = 0;
 			RenderSystemCapabilities caps = Root.Instance.RenderSystem.Capabilities;
 			int numTexUnits = caps.TextureUnitCount;
-			for ( int i = 0; i < _passes.Count; ++i )
+			for ( int i = 0; i < this._passes.Count; ++i )
 			{
 				// Adjust pass index
-				_passes[ i ].Index = passNum;
+				this._passes[ i ].Index = passNum;
 
 				//Check for advanced blending operation support
-				if ( ( _passes[ i ].SceneBlendingOperation != SceneBlendOperation.Add ||
-				       _passes[ i ].SceneBlendingOperationAlpha != SceneBlendOperation.Add ) &&
+				if ( ( this._passes[ i ].SceneBlendingOperation != SceneBlendOperation.Add ||
+				       this._passes[ i ].SceneBlendingOperationAlpha != SceneBlendOperation.Add ) &&
 				     !caps.HasCapability( Capabilities.AdvancedBlendOperations ) )
 				{
 					return false;
 				}
 
 				// Check texture unit requirements
-				int numTexUnitsRequested = _passes[ i ].TextureUnitStatesCount;
+				int numTexUnitsRequested = this._passes[ i ].TextureUnitStatesCount;
 				// Don't trust getNumTextureUnits for programmable
-				if ( !_passes[ i ].HasFragmentProgram )
+				if ( !this._passes[ i ].HasFragmentProgram )
 				{
 #if OGRE_PRETEND_TEXTURE_UNITS //&& OGRE_PRETEND_TEXTURE_UNITS > 0
 				if (numTexUnits > OGRE_PRETEND_TEXTURE_UNITS)
@@ -1023,7 +1024,7 @@ namespace Axiom.Graphics
 							                          ": Too many texture units for the current hardware and no splitting allowed." );
 							return false;
 						}
-						else if ( _passes[ i ].HasVertexProgram )
+						else if ( this._passes[ i ].HasVertexProgram )
 						{
 							// Can't do this one, and can't split a programmable pass
 							compileErrors.AppendLine( "Pass " + passNum +
@@ -1033,16 +1034,16 @@ namespace Axiom.Graphics
 					}
 				}
 
-				if ( _passes[ i ].HasVertexProgram )
+				if ( this._passes[ i ].HasVertexProgram )
 				{
 					// Check vertex program version
-					if ( !_passes[ i ].VertexProgram.IsSupported )
+					if ( !this._passes[ i ].VertexProgram.IsSupported )
 					{
 						// Can't do this one
-						compileErrors.Append( "Pass " + passNum + ": Vertex program " + _passes[ i ].VertexProgram.Name +
+						compileErrors.Append( "Pass " + passNum + ": Vertex program " + this._passes[ i ].VertexProgram.Name +
 						                      " cannot be used - " );
 
-						if ( _passes[ i ].VertexProgram.HasCompileError )
+						if ( this._passes[ i ].VertexProgram.HasCompileError )
 						{
 							compileErrors.Append( "compile error." );
 						}
@@ -1056,15 +1057,15 @@ namespace Axiom.Graphics
 					}
 				}
 
-				if ( _passes[ i ].HasGeometryProgram )
+				if ( this._passes[ i ].HasGeometryProgram )
 				{
 					// Check geometry program version
-					if ( !_passes[ i ].GeometryProgram.IsSupported )
+					if ( !this._passes[ i ].GeometryProgram.IsSupported )
 					{
 						// Can't do this one
-						compileErrors.Append( "Pass " + passNum + ": Geometry program " + _passes[ i ].GeometryProgram.Name +
+						compileErrors.Append( "Pass " + passNum + ": Geometry program " + this._passes[ i ].GeometryProgram.Name +
 						                      " cannot be used - " );
-						if ( _passes[ i ].GeometryProgram.HasCompileError )
+						if ( this._passes[ i ].GeometryProgram.HasCompileError )
 						{
 							compileErrors.Append( "compile error." );
 						}
@@ -1078,15 +1079,15 @@ namespace Axiom.Graphics
 					}
 				}
 
-				if ( _passes[ i ].HasFragmentProgram )
+				if ( this._passes[ i ].HasFragmentProgram )
 				{
 					// Check fragment program version
-					if ( !_passes[ i ].FragmentProgram.IsSupported )
+					if ( !this._passes[ i ].FragmentProgram.IsSupported )
 					{
 						// Can't do this one
-						compileErrors.Append( "Pass " + passNum + ": Fragment program " + _passes[ i ].FragmentProgram.Name +
+						compileErrors.Append( "Pass " + passNum + ": Fragment program " + this._passes[ i ].FragmentProgram.Name +
 						                      " cannot be used - " );
-						if ( _passes[ i ].FragmentProgram.HasCompileError )
+						if ( this._passes[ i ].FragmentProgram.HasCompileError )
 						{
 							compileErrors.Append( "compile error." );
 						}
@@ -1104,9 +1105,9 @@ namespace Axiom.Graphics
 					// Check a few fixed-function options in texture layers
 					int texUnit = 0;
 
-					for ( int t = 0; t < _passes[ i ].TextureUnitStatesCount; ++t )
+					for ( int t = 0; t < this._passes[ i ].TextureUnitStatesCount; ++t )
 					{
-						TextureUnitState tex = _passes[ i ].GetTextureUnitState( t );
+						TextureUnitState tex = this._passes[ i ].GetTextureUnitState( t );
 						// Any Cube textures? NB we make the assumption that any
 						// card capable of running fragment programs can support
 						// cubic textures, which has to be true, surely?
@@ -1139,33 +1140,33 @@ namespace Axiom.Graphics
 					}
 
 					// We're ok on operations, now we need to check # texture units
-					if ( !_passes[ i ].HasFragmentProgram )
+					if ( !this._passes[ i ].HasFragmentProgram )
 					{
 						// Keep splitting this pass so long as units requested > gpu units
 						while ( numTexUnitsRequested > numTexUnits )
 						{
 							// chop this pass into many passes
-							_passes[ i ] = _passes[ i ].Split( numTexUnits );
-							numTexUnitsRequested = _passes[ i ].TextureUnitStatesCount;
+							this._passes[ i ] = this._passes[ i ].Split( numTexUnits );
+							numTexUnitsRequested = this._passes[ i ].TextureUnitStatesCount;
 							// Advance pass number
 							++passNum;
 							// Reset iterator
 							i = passNum;
 							// Move the new pass to the right place (will have been created
 							// at the end, may be other passes in between)
-							Debug.Assert( _passes[ _passes.Count - 1 ] == _passes[ i ] );
+							Debug.Assert( this._passes[ this._passes.Count - 1 ] == this._passes[ i ] );
 
 							//std::copy_backward(i, (mPasses.end()-1), mPasses.end());
-							int result = _passes.Count;
+							int result = this._passes.Count;
 							int last = result - 1;
 
 							while ( last != i )
 							{
-								_passes[ --result ] = _passes[ --last ];
+								this._passes[ --result ] = this._passes[ --last ];
 							}
 
 							// Adjust pass index
-							_passes[ i ].Index = passNum;
+							this._passes[ i ].Index = passNum;
 						}
 					}
 				}
@@ -1187,7 +1188,7 @@ namespace Axiom.Graphics
 			bool includeRuleMatched = false;
 
 			// Check vendors first
-			foreach ( var i in _GPUVendorRules )
+			foreach ( var i in this._GPUVendorRules )
 			{
 				var vendorName = ScriptEnumAttribute.GetScriptAttribute( (int)caps.Vendor, typeof ( GPUVendor ) );
 
@@ -1221,7 +1222,7 @@ namespace Axiom.Graphics
 			includeRulesPresent = false;
 			includeRuleMatched = false;
 
-			foreach ( var i in _GPUDeviceNameRules )
+			foreach ( var i in this._GPUDeviceNameRules )
 			{
 				//StringUtil::match(caps->getDeviceName(), i->devicePattern, i->caseSensitive)
 				bool checkCondition = i.CaseSensitive
@@ -1275,9 +1276,9 @@ namespace Axiom.Graphics
 
 			var hasAmbient = false;
 
-			for ( var i = 0; i < _passes.Count; /* increment in logic */ )
+			for ( var i = 0; i < this._passes.Count; /* increment in logic */ )
 			{
-				var pass = (Pass)_passes[ i ];
+				var pass = (Pass)this._passes[ i ];
 				IlluminationPass iPass;
 
 				switch ( stage )
@@ -1290,7 +1291,7 @@ namespace Axiom.Graphics
 							iPass.OriginalPass = pass;
 							iPass.Pass = pass;
 							iPass.Stage = stage;
-							_illuminationPasses.Add( iPass );
+							this._illuminationPasses.Add( iPass );
 							hasAmbient = true;
 
 							// progress to the next pass
@@ -1331,7 +1332,7 @@ namespace Axiom.Graphics
 								iPass.Pass = newPass;
 								iPass.Stage = stage;
 
-								_illuminationPasses.Add( iPass );
+								this._illuminationPasses.Add( iPass );
 								hasAmbient = true;
 							}
 
@@ -1349,7 +1350,7 @@ namespace Axiom.Graphics
 								iPass.OriginalPass = pass;
 								iPass.Pass = newPass;
 								iPass.Stage = stage;
-								_illuminationPasses.Add( iPass );
+								this._illuminationPasses.Add( iPass );
 								hasAmbient = true;
 							}
 
@@ -1368,7 +1369,7 @@ namespace Axiom.Graphics
 							iPass.OriginalPass = pass;
 							iPass.Pass = pass;
 							iPass.Stage = stage;
-							_illuminationPasses.Add( iPass );
+							this._illuminationPasses.Add( iPass );
 
 							// progress to the next pass
 							i++;
@@ -1405,7 +1406,7 @@ namespace Axiom.Graphics
 								iPass.Pass = newPass;
 								iPass.Stage = stage;
 
-								_illuminationPasses.Add( iPass );
+								this._illuminationPasses.Add( iPass );
 							}
 
 							// This means the end of per-light passes
@@ -1427,7 +1428,7 @@ namespace Axiom.Graphics
 								iPass.OriginalPass = pass;
 								iPass.Pass = pass;
 								iPass.Stage = stage;
-								_illuminationPasses.Add( iPass );
+								this._illuminationPasses.Add( iPass );
 							}
 							else
 							{
@@ -1450,7 +1451,7 @@ namespace Axiom.Graphics
 								iPass.OriginalPass = pass;
 								iPass.Pass = newPass;
 								iPass.Stage = stage;
-								_illuminationPasses.Add( iPass );
+								this._illuminationPasses.Add( iPass );
 							}
 						}
 
@@ -1461,7 +1462,7 @@ namespace Axiom.Graphics
 				}
 			}
 
-			_compiledIlluminationPasses = true;
+			this._compiledIlluminationPasses = true;
 		}
 
 		/// <summary>
@@ -1479,8 +1480,8 @@ namespace Axiom.Graphics
 		/// <returns>A new Pass object reference.</returns>
 		public Pass CreatePass()
 		{
-			var pass = new Pass( this, _passes.Count );
-			_passes.Add( pass );
+			var pass = new Pass( this, this._passes.Count );
+			this._passes.Add( pass );
 			return pass;
 		}
 
@@ -1490,7 +1491,7 @@ namespace Axiom.Graphics
 		/// <param name="passName">Name of the Pass to retreive.</param>
 		public Pass GetPass( string passName )
 		{
-			foreach ( var pass in _passes )
+			foreach ( var pass in this._passes )
 			{
 				if ( pass.Name == passName )
 				{
@@ -1506,9 +1507,9 @@ namespace Axiom.Graphics
 		/// <param name="index">Index of the Pass to retreive.</param>
 		public Pass GetPass( int index )
 		{
-			Debug.Assert( index < _passes.Count, "index < passes.Count" );
+			Debug.Assert( index < this._passes.Count, "index < passes.Count" );
 
-			return (Pass)_passes[ index ];
+			return (Pass)this._passes[ index ];
 		}
 
 		/// <summary>
@@ -1517,14 +1518,14 @@ namespace Axiom.Graphics
 		/// <param name="index">Index of the IlluminationPass to retreive.</param>
 		public IlluminationPass GetIlluminationPass( int index )
 		{
-			if ( !_compiledIlluminationPasses )
+			if ( !this._compiledIlluminationPasses )
 			{
 				CompileIlluminationPasses();
 			}
 
-			Debug.Assert( index < _illuminationPasses.Count, "index < illuminationPasses.Count" );
+			Debug.Assert( index < this._illuminationPasses.Count, "index < illuminationPasses.Count" );
 
-			return (IlluminationPass)_illuminationPasses[ index ];
+			return (IlluminationPass)this._illuminationPasses[ index ];
 		}
 
 		/// <summary>
@@ -1534,12 +1535,12 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void Preload()
 		{
-			Debug.Assert( _isSupported, "This technique is not supported." );
+			Debug.Assert( this._isSupported, "This technique is not supported." );
 
 			// load each pass
-			for ( var i = 0; i < _passes.Count; i++ )
+			for ( var i = 0; i < this._passes.Count; i++ )
 			{
-				( (Pass)_passes[ i ] ).Load();
+				( (Pass)this._passes[ i ] ).Load();
 			}
 		}
 
@@ -1548,12 +1549,12 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void Load()
 		{
-			Debug.Assert( _isSupported, "This technique is not supported." );
+			Debug.Assert( this._isSupported, "This technique is not supported." );
 
 			// load each pass
-			for ( var i = 0; i < _passes.Count; i++ )
+			for ( var i = 0; i < this._passes.Count; i++ )
 			{
-				( (Pass)_passes[ i ] ).Load();
+				( (Pass)this._passes[ i ] ).Load();
 			}
 		}
 
@@ -1565,9 +1566,9 @@ namespace Axiom.Graphics
 		/// </remarks>
 		internal void NotifyNeedsRecompile()
 		{
-			if ( _illuminationPassesCompilationPhase != IlluminationPassesCompilationPhase.Disabled )
+			if ( this._illuminationPassesCompilationPhase != IlluminationPassesCompilationPhase.Disabled )
 			{
-				_parent.NotifyNeedsRecompile();
+				this._parent.NotifyNeedsRecompile();
 			}
 		}
 
@@ -1581,7 +1582,7 @@ namespace Axiom.Graphics
 
 			pass.QueueForDeletion();
 
-			_passes.Remove( pass );
+			this._passes.Remove( pass );
 		}
 
 		/// <summary>
@@ -1590,13 +1591,13 @@ namespace Axiom.Graphics
 		public void RemoveAllPasses()
 		{
 			// load each pass
-			for ( var i = 0; i < _passes.Count; i++ )
+			for ( var i = 0; i < this._passes.Count; i++ )
 			{
-				var pass = (Pass)_passes[ i ];
+				var pass = (Pass)this._passes[ i ];
 				pass.QueueForDeletion();
 			}
 
-			_passes.Clear();
+			this._passes.Clear();
 		}
 
 		/// <summary>
@@ -1613,9 +1614,9 @@ namespace Axiom.Graphics
 		public void SetSceneBlending( SceneBlendType blendType )
 		{
 			// load each pass
-			for ( var i = 0; i < _passes.Count; i++ )
+			for ( var i = 0; i < this._passes.Count; i++ )
 			{
-				_passes[ i ].SetSceneBlending( blendType );
+				this._passes[ i ].SetSceneBlending( blendType );
 			}
 		}
 
@@ -1632,9 +1633,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void SetSeparateSceneBlending( SceneBlendType sbt, SceneBlendType sbta )
 		{
-			for ( var i = 0; i < _passes.Count; i++ )
+			for ( var i = 0; i < this._passes.Count; i++ )
 			{
-				_passes[ i ].SetSeparateSceneBlending( sbt, sbta );
+				this._passes[ i ].SetSeparateSceneBlending( sbt, sbta );
 			}
 		}
 
@@ -1652,9 +1653,9 @@ namespace Axiom.Graphics
 		public void SetSceneBlending( SceneBlendFactor src, SceneBlendFactor dest )
 		{
 			// load each pass
-			for ( var i = 0; i < _passes.Count; i++ )
+			for ( var i = 0; i < this._passes.Count; i++ )
 			{
-				_passes[ i ].SetSceneBlending( src, dest );
+				this._passes[ i ].SetSceneBlending( src, dest );
 			}
 		}
 
@@ -1672,9 +1673,9 @@ namespace Axiom.Graphics
 		public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
 		                                      SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
 		{
-			for ( var i = 0; i < _passes.Count; i++ )
+			for ( var i = 0; i < this._passes.Count; i++ )
 			{
-				_passes[ i ].SetSeparateSceneBlending( sourceFactor, destFactor, sourceFactorAlpha, destFactorAlpha );
+				this._passes[ i ].SetSeparateSceneBlending( sourceFactor, destFactor, sourceFactorAlpha, destFactorAlpha );
 			}
 		}
 
@@ -1683,7 +1684,7 @@ namespace Axiom.Graphics
 			// iterate through all passes and apply texture aliases
 			var testResult = false;
 
-			foreach ( var p in _passes )
+			foreach ( var p in this._passes )
 			{
 				if ( p.ApplyTextureAliases( aliasList, apply ) )
 				{
@@ -1700,9 +1701,9 @@ namespace Axiom.Graphics
 		public void Unload()
 		{
 			// load each pass
-			for ( var i = 0; i < _passes.Count; i++ )
+			for ( var i = 0; i < this._passes.Count; i++ )
 			{
-				( (Pass)_passes[ i ] ).Unload();
+				( (Pass)this._passes[ i ] ).Unload();
 			}
 		}
 
@@ -1759,27 +1760,27 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _shadowCasterMaterial;
+				return this._shadowCasterMaterial;
 			}
 			set
 			{
 				if ( value != null )
 				{
-					_shadowCasterMaterial = value;
-					_shadowCasterMaterialName = _shadowCasterMaterial.Name;
+					this._shadowCasterMaterial = value;
+					this._shadowCasterMaterialName = this._shadowCasterMaterial.Name;
 				}
 				else
 				{
-					_shadowCasterMaterial = null;
-					_shadowCasterMaterialName = String.Empty;
+					this._shadowCasterMaterial = null;
+					this._shadowCasterMaterialName = String.Empty;
 				}
 			}
 		}
 
 		public void SetShadowCasterMaterial( string name )
 		{
-			_shadowCasterMaterialName = name;
-			_shadowCasterMaterial = (Material)MaterialManager.Instance[ name ];
+			this._shadowCasterMaterialName = name;
+			this._shadowCasterMaterial = (Material)MaterialManager.Instance[ name ];
 		}
 
 
@@ -1790,27 +1791,27 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _shadowReceiverMaterial;
+				return this._shadowReceiverMaterial;
 			}
 			set
 			{
 				if ( value != null )
 				{
-					_shadowReceiverMaterial = value;
-					_shadowReceiverMaterialName = _shadowReceiverMaterial.Name;
+					this._shadowReceiverMaterial = value;
+					this._shadowReceiverMaterialName = this._shadowReceiverMaterial.Name;
 				}
 				else
 				{
-					_shadowReceiverMaterial = null;
-					_shadowReceiverMaterialName = String.Empty;
+					this._shadowReceiverMaterial = null;
+					this._shadowReceiverMaterialName = String.Empty;
 				}
 			}
 		}
 
 		public void SetShadowReceiverMaterial( string name )
 		{
-			_shadowReceiverMaterialName = name;
-			_shadowReceiverMaterial = (Material)MaterialManager.Instance[ name ];
+			this._shadowReceiverMaterialName = name;
+			this._shadowReceiverMaterial = (Material)MaterialManager.Instance[ name ];
 		}
 
 		#endregion
@@ -1834,7 +1835,7 @@ namespace Axiom.Graphics
 		{
 			// remove duplicates
 			RemoveGPUVendorRule( rule );
-			_GPUVendorRules.Add( rule );
+			this._GPUVendorRules.Add( rule );
 		}
 
 		/// <summary>
@@ -1844,9 +1845,9 @@ namespace Axiom.Graphics
 		/// <param name="rule"></param>
 		internal void RemoveGPUVendorRule( GPUVendorRule rule )
 		{
-			if ( _GPUVendorRules.Contains( rule ) )
+			if ( this._GPUVendorRules.Contains( rule ) )
 			{
-				_GPUVendorRules.Remove( rule );
+				this._GPUVendorRules.Remove( rule );
 			}
 		}
 
@@ -1870,7 +1871,7 @@ namespace Axiom.Graphics
 		{
 			// remove duplicates
 			RemoveGPUDeviceNameRule( rule );
-			_GPUDeviceNameRules.Add( rule );
+			this._GPUDeviceNameRules.Add( rule );
 		}
 
 		/// <summary>
@@ -1880,9 +1881,9 @@ namespace Axiom.Graphics
 		/// <param name="rule"></param>
 		internal void RemoveGPUDeviceNameRule( GPUDeviceNameRule rule )
 		{
-			if ( _GPUDeviceNameRules.Contains( rule ) )
+			if ( this._GPUDeviceNameRules.Contains( rule ) )
 			{
-				_GPUDeviceNameRules.Remove( rule );
+				this._GPUDeviceNameRules.Remove( rule );
 			}
 		}
 	}

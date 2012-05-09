@@ -63,7 +63,7 @@ namespace Axiom.Media
 
 			public Byte( int channels )
 			{
-				_channels = channels;
+				this._channels = channels;
 			}
 
 			public void Scale( PixelBox src, PixelBox dst )
@@ -118,21 +118,21 @@ namespace Axiom.Media
 							var sx2 = (uint)System.Math.Min( sx1 + 1, src.Right - src.Left - 1 );
 
 							var sxfsyf = sxf*syf;
-							for ( uint k = 0; k < _channels; k++ )
+							for ( uint k = 0; k < this._channels; k++ )
 							{
 								var accum =
 									(uint)
-									( srcdata[ (int)( ( sx1 + syoff1 )*_channels + k ) ]*
+									( srcdata[ (int)( ( sx1 + syoff1 )*this._channels + k ) ]*
 									  (char)( 0x1000000 - ( sxf << 12 ) - ( syf << 12 ) + sxfsyf ) +
-									  srcdata[ (int)( ( sx2 + syoff1 )*_channels + k ) ]*(char)( ( sxf << 12 ) - sxfsyf ) +
-									  srcdata[ (int)( ( sx1 + syoff2 )*_channels + k ) ]*(char)( ( syf << 12 ) - sxfsyf ) +
-									  srcdata[ (int)( ( sx2 + syoff2 )*_channels + k ) ]*(char)sxfsyf );
+									  srcdata[ (int)( ( sx2 + syoff1 )*this._channels + k ) ]*(char)( ( sxf << 12 ) - sxfsyf ) +
+									  srcdata[ (int)( ( sx1 + syoff2 )*this._channels + k ) ]*(char)( ( syf << 12 ) - sxfsyf ) +
+									  srcdata[ (int)( ( sx2 + syoff2 )*this._channels + k ) ]*(char)sxfsyf );
 								// accum is computed using 8/24-bit fixed-point math
 								// (maximum is 0xFF000000; rounding will not cause overflow)
 								dstData[ pdst++ ] = (byte)( ( accum + 0x800000 ) >> 24 );
 							}
 						}
-						pdst += _channels*dst.RowSkip;
+						pdst += this._channels*dst.RowSkip;
 					}
 				}
 			}

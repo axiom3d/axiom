@@ -188,7 +188,7 @@ namespace Axiom.Math.Collections
 		/// </summary>
 		public Vector3List()
 		{
-			m_array = new Vector3[DEFAULT_CAPACITY];
+			this.m_array = new Vector3[DEFAULT_CAPACITY];
 		}
 
 		/// <summary>
@@ -200,7 +200,7 @@ namespace Axiom.Math.Collections
 		///	</param>
 		public Vector3List( int capacity )
 		{
-			m_array = new Vector3[capacity];
+			this.m_array = new Vector3[capacity];
 		}
 
 		/// <summary>
@@ -210,7 +210,7 @@ namespace Axiom.Math.Collections
 		/// <param name="c">The <c>Vector3List</c> whose elements are copied to the new collection.</param>
 		public Vector3List( Vector3List c )
 		{
-			m_array = new Vector3[c.Count];
+			this.m_array = new Vector3[c.Count];
 			AddRange( c );
 		}
 
@@ -221,7 +221,7 @@ namespace Axiom.Math.Collections
 		/// <param name="a">The <see cref="Vector3"/> array whose elements are copied to the new list.</param>
 		public Vector3List( Vector3[] a )
 		{
-			m_array = new Vector3[a.Length];
+			this.m_array = new Vector3[a.Length];
 			AddRange( a );
 		}
 
@@ -246,7 +246,7 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return m_count;
+				return this.m_count;
 			}
 		}
 
@@ -268,12 +268,12 @@ namespace Axiom.Math.Collections
 		/// <param name="start">The zero-based index in <paramref name="array"/> at which copying begins.</param>
 		public virtual void CopyTo( Vector3[] array, int start )
 		{
-			if ( m_count > array.GetUpperBound( 0 ) + 1 - start )
+			if ( this.m_count > array.GetUpperBound( 0 ) + 1 - start )
 			{
 				throw new System.ArgumentException( "Destination array was not long enough." );
 			}
 
-			Array.Copy( m_array, 0, array, start, m_count );
+			Array.Copy( this.m_array, 0, array, start, this.m_count );
 		}
 
 		/// <summary>
@@ -284,7 +284,7 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return m_array.IsSynchronized;
+				return this.m_array.IsSynchronized;
 			}
 		}
 
@@ -295,7 +295,7 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return m_array.SyncRoot;
+				return this.m_array.SyncRoot;
 			}
 		}
 
@@ -317,13 +317,13 @@ namespace Axiom.Math.Collections
 			get
 			{
 				ValidateIndex( index ); // throws
-				return m_array[ index ];
+				return this.m_array[ index ];
 			}
 			set
 			{
 				ValidateIndex( index ); // throws
-				++m_version;
-				m_array[ index ] = value;
+				++this.m_version;
+				this.m_array[ index ] = value;
 			}
 		}
 
@@ -334,15 +334,15 @@ namespace Axiom.Math.Collections
 		/// <returns>The index at which the value has been added.</returns>
 		public virtual int Add( Vector3 item )
 		{
-			if ( m_count == m_array.Length )
+			if ( this.m_count == this.m_array.Length )
 			{
-				EnsureCapacity( m_count + 1 );
+				EnsureCapacity( this.m_count + 1 );
 			}
 
-			m_array[ m_count ] = item;
-			m_version++;
+			this.m_array[ this.m_count ] = item;
+			this.m_version++;
 
-			return m_count++;
+			return this.m_count++;
 		}
 
 		/// <summary>
@@ -350,9 +350,9 @@ namespace Axiom.Math.Collections
 		/// </summary>
 		public virtual void Clear()
 		{
-			++m_version;
-			m_array = new Vector3[DEFAULT_CAPACITY];
-			m_count = 0;
+			++this.m_version;
+			this.m_array = new Vector3[DEFAULT_CAPACITY];
+			this.m_count = 0;
 		}
 
 		/// <summary>
@@ -360,10 +360,10 @@ namespace Axiom.Math.Collections
 		/// </summary>
 		public virtual object Clone()
 		{
-			var newColl = new Vector3List( m_count );
-			Array.Copy( m_array, 0, newColl.m_array, 0, m_count );
-			newColl.m_count = m_count;
-			newColl.m_version = m_version;
+			var newColl = new Vector3List( this.m_count );
+			Array.Copy( this.m_array, 0, newColl.m_array, 0, this.m_count );
+			newColl.m_count = this.m_count;
+			newColl.m_version = this.m_version;
 
 			return newColl;
 		}
@@ -375,9 +375,9 @@ namespace Axiom.Math.Collections
 		/// <returns><c>true</c> if <paramref name="item"/> is found in the <c>Vector3List</c>; otherwise, <c>false</c>.</returns>
 		public virtual bool Contains( Vector3 item )
 		{
-			for ( var i = 0; i != m_count; ++i )
+			for ( var i = 0; i != this.m_count; ++i )
 			{
-				if ( m_array[ i ].Equals( item ) )
+				if ( this.m_array[ i ].Equals( item ) )
 				{
 					return true;
 				}
@@ -396,9 +396,9 @@ namespace Axiom.Math.Collections
 		///	</returns>
 		public virtual int IndexOf( Vector3 item )
 		{
-			for ( var i = 0; i != m_count; ++i )
+			for ( var i = 0; i != this.m_count; ++i )
 			{
-				if ( m_array[ i ].Equals( item ) )
+				if ( this.m_array[ i ].Equals( item ) )
 				{
 					return i;
 				}
@@ -420,19 +420,19 @@ namespace Axiom.Math.Collections
 		{
 			ValidateIndex( index, true ); // throws
 
-			if ( m_count == m_array.Length )
+			if ( this.m_count == this.m_array.Length )
 			{
-				EnsureCapacity( m_count + 1 );
+				EnsureCapacity( this.m_count + 1 );
 			}
 
-			if ( index < m_count )
+			if ( index < this.m_count )
 			{
-				Array.Copy( m_array, index, m_array, index + 1, m_count - index );
+				Array.Copy( this.m_array, index, this.m_array, index + 1, this.m_count - index );
 			}
 
-			m_array[ index ] = item;
-			m_count++;
-			m_version++;
+			this.m_array[ index ] = item;
+			this.m_count++;
+			this.m_version++;
 		}
 
 		/// <summary>
@@ -451,7 +451,7 @@ namespace Axiom.Math.Collections
 					"Cannot remove the specified item because it was not found in the specified Collection." );
 			}
 
-			++m_version;
+			++this.m_version;
 			RemoveAt( i );
 		}
 
@@ -468,19 +468,19 @@ namespace Axiom.Math.Collections
 		{
 			ValidateIndex( index ); // throws
 
-			m_count--;
+			this.m_count--;
 
-			if ( index < m_count )
+			if ( index < this.m_count )
 			{
-				Array.Copy( m_array, index + 1, m_array, index, m_count - index );
+				Array.Copy( this.m_array, index + 1, this.m_array, index, this.m_count - index );
 			}
 
 			// We can't set the deleted entry equal to null, because it might be a value type.
 			// Instead, we'll create an empty single-element array of the right type and copy it 
 			// over the entry we want to erase.
 			var temp = new Vector3[1];
-			Array.Copy( temp, 0, m_array, m_count, 1 );
-			m_version++;
+			Array.Copy( temp, 0, this.m_array, this.m_count, 1 );
+			this.m_version++;
 		}
 
 		/// <summary>
@@ -531,27 +531,27 @@ namespace Axiom.Math.Collections
 		{
 			get
 			{
-				return m_array.Length;
+				return this.m_array.Length;
 			}
 
 			set
 			{
-				if ( value < m_count )
+				if ( value < this.m_count )
 				{
-					value = m_count;
+					value = this.m_count;
 				}
 
-				if ( value != m_array.Length )
+				if ( value != this.m_array.Length )
 				{
 					if ( value > 0 )
 					{
 						var temp = new Vector3[value];
-						Array.Copy( m_array, temp, m_count );
-						m_array = temp;
+						Array.Copy( this.m_array, temp, this.m_count );
+						this.m_array = temp;
 					}
 					else
 					{
-						m_array = new Vector3[DEFAULT_CAPACITY];
+						this.m_array = new Vector3[DEFAULT_CAPACITY];
 					}
 				}
 			}
@@ -564,16 +564,16 @@ namespace Axiom.Math.Collections
 		/// <returns>The new <see cref="Vector3List.Count"/> of the <c>Vector3List</c>.</returns>
 		public virtual int AddRange( Vector3List x )
 		{
-			if ( m_count + x.Count >= m_array.Length )
+			if ( this.m_count + x.Count >= this.m_array.Length )
 			{
-				EnsureCapacity( m_count + x.Count );
+				EnsureCapacity( this.m_count + x.Count );
 			}
 
-			Array.Copy( x.m_array, 0, m_array, m_count, x.Count );
-			m_count += x.Count;
-			m_version++;
+			Array.Copy( x.m_array, 0, this.m_array, this.m_count, x.Count );
+			this.m_count += x.Count;
+			this.m_version++;
 
-			return m_count;
+			return this.m_count;
 		}
 
 		/// <summary>
@@ -583,16 +583,16 @@ namespace Axiom.Math.Collections
 		/// <returns>The new <see cref="Vector3List.Count"/> of the <c>Vector3List</c>.</returns>
 		public virtual int AddRange( Vector3[] x )
 		{
-			if ( m_count + x.Length >= m_array.Length )
+			if ( this.m_count + x.Length >= this.m_array.Length )
 			{
-				EnsureCapacity( m_count + x.Length );
+				EnsureCapacity( this.m_count + x.Length );
 			}
 
-			Array.Copy( x, 0, m_array, m_count, x.Length );
-			m_count += x.Length;
-			m_version++;
+			Array.Copy( x, 0, this.m_array, this.m_count, x.Length );
+			this.m_count += x.Length;
+			this.m_version++;
 
-			return m_count;
+			return this.m_count;
 		}
 
 		/// <summary>
@@ -600,7 +600,7 @@ namespace Axiom.Math.Collections
 		/// </summary>
 		public virtual void TrimToSize()
 		{
-			Capacity = m_count;
+			Capacity = this.m_count;
 		}
 
 		#endregion
@@ -624,7 +624,7 @@ namespace Axiom.Math.Collections
 		/// </exception>
 		private void ValidateIndex( int i, bool allowEqualEnd )
 		{
-			var max = ( allowEqualEnd ) ? ( m_count ) : ( m_count - 1 );
+			var max = ( allowEqualEnd ) ? ( this.m_count ) : ( this.m_count - 1 );
 			if ( i < 0 || i > max )
 			{
 #if !(XBOX || XBOX360 || SILVERLIGHT || WINDOWS_PHONE)
@@ -639,7 +639,7 @@ namespace Axiom.Math.Collections
 
 		private void EnsureCapacity( int min )
 		{
-			var newCapacity = ( ( m_array.Length == 0 ) ? DEFAULT_CAPACITY : m_array.Length*2 );
+			var newCapacity = ( ( this.m_array.Length == 0 ) ? DEFAULT_CAPACITY : this.m_array.Length*2 );
 			if ( newCapacity < min )
 			{
 				newCapacity = min;
@@ -654,7 +654,7 @@ namespace Axiom.Math.Collections
 
 		void ICollection.CopyTo( Array array, int start )
 		{
-			Array.Copy( m_array, 0, array, start, m_count );
+			Array.Copy( this.m_array, 0, array, start, this.m_count );
 		}
 
 		#endregion
@@ -737,9 +737,9 @@ namespace Axiom.Math.Collections
 			/// <param name="tc"></param>
 			internal Enumerator( Vector3List tc )
 			{
-				m_collection = tc;
-				m_index = -1;
-				m_version = tc.m_version;
+				this.m_collection = tc;
+				this.m_index = -1;
+				this.m_version = tc.m_version;
 			}
 
 			#endregion
@@ -753,7 +753,7 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					return m_collection[ m_index ];
+					return this.m_collection[ this.m_index ];
 				}
 			}
 
@@ -769,13 +769,13 @@ namespace Axiom.Math.Collections
 			/// </returns>
 			public bool MoveNext()
 			{
-				if ( m_version != m_collection.m_version )
+				if ( this.m_version != this.m_collection.m_version )
 				{
 					throw new System.InvalidOperationException( "Collection was modified; enumeration operation may not execute." );
 				}
 
-				++m_index;
-				return ( m_index < m_collection.Count ) ? true : false;
+				++this.m_index;
+				return ( this.m_index < this.m_collection.Count ) ? true : false;
 			}
 
 			/// <summary>
@@ -783,7 +783,7 @@ namespace Axiom.Math.Collections
 			/// </summary>
 			public void Reset()
 			{
-				m_index = -1;
+				this.m_index = -1;
 			}
 
 			#endregion
@@ -819,8 +819,8 @@ namespace Axiom.Math.Collections
 			internal SyncVector3List( Vector3List list )
 				: base( Tag.Default )
 			{
-				m_root = list.SyncRoot;
-				m_collection = list;
+				this.m_root = list.SyncRoot;
+				this.m_collection = list;
 			}
 
 			#endregion
@@ -829,22 +829,22 @@ namespace Axiom.Math.Collections
 
 			public override void CopyTo( Vector3[] array )
 			{
-				lock ( m_root )
-					m_collection.CopyTo( array );
+				lock ( this.m_root )
+					this.m_collection.CopyTo( array );
 			}
 
 			public override void CopyTo( Vector3[] array, int start )
 			{
-				lock ( m_root )
-					m_collection.CopyTo( array, start );
+				lock ( this.m_root )
+					this.m_collection.CopyTo( array, start );
 			}
 
 			public override int Count
 			{
 				get
 				{
-					lock ( m_root )
-						return m_collection.Count;
+					lock ( this.m_root )
+						return this.m_collection.Count;
 				}
 			}
 
@@ -860,7 +860,7 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					return m_root;
+					return this.m_root;
 				}
 			}
 
@@ -872,63 +872,63 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					lock ( m_root )
-						return m_collection[ i ];
+					lock ( this.m_root )
+						return this.m_collection[ i ];
 				}
 				set
 				{
-					lock ( m_root )
-						m_collection[ i ] = value;
+					lock ( this.m_root )
+						this.m_collection[ i ] = value;
 				}
 			}
 
 			public override int Add( Vector3 x )
 			{
-				lock ( m_root )
-					return m_collection.Add( x );
+				lock ( this.m_root )
+					return this.m_collection.Add( x );
 			}
 
 			public override void Clear()
 			{
-				lock ( m_root )
-					m_collection.Clear();
+				lock ( this.m_root )
+					this.m_collection.Clear();
 			}
 
 			public override bool Contains( Vector3 x )
 			{
-				lock ( m_root )
-					return m_collection.Contains( x );
+				lock ( this.m_root )
+					return this.m_collection.Contains( x );
 			}
 
 			public override int IndexOf( Vector3 x )
 			{
-				lock ( m_root )
-					return m_collection.IndexOf( x );
+				lock ( this.m_root )
+					return this.m_collection.IndexOf( x );
 			}
 
 			public override void Insert( int pos, Vector3 x )
 			{
-				lock ( m_root )
-					m_collection.Insert( pos, x );
+				lock ( this.m_root )
+					this.m_collection.Insert( pos, x );
 			}
 
 			public override void Remove( Vector3 x )
 			{
-				lock ( m_root )
-					m_collection.Remove( x );
+				lock ( this.m_root )
+					this.m_collection.Remove( x );
 			}
 
 			public override void RemoveAt( int pos )
 			{
-				lock ( m_root )
-					m_collection.RemoveAt( pos );
+				lock ( this.m_root )
+					this.m_collection.RemoveAt( pos );
 			}
 
 			public override bool IsFixedSize
 			{
 				get
 				{
-					return m_collection.IsFixedSize;
+					return this.m_collection.IsFixedSize;
 				}
 			}
 
@@ -936,7 +936,7 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					return m_collection.IsReadOnly;
+					return this.m_collection.IsReadOnly;
 				}
 			}
 
@@ -946,8 +946,8 @@ namespace Axiom.Math.Collections
 
 			public override IVector3ListEnumerator GetEnumerator()
 			{
-				lock ( m_root )
-					return m_collection.GetEnumerator();
+				lock ( this.m_root )
+					return this.m_collection.GetEnumerator();
 			}
 
 			#endregion
@@ -959,27 +959,27 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					lock ( m_root )
-						return m_collection.Capacity;
+					lock ( this.m_root )
+						return this.m_collection.Capacity;
 				}
 
 				set
 				{
-					lock ( m_root )
-						m_collection.Capacity = value;
+					lock ( this.m_root )
+						this.m_collection.Capacity = value;
 				}
 			}
 
 			public override int AddRange( Vector3List x )
 			{
-				lock ( m_root )
-					return m_collection.AddRange( x );
+				lock ( this.m_root )
+					return this.m_collection.AddRange( x );
 			}
 
 			public override int AddRange( Vector3[] x )
 			{
-				lock ( m_root )
-					return m_collection.AddRange( x );
+				lock ( this.m_root )
+					return this.m_collection.AddRange( x );
 			}
 
 			#endregion
@@ -1002,7 +1002,7 @@ namespace Axiom.Math.Collections
 			internal ReadOnlyVector3List( Vector3List list )
 				: base( Tag.Default )
 			{
-				m_collection = list;
+				this.m_collection = list;
 			}
 
 			#endregion
@@ -1011,19 +1011,19 @@ namespace Axiom.Math.Collections
 
 			public override void CopyTo( Vector3[] array )
 			{
-				m_collection.CopyTo( array );
+				this.m_collection.CopyTo( array );
 			}
 
 			public override void CopyTo( Vector3[] array, int start )
 			{
-				m_collection.CopyTo( array, start );
+				this.m_collection.CopyTo( array, start );
 			}
 
 			public override int Count
 			{
 				get
 				{
-					return m_collection.Count;
+					return this.m_collection.Count;
 				}
 			}
 
@@ -1031,7 +1031,7 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					return m_collection.IsSynchronized;
+					return this.m_collection.IsSynchronized;
 				}
 			}
 
@@ -1039,7 +1039,7 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					return m_collection.SyncRoot;
+					return this.m_collection.SyncRoot;
 				}
 			}
 
@@ -1051,7 +1051,7 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					return m_collection[ i ];
+					return this.m_collection[ i ];
 				}
 				set
 				{
@@ -1071,12 +1071,12 @@ namespace Axiom.Math.Collections
 
 			public override bool Contains( Vector3 x )
 			{
-				return m_collection.Contains( x );
+				return this.m_collection.Contains( x );
 			}
 
 			public override int IndexOf( Vector3 x )
 			{
-				return m_collection.IndexOf( x );
+				return this.m_collection.IndexOf( x );
 			}
 
 			public override void Insert( int pos, Vector3 x )
@@ -1116,7 +1116,7 @@ namespace Axiom.Math.Collections
 
 			public override IVector3ListEnumerator GetEnumerator()
 			{
-				return m_collection.GetEnumerator();
+				return this.m_collection.GetEnumerator();
 			}
 
 			#endregion
@@ -1128,7 +1128,7 @@ namespace Axiom.Math.Collections
 			{
 				get
 				{
-					return m_collection.Capacity;
+					return this.m_collection.Capacity;
 				}
 
 				set

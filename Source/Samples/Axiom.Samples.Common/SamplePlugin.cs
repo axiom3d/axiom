@@ -30,7 +30,7 @@ namespace Axiom.Samples
 	/// <summary>
 	/// Utility class used to hold a set of samples in an Axiom plugin.
 	/// </summary>
-#if !(WINDOWS_PHONE || XBOX || XBOX360)
+#if NET_40 && !(WINDOWS_PHONE || XBOX || XBOX360)
 	[Export( typeof ( IPlugin ) )]
 #endif
 	public class SamplePlugin : IPlugin
@@ -68,7 +68,7 @@ namespace Axiom.Samples
 
 		public void AddSample( Sample s )
 		{
-			Samples.Add( s );
+			this.Samples.Add( s );
 		}
 
 		#endregion Methods

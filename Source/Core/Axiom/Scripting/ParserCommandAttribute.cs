@@ -56,7 +56,7 @@ namespace Axiom.Scripting
 
 		public ParserCommandAttribute( string name, string parserType )
 		{
-			attributeName = name;
+			this.attributeName = name;
 			this.parserType = parserType;
 		}
 
@@ -64,7 +64,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return attributeName;
+				return this.attributeName;
 			}
 		}
 
@@ -72,7 +72,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return parserType;
+				return this.parserType;
 			}
 		}
 	}

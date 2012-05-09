@@ -121,10 +121,10 @@ namespace Axiom.Core
 		public ColorEx( ColorEx other )
 			: this()
 		{
-			a = other.a;
-			r = other.r;
-			g = other.g;
-			b = other.b;
+			this.a = other.a;
+			this.r = other.r;
+			this.g = other.g;
+			this.b = other.b;
 		}
 
 		#endregion Constructors
@@ -135,10 +135,10 @@ namespace Axiom.Core
 		{
 			var result = 0;
 
-			result += ( (int)( r*255.0f ) ) << 24;
-			result += ( (int)( g*255.0f ) ) << 16;
-			result += ( (int)( b*255.0f ) ) << 8;
-			result += ( (int)( a*255.0f ) );
+			result += ( (int)( this.r*255.0f ) ) << 24;
+			result += ( (int)( this.g*255.0f ) ) << 16;
+			result += ( (int)( this.b*255.0f ) ) << 8;
+			result += ( (int)( this.a*255.0f ) );
 
 			return result;
 		}
@@ -152,10 +152,10 @@ namespace Axiom.Core
 		{
 			var result = 0;
 
-			result += ( (int)( a*255.0f ) ) << 24;
-			result += ( (int)( b*255.0f ) ) << 16;
-			result += ( (int)( g*255.0f ) ) << 8;
-			result += ( (int)( r*255.0f ) );
+			result += ( (int)( this.a*255.0f ) ) << 24;
+			result += ( (int)( this.b*255.0f ) ) << 16;
+			result += ( (int)( this.g*255.0f ) ) << 8;
+			result += ( (int)( this.r*255.0f ) );
 
 			return result;
 		}
@@ -168,10 +168,10 @@ namespace Axiom.Core
 		{
 			var result = 0;
 
-			result += ( (int)( a*255.0f ) ) << 24;
-			result += ( (int)( r*255.0f ) ) << 16;
-			result += ( (int)( g*255.0f ) ) << 8;
-			result += ( (int)( b*255.0f ) );
+			result += ( (int)( this.a*255.0f ) ) << 24;
+			result += ( (int)( this.r*255.0f ) ) << 16;
+			result += ( (int)( this.g*255.0f ) ) << 8;
+			result += ( (int)( this.b*255.0f ) );
 
 			return result;
 		}
@@ -185,10 +185,10 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public void ToArrayRGBA( float[] vals )
 		{
-			vals[ 0 ] = r;
-			vals[ 1 ] = g;
-			vals[ 2 ] = b;
-			vals[ 3 ] = a;
+			vals[ 0 ] = this.r;
+			vals[ 1 ] = this.g;
+			vals[ 2 ] = this.b;
+			vals[ 3 ] = this.a;
 		}
 
 		/// <summary>
@@ -196,10 +196,10 @@ namespace Axiom.Core
 		/// </summary>
 		public void Saturate()
 		{
-			r = Utility.Clamp( r, 1.0f, 0.0f );
-			g = Utility.Clamp( g, 1.0f, 0.0f );
-			b = Utility.Clamp( b, 1.0f, 0.0f );
-			a = Utility.Clamp( a, 1.0f, 0.0f );
+			this.r = Utility.Clamp( this.r, 1.0f, 0.0f );
+			this.g = Utility.Clamp( this.g, 1.0f, 0.0f );
+			this.b = Utility.Clamp( this.b, 1.0f, 0.0f );
+			this.a = Utility.Clamp( this.a, 1.0f, 0.0f );
 		}
 
 		/// <summary>
@@ -208,10 +208,10 @@ namespace Axiom.Core
 		public ColorEx SaturateCopy()
 		{
 			ColorEx saturated;
-			saturated.r = Utility.Clamp( r, 1.0f, 0.0f );
-			saturated.g = Utility.Clamp( g, 1.0f, 0.0f );
-			saturated.b = Utility.Clamp( b, 1.0f, 0.0f );
-			saturated.a = Utility.Clamp( a, 1.0f, 0.0f );
+			saturated.r = Utility.Clamp( this.r, 1.0f, 0.0f );
+			saturated.g = Utility.Clamp( this.g, 1.0f, 0.0f );
+			saturated.b = Utility.Clamp( this.b, 1.0f, 0.0f );
+			saturated.a = Utility.Clamp( this.a, 1.0f, 0.0f );
 
 			return saturated;
 		}
@@ -2590,7 +2590,8 @@ namespace Axiom.Core
 		//TODO : Move this to StringConverter
 		public string To_0_255_String()
 		{
-			return string.Format( "({0},{1},{2},{3})", (int)( r*255f ), (int)( g*255f ), (int)( b*255f ), (int)( a*255f ) );
+			return string.Format( "({0},{1},{2},{3})", (int)( this.r*255f ), (int)( this.g*255f ), (int)( this.b*255f ),
+			                      (int)( this.a*255f ) );
 		}
 
 		#endregion Static color properties
@@ -2637,7 +2638,7 @@ namespace Axiom.Core
 		{
 			var other = (ColorEx)obj;
 
-			if ( a == other.a && r == other.r && g == other.g && b == other.b )
+			if ( this.a == other.a && this.r == other.r && this.g == other.g && this.b == other.b )
 			{
 				return 0;
 			}
@@ -2659,10 +2660,10 @@ namespace Axiom.Core
 		public ColorEx Clone()
 		{
 			ColorEx clone;
-			clone.a = a;
-			clone.r = r;
-			clone.g = g;
-			clone.b = b;
+			clone.a = this.a;
+			clone.r = this.r;
+			clone.g = this.g;
+			clone.b = this.b;
 			return clone;
 		}
 

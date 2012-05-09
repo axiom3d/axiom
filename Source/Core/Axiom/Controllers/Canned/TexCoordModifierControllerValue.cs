@@ -73,16 +73,16 @@ namespace Axiom.Controllers.Canned
 		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV )
 		{
 			this.texUnit = texUnit;
-			transU = scrollU;
-			transV = scrollV;
+			this.transU = scrollU;
+			this.transV = scrollV;
 		}
 
 		public TexCoordModifierControllerValue( TextureUnitState texUnit, bool scrollU, bool scrollV, bool scaleU, bool scaleV,
 		                                        bool rotate )
 		{
 			this.texUnit = texUnit;
-			transU = scrollU;
-			transV = scrollV;
+			this.transU = scrollU;
+			this.transV = scrollV;
 			this.scaleU = scaleU;
 			this.scaleV = scaleV;
 			this.rotate = rotate;
@@ -94,21 +94,21 @@ namespace Axiom.Controllers.Canned
 		{
 			get
 			{
-				var trans = texUnit.TextureMatrix;
+				var trans = this.texUnit.TextureMatrix;
 
-				if ( transU )
+				if ( this.transU )
 				{
 					return trans.m03;
 				}
-				else if ( transV )
+				else if ( this.transV )
 				{
 					return trans.m13;
 				}
-				else if ( scaleU )
+				else if ( this.scaleU )
 				{
 					return trans.m00;
 				}
-				else if ( scaleV )
+				else if ( this.scaleV )
 				{
 					return trans.m11;
 				}
@@ -118,43 +118,43 @@ namespace Axiom.Controllers.Canned
 			}
 			set
 			{
-				if ( transU )
+				if ( this.transU )
 				{
-					texUnit.SetTextureScrollU( value );
+					this.texUnit.SetTextureScrollU( value );
 				}
 
-				if ( transV )
+				if ( this.transV )
 				{
-					texUnit.SetTextureScrollV( value );
+					this.texUnit.SetTextureScrollV( value );
 				}
 
-				if ( scaleU )
+				if ( this.scaleU )
 				{
 					if ( value >= 0 )
 					{
-						texUnit.SetTextureScaleU( 1 + value );
+						this.texUnit.SetTextureScaleU( 1 + value );
 					}
 					else
 					{
-						texUnit.SetTextureScaleU( 1/-value );
+						this.texUnit.SetTextureScaleU( 1/-value );
 					}
 				}
 
-				if ( scaleV )
+				if ( this.scaleV )
 				{
 					if ( value >= 0 )
 					{
-						texUnit.SetTextureScaleV( 1 + value );
+						this.texUnit.SetTextureScaleV( 1 + value );
 					}
 					else
 					{
-						texUnit.SetTextureScaleV( 1/-value );
+						this.texUnit.SetTextureScaleV( 1/-value );
 					}
 				}
 
-				if ( rotate )
+				if ( this.rotate )
 				{
-					texUnit.SetTextureRotate( value*360 );
+					this.texUnit.SetTextureRotate( value*360 );
 				}
 			}
 		}

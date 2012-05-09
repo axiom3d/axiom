@@ -96,7 +96,7 @@ namespace Axiom.ParticleSystems
 		public virtual void Destroy( ParticleAffector e )
 		{
 			// remove the affector from the list
-			affectorList.Remove( e );
+			this.affectorList.Remove( e );
 		}
 
 		#endregion

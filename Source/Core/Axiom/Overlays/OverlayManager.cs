@@ -81,7 +81,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return _overlays.Values.GetEnumerator();
+				return this._overlays.Values.GetEnumerator();
 			}
 		}
 
@@ -101,7 +101,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return _viewportDimensionsChanged;
+				return this._viewportDimensionsChanged;
 			}
 		}
 
@@ -118,7 +118,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return _lastViewportHeight;
+				return this._lastViewportHeight;
 			}
 		}
 
@@ -135,7 +135,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return _lastViewportWidth;
+				return this._lastViewportWidth;
 			}
 		}
 
@@ -147,7 +147,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return (Real)_lastViewportHeight/(Real)_lastViewportWidth;
+				return (Real)this._lastViewportHeight/(Real)this._lastViewportWidth;
 			}
 		}
 
@@ -178,7 +178,7 @@ namespace Axiom.Overlays
 		/// <returns></returns>
 		public Overlay Create( string name )
 		{
-			if ( _overlays.ContainsKey( name ) )
+			if ( this._overlays.ContainsKey( name ) )
 			{
 				throw new Exception( "Overlay with the name '" + name + "' already exists." );
 			}
@@ -189,7 +189,7 @@ namespace Axiom.Overlays
 				throw new Exception( "Overlay '" + name + "' could not be created." );
 			}
 
-			_overlays.Add( name, overlay );
+			this._overlays.Add( name, overlay );
 			return overlay;
 		}
 
@@ -200,7 +200,7 @@ namespace Axiom.Overlays
 		/// <returns>The overlay or null if not found.</returns>
 		public Overlay GetByName( string name )
 		{
-			return _overlays.ContainsKey( name ) ? _overlays[ name ] : null;
+			return this._overlays.ContainsKey( name ) ? this._overlays[ name ] : null;
 		}
 
 		#region Destroy*
@@ -211,14 +211,14 @@ namespace Axiom.Overlays
 		/// <param name="name"></param>
 		public void Destroy( string name )
 		{
-			if ( !_overlays.ContainsKey( name ) )
+			if ( !this._overlays.ContainsKey( name ) )
 			{
 				LogManager.Instance.Write( "No overlay with the name '" + name + "' found to destroy." );
 				return;
 			}
 
-			_overlays[ name ].Dispose();
-			_overlays.Remove( name );
+			this._overlays[ name ].Dispose();
+			this._overlays.Remove( name );
 		}
 
 		/// <summary>
@@ -227,7 +227,7 @@ namespace Axiom.Overlays
 		/// <param name="overlay"></param>
 		public void Destroy( Overlay overlay )
 		{
-			if ( !_overlays.ContainsValue( overlay ) )
+			if ( !this._overlays.ContainsValue( overlay ) )
 			{
 				LogManager.Instance.Write( "Overlay '" + overlay.Name + "' not found to destroy." );
 				if ( !overlay.IsDisposed )
@@ -237,7 +237,7 @@ namespace Axiom.Overlays
 				return;
 			}
 
-			_overlays.Remove( overlay.Name );
+			this._overlays.Remove( overlay.Name );
 			if ( !overlay.IsDisposed )
 			{
 				overlay.Dispose();
@@ -249,14 +249,14 @@ namespace Axiom.Overlays
 		/// </summary>
 		public void DestroyAll()
 		{
-			foreach ( var entry in _overlays )
+			foreach ( var entry in this._overlays )
 			{
 				if ( !entry.Value.IsDisposed )
 				{
 					entry.Value.Dispose();
 				}
 			}
-			_overlays.Clear();
+			this._overlays.Clear();
 		}
 
 		#endregion Destroy*
@@ -284,18 +284,18 @@ namespace Axiom.Overlays
 		internal void QueueOverlaysForRendering( Camera camera, RenderQueue queue, Viewport viewport )
 		{
 			// Flag for update pixel-based OverlayElements if viewport has changed dimensions
-			if ( _lastViewportWidth != viewport.ActualWidth || _lastViewportHeight != viewport.ActualHeight )
+			if ( this._lastViewportWidth != viewport.ActualWidth || this._lastViewportHeight != viewport.ActualHeight )
 			{
-				_viewportDimensionsChanged = true;
-				_lastViewportWidth = viewport.ActualWidth;
-				_lastViewportHeight = viewport.ActualHeight;
+				this._viewportDimensionsChanged = true;
+				this._lastViewportWidth = viewport.ActualWidth;
+				this._lastViewportHeight = viewport.ActualHeight;
 			}
 			else
 			{
-				_viewportDimensionsChanged = false;
+				this._viewportDimensionsChanged = false;
 			}
 
-			foreach ( var overlay in _overlays.Values )
+			foreach ( var overlay in this._overlays.Values )
 			{
 				overlay.FindVisibleObjects( camera, queue );
 			}
@@ -543,7 +543,7 @@ namespace Axiom.Overlays
 		{
 			get
 			{
-				return _scriptPatterns;
+				return this._scriptPatterns;
 			}
 		}
 
@@ -553,7 +553,7 @@ namespace Axiom.Overlays
 			Overlay overlay = null;
 			bool skipLine;
 
-			if ( _loadedScripts.Contains( fileName ) )
+			if ( this._loadedScripts.Contains( fileName ) )
 			{
 				LogManager.Instance.Write( "Skipping load of overlay include: {0}, as it is already loaded.", fileName );
 				return;
@@ -653,7 +653,7 @@ namespace Axiom.Overlays
 			}
 
 			// record as parsed
-			_loadedScripts.Add( fileName );
+			this._loadedScripts.Add( fileName );
 		}
 
 		public Real LoadingOrder

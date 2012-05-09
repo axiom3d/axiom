@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,21 +25,19 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 #endregion Namespace Declarations
 
@@ -48,7 +47,7 @@ namespace Axiom.RenderSystems.OpenGLES
 	{
 		#region Fields and Properties
 
-		private GLESFrameBufferObject _fbo;
+		private readonly GLESFrameBufferObject _fbo;
 
 		#endregion Fields and Properties
 
@@ -60,8 +59,8 @@ namespace Axiom.RenderSystems.OpenGLES
 			this._fbo = new GLESFrameBufferObject( manager, fsaa );
 			GLESConfig.GlCheckError( this );
 
-			Width = _fbo.Width;
-			Height = _fbo.Height;
+			Width = this._fbo.Width;
+			Height = this._fbo.Height;
 		}
 
 		#endregion Construction and Destruction
@@ -75,7 +74,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				switch ( attribute.ToLower() )
 				{
 					case "fbo":
-						return _fbo;
+						return this._fbo;
 					default:
 						return base[ attribute ];
 				}
@@ -84,10 +83,9 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		public override void SwapBuffers( bool waitForVSync )
 		{
-			_fbo.SwapBuffers();
+			this._fbo.SwapBuffers();
 		}
 
 		#endregion GLESRenderTexture Implementation
 	}
 }
-

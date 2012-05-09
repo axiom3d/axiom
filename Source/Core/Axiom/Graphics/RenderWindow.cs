@@ -82,11 +82,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _top;
+				return this._top;
 			}
 			set
 			{
-				_top = value;
+				this._top = value;
 			}
 		}
 
@@ -103,11 +103,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _left;
+				return this._left;
 			}
 			set
 			{
-				_left = value;
+				this._left = value;
 			}
 		}
 
@@ -124,11 +124,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return isFullScreen;
+				return this.isFullScreen;
 			}
 			protected set
 			{
-				isFullScreen = value;
+				this.isFullScreen = value;
 			}
 		}
 
@@ -185,11 +185,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _isPrimary;
+				return this._isPrimary;
 			}
 			internal set // Only to be called by root
 			{
-				_isPrimary = value;
+				this._isPrimary = value;
 			}
 		}
 
@@ -282,8 +282,8 @@ namespace Axiom.Graphics
 		public virtual void GetMetrics( out int width, out int height, out int colorDepth, out int left, out int top )
 		{
 			GetMetrics( out width, out height, out colorDepth );
-			top = _top;
-			left = _left;
+			top = this._top;
+			left = this._left;
 		}
 
 		#endregion

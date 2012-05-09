@@ -65,11 +65,11 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				trayLoc = value;
+				this.trayLoc = value;
 			}
 			get
 			{
-				return trayLoc;
+				return this.trayLoc;
 			}
 		}
 
@@ -80,11 +80,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return listener;
+				return this.listener;
 			}
 			set
 			{
-				listener = value;
+				this.listener = value;
 			}
 		}
 
@@ -95,7 +95,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return element;
+				return this.element;
 			}
 		}
 
@@ -106,7 +106,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return element.Name;
+				return this.element.Name;
 			}
 		}
 
@@ -117,7 +117,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return trayLoc;
+				return this.trayLoc;
 			}
 		}
 
@@ -128,7 +128,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return element.IsVisible;
+				return this.element.IsVisible;
 			}
 		}
 
@@ -141,9 +141,9 @@ namespace Axiom.Samples
 		/// </summary>
 		public Widget()
 		{
-			trayLoc = TrayLocation.None;
-			element = null;
-			listener = null;
+			this.trayLoc = TrayLocation.None;
+			this.element = null;
+			this.listener = null;
 		}
 
 		#endregion construction
@@ -314,11 +314,11 @@ namespace Axiom.Samples
 		/// </summary>
 		public void Cleanup()
 		{
-			if ( element != null )
+			if ( this.element != null )
 			{
-				NukeOverlayElement( element );
+				NukeOverlayElement( this.element );
 			}
-			element = null;
+			this.element = null;
 		}
 
 		/// <summary>
@@ -326,7 +326,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public void Hide()
 		{
-			element.Hide();
+			this.element.Hide();
 		}
 
 		/// <summary>
@@ -334,7 +334,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public void Show()
 		{
-			element.Show();
+			this.element.Show();
 		}
 
 		#endregion

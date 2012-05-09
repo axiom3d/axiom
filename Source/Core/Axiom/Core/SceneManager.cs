@@ -274,7 +274,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return specialCaseRenderQueueList;
+				return this.specialCaseRenderQueueList;
 			}
 		}
 
@@ -284,12 +284,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return worldGeometryRenderQueueId;
+				return this.worldGeometryRenderQueueId;
 			}
 
 			set
 			{
-				worldGeometryRenderQueueId = value;
+				this.worldGeometryRenderQueueId = value;
 			}
 		}
 
@@ -573,7 +573,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return cameraList.Values;
+				return this.cameraList.Values;
 			}
 		}
 
@@ -590,7 +590,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return sceneNodeList.Values;
+				return this.sceneNodeList.Values;
 			}
 		}
 
@@ -601,7 +601,8 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTechnique == ShadowTechnique.StencilModulative || shadowTechnique == ShadowTechnique.StencilAdditive;
+				return this.shadowTechnique == ShadowTechnique.StencilModulative ||
+				       this.shadowTechnique == ShadowTechnique.StencilAdditive;
 			}
 		}
 
@@ -612,7 +613,8 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTechnique == ShadowTechnique.TextureModulative || shadowTechnique == ShadowTechnique.TextureAdditive;
+				return this.shadowTechnique == ShadowTechnique.TextureModulative ||
+				       this.shadowTechnique == ShadowTechnique.TextureAdditive;
 			}
 		}
 
@@ -623,7 +625,8 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTechnique == ShadowTechnique.StencilAdditive || shadowTechnique == ShadowTechnique.TextureAdditive;
+				return this.shadowTechnique == ShadowTechnique.StencilAdditive ||
+				       this.shadowTechnique == ShadowTechnique.TextureAdditive;
 			}
 		}
 
@@ -634,7 +637,8 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTechnique == ShadowTechnique.StencilModulative || shadowTechnique == ShadowTechnique.TextureModulative;
+				return this.shadowTechnique == ShadowTechnique.StencilModulative ||
+				       this.shadowTechnique == ShadowTechnique.TextureModulative;
 			}
 		}
 
@@ -645,7 +649,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTechnique != ShadowTechnique.None;
+				return this.shadowTechnique != ShadowTechnique.None;
 			}
 		}
 
@@ -679,11 +683,11 @@ namespace Axiom.Core
 		{
 			add
 			{
-				_queueStartedEvent.EventSinks += value;
+				this._queueStartedEvent.EventSinks += value;
 			}
 			remove
 			{
-				_queueStartedEvent.EventSinks -= value;
+				this._queueStartedEvent.EventSinks -= value;
 			}
 		}
 
@@ -696,11 +700,11 @@ namespace Axiom.Core
 		{
 			add
 			{
-				_queueEndedEvent.EventSinks += value;
+				this._queueEndedEvent.EventSinks += value;
 			}
 			remove
 			{
-				_queueEndedEvent.EventSinks -= value;
+				this._queueEndedEvent.EventSinks -= value;
 			}
 		}
 
@@ -723,52 +727,52 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return autoParamDataSource;
+				return this.autoParamDataSource;
 			}
 		}
 
 		public SceneManager( string name )
 			: base()
 		{
-			cameraList = new CameraCollection();
-			sceneNodeList = new SceneNodeCollection();
-			animationList = new AnimationCollection();
-			animationStateList = new AnimationStateSet();
-			regionList = new List<StaticGeometry.Region>();
+			this.cameraList = new CameraCollection();
+			this.sceneNodeList = new SceneNodeCollection();
+			this.animationList = new AnimationCollection();
+			this.animationStateList = new AnimationStateSet();
+			this.regionList = new List<StaticGeometry.Region>();
 
-			shadowCasterQueryListener = new ShadowCasterSceneQueryListener( this );
+			this.shadowCasterQueryListener = new ShadowCasterSceneQueryListener( this );
 
 			// create the root scene node
-			rootSceneNode = new SceneNode( this, "Root" );
-			rootSceneNode.SetAsRootNode();
-			defaultRootNode = rootSceneNode;
+			this.rootSceneNode = new SceneNode( this, "Root" );
+			this.rootSceneNode.SetAsRootNode();
+			this.defaultRootNode = this.rootSceneNode;
 
 			this.name = name;
 
 			// default to no fog
-			fogMode = FogMode.None;
+			this.fogMode = FogMode.None;
 
 			// no shadows by default
-			shadowTechnique = ShadowTechnique.None;
+			this.shadowTechnique = ShadowTechnique.None;
 
 			// setup default shadow camera setup
-			_defaultShadowCameraSetup = new DefaultShadowCameraSetup();
+			this._defaultShadowCameraSetup = new DefaultShadowCameraSetup();
 
-			illuminationStage = IlluminationRenderStage.None;
-			renderingNoShadowQueue = false;
-			renderingMainGroup = false;
-			shadowColor.a = shadowColor.r = shadowColor.g = shadowColor.b = 0.25f;
-			shadowDirLightExtrudeDist = 10000;
-			shadowIndexBufferSize = 51200;
-			shadowTextureOffset = 0.6f;
-			shadowTextureFadeStart = 0.7f;
-			shadowTextureFadeEnd = 0.9f;
-			shadowTextureSize = 512;
-			shadowTextureCount = 1;
-			findVisibleObjects = true;
-			suppressRenderStateChanges = false;
-			suppressShadows = false;
-			shadowUseInfiniteFarPlane = true;
+			this.illuminationStage = IlluminationRenderStage.None;
+			this.renderingNoShadowQueue = false;
+			this.renderingMainGroup = false;
+			this.shadowColor.a = this.shadowColor.r = this.shadowColor.g = this.shadowColor.b = 0.25f;
+			this.shadowDirLightExtrudeDist = 10000;
+			this.shadowIndexBufferSize = 51200;
+			this.shadowTextureOffset = 0.6f;
+			this.shadowTextureFadeStart = 0.7f;
+			this.shadowTextureFadeEnd = 0.9f;
+			this.shadowTextureSize = 512;
+			this.shadowTextureCount = 1;
+			this.findVisibleObjects = true;
+			this.suppressRenderStateChanges = false;
+			this.suppressShadows = false;
+			this.shadowUseInfiniteFarPlane = true;
 		}
 
 		#endregion Constructors
@@ -797,24 +801,24 @@ namespace Axiom.Core
 						op = null;
 					}
 
-					if ( autoParamDataSource != null )
+					if ( this.autoParamDataSource != null )
 					{
-						if ( !autoParamDataSource.IsDisposed )
+						if ( !this.autoParamDataSource.IsDisposed )
 						{
-							autoParamDataSource.Dispose();
+							this.autoParamDataSource.Dispose();
 						}
 
-						autoParamDataSource = null;
+						this.autoParamDataSource = null;
 					}
 
-					if ( rootSceneNode != null )
+					if ( this.rootSceneNode != null )
 					{
-						if ( !rootSceneNode.IsDisposed )
+						if ( !this.rootSceneNode.IsDisposed )
 						{
-							rootSceneNode.Dispose();
+							this.rootSceneNode.Dispose();
 						}
 
-						rootSceneNode = null;
+						this.rootSceneNode = null;
 					}
 				}
 			}
@@ -846,7 +850,7 @@ namespace Axiom.Core
 		public virtual SceneNode CreateSceneNode()
 		{
 			var node = new SceneNode( this );
-			sceneNodeList.Add( node );
+			this.sceneNodeList.Add( node );
 			return node;
 		}
 
@@ -870,7 +874,7 @@ namespace Axiom.Core
 		public virtual SceneNode CreateSceneNode( string name )
 		{
 			var node = new SceneNode( this, name );
-			sceneNodeList.Add( node );
+			this.sceneNodeList.Add( node );
 			return node;
 		}
 
@@ -896,14 +900,14 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual Animation CreateAnimation( string name, float length )
 		{
-			if ( animationList.ContainsKey( name ) )
+			if ( this.animationList.ContainsKey( name ) )
 			{
 				throw new AxiomException( string.Format( "An animation with the name '{0}' already exists in the scene.", name ) );
 			}
 
 			// create a new animation and record it locally
 			var anim = new Animation( name, length );
-			animationList.Add( name, anim );
+			this.animationList.Add( name, anim );
 
 			return anim;
 		}
@@ -943,12 +947,12 @@ namespace Axiom.Core
 		public virtual AnimationState CreateAnimationState( string animationName )
 		{
 			// do we have this already?
-			if ( animationStateList.HasAnimationState( animationName ) )
+			if ( this.animationStateList.HasAnimationState( animationName ) )
 			{
 				throw new AxiomException( "Cannot create, AnimationState already exists: " + animationName );
 			}
 
-			if ( !animationList.ContainsKey( animationName ) )
+			if ( !this.animationList.ContainsKey( animationName ) )
 			{
 				throw new AxiomException(
 					string.Format(
@@ -957,10 +961,10 @@ namespace Axiom.Core
 			}
 
 			// get a reference to the sepcified animation
-			var anim = animationList[ animationName ];
+			var anim = this.animationList[ animationName ];
 
 			// create and return new animation state
-			return animationStateList.CreateAnimationState( animationName, 0, anim.Length );
+			return this.animationStateList.CreateAnimationState( animationName, 0, anim.Length );
 		}
 
 		/// <summary>
@@ -995,7 +999,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual BillboardSet CreateBillboardSet( uint poolSize )
 		{
-			string name = movableNameGenerator.GetNextUniqueName();
+			string name = this.movableNameGenerator.GetNextUniqueName();
 			return CreateBillboardSet( name, poolSize );
 		}
 
@@ -1026,14 +1030,14 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual Camera CreateCamera( string name )
 		{
-			if ( cameraList.ContainsKey( name ) )
+			if ( this.cameraList.ContainsKey( name ) )
 			{
 				throw new AxiomException( string.Format( "A camera with the name '{0}' already exists in the scene.", name ) );
 			}
 
 			// create the camera and add it to our local list
 			var camera = new Camera( name, this );
-			cameraList.Add( camera );
+			this.cameraList.Add( camera );
 
 			return camera;
 		}
@@ -1108,7 +1112,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual Light CreateLight()
 		{
-			string name = movableNameGenerator.GetNextUniqueName();
+			string name = this.movableNameGenerator.GetNextUniqueName();
 			return CreateLight( name );
 		}
 
@@ -1174,7 +1178,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual ManualObject CreateManualObject()
 		{
-			string name = movableNameGenerator.GetNextUniqueName();
+			string name = this.movableNameGenerator.GetNextUniqueName();
 			return CreateManualObject( name );
 		}
 
@@ -1231,16 +1235,16 @@ namespace Axiom.Core
 			DestroyAllStaticGeometry();
 			DestroyAllMovableObjects();
 
-			if ( rootSceneNode != null )
+			if ( this.rootSceneNode != null )
 			{
-				rootSceneNode.RemoveAllChildren();
-				rootSceneNode.DetachAllObjects();
+				this.rootSceneNode.RemoveAllChildren();
+				this.rootSceneNode.DetachAllObjects();
 			}
 
 			// Delete all SceneNodes, except root that is
-			foreach ( Node node in sceneNodeList )
+			foreach ( Node node in this.sceneNodeList )
 			{
-				foreach ( var currentNode in sceneNodeList.Values )
+				foreach ( var currentNode in this.sceneNodeList.Values )
 				{
 					if ( !currentNode.IsDisposed )
 					{
@@ -1248,23 +1252,23 @@ namespace Axiom.Core
 					}
 				}
 			}
-			sceneNodeList.Clear();
+			this.sceneNodeList.Clear();
 
-			if ( autoTrackingSceneNodes != null )
+			if ( this.autoTrackingSceneNodes != null )
 			{
-				autoTrackingSceneNodes.Clear();
+				this.autoTrackingSceneNodes.Clear();
 			}
 
 			// Clear animations
 			DestroyAllAnimations();
 
 			// Remove sky nodes since they've been deleted
-			skyBoxNode = skyPlaneNode = skyDomeNode = null;
-			isSkyBoxEnabled = isSkyPlaneEnabled = isSkyDomeEnabled = false;
+			this.skyBoxNode = this.skyPlaneNode = this.skyDomeNode = null;
+			this.isSkyBoxEnabled = this.isSkyPlaneEnabled = this.isSkyDomeEnabled = false;
 
-			if ( renderQueue != null )
+			if ( this.renderQueue != null )
 			{
-				renderQueue.Clear();
+				this.renderQueue.Clear();
 			}
 		}
 
@@ -1275,7 +1279,7 @@ namespace Axiom.Core
 		public virtual void DestroySceneNode( string name )
 		{
 			SceneNode node;
-			if ( !sceneNodeList.TryGetValue( name, out node ) )
+			if ( !this.sceneNodeList.TryGetValue( name, out node ) )
 			{
 				throw new AxiomException( "SceneNode named '{0}' not found.", name );
 			}
@@ -1301,7 +1305,7 @@ namespace Axiom.Core
 		internal void DestroySceneNode( SceneNode node, bool removeFromParent )
 		{
 			// Find any scene nodes which are tracking this node, and turn them off.
-			foreach ( var autoNode in autoTrackingSceneNodes.Values )
+			foreach ( var autoNode in this.autoTrackingSceneNodes.Values )
 			{
 				// Tracking this node
 				if ( autoNode.AutoTrackTarget == node )
@@ -1312,7 +1316,7 @@ namespace Axiom.Core
 				else if ( autoNode == node )
 				{
 					// node being removed is a tracker
-					autoTrackingSceneNodes.Remove( name );
+					this.autoTrackingSceneNodes.Remove( this.name );
 				}
 			}
 
@@ -1322,7 +1326,7 @@ namespace Axiom.Core
 			}
 
 			// removes the node from the list
-			sceneNodeList.Remove( node.Name );
+			this.sceneNodeList.Remove( node.Name );
 		}
 
 		/// <summary>
@@ -1332,13 +1336,13 @@ namespace Axiom.Core
 		public virtual void DestroyAnimation( string name )
 		{
 			// Also destroy any animation states referencing this animation
-			animationStateList.RemoveAnimationState( name );
-			var animation = animationList[ name ];
+			this.animationStateList.RemoveAnimationState( name );
+			var animation = this.animationList[ name ];
 			if ( animation == null )
 			{
 				throw new AxiomException( "Animation named '{0}' not found.", name );
 			}
-			animationList.Remove( name );
+			this.animationList.Remove( name );
 		}
 
 		/// <summary>
@@ -1347,13 +1351,13 @@ namespace Axiom.Core
 		/// <param name="name"></param>
 		public virtual void DestroyAnimationState( string name )
 		{
-			var animationState = animationStateList.GetAnimationState( name );
+			var animationState = this.animationStateList.GetAnimationState( name );
 			if ( animationState == null )
 			{
 				throw new AxiomException( "AnimationState named '{0}' not found.", name );
 			}
 
-			animationStateList.RemoveAnimationState( name );
+			this.animationStateList.RemoveAnimationState( name );
 		}
 
 		/// <summary>
@@ -1363,9 +1367,9 @@ namespace Axiom.Core
 		{
 			// Destroy all states too, since they cannot reference destroyed animations
 			DestroyAllAnimationStates();
-			if ( animationList != null )
+			if ( this.animationList != null )
 			{
-				animationList.Clear();
+				this.animationList.Clear();
 			}
 		}
 
@@ -1374,9 +1378,9 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void DestroyAllAnimationStates()
 		{
-			if ( animationStateList != null )
+			if ( this.animationStateList != null )
 			{
-				animationStateList.RemoveAllAnimationStates();
+				this.animationStateList.RemoveAllAnimationStates();
 			}
 		}
 
@@ -1410,7 +1414,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual Camera GetCamera( string name )
 		{
-			var camera = cameraList[ name ];
+			var camera = this.cameraList[ name ];
 			if ( camera == null )
 			{
 				throw new AxiomException( "Camera named '{0}' not found.", name );
@@ -1446,7 +1450,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual Animation GetAnimation( string name )
 		{
-			var animation = animationList[ name ];
+			var animation = this.animationList[ name ];
 			return animation;
 		}
 
@@ -1457,7 +1461,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public virtual AnimationState GetAnimationState( string name )
 		{
-			var animationState = animationStateList.GetAnimationState( name );
+			var animationState = this.animationStateList.GetAnimationState( name );
 			return animationState;
 		}
 
@@ -1501,12 +1505,12 @@ namespace Axiom.Core
 		/// </returns>
 		public virtual RenderQueue GetRenderQueue()
 		{
-			if ( renderQueue == null )
+			if ( this.renderQueue == null )
 			{
 				InitRenderQueue();
 			}
 
-			return renderQueue;
+			return this.renderQueue;
 		}
 
 		/// <summary>
@@ -1517,13 +1521,13 @@ namespace Axiom.Core
 		/// </remarks>
 		protected virtual void InitRenderQueue()
 		{
-			renderQueue = new RenderQueue();
+			this.renderQueue = new RenderQueue();
 
 			// init render queues that do not need shadows
-			renderQueue.GetQueueGroup( RenderQueueGroupID.Background ).ShadowsEnabled = false;
-			renderQueue.GetQueueGroup( RenderQueueGroupID.Overlay ).ShadowsEnabled = false;
-			renderQueue.GetQueueGroup( RenderQueueGroupID.SkiesEarly ).ShadowsEnabled = false;
-			renderQueue.GetQueueGroup( RenderQueueGroupID.SkiesLate ).ShadowsEnabled = false;
+			this.renderQueue.GetQueueGroup( RenderQueueGroupID.Background ).ShadowsEnabled = false;
+			this.renderQueue.GetQueueGroup( RenderQueueGroupID.Overlay ).ShadowsEnabled = false;
+			this.renderQueue.GetQueueGroup( RenderQueueGroupID.SkiesEarly ).ShadowsEnabled = false;
+			this.renderQueue.GetQueueGroup( RenderQueueGroupID.SkiesLate ).ShadowsEnabled = false;
 		}
 
 		/// <summary>
@@ -1533,7 +1537,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SceneNode GetSceneNode( string name )
 		{
-			var node = sceneNodeList[ name ];
+			var node = this.sceneNodeList[ name ];
 			/*
 			 * if(node == null)
 			 *		throw new AxiomException("Scene node '{0}' could not be found.",name);
@@ -1639,40 +1643,40 @@ namespace Axiom.Core
 		                                  Matrix4 projMatrix, bool doBeginEndFrame )
 		{
 			// configure all necessary parameters
-			targetRenderSystem.Viewport = vp;
-			targetRenderSystem.WorldMatrix = worldMatrix;
-			targetRenderSystem.ViewMatrix = viewMatrix;
-			targetRenderSystem.ProjectionMatrix = projMatrix;
+			this.targetRenderSystem.Viewport = vp;
+			this.targetRenderSystem.WorldMatrix = worldMatrix;
+			this.targetRenderSystem.ViewMatrix = viewMatrix;
+			this.targetRenderSystem.ProjectionMatrix = projMatrix;
 
 			if ( doBeginEndFrame )
 			{
-				targetRenderSystem.BeginFrame();
+				this.targetRenderSystem.BeginFrame();
 			}
 
 			// set the pass and render the object
 			SetPass( pass );
-			targetRenderSystem.Render( op );
+			this.targetRenderSystem.Render( op );
 
 			if ( doBeginEndFrame )
 			{
-				targetRenderSystem.EndFrame();
+				this.targetRenderSystem.EndFrame();
 			}
 		}
 
 		public void ResetViewProjectionMode()
 		{
-			if ( lastViewWasIdentity )
+			if ( this.lastViewWasIdentity )
 			{
 				// Coming back to normal from identity view
-				targetRenderSystem.ViewMatrix = cameraInProgress.ViewMatrix;
-				lastViewWasIdentity = false;
+				this.targetRenderSystem.ViewMatrix = this.cameraInProgress.ViewMatrix;
+				this.lastViewWasIdentity = false;
 			}
 
-			if ( lastProjectionWasIdentity )
+			if ( this.lastProjectionWasIdentity )
 			{
 				// Coming back from flat projection
-				targetRenderSystem.ProjectionMatrix = cameraInProgress.ProjectionMatrixRS;
-				lastProjectionWasIdentity = false;
+				this.targetRenderSystem.ProjectionMatrix = this.cameraInProgress.ProjectionMatrixRS;
+				this.lastProjectionWasIdentity = false;
 			}
 		}
 
@@ -1699,7 +1703,7 @@ namespace Axiom.Core
 		protected virtual void FindLightsAffectingFrustum( Camera camera )
 		{
 			// Basic iteration for this scene manager
-			lightsAffectingFrustum.Clear();
+			this.lightsAffectingFrustum.Clear();
 
 			var lightList = GetMovableObjectCollection( LightFactory.TypeName );
 
@@ -1708,9 +1712,9 @@ namespace Axiom.Core
 
 			foreach ( Light light in lightList.Values )
 			{
-				if ( cameraRelativeRendering )
+				if ( this.cameraRelativeRendering )
 				{
-					light.CameraRelative = cameraInProgress;
+					light.CameraRelative = this.cameraInProgress;
 				}
 				else
 				{
@@ -1722,7 +1726,7 @@ namespace Axiom.Core
 					if ( light.Type == LightType.Directional )
 					{
 						// Always visible
-						lightsAffectingFrustum.Add( light );
+						this.lightsAffectingFrustum.Add( light );
 					}
 					else
 					{
@@ -1733,7 +1737,7 @@ namespace Axiom.Core
 
 						if ( camera.IsObjectVisible( sphere ) )
 						{
-							lightsAffectingFrustum.Add( light );
+							this.lightsAffectingFrustum.Add( light );
 						}
 					}
 				}
@@ -1756,7 +1760,7 @@ namespace Axiom.Core
 		/// <param name="camera"></param>
 		protected virtual IList FindShadowCastersForLight( Light light, Camera camera )
 		{
-			shadowCasterList.Clear();
+			this.shadowCasterList.Clear();
 
 			if ( light.Type == LightType.Directional )
 			{
@@ -1764,7 +1768,7 @@ namespace Axiom.Core
 				var aabb = new AxisAlignedBox();
 				var corners = camera.WorldSpaceCorners;
 				Vector3 min, max;
-				var extrude = light.DerivedDirection*-shadowDirLightExtrudeDist;
+				var extrude = light.DerivedDirection*-this.shadowDirLightExtrudeDist;
 				// do first corner
 				min = max = corners[ 0 ];
 				min.Floor( corners[ 0 ] + extrude );
@@ -1778,18 +1782,19 @@ namespace Axiom.Core
 				}
 				aabb.SetExtents( min, max );
 
-				if ( shadowCasterAABBQuery == null )
+				if ( this.shadowCasterAABBQuery == null )
 				{
-					shadowCasterAABBQuery = CreateAABBRegionQuery( aabb );
+					this.shadowCasterAABBQuery = CreateAABBRegionQuery( aabb );
 				}
 				else
 				{
-					shadowCasterAABBQuery.Box = aabb;
+					this.shadowCasterAABBQuery.Box = aabb;
 				}
 				// Execute, use callback
-				shadowCasterQueryListener.Prepare( false, light.GetFrustumClipVolumes( camera ), light, camera, shadowCasterList,
-				                                   light.ShadowFarDistanceSquared );
-				shadowCasterAABBQuery.Execute( shadowCasterQueryListener );
+				this.shadowCasterQueryListener.Prepare( false, light.GetFrustumClipVolumes( camera ), light, camera,
+				                                        this.shadowCasterList,
+				                                        light.ShadowFarDistanceSquared );
+				this.shadowCasterAABBQuery.Execute( this.shadowCasterQueryListener );
 			}
 			else
 			{
@@ -1799,13 +1804,13 @@ namespace Axiom.Core
 				if ( camera.IsObjectVisible( s ) )
 				{
 					// create or init a sphere region query
-					if ( shadowCasterSphereQuery == null )
+					if ( this.shadowCasterSphereQuery == null )
 					{
-						shadowCasterSphereQuery = CreateSphereRegionQuery( s );
+						this.shadowCasterSphereQuery = CreateSphereRegionQuery( s );
 					}
 					else
 					{
-						shadowCasterSphereQuery.Sphere = s;
+						this.shadowCasterSphereQuery.Sphere = s;
 					}
 
 					// check if the light is within view of the camera
@@ -1821,14 +1826,14 @@ namespace Axiom.Core
 					}
 
 					// prepare the query and execute using the callback
-					shadowCasterQueryListener.Prepare( lightInFrustum, volumeList, light, camera, shadowCasterList,
-					                                   light.ShadowFarDistanceSquared );
+					this.shadowCasterQueryListener.Prepare( lightInFrustum, volumeList, light, camera, this.shadowCasterList,
+					                                        light.ShadowFarDistanceSquared );
 
-					shadowCasterSphereQuery.Execute( shadowCasterQueryListener );
+					this.shadowCasterSphereQuery.Execute( this.shadowCasterQueryListener );
 				}
 			}
 
-			return shadowCasterList;
+			return this.shadowCasterList;
 		}
 
 		/// <summary>
@@ -1836,40 +1841,40 @@ namespace Axiom.Core
 		/// </summary>
 		protected virtual void InitShadowVolumeMaterials()
 		{
-			if ( shadowMaterialInitDone )
+			if ( this.shadowMaterialInitDone )
 			{
 				return;
 			}
 
-			if ( shadowDebugPass == null )
+			if ( this.shadowDebugPass == null )
 			{
 				InitShadowDebugPass();
 			}
 
-			if ( shadowStencilPass == null )
+			if ( this.shadowStencilPass == null )
 			{
 				InitShadowStencilPass();
 			}
 
-			if ( shadowModulativePass == null )
+			if ( this.shadowModulativePass == null )
 			{
 				InitShadowModulativePass();
 			}
 
 			// Also init full screen quad while we're at it
-			if ( fullScreenQuad == null )
+			if ( this.fullScreenQuad == null )
 			{
-				fullScreenQuad = new Rectangle2D();
-				fullScreenQuad.SetCorners( -1, 1, 1, -1 );
+				this.fullScreenQuad = new Rectangle2D();
+				this.fullScreenQuad.SetCorners( -1, 1, 1, -1 );
 			}
 
 			// Also init shadow caster material for texture shadows
-			if ( shadowCasterPlainBlackPass == null )
+			if ( this.shadowCasterPlainBlackPass == null )
 			{
 				InitShadowCasterPass();
 			}
 
-			if ( shadowReceiverPass == null )
+			if ( this.shadowReceiverPass == null )
 			{
 				InitShadowReceiverPass();
 			}
@@ -1887,7 +1892,7 @@ namespace Axiom.Core
 				                                                       TextureType.TwoD );
 			}
 
-			shadowMaterialInitDone = true;
+			this.shadowMaterialInitDone = true;
 		}
 
 		private void InitShadowReceiverPass()
@@ -1899,15 +1904,15 @@ namespace Axiom.Core
 				matShadRec =
 					(Material)
 					MaterialManager.Instance.Create( TEXTURE_SHADOW_RECEIVER_MATERIAL, ResourceGroupManager.InternalResourceGroupName );
-				shadowReceiverPass = matShadRec.GetTechnique( 0 ).GetPass( 0 );
-				shadowReceiverPass.SetSceneBlending( SceneBlendFactor.DestColor, SceneBlendFactor.Zero );
+				this.shadowReceiverPass = matShadRec.GetTechnique( 0 ).GetPass( 0 );
+				this.shadowReceiverPass.SetSceneBlending( SceneBlendFactor.DestColor, SceneBlendFactor.Zero );
 				// Don't set lighting and blending modes here, depends on additive / modulative
-				var t = shadowReceiverPass.CreateTextureUnitState();
+				var t = this.shadowReceiverPass.CreateTextureUnitState();
 				t.SetTextureAddressingMode( TextureAddressing.Clamp );
 			}
 			else
 			{
-				shadowReceiverPass = matShadRec.GetTechnique( 0 ).GetPass( 0 );
+				this.shadowReceiverPass = matShadRec.GetTechnique( 0 ).GetPass( 0 );
 			}
 		}
 
@@ -1920,23 +1925,23 @@ namespace Axiom.Core
 				matPlainBlack =
 					(Material)
 					MaterialManager.Instance.Create( TEXTURE_SHADOW_CASTER_MATERIAL, ResourceGroupManager.InternalResourceGroupName );
-				shadowCasterPlainBlackPass = matPlainBlack.GetTechnique( 0 ).GetPass( 0 );
+				this.shadowCasterPlainBlackPass = matPlainBlack.GetTechnique( 0 ).GetPass( 0 );
 				// Lighting has to be on, because we need shadow coloured objects
 				// Note that because we can't predict vertex programs, we'll have to
 				// bind light values to those, and so we bind White to ambient
 				// reflectance, and we'll set the ambient colour to the shadow colour
-				shadowCasterPlainBlackPass.Ambient = ColorEx.White;
-				shadowCasterPlainBlackPass.Diffuse = ColorEx.Black;
-				shadowCasterPlainBlackPass.SelfIllumination = ColorEx.Black;
-				shadowCasterPlainBlackPass.Specular = ColorEx.Black;
+				this.shadowCasterPlainBlackPass.Ambient = ColorEx.White;
+				this.shadowCasterPlainBlackPass.Diffuse = ColorEx.Black;
+				this.shadowCasterPlainBlackPass.SelfIllumination = ColorEx.Black;
+				this.shadowCasterPlainBlackPass.Specular = ColorEx.Black;
 				// Override fog
-				shadowCasterPlainBlackPass.SetFog( true, FogMode.None );
+				this.shadowCasterPlainBlackPass.SetFog( true, FogMode.None );
 				// no textures or anything else, we will bind vertex programs
 				// every so often though
 			}
 			else
 			{
-				shadowCasterPlainBlackPass = matPlainBlack.GetTechnique( 0 ).GetPass( 0 );
+				this.shadowCasterPlainBlackPass = matPlainBlack.GetTechnique( 0 ).GetPass( 0 );
 			}
 		}
 
@@ -1951,19 +1956,19 @@ namespace Axiom.Core
 					(Material)
 					MaterialManager.Instance.Create( STENCIL_SHADOW_MODULATIVE_MATERIAL, ResourceGroupManager.InternalResourceGroupName );
 
-				shadowModulativePass = matModStencil.GetTechnique( 0 ).GetPass( 0 );
-				shadowModulativePass.SetSceneBlending( SceneBlendFactor.DestColor, SceneBlendFactor.Zero );
-				shadowModulativePass.LightingEnabled = false;
-				shadowModulativePass.DepthWrite = false;
-				shadowModulativePass.DepthCheck = false;
-				var t = shadowModulativePass.CreateTextureUnitState();
+				this.shadowModulativePass = matModStencil.GetTechnique( 0 ).GetPass( 0 );
+				this.shadowModulativePass.SetSceneBlending( SceneBlendFactor.DestColor, SceneBlendFactor.Zero );
+				this.shadowModulativePass.LightingEnabled = false;
+				this.shadowModulativePass.DepthWrite = false;
+				this.shadowModulativePass.DepthCheck = false;
+				var t = this.shadowModulativePass.CreateTextureUnitState();
 				t.SetColorOperationEx( LayerBlendOperationEx.Modulate, LayerBlendSource.Manual, LayerBlendSource.Current,
-				                       shadowColor );
-				shadowModulativePass.CullingMode = CullingMode.None;
+				                       this.shadowColor );
+				this.shadowModulativePass.CullingMode = CullingMode.None;
 			}
 			else
 			{
-				shadowModulativePass = matModStencil.GetTechnique( 0 ).GetPass( 0 );
+				this.shadowModulativePass = matModStencil.GetTechnique( 0 ).GetPass( 0 );
 			}
 		}
 
@@ -1977,39 +1982,39 @@ namespace Axiom.Core
 				matDebug =
 					(Material)
 					MaterialManager.Instance.Create( SHADOW_VOLUMES_MATERIAL, ResourceGroupManager.InternalResourceGroupName );
-				shadowDebugPass = matDebug.GetTechnique( 0 ).GetPass( 0 );
-				shadowDebugPass.SetSceneBlending( SceneBlendType.Add );
-				shadowDebugPass.LightingEnabled = false;
-				shadowDebugPass.DepthWrite = false;
-				var t = shadowDebugPass.CreateTextureUnitState();
+				this.shadowDebugPass = matDebug.GetTechnique( 0 ).GetPass( 0 );
+				this.shadowDebugPass.SetSceneBlending( SceneBlendType.Add );
+				this.shadowDebugPass.LightingEnabled = false;
+				this.shadowDebugPass.DepthWrite = false;
+				var t = this.shadowDebugPass.CreateTextureUnitState();
 				t.SetColorOperationEx( LayerBlendOperationEx.Modulate, LayerBlendSource.Manual, LayerBlendSource.Current,
 				                       new ColorEx( 0.7f, 0.0f, 0.2f ) );
 
-				shadowDebugPass.CullingMode = CullingMode.None;
+				this.shadowDebugPass.CullingMode = CullingMode.None;
 
-				if ( targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					ShadowVolumeExtrudeProgram.Initialize();
 
 					// Enable the (infinite) point light extruder for now, just to get some params
-					shadowDebugPass.SetVertexProgram(
+					this.shadowDebugPass.SetVertexProgram(
 						ShadowVolumeExtrudeProgram.GetProgramName( ShadowVolumeExtrudeProgram.Programs.PointLight ) );
 
-					infiniteExtrusionParams = shadowDebugPass.VertexProgramParameters;
-					infiniteExtrusionParams.SetAutoConstant( 0, GpuProgramParameters.AutoConstantType.WorldViewProjMatrix );
-					infiniteExtrusionParams.SetAutoConstant( 4, GpuProgramParameters.AutoConstantType.LightPositionObjectSpace );
+					this.infiniteExtrusionParams = this.shadowDebugPass.VertexProgramParameters;
+					this.infiniteExtrusionParams.SetAutoConstant( 0, GpuProgramParameters.AutoConstantType.WorldViewProjMatrix );
+					this.infiniteExtrusionParams.SetAutoConstant( 4, GpuProgramParameters.AutoConstantType.LightPositionObjectSpace );
 					// Note ignored extra parameter - for compatibility with finite extrusion vertex program
-					infiniteExtrusionParams.SetAutoConstant( 5, GpuProgramParameters.AutoConstantType.ShadowExtrusionDistance );
+					this.infiniteExtrusionParams.SetAutoConstant( 5, GpuProgramParameters.AutoConstantType.ShadowExtrusionDistance );
 				}
 
 				matDebug.Compile();
 			}
 			else
 			{
-				shadowDebugPass = matDebug.GetTechnique( 0 ).GetPass( 0 );
-				if ( targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
+				this.shadowDebugPass = matDebug.GetTechnique( 0 ).GetPass( 0 );
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
-					infiniteExtrusionParams = shadowDebugPass.VertexProgramParameters;
+					this.infiniteExtrusionParams = this.shadowDebugPass.VertexProgramParameters;
 				}
 			}
 		}
@@ -2024,18 +2029,18 @@ namespace Axiom.Core
 				matStencil =
 					(Material)
 					MaterialManager.Instance.Create( STENCIL_SHADOW_VOLUMES_MATERIAL, ResourceGroupManager.InternalResourceGroupName );
-				shadowStencilPass = matStencil.GetTechnique( 0 ).GetPass( 0 );
+				this.shadowStencilPass = matStencil.GetTechnique( 0 ).GetPass( 0 );
 
-				if ( targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
 					// Enable the finite point light extruder for now, just to get some params
-					shadowStencilPass.SetVertexProgram(
+					this.shadowStencilPass.SetVertexProgram(
 						ShadowVolumeExtrudeProgram.GetProgramName( ShadowVolumeExtrudeProgram.Programs.PointLightFinite ) );
 
-					finiteExtrusionParams = shadowStencilPass.VertexProgramParameters;
-					finiteExtrusionParams.SetAutoConstant( 0, GpuProgramParameters.AutoConstantType.WorldViewProjMatrix );
-					finiteExtrusionParams.SetAutoConstant( 4, GpuProgramParameters.AutoConstantType.LightPositionObjectSpace );
-					finiteExtrusionParams.SetAutoConstant( 5, GpuProgramParameters.AutoConstantType.ShadowExtrusionDistance );
+					this.finiteExtrusionParams = this.shadowStencilPass.VertexProgramParameters;
+					this.finiteExtrusionParams.SetAutoConstant( 0, GpuProgramParameters.AutoConstantType.WorldViewProjMatrix );
+					this.finiteExtrusionParams.SetAutoConstant( 4, GpuProgramParameters.AutoConstantType.LightPositionObjectSpace );
+					this.finiteExtrusionParams.SetAutoConstant( 5, GpuProgramParameters.AutoConstantType.ShadowExtrusionDistance );
 				}
 				matStencil.Compile();
 				// Nothing else, we don't use this like a 'real' pass anyway,
@@ -2043,10 +2048,10 @@ namespace Axiom.Core
 			}
 			else
 			{
-				shadowStencilPass = matStencil.GetTechnique( 0 ).GetPass( 0 );
-				if ( targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
+				this.shadowStencilPass = matStencil.GetTechnique( 0 ).GetPass( 0 );
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 				{
-					finiteExtrusionParams = shadowStencilPass.VertexProgramParameters;
+					this.finiteExtrusionParams = this.shadowStencilPass.VertexProgramParameters;
 				}
 			}
 		}
@@ -2075,7 +2080,9 @@ namespace Axiom.Core
 				}
 				else
 				{
-					retPass = ( shadowTextureCustomCasterPass != null ? shadowTextureCustomCasterPass : shadowCasterPlainBlackPass );
+					retPass = ( this.shadowTextureCustomCasterPass != null
+					            	? this.shadowTextureCustomCasterPass
+					            	: this.shadowCasterPlainBlackPass );
 				}
 
 				// Special case alpha-blended passes
@@ -2106,7 +2113,7 @@ namespace Axiom.Core
 						pass.GetTextureUnitState( t ).CopyTo( tex );
 						// override colour function
 						tex.SetColorOperationEx( LayerBlendOperationEx.Source1, LayerBlendSource.Manual, LayerBlendSource.Current,
-						                         IsShadowTechniqueAdditive ? ColorEx.Black : shadowColor );
+						                         IsShadowTechniqueAdditive ? ColorEx.Black : this.shadowColor );
 					}
 					// Remove any extras
 					while ( retPass.TextureUnitStatesCount > origPassTUCount )
@@ -2146,14 +2153,14 @@ namespace Axiom.Core
 				else
 				{
 					// reset vp?
-					if ( retPass == shadowTextureCustomCasterPass )
+					if ( retPass == this.shadowTextureCustomCasterPass )
 					{
-						if ( retPass.VertexProgramName != shadowTextureCustomCasterVertexProgram )
+						if ( retPass.VertexProgramName != this.shadowTextureCustomCasterVertexProgram )
 						{
-							shadowTextureCustomCasterPass.SetVertexProgram( shadowTextureCustomCasterVertexProgram );
+							this.shadowTextureCustomCasterPass.SetVertexProgram( this.shadowTextureCustomCasterVertexProgram );
 							if ( retPass.HasVertexProgram )
 							{
-								retPass.VertexProgramParameters = shadowTextureCustomCasterVPParams;
+								retPass.VertexProgramParameters = this.shadowTextureCustomCasterVPParams;
 							}
 						}
 					}
@@ -2195,7 +2202,9 @@ namespace Axiom.Core
 				}
 				else
 				{
-					retPass = ( shadowTextureCustomReceiverPass != null ? shadowTextureCustomReceiverPass : shadowReceiverPass );
+					retPass = ( this.shadowTextureCustomReceiverPass != null
+					            	? this.shadowTextureCustomReceiverPass
+					            	: this.shadowReceiverPass );
 				}
 
 				// Does incoming pass have a custom shadow receiver program?
@@ -2214,14 +2223,14 @@ namespace Axiom.Core
 				}
 				else
 				{
-					if ( retPass == shadowTextureCustomReceiverPass )
+					if ( retPass == this.shadowTextureCustomReceiverPass )
 					{
-						if ( shadowTextureCustomReceiverPass.VertexProgramName != shadowTextureCustomReceiverVertexProgram )
+						if ( this.shadowTextureCustomReceiverPass.VertexProgramName != this.shadowTextureCustomReceiverVertexProgram )
 						{
-							shadowTextureCustomReceiverPass.SetVertexProgram( shadowTextureCustomReceiverVertexProgram );
+							this.shadowTextureCustomReceiverPass.SetVertexProgram( this.shadowTextureCustomReceiverVertexProgram );
 							if ( retPass.HasVertexProgram )
 							{
-								retPass.VertexProgramParameters = shadowTextureCustomReceiverVPParams;
+								retPass.VertexProgramParameters = this.shadowTextureCustomReceiverVPParams;
 							}
 						}
 					}
@@ -2299,15 +2308,15 @@ namespace Axiom.Core
 				else
 				{
 					// Reset any merged fragment programs from last time
-					if ( retPass == shadowTextureCustomReceiverPass )
+					if ( retPass == this.shadowTextureCustomReceiverPass )
 					{
 						// reset fp?
-						if ( retPass.FragmentProgramName != shadowTextureCustomReceiverFragmentProgram )
+						if ( retPass.FragmentProgramName != this.shadowTextureCustomReceiverFragmentProgram )
 						{
-							retPass.SetFragmentProgram( shadowTextureCustomReceiverFragmentProgram );
+							retPass.SetFragmentProgram( this.shadowTextureCustomReceiverFragmentProgram );
 							if ( retPass.HasFragmentProgram )
 							{
-								retPass.FragmentProgramParameters = shadowTextureCustomReceiverFPParams;
+								retPass.FragmentProgramParameters = this.shadowTextureCustomReceiverFPParams;
 							}
 						}
 					}
@@ -2351,7 +2360,8 @@ namespace Axiom.Core
 
 			// Set up scissor test (point & spot lights only)
 			var scissored = false;
-			if ( light.Type != LightType.Directional && targetRenderSystem.Capabilities.HasCapability( Capabilities.ScissorTest ) )
+			if ( light.Type != LightType.Directional &&
+			     this.targetRenderSystem.Capabilities.HasCapability( Capabilities.ScissorTest ) )
 			{
 				// Project the sphere onto the camera
 				float left, right, top, bottom;
@@ -2361,7 +2371,7 @@ namespace Axiom.Core
 					scissored = true;
 					// Turn normalised device coordinates into pixels
 					int iLeft, iTop, iWidth, iHeight;
-					currentViewport.GetActualDimensions( out iLeft, out iTop, out iWidth, out iHeight );
+					this.currentViewport.GetActualDimensions( out iLeft, out iTop, out iWidth, out iHeight );
 					int szLeft, szRight, szTop, szBottom;
 
 					szLeft = (int)( iLeft + ( ( left + 1 )*0.5f*iWidth ) );
@@ -2369,17 +2379,17 @@ namespace Axiom.Core
 					szTop = (int)( iTop + ( ( -top + 1 )*0.5f*iHeight ) );
 					szBottom = (int)( iTop + ( ( -bottom + 1 )*0.5f*iHeight ) );
 
-					targetRenderSystem.SetScissorTest( true, szLeft, szTop, szRight, szBottom );
+					this.targetRenderSystem.SetScissorTest( true, szLeft, szTop, szRight, szBottom );
 				}
 			}
 
-			targetRenderSystem.UnbindGpuProgram( GpuProgramType.Fragment );
+			this.targetRenderSystem.UnbindGpuProgram( GpuProgramType.Fragment );
 
 			// Can we do a 2-sided stencil?
 			var stencil2sided = false;
 
-			if ( targetRenderSystem.Capabilities.HasCapability( Capabilities.TwoSidedStencil ) &&
-			     targetRenderSystem.Capabilities.HasCapability( Capabilities.StencilWrap ) )
+			if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.TwoSidedStencil ) &&
+			     this.targetRenderSystem.Capabilities.HasCapability( Capabilities.StencilWrap ) )
 			{
 				// enable
 				stencil2sided = true;
@@ -2388,34 +2398,34 @@ namespace Axiom.Core
 			// Do we have access to vertex programs?
 			var extrudeInSoftware = true;
 
-			var finiteExtrude = !shadowUseInfiniteFarPlane ||
-			                    !targetRenderSystem.Capabilities.HasCapability( Capabilities.InfiniteFarPlane );
+			var finiteExtrude = !this.shadowUseInfiniteFarPlane ||
+			                    !this.targetRenderSystem.Capabilities.HasCapability( Capabilities.InfiniteFarPlane );
 
-			if ( targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
+			if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) )
 			{
 				extrudeInSoftware = false;
 				EnableHardwareShadowExtrusion( light, finiteExtrude );
 			}
 			else
 			{
-				targetRenderSystem.UnbindGpuProgram( GpuProgramType.Vertex );
+				this.targetRenderSystem.UnbindGpuProgram( GpuProgramType.Vertex );
 			}
 
 			// Add light to internal list for use in render call
-			tmpLightList.Clear();
-			tmpLightList.Add( light );
+			this.tmpLightList.Clear();
+			this.tmpLightList.Add( light );
 
 			// Turn off color writing and depth writing
-			targetRenderSystem.SetColorBufferWriteEnabled( false, false, false, false );
-			targetRenderSystem.DepthBufferWriteEnabled = false;
-			targetRenderSystem.StencilCheckEnabled = true;
-			targetRenderSystem.DepthBufferFunction = CompareFunction.Less;
+			this.targetRenderSystem.SetColorBufferWriteEnabled( false, false, false, false );
+			this.targetRenderSystem.DepthBufferWriteEnabled = false;
+			this.targetRenderSystem.StencilCheckEnabled = true;
+			this.targetRenderSystem.DepthBufferFunction = CompareFunction.Less;
 
 			// Calculate extrusion distance
 			float extrudeDistance = 0;
 			if ( light.Type == LightType.Directional )
 			{
-				extrudeDistance = shadowDirLightExtrudeDist;
+				extrudeDistance = this.shadowDirLightExtrudeDist;
 			}
 
 			// get the near clip volume
@@ -2427,20 +2437,20 @@ namespace Axiom.Core
 			var zfailAlgo = false;
 
 			CheckShadowCasters( casters, nearClipVol, light, extrudeInSoftware, finiteExtrude, zfailAlgo, camera, extrudeDistance,
-			                    stencil2sided, tmpLightList );
+			                    stencil2sided, this.tmpLightList );
 			// revert colour write state
-			targetRenderSystem.SetColorBufferWriteEnabled( true, true, true, true );
+			this.targetRenderSystem.SetColorBufferWriteEnabled( true, true, true, true );
 			// revert depth state
-			targetRenderSystem.SetDepthBufferParams();
+			this.targetRenderSystem.SetDepthBufferParams();
 
-			targetRenderSystem.StencilCheckEnabled = false;
+			this.targetRenderSystem.StencilCheckEnabled = false;
 
-			targetRenderSystem.UnbindGpuProgram( GpuProgramType.Vertex );
+			this.targetRenderSystem.UnbindGpuProgram( GpuProgramType.Vertex );
 
 			if ( scissored )
 			{
 				// disable scissor test
-				targetRenderSystem.SetScissorTest( false );
+				this.targetRenderSystem.SetScissorTest( false );
 			}
 		}
 
@@ -2448,34 +2458,34 @@ namespace Axiom.Core
 		{
 			// attach the appropriate extrusion vertex program
 			// Note we never unset it because support for vertex programs is constant
-			shadowStencilPass.SetVertexProgram( ShadowVolumeExtrudeProgram.GetProgramName( light.Type, finiteExtrude, false ) );
+			this.shadowStencilPass.SetVertexProgram( ShadowVolumeExtrudeProgram.GetProgramName( light.Type, finiteExtrude, false ) );
 
 			// Set params
 			if ( finiteExtrude )
 			{
-				shadowStencilPass.VertexProgramParameters = finiteExtrusionParams;
+				this.shadowStencilPass.VertexProgramParameters = this.finiteExtrusionParams;
 			}
 			else
 			{
-				shadowStencilPass.VertexProgramParameters = infiniteExtrusionParams;
+				this.shadowStencilPass.VertexProgramParameters = this.infiniteExtrusionParams;
 			}
 
-			if ( showDebugShadows )
+			if ( this.showDebugShadows )
 			{
-				shadowDebugPass.SetVertexProgram( ShadowVolumeExtrudeProgram.GetProgramName( light.Type, finiteExtrude, true ) );
+				this.shadowDebugPass.SetVertexProgram( ShadowVolumeExtrudeProgram.GetProgramName( light.Type, finiteExtrude, true ) );
 
 				// Set params
 				if ( finiteExtrude )
 				{
-					shadowDebugPass.VertexProgramParameters = finiteExtrusionParams;
+					this.shadowDebugPass.VertexProgramParameters = this.finiteExtrusionParams;
 				}
 				else
 				{
-					shadowDebugPass.VertexProgramParameters = infiniteExtrusionParams;
+					this.shadowDebugPass.VertexProgramParameters = this.infiniteExtrusionParams;
 				}
 			}
 
-			targetRenderSystem.BindGpuProgram( shadowStencilPass.VertexProgram );
+			this.targetRenderSystem.BindGpuProgram( this.shadowStencilPass.VertexProgram );
 		}
 
 		private void CheckShadowCasters( IList casters, PlaneBoundedVolume nearClipVol, Light light, bool extrudeInSoftware,
@@ -2531,7 +2541,7 @@ namespace Axiom.Core
 				}
 
 				// get shadow renderables
-				var renderables = caster.GetShadowVolumeRenderableEnumerator( shadowTechnique, light, shadowIndexBuffer,
+				var renderables = caster.GetShadowVolumeRenderableEnumerator( this.shadowTechnique, light, this.shadowIndexBuffer,
 				                                                              extrudeInSoftware, extrudeDistance, flags );
 
 				// If using one-sided stencil, render the first pass of all shadow
@@ -2557,13 +2567,13 @@ namespace Axiom.Core
 							if ( sr.IsLightCapSeperate && ( ( flags & (int)ShadowRenderableFlags.IncludeLightCap ) ) > 0 )
 							{
 								// must always fail depth check
-								targetRenderSystem.DepthBufferFunction = CompareFunction.AlwaysFail;
+								this.targetRenderSystem.DepthBufferFunction = CompareFunction.AlwaysFail;
 
 								Debug.Assert( sr.LightCapRenderable != null, "Shadow renderable is missing a separate light cap renderable!" );
 
 								RenderSingleShadowVolumeToStencil( sr.LightCapRenderable, zfailAlgo, stencil2sided, tmpLightList, ( i > 0 ) );
 								// reset depth function
-								targetRenderSystem.DepthBufferFunction = CompareFunction.Less;
+								this.targetRenderSystem.DepthBufferFunction = CompareFunction.Less;
 							}
 						}
 					}
@@ -2585,41 +2595,41 @@ namespace Axiom.Core
 			// this is to ensure we always increment before decrement
 			if ( ( secondPass ^ zfail ) )
 			{
-				targetRenderSystem.CullingMode = twoSided ? CullingMode.None : CullingMode.CounterClockwise;
-				targetRenderSystem.SetStencilBufferParams( CompareFunction.AlwaysPass, // always pass stencil check
-				                                           0, // no ref value (no compare)
-				                                           unchecked( (int)0xffffffff ), // no mask
-				                                           StencilOperation.Keep, // stencil test will never fail
-				                                           zfail
-				                                           	? ( twoSided
-				                                           	    	? StencilOperation.IncrementWrap
-				                                           	    	: StencilOperation.Increment )
-				                                           	: StencilOperation.Keep, // back face depth fail
-				                                           zfail
-				                                           	? StencilOperation.Keep
-				                                           	: ( twoSided
-				                                           	    	? StencilOperation.DecrementWrap
-				                                           	    	: StencilOperation.Decrement ), // back face pass
-				                                           twoSided );
+				this.targetRenderSystem.CullingMode = twoSided ? CullingMode.None : CullingMode.CounterClockwise;
+				this.targetRenderSystem.SetStencilBufferParams( CompareFunction.AlwaysPass, // always pass stencil check
+				                                                0, // no ref value (no compare)
+				                                                unchecked( (int)0xffffffff ), // no mask
+				                                                StencilOperation.Keep, // stencil test will never fail
+				                                                zfail
+				                                                	? ( twoSided
+				                                                	    	? StencilOperation.IncrementWrap
+				                                                	    	: StencilOperation.Increment )
+				                                                	: StencilOperation.Keep, // back face depth fail
+				                                                zfail
+				                                                	? StencilOperation.Keep
+				                                                	: ( twoSided
+				                                                	    	? StencilOperation.DecrementWrap
+				                                                	    	: StencilOperation.Decrement ), // back face pass
+				                                                twoSided );
 			}
 			else
 			{
-				targetRenderSystem.CullingMode = twoSided ? CullingMode.None : CullingMode.Clockwise;
-				targetRenderSystem.SetStencilBufferParams( CompareFunction.AlwaysPass, // always pass stencil check
-				                                           0, // no ref value (no compare)
-				                                           unchecked( (int)0xffffffff ), // no mask
-				                                           StencilOperation.Keep, // stencil test will never fail
-				                                           zfail
-				                                           	? ( twoSided
-				                                           	    	? StencilOperation.DecrementWrap
-				                                           	    	: StencilOperation.Decrement )
-				                                           	: StencilOperation.Keep, // front face depth fail
-				                                           zfail
-				                                           	? StencilOperation.Keep
-				                                           	: ( twoSided
-				                                           	    	? StencilOperation.IncrementWrap
-				                                           	    	: StencilOperation.Increment ), // front face pass
-				                                           twoSided );
+				this.targetRenderSystem.CullingMode = twoSided ? CullingMode.None : CullingMode.Clockwise;
+				this.targetRenderSystem.SetStencilBufferParams( CompareFunction.AlwaysPass, // always pass stencil check
+				                                                0, // no ref value (no compare)
+				                                                unchecked( (int)0xffffffff ), // no mask
+				                                                StencilOperation.Keep, // stencil test will never fail
+				                                                zfail
+				                                                	? ( twoSided
+				                                                	    	? StencilOperation.DecrementWrap
+				                                                	    	: StencilOperation.Decrement )
+				                                                	: StencilOperation.Keep, // front face depth fail
+				                                                zfail
+				                                                	? StencilOperation.Keep
+				                                                	: ( twoSided
+				                                                	    	? StencilOperation.IncrementWrap
+				                                                	    	: StencilOperation.Increment ), // front face pass
+				                                                twoSided );
 			}
 		}
 
@@ -2635,24 +2645,24 @@ namespace Axiom.Core
 			if ( !isSecondPass )
 			{
 				SetShadowVolumeStencilState( false, zfail, stencil2sided );
-				RenderSingleObject( sr, shadowStencilPass, false, manualLightList );
+				RenderSingleObject( sr, this.shadowStencilPass, false, manualLightList );
 			}
 
 			if ( !stencil2sided && isSecondPass )
 			{
 				// Second pass
 				SetShadowVolumeStencilState( true, zfail, false );
-				RenderSingleObject( sr, shadowStencilPass, false );
+				RenderSingleObject( sr, this.shadowStencilPass, false );
 			}
 
 			// Do we need to render a debug shadow marker?
-			if ( showDebugShadows && ( isSecondPass || stencil2sided ) )
+			if ( this.showDebugShadows && ( isSecondPass || stencil2sided ) )
 			{
 				// reset stencil & colour ops
-				targetRenderSystem.SetStencilBufferParams();
-				SetPass( shadowDebugPass );
-				RenderSingleObject( sr, shadowDebugPass, false, manualLightList );
-				targetRenderSystem.SetColorBufferWriteEnabled( false, false, false, false );
+				this.targetRenderSystem.SetStencilBufferParams();
+				SetPass( this.shadowDebugPass );
+				RenderSingleObject( sr, this.shadowDebugPass, false, manualLightList );
+				this.targetRenderSystem.SetColorBufferWriteEnabled( false, false, false, false );
 			}
 		}
 
@@ -2683,27 +2693,27 @@ namespace Axiom.Core
 				//Should we warn or throw an exception if an illegal state was achieved?
 			}
 
-			if ( !suppressRenderStateChanges || evenIfSuppressed )
+			if ( !this.suppressRenderStateChanges || evenIfSuppressed )
 			{
-				if ( illuminationStage == IlluminationRenderStage.RenderToTexture && shadowDerivation )
+				if ( this.illuminationStage == IlluminationRenderStage.RenderToTexture && shadowDerivation )
 				{
 					// Derive a special shadow caster pass from this one
 					pass = DeriveShadowCasterPass( pass );
 				}
-				else if ( illuminationStage == IlluminationRenderStage.RenderReceiverPass )
+				else if ( this.illuminationStage == IlluminationRenderStage.RenderReceiverPass )
 				{
 					pass = DeriveShadowReceiverPass( pass );
 				}
 
 				// Tell params about current pass
-				autoParamDataSource.CurrentPass = pass;
+				this.autoParamDataSource.CurrentPass = pass;
 
 				bool passSurfaceAndLightParams = true;
 				bool passFogParams = true;
 
 				if ( pass.HasVertexProgram )
 				{
-					targetRenderSystem.BindGpuProgram( pass.VertexProgram.BindingDelegate );
+					this.targetRenderSystem.BindGpuProgram( pass.VertexProgram.BindingDelegate );
 					// bind parameters later 
 					// does the vertex program want surface and light params passed to rendersystem?
 					passSurfaceAndLightParams = pass.VertexProgram.PassSurfaceAndLightStates;
@@ -2711,24 +2721,24 @@ namespace Axiom.Core
 				else
 				{
 					// Unbind program?
-					if ( targetRenderSystem.IsGpuProgramBound( GpuProgramType.Vertex ) )
+					if ( this.targetRenderSystem.IsGpuProgramBound( GpuProgramType.Vertex ) )
 					{
-						targetRenderSystem.UnbindGpuProgram( GpuProgramType.Vertex );
+						this.targetRenderSystem.UnbindGpuProgram( GpuProgramType.Vertex );
 					}
 					// Set fixed-function vertex parameters
 				}
 
 				if ( pass.HasGeometryProgram )
 				{
-					targetRenderSystem.BindGpuProgram( pass.GeometryProgram.BindingDelegate );
+					this.targetRenderSystem.BindGpuProgram( pass.GeometryProgram.BindingDelegate );
 					// bind parameters later 
 				}
 				else
 				{
 					// Unbind program?
-					if ( targetRenderSystem.IsGpuProgramBound( GpuProgramType.Geometry ) )
+					if ( this.targetRenderSystem.IsGpuProgramBound( GpuProgramType.Geometry ) )
 					{
-						targetRenderSystem.UnbindGpuProgram( GpuProgramType.Geometry );
+						this.targetRenderSystem.UnbindGpuProgram( GpuProgramType.Geometry );
 					}
 					// Set fixed-function vertex parameters
 				}
@@ -2738,35 +2748,35 @@ namespace Axiom.Core
 					// Set surface reflectance properties, only valid if lighting is enabled
 					if ( pass.LightingEnabled )
 					{
-						targetRenderSystem.SetSurfaceParams( pass.Ambient, pass.Diffuse, pass.Specular, pass.SelfIllumination,
-						                                     pass.Shininess, pass.VertexColorTracking );
+						this.targetRenderSystem.SetSurfaceParams( pass.Ambient, pass.Diffuse, pass.Specular, pass.SelfIllumination,
+						                                          pass.Shininess, pass.VertexColorTracking );
 					}
 						// #if NOT_IN_OGRE
 					else
 					{
 						// even with lighting off, we need ambient set to white
-						targetRenderSystem.SetSurfaceParams( ColorEx.White, ColorEx.Black, ColorEx.Black, ColorEx.Black, 0,
-						                                     TrackVertexColor.None );
+						this.targetRenderSystem.SetSurfaceParams( ColorEx.White, ColorEx.Black, ColorEx.Black, ColorEx.Black, 0,
+						                                          TrackVertexColor.None );
 					}
 					// #endif
 
 					// Dynamic lighting enabled?
-					targetRenderSystem.LightingEnabled = pass.LightingEnabled;
+					this.targetRenderSystem.LightingEnabled = pass.LightingEnabled;
 				}
 
 				// Using a fragment program?
 				if ( pass.HasFragmentProgram )
 				{
-					targetRenderSystem.BindGpuProgram( pass.FragmentProgram.BindingDelegate );
+					this.targetRenderSystem.BindGpuProgram( pass.FragmentProgram.BindingDelegate );
 					// bind parameters later 
 					passFogParams = pass.FragmentProgram.PassFogStates;
 				}
 				else
 				{
 					// Unbind program?
-					if ( targetRenderSystem.IsGpuProgramBound( GpuProgramType.Fragment ) )
+					if ( this.targetRenderSystem.IsGpuProgramBound( GpuProgramType.Fragment ) )
 					{
-						targetRenderSystem.UnbindGpuProgram( GpuProgramType.Fragment );
+						this.targetRenderSystem.UnbindGpuProgram( GpuProgramType.Fragment );
 					}
 
 					// Set fixed-function fragment settings
@@ -2790,11 +2800,11 @@ namespace Axiom.Core
 					else
 					{
 						// New fog params from scene
-						newFogMode = fogMode;
-						newFogColour = fogColor;
-						newFogStart = fogStart;
-						newFogEnd = fogEnd;
-						newFogDensity = fogDensity;
+						newFogMode = this.fogMode;
+						newFogColour = this.fogColor;
+						newFogStart = this.fogStart;
+						newFogEnd = this.fogEnd;
+						newFogDensity = this.fogDensity;
 					}
 
 					/* In D3D, it applies to shaders prior
@@ -2802,38 +2812,38 @@ namespace Axiom.Core
                     fragment program, and in other ways, them maybe access by gpu program via
                     "state.fog.XXX".
                     */
-					targetRenderSystem.SetFog( newFogMode, newFogColour, newFogDensity, newFogStart, newFogEnd );
+					this.targetRenderSystem.SetFog( newFogMode, newFogColour, newFogDensity, newFogStart, newFogEnd );
 				}
 
 				// Tell params about ORIGINAL fog
 				// Need to be able to override fixed function fog, but still have
 				// original fog parameters available to a shader that chooses to use
-				autoParamDataSource.SetFog( fogMode, fogColor, fogDensity, fogStart, fogEnd );
+				this.autoParamDataSource.SetFog( this.fogMode, this.fogColor, this.fogDensity, this.fogStart, this.fogEnd );
 
 				// The rest of the settings are the same no matter whether we use programs or not
 
 				// Set scene blending
 				if ( pass.HasSeparateSceneBlending )
 				{
-					targetRenderSystem.SetSeparateSceneBlending( pass.SourceBlendFactor, pass.DestinationBlendFactor,
-					                                             pass.SourceBlendFactorAlpha, pass.DestinationBlendFactorAlpha,
-					                                             pass.SceneBlendingOperation,
-					                                             pass.HasSeparateSceneBlendingOperations
-					                                             	? pass.SceneBlendingOperation
-					                                             	: pass.SceneBlendingOperationAlpha );
+					this.targetRenderSystem.SetSeparateSceneBlending( pass.SourceBlendFactor, pass.DestinationBlendFactor,
+					                                                  pass.SourceBlendFactorAlpha, pass.DestinationBlendFactorAlpha,
+					                                                  pass.SceneBlendingOperation,
+					                                                  pass.HasSeparateSceneBlendingOperations
+					                                                  	? pass.SceneBlendingOperation
+					                                                  	: pass.SceneBlendingOperationAlpha );
 				}
 				else
 				{
 					if ( pass.HasSeparateSceneBlendingOperations )
 					{
-						targetRenderSystem.SetSeparateSceneBlending( pass.SourceBlendFactor, pass.DestinationBlendFactor,
-						                                             pass.SourceBlendFactor, pass.DestinationBlendFactor,
-						                                             pass.SceneBlendingOperation, pass.SceneBlendingOperationAlpha );
+						this.targetRenderSystem.SetSeparateSceneBlending( pass.SourceBlendFactor, pass.DestinationBlendFactor,
+						                                                  pass.SourceBlendFactor, pass.DestinationBlendFactor,
+						                                                  pass.SceneBlendingOperation, pass.SceneBlendingOperationAlpha );
 					}
 					else
 					{
-						targetRenderSystem.SetSceneBlending( pass.SourceBlendFactor, pass.DestinationBlendFactor,
-						                                     pass.SceneBlendingOperation );
+						this.targetRenderSystem.SetSceneBlending( pass.SourceBlendFactor, pass.DestinationBlendFactor,
+						                                          pass.SceneBlendingOperation );
 					}
 				}
 
@@ -2848,9 +2858,9 @@ namespace Axiom.Core
 				//    pass.PointMaxSize
 				//    );
 
-				if ( targetRenderSystem.Capabilities.HasCapability( Capabilities.PointSprites ) )
+				if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.PointSprites ) )
 				{
-					targetRenderSystem.PointSpritesEnabled = pass.PointSpritesEnabled;
+					this.targetRenderSystem.PointSpritesEnabled = pass.PointSpritesEnabled;
 				}
 
 				//targetRenderSystem.PointSpritesEnabled = pass.PointSpritesEnabled;
@@ -2861,7 +2871,7 @@ namespace Axiom.Core
 				//}
 
 				// set all required texture units for this pass, and disable ones not being used
-				var numTextureUnits = targetRenderSystem.Capabilities.TextureUnitCount;
+				var numTextureUnits = this.targetRenderSystem.Capabilities.TextureUnitCount;
 				if ( pass.HasFragmentProgram && pass.FragmentProgram.IsSupported )
 				{
 					// Axiom: This effectivley breaks GLSL.
@@ -2869,7 +2879,7 @@ namespace Axiom.Core
 					// an upgrade of the scenemanager is recommended
 					//numTextureUnits = pass.FragmentProgram.SamplerCount;
 				}
-				else if ( Config.MaxTextureLayers < targetRenderSystem.Capabilities.TextureUnitCount )
+				else if ( Config.MaxTextureLayers < this.targetRenderSystem.Capabilities.TextureUnitCount )
 				{
 					numTextureUnits = Config.MaxTextureLayers;
 				}
@@ -2879,7 +2889,7 @@ namespace Axiom.Core
 					if ( i < pass.TextureUnitStatesCount )
 					{
 						var texUnit = pass.GetTextureUnitState( i );
-						targetRenderSystem.SetTextureUnitSettings( i, texUnit );
+						this.targetRenderSystem.SetTextureUnitSettings( i, texUnit );
 						//this.targetRenderSystem.SetTextureUnit( i, texUnit, !pass.HasFragmentProgram );
 					}
 					else
@@ -2887,40 +2897,40 @@ namespace Axiom.Core
 						// disable this unit
 						if ( !pass.HasFragmentProgram )
 						{
-							targetRenderSystem.DisableTextureUnit( i );
+							this.targetRenderSystem.DisableTextureUnit( i );
 						}
 					}
 				}
 
 				// Disable remaining texture units
-				targetRenderSystem.DisableTextureUnitsFrom( pass.TextureUnitStatesCount );
+				this.targetRenderSystem.DisableTextureUnitsFrom( pass.TextureUnitStatesCount );
 
 				// Depth Settings
-				targetRenderSystem.DepthBufferWriteEnabled = pass.DepthWrite;
-				targetRenderSystem.DepthBufferCheckEnabled = pass.DepthCheck;
-				targetRenderSystem.DepthBufferFunction = pass.DepthFunction;
-				targetRenderSystem.SetDepthBias( pass.DepthBiasConstant );
+				this.targetRenderSystem.DepthBufferWriteEnabled = pass.DepthWrite;
+				this.targetRenderSystem.DepthBufferCheckEnabled = pass.DepthCheck;
+				this.targetRenderSystem.DepthBufferFunction = pass.DepthFunction;
+				this.targetRenderSystem.SetDepthBias( pass.DepthBiasConstant );
 
 				// Aplha Reject Settings
-				targetRenderSystem.SetAlphaRejectSettings( pass.AlphaRejectFunction, (byte)pass.AlphaRejectValue,
-				                                           pass.IsAlphaToCoverageEnabled );
+				this.targetRenderSystem.SetAlphaRejectSettings( pass.AlphaRejectFunction, (byte)pass.AlphaRejectValue,
+				                                                pass.IsAlphaToCoverageEnabled );
 
 				// Color Write
 				// right now only using on/off, not per channel
 				var colWrite = pass.ColorWriteEnabled;
-				targetRenderSystem.SetColorBufferWriteEnabled( colWrite, colWrite, colWrite, colWrite );
+				this.targetRenderSystem.SetColorBufferWriteEnabled( colWrite, colWrite, colWrite, colWrite );
 
 				// Culling Mode
-				targetRenderSystem.CullingMode = pass.CullingMode;
+				this.targetRenderSystem.CullingMode = pass.CullingMode;
 
 				// Shading mode
 				//this.targetRenderSystem.ShadingMode = pass.ShadingMode;
 
 				// Polygon Mode
-				targetRenderSystem.PolygonMode = pass.PolygonMode;
+				this.targetRenderSystem.PolygonMode = pass.PolygonMode;
 
 				// set pass number
-				autoParamDataSource.PassNumber = pass.Index;
+				this.autoParamDataSource.PassNumber = pass.Index;
 			}
 
 			return pass;
@@ -3103,8 +3113,8 @@ namespace Axiom.Core
 			if ( useIdentityView )
 			{
 				// Using identity view now, change it
-				targetRenderSystem.ViewMatrix = Matrix4.Identity;
-				lastViewWasIdentity = true;
+				this.targetRenderSystem.ViewMatrix = Matrix4.Identity;
+				this.lastViewWasIdentity = true;
 			}
 
 			// Projection
@@ -3113,9 +3123,9 @@ namespace Axiom.Core
 			{
 				// Use identity projection matrix, still need to take RS depth into account
 				Matrix4 mat;
-				targetRenderSystem.ConvertProjectionMatrix( Matrix4.Identity, out mat );
-				targetRenderSystem.ProjectionMatrix = mat;
-				lastProjectionWasIdentity = true;
+				this.targetRenderSystem.ConvertProjectionMatrix( Matrix4.Identity, out mat );
+				this.targetRenderSystem.ProjectionMatrix = mat;
+				this.lastProjectionWasIdentity = true;
 			}
 		}
 
@@ -3130,11 +3140,11 @@ namespace Axiom.Core
 			e.Invocation = invocation;
 
 			var skip = false;
-			_queueStartedEvent.Fire( this, e, ( args ) =>
-			                                  {
-			                                  	skip |= args.SkipInvocation;
-			                                  	return true;
-			                                  } );
+			this._queueStartedEvent.Fire( this, e, ( args ) =>
+			                                       {
+			                                       	skip |= args.SkipInvocation;
+			                                       	return true;
+			                                       } );
 			return skip;
 		}
 
@@ -3149,11 +3159,11 @@ namespace Axiom.Core
 			e.Invocation = invocation;
 
 			var repeat = false;
-			_queueEndedEvent.Fire( this, e, ( args ) =>
-			                                {
-			                                	repeat |= args.RepeatInvocation;
-			                                	return true;
-			                                } );
+			this._queueEndedEvent.Fire( this, e, ( args ) =>
+			                                     {
+			                                     	repeat |= args.RepeatInvocation;
+			                                     	return true;
+			                                     } );
 			return repeat;
 		}
 
@@ -3181,7 +3191,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual RibbonTrail CreateRibbonTrail()
 		{
-			string name = movableNameGenerator.GetNextUniqueName();
+			string name = this.movableNameGenerator.GetNextUniqueName();
 			return CreateRibbonTrail( name );
 		}
 
@@ -3209,10 +3219,10 @@ namespace Axiom.Core
 
 		public void RekeySceneNode( string oldName, SceneNode node )
 		{
-			if ( sceneNodeList[ oldName ] == node )
+			if ( this.sceneNodeList[ oldName ] == node )
 			{
-				sceneNodeList.Remove( oldName );
-				sceneNodeList.Add( node );
+				this.sceneNodeList.Remove( oldName );
+				this.sceneNodeList.Add( node );
 			}
 		}
 
@@ -3424,12 +3434,12 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void RemoveAllCameras()
 		{
-			if ( cameraList != null )
+			if ( this.cameraList != null )
 			{
 				// notify the render system of each camera being removed
-				foreach ( var cam in cameraList.Values )
+				foreach ( var cam in this.cameraList.Values )
 				{
-					targetRenderSystem.NotifyCameraRemoved( cam );
+					this.targetRenderSystem.NotifyCameraRemoved( cam );
 
 					if ( !cam.IsDisposed )
 					{
@@ -3438,7 +3448,7 @@ namespace Axiom.Core
 				}
 
 				// clear the list
-				cameraList.Clear();
+				this.cameraList.Clear();
 			}
 		}
 
@@ -3475,10 +3485,10 @@ namespace Axiom.Core
 		/// <param name="camera">Reference to the camera to remove.</param>
 		public virtual void RemoveCamera( Camera camera )
 		{
-			cameraList.Remove( camera.Name );
+			this.cameraList.Remove( camera.Name );
 
 			// notify all render targets
-			targetRenderSystem.NotifyCameraRemoved( camera );
+			this.targetRenderSystem.NotifyCameraRemoved( camera );
 		}
 
 		/// <summary>
@@ -3490,9 +3500,9 @@ namespace Axiom.Core
 		/// <param name="name">Name of the camera to remove.</param>
 		public virtual void RemoveCamera( string name )
 		{
-			Debug.Assert( cameraList.ContainsKey( name ), string.Format( "Camera '{0}' does not exist in the scene.", name ) );
+			Debug.Assert( this.cameraList.ContainsKey( name ), string.Format( "Camera '{0}' does not exist in the scene.", name ) );
 
-			RemoveCamera( cameraList[ name ] );
+			RemoveCamera( this.cameraList[ name ] );
 		}
 
 		/// <summary>
@@ -3582,11 +3592,11 @@ namespace Axiom.Core
 		public virtual void SetFog( FogMode mode, ColorEx color, float density, float linearStart, float linearEnd )
 		{
 			// set all the fog information
-			fogMode = mode;
-			fogColor = color;
-			fogDensity = density;
-			fogStart = linearStart;
-			fogEnd = linearEnd;
+			this.fogMode = mode;
+			this.fogColor = color;
+			this.fogDensity = density;
+			this.fogStart = linearStart;
+			this.fogEnd = linearEnd;
 		}
 
 		/// <summary>
@@ -3598,11 +3608,11 @@ namespace Axiom.Core
 		public virtual void SetFog( FogMode mode, ColorEx color, float density )
 		{
 			// set all the fog information
-			fogMode = mode;
-			fogColor = color;
-			fogDensity = density;
-			fogStart = 0.0f;
-			fogEnd = 1.0f;
+			this.fogMode = mode;
+			this.fogColor = color;
+			this.fogDensity = density;
+			this.fogStart = 0.0f;
+			this.fogEnd = 1.0f;
 		}
 
 		/// <summary>
@@ -3659,7 +3669,7 @@ namespace Axiom.Core
 		                       string groupName )
 		{
 			// enable the skybox?
-			isSkyBoxEnabled = enable;
+			this.isSkyBoxEnabled = enable;
 
 			if ( enable )
 			{
@@ -3667,7 +3677,7 @@ namespace Axiom.Core
 
 				if ( m == null )
 				{
-					isSkyBoxEnabled = false;
+					this.isSkyBoxEnabled = false;
 					throw new AxiomException( string.Format( "Could not find skybox material '{0}'", materialName ) );
 				}
 				// Make sure the material doesn't update the depth buffer
@@ -3678,15 +3688,15 @@ namespace Axiom.Core
 				// ensure texture clamping to reduce fuzzy edges when using filtering
 				m.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).SetTextureAddressingMode( TextureAddressing.Clamp );
 
-				isSkyBoxDrawnFirst = drawFirst;
+				this.isSkyBoxDrawnFirst = drawFirst;
 
-				if ( skyBoxNode == null )
+				if ( this.skyBoxNode == null )
 				{
-					skyBoxNode = CreateSceneNode( "SkyBoxNode" );
+					this.skyBoxNode = CreateSceneNode( "SkyBoxNode" );
 				}
 				else
 				{
-					skyBoxNode.DetachAllObjects();
+					this.skyBoxNode.DetachAllObjects();
 				}
 
 				// need to create 6 plane entities for each side of the skybox
@@ -3695,16 +3705,16 @@ namespace Axiom.Core
 					var planeModel = CreateSkyboxPlane( (BoxPlane)i, distance, orientation, groupName );
 					var entityName = "SkyBoxPlane" + i;
 
-					if ( skyBoxEntities[ i ] != null )
+					if ( this.skyBoxEntities[ i ] != null )
 					{
-						RemoveEntity( skyBoxEntities[ i ] );
+						RemoveEntity( this.skyBoxEntities[ i ] );
 					}
 
 					// create an entity for this plane
-					skyBoxEntities[ i ] = CreateEntity( entityName, planeModel.Name );
+					this.skyBoxEntities[ i ] = CreateEntity( entityName, planeModel.Name );
 
 					// skyboxes need not cast shadows
-					skyBoxEntities[ i ].CastShadows = false;
+					this.skyBoxEntities[ i ].CastShadows = false;
 
 					// Have to create 6 materials, one for each frame
 					// Used to use combined material but now we're using queue we can't split to change frame
@@ -3728,10 +3738,10 @@ namespace Axiom.Core
 					// set the current frame
 					boxMaterial.GetTechnique( 0 ).GetPass( 0 ).GetTextureUnitState( 0 ).CurrentFrame = i;
 
-					skyBoxEntities[ i ].MaterialName = boxMaterial.Name;
+					this.skyBoxEntities[ i ].MaterialName = boxMaterial.Name;
 
 					// Attach to node
-					skyBoxNode.AttachObject( skyBoxEntities[ i ] );
+					this.skyBoxNode.AttachObject( this.skyBoxEntities[ i ] );
 				} // for each plane
 			}
 		}
@@ -3754,7 +3764,7 @@ namespace Axiom.Core
 		public void SetSkyDome( bool isEnabled, string materialName, float curvature, float tiling, float distance,
 		                        bool drawFirst, Quaternion orientation, string groupName )
 		{
-			isSkyDomeEnabled = isEnabled;
+			this.isSkyDomeEnabled = isEnabled;
 			if ( isEnabled )
 			{
 				var material = (Material)MaterialManager.Instance[ materialName ];
@@ -3769,16 +3779,16 @@ namespace Axiom.Core
 				// ensure loading
 				material.Load();
 
-				isSkyDomeDrawnFirst = drawFirst;
+				this.isSkyDomeDrawnFirst = drawFirst;
 
 				// create node
-				if ( skyDomeNode == null )
+				if ( this.skyDomeNode == null )
 				{
-					skyDomeNode = CreateSceneNode( "SkyDomeNode" );
+					this.skyDomeNode = CreateSceneNode( "SkyDomeNode" );
 				}
 				else
 				{
-					skyDomeNode.DetachAllObjects();
+					this.skyDomeNode.DetachAllObjects();
 				}
 
 				// set up the dome (5 planes)
@@ -3788,25 +3798,25 @@ namespace Axiom.Core
 					var entityName = String.Format( "SkyDomePlane{0}", i );
 
 					// create entity
-					if ( skyDomeEntities[ i ] != null )
+					if ( this.skyDomeEntities[ i ] != null )
 					{
-						RemoveEntity( skyDomeEntities[ i ] );
+						RemoveEntity( this.skyDomeEntities[ i ] );
 					}
 
-					skyDomeEntities[ i ] = CreateEntity( entityName, planeMesh.Name );
-					skyDomeEntities[ i ].MaterialName = material.Name;
+					this.skyDomeEntities[ i ] = CreateEntity( entityName, planeMesh.Name );
+					this.skyDomeEntities[ i ].MaterialName = material.Name;
 					// Sky entities need not cast shadows
-					skyDomeEntities[ i ].CastShadows = false;
+					this.skyDomeEntities[ i ].CastShadows = false;
 
 					// attach to node
-					skyDomeNode.AttachObject( skyDomeEntities[ i ] );
+					this.skyDomeNode.AttachObject( this.skyDomeEntities[ i ] );
 				} // for each plane
 			}
 		}
 
 		public virtual void SetShadowTextureSettings( ushort size, ushort count )
 		{
-			SetShadowTextureSettings( size, count, shadowTextureFormat );
+			SetShadowTextureSettings( size, count, this.shadowTextureFormat );
 		}
 
 		/// <summary>
@@ -3819,29 +3829,29 @@ namespace Axiom.Core
 		/// </remarks>
 		public virtual void SetShadowTextureSettings( ushort size, ushort count, PixelFormat format )
 		{
-			if ( shadowTextures.Count > 0 &&
-			     ( count != shadowTextureCount || size != shadowTextureSize || format != shadowTextureFormat ) )
+			if ( this.shadowTextures.Count > 0 &&
+			     ( count != this.shadowTextureCount || size != this.shadowTextureSize || format != this.shadowTextureFormat ) )
 			{
 				// recreate
 				CreateShadowTextures( size, count, format );
 			}
-			shadowTextureCount = count;
-			shadowTextureSize = size;
-			shadowTextureFormat = format;
+			this.shadowTextureCount = count;
+			this.shadowTextureSize = size;
+			this.shadowTextureFormat = format;
 		}
 
 		protected virtual void EnsureShadowTexturesCreated()
 		{
-			if ( shadowTextureConfigDirty )
+			if ( this.shadowTextureConfigDirty )
 			{
 				DestroyShadowTextures();
-				ShadowTextureManager.Instance.GetShadowTextures( shadowTextureConfigList, shadowTextures );
+				ShadowTextureManager.Instance.GetShadowTextures( this.shadowTextureConfigList, this.shadowTextures );
 
 				// clear shadow cam - light mapping
-				shadowCameraLightMapping.Clear();
+				this.shadowCameraLightMapping.Clear();
 
 				// Recreate shadow textures
-				foreach ( var shadowTexture in shadowTextures )
+				foreach ( var shadowTexture in this.shadowTextures )
 				{
 					// Camera names are local to SM
 					var camName = shadowTexture.Name + "Cam";
@@ -3854,7 +3864,7 @@ namespace Axiom.Core
 					// in PrepareShadowTextures to coexist with multiple SMs
 					var cam = CreateCamera( camName );
 					cam.AspectRatio = shadowTexture.Width/(Real)shadowTexture.Height;
-					shadowTextureCameras.Add( cam );
+					this.shadowTextureCameras.Add( cam );
 
 					// Create a viewport, if not there already
 					if ( shadowRTT.NumViewports == 0 )
@@ -3891,14 +3901,15 @@ namespace Axiom.Core
 					}
 
 					// insert dummy camera-light combination
-					shadowCameraLightMapping.Add( cam, null );
+					this.shadowCameraLightMapping.Add( cam, null );
 
 					// Get null shadow texture
-					nullShadowTexture = shadowTextureConfigList.Count == 0
-					                    	? null
-					                    	: ShadowTextureManager.Instance.GetNullShadowTexture( shadowTextureConfigList[ 0 ].format );
+					this.nullShadowTexture = this.shadowTextureConfigList.Count == 0
+					                         	? null
+					                         	: ShadowTextureManager.Instance.GetNullShadowTexture(
+					                         		this.shadowTextureConfigList[ 0 ].format );
 				}
-				shadowTextureConfigDirty = false;
+				this.shadowTextureConfigDirty = false;
 			}
 		}
 
@@ -3916,11 +3927,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _activeCompositorChain;
+				return this._activeCompositorChain;
 			}
 			set
 			{
-				_activeCompositorChain = value;
+				this._activeCompositorChain = value;
 			}
 		}
 
@@ -3931,11 +3942,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return targetRenderSystem;
+				return this.targetRenderSystem;
 			}
 			set
 			{
-				targetRenderSystem = value;
+				this.targetRenderSystem = value;
 			}
 		}
 
@@ -3957,7 +3968,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return rootSceneNode;
+				return this.rootSceneNode;
 			}
 		}
 
@@ -3979,7 +3990,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return ambientColor;
+				return this.ambientColor;
 			}
 			set
 			{
@@ -3988,9 +3999,9 @@ namespace Axiom.Core
 					throw new ArgumentException( "Cannot set the scene ambient light color to null" );
 				}
 				//it will cause the GpuProgramParameters.SetConstant() color overload to throw a null reference exception otherwise
-				ambientColor = value;
+				this.ambientColor = value;
 				// change ambient color of current render system
-				targetRenderSystem.AmbientLight = ambientColor;
+				this.targetRenderSystem.AmbientLight = this.ambientColor;
 			}
 		}
 
@@ -4003,7 +4014,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return optionList;
+				return this.optionList;
 			}
 		}
 
@@ -4021,11 +4032,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _defaultShadowCameraSetup;
+				return this._defaultShadowCameraSetup;
 			}
 			set
 			{
-				_defaultShadowCameraSetup = value;
+				this._defaultShadowCameraSetup = value;
 			}
 		}
 
@@ -4042,20 +4053,21 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowColor;
+				return this.shadowColor;
 			}
 			set
 			{
-				shadowColor = value;
+				this.shadowColor = value;
 
-				if ( shadowModulativePass == null && shadowCasterPlainBlackPass == null )
+				if ( this.shadowModulativePass == null && this.shadowCasterPlainBlackPass == null )
 				{
 					InitShadowVolumeMaterials();
 				}
 
-				shadowModulativePass.GetTextureUnitState( 0 ).SetColorOperationEx( LayerBlendOperationEx.Modulate,
-				                                                                   LayerBlendSource.Manual, LayerBlendSource.Current,
-				                                                                   value );
+				this.shadowModulativePass.GetTextureUnitState( 0 ).SetColorOperationEx( LayerBlendOperationEx.Modulate,
+				                                                                        LayerBlendSource.Manual,
+				                                                                        LayerBlendSource.Current,
+				                                                                        value );
 			}
 		}
 
@@ -4076,11 +4088,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowDirLightExtrudeDist;
+				return this.shadowDirLightExtrudeDist;
 			}
 			set
 			{
-				shadowDirLightExtrudeDist = value;
+				this.shadowDirLightExtrudeDist = value;
 			}
 		}
 
@@ -4092,7 +4104,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTextureOffset;
+				return this.shadowTextureOffset;
 			}
 		}
 
@@ -4116,12 +4128,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowFarDistance;
+				return this.shadowFarDistance;
 			}
 			set
 			{
-				shadowFarDistance = value;
-				shadowFarDistanceSquared = shadowFarDistance*shadowFarDistance;
+				this.shadowFarDistance = value;
+				this.shadowFarDistanceSquared = this.shadowFarDistance*this.shadowFarDistance;
 			}
 		}
 
@@ -4129,7 +4141,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowFarDistance;
+				return this.shadowFarDistance;
 			}
 		}
 
@@ -4161,18 +4173,19 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowIndexBufferSize;
+				return this.shadowIndexBufferSize;
 			}
 			set
 			{
-				if ( shadowIndexBuffer != null || value != shadowIndexBufferSize )
+				if ( this.shadowIndexBuffer != null || value != this.shadowIndexBufferSize )
 				{
 					// create an shadow index buffer
-					shadowIndexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, shadowIndexBufferSize,
-					                                                                      BufferUsage.DynamicWriteOnly, false );
+					this.shadowIndexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16,
+					                                                                           this.shadowIndexBufferSize,
+					                                                                           BufferUsage.DynamicWriteOnly, false );
 				}
 
-				shadowIndexBufferSize = value;
+				this.shadowIndexBufferSize = value;
 			}
 		}
 
@@ -4188,13 +4201,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTextureSize;
+				return this.shadowTextureSize;
 			}
 			set
 			{
 				// possibly recreate
-				CreateShadowTextures( value, shadowTextureCount, shadowTextureFormat );
-				shadowTextureSize = value;
+				CreateShadowTextures( value, this.shadowTextureCount, this.shadowTextureFormat );
+				this.shadowTextureSize = value;
 			}
 		}
 
@@ -4211,13 +4224,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTextureCount;
+				return this.shadowTextureCount;
 			}
 			set
 			{
 				// possibly recreate
-				CreateShadowTextures( shadowTextureSize, value, shadowTextureFormat );
-				shadowTextureCount = value;
+				CreateShadowTextures( this.shadowTextureSize, value, this.shadowTextureFormat );
+				this.shadowTextureCount = value;
 			}
 		}
 
@@ -4225,13 +4238,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTextureFormat;
+				return this.shadowTextureFormat;
 			}
 			set
 			{
 				// possibly recreate
-				CreateShadowTextures( shadowTextureSize, shadowTextureCount, value );
-				shadowTextureFormat = value;
+				CreateShadowTextures( this.shadowTextureSize, this.shadowTextureCount, value );
+				this.shadowTextureFormat = value;
 			}
 		}
 
@@ -4248,11 +4261,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTextureSelfShadow;
+				return this.shadowTextureSelfShadow;
 			}
 			set
 			{
-				shadowTextureSelfShadow = value;
+				this.shadowTextureSelfShadow = value;
 			}
 		}
 
@@ -4293,28 +4306,29 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTechnique;
+				return this.shadowTechnique;
 			}
 			set
 			{
-				shadowTechnique = value;
+				this.shadowTechnique = value;
 
 				// do initial setup for stencil shadows if needed
 				if ( IsShadowTechniqueStencilBased )
 				{
 					// Firstly check that we have a stencil. Otherwise, forget it!
-					if ( !targetRenderSystem.Capabilities.HasCapability( Capabilities.StencilBuffer ) )
+					if ( !this.targetRenderSystem.Capabilities.HasCapability( Capabilities.StencilBuffer ) )
 					{
 						LogManager.Instance.Write(
 							"WARNING: Stencil shadows were requested, but the current hardware does not support them.  Disabling." );
 
-						shadowTechnique = ShadowTechnique.None;
+						this.shadowTechnique = ShadowTechnique.None;
 					}
-					else if ( shadowIndexBuffer == null )
+					else if ( this.shadowIndexBuffer == null )
 					{
 						// create an shadow index buffer
-						shadowIndexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, shadowIndexBufferSize,
-						                                                                      BufferUsage.DynamicWriteOnly, false );
+						this.shadowIndexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16,
+						                                                                           this.shadowIndexBufferSize,
+						                                                                           BufferUsage.DynamicWriteOnly, false );
 
 						// tell all the meshes to prepare shadow volumes
 						MeshManager.Instance.PrepareAllMeshesForShadowVolumes = true;
@@ -4322,7 +4336,7 @@ namespace Axiom.Core
 				}
 
 				// If Additive stencil, we need to split everything by illumination stage
-				GetRenderQueue().SplitPassesByLightingType = ( shadowTechnique == ShadowTechnique.StencilAdditive );
+				GetRenderQueue().SplitPassesByLightingType = ( this.shadowTechnique == ShadowTechnique.StencilAdditive );
 
 				// If any type of shadowing is used, tell render queue to split off non-shadowable materials
 				GetRenderQueue().SplitNoShadowPasses = IsShadowTechniqueInUse;
@@ -4330,7 +4344,7 @@ namespace Axiom.Core
 				// create new textures for texture based shadows
 				if ( IsShadowTechniqueTextureBased )
 				{
-					CreateShadowTextures( shadowTextureSize, shadowTextureCount, shadowTextureFormat );
+					CreateShadowTextures( this.shadowTextureSize, this.shadowTextureCount, this.shadowTextureFormat );
 				}
 			}
 		}
@@ -4339,7 +4353,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTextureCasterMaterial;
+				return this.shadowTextureCasterMaterial;
 			}
 			set
 			{
@@ -4348,24 +4362,24 @@ namespace Axiom.Core
 				// in this material with the one from the object's own material.
 				// We need to set it back before we switch materials, in case we need to use this
 				// material again.
-				if ( shadowTextureCustomCasterPass != null )
+				if ( this.shadowTextureCustomCasterPass != null )
 				{
-					if ( shadowTextureCustomCasterPass.VertexProgramName != shadowTextureCustomCasterVertexProgram )
+					if ( this.shadowTextureCustomCasterPass.VertexProgramName != this.shadowTextureCustomCasterVertexProgram )
 					{
-						shadowTextureCustomCasterPass.SetVertexProgram( shadowTextureCustomCasterVertexProgram );
-						if ( shadowTextureCustomCasterPass.HasVertexProgram )
+						this.shadowTextureCustomCasterPass.SetVertexProgram( this.shadowTextureCustomCasterVertexProgram );
+						if ( this.shadowTextureCustomCasterPass.HasVertexProgram )
 						{
-							shadowTextureCustomCasterPass.VertexProgramParameters = shadowTextureCustomCasterVPParams;
+							this.shadowTextureCustomCasterPass.VertexProgramParameters = this.shadowTextureCustomCasterVPParams;
 						}
 					}
 				}
 
-				shadowTextureCasterMaterial = value;
+				this.shadowTextureCasterMaterial = value;
 				if ( value == "" )
 				{
-					shadowTextureCustomCasterPass = null;
-					shadowTextureCustomCasterFragmentProgram = "";
-					shadowTextureCustomCasterVertexProgram = "";
+					this.shadowTextureCustomCasterPass = null;
+					this.shadowTextureCustomCasterFragmentProgram = "";
+					this.shadowTextureCustomCasterVertexProgram = "";
 				}
 				else
 				{
@@ -4378,26 +4392,26 @@ namespace Axiom.Core
 					else
 					{
 						material.Load();
-						shadowTextureCustomCasterPass = material.GetBestTechnique().GetPass( 0 );
-						if ( shadowTextureCustomCasterPass.HasVertexProgram )
+						this.shadowTextureCustomCasterPass = material.GetBestTechnique().GetPass( 0 );
+						if ( this.shadowTextureCustomCasterPass.HasVertexProgram )
 						{
 							// Save vertex program and params in case we have to swap them out
-							shadowTextureCustomCasterVertexProgram = shadowTextureCustomCasterPass.VertexProgramName;
-							shadowTextureCustomCasterVPParams = shadowTextureCustomCasterPass.VertexProgramParameters;
+							this.shadowTextureCustomCasterVertexProgram = this.shadowTextureCustomCasterPass.VertexProgramName;
+							this.shadowTextureCustomCasterVPParams = this.shadowTextureCustomCasterPass.VertexProgramParameters;
 						}
 						else
 						{
-							shadowTextureCustomCasterVertexProgram = "";
+							this.shadowTextureCustomCasterVertexProgram = "";
 						}
-						if ( shadowTextureCustomCasterPass.HasFragmentProgram )
+						if ( this.shadowTextureCustomCasterPass.HasFragmentProgram )
 						{
 							// Save fragment program and params in case we have to swap them out
-							shadowTextureCustomCasterFragmentProgram = shadowTextureCustomCasterPass.FragmentProgramName;
-							shadowTextureCustomCasterFPParams = shadowTextureCustomCasterPass.FragmentProgramParameters;
+							this.shadowTextureCustomCasterFragmentProgram = this.shadowTextureCustomCasterPass.FragmentProgramName;
+							this.shadowTextureCustomCasterFPParams = this.shadowTextureCustomCasterPass.FragmentProgramParameters;
 						}
 						else
 						{
-							shadowTextureCustomCasterFragmentProgram = "";
+							this.shadowTextureCustomCasterFragmentProgram = "";
 						}
 					}
 				}
@@ -4408,7 +4422,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowTextureReceiverMaterial;
+				return this.shadowTextureReceiverMaterial;
 			}
 			set
 			{
@@ -4417,24 +4431,24 @@ namespace Axiom.Core
 				// in this material with the one from the object's own material.
 				// We need to set it back before we switch materials, in case we need to use this
 				// material again.
-				if ( shadowTextureCustomReceiverPass != null )
+				if ( this.shadowTextureCustomReceiverPass != null )
 				{
-					if ( shadowTextureCustomReceiverPass.VertexProgramName != shadowTextureCustomReceiverVertexProgram )
+					if ( this.shadowTextureCustomReceiverPass.VertexProgramName != this.shadowTextureCustomReceiverVertexProgram )
 					{
-						shadowTextureCustomReceiverPass.SetVertexProgram( shadowTextureCustomReceiverVertexProgram );
-						if ( shadowTextureCustomReceiverPass.HasVertexProgram )
+						this.shadowTextureCustomReceiverPass.SetVertexProgram( this.shadowTextureCustomReceiverVertexProgram );
+						if ( this.shadowTextureCustomReceiverPass.HasVertexProgram )
 						{
-							shadowTextureCustomReceiverPass.VertexProgramParameters = shadowTextureCustomReceiverVPParams;
+							this.shadowTextureCustomReceiverPass.VertexProgramParameters = this.shadowTextureCustomReceiverVPParams;
 						}
 					}
 				}
 
-				shadowTextureReceiverMaterial = value;
+				this.shadowTextureReceiverMaterial = value;
 				if ( value == "" )
 				{
-					shadowTextureCustomReceiverPass = null;
-					shadowTextureCustomReceiverVertexProgram = "";
-					shadowTextureCustomReceiverFragmentProgram = "";
+					this.shadowTextureCustomReceiverPass = null;
+					this.shadowTextureCustomReceiverVertexProgram = "";
+					this.shadowTextureCustomReceiverFragmentProgram = "";
 				}
 				else
 				{
@@ -4447,26 +4461,26 @@ namespace Axiom.Core
 					else
 					{
 						material.Load();
-						shadowTextureCustomReceiverPass = material.GetBestTechnique().GetPass( 0 );
-						if ( shadowTextureCustomReceiverPass.HasVertexProgram )
+						this.shadowTextureCustomReceiverPass = material.GetBestTechnique().GetPass( 0 );
+						if ( this.shadowTextureCustomReceiverPass.HasVertexProgram )
 						{
 							// Save vertex program and params in case we have to swap them out
-							shadowTextureCustomReceiverVertexProgram = shadowTextureCustomReceiverPass.VertexProgramName;
-							shadowTextureCustomReceiverVPParams = shadowTextureCustomReceiverPass.VertexProgramParameters;
+							this.shadowTextureCustomReceiverVertexProgram = this.shadowTextureCustomReceiverPass.VertexProgramName;
+							this.shadowTextureCustomReceiverVPParams = this.shadowTextureCustomReceiverPass.VertexProgramParameters;
 						}
 						else
 						{
-							shadowTextureCustomReceiverVertexProgram = "";
+							this.shadowTextureCustomReceiverVertexProgram = "";
 						}
-						if ( shadowTextureCustomReceiverPass.HasFragmentProgram )
+						if ( this.shadowTextureCustomReceiverPass.HasFragmentProgram )
 						{
 							// Save fragment program and params in case we have to swap them out
-							shadowTextureCustomReceiverFragmentProgram = shadowTextureCustomReceiverPass.FragmentProgramName;
-							shadowTextureCustomReceiverFPParams = shadowTextureCustomReceiverPass.FragmentProgramParameters;
+							this.shadowTextureCustomReceiverFragmentProgram = this.shadowTextureCustomReceiverPass.FragmentProgramName;
+							this.shadowTextureCustomReceiverFPParams = this.shadowTextureCustomReceiverPass.FragmentProgramParameters;
 						}
 						else
 						{
-							shadowTextureCustomReceiverFragmentProgram = "";
+							this.shadowTextureCustomReceiverFragmentProgram = "";
 						}
 					}
 				}
@@ -4515,11 +4529,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return shadowUseInfiniteFarPlane;
+				return this.shadowUseInfiniteFarPlane;
 			}
 			set
 			{
-				shadowUseInfiniteFarPlane = value;
+				this.shadowUseInfiniteFarPlane = value;
 			}
 		}
 
@@ -4527,11 +4541,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return suppressRenderStateChanges;
+				return this.suppressRenderStateChanges;
 			}
 			set
 			{
-				suppressRenderStateChanges = value;
+				this.suppressRenderStateChanges = value;
 			}
 		}
 
@@ -4542,11 +4556,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return showBoundingBoxes;
+				return this.showBoundingBoxes;
 			}
 			set
 			{
-				showBoundingBoxes = value;
+				this.showBoundingBoxes = value;
 			}
 		}
 
@@ -4558,11 +4572,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return showDebugShadows;
+				return this.showDebugShadows;
 			}
 			set
 			{
-				showDebugShadows = value;
+				this.showDebugShadows = value;
 			}
 		}
 
@@ -4576,11 +4590,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return displayNodes;
+				return this.displayNodes;
 			}
 			set
 			{
-				displayNodes = value;
+				this.displayNodes = value;
 			}
 		}
 
@@ -4591,11 +4605,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return fogMode;
+				return this.fogMode;
 			}
 			set
 			{
-				fogMode = value;
+				this.fogMode = value;
 			}
 		}
 
@@ -4606,11 +4620,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return fogStart;
+				return this.fogStart;
 			}
 			set
 			{
-				fogStart = value;
+				this.fogStart = value;
 			}
 		}
 
@@ -4621,11 +4635,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return fogEnd;
+				return this.fogEnd;
 			}
 			set
 			{
-				fogEnd = value;
+				this.fogEnd = value;
 			}
 		}
 
@@ -4636,11 +4650,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return fogDensity;
+				return this.fogDensity;
 			}
 			set
 			{
-				fogDensity = value;
+				this.fogDensity = value;
 			}
 		}
 
@@ -4651,11 +4665,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return fogColor;
+				return this.fogColor;
 			}
 			set
 			{
-				fogColor = value;
+				this.fogColor = value;
 			}
 		}
 
@@ -4708,7 +4722,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return currentViewport;
+				return this.currentViewport;
 			}
 		}
 
@@ -4719,11 +4733,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return visibilityMask;
+				return this.visibilityMask;
 			}
 			set
 			{
-				visibilityMask = value;
+				this.visibilityMask = value;
 			}
 		}
 
@@ -4734,7 +4748,9 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return currentViewport != null ? currentViewport.VisibilityMask & visibilityMask : visibilityMask;
+				return this.currentViewport != null
+				       	? this.currentViewport.VisibilityMask & this.visibilityMask
+				       	: this.visibilityMask;
 			}
 		}
 
@@ -4745,11 +4761,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return findVisibleObjects;
+				return this.findVisibleObjects;
 			}
 			set
 			{
-				findVisibleObjects = value;
+				this.findVisibleObjects = value;
 			}
 		}
 
@@ -4760,7 +4776,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -4798,7 +4814,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _lightsDirtyCounter;
+				return this._lightsDirtyCounter;
 			}
 		}
 
@@ -4816,7 +4832,7 @@ namespace Axiom.Core
 		/// </remarks>
 		protected internal virtual void NotifyLightsDirty()
 		{
-			++_lightsDirtyCounter;
+			++this._lightsDirtyCounter;
 		}
 
 		#endregion Properties
@@ -4852,31 +4868,32 @@ namespace Axiom.Core
 			// When using stencil volumes we have to use infinite far distance
 			// to prevent dark caps getting clipped
 			if ( IsShadowTechniqueStencilBased && camera.Far != 0 &&
-			     targetRenderSystem.Capabilities.HasCapability( Capabilities.InfiniteFarPlane ) && shadowUseInfiniteFarPlane )
+			     this.targetRenderSystem.Capabilities.HasCapability( Capabilities.InfiniteFarPlane ) &&
+			     this.shadowUseInfiniteFarPlane )
 			{
 				// infinite far distance
 				camera.Far = 0.0f;
 			}
 
-			cameraInProgress = camera;
-			hasCameraChanged = true;
+			this.cameraInProgress = camera;
+			this.hasCameraChanged = true;
 
 			// Update the scene, only do this once per frame
 			var thisFrameNumber = Root.Instance.CurrentFrameCount;
-			if ( thisFrameNumber != lastFrameNumber )
+			if ( thisFrameNumber != this.lastFrameNumber )
 			{
 				// Update animations
 				ApplySceneAnimations();
 				// Update controllers
 				ControllerManager.Instance.UpdateAll();
-				lastFrameNumber = thisFrameNumber;
+				this.lastFrameNumber = thisFrameNumber;
 			}
 
 			// Update scene graph for this camera (can happen multiple times per frame)
 			UpdateSceneGraph( camera );
 
 			// Auto-track nodes
-			foreach ( var sn in autoTrackingSceneNodes.Values )
+			foreach ( var sn in this.autoTrackingSceneNodes.Values )
 			{
 				sn.AutoTrack();
 			}
@@ -4885,8 +4902,9 @@ namespace Axiom.Core
 			camera.AutoTrack();
 
 			// Are we using any shadows at all?
-			if ( IsShadowTechniqueInUse && illuminationStage != IlluminationRenderStage.RenderToTexture && viewport.ShowShadows &&
-			     findVisibleObjects )
+			if ( IsShadowTechniqueInUse && this.illuminationStage != IlluminationRenderStage.RenderToTexture &&
+			     viewport.ShowShadows &&
+			     this.findVisibleObjects )
 			{
 				// Locate any lights which could be affecting the frustum
 				FindLightsAffectingFrustum( camera );
@@ -4903,55 +4921,55 @@ namespace Axiom.Core
 					// AFTER THIS POINT
 					PrepareShadowTextures( camera, viewport );
 					// reset the cameras because of the re-entrant call
-					cameraInProgress = camera;
-					hasCameraChanged = true;
+					this.cameraInProgress = camera;
+					this.hasCameraChanged = true;
 				}
 			}
 
 			// Invert vertex winding?
-			targetRenderSystem.InvertVertexWinding = camera.IsReflected;
+			this.targetRenderSystem.InvertVertexWinding = camera.IsReflected;
 
 			// Tell params about viewport
-			autoParamDataSource.CurrentViewport = viewport;
+			this.autoParamDataSource.CurrentViewport = viewport;
 			// Set the viewport
 			SetViewport( viewport );
 
 			// set the current camera for use in the auto GPU program params
-			autoParamDataSource.SetCurrentCamera( camera, cameraRelativeRendering );
+			this.autoParamDataSource.SetCurrentCamera( camera, this.cameraRelativeRendering );
 
 			// Set autoparams for finite dir light extrusion
-			autoParamDataSource.ShadowExtrusionDistance = shadowDirLightExtrudeDist;
+			this.autoParamDataSource.ShadowExtrusionDistance = this.shadowDirLightExtrudeDist;
 
 			// sets the current ambient light color for use in auto GPU program params
-			autoParamDataSource.AmbientLight = ambientColor;
+			this.autoParamDataSource.AmbientLight = this.ambientColor;
 			// Tell rendersystem
-			targetRenderSystem.AmbientLight = ambientColor;
+			this.targetRenderSystem.AmbientLight = this.ambientColor;
 
 			// Tell params about render target
-			autoParamDataSource.CurrentRenderTarget = viewport.Target;
+			this.autoParamDataSource.CurrentRenderTarget = viewport.Target;
 
 			// set fog params
 			var fogScale = 1f;
-			if ( fogMode == FogMode.None )
+			if ( this.fogMode == FogMode.None )
 			{
 				fogScale = 0f;
 			}
-			autoParamDataSource.SetFog( fogMode, fogColor, fogScale, fogStart, fogEnd );
+			this.autoParamDataSource.SetFog( this.fogMode, this.fogColor, fogScale, this.fogStart, this.fogEnd );
 
 			// set the time in the auto param data source
 			//autoParamDataSource.Time = ((float)Root.Instance.Timer.Milliseconds) / 1000f;
 
 			// Set camera window clipping planes (if any)
-			if ( targetRenderSystem.Capabilities.HasCapability( Capabilities.UserClipPlanes ) )
+			if ( this.targetRenderSystem.Capabilities.HasCapability( Capabilities.UserClipPlanes ) )
 			{
 				// TODO: Add ClipPlanes to RenderSystem.cs
 				if ( camera.IsWindowSet )
 				{
-					targetRenderSystem.ResetClipPlanes();
+					this.targetRenderSystem.ResetClipPlanes();
 					var planeList = camera.WindowPlanes;
 					for ( ushort i = 0; i < 4; ++i )
 					{
-						targetRenderSystem.AddClipPlane( planeList[ i ] );
+						this.targetRenderSystem.AddClipPlane( planeList[ i ] );
 
 						//this.targetRenderSystem.EnableClipPlane( i, true );
 						//this.targetRenderSystem.SetClipPlane( i, planeList[ i ] );
@@ -4971,62 +4989,63 @@ namespace Axiom.Core
 			PrepareRenderQueue();
 
 			// Parse the scene and tag visibles
-			if ( findVisibleObjects )
+			if ( this.findVisibleObjects )
 			{
 				if ( PreFindVisibleObjects != null )
 				{
-					PreFindVisibleObjects( this, illuminationStage, viewport );
+					PreFindVisibleObjects( this, this.illuminationStage, viewport );
 				}
-				FindVisibleObjects( camera, illuminationStage == IlluminationRenderStage.RenderToTexture );
+				FindVisibleObjects( camera, this.illuminationStage == IlluminationRenderStage.RenderToTexture );
 				if ( PostFindVisibleObjects != null )
 				{
-					PostFindVisibleObjects( this, illuminationStage, viewport );
+					PostFindVisibleObjects( this, this.illuminationStage, viewport );
 				}
 			}
 
 			// Add overlays, if viewport deems it
-			if ( viewport.ShowOverlays && illuminationStage != IlluminationRenderStage.RenderToTexture )
+			if ( viewport.ShowOverlays && this.illuminationStage != IlluminationRenderStage.RenderToTexture )
 			{
 				// Queue overlays for rendering
 				OverlayManager.Instance.QueueOverlaysForRendering( camera, GetRenderQueue(), viewport );
 			}
 
 			// queue overlays and skyboxes for rendering
-			if ( viewport.ShowSkies && findVisibleObjects && illuminationStage != IlluminationRenderStage.RenderToTexture )
+			if ( viewport.ShowSkies && this.findVisibleObjects &&
+			     this.illuminationStage != IlluminationRenderStage.RenderToTexture )
 			{
 				QueueSkiesForRendering( camera );
 			}
 
 			// begin frame geometry count
-			targetRenderSystem.BeginGeometryCount();
+			this.targetRenderSystem.BeginGeometryCount();
 
 			// clear the device if need be
 			if ( viewport.ClearEveryFrame )
 			{
-				targetRenderSystem.ClearFrameBuffer( viewport.ClearBuffers, viewport.BackgroundColor );
+				this.targetRenderSystem.ClearFrameBuffer( viewport.ClearBuffers, viewport.BackgroundColor );
 			}
 
 			// being a frame of animation
-			targetRenderSystem.BeginFrame();
+			this.targetRenderSystem.BeginFrame();
 
 			// use the camera's current scene detail level
-			targetRenderSystem.PolygonMode = camera.PolygonMode;
+			this.targetRenderSystem.PolygonMode = camera.PolygonMode;
 
 			// Set initial camera state
-			targetRenderSystem.ProjectionMatrix = camera.ProjectionMatrixRS;
-			targetRenderSystem.ViewMatrix = camera.ViewMatrix;
+			this.targetRenderSystem.ProjectionMatrix = camera.ProjectionMatrixRS;
+			this.targetRenderSystem.ViewMatrix = camera.ViewMatrix;
 
 			// render all visible objects
 			RenderVisibleObjects();
 
 			// end the current frame
-			targetRenderSystem.EndFrame();
+			this.targetRenderSystem.EndFrame();
 
 			// Notify camera of the number of rendered faces
-			camera.NotifyRenderedFaces( targetRenderSystem.FaceCount );
+			camera.NotifyRenderedFaces( this.targetRenderSystem.FaceCount );
 
 			// Notify camera of the number of rendered batches
-			camera.NotifyRenderedBatches( targetRenderSystem.BatchCount );
+			camera.NotifyRenderedBatches( this.targetRenderSystem.BatchCount );
 		}
 
 		private void PrepareRenderQueue()
@@ -5048,10 +5067,10 @@ namespace Axiom.Core
 			}
 			else // texture based
 			{
-				q.ShadowCastersCannotBeReceivers = !shadowTextureSelfShadow;
+				q.ShadowCastersCannotBeReceivers = !this.shadowTextureSelfShadow;
 			}
 
-			if ( IsShadowTechniqueAdditive && currentViewport.ShowShadows )
+			if ( IsShadowTechniqueAdditive && this.currentViewport.ShowShadows )
 			{
 				// Additive lighting, we need to split everything by illumination stage
 				q.SplitPassesByLightingType = true;
@@ -5061,7 +5080,7 @@ namespace Axiom.Core
 				q.SplitPassesByLightingType = false;
 			}
 
-			if ( IsShadowTechniqueInUse && currentViewport.ShowShadows )
+			if ( IsShadowTechniqueInUse && this.currentViewport.ShowShadows )
 			{
 				// Tell render queue to split off non-shadowable materials
 				q.SplitNoShadowPasses = true;
@@ -5082,10 +5101,10 @@ namespace Axiom.Core
 			}
 			else if ( IsShadowTechniqueTextureBased )
 			{
-				group.ShadowCastersCannotBeReceivers = !shadowTextureSelfShadow;
+				group.ShadowCastersCannotBeReceivers = !this.shadowTextureSelfShadow;
 			}
 
-			if ( !suppressShadows && currentViewport.ShowShadows && IsShadowTechniqueAdditive )
+			if ( !suppressShadows && this.currentViewport.ShowShadows && IsShadowTechniqueAdditive )
 			{
 				// Additive lighting, we need to split everything by illumination stage
 				group.SplitPassesByLightingType = true;
@@ -5095,7 +5114,7 @@ namespace Axiom.Core
 				group.SplitPassesByLightingType = false;
 			}
 
-			if ( !suppressShadows && currentViewport.ShowShadows && IsShadowTechniqueInUse )
+			if ( !suppressShadows && this.currentViewport.ShowShadows && IsShadowTechniqueInUse )
 			{
 				// Tell render queue to split off non-shadowable materials
 				group.SplitNoShadowPasses = true;
@@ -5126,7 +5145,7 @@ namespace Axiom.Core
 			// In this implementation, just update from the root
 			// Smarter SceneManager subclasses may choose to update only
 			// certain scene graph branches based on space partioning info.
-			rootSceneNode.Update( true, false );
+			this.rootSceneNode.Update( true, false );
 		}
 
 		/// <summary>
@@ -5145,7 +5164,7 @@ namespace Axiom.Core
 		public virtual void FindVisibleObjects( Camera camera, bool onlyShadowCasters )
 		{
 			// ask the root node to iterate through and find visible objects in the scene
-			rootSceneNode.FindVisibleObjects( camera, GetRenderQueue(), true, displayNodes, onlyShadowCasters );
+			this.rootSceneNode.FindVisibleObjects( camera, GetRenderQueue(), true, this.displayNodes, onlyShadowCasters );
 		}
 
 		/// <summary>
@@ -5156,10 +5175,10 @@ namespace Axiom.Core
 		/// </remarks>
 		internal virtual void ApplySceneAnimations()
 		{
-			foreach ( var animState in animationStateList.Values )
+			foreach ( var animState in this.animationStateList.Values )
 			{
 				// get this states animation
-				var anim = animationList[ animState.Name ];
+				var anim = this.animationList[ animState.Name ];
 
 				// loop through all node tracks and reset their nodes initial state
 				foreach ( var nodeTrack in anim.NodeTracks.Values )
@@ -5182,9 +5201,9 @@ namespace Axiom.Core
 
 		protected internal void DestroyShadowTextures()
 		{
-			for ( var i = 0; i < shadowTextures.Count; ++i )
+			for ( var i = 0; i < this.shadowTextures.Count; ++i )
 			{
-				var shadowTex = shadowTextures[ i ];
+				var shadowTex = this.shadowTextures[ i ];
 				// TODO: It would be useful to have a reference count for
 				// these textures.  They should only be removed from the
 				// resource manager if nobody else is using them.
@@ -5196,16 +5215,16 @@ namespace Axiom.Core
 					shadowTex.Dispose();
 				}
 
-				DestroyCamera( shadowTextureCameras[ i ] );
+				DestroyCamera( this.shadowTextureCameras[ i ] );
 			}
-			shadowTextures.Clear();
-			shadowTextureCameras.Clear();
+			this.shadowTextures.Clear();
+			this.shadowTextureCameras.Clear();
 		}
 
 		public void DestroyCamera( Camera camera )
 		{
-			cameraList.Remove( camera.Name );
-			targetRenderSystem.NotifyCameraRemoved( camera );
+			this.cameraList.Remove( camera.Name );
+			this.targetRenderSystem.NotifyCameraRemoved( camera );
 
 			if ( !camera.IsDisposed )
 			{
@@ -5221,9 +5240,9 @@ namespace Axiom.Core
 		/// </summary>
 		public void DestroyAllCameras()
 		{
-			foreach ( var camera in cameraList.Values )
+			foreach ( var camera in this.cameraList.Values )
 			{
-				targetRenderSystem.NotifyCameraRemoved( camera );
+				this.targetRenderSystem.NotifyCameraRemoved( camera );
 
 				if ( !camera.IsDisposed )
 				{
@@ -5231,7 +5250,7 @@ namespace Axiom.Core
 				}
 			}
 
-			cameraList.Clear();
+			this.cameraList.Clear();
 		}
 
 		/// <summary>
@@ -5242,8 +5261,8 @@ namespace Axiom.Core
 			var baseName = "Axiom/ShadowTexture";
 
 			if ( !IsShadowTechniqueTextureBased ||
-			     shadowTextures.Count > 0 && count == shadowTextureCount && size == shadowTextureSize &&
-			     format == shadowTextureFormat )
+			     this.shadowTextures.Count > 0 && count == this.shadowTextureCount && size == this.shadowTextureSize &&
+			     format == this.shadowTextureFormat )
 			{
 				// no change
 				return;
@@ -5285,7 +5304,7 @@ namespace Axiom.Core
 				// Don't use rendering distance for light cameras; we don't want shadows
 				// for visible objects disappearing, especially for directional lights
 				cam.UseRenderingDistance = false;
-				shadowTextureCameras.Add( cam );
+				this.shadowTextureCameras.Add( cam );
 
 				// Create a viewport, if not there already
 				if ( shadowRTT.NumViewports == 0 )
@@ -5299,7 +5318,7 @@ namespace Axiom.Core
 
 				// Don't update automatically - we'll do it when required
 				shadowRTT.IsAutoUpdated = false;
-				shadowTextures.Add( shadowTex );
+				this.shadowTextures.Add( shadowTex );
 
 				// Also create corresponding Material used for rendering this shadow
 				var mat = (Material)MaterialManager.Instance[ matName ];
@@ -5326,49 +5345,49 @@ namespace Axiom.Core
 		protected internal virtual void PrepareShadowTextures( Camera camera, Viewport viewPort )
 		{
 			// Set the illumination stage, prevents recursive calls
-			var savedStage = illuminationStage;
-			illuminationStage = IlluminationRenderStage.RenderToTexture;
+			var savedStage = this.illuminationStage;
+			this.illuminationStage = IlluminationRenderStage.RenderToTexture;
 
 			// Determine far shadow distance
-			var shadowDist = shadowFarDistance;
+			var shadowDist = this.shadowFarDistance;
 			if ( shadowDist == 0.0f )
 			{
 				// need a shadow distance, make one up
 				shadowDist = camera.Near*300;
 			}
 			// set fogging to hide the shadow edge
-			var shadowOffset = shadowDist*shadowTextureOffset;
+			var shadowOffset = shadowDist*this.shadowTextureOffset;
 			// Precalculate fading info
 			var shadowEnd = shadowDist + shadowOffset;
-			var fadeStart = shadowEnd*shadowTextureFadeStart;
-			var fadeEnd = shadowEnd*shadowTextureFadeEnd;
+			var fadeStart = shadowEnd*this.shadowTextureFadeStart;
+			var fadeEnd = shadowEnd*this.shadowTextureFadeEnd;
 			// Additive lighting should not use fogging, since it will overbrighten; use border clamp
 			if ( !IsShadowTechniqueAdditive )
 			{
-				shadowReceiverPass.SetFog( true, FogMode.Linear, ColorEx.White, 0, fadeStart, fadeEnd );
+				this.shadowReceiverPass.SetFog( true, FogMode.Linear, ColorEx.White, 0, fadeStart, fadeEnd );
 				// if we have a custom receiver material, then give it the fog params too
-				if ( shadowTextureCustomReceiverPass != null )
+				if ( this.shadowTextureCustomReceiverPass != null )
 				{
-					shadowTextureCustomReceiverPass.SetFog( true, FogMode.Linear, ColorEx.White, 0, fadeStart, fadeEnd );
+					this.shadowTextureCustomReceiverPass.SetFog( true, FogMode.Linear, ColorEx.White, 0, fadeStart, fadeEnd );
 				}
 			}
 			else
 			{
 				// disable fogging explicitly
-				shadowReceiverPass.SetFog( true, FogMode.None );
+				this.shadowReceiverPass.SetFog( true, FogMode.None );
 				// if we have a custom receiver material, then give it the fog params too
-				if ( shadowTextureCustomReceiverPass != null )
+				if ( this.shadowTextureCustomReceiverPass != null )
 				{
-					shadowTextureCustomReceiverPass.SetFog( true, FogMode.None );
+					this.shadowTextureCustomReceiverPass.SetFog( true, FogMode.None );
 				}
 			}
 
 			// Iterate over the lights we've found, max out at the limit of light textures
 			var sti = 0;
-			foreach ( var light in lightsAffectingFrustum )
+			foreach ( var light in this.lightsAffectingFrustum )
 			{
 				// Check limit reached
-				if ( sti == shadowTextures.Count )
+				if ( sti == this.shadowTextures.Count )
 				{
 					break;
 				}
@@ -5379,10 +5398,10 @@ namespace Axiom.Core
 					continue;
 				}
 
-				var shadowTex = shadowTextures[ sti ];
+				var shadowTex = this.shadowTextures[ sti ];
 				RenderTarget shadowRTT = shadowTex.GetBuffer().GetRenderTarget();
 				var shadowView = shadowRTT.GetViewport( 0 );
-				var texCam = shadowTextureCameras[ sti ];
+				var texCam = this.shadowTextureCameras[ sti ];
 
 				// rebind camera, incase another SM in use which has switched to its cam
 				shadowView.Camera = texCam;
@@ -5408,7 +5427,7 @@ namespace Axiom.Core
 
 				if ( light.CustomShadowCameraSetup == null )
 				{
-					_defaultShadowCameraSetup.GetShadowCamera( this, camera, viewPort, light, texCam, sti );
+					this._defaultShadowCameraSetup.GetShadowCamera( this, camera, viewPort, light, texCam, sti );
 				}
 				else
 				{
@@ -5426,7 +5445,7 @@ namespace Axiom.Core
 				++sti;
 			}
 			// Set the illumination stage, prevents recursive calls
-			illuminationStage = savedStage;
+			this.illuminationStage = savedStage;
 
 			//fireShadowTexturesUpdated( std::min(mLightsAffectingFrustum.size(), mShadowTextures.size()));
 		}
@@ -5437,9 +5456,9 @@ namespace Axiom.Core
 		/// <param name="viewport"></param>
 		protected virtual void SetViewport( Viewport viewport )
 		{
-			currentViewport = viewport;
+			this.currentViewport = viewport;
 			// Set viewport in render system
-			targetRenderSystem.Viewport = viewport;
+			this.targetRenderSystem.Viewport = viewport;
 			// Set the active material scheme for this viewport
 			MaterialManager.Instance.ActiveScheme = viewport.MaterialScheme;
 		}
@@ -5450,31 +5469,32 @@ namespace Axiom.Core
 		{
 			if ( pass.IsProgrammable )
 			{
-				if ( _gpuParamsDirty == 0 )
+				if ( this._gpuParamsDirty == 0 )
 				{
 					return;
 				}
 
-				if ( _gpuParamsDirty != 0 )
+				if ( this._gpuParamsDirty != 0 )
 				{
-					pass.UpdateAutoParams( autoParamDataSource, _gpuParamsDirty );
+					pass.UpdateAutoParams( this.autoParamDataSource, this._gpuParamsDirty );
 				}
 
 				if ( pass.HasVertexProgram )
 				{
-					targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Vertex, pass.VertexProgramParameters, _gpuParamsDirty );
+					this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Vertex, pass.VertexProgramParameters,
+					                                                  this._gpuParamsDirty );
 				}
 
 				if ( pass.HasGeometryProgram )
 				{
-					targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Geometry, pass.GeometryProgramParameters,
-					                                             _gpuParamsDirty );
+					this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Geometry, pass.GeometryProgramParameters,
+					                                                  this._gpuParamsDirty );
 				}
 
 				if ( pass.HasFragmentProgram )
 				{
-					targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Fragment, pass.FragmentProgramParameters,
-					                                             _gpuParamsDirty );
+					this.targetRenderSystem.BindGpuProgramParameters( GpuProgramType.Fragment, pass.FragmentProgramParameters,
+					                                                  this._gpuParamsDirty );
 				}
 
 				//_gpuParamsDirty = 0;
@@ -5503,32 +5523,32 @@ namespace Axiom.Core
 			ushort numMatrices = 0;
 
 			// grab the current scene detail level
-			var camPolyMode = cameraInProgress.PolygonMode;
+			var camPolyMode = this.cameraInProgress.PolygonMode;
 
 			// get the world matrices and the count
-			renderable.GetWorldTransforms( xform );
+			renderable.GetWorldTransforms( this.xform );
 			numMatrices = renderable.NumWorldTransforms;
 
 			// set the world matrices in the render system
 			if ( numMatrices > 1 )
 			{
-				targetRenderSystem.SetWorldMatrices( xform, numMatrices );
+				this.targetRenderSystem.SetWorldMatrices( this.xform, numMatrices );
 			}
 			else
 			{
-				targetRenderSystem.WorldMatrix = xform[ 0 ];
+				this.targetRenderSystem.WorldMatrix = this.xform[ 0 ];
 			}
 
 			// issue view/projection changes (if any)
 			UseRenderableViewProjection( renderable );
 
-			if ( !suppressRenderStateChanges )
+			if ( !this.suppressRenderStateChanges )
 			{
 				var passSurfaceAndLightParams = true;
 				if ( pass.IsProgrammable )
 				{
 					// Tell auto params object about the renderable change
-					autoParamDataSource.CurrentRenderable = renderable;
+					this.autoParamDataSource.CurrentRenderable = renderable;
 					//pass.UpdateAutoParamsNoLights( this.autoParamDataSource );
 
 					if ( pass.HasVertexProgram )
@@ -5545,7 +5565,7 @@ namespace Axiom.Core
 
 					if ( texUnit.HasViewRelativeTexCoordGen )
 					{
-						targetRenderSystem.SetTextureUnitSettings( i, texUnit );
+						this.targetRenderSystem.SetTextureUnitSettings( i, texUnit );
 						//this.targetRenderSystem.SetTextureUnit( i, texUnit, !pass.HasFragmentProgram );
 					}
 				}
@@ -5555,7 +5575,7 @@ namespace Axiom.Core
 
 				if ( thisNormalize != normalizeNormals )
 				{
-					targetRenderSystem.NormalizeNormals = thisNormalize;
+					this.targetRenderSystem.NormalizeNormals = thisNormalize;
 					normalizeNormals = thisNormalize;
 				}
 
@@ -5571,10 +5591,10 @@ namespace Axiom.Core
 					}
 				}
 
-				if ( requestedMode != lastPolyMode )
+				if ( requestedMode != this.lastPolyMode )
 				{
-					targetRenderSystem.PolygonMode = requestedMode;
-					lastPolyMode = requestedMode;
+					this.targetRenderSystem.PolygonMode = requestedMode;
+					this.lastPolyMode = requestedMode;
 				}
 
 				// TODO: Add ClipPlanes to RenderSystem.cs
@@ -5624,7 +5644,7 @@ namespace Axiom.Core
 						{
 							// Update any automatic gpu params for lights
 							// Other bits of information will have to be looked up
-							autoParamDataSource.SetCurrentLightList( lightListToUse );
+							this.autoParamDataSource.SetCurrentLightList( lightListToUse );
 							//pass.UpdateAutoParamsLightsOnly( this.autoParamDataSource );
 
 							UpdateGpuProgramParameters( pass );
@@ -5634,11 +5654,11 @@ namespace Axiom.Core
 						// Only do this if fixed-function vertex lighting applies
 						if ( pass.LightingEnabled && passSurfaceAndLightParams )
 						{
-							targetRenderSystem.UseLights( lightListToUse, pass.MaxSimultaneousLights );
+							this.targetRenderSystem.UseLights( lightListToUse, pass.MaxSimultaneousLights );
 						}
-						targetRenderSystem.CurrentPassIterationCount = pass.IterationCount;
+						this.targetRenderSystem.CurrentPassIterationCount = pass.IterationCount;
 						// issue the render op
-						targetRenderSystem.Render( op );
+						this.targetRenderSystem.Render( op );
 					} // iterate per light
 				}
 				else
@@ -5651,7 +5671,7 @@ namespace Axiom.Core
 						{
 							// Update any automatic gpu params for lights
 							// Other bits of information will have to be looked up
-							autoParamDataSource.SetCurrentLightList( manualLightList );
+							this.autoParamDataSource.SetCurrentLightList( manualLightList );
 							//pass.UpdateAutoParamsLightsOnly( this.autoParamDataSource );
 						}
 
@@ -5661,19 +5681,19 @@ namespace Axiom.Core
 					// Use manual lights if present, and not using vertex programs
 					if ( manualLightList != null && pass.LightingEnabled && passSurfaceAndLightParams )
 					{
-						targetRenderSystem.UseLights( manualLightList, pass.MaxSimultaneousLights );
+						this.targetRenderSystem.UseLights( manualLightList, pass.MaxSimultaneousLights );
 					}
-					targetRenderSystem.CurrentPassIterationCount = pass.IterationCount;
+					this.targetRenderSystem.CurrentPassIterationCount = pass.IterationCount;
 					// issue the render op
-					targetRenderSystem.Render( op );
+					this.targetRenderSystem.Render( op );
 				}
 			}
 			else
 			{
 				// suppressRenderStateChanges
 				// Just render
-				targetRenderSystem.CurrentPassIterationCount = 1;
-				targetRenderSystem.Render( op );
+				this.targetRenderSystem.CurrentPassIterationCount = 1;
+				this.targetRenderSystem.Render( op );
 			}
 
 			// Reset view / projection changes if any
@@ -5767,35 +5787,35 @@ namespace Axiom.Core
 			foreach ( var priorityGroup in group.PriorityGroups.Values )
 			{
 				// sort the group first
-				priorityGroup.Sort( cameraInProgress );
+				priorityGroup.Sort( this.cameraInProgress );
 
 				// Clear light list
 				tempLightList.Clear();
 
 				// Render all the ambient passes first, no light iteration, no lights
-				illuminationStage = IlluminationRenderStage.Ambient;
+				this.illuminationStage = IlluminationRenderStage.Ambient;
 				RenderSolidObjects( priorityGroup.solidPasses, false, tempLightList );
 				// Also render any objects which have receive shadows disabled
-				renderingNoShadowQueue = true;
+				this.renderingNoShadowQueue = true;
 				RenderSolidObjects( priorityGroup.solidPassesNoShadow, true );
-				renderingNoShadowQueue = false;
+				this.renderingNoShadowQueue = false;
 
 				// Now iterate per light
-				illuminationStage = IlluminationRenderStage.PerLight;
+				this.illuminationStage = IlluminationRenderStage.PerLight;
 
-				foreach ( var light in lightsAffectingFrustum )
+				foreach ( var light in this.lightsAffectingFrustum )
 				{
 					// Set light state
 
 					if ( light.CastShadows )
 					{
 						// Clear stencil
-						targetRenderSystem.ClearFrameBuffer( FrameBufferType.Stencil );
-						RenderShadowVolumesToStencil( light, cameraInProgress );
+						this.targetRenderSystem.ClearFrameBuffer( FrameBufferType.Stencil );
+						RenderShadowVolumesToStencil( light, this.cameraInProgress );
 						// turn stencil check on
-						targetRenderSystem.StencilCheckEnabled = true;
+						this.targetRenderSystem.StencilCheckEnabled = true;
 						// NB we render where the stencil is equal to zero to render lit areas
-						targetRenderSystem.SetStencilBufferParams( CompareFunction.Equal, 0 );
+						this.targetRenderSystem.SetStencilBufferParams( CompareFunction.Equal, 0 );
 					}
 
 					// render lighting passes for this light
@@ -5805,18 +5825,18 @@ namespace Axiom.Core
 					RenderSolidObjects( priorityGroup.solidPassesDiffuseSpecular, false, tempLightList );
 
 					// Reset stencil params
-					targetRenderSystem.SetStencilBufferParams();
-					targetRenderSystem.StencilCheckEnabled = false;
-					targetRenderSystem.SetDepthBufferParams();
+					this.targetRenderSystem.SetStencilBufferParams();
+					this.targetRenderSystem.StencilCheckEnabled = false;
+					this.targetRenderSystem.SetDepthBufferParams();
 				} // for each light
 
 				// Now render decal passes, no need to set lights as lighting will be disabled
-				illuminationStage = IlluminationRenderStage.Decal;
+				this.illuminationStage = IlluminationRenderStage.Decal;
 				RenderSolidObjects( priorityGroup.solidPassesDecal, false );
 			} // for each priority
 
 			// reset lighting stage
-			illuminationStage = IlluminationRenderStage.None;
+			this.illuminationStage = IlluminationRenderStage.None;
 
 			// Iterate again
 			foreach ( var priorityGroup in group.PriorityGroups.Values )
@@ -5843,44 +5863,44 @@ namespace Axiom.Core
 			foreach ( var priorityGroup in group.PriorityGroups.Values )
 			{
 				// sort the group first
-				priorityGroup.Sort( cameraInProgress );
+				priorityGroup.Sort( this.cameraInProgress );
 
 				// do solids
 				RenderSolidObjects( priorityGroup.solidPasses, true );
 			}
 
 			// iterate over lights, rendering all volumes to the stencil buffer
-			foreach ( var light in lightsAffectingFrustum )
+			foreach ( var light in this.lightsAffectingFrustum )
 			{
 				if ( light.CastShadows )
 				{
 					// clear the stencil buffer
-					targetRenderSystem.ClearFrameBuffer( FrameBufferType.Stencil );
-					RenderShadowVolumesToStencil( light, cameraInProgress );
+					this.targetRenderSystem.ClearFrameBuffer( FrameBufferType.Stencil );
+					RenderShadowVolumesToStencil( light, this.cameraInProgress );
 
 					// render full-screen shadow modulator for all lights
-					SetPass( shadowModulativePass );
+					SetPass( this.shadowModulativePass );
 
 					// turn the stencil check on
-					targetRenderSystem.StencilCheckEnabled = true;
+					this.targetRenderSystem.StencilCheckEnabled = true;
 
 					// we render where the stencil is not equal to zero to render shadows, not lit areas
-					targetRenderSystem.SetStencilBufferParams( CompareFunction.NotEqual, 0 );
-					RenderSingleObject( fullScreenQuad, shadowModulativePass, false );
+					this.targetRenderSystem.SetStencilBufferParams( CompareFunction.NotEqual, 0 );
+					RenderSingleObject( this.fullScreenQuad, this.shadowModulativePass, false );
 
 					// reset stencil buffer params
-					targetRenderSystem.SetStencilBufferParams();
-					targetRenderSystem.StencilCheckEnabled = false;
-					targetRenderSystem.SetDepthBufferParams();
+					this.targetRenderSystem.SetStencilBufferParams();
+					this.targetRenderSystem.StencilCheckEnabled = false;
+					this.targetRenderSystem.SetDepthBufferParams();
 				}
 			} // for each light
 
 			foreach ( var priorityGroup in group.PriorityGroups.Values )
 			{
 				// Do non-shadowable solids
-				renderingNoShadowQueue = true;
+				this.renderingNoShadowQueue = true;
 				RenderSolidObjects( priorityGroup.solidPassesNoShadow, true );
-				renderingNoShadowQueue = false;
+				this.renderingNoShadowQueue = false;
 			} // for each priority
 
 			foreach ( var priorityGroup in group.PriorityGroups.Values )
@@ -5905,34 +5925,34 @@ namespace Axiom.Core
 			// use shadow colour
 			if ( IsShadowTechniqueAdditive )
 			{
-				autoParamDataSource.AmbientLight = ColorEx.Black;
-				targetRenderSystem.AmbientLight = ColorEx.Black;
+				this.autoParamDataSource.AmbientLight = ColorEx.Black;
+				this.targetRenderSystem.AmbientLight = ColorEx.Black;
 			}
 			else
 			{
-				autoParamDataSource.AmbientLight = shadowColor;
-				targetRenderSystem.AmbientLight = shadowColor;
+				this.autoParamDataSource.AmbientLight = this.shadowColor;
+				this.targetRenderSystem.AmbientLight = this.shadowColor;
 			}
 
 			// Iterate through priorities
 			foreach ( var priorityGroup in group.PriorityGroups.Values )
 			{
 				// Sort the queue first
-				priorityGroup.Sort( cameraInProgress );
+				priorityGroup.Sort( this.cameraInProgress );
 
 				// Do solids, override light list in case any vertex programs use them
-				RenderSolidObjects( priorityGroup.solidPasses, false, nullLightList );
-				renderingNoShadowQueue = true;
-				RenderSolidObjects( priorityGroup.solidPassesNoShadow, false, nullLightList );
-				renderingNoShadowQueue = false;
+				RenderSolidObjects( priorityGroup.solidPasses, false, this.nullLightList );
+				this.renderingNoShadowQueue = true;
+				RenderSolidObjects( priorityGroup.solidPassesNoShadow, false, this.nullLightList );
+				this.renderingNoShadowQueue = false;
 
 				// Do transparents that cast shadows
-				RenderTransparentShadowCasterObjects( priorityGroup.transparentPasses, false, nullLightList );
+				RenderTransparentShadowCasterObjects( priorityGroup.transparentPasses, false, this.nullLightList );
 			} // for each priority
 
 			// reset ambient light
-			autoParamDataSource.AmbientLight = ambientColor;
-			targetRenderSystem.AmbientLight = ambientColor;
+			this.autoParamDataSource.AmbientLight = this.ambientColor;
+			this.targetRenderSystem.AmbientLight = this.ambientColor;
 		}
 
 		/// <summary>
@@ -5953,27 +5973,27 @@ namespace Axiom.Core
 			foreach ( var priorityGroup in group.PriorityGroups.Values )
 			{
 				// Sort the queue first
-				priorityGroup.Sort( cameraInProgress );
+				priorityGroup.Sort( this.cameraInProgress );
 
 				// Do solids
 				RenderSolidObjects( priorityGroup.solidPasses, true );
-				renderingNoShadowQueue = true;
+				this.renderingNoShadowQueue = true;
 				RenderSolidObjects( priorityGroup.solidPassesNoShadow, true );
-				renderingNoShadowQueue = false;
+				this.renderingNoShadowQueue = false;
 			}
 
 			// Iterate over lights, render received shadows
 			// only perform this if we're in the 'normal' render stage, to avoid
 			// doing it during the render to texture
-			if ( illuminationStage == IlluminationRenderStage.None )
+			if ( this.illuminationStage == IlluminationRenderStage.None )
 			{
-				illuminationStage = IlluminationRenderStage.RenderReceiverPass;
+				this.illuminationStage = IlluminationRenderStage.RenderReceiverPass;
 
 				var sti = 0;
-				foreach ( var light in lightsAffectingFrustum )
+				foreach ( var light in this.lightsAffectingFrustum )
 				{
 					// Check limit reached
-					if ( sti == shadowTextures.Count )
+					if ( sti == this.shadowTextures.Count )
 					{
 						break;
 					}
@@ -5983,11 +6003,13 @@ namespace Axiom.Core
 						continue;
 					}
 
-					var shadowTex = shadowTextures[ sti ];
+					var shadowTex = this.shadowTextures[ sti ];
 					var cam = shadowTex.GetBuffer().GetRenderTarget().GetViewport( 0 ).Camera;
 
 					// Hook up receiver texture
-					var targetPass = shadowTextureCustomReceiverPass != null ? shadowTextureCustomReceiverPass : shadowReceiverPass;
+					var targetPass = this.shadowTextureCustomReceiverPass != null
+					                 	? this.shadowTextureCustomReceiverPass
+					                 	: this.shadowReceiverPass;
 					var textureUnit = targetPass.GetTextureUnitState( 0 );
 					textureUnit.SetTextureName( shadowTex.Name );
 
@@ -5999,7 +6021,7 @@ namespace Axiom.Core
 					textureUnit.SetTextureAddressingMode( TextureAddressing.Border );
 					textureUnit.TextureBorderColor = ColorEx.White;
 
-					autoParamDataSource.SetTextureProjector( cam );
+					this.autoParamDataSource.SetTextureProjector( cam );
 
 					// if this light is a spotlight, we need to add the spot fader layer
 					// BUT not if using a custom projection matrix, since then it will be
@@ -6057,7 +6079,7 @@ namespace Axiom.Core
 					++sti;
 				} // for each light
 
-				illuminationStage = IlluminationRenderStage.None;
+				this.illuminationStage = IlluminationRenderStage.None;
 			}
 
 			// Iterate again
@@ -6078,7 +6100,7 @@ namespace Axiom.Core
 			foreach ( var priorityGroup in group.PriorityGroups.Values )
 			{
 				// Sort the queue first
-				priorityGroup.Sort( cameraInProgress );
+				priorityGroup.Sort( this.cameraInProgress );
 
 				// Clear light list
 				tempLightList.Clear();
@@ -6086,30 +6108,32 @@ namespace Axiom.Core
 				// Render all the ambient passes first, no light iteration, no lights
 				RenderSolidObjects( priorityGroup.solidPasses, false, tempLightList );
 				// Also render any objects which have receive shadows disabled
-				renderingNoShadowQueue = true;
+				this.renderingNoShadowQueue = true;
 				RenderSolidObjects( priorityGroup.solidPassesNoShadow, true );
-				renderingNoShadowQueue = false;
+				this.renderingNoShadowQueue = false;
 
 				// only perform this next part if we're in the 'normal' render stage, to avoid
 				// doing it during the render to texture
-				if ( illuminationStage == IlluminationRenderStage.None )
+				if ( this.illuminationStage == IlluminationRenderStage.None )
 				{
 					// Iterate over lights, render masked
 					var sti = 0;
-					foreach ( var light in lightsAffectingFrustum )
+					foreach ( var light in this.lightsAffectingFrustum )
 					{
 						// Set light state
-						if ( light.CastShadows && sti < shadowTextures.Count )
+						if ( light.CastShadows && sti < this.shadowTextures.Count )
 						{
-							var shadowTex = shadowTextures[ sti ];
+							var shadowTex = this.shadowTextures[ sti ];
 							// Get camera for current shadow texture
 							var camera = shadowTex.GetBuffer().GetRenderTarget().GetViewport( 0 ).Camera;
 							// Hook up receiver texture
-							var targetPass = shadowTextureCustomReceiverPass != null ? shadowTextureCustomReceiverPass : shadowReceiverPass;
+							var targetPass = this.shadowTextureCustomReceiverPass != null
+							                 	? this.shadowTextureCustomReceiverPass
+							                 	: this.shadowReceiverPass;
 							targetPass.GetTextureUnitState( 0 ).SetTextureName( shadowTex.Name );
 							// Hook up projection frustum
 							targetPass.GetTextureUnitState( 0 ).SetProjectiveTexturing( true, camera );
-							autoParamDataSource.SetTextureProjector( camera );
+							this.autoParamDataSource.SetTextureProjector( camera );
 							// Remove any spot fader layer
 							if ( targetPass.TextureUnitStatesCount > 1 &&
 							     targetPass.GetTextureUnitState( 1 ).TextureName == "spot_shadow_fade.png" )
@@ -6124,11 +6148,11 @@ namespace Axiom.Core
 							targetPass.Load();
 							// increment shadow texture since used
 							++sti;
-							illuminationStage = IlluminationRenderStage.RenderReceiverPass;
+							this.illuminationStage = IlluminationRenderStage.RenderReceiverPass;
 						}
 						else
 						{
-							illuminationStage = IlluminationRenderStage.None;
+							this.illuminationStage = IlluminationRenderStage.None;
 						}
 
 						// render lighting passes for this light
@@ -6137,7 +6161,7 @@ namespace Axiom.Core
 
 						RenderSolidObjects( priorityGroup.solidPassesDiffuseSpecular, false, tempLightList );
 					} // for each light
-					illuminationStage = IlluminationRenderStage.None;
+					this.illuminationStage = IlluminationRenderStage.None;
 
 					// Now render decal passes, no need to set lights as lighting will be disabled
 					RenderSolidObjects( priorityGroup.solidPassesDecal, false );
@@ -6158,21 +6182,21 @@ namespace Axiom.Core
 		protected virtual void RenderTextureShadowReceiverQueueGroupObjects( RenderQueueGroup group )
 		{
 			// Override auto param ambient to force vertex programs to go full-bright
-			autoParamDataSource.AmbientLight = ColorEx.White;
-			targetRenderSystem.AmbientLight = ColorEx.White;
+			this.autoParamDataSource.AmbientLight = ColorEx.White;
+			this.targetRenderSystem.AmbientLight = ColorEx.White;
 
 			// Iterate through priorities
 			foreach ( var priorityGroup in group.PriorityGroups.Values )
 			{
 				// Do solids, override light list in case any vertex programs use them
-				RenderSolidObjects( priorityGroup.solidPasses, false, nullLightList );
+				RenderSolidObjects( priorityGroup.solidPasses, false, this.nullLightList );
 
 				// Don't render transparents or passes which have shadow receipt disabled
 			} // for each priority
 
 			// reset ambient
-			autoParamDataSource.AmbientLight = ambientColor;
-			targetRenderSystem.AmbientLight = ambientColor;
+			this.autoParamDataSource.AmbientLight = this.ambientColor;
+			this.targetRenderSystem.AmbientLight = this.ambientColor;
 		}
 
 		/// <summary>
@@ -6187,9 +6211,10 @@ namespace Axiom.Core
 		{
 			// Bypass if we're doing a texture shadow render and
 			// this pass is after the first (only 1 pass needed for shadow texture)
-			if ( !suppressShadows && currentViewport.ShowShadows &&
-			     ( ( IsShadowTechniqueModulative && illuminationStage == IlluminationRenderStage.RenderReceiverPass ) ||
-			       illuminationStage == IlluminationRenderStage.RenderToTexture || suppressRenderStateChanges ) && pass.Index > 0 )
+			if ( !this.suppressShadows && this.currentViewport.ShowShadows &&
+			     ( ( IsShadowTechniqueModulative && this.illuminationStage == IlluminationRenderStage.RenderReceiverPass ) ||
+			       this.illuminationStage == IlluminationRenderStage.RenderToTexture || this.suppressRenderStateChanges ) &&
+			     pass.Index > 0 )
 			{
 				return false;
 			}
@@ -6209,16 +6234,16 @@ namespace Axiom.Core
 		{
 			// Skip this renderable if we're doing texture shadows, it casts shadows
 			// and we're doing the render receivers pass
-			if ( !suppressShadows && currentViewport.ShowShadows && IsShadowTechniqueTextureBased )
+			if ( !this.suppressShadows && this.currentViewport.ShowShadows && IsShadowTechniqueTextureBased )
 			{
-				if ( illuminationStage == IlluminationRenderStage.RenderReceiverPass && renderable.CastsShadows &&
-				     !shadowTextureSelfShadow )
+				if ( this.illuminationStage == IlluminationRenderStage.RenderReceiverPass && renderable.CastsShadows &&
+				     !this.shadowTextureSelfShadow )
 				{
 					return false;
 				}
 				// Some duplication here with validatePassForRendering, for transparents
-				if ( ( ( IsShadowTechniqueModulative && illuminationStage == IlluminationRenderStage.RenderReceiverPass ) ||
-				       illuminationStage == IlluminationRenderStage.RenderToTexture || suppressRenderStateChanges ) &&
+				if ( ( ( IsShadowTechniqueModulative && this.illuminationStage == IlluminationRenderStage.RenderReceiverPass ) ||
+				       this.illuminationStage == IlluminationRenderStage.RenderToTexture || this.suppressRenderStateChanges ) &&
 				     pass.Index > 0 )
 				{
 					return false;
@@ -6234,23 +6259,23 @@ namespace Axiom.Core
 		protected virtual void RenderQueueGroupObjects( RenderQueueGroup group )
 		{
 			// Redirect to alternate versions if stencil shadows in use
-			var doShadows = group.ShadowsEnabled && currentViewport.ShowShadows && !suppressShadows &&
-			                !suppressRenderStateChanges;
-			if ( doShadows && shadowTechnique == ShadowTechnique.StencilAdditive )
+			var doShadows = group.ShadowsEnabled && this.currentViewport.ShowShadows && !this.suppressShadows &&
+			                !this.suppressRenderStateChanges;
+			if ( doShadows && this.shadowTechnique == ShadowTechnique.StencilAdditive )
 			{
 				RenderAdditiveStencilShadowedQueueGroupObjects( group );
 			}
-			else if ( doShadows && shadowTechnique == ShadowTechnique.StencilModulative )
+			else if ( doShadows && this.shadowTechnique == ShadowTechnique.StencilModulative )
 			{
 				RenderModulativeStencilShadowedQueueGroupObjects( group );
 			}
 			else if ( IsShadowTechniqueTextureBased )
 			{
 				// Modulative texture shadows in use
-				if ( illuminationStage == IlluminationRenderStage.RenderToTexture )
+				if ( this.illuminationStage == IlluminationRenderStage.RenderToTexture )
 				{
 					// Shadow caster pass
-					if ( currentViewport.ShowShadows && !suppressShadows && !suppressRenderStateChanges )
+					if ( this.currentViewport.ShowShadows && !this.suppressShadows && !this.suppressRenderStateChanges )
 					{
 						RenderTextureShadowCasterQueueGroupObjects( group );
 					}
@@ -6293,7 +6318,7 @@ namespace Axiom.Core
 			foreach ( var priorityGroup in group.PriorityGroups.Values )
 			{
 				// Sort the queue first
-				priorityGroup.Sort( cameraInProgress );
+				priorityGroup.Sort( this.cameraInProgress );
 
 				// Do solids
 				RenderSolidObjects( priorityGroup.solidPasses, true );
@@ -6341,14 +6366,14 @@ namespace Axiom.Core
 				var queueID = GetRenderQueue().GetRenderQueueGroupID( i );
 				var queueGroup = GetRenderQueue().GetQueueGroupByIndex( i );
 
-				if ( !specialCaseRenderQueueList.IsRenderQueueToBeProcessed( queueID ) )
+				if ( !this.specialCaseRenderQueueList.IsRenderQueueToBeProcessed( queueID ) )
 				{
 					continue;
 				}
 
 				if ( queueID == RenderQueueGroupID.Main )
 				{
-					renderingMainGroup = true;
+					this.renderingMainGroup = true;
 				}
 				var repeatQueue = false;
 
@@ -6356,7 +6381,7 @@ namespace Axiom.Core
 				do
 				{
 					if ( OnRenderQueueStarted( queueID,
-					                           illuminationStage == IlluminationRenderStage.RenderToTexture
+					                           this.illuminationStage == IlluminationRenderStage.RenderToTexture
 					                           	? String.Empty
 					                           	: String.Empty ) )
 					{
@@ -6372,13 +6397,13 @@ namespace Axiom.Core
 
 					// true if someone requested that we repeat this queue
 					repeatQueue = OnRenderQueueEnded( queueID,
-					                                  illuminationStage == IlluminationRenderStage.RenderToTexture
+					                                  this.illuminationStage == IlluminationRenderStage.RenderToTexture
 					                                  	? String.Empty
 					                                  	: String.Empty );
 				}
 				while ( repeatQueue );
 
-				renderingMainGroup = false;
+				this.renderingMainGroup = false;
 			} // for each queue group
 		}
 
@@ -6390,49 +6415,49 @@ namespace Axiom.Core
 		internal virtual void QueueSkiesForRendering( Camera camera )
 		{
 			// translate the skybox by cam position
-			if ( skyPlaneNode != null )
+			if ( this.skyPlaneNode != null )
 			{
-				skyPlaneNode.Position = camera.DerivedPosition;
+				this.skyPlaneNode.Position = camera.DerivedPosition;
 			}
 
-			if ( skyBoxNode != null )
+			if ( this.skyBoxNode != null )
 			{
-				skyBoxNode.Position = camera.DerivedPosition;
+				this.skyBoxNode.Position = camera.DerivedPosition;
 			}
 
-			if ( skyDomeNode != null )
+			if ( this.skyDomeNode != null )
 			{
-				skyDomeNode.Position = camera.DerivedPosition;
+				this.skyDomeNode.Position = camera.DerivedPosition;
 			}
 
 			RenderQueueGroupID qid;
 
 			// if the skyplane is enabled, queue up the single plane
-			if ( isSkyPlaneEnabled )
+			if ( this.isSkyPlaneEnabled )
 			{
-				qid = isSkyPlaneDrawnFirst ? RenderQueueGroupID.SkiesEarly : RenderQueueGroupID.SkiesLate;
-				GetRenderQueue().AddRenderable( skyPlaneEntity.GetSubEntity( 0 ), 1, qid );
+				qid = this.isSkyPlaneDrawnFirst ? RenderQueueGroupID.SkiesEarly : RenderQueueGroupID.SkiesLate;
+				GetRenderQueue().AddRenderable( this.skyPlaneEntity.GetSubEntity( 0 ), 1, qid );
 			}
 
 			// if the skybox is enabled, queue up all the planes
-			if ( isSkyBoxEnabled )
+			if ( this.isSkyBoxEnabled )
 			{
-				qid = isSkyBoxDrawnFirst ? RenderQueueGroupID.SkiesEarly : RenderQueueGroupID.SkiesLate;
+				qid = this.isSkyBoxDrawnFirst ? RenderQueueGroupID.SkiesEarly : RenderQueueGroupID.SkiesLate;
 
 				for ( var plane = 0; plane < 6; plane++ )
 				{
-					GetRenderQueue().AddRenderable( skyBoxEntities[ plane ].GetSubEntity( 0 ), 1, qid );
+					GetRenderQueue().AddRenderable( this.skyBoxEntities[ plane ].GetSubEntity( 0 ), 1, qid );
 				}
 			}
 
 			// if the skydome is enabled, queue up all the planes
-			if ( isSkyDomeEnabled )
+			if ( this.isSkyDomeEnabled )
 			{
-				qid = isSkyDomeDrawnFirst ? RenderQueueGroupID.SkiesEarly : RenderQueueGroupID.SkiesLate;
+				qid = this.isSkyDomeDrawnFirst ? RenderQueueGroupID.SkiesEarly : RenderQueueGroupID.SkiesLate;
 
 				for ( var plane = 0; plane < 5; ++plane )
 				{
-					GetRenderQueue().AddRenderable( skyDomeEntities[ plane ].GetSubEntity( 0 ), 1, qid );
+					GetRenderQueue().AddRenderable( this.skyDomeEntities[ plane ].GetSubEntity( 0 ), 1, qid );
 				}
 			}
 		}
@@ -6528,12 +6553,12 @@ namespace Axiom.Core
 		public virtual void SetSkyPlane( bool enable, Plane plane, string materialName, float scale, float tiling,
 		                                 bool drawFirst, float bow, string groupName )
 		{
-			isSkyPlaneEnabled = enable;
+			this.isSkyPlaneEnabled = enable;
 
 			if ( enable )
 			{
 				var meshName = "SkyPlane";
-				skyPlane = plane;
+				this.skyPlane = plane;
 
 				var m = (Material)MaterialManager.Instance[ materialName ];
 
@@ -6546,7 +6571,7 @@ namespace Axiom.Core
 				m.DepthWrite = false;
 				m.Load();
 
-				isSkyPlaneDrawnFirst = drawFirst;
+				this.isSkyPlaneDrawnFirst = drawFirst;
 
 				// set up the place
 				var planeMesh = (Mesh)MeshManager.Instance[ meshName ];
@@ -6575,28 +6600,28 @@ namespace Axiom.Core
 					                                              tiling, tiling, up );
 				}
 
-				if ( skyPlaneEntity != null )
+				if ( this.skyPlaneEntity != null )
 				{
-					RemoveEntity( skyPlaneEntity );
+					RemoveEntity( this.skyPlaneEntity );
 				}
 
 				// create entity for the plane, using the mesh name
-				skyPlaneEntity = CreateEntity( meshName, meshName );
-				skyPlaneEntity.MaterialName = materialName;
+				this.skyPlaneEntity = CreateEntity( meshName, meshName );
+				this.skyPlaneEntity.MaterialName = materialName;
 				// sky entities need not cast shadows
-				skyPlaneEntity.CastShadows = false;
+				this.skyPlaneEntity.CastShadows = false;
 
-				if ( skyPlaneNode == null )
+				if ( this.skyPlaneNode == null )
 				{
-					skyPlaneNode = CreateSceneNode( meshName + "Node" );
+					this.skyPlaneNode = CreateSceneNode( meshName + "Node" );
 				}
 				else
 				{
-					skyPlaneNode.DetachAllObjects();
+					this.skyPlaneNode.DetachAllObjects();
 				}
 
 				// attach the skyplane to the new node
-				skyPlaneNode.AttachObject( skyPlaneEntity );
+				this.skyPlaneNode.AttachObject( this.skyPlaneEntity );
 			}
 		}
 
@@ -6618,11 +6643,11 @@ namespace Axiom.Core
 		{
 			if ( autoTrack )
 			{
-				autoTrackingSceneNodes.Add( node );
+				this.autoTrackingSceneNodes.Add( node );
 			}
 			else
 			{
-				autoTrackingSceneNodes.Remove( node.Name );
+				this.autoTrackingSceneNodes.Remove( node.Name );
 			}
 		}
 
@@ -6633,12 +6658,12 @@ namespace Axiom.Core
 		///
 		public void OverrideRootSceneNode( SceneNode node )
 		{
-			rootSceneNode = node;
+			this.rootSceneNode = node;
 		}
 
 		public void RestoreRootSceneNode()
 		{
-			rootSceneNode = defaultRootNode;
+			this.rootSceneNode = this.defaultRootNode;
 		}
 
 		/// <summary>
@@ -6674,12 +6699,12 @@ namespace Axiom.Core
 		public StaticGeometry CreateStaticGeometry( string name, int logLevel )
 		{
 			// Check not existing
-			if ( staticGeometryList.ContainsKey( name ) )
+			if ( this.staticGeometryList.ContainsKey( name ) )
 			{
 				throw new AxiomException( "StaticGeometry with name '" + name + "' already exists!" );
 			}
 			var geometry = new StaticGeometry( this, name, logLevel );
-			staticGeometryList[ name ] = geometry;
+			this.staticGeometryList[ name ] = geometry;
 			return geometry;
 		}
 
@@ -6692,7 +6717,7 @@ namespace Axiom.Core
 		public StaticGeometry GetStaticGeometry( string name )
 		{
 			StaticGeometry geometry;
-			if ( !staticGeometryList.TryGetValue( name, out geometry ) )
+			if ( !this.staticGeometryList.TryGetValue( name, out geometry ) )
 			{
 				throw new AxiomException( "StaticGeometry with name '" + name + "' not found!" );
 			}
@@ -6707,7 +6732,7 @@ namespace Axiom.Core
 		/// </summary>
 		public bool HasStaticGeometry( string name )
 		{
-			return staticGeometryList.ContainsKey( name );
+			return this.staticGeometryList.ContainsKey( name );
 		}
 
 		/// <summary>
@@ -6724,13 +6749,13 @@ namespace Axiom.Core
 		public void DestroyStaticGeometry( string name )
 		{
 			StaticGeometry geometry;
-			if ( !staticGeometryList.TryGetValue( name, out geometry ) )
+			if ( !this.staticGeometryList.TryGetValue( name, out geometry ) )
 			{
 				throw new AxiomException( "StaticGeometry with name '" + name + "' not found!" );
 			}
 			else
 			{
-				staticGeometryList.Remove( name );
+				this.staticGeometryList.Remove( name );
 				geometry.Destroy();
 			}
 		}
@@ -6740,11 +6765,11 @@ namespace Axiom.Core
 		/// </summary>
 		public void DestroyAllStaticGeometry()
 		{
-			foreach ( var geometry in staticGeometryList.Values )
+			foreach ( var geometry in this.staticGeometryList.Values )
 			{
 				geometry.Destroy();
 			}
-			staticGeometryList.Clear();
+			this.staticGeometryList.Clear();
 		}
 
 		#endregion Internal methods
@@ -6791,9 +6816,9 @@ namespace Axiom.Core
 			public void Prepare( bool lightInFrustum, PlaneBoundedVolumeList lightClipVolumes, Light light, Camera camera,
 			                     List<ShadowCaster> shadowCasterList, float farDistSquared )
 			{
-				casterList = shadowCasterList;
-				isLightInFrustum = lightInFrustum;
-				lightClipVolumeList = lightClipVolumes;
+				this.casterList = shadowCasterList;
+				this.isLightInFrustum = lightInFrustum;
+				this.lightClipVolumeList = lightClipVolumes;
 				this.camera = camera;
 				this.light = light;
 				this.farDistSquared = farDistSquared;
@@ -6806,16 +6831,16 @@ namespace Axiom.Core
 			public bool OnQueryResult( MovableObject sceneObject )
 			{
 				if ( sceneObject.CastShadows && sceneObject.IsVisible &&
-				     sceneManager.SpecialCaseRenderQueueList.IsRenderQueueToBeProcessed( sceneObject.RenderQueueGroup ) )
+				     this.sceneManager.SpecialCaseRenderQueueList.IsRenderQueueToBeProcessed( sceneObject.RenderQueueGroup ) )
 				{
-					if ( farDistSquared > 0 )
+					if ( this.farDistSquared > 0 )
 					{
 						// Check object is within the shadow far distance
-						var toObj = sceneObject.ParentNode.DerivedPosition - camera.DerivedPosition;
+						var toObj = sceneObject.ParentNode.DerivedPosition - this.camera.DerivedPosition;
 						float radius = sceneObject.GetWorldBoundingSphere().Radius;
 						float dist = toObj.LengthSquared;
 
-						if ( dist - ( radius*radius ) > farDistSquared )
+						if ( dist - ( radius*radius ) > this.farDistSquared )
 						{
 							// skip, beyond max range
 							return true;
@@ -6823,9 +6848,9 @@ namespace Axiom.Core
 					}
 
 					// If the object is in the frustum, we can always see the shadow
-					if ( camera.IsObjectVisible( sceneObject.GetWorldBoundingBox() ) )
+					if ( this.camera.IsObjectVisible( sceneObject.GetWorldBoundingBox() ) )
 					{
-						casterList.Add( sceneObject );
+						this.casterList.Add( sceneObject );
 						return true;
 					}
 
@@ -6834,16 +6859,16 @@ namespace Axiom.Core
 					// which are always outside), and the object is intersecting
 					// on of the volumes formed between the edges of the frustum and the
 					// light
-					if ( !isLightInFrustum || light.Type == LightType.Directional )
+					if ( !this.isLightInFrustum || this.light.Type == LightType.Directional )
 					{
 						// Iterate over volumes
-						for ( var i = 0; i < lightClipVolumeList.Count; i++ )
+						for ( var i = 0; i < this.lightClipVolumeList.Count; i++ )
 						{
-							var pbv = (PlaneBoundedVolume)lightClipVolumeList[ i ];
+							var pbv = (PlaneBoundedVolume)this.lightClipVolumeList[ i ];
 
 							if ( pbv.Intersects( sceneObject.GetWorldBoundingBox() ) )
 							{
-								casterList.Add( sceneObject );
+								this.casterList.Add( sceneObject );
 								return true;
 							}
 						}
@@ -6989,23 +7014,23 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return movableObjectCollectionMap;
+				return this.movableObjectCollectionMap;
 			}
 		}
 
 		public MovableObjectCollection GetMovableObjectCollection( string typeName )
 		{
 			// lock collection mutex
-			lock ( movableObjectCollectionMap )
+			lock ( this.movableObjectCollectionMap )
 			{
-				if ( movableObjectCollectionMap.ContainsKey( typeName ) )
+				if ( this.movableObjectCollectionMap.ContainsKey( typeName ) )
 				{
-					return movableObjectCollectionMap[ typeName ];
+					return this.movableObjectCollectionMap[ typeName ];
 				}
 				else
 				{
 					var newCol = new MovableObjectCollection();
-					movableObjectCollectionMap.Add( typeName, newCol );
+					this.movableObjectCollectionMap.Add( typeName, newCol );
 					return newCol;
 				}
 			}
@@ -7065,7 +7090,7 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual MovableObject CreateMovableObject( string typeName, NamedParameterList para )
 		{
-			string name = movableNameGenerator.GetNextUniqueName();
+			string name = this.movableNameGenerator.GetNextUniqueName();
 			return CreateMovableObject( name, typeName, para );
 		}
 
@@ -7074,7 +7099,7 @@ namespace Axiom.Core
 			// Nasty hack to make generalized Camera functions work without breaking add-on SMs
 			if ( typeName == "Camera" )
 			{
-				DestroyCamera( cameraList[ name ] );
+				DestroyCamera( this.cameraList[ name ] );
 				return;
 			}
 
@@ -7119,7 +7144,7 @@ namespace Axiom.Core
 
 		public void DestroyAllMovableObjects()
 		{
-			foreach ( var col in movableObjectCollectionMap )
+			foreach ( var col in this.movableObjectCollectionMap )
 			{
 				var coll = col.Value;
 				lock ( coll )
@@ -7140,7 +7165,7 @@ namespace Axiom.Core
 					}
 				}
 			}
-			movableObjectCollectionMap.Clear();
+			this.movableObjectCollectionMap.Clear();
 		}
 
 		public MovableObject GetMovableObject( string name, string typeName )
@@ -7148,20 +7173,20 @@ namespace Axiom.Core
 			// Nasty hack to make generalized Camera functions work without breaking add-on SMs
 			if ( typeName == "Camera" )
 			{
-				return cameraList[ name ];
+				return this.cameraList[ name ];
 			}
 
-			if ( !movableObjectCollectionMap.ContainsKey( typeName ) )
+			if ( !this.movableObjectCollectionMap.ContainsKey( typeName ) )
 			{
 				throw new AxiomException( "The factory for the type " + typeName + " does not exists in the collection." );
 			}
 
-			if ( !movableObjectCollectionMap[ typeName ].ContainsKey( name ) )
+			if ( !this.movableObjectCollectionMap[ typeName ].ContainsKey( name ) )
 			{
 				throw new AxiomException( "The object with the name " + name + " does not exists in the collection." );
 			}
 
-			return movableObjectCollectionMap[ typeName ][ name ];
+			return this.movableObjectCollectionMap[ typeName ][ name ];
 		}
 
 		public bool HasMovableObject( string name, string typeName )
@@ -7169,11 +7194,11 @@ namespace Axiom.Core
 			// Nasty hack to make generalized Camera functions work without breaking add-on SMs
 			if ( typeName == "Camera" )
 			{
-				return cameraList.ContainsKey( name );
+				return this.cameraList.ContainsKey( name );
 			}
 
-			return movableObjectCollectionMap.ContainsKey( typeName ) &&
-			       movableObjectCollectionMap[ typeName ].ContainsKey( name );
+			return this.movableObjectCollectionMap.ContainsKey( typeName ) &&
+			       this.movableObjectCollectionMap[ typeName ].ContainsKey( name );
 		}
 
 		public void DestroyMovableObject( MovableObject m )
@@ -7561,12 +7586,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( metaDataInit )
+				if ( this.metaDataInit )
 				{
 					InitMetaData();
-					metaDataInit = false;
+					this.metaDataInit = false;
 				}
-				return metaData;
+				return this.metaData;
 			}
 		}
 

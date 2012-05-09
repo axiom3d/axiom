@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,45 +25,49 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
-using Axiom.Graphics;
+
 using Axiom.Core;
+using Axiom.Graphics;
+
 using OpenTK.Graphics.ES11;
+
 using OpenGL = OpenTK.Graphics.ES11.GL;
 using OpenGLOES = OpenTK.Graphics.ES11.GL.Oes;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
 	/// <summary>
-	/// 
 	/// </summary>
 	public class GLESHardwareVertexBuffer : HardwareVertexBuffer
 	{
-		const int MapBufferThreshold = 1024 * 32;
+		private const int MapBufferThreshold = 1024 * 32;
 		private int _bufferId = 0;
-		IntPtr _scratchPtr;
-		bool _lockedToScratch;
-		bool _scratchUploadOnUnlock;
-		int _scratchOffset;
-		int _scratchSize;
+		private IntPtr _scratchPtr;
+		private bool _lockedToScratch;
+		private bool _scratchUploadOnUnlock;
+		private int _scratchOffset;
+		private int _scratchSize;
 
 		public int BufferID
 		{
-			get
-			{
-				return _bufferId;
-			}
+			get { return this._bufferId; }
 		}
 
 		public GLESHardwareVertexBuffer( HardwareBufferManager mgr, int vertexSize, int numVertices, BufferUsage usage, bool useShadowBuffer )
@@ -73,38 +78,37 @@ namespace Axiom.RenderSystems.OpenGLES
 				throw new AxiomException( "Only supported with shadowBuffer" );
 			}
 
-			OpenGL.GenBuffers( 1, ref _bufferId );
+			OpenGL.GenBuffers( 1, ref this._bufferId );
 			GLESConfig.GlCheckError( this );
-			if ( _bufferId == 0 )
+			if ( this._bufferId == 0 )
 			{
 				throw new AxiomException( "Cannot create GL vertex buffer" );
 			}
 
-			OpenGL.BindBuffer( All.ArrayBuffer, _bufferId );
+			OpenGL.BindBuffer( All.ArrayBuffer, this._bufferId );
 			GLESConfig.GlCheckError( this );
 			OpenGL.BufferData( All.ArrayBuffer, new IntPtr( sizeInBytes ), IntPtr.Zero, GLESHardwareBufferManager.GetGLUsage( usage ) );
 			GLESConfig.GlCheckError( this );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected override void UnlockImpl()
 		{
-			if ( _lockedToScratch )
+			if ( this._lockedToScratch )
 			{
-				if ( _scratchUploadOnUnlock )
+				if ( this._scratchUploadOnUnlock )
 				{
 					// have to write the data back to vertex buffer
-					WriteData( _scratchOffset, _scratchSize, _scratchPtr, _scratchOffset == 0 && _scratchSize == sizeInBytes );
+					WriteData( this._scratchOffset, this._scratchSize, this._scratchPtr, this._scratchOffset == 0 && this._scratchSize == sizeInBytes );
 				}
 				// deallocate from scratch buffer
-				( (GLESHardwareBufferManager)HardwareBufferManager.Instance ).DeallocateScratch( _scratchPtr );
-				_lockedToScratch = false;
+				( (GLESHardwareBufferManager) HardwareBufferManager.Instance ).DeallocateScratch( this._scratchPtr );
+				this._lockedToScratch = false;
 			}
 			else
 			{
-				OpenGL.BindBuffer( All.ArrayBuffer, _bufferId );
+				OpenGL.BindBuffer( All.ArrayBuffer, this._bufferId );
 				if ( !OpenGLOES.UnmapBuffer( All.ArrayBuffer ) )
 				{
 					throw new AxiomException( "Buffer data corrupted, please reload" );
@@ -114,12 +118,11 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="locking"></param>
-		/// <returns></returns>
+		/// <param name="offset"> </param>
+		/// <param name="length"> </param>
+		/// <param name="locking"> </param>
+		/// <returns> </returns>
 		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
 		{
 			All access = 0;
@@ -131,14 +134,14 @@ namespace Axiom.RenderSystems.OpenGLES
 			IntPtr retPtr = IntPtr.Zero;
 			if ( length < MapBufferThreshold )
 			{
-				retPtr = ( (GLESHardwareBufferManager)HardwareBufferManager.Instance ).AllocateScratch( length );
+				retPtr = ( (GLESHardwareBufferManager) HardwareBufferManager.Instance ).AllocateScratch( length );
 				if ( retPtr != IntPtr.Zero )
 				{
-					_lockedToScratch = true;
-					_scratchOffset = offset;
-					_scratchSize = length;
-					_scratchPtr = retPtr;
-					_scratchUploadOnUnlock = ( locking != BufferLocking.ReadOnly );
+					this._lockedToScratch = true;
+					this._scratchOffset = offset;
+					this._scratchSize = length;
+					this._scratchPtr = retPtr;
+					this._scratchUploadOnUnlock = ( locking != BufferLocking.ReadOnly );
 
 					if ( locking != BufferLocking.Discard )
 					{
@@ -153,14 +156,16 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			if ( retPtr == IntPtr.Zero )
 			{
-				OpenGL.BindBuffer( All.ArrayBuffer, _bufferId );
+				OpenGL.BindBuffer( All.ArrayBuffer, this._bufferId );
 				// Use glMapBuffer
 				if ( locking == BufferLocking.Discard )
 				{
 					OpenGL.BufferData( All.ArrayBuffer, new IntPtr( sizeInBytes ), IntPtr.Zero, GLESHardwareBufferManager.GetGLUsage( usage ) );
 				}
 				if ( ( usage & BufferUsage.WriteOnly ) != 0 )
+				{
 					access = All.WriteOnlyOes;
+				}
 
 				IntPtr pBuffer = OpenGLOES.MapBuffer( All.ArrayBuffer, access );
 				if ( pBuffer == IntPtr.Zero )
@@ -171,10 +176,10 @@ namespace Axiom.RenderSystems.OpenGLES
 				unsafe
 				{
 					// return offset
-					retPtr = (IntPtr)( (byte*)pBuffer + offset );
+					retPtr = (IntPtr) ( (byte*) pBuffer + offset );
 				}
 
-				_lockedToScratch = false;
+				this._lockedToScratch = false;
 			}
 			isLocked = true;
 
@@ -182,11 +187,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="dest"></param>
+		/// <param name="offset"> </param>
+		/// <param name="length"> </param>
+		/// <param name="dest"> </param>
 		public override void ReadData( int offset, int length, IntPtr dest )
 		{
 			if ( useShadowBuffer )
@@ -202,15 +206,14 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="offset"></param>
-		/// <param name="length"></param>
-		/// <param name="src"></param>
-		/// <param name="discardWholeBuffer"></param>
+		/// <param name="offset"> </param>
+		/// <param name="length"> </param>
+		/// <param name="src"> </param>
+		/// <param name="discardWholeBuffer"> </param>
 		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
 		{
-			OpenGL.BindBuffer( All.ArrayBuffer, _bufferId );
+			OpenGL.BindBuffer( All.ArrayBuffer, this._bufferId );
 			GLESConfig.GlCheckError( this );
 			// Update the shadow buffer
 			if ( useShadowBuffer )
@@ -239,14 +242,13 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		protected override void UpdateFromShadow()
 		{
 			if ( useShadowBuffer && shadowUpdated && !suppressHardwareUpdate )
 			{
 				IntPtr srcData = shadowBuffer.Lock( lockStart, lockSize, BufferLocking.ReadOnly );
-				OpenGL.BindBuffer( All.ArrayBuffer, _bufferId );
+				OpenGL.BindBuffer( All.ArrayBuffer, this._bufferId );
 				GLESConfig.GlCheckError( this );
 
 				// Update whole buffer if possible, otherwise normal
@@ -266,16 +268,15 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="disposeManagedResources"></param>
+		/// <param name="disposeManagedResources"> </param>
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
-					OpenGL.DeleteBuffers( 1, ref _bufferId );
+					OpenGL.DeleteBuffers( 1, ref this._bufferId );
 					GLESConfig.GlCheckError( this );
 				}
 			}

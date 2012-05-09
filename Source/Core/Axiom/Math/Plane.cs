@@ -98,8 +98,8 @@ namespace Axiom.Math
 
 		public Plane( Plane plane )
 		{
-			Normal = plane.Normal;
-			D = plane.D;
+			this.Normal = plane.Normal;
+			this.D = plane.D;
 		}
 
 		/// <summary>
@@ -109,14 +109,14 @@ namespace Axiom.Math
 		/// <param name="constant"></param>
 		public Plane( Vector3 normal, Real constant )
 		{
-			Normal = normal;
-			D = -constant;
+			this.Normal = normal;
+			this.D = -constant;
 		}
 
 		public Plane( Vector3 normal, Vector3 point )
 		{
-			Normal = normal;
-			D = -normal.Dot( point );
+			this.Normal = normal;
+			this.D = -normal.Dot( point );
 		}
 
 		/// <summary>
@@ -129,9 +129,9 @@ namespace Axiom.Math
 		{
 			var edge1 = point1 - point0;
 			var edge2 = point2 - point0;
-			Normal = edge1.Cross( edge2 );
-			Normal.Normalize();
-			D = -Normal.Dot( point0 );
+			this.Normal = edge1.Cross( edge2 );
+			this.Normal.Normalize();
+			this.D = -this.Normal.Dot( point0 );
 		}
 
 		#endregion
@@ -198,7 +198,7 @@ namespace Axiom.Math
 
 			// Calculate the maximise allows absolute distance for
 			// the distance between box centre and plane
-			var maxAbsDist = Normal.AbsDot( halfSize );
+			var maxAbsDist = this.Normal.AbsDot( halfSize );
 
 			if ( dist < -maxAbsDist )
 			{
@@ -225,7 +225,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Real GetDistance( Vector3 point )
 		{
-			return Normal.Dot( point ) + D;
+			return this.Normal.Dot( point ) + this.D;
 		}
 
 		/// <summary>
@@ -235,8 +235,8 @@ namespace Axiom.Math
 		/// <param name="rkPoint">Point vector</param>
 		public void Redefine( Vector3 rkNormal, Vector3 rkPoint )
 		{
-			Normal = rkNormal;
-			D = -rkNormal.Dot( rkPoint );
+			this.Normal = rkNormal;
+			this.D = -rkNormal.Dot( rkPoint );
 		}
 
 		/// <summary>
@@ -249,9 +249,9 @@ namespace Axiom.Math
 		{
 			var edge1 = point1 - point0;
 			var edge2 = point2 - point0;
-			Normal = edge1.Cross( edge2 );
-			Normal.Normalize();
-			D = -Normal.Dot( point0 );
+			this.Normal = edge1.Cross( edge2 );
+			this.Normal.Normalize();
+			this.D = -this.Normal.Dot( point0 );
 		}
 
 		/// <summary>
@@ -262,15 +262,15 @@ namespace Axiom.Math
 			// We know plane normal is unit length, so use simple method
 			Matrix3 xform;
 
-			xform.m00 = 1.0f - Normal.x*Normal.x;
-			xform.m01 = -Normal.x*Normal.y;
-			xform.m02 = -Normal.x*Normal.z;
-			xform.m10 = -Normal.y*Normal.x;
-			xform.m11 = 1.0f - Normal.y*Normal.y;
-			xform.m12 = -Normal.y*Normal.z;
-			xform.m20 = -Normal.z*Normal.x;
-			xform.m21 = -Normal.z*Normal.y;
-			xform.m22 = 1.0f - Normal.z*Normal.z;
+			xform.m00 = 1.0f - this.Normal.x*this.Normal.x;
+			xform.m01 = -this.Normal.x*this.Normal.y;
+			xform.m02 = -this.Normal.x*this.Normal.z;
+			xform.m10 = -this.Normal.y*this.Normal.x;
+			xform.m11 = 1.0f - this.Normal.y*this.Normal.y;
+			xform.m12 = -this.Normal.y*this.Normal.z;
+			xform.m20 = -this.Normal.z*this.Normal.x;
+			xform.m21 = -this.Normal.z*this.Normal.y;
+			xform.m22 = 1.0f - this.Normal.z*this.Normal.z;
 
 			return xform*point;
 		}
@@ -295,7 +295,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return D.GetHashCode() ^ Normal.GetHashCode();
+			return this.D.GetHashCode() ^ this.Normal.GetHashCode();
 		}
 
 		/// <summary>
@@ -304,7 +304,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return string.Format( "Distance: {0} Normal: {1}", D, Normal );
+			return string.Format( "Distance: {0} Normal: {1}", this.D, this.Normal );
 		}
 
 		#endregion

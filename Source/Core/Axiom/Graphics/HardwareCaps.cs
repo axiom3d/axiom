@@ -223,11 +223,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _stencilBufferBitCount;
+				return this._stencilBufferBitCount;
 			}
 			set
 			{
-				_stencilBufferBitCount = value;
+				this._stencilBufferBitCount = value;
 			}
 		}
 
@@ -250,11 +250,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _vendor;
+				return this._vendor;
 			}
 			set
 			{
-				_vendor = value;
+				this._vendor = value;
 			}
 		}
 
@@ -274,11 +274,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _deviceName;
+				return this._deviceName;
 			}
 			set
 			{
-				_deviceName = value;
+				this._deviceName = value;
 			}
 		}
 
@@ -300,11 +300,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _driverVersion;
+				return this._driverVersion;
 			}
 			set
 			{
-				_driverVersion = value;
+				this._driverVersion = value;
 			}
 		}
 
@@ -355,7 +355,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public RenderSystemCapabilities()
 		{
-			_caps = 0;
+			this._caps = 0;
 		}
 
 		#endregion Construction and Destruction
@@ -369,7 +369,7 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		public bool HasCapability( Capabilities cap )
 		{
-			return ( _caps & cap ) > 0;
+			return ( this._caps & cap ) > 0;
 		}
 
 		/// <summary>
@@ -378,7 +378,7 @@ namespace Axiom.Graphics
 		/// <param name="cap"></param>
 		public void SetCapability( Capabilities cap )
 		{
-			_caps |= cap;
+			this._caps |= cap;
 		}
 
 		/// <summary>
@@ -396,8 +396,8 @@ namespace Axiom.Graphics
 		{
 			logMgr.Write( "---RenderSystem capabilities---" );
 			logMgr.Write( "\t-GPU Vendor: {0}", VendorToString( Vendor ) );
-			logMgr.Write( "\t-Device Name: {0}", _deviceName );
-			logMgr.Write( "\t-Driver Version: {0}", _driverVersion.ToString() );
+			logMgr.Write( "\t-Device Name: {0}", this._deviceName );
+			logMgr.Write( "\t-Driver Version: {0}", this._driverVersion.ToString() );
 			logMgr.Write( "\t-Available texture units: {0}", TextureUnitCount );
 			logMgr.Write( "\t-Maximum lights available: {0}", MaxLights );
 			logMgr.Write( "\t-Hardware generation of mip-maps: {0}", ConvertBool( HasCapability( Capabilities.HardwareMipMaps ) ) );
@@ -411,7 +411,7 @@ namespace Axiom.Graphics
 
 			if ( HasCapability( Capabilities.StencilBuffer ) )
 			{
-				logMgr.Write( "\t\t-Stencil depth: {0} bits", _stencilBufferBitCount );
+				logMgr.Write( "\t\t-Stencil depth: {0} bits", this._stencilBufferBitCount );
 				logMgr.Write( "\t\t-Two sided stencil support: {0}", ConvertBool( HasCapability( Capabilities.TwoSidedStencil ) ) );
 				logMgr.Write( "\t\t-Wrap stencil values: {0}", ConvertBool( HasCapability( Capabilities.StencilWrap ) ) );
 			}
@@ -507,7 +507,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void AddShaderProfile( string profile )
 		{
-			ShaderProfiles.Add( profile );
+			this.ShaderProfiles.Add( profile );
 		}
 
 		/// <summary>
@@ -515,7 +515,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void RemoveShaderProfile( string profile )
 		{
-			ShaderProfiles.Remove( profile );
+			this.ShaderProfiles.Remove( profile );
 		}
 
 		/// <summary>
@@ -523,7 +523,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public bool IsShaderProfileSupported( string profile )
 		{
-			return ShaderProfiles.Contains( profile );
+			return this.ShaderProfiles.Contains( profile );
 		}
 
 		#endregion
@@ -535,7 +535,7 @@ namespace Axiom.Graphics
 
 		public void UnsetCapability( Capabilities cap )
 		{
-			_caps &= ~cap;
+			this._caps &= ~cap;
 		}
 	}
 }

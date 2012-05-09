@@ -120,12 +120,12 @@ namespace Axiom.Math
 			// If all points are on outside of any plane, we fail
 			var points = box.Corners;
 
-			for ( var i = 0; i < planes.Count; i++ )
+			for ( var i = 0; i < this.planes.Count; i++ )
 			{
-				var plane = (Plane)planes[ i ];
+				var plane = (Plane)this.planes[ i ];
 
 				var side = plane.GetSide( center, halfSize );
-				if ( side == outside )
+				if ( side == this.outside )
 				{
 					// Found a splitting plane therefore return not intersecting
 					return false;
@@ -143,15 +143,15 @@ namespace Axiom.Math
 		/// <returns>True if the sphere intersects this volume, and false otherwise.</returns>
 		public bool Intersects( Sphere sphere )
 		{
-			for ( var i = 0; i < planes.Count; i++ )
+			for ( var i = 0; i < this.planes.Count; i++ )
 			{
-				var plane = (Plane)planes[ i ];
+				var plane = (Plane)this.planes[ i ];
 
 				// Test which side of the plane the sphere is
 				var d = plane.GetDistance( sphere.Center );
 
 				// Negate d if planes point inwards
-				if ( outside == PlaneSide.Negative )
+				if ( this.outside == PlaneSide.Negative )
 				{
 					d = -d;
 				}

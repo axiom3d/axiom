@@ -85,7 +85,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _windows;
+				return this._windows;
 			}
 		}
 
@@ -126,11 +126,11 @@ namespace Axiom.Core
 			Contract.RequiresNotNull( window, "window" );
 			Contract.RequiresNotNull( listener, "listener" );
 
-			if ( !_listeners.ContainsKey( window ) )
+			if ( !this._listeners.ContainsKey( window ) )
 			{
-				_listeners.Add( window, new List<IWindowEventListener>() );
+				this._listeners.Add( window, new List<IWindowEventListener>() );
 			}
-			_listeners[ window ].Add( listener );
+			this._listeners[ window ].Add( listener );
 		}
 
 		/// <summary>
@@ -143,9 +143,9 @@ namespace Axiom.Core
 			Contract.RequiresNotNull( window, "window" );
 			Contract.RequiresNotNull( listener, "listener" );
 
-			if ( _listeners.ContainsKey( window ) )
+			if ( this._listeners.ContainsKey( window ) )
 			{
-				_listeners[ window ].Remove( listener );
+				this._listeners[ window ].Remove( listener );
 			}
 		}
 
@@ -158,8 +158,8 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			_windows.Add( window );
-			_listeners.Add( window, new List<IWindowEventListener>() );
+			this._windows.Add( window );
+			this._listeners.Add( window, new List<IWindowEventListener>() );
 		}
 
 		/// <summary>
@@ -171,15 +171,15 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if ( this._windows.Contains( window ) )
 			{
-				_windows.Remove( window );
+				this._windows.Remove( window );
 			}
 
-			if ( _listeners.ContainsKey( window ) )
+			if ( this._listeners.ContainsKey( window ) )
 			{
-				_listeners[ window ].Clear();
-				_listeners.Remove( window );
+				this._listeners[ window ].Clear();
+				this._listeners.Remove( window );
 			}
 		}
 
@@ -192,13 +192,13 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if ( this._windows.Contains( window ) )
 			{
 				// Notify Window of focus change
 				window.IsActive = hasFocus;
 
 				// Notify listeners of focus change
-				foreach ( var listener in _listeners[ window ] )
+				foreach ( var listener in this._listeners[ window ] )
 				{
 					listener.WindowFocusChange( window );
 				}
@@ -215,13 +215,13 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if ( this._windows.Contains( window ) )
 			{
 				// Notify Window of Move or Resize
 				window.WindowMovedOrResized();
 
 				// Notify listeners of Resize
-				foreach ( var listener in _listeners[ window ] )
+				foreach ( var listener in this._listeners[ window ] )
 				{
 					listener.WindowMoved( window );
 				}
@@ -237,13 +237,13 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if ( this._windows.Contains( window ) )
 			{
 				// Notify Window of Move or Resize
 				window.WindowMovedOrResized();
 
 				// Notify listeners of Resize
-				foreach ( var listener in _listeners[ window ] )
+				foreach ( var listener in this._listeners[ window ] )
 				{
 					listener.WindowResized( window );
 				}
@@ -259,10 +259,10 @@ namespace Axiom.Core
 		{
 			Contract.RequiresNotNull( window, "window" );
 
-			if ( _windows.Contains( window ) )
+			if ( this._windows.Contains( window ) )
 			{
 				// Notify listeners of close
-				foreach ( var listener in _listeners[ window ] )
+				foreach ( var listener in this._listeners[ window ] )
 				{
 					listener.WindowClosed( window );
 				}
@@ -282,20 +282,20 @@ namespace Axiom.Core
 			{
 				if ( disposeManagedResources )
 				{
-					if ( _listeners != null )
+					if ( this._listeners != null )
 					{
-						foreach ( var list in _listeners.Values )
+						foreach ( var list in this._listeners.Values )
 						{
 							list.Clear();
 						}
-						_listeners.Clear();
-						_listeners = null;
+						this._listeners.Clear();
+						this._listeners = null;
 					}
 
-					if ( _windows != null )
+					if ( this._windows != null )
 					{
-						_windows.Clear();
-						_windows = null;
+						this._windows.Clear();
+						this._windows = null;
 					}
 				}
 			}

@@ -105,11 +105,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return particleType;
+				return this.particleType;
 			}
 			set
 			{
-				particleType = value;
+				this.particleType = value;
 			}
 		}
 
@@ -120,44 +120,44 @@ namespace Axiom.ParticleSystems
 		/// </summary>
 		public Particle()
 		{
-			timeToLive = 10;
-			totalTimeToLive = 10;
+			this.timeToLive = 10;
+			this.totalTimeToLive = 10;
 			RotationSpeed = 0;
 		}
 
 
 		public void NotifyVisualData( ParticleVisualData vdata )
 		{
-			visual = vdata;
+			this.visual = vdata;
 		}
 
 		public void NotifyOwner( ParticleSystem owner )
 		{
-			parentSystem = owner;
+			this.parentSystem = owner;
 		}
 
 		public void SetDimensions( float width, float height )
 		{
-			hasOwnDimensions = true;
+			this.hasOwnDimensions = true;
 			this.width = width;
 			this.height = height;
-			parentSystem.NotifyParticleResized();
+			this.parentSystem.NotifyParticleResized();
 		}
 
 		public void ResetDimensions()
 		{
-			hasOwnDimensions = false;
+			this.hasOwnDimensions = false;
 		}
 
 		public bool HasOwnDimensions
 		{
 			get
 			{
-				return hasOwnDimensions;
+				return this.hasOwnDimensions;
 			}
 			set
 			{
-				hasOwnDimensions = value;
+				this.hasOwnDimensions = value;
 			}
 		}
 
@@ -165,14 +165,14 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return rotationInRadians*Utility.DEGREES_PER_RADIAN;
+				return this.rotationInRadians*Utility.DEGREES_PER_RADIAN;
 			}
 			set
 			{
-				rotationInRadians = value*Utility.RADIANS_PER_DEGREE;
-				if ( rotationInRadians != 0 )
+				this.rotationInRadians = value*Utility.RADIANS_PER_DEGREE;
+				if ( this.rotationInRadians != 0 )
 				{
-					parentSystem.NotifyParticleRotated();
+					this.parentSystem.NotifyParticleRotated();
 				}
 			}
 		}
@@ -181,11 +181,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return width;
+				return this.width;
 			}
 			set
 			{
-				width = value;
+				this.width = value;
 			}
 		}
 
@@ -193,11 +193,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return height;
+				return this.height;
 			}
 			set
 			{
-				height = value;
+				this.height = value;
 			}
 		}
 
@@ -205,7 +205,7 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return visual;
+				return this.visual;
 			}
 		}
 	}

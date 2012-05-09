@@ -71,7 +71,7 @@ namespace Axiom.Controllers.Canned
 			}
 			set
 			{
-				node.Rotate( axis, value );
+				this.node.Rotate( this.axis, value );
 			}
 		}
 

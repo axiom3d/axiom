@@ -187,7 +187,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return floatLogicalToPhysical;
+				return this.floatLogicalToPhysical;
 			}
 		}
 
@@ -205,7 +205,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return intLogicalToPhysical;
+				return this.intLogicalToPhysical;
 			}
 		}
 
@@ -223,18 +223,19 @@ namespace Axiom.Graphics
 		{
 			set
 			{
-				_namedConstants = value;
+				this._namedConstants = value;
 
 				// Determine any extension to local buffers
 
 				// Size and reset buffer (fill with zero to make comparison later ok)
-				if ( _namedConstants.FloatBufferSize > floatConstants.Count )
+				if ( this._namedConstants.FloatBufferSize > this.floatConstants.Count )
 				{
-					floatConstants.AddRange( Enumerable.Repeat( 0.0f, _namedConstants.FloatBufferSize - floatConstants.Count ) );
+					this.floatConstants.AddRange( Enumerable.Repeat( 0.0f,
+					                                                 this._namedConstants.FloatBufferSize - this.floatConstants.Count ) );
 				}
-				if ( _namedConstants.IntBufferSize > intConstants.Count )
+				if ( this._namedConstants.IntBufferSize > this.intConstants.Count )
 				{
-					intConstants.AddRange( Enumerable.Repeat( 0, _namedConstants.IntBufferSize - intConstants.Count ) );
+					this.intConstants.AddRange( Enumerable.Repeat( 0, this._namedConstants.IntBufferSize - this.intConstants.Count ) );
 				}
 			}
 		}
@@ -276,7 +277,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return activePassIterationIndex;
+				return this.activePassIterationIndex;
 			}
 		}
 
@@ -300,7 +301,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return autoConstants.Count > 0;
+				return this.autoConstants.Count > 0;
 			}
 		}
 
@@ -318,7 +319,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return autoConstants;
+				return this.autoConstants;
 			}
 		}
 
@@ -329,13 +330,13 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return ignoreMissingParameters;
+				return this.ignoreMissingParameters;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				ignoreMissingParameters = value;
+				this.ignoreMissingParameters = value;
 			}
 		}
 
@@ -344,7 +345,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return _sharedParamSets;
+				return this._sharedParamSets;
 			}
 		}
 
@@ -359,8 +360,8 @@ namespace Axiom.Graphics
 		public GpuProgramParameters()
 			: base()
 		{
-			_combinedVariability = GpuParamVariability.Global;
-			activePassIterationIndex = int.MaxValue;
+			this._combinedVariability = GpuParamVariability.Global;
+			this.activePassIterationIndex = int.MaxValue;
 		}
 
 		public GpuProgramParameters( GpuProgramParameters other )
@@ -368,25 +369,25 @@ namespace Axiom.Graphics
 		{
 			// let compiler perform shallow copies of structures 
 			// AutoConstantEntry, RealConstantEntry, IntConstantEntry
-			floatConstants = new FloatConstantList( other.floatConstants ); // vector<float> in ogre => shallow copy
-			intConstants = new IntConstantList( other.intConstants ); // vector<int> in ogre => shallow copy
+			this.floatConstants = new FloatConstantList( other.floatConstants ); // vector<float> in ogre => shallow copy
+			this.intConstants = new IntConstantList( other.intConstants ); // vector<int> in ogre => shallow copy
 
-			autoConstants = new AutoConstantsList(); // vector<AutoConstantEntry> in ogre => deep copy
+			this.autoConstants = new AutoConstantsList(); // vector<AutoConstantEntry> in ogre => deep copy
 			foreach ( var ac in other.autoConstants )
 			{
-				autoConstants.Add( ac.Clone() );
+				this.autoConstants.Add( ac.Clone() );
 			}
 
 			// copy value members
-			floatLogicalToPhysical = other.floatLogicalToPhysical; // pointer in ogre => no Clone
-			intLogicalToPhysical = other.intLogicalToPhysical; // pointer in ogre => no Clone
-			_namedConstants = other._namedConstants; // pointer in ogre => no Clone
+			this.floatLogicalToPhysical = other.floatLogicalToPhysical; // pointer in ogre => no Clone
+			this.intLogicalToPhysical = other.intLogicalToPhysical; // pointer in ogre => no Clone
+			this._namedConstants = other._namedConstants; // pointer in ogre => no Clone
 			CopySharedParamSetUsage( other._sharedParamSets );
 
-			_combinedVariability = other._combinedVariability;
+			this._combinedVariability = other._combinedVariability;
 			TransposeMatrices = other.TransposeMatrices;
-			ignoreMissingParameters = other.ignoreMissingParameters;
-			activePassIterationIndex = other.activePassIterationIndex;
+			this.ignoreMissingParameters = other.ignoreMissingParameters;
+			this.activePassIterationIndex = other.activePassIterationIndex;
 		}
 
 		#endregion Construction and destruction
@@ -397,8 +398,8 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					floatConstants.SafeDispose();
-					intConstants.SafeDispose();
+					this.floatConstants.SafeDispose();
+					this.intConstants.SafeDispose();
 				}
 			}
 
@@ -410,31 +411,31 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		protected void CopySharedParamSetUsage( GpuSharedParametersUsageList srcList )
 		{
-			_sharedParamSets.Clear();
+			this._sharedParamSets.Clear();
 			foreach ( var i in srcList )
 			{
-				_sharedParamSets.Add( new GpuSharedParametersUsage( i.SharedParameters, this ) );
+				this._sharedParamSets.Add( new GpuSharedParametersUsage( i.SharedParameters, this ) );
 			}
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetLogicalIndexes( GpuLogicalBufferStruct floatIndexMap, GpuLogicalBufferStruct intIndexMap )
 		{
-			floatLogicalToPhysical = floatIndexMap;
-			intLogicalToPhysical = intIndexMap;
+			this.floatLogicalToPhysical = floatIndexMap;
+			this.intLogicalToPhysical = intIndexMap;
 
 			// resize the internal buffers
 			// Note that these will only contain something after the first parameter
 			// set has set some parameters
 
 			// Size and reset buffer (fill with zero to make comparison later ok)
-			if ( floatIndexMap != null && floatIndexMap.BufferSize > floatConstants.Count )
+			if ( floatIndexMap != null && floatIndexMap.BufferSize > this.floatConstants.Count )
 			{
-				floatConstants.AddRange( Enumerable.Repeat( 0.0f, floatIndexMap.BufferSize - floatConstants.Count ) );
+				this.floatConstants.AddRange( Enumerable.Repeat( 0.0f, floatIndexMap.BufferSize - this.floatConstants.Count ) );
 			}
-			if ( intIndexMap != null && intIndexMap.BufferSize > intConstants.Count )
+			if ( intIndexMap != null && intIndexMap.BufferSize > this.intConstants.Count )
 			{
-				intConstants.AddRange( Enumerable.Repeat( 0, intIndexMap.BufferSize - intConstants.Count ) );
+				this.intConstants.AddRange( Enumerable.Repeat( 0, intIndexMap.BufferSize - this.intConstants.Count ) );
 			}
 		}
 
@@ -572,7 +573,7 @@ namespace Axiom.Graphics
 			// Raw buffer size is 4x count
 			var rawCount = val.Length;
 			// get physical index
-			Debug.Assert( intLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
+			Debug.Assert( this.intLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
 
 			var physicalIndex = GetIntConstantPhysicalIndex( index, rawCount, GpuParamVariability.Global );
 			// Copy 
@@ -591,7 +592,7 @@ namespace Axiom.Graphics
 			// Raw buffer size is 4x count
 			var rawCount = val.Length;
 			// get physical index
-			Debug.Assert( floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
+			Debug.Assert( this.floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
 
 			var physicalIndex = GetFloatConstantPhysicalIndex( index, rawCount, GpuParamVariability.Global );
 
@@ -611,14 +612,14 @@ namespace Axiom.Graphics
 			// Raw buffer size is 4x count
 			var rawCount = val.Length;
 			// get physical index
-			Debug.Assert( floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
+			Debug.Assert( this.floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
 
 			var physicalIndex = GetFloatConstantPhysicalIndex( index, rawCount, GpuParamVariability.Global );
-			Debug.Assert( physicalIndex + rawCount <= floatConstants.Count );
+			Debug.Assert( physicalIndex + rawCount <= this.floatConstants.Count );
 			// Copy manually since cast required
 			for ( var i = 0; i < rawCount; ++i )
 			{
-				floatConstants[ physicalIndex + i ] = (float)( val[ i ] );
+				this.floatConstants[ physicalIndex + i ] = (float)( val[ i ] );
 			}
 		}
 
@@ -634,7 +635,7 @@ namespace Axiom.Graphics
 			// Raw buffer size is 4x count
 			var rawCount = count*4;
 			// get physical index
-			Debug.Assert( intLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
+			Debug.Assert( this.intLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
 
 			var physicalIndex = GetIntConstantPhysicalIndex( index, rawCount, GpuParamVariability.Global );
 			// Copy 
@@ -647,7 +648,7 @@ namespace Axiom.Graphics
 			// Raw buffer size is 4x count
 			var rawCount = count*4;
 			// get physical index
-			Debug.Assert( floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
+			Debug.Assert( this.floatLogicalToPhysical != null, "GpuProgram hasn't set up the logical -> physical map!" );
 
 			var physicalIndex = GetFloatConstantPhysicalIndex( index, rawCount, GpuParamVariability.Global );
 
@@ -753,37 +754,37 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		private void _writeRawConstants( int physicalIndex, double[] val, int count )
 		{
-			Debug.Assert( physicalIndex + count <= floatConstants.Count );
+			Debug.Assert( physicalIndex + count <= this.floatConstants.Count );
 			for ( var i = 0; i < count; ++i )
 			{
-				floatConstants[ physicalIndex + i ] = (float)val[ i ];
+				this.floatConstants[ physicalIndex + i ] = (float)val[ i ];
 			}
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		private void _writeRawConstants( int physicalIndex, float[] val, int count )
 		{
-			Debug.Assert( physicalIndex + count <= floatConstants.Count );
+			Debug.Assert( physicalIndex + count <= this.floatConstants.Count );
 			for ( var i = 0; i < count; ++i )
 			{
-				floatConstants[ physicalIndex + i ] = val[ i ];
+				this.floatConstants[ physicalIndex + i ] = val[ i ];
 			}
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		private void _writeRawConstants( int physicalIndex, int[] val, int count )
 		{
-			Debug.Assert( physicalIndex + count <= intConstants.Count );
+			Debug.Assert( physicalIndex + count <= this.intConstants.Count );
 			for ( var i = 0; i < count; ++i )
 			{
-				intConstants[ physicalIndex + i ] = val[ i ];
+				this.intConstants[ physicalIndex + i ] = val[ i ];
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		internal void ReadRawConstants( int physicalIndex, float[] dest )
 		{
-			Debug.Assert( physicalIndex + dest.Length <= floatConstants.Count );
+			Debug.Assert( physicalIndex + dest.Length <= this.floatConstants.Count );
 			var destBuf = Memory.PinObject( dest );
 			Memory.Copy( GetFloatPointer( physicalIndex ).Pointer, destBuf, sizeof ( float )*dest.Length );
 			Memory.UnpinObject( dest );
@@ -792,7 +793,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		internal void ReadRawConstants( int physicalIndex, int[] dest )
 		{
-			Debug.Assert( physicalIndex + dest.Length <= intConstants.Count );
+			Debug.Assert( physicalIndex + dest.Length <= this.intConstants.Count );
 			var destBuf = Memory.PinObject( dest );
 			Memory.Copy( GetFloatPointer( physicalIndex ).Pointer, destBuf, sizeof ( int )*dest.Length );
 			Memory.UnpinObject( dest );
@@ -953,29 +954,29 @@ namespace Axiom.Graphics
 		protected GpuLogicalIndexUse GetFloatConstantLogicalIndexUse( int logicalIndex, int requestedSize,
 		                                                              GpuParamVariability variability )
 		{
-			if ( floatLogicalToPhysical == null )
+			if ( this.floatLogicalToPhysical == null )
 			{
 				return null;
 			}
 
 			GpuLogicalIndexUse indexUse = null;
-			lock ( floatLogicalToPhysical.Mutex )
+			lock ( this.floatLogicalToPhysical.Mutex )
 			{
 				GpuLogicalIndexUse logi;
-				if ( !floatLogicalToPhysical.Map.TryGetValue( logicalIndex, out logi ) )
+				if ( !this.floatLogicalToPhysical.Map.TryGetValue( logicalIndex, out logi ) )
 				{
 					if ( requestedSize != 0 )
 					{
-						var physicalIndex = floatConstants.Count;
+						var physicalIndex = this.floatConstants.Count;
 
 						// Expand at buffer end
 						for ( var i = 0; i < requestedSize; i++ )
 						{
-							floatConstants.Add( 0.0f );
+							this.floatConstants.Add( 0.0f );
 						}
 
 						// Record extended size for future GPU params re-using this information
-						floatLogicalToPhysical.BufferSize = floatConstants.Count;
+						this.floatLogicalToPhysical.BufferSize = this.floatConstants.Count;
 
 						// low-level programs will not know about mapping ahead of time, so 
 						// populate it. Other params objects will be able to just use this
@@ -989,7 +990,7 @@ namespace Axiom.Graphics
 						for ( var logicalNum = 0; logicalNum < count; ++logicalNum )
 						{
 							var it = new GpuLogicalIndexUse( currPhys, requestedSize, variability );
-							floatLogicalToPhysical.Map.Add( logicalIndex + logicalNum, it );
+							this.floatLogicalToPhysical.Map.Add( logicalIndex + logicalNum, it );
 							currPhys += 4;
 
 							if ( logicalNum == 0 )
@@ -1022,11 +1023,11 @@ namespace Axiom.Graphics
 
 						for ( var i = 0; i < insertCount; i++ )
 						{
-							floatConstants.Insert( insertPos, 0.0f );
+							this.floatConstants.Insert( insertPos, 0.0f );
 						}
 
 						// shift all physical positions after this one
-						foreach ( var i in floatLogicalToPhysical.Map )
+						foreach ( var i in this.floatLogicalToPhysical.Map )
 						{
 							if ( i.Value.PhysicalIndex > physicalIndex )
 							{
@@ -1034,8 +1035,8 @@ namespace Axiom.Graphics
 							}
 						}
 
-						floatLogicalToPhysical.BufferSize += insertCount;
-						foreach ( var i in autoConstants )
+						this.floatLogicalToPhysical.BufferSize += insertCount;
+						foreach ( var i in this.autoConstants )
 						{
 							AutoConstantDefinition def;
 							if ( i.PhysicalIndex > physicalIndex && GetAutoConstantDefinition( i.Type.ToString(), out def ) &&
@@ -1044,16 +1045,16 @@ namespace Axiom.Graphics
 								i.PhysicalIndex += insertCount;
 							}
 						}
-						if ( _namedConstants != null )
+						if ( this._namedConstants != null )
 						{
-							foreach ( var i in _namedConstants.Map )
+							foreach ( var i in this._namedConstants.Map )
 							{
 								if ( i.Value.IsFloat && i.Value.PhysicalIndex > physicalIndex )
 								{
 									i.Value.PhysicalIndex += insertCount;
 								}
 							}
-							_namedConstants.FloatBufferSize += insertCount;
+							this._namedConstants.FloatBufferSize += insertCount;
 						}
 
 						logi.CurrentSize += insertCount;
@@ -1073,29 +1074,29 @@ namespace Axiom.Graphics
 		protected GpuLogicalIndexUse GetIntConstantLogicalIndexUse( int logicalIndex, int requestedSize,
 		                                                            GpuParamVariability variability )
 		{
-			if ( intLogicalToPhysical == null )
+			if ( this.intLogicalToPhysical == null )
 			{
 				throw new AxiomException( "This is not a low-level parameter parameter object" );
 			}
 
 			GpuLogicalIndexUse indexUse = null;
-			lock ( intLogicalToPhysical.Mutex )
+			lock ( this.intLogicalToPhysical.Mutex )
 			{
 				GpuLogicalIndexUse logi;
-				if ( !intLogicalToPhysical.Map.TryGetValue( logicalIndex, out logi ) )
+				if ( !this.intLogicalToPhysical.Map.TryGetValue( logicalIndex, out logi ) )
 				{
 					if ( requestedSize != 0 )
 					{
-						var physicalIndex = intConstants.Count;
+						var physicalIndex = this.intConstants.Count;
 
 						// Expand at buffer end
 						for ( var i = 0; i < requestedSize; i++ )
 						{
-							intConstants.Add( 0 );
+							this.intConstants.Add( 0 );
 						}
 
 						// Record extended size for future GPU params re-using this information
-						intLogicalToPhysical.BufferSize = intConstants.Count;
+						this.intLogicalToPhysical.BufferSize = this.intConstants.Count;
 
 						// low-level programs will not know about mapping ahead of time, so 
 						// populate it. Other params objects will be able to just use this
@@ -1109,7 +1110,7 @@ namespace Axiom.Graphics
 						for ( var logicalNum = 0; logicalNum < count; ++logicalNum )
 						{
 							var it = new GpuLogicalIndexUse( currPhys, requestedSize, variability );
-							intLogicalToPhysical.Map.Add( logicalIndex + logicalNum, it );
+							this.intLogicalToPhysical.Map.Add( logicalIndex + logicalNum, it );
 
 							if ( logicalNum == 0 )
 							{
@@ -1143,11 +1144,11 @@ namespace Axiom.Graphics
 
 						for ( var i = 0; i < insertCount; i++ )
 						{
-							intConstants.Insert( insertPos, 0 );
+							this.intConstants.Insert( insertPos, 0 );
 						}
 
 						// shift all physical positions after this one
-						foreach ( var i in intLogicalToPhysical.Map )
+						foreach ( var i in this.intLogicalToPhysical.Map )
 						{
 							if ( i.Value.PhysicalIndex > physicalIndex )
 							{
@@ -1155,8 +1156,8 @@ namespace Axiom.Graphics
 							}
 						}
 
-						intLogicalToPhysical.BufferSize += insertCount;
-						foreach ( var i in autoConstants )
+						this.intLogicalToPhysical.BufferSize += insertCount;
+						foreach ( var i in this.autoConstants )
 						{
 							AutoConstantDefinition def;
 							if ( i.PhysicalIndex > physicalIndex && GetAutoConstantDefinition( i.Type.ToString(), out def ) &&
@@ -1165,16 +1166,16 @@ namespace Axiom.Graphics
 								i.PhysicalIndex += insertCount;
 							}
 						}
-						if ( _namedConstants != null )
+						if ( this._namedConstants != null )
 						{
-							foreach ( var i in _namedConstants.Map )
+							foreach ( var i in this._namedConstants.Map )
 							{
 								if ( !i.Value.IsFloat && i.Value.PhysicalIndex > physicalIndex )
 								{
 									i.Value.PhysicalIndex += insertCount;
 								}
 							}
-							_namedConstants.IntBufferSize += insertCount;
+							this._namedConstants.IntBufferSize += insertCount;
 						}
 
 						logi.CurrentSize += insertCount;
@@ -1214,7 +1215,7 @@ namespace Axiom.Graphics
 		public int GetFloatLogicalIndexForPhysicalIndex( int physicalIndex )
 		{
 			// perhaps build a reverse map of this sometime (shared in GpuProgram)
-			var it = floatLogicalToPhysical.Map.FirstOrDefault( ( i ) => i.Value.PhysicalIndex == physicalIndex );
+			var it = this.floatLogicalToPhysical.Map.FirstOrDefault( ( i ) => i.Value.PhysicalIndex == physicalIndex );
 			return it.Value != null ? it.Key : int.MaxValue;
 		}
 
@@ -1228,7 +1229,7 @@ namespace Axiom.Graphics
 		public int GetIntLogicalIndexForPhysicalIndex( int physicalIndex )
 		{
 			// perhaps build a reverse map of this sometime (shared in GpuProgram)
-			var it = intLogicalToPhysical.Map.FirstOrDefault( ( i ) => i.Value.PhysicalIndex == physicalIndex );
+			var it = this.intLogicalToPhysical.Map.FirstOrDefault( ( i ) => i.Value.PhysicalIndex == physicalIndex );
 			return it.Value != null ? it.Key : int.MaxValue;
 		}
 
@@ -1238,7 +1239,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public GpuConstantDefinition GetConstantDefinition( string name )
 		{
-			if ( _namedConstants == null )
+			if ( this._namedConstants == null )
 			{
 				throw new AxiomException( "This params object is not based on a program with named parameters." );
 			}
@@ -1296,7 +1297,7 @@ namespace Axiom.Graphics
 		{
 			// update existing index if it exists
 			var found = false;
-			foreach ( var i in autoConstants )
+			foreach ( var i in this.autoConstants )
 			{
 				if ( i.PhysicalIndex == physicalIndex )
 				{
@@ -1310,10 +1311,10 @@ namespace Axiom.Graphics
 			}
 			if ( !found )
 			{
-				autoConstants.Add( new AutoConstantEntry( acType, physicalIndex, extraInfo, variability, elementSize ) );
+				this.autoConstants.Add( new AutoConstantEntry( acType, physicalIndex, extraInfo, variability, elementSize ) );
 			}
 
-			_combinedVariability |= variability;
+			this._combinedVariability |= variability;
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -1329,7 +1330,7 @@ namespace Axiom.Graphics
 		{
 			// update existing index if it exists
 			var found = false;
-			foreach ( var i in autoConstants )
+			foreach ( var i in this.autoConstants )
 			{
 				if ( i.PhysicalIndex == physicalIndex )
 				{
@@ -1343,10 +1344,10 @@ namespace Axiom.Graphics
 			}
 			if ( !found )
 			{
-				autoConstants.Add( new AutoConstantEntry( acType, physicalIndex, extraInfo, variability, elementSize ) );
+				this.autoConstants.Add( new AutoConstantEntry( acType, physicalIndex, extraInfo, variability, elementSize ) );
 			}
 
-			_combinedVariability |= variability;
+			this._combinedVariability |= variability;
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -1359,7 +1360,7 @@ namespace Axiom.Graphics
 				indexUse.Variability = GpuParamVariability.Global;
 				var physicalIndex = indexUse.PhysicalIndex;
 				// update existing index if it exists
-				autoConstants.RemoveAll( i => i.PhysicalIndex == physicalIndex );
+				this.autoConstants.RemoveAll( i => i.PhysicalIndex == physicalIndex );
 			}
 		}
 
@@ -1374,7 +1375,7 @@ namespace Axiom.Graphics
 				// Autos are always floating point
 				if ( def.IsFloat )
 				{
-					autoConstants.RemoveAll( x => x.PhysicalIndex == def.PhysicalIndex );
+					this.autoConstants.RemoveAll( x => x.PhysicalIndex == def.PhysicalIndex );
 				}
 			}
 		}
@@ -1385,8 +1386,8 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public void ClearAutoConstants()
 		{
-			autoConstants.Clear();
-			_combinedVariability = GpuParamVariability.Global;
+			this.autoConstants.Clear();
+			this._combinedVariability = GpuParamVariability.Global;
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -1414,7 +1415,7 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, Real val )
 		{
 			// look up, and throw an exception if we're not ignoring missing
-			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
+			var def = FindNamedConstantDefinition( name, !this.ignoreMissingParameters );
 			if ( def != null )
 			{
 				WriteRawConstant( def.PhysicalIndex, val );
@@ -1425,7 +1426,7 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, int val )
 		{
 			// look up, and throw an exception if we're not ignoring missing
-			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
+			var def = FindNamedConstantDefinition( name, !this.ignoreMissingParameters );
 			if ( def != null )
 			{
 				WriteRawConstant( def.PhysicalIndex, val );
@@ -1441,7 +1442,7 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, Vector4 val )
 		{
 			// look up, and throw an exception if we're not ignoring missing
-			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
+			var def = FindNamedConstantDefinition( name, !this.ignoreMissingParameters );
 			if ( def != null )
 			{
 				WriteRawConstant( def.PhysicalIndex, val, def.ElementSize );
@@ -1457,7 +1458,7 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, Vector3 val )
 		{
 			// look up, and throw an exception if we're not ignoring missing
-			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
+			var def = FindNamedConstantDefinition( name, !this.ignoreMissingParameters );
 			if ( def != null )
 			{
 				WriteRawConstant( def.PhysicalIndex, val );
@@ -1468,7 +1469,7 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, Matrix4 val )
 		{
 			// look up, and throw an exception if we're not ignoring missing
-			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
+			var def = FindNamedConstantDefinition( name, !this.ignoreMissingParameters );
 			if ( def != null )
 			{
 				WriteRawConstant( def.PhysicalIndex, val, def.ElementSize );
@@ -1485,7 +1486,7 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, Matrix4[] matrices, int count )
 		{
 			// look up, and throw an exception if we're not ignoring missing
-			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
+			var def = FindNamedConstantDefinition( name, !this.ignoreMissingParameters );
 			if ( def != null )
 			{
 				WriteRawConstant( def.PhysicalIndex, matrices, count );
@@ -1501,7 +1502,7 @@ namespace Axiom.Graphics
 		{
 			var rawCount = count*multiple;
 			// look up, and throw an exception if we're not ignoring missing
-			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
+			var def = FindNamedConstantDefinition( name, !this.ignoreMissingParameters );
 			if ( def != null )
 			{
 				_writeRawConstants( def.PhysicalIndex, val, rawCount );
@@ -1524,7 +1525,7 @@ namespace Axiom.Graphics
 		public void SetNamedConstant( string name, ColorEx color )
 		{
 			// look up, and throw an exception if we're not ignoring missing
-			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
+			var def = FindNamedConstantDefinition( name, !this.ignoreMissingParameters );
 			if ( def != null )
 			{
 				WriteRawConstant( def.PhysicalIndex, color, def.ElementSize );
@@ -1540,7 +1541,7 @@ namespace Axiom.Graphics
 		{
 			var rawCount = count*multiple;
 			// look up, and throw an exception if we're not ignoring missing
-			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
+			var def = FindNamedConstantDefinition( name, !this.ignoreMissingParameters );
 			if ( def != null )
 			{
 				_writeRawConstants( def.PhysicalIndex, val, rawCount );
@@ -1577,7 +1578,7 @@ namespace Axiom.Graphics
 		public void SetNamedAutoConstant( string name, AutoConstantType acType, int extraInfo )
 		{
 			// look up, and throw an exception if we're not ignoring missing
-			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
+			var def = FindNamedConstantDefinition( name, !this.ignoreMissingParameters );
 			if ( def != null )
 			{
 				def.Variability = DeriveVariability( acType );
@@ -1603,7 +1604,7 @@ namespace Axiom.Graphics
 		public void SetNamedAutoConstantReal( string name, AutoConstantType acType, Real rData )
 		{
 			// look up, and throw an exception if we're not ignoring missing
-			var def = FindNamedConstantDefinition( name, !ignoreMissingParameters );
+			var def = FindNamedConstantDefinition( name, !this.ignoreMissingParameters );
 			if ( def != null )
 			{
 				def.Variability = DeriveVariability( acType );
@@ -1640,7 +1641,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public AutoConstantEntry GetAutoConstantEntry( int index )
 		{
-			return index < autoConstants.Count ? autoConstants[ index ] : null;
+			return index < this.autoConstants.Count ? this.autoConstants[ index ] : null;
 		}
 
 		/// <summary>
@@ -1653,7 +1654,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public AutoConstantEntry FindFloatAutoConstantEntry( int logicalIndex )
 		{
-			if ( floatLogicalToPhysical == null )
+			if ( this.floatLogicalToPhysical == null )
 			{
 				throw new AxiomException( "This is not a low-level parameter parameter object" );
 			}
@@ -1671,7 +1672,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public AutoConstantEntry FindIntAutoConstantEntry( int logicalIndex )
 		{
-			if ( intLogicalToPhysical == null )
+			if ( this.intLogicalToPhysical == null )
 			{
 				throw new AxiomException( "This is not a low-level parameter parameter object" );
 			}
@@ -1688,7 +1689,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public AutoConstantEntry FindAutoConstantEntry( string paramName )
 		{
-			if ( _namedConstants == null )
+			if ( this._namedConstants == null )
 			{
 				throw new AxiomException( "This params object is not based on a program with named parameters." );
 			}
@@ -1705,7 +1706,7 @@ namespace Axiom.Graphics
 			// should check that auto is float and not int so that physicalIndex
 			// doesn't have any ambiguity
 			// However, all autos are float I think so no need
-			return autoConstants.FirstOrDefault( x => x.PhysicalIndex == physicalIndex );
+			return this.autoConstants.FirstOrDefault( x => x.PhysicalIndex == physicalIndex );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -1722,18 +1723,18 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void CopyConstantsFrom( GpuProgramParameters source )
 		{
-			floatConstants.Clear();
-			floatConstants.AddRange( source.floatConstants );
+			this.floatConstants.Clear();
+			this.floatConstants.AddRange( source.floatConstants );
 
-			intConstants.Clear();
-			intConstants.AddRange( source.intConstants );
+			this.intConstants.Clear();
+			this.intConstants.AddRange( source.intConstants );
 
 			// Iterate over auto parameters
 			// Clear existing auto constants
 			ClearAutoConstants();
-			autoConstants.AddRange( source.autoConstants.Select( x => x.Clone() ) );
+			this.autoConstants.AddRange( source.autoConstants.Select( x => x.Clone() ) );
 
-			_combinedVariability = source._combinedVariability;
+			this._combinedVariability = source._combinedVariability;
 			CopySharedParamSetUsage( source._sharedParamSets );
 		}
 
@@ -1750,7 +1751,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void CopyMatchingNamedConstantsFrom( GpuProgramParameters source )
 		{
-			if ( _namedConstants == null || source == null )
+			if ( this._namedConstants == null || source == null )
 			{
 				return;
 			}
@@ -1825,7 +1826,7 @@ namespace Axiom.Graphics
 			if ( PassIterationNumberIndex != int.MaxValue )
 			{
 				// This is a physical index
-				++floatConstants[ PassIterationNumberIndex ];
+				++this.floatConstants[ PassIterationNumberIndex ];
 			}
 		}
 
@@ -1841,7 +1842,7 @@ namespace Axiom.Graphics
 		{
 			if ( !IsUsingSharedParameters( sharedParams.Name ) )
 			{
-				_sharedParamSets.Add( new GpuSharedParametersUsage( sharedParams, this ) );
+				this._sharedParamSets.Add( new GpuSharedParametersUsage( sharedParams, this ) );
 			}
 		}
 
@@ -1867,7 +1868,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public bool IsUsingSharedParameters( string sharedParamsName )
 		{
-			return _sharedParamSets.FirstOrDefault( x => x.Name == sharedParamsName ) != null;
+			return this._sharedParamSets.FirstOrDefault( x => x.Name == sharedParamsName ) != null;
 		}
 
 		/// <summary>
@@ -1876,7 +1877,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void RemoveSharedParameters( string sharedParamsName )
 		{
-			_sharedParamSets.RemoveAll( x => x.Name == sharedParamsName );
+			this._sharedParamSets.RemoveAll( x => x.Name == sharedParamsName );
 		}
 
 		/// <summary>
@@ -1885,7 +1886,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public void RemoveAllSharedParameters()
 		{
-			_sharedParamSets.Clear();
+			this._sharedParamSets.Clear();
 		}
 
 		/// <summary>
@@ -1901,7 +1902,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public void CopySharedParams()
 		{
-			foreach ( var i in _sharedParamSets )
+			foreach ( var i in this._sharedParamSets )
 			{
 				i.CopySharedParamsToTargetParams();
 			}
@@ -1911,14 +1912,14 @@ namespace Axiom.Graphics
 		/// </summary>
 		public float GetFloatConstant( int i )
 		{
-			return floatConstants[ i ];
+			return this.floatConstants[ i ];
 		}
 
 		/// <summary>
 		/// </summary>
 		public int GetIntConstant( int i )
 		{
-			return intConstants[ i ];
+			return this.intConstants[ i ];
 		}
 
 		/// <summary>
@@ -1927,7 +1928,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public float[] GetFloatConstantList()
 		{
-			return floatConstants.Data;
+			return this.floatConstants.Data;
 		}
 
 		/// <summary>
@@ -1936,7 +1937,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public int[] GetIntConstantList()
 		{
-			return intConstants.Data;
+			return this.intConstants.Data;
 		}
 
 		/// <summary>
@@ -1945,7 +1946,7 @@ namespace Axiom.Graphics
 		[AxiomHelper( 0, 9 )]
 		public OffsetArray<float>.FixedPointer GetFloatPointer( int physicalIndex )
 		{
-			return floatConstants.Fix( physicalIndex );
+			return this.floatConstants.Fix( physicalIndex );
 		}
 
 		/// <summary>
@@ -1954,7 +1955,7 @@ namespace Axiom.Graphics
 		[AxiomHelper( 0, 9 )]
 		public OffsetArray<int>.FixedPointer GetIntPointer( int physicalIndex )
 		{
-			return intConstants.Fix( physicalIndex );
+			return this.intConstants.Fix( physicalIndex );
 		}
 
 		#endregion Methods

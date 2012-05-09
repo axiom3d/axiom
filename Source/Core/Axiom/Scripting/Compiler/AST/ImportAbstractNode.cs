@@ -65,8 +65,8 @@ namespace Axiom.Scripting.Compiler.AST
 			var node = new ImportAbstractNode();
 			node.File = File;
 			node.Line = Line;
-			node.Target = Target;
-			node.Source = Source;
+			node.Target = this.Target;
+			node.Source = this.Source;
 			return node;
 		}
 
@@ -75,11 +75,11 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				return Target;
+				return this.Target;
 			}
 			set
 			{
-				Target = value;
+				this.Target = value;
 			}
 		}
 

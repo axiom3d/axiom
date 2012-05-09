@@ -174,8 +174,8 @@ namespace Axiom.Scripting.Compiler
 		public PreApplyTextureAliasesScriptCompilerEvent( Material material, ref Dictionary<string, string> aliases )
 			: base( CompilerEventType.PreApplyTextureAliases )
 		{
-			Material = material;
-			Aliases = aliases;
+			this.Material = material;
+			this.Aliases = aliases;
 		}
 	};
 
@@ -199,8 +199,8 @@ namespace Axiom.Scripting.Compiler
 		public ProcessResourceNameScriptCompilerEvent( ResourceType resType, string name )
 			: base( CompilerEventType.ProcessResourceName )
 		{
-			ResType = resType;
-			Name = name;
+			this.ResType = resType;
+			this.Name = name;
 		}
 	};
 
@@ -216,8 +216,8 @@ namespace Axiom.Scripting.Compiler
 		public ProcessNameExclusionScriptCompilerEvent( string cls, AbstractNode parent )
 			: base( CompilerEventType.ProcessNameExclusion )
 		{
-			Class = cls;
-			Parent = parent;
+			this.Class = cls;
+			this.Parent = parent;
 		}
 	};
 
@@ -234,9 +234,9 @@ namespace Axiom.Scripting.Compiler
 		public CreateMaterialScriptCompilerEvent( string file, string name, string resGroup )
 			: base( CompilerEventType.CreateMaterial )
 		{
-			File = file;
-			Name = name;
-			ResourceGroup = resGroup;
+			this.File = file;
+			this.Name = name;
+			this.ResourceGroup = resGroup;
 		}
 	};
 
@@ -257,12 +257,12 @@ namespace Axiom.Scripting.Compiler
 		                                            GpuProgramType prgType )
 			: base( CompilerEventType.CreateGpuProgram )
 		{
-			File = file;
-			Name = name;
-			ResourceGroup = resGroup;
-			Source = source;
-			Syntax = syntax;
-			ProgramType = prgType;
+			this.File = file;
+			this.Name = name;
+			this.ResourceGroup = resGroup;
+			this.Source = source;
+			this.Syntax = syntax;
+			this.ProgramType = prgType;
 		}
 	};
 
@@ -283,12 +283,12 @@ namespace Axiom.Scripting.Compiler
 		                                                     string language, GpuProgramType prgType )
 			: base( CompilerEventType.CreateHighLevelGpuProgram )
 		{
-			File = file;
-			Name = name;
-			ResourceGroup = resGroup;
-			Source = source;
-			Language = language;
-			ProgramType = prgType;
+			this.File = file;
+			this.Name = name;
+			this.ResourceGroup = resGroup;
+			this.Source = source;
+			this.Language = language;
+			this.ProgramType = prgType;
 		}
 	};
 
@@ -305,9 +305,9 @@ namespace Axiom.Scripting.Compiler
 		public CreateGpuSharedParametersScriptCompilerEvent( string file, string name, string resGroup )
 			: base( CompilerEventType.CreateGpuSharedParameters )
 		{
-			File = file;
-			Name = name;
-			ResourceGroup = resGroup;
+			this.File = file;
+			this.Name = name;
+			this.ResourceGroup = resGroup;
 		}
 	};
 
@@ -324,9 +324,9 @@ namespace Axiom.Scripting.Compiler
 		public CreateParticleSystemScriptCompilerEvent( string file, string name, string resGroup )
 			: base( CompilerEventType.CreateParticleSystem )
 		{
-			File = file;
-			Name = name;
-			ResourceGroup = resGroup;
+			this.File = file;
+			this.Name = name;
+			this.ResourceGroup = resGroup;
 		}
 	};
 
@@ -343,9 +343,9 @@ namespace Axiom.Scripting.Compiler
 		public CreateCompositorScriptCompilerEvent( string file, string name, string resGroup )
 			: base( CompilerEventType.CreateCompositor )
 		{
-			File = file;
-			Name = name;
-			ResourceGroup = resGroup;
+			this.File = file;
+			this.Name = name;
+			this.ResourceGroup = resGroup;
 		}
 	};
 

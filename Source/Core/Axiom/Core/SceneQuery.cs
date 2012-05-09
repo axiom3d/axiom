@@ -116,10 +116,10 @@ namespace Axiom.Core
 		{
 			this.creator = creator;
 
-			queryMask = 0xFFFFFFFF;
+			this.queryMask = 0xFFFFFFFF;
 
 			// default type mask to everything except lights & fx (previous behaviour)
-			queryTypeMask = ( 0xFFFFFFFF & (uint)~SceneQueryTypeMask.Fx ) & (uint)~SceneQueryTypeMask.Light;
+			this.queryTypeMask = ( 0xFFFFFFFF & (uint)~SceneQueryTypeMask.Fx ) & (uint)~SceneQueryTypeMask.Light;
 
 			// default to no world fragments queried
 			AddWorldFragmentType( WorldFragmentType.None );
@@ -134,7 +134,7 @@ namespace Axiom.Core
 		/// </summary>
 		public void AddWorldFragmentType( WorldFragmentType fragmentType )
 		{
-			worldFragmentTypes |= fragmentType;
+			this.worldFragmentTypes |= fragmentType;
 		}
 
 		#endregion Methods
@@ -156,11 +156,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return queryMask;
+				return this.queryMask;
 			}
 			set
 			{
-				queryMask = value;
+				this.queryMask = value;
 			}
 		}
 
@@ -178,11 +178,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return queryTypeMask;
+				return this.queryTypeMask;
 			}
 			set
 			{
-				queryTypeMask = value;
+				this.queryTypeMask = value;
 			}
 		}
 
@@ -268,8 +268,8 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void ClearResults()
 		{
-			lastResult.objects.Clear();
-			lastResult.worldFragments.Clear();
+			this.lastResult.objects.Clear();
+			this.lastResult.worldFragments.Clear();
 		}
 
 		/// <summary>
@@ -290,7 +290,7 @@ namespace Axiom.Core
 			// invoke callback method with ourself as the listener
 			Execute( this );
 
-			return lastResult;
+			return this.lastResult;
 		}
 
 		/// <summary>
@@ -316,7 +316,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public bool OnQueryResult( MovableObject sceneObject )
 		{
-			lastResult.objects.Add( sceneObject );
+			this.lastResult.objects.Add( sceneObject );
 
 			// continue
 			return true;
@@ -329,7 +329,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public bool OnQueryResult( Axiom.Core.SceneQuery.WorldFragment fragment )
 		{
-			lastResult.worldFragments.Add( fragment );
+			this.lastResult.worldFragments.Add( fragment );
 
 			// continue
 			return true;
@@ -434,11 +434,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return ray;
+				return this.ray;
 			}
 			set
 			{
-				ray = value;
+				this.ray = value;
 			}
 		}
 
@@ -461,11 +461,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return sortByDistance;
+				return this.sortByDistance;
 			}
 			set
 			{
-				sortByDistance = value;
+				this.sortByDistance = value;
 			}
 		}
 
@@ -480,14 +480,14 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return maxResults;
+				return this.maxResults;
 			}
 			set
 			{
-				maxResults = value;
+				this.maxResults = value;
 
 				// size the arraylist to hold the maximum results
-				lastResults.Capacity = maxResults;
+				this.lastResults.Capacity = this.maxResults;
 			}
 		}
 
@@ -500,7 +500,7 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void ClearResults()
 		{
-			lastResults.Clear();
+			this.lastResults.Clear();
 		}
 
 		/// <summary>
@@ -521,18 +521,18 @@ namespace Axiom.Core
 			// execute the callback version using ourselves as the listener
 			Execute( this );
 
-			if ( sortByDistance )
+			if ( this.sortByDistance )
 			{
-				lastResults.Sort();
+				this.lastResults.Sort();
 
-				if ( maxResults != 0 && lastResults.Count > maxResults )
+				if ( this.maxResults != 0 && this.lastResults.Count > this.maxResults )
 				{
 					// remove the results greater than the desired amount
-					lastResults.RemoveRange( maxResults, lastResults.Count - maxResults );
+					this.lastResults.RemoveRange( this.maxResults, this.lastResults.Count - this.maxResults );
 				}
 			}
 
-			return lastResults;
+			return this.lastResults;
 		}
 
 		/// <summary>
@@ -558,7 +558,7 @@ namespace Axiom.Core
 			entry.Distance = distance;
 			entry.SceneObject = sceneObject;
 			entry.worldFragment = null;
-			lastResults.Add( entry );
+			this.lastResults.Add( entry );
 
 			// continue gathering results
 			return true;
@@ -571,7 +571,7 @@ namespace Axiom.Core
 			entry.Distance = distance;
 			entry.SceneObject = null;
 			entry.worldFragment = fragment;
-			lastResults.Add( entry );
+			this.lastResults.Add( entry );
 
 			// continue gathering results
 			return true;
@@ -633,12 +633,12 @@ namespace Axiom.Core
 		{
 			var entry = obj as RaySceneQueryResultEntry;
 
-			if ( Distance < entry.Distance )
+			if ( this.Distance < entry.Distance )
 			{
 				// this result is less than
 				return -1;
 			}
-			else if ( Distance > entry.Distance )
+			else if ( this.Distance > entry.Distance )
 			{
 				// this result is greater than
 				return 1;
@@ -691,11 +691,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return box;
+				return this.box;
 			}
 			set
 			{
-				box = value;
+				this.box = value;
 			}
 		}
 
@@ -742,11 +742,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return sphere;
+				return this.sphere;
 			}
 			set
 			{
-				sphere = value;
+				this.sphere = value;
 			}
 		}
 
@@ -793,11 +793,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return volumes;
+				return this.volumes;
 			}
 			set
 			{
-				volumes = value;
+				this.volumes = value;
 			}
 		}
 
@@ -849,7 +849,7 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void ClearResults()
 		{
-			lastResults.Clear();
+			this.lastResults.Clear();
 		}
 
 		/// <summary>
@@ -870,7 +870,7 @@ namespace Axiom.Core
 			// execute the callback version using ourselves as the listener
 			Execute( this );
 
-			return lastResults;
+			return this.lastResults;
 		}
 
 		/// <summary>
@@ -892,7 +892,7 @@ namespace Axiom.Core
 		bool Axiom.Core.IIntersectionSceneQueryListener.OnQueryResult( MovableObject first, MovableObject second )
 		{
 			// create an entry and add it to the cached result list
-			lastResults.Objects2Objects.Add( new SceneQueryMovableObjectPair( first, second ) );
+			this.lastResults.Objects2Objects.Add( new SceneQueryMovableObjectPair( first, second ) );
 
 			// continue gathering results
 			return true;
@@ -901,7 +901,7 @@ namespace Axiom.Core
 		bool Axiom.Core.IIntersectionSceneQueryListener.OnQueryResult( MovableObject obj, SceneQuery.WorldFragment fragment )
 		{
 			// create an entry and add it to the cached result list
-			lastResults.Objects2World.Add( new SceneQueryMovableObjectWorldFragmentPair( obj, fragment ) );
+			this.lastResults.Objects2World.Add( new SceneQueryMovableObjectWorldFragmentPair( obj, fragment ) );
 
 			// continue gathering results
 			return true;
@@ -948,7 +948,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return objects2Objects;
+				return this.objects2Objects;
 			}
 		}
 
@@ -956,14 +956,14 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return objects2World;
+				return this.objects2World;
 			}
 		}
 
 		public void Clear()
 		{
-			objects2Objects.Clear();
-			objects2World.Clear();
+			this.objects2Objects.Clear();
+			this.objects2World.Clear();
 		}
 	}
 

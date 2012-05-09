@@ -124,7 +124,7 @@ namespace Axiom.Graphics
 		/// </param>
 		public void AddFactory( HighLevelGpuProgramFactory factory )
 		{
-			factories.Add( factory.Language, factory );
+			this.factories.Add( factory.Language, factory );
 		}
 
 		/// <summary>
@@ -132,7 +132,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public void RemoveFactory( HighLevelGpuProgramFactory factory )
 		{
-			factories.Remove( factory.Language );
+			this.factories.Remove( factory.Language );
 		}
 
 		/// <summary>
@@ -176,17 +176,17 @@ namespace Axiom.Graphics
 		/// <returns>A factory capable of creating a HighLevelGpuProgram of the specified language.</returns>
 		public HighLevelGpuProgramFactory GetFactory( string language )
 		{
-			if ( !factories.ContainsKey( language ) )
+			if ( !this.factories.ContainsKey( language ) )
 			{
 				// use the null factory to create programs that will never be supported
-				if ( factories.ContainsKey( NullLang ) )
+				if ( this.factories.ContainsKey( NullLang ) )
 				{
-					return (HighLevelGpuProgramFactory)factories[ NullLang ];
+					return (HighLevelGpuProgramFactory)this.factories[ NullLang ];
 				}
 			}
 			else
 			{
-				return (HighLevelGpuProgramFactory)factories[ language ];
+				return (HighLevelGpuProgramFactory)this.factories[ language ];
 			}
 
 			// wasn't found, so return null
@@ -199,7 +199,7 @@ namespace Axiom.Graphics
 
 		public bool IsLanguageSupported( string language )
 		{
-			return factories.ContainsKey( language );
+			return this.factories.ContainsKey( language );
 		}
 
 		#endregion Properties

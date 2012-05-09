@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,29 +25,37 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
+
 using System;
 using System.Collections.Generic;
+
 using Axiom.Core;
-using Axiom.Media;
 using Axiom.Graphics;
+using Axiom.Media;
+
 using OpenTK.Graphics.ES11;
+
 using OpenGL = OpenTK.Graphics.ES11.GL;
+
 #endregion
 
 namespace Axiom.RenderSystems.OpenGLES
 {
 	/// <summary>
-	/// Texture surface
+	///   Texture surface
 	/// </summary>
 	public class GLESTextureBuffer : GLESHardwarePixelBuffer
 	{
@@ -59,43 +68,43 @@ namespace Axiom.RenderSystems.OpenGLES
 		protected List<RenderTexture> _sliceTRT;
 
 		#region Construction and Destruction
+
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="target"></param>
-		/// <param name="id"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="format"></param>
-		/// <param name="face"></param>
-		/// <param name="level"></param>
-		/// <param name="usage"></param>
-		/// <param name="crappyCard"></param>
-		/// <param name="writeGamma"></param>
-		/// <param name="fsaa"></param>
+		/// <param name="name"> </param>
+		/// <param name="target"> </param>
+		/// <param name="id"> </param>
+		/// <param name="width"> </param>
+		/// <param name="height"> </param>
+		/// <param name="format"> </param>
+		/// <param name="face"> </param>
+		/// <param name="level"> </param>
+		/// <param name="usage"> </param>
+		/// <param name="crappyCard"> </param>
+		/// <param name="writeGamma"> </param>
+		/// <param name="fsaa"> </param>
 		public GLESTextureBuffer( string basename, All targetfmt, int id, int width, int height, int format, int face, int level, BufferUsage usage, bool crappyCard, bool writeGamma, int fsaa )
 			: base( 0, 0, 0, Media.PixelFormat.Unknown, usage )
 		{
-			_target = targetfmt;
-			_textureId = id;
-			_face = face;
-			_level = level;
-			_softwareMipmap = crappyCard;
+			this._target = targetfmt;
+			this._textureId = id;
+			this._face = face;
+			this._level = level;
+			this._softwareMipmap = crappyCard;
 
 			GLESConfig.GlCheckError( this );
-			OpenGL.BindTexture( All.Texture2D, _textureId );
+			OpenGL.BindTexture( All.Texture2D, this._textureId );
 			GLESConfig.GlCheckError( this );
 
 			// Get face identifier
-			_faceTarget = _target;
+			this._faceTarget = this._target;
 
 			// TODO verify who get this
 			Width = width;
 			Height = height;
 			Depth = 1;
 
-			_glInternalFormat = (All)format;
+			_glInternalFormat = (All) format;
 			Format = GLESPixelUtil.GetClosestAxiomFormat( _glInternalFormat );
 
 			RowPitch = Width;
@@ -111,70 +120,69 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 
 			// Is this a render target?
-			if ( ( (int)Usage & (int)TextureUsage.RenderTarget ) != 0 )
+			if ( ( (int) Usage & (int) TextureUsage.RenderTarget ) != 0 )
 			{
 				// Create render target for each slice
 				for ( int zoffset = 0; zoffset < Depth; zoffset++ )
 				{
 					string name = string.Empty;
-					name = "rtt/" + this.GetHashCode() + "/" + basename;
-					GLESSurfaceDescription target = new GLESSurfaceDescription();
+					name = "rtt/" + GetHashCode() + "/" + basename;
+					var target = new GLESSurfaceDescription();
 					target.Buffer = this;
 					target.ZOffset = zoffset;
 					RenderTexture trt = GLESRTTManager.Instance.CreateRenderTexture( name, target, writeGamma, fsaa );
-					_sliceTRT.Add( trt );
-					Root.Instance.RenderSystem.AttachRenderTarget( _sliceTRT[ zoffset ] );
+					this._sliceTRT.Add( trt );
+					Root.Instance.RenderSystem.AttachRenderTarget( this._sliceTRT[ zoffset ] );
 				}
 			}
-
 		}
 
 		#endregion Construction and Destruction
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="slice"></param>
-		/// <returns></returns>
+		/// <param name="slice"> </param>
+		/// <returns> </returns>
 		public override RenderTexture GetRenderTarget( int slice )
 		{
 			return base.GetRenderTarget( slice );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="data"></param>
-		/// <param name="dest"></param>
+		/// <param name="data"> </param>
+		/// <param name="dest"> </param>
 		protected override void Upload( PixelBox data, BasicBox dest )
 		{
-			OpenGL.BindTexture( _target, _textureId );
+			OpenGL.BindTexture( this._target, this._textureId );
 			GLESConfig.GlCheckError( this );
 
 			if ( PixelUtil.IsCompressed( data.Format ) )
 			{
-				if ( data.Format != this.Format || !data.IsConsecutive )
+				if ( data.Format != Format || !data.IsConsecutive )
 				{
 					throw new AxiomException( "Compressed images must be consecutive, in the source format" );
 				}
 
 				if ( data.Format != Format || !data.IsConsecutive )
+				{
 					throw new AxiomException( "Compressed images must be consecutive, in the source format." );
+				}
 
 				All format = GLESPixelUtil.GetClosestGLInternalFormat( Format );
 				// Data must be consecutive and at beginning of buffer as PixelStorei not allowed
 				// for compressed formats
 				if ( dest.Left == 0 && dest.Top == 0 )
 				{
-					OpenGL.CompressedTexImage2D( All.Texture2D, _level, format, dest.Width, dest.Height, 0, data.ConsecutiveSize, data.Data );
+					OpenGL.CompressedTexImage2D( All.Texture2D, this._level, format, dest.Width, dest.Height, 0, data.ConsecutiveSize, data.Data );
 				}
 				else
 				{
-					OpenGL.CompressedTexSubImage2D( All.Texture2D, _level, dest.Left, dest.Top, dest.Width, dest.Height, format, data.ConsecutiveSize, data.Data );
+					OpenGL.CompressedTexSubImage2D( All.Texture2D, this._level, dest.Left, dest.Top, dest.Width, dest.Height, format, data.ConsecutiveSize, data.Data );
 				}
 				GLESConfig.GlCheckError( this );
 			}
-			else if ( _softwareMipmap )
+			else if ( this._softwareMipmap )
 			{
 				if ( data.Width != data.RowPitch )
 				{
@@ -213,65 +221,66 @@ namespace Axiom.RenderSystems.OpenGLES
 				All form = GLESPixelUtil.GetGLOriginFormat( data.Format );
 				All pix = GLESPixelUtil.GetGLOriginDataType( data.Format );
 				GLESConfig.GlCheckError( this );
-				GL.TexSubImage2D( _faceTarget, _level, dest.Left, dest.Top, dest.Width, dest.Height, GLESPixelUtil.GetGLOriginFormat( data.Format ), GLESPixelUtil.GetGLOriginDataType( data.Format ), data.Data );
+				GL.TexSubImage2D( this._faceTarget, this._level, dest.Left, dest.Top, dest.Width, dest.Height, GLESPixelUtil.GetGLOriginFormat( data.Format ), GLESPixelUtil.GetGLOriginDataType( data.Format ), data.Data );
 				GLESConfig.GlCheckError( this );
 			}
 
 			OpenGL.PixelStore( All.UnpackAlignment, 4 );
 			GLESConfig.GlCheckError( this );
 		}
+
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="data"></param>
+		/// <param name="data"> </param>
 		protected override void Download( PixelBox data )
 		{
 			throw new AxiomException( "Downloading texture buffers is not supported by OpenGL ES" );
 		}
+
 		/// <summary>
-		/// Notify TextureBuffer of destruction of render target
+		///   Notify TextureBuffer of destruction of render target
 		/// </summary>
-		/// <param name="data"></param>
+		/// <param name="data"> </param>
 		public void ClearRTT( int zoffset )
 		{
-			Utilities.Contract.Requires( zoffset < _sliceTRT.Count );
-			_sliceTRT[ zoffset ] = null;
+			Utilities.Contract.Requires( zoffset < this._sliceTRT.Count );
+			this._sliceTRT[ zoffset ] = null;
 		}
+
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="attachment"></param>
-		/// <param name="zOffset"></param>
+		/// <param name="attachment"> </param>
+		/// <param name="zOffset"> </param>
 		public override void BindToFramebuffer( All attachment, int zOffset )
 		{
 			Axiom.Utilities.Contract.Requires( zOffset < Depth, "GLESTextureBuffer.BindToFramebuffer, z offset must be smaller then depth" );
-			OpenGL.Oes.FramebufferTexture2D( All.FramebufferOes, attachment, _faceTarget, _textureId, _level );
+			OpenGL.Oes.FramebufferTexture2D( All.FramebufferOes, attachment, this._faceTarget, this._textureId, this._level );
 			GLESConfig.GlCheckError( this );
 		}
+
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="p"></param>
+		/// <param name="p"> </param>
 		internal void CopyFromFramebuffer( int p )
 		{
-			OpenGL.BindBuffer( All.Texture2D, _textureId );
+			OpenGL.BindBuffer( All.Texture2D, this._textureId );
 			GLESConfig.GlCheckError( this );
-			OpenGL.CopyTexSubImage2D( All.Texture2D, _level, 0, 0, 0, 0, Width, Height );
+			OpenGL.CopyTexSubImage2D( All.Texture2D, this._level, 0, 0, 0, 0, Width, Height );
 			GLESConfig.GlCheckError( this );
 		}
+
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="srcBox"></param>
-		/// <param name="dstBox"></param>
+		/// <param name="src"> </param>
+		/// <param name="srcBox"> </param>
+		/// <param name="dstBox"> </param>
 		public override void Blit( HardwarePixelBuffer src, BasicBox srcBox, BasicBox dstBox )
 		{
-			GLESTextureBuffer srct = (GLESTextureBuffer)src;
+			var srct = (GLESTextureBuffer) src;
 			/// TODO: Check for FBO support first
 			/// Destination texture must be 2D
 			/// Source texture must be 2D
-			if ( ( ( (int)src.Usage & (int)TextureUsage.RenderTarget ) != (int)TextureUsage.RenderTarget ) && ( srct._target == All.Texture2D ) )
+			if ( ( ( (int) src.Usage & (int) TextureUsage.RenderTarget ) != (int) TextureUsage.RenderTarget ) && ( srct._target == All.Texture2D ) )
 			{
 				BlitFromTexture( srct, srcBox, dstBox );
 			}
@@ -280,12 +289,12 @@ namespace Axiom.RenderSystems.OpenGLES
 				base.Blit( src, srcBox, dstBox );
 			}
 		}
+
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="src"></param>
-		/// <param name="srcBox"></param>
-		/// <param name="dstBox"></param>
+		/// <param name="src"> </param>
+		/// <param name="srcBox"> </param>
+		/// <param name="dstBox"> </param>
 		public void BlitFromTexture( GLESTextureBuffer src, BasicBox srcBox, BasicBox dstBox )
 		{
 			if ( !Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.FrameBufferObjects ) )
@@ -298,6 +307,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			/// Store reference to FBO manager
 			throw new NotImplementedException();
 		}
+
 		protected static void BuildMipmaps( PixelBox data )
 		{
 			int width = 0;
@@ -328,7 +338,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				format = GLESPixelUtil.GetGLOriginFormat( scaled.Format );
 				dataType = GLESPixelUtil.GetGLOriginDataType( scaled.Format );
 
-				OpenGL.TexImage2D( All.Texture2D, mip, (int)format, width, height, 0, format, dataType, scaled.Data );
+				OpenGL.TexImage2D( All.Texture2D, mip, (int) format, width, height, 0, format, dataType, scaled.Data );
 
 				GLESConfig.GlCheckError( null );
 
@@ -348,11 +358,10 @@ namespace Axiom.RenderSystems.OpenGLES
 
 				int sizeInBytes = PixelUtil.GetMemorySize( width, height, 1, data.Format );
 				scaled = new PixelBox( width, height, 1, data.Format );
-				byte[] dataarr = new byte[ sizeInBytes ];
+				var dataarr = new byte[ sizeInBytes ];
 				scaled.Data = Memory.PinObject( dataarr );
 				Image.Scale( data, scaled, ImageFilter.Linear );
 			}
 		}
-
 	}
 }

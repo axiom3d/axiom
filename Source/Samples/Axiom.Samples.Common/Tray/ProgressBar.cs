@@ -72,13 +72,14 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				progress = value;
-				progress = Utility.Clamp<Real>( progress, 1, 0 );
-				fill.Width = System.Math.Max( (int)fill.Height, (int)( progress*( meter.Width - 2*fill.Left ) ) );
+				this.progress = value;
+				this.progress = Utility.Clamp<Real>( this.progress, 1, 0 );
+				this.fill.Width = System.Math.Max( (int)this.fill.Height,
+				                                   (int)( this.progress*( this.meter.Width - 2*this.fill.Left ) ) );
 			}
 			get
 			{
-				return progress;
+				return this.progress;
 			}
 		}
 
@@ -89,11 +90,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return textArea.Text;
+				return this.textArea.Text;
 			}
 			set
 			{
-				textArea.Text = value;
+				this.textArea.Text = value;
 			}
 		}
 
@@ -104,11 +105,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return commentTextArea.Text;
+				return this.commentTextArea.Text;
 			}
 			set
 			{
-				commentTextArea.Text = value;
+				this.commentTextArea.Text = value;
 			}
 		}
 
@@ -126,14 +127,14 @@ namespace Axiom.Samples
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/ProgressBar", "BorderPanel", name );
 			element.Width = ( width );
 			var c = (OverlayElementContainer)element;
-			textArea = (TextArea)c.Children[ Name + "/ProgressCaption" ];
+			this.textArea = (TextArea)c.Children[ Name + "/ProgressCaption" ];
 			var commentBox = (OverlayElementContainer)c.Children[ Name + "/ProgressCommentBox" ];
 			commentBox.Width = ( commentBoxWidth );
 			commentBox.Left = ( -( commentBoxWidth + 5 ) );
-			commentTextArea = (TextArea)commentBox.Children[ commentBox.Name + "/ProgressCommentText" ];
-			meter = c.Children[ Name + "/ProgressMeter" ];
-			meter.Width = ( width - 10 );
-			fill = ( (OverlayElementContainer)meter ).Children[ meter.Name + "/ProgressFill" ];
+			this.commentTextArea = (TextArea)commentBox.Children[ commentBox.Name + "/ProgressCommentText" ];
+			this.meter = c.Children[ Name + "/ProgressMeter" ];
+			this.meter.Width = ( width - 10 );
+			this.fill = ( (OverlayElementContainer)this.meter ).Children[ this.meter.Name + "/ProgressFill" ];
 			Caption = caption;
 		}
 	};

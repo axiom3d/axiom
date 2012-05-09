@@ -130,7 +130,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return _metadata;
+				return this._metadata;
 			}
 		}
 
@@ -177,11 +177,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return _sceneManager;
+				return this._sceneManager;
 			}
 			protected set
 			{
-				_sceneManager = value;
+				this._sceneManager = value;
 			}
 		}
 
@@ -198,11 +198,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return _done;
+				return this._done;
 			}
 			protected set
 			{
-				_done = value;
+				this._done = value;
 			}
 		}
 
@@ -215,12 +215,12 @@ namespace Axiom.Samples
 		/// </summary>
 		public Sample()
 		{
-			Root = Root.Instance;
-			Window = null;
-			_sceneManager = null;
-			_done = true;
-			ResourcesLoaded = false;
-			ContentSetup = false;
+			this.Root = Root.Instance;
+			this.Window = null;
+			this._sceneManager = null;
+			this._done = true;
+			this.ResourcesLoaded = false;
+			this.ContentSetup = false;
 		}
 
 		/// <summary>
@@ -239,19 +239,19 @@ namespace Axiom.Samples
 		/// <param name="mouse"></param>
 		protected internal virtual void Setup( RenderWindow window, SIS.Keyboard keyboard, SIS.Mouse mouse )
 		{
-			Window = window;
-			Keyboard = keyboard;
-			Mouse = mouse;
+			this.Window = window;
+			this.Keyboard = keyboard;
+			this.Mouse = mouse;
 
 			LocateResources();
 			CreateSceneManager();
 			SetupView();
 			LoadResources();
-			ResourcesLoaded = true;
+			this.ResourcesLoaded = true;
 			SetupContent();
-			ContentSetup = true;
+			this.ContentSetup = true;
 
-			_done = false;
+			this._done = false;
 		}
 
 		/// <summary>
@@ -259,30 +259,30 @@ namespace Axiom.Samples
 		/// </summary>
 		public virtual void Shutdown()
 		{
-			if ( _sceneManager != null )
+			if ( this._sceneManager != null )
 			{
-				_sceneManager.ClearScene();
+				this._sceneManager.ClearScene();
 			}
 
-			if ( ContentSetup )
+			if ( this.ContentSetup )
 			{
 				CleanupContent();
 			}
-			ContentSetup = false;
+			this.ContentSetup = false;
 
-			if ( ResourcesLoaded )
+			if ( this.ResourcesLoaded )
 			{
 				UnloadResources();
 			}
-			ResourcesLoaded = false;
+			this.ResourcesLoaded = false;
 
-			if ( _sceneManager != null )
+			if ( this._sceneManager != null )
 			{
-				Root.DestroySceneManager( _sceneManager );
+				this.Root.DestroySceneManager( this._sceneManager );
 			}
-			_sceneManager = null;
+			this._sceneManager = null;
 
-			_done = true;
+			this._done = true;
 		}
 
 		/*-----------------------------------------------------------------------------
@@ -408,7 +408,7 @@ namespace Axiom.Samples
 
 		protected virtual void CreateSceneManager()
 		{
-			_sceneManager = Root.Instance.CreateSceneManager( "DefaultSceneManager" );
+			this._sceneManager = Root.Instance.CreateSceneManager( "DefaultSceneManager" );
 		}
 
 		/*-----------------------------------------------------------------------------

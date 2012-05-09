@@ -159,13 +159,13 @@ namespace Axiom.Animating
 			this.length = length;
 
 			// use the default interpolation modes
-			interpolationMode = Animation.DefaultInterpolationMode;
-			rotationInterpolationMode = Animation.DefaultRotationInterpolationMode;
+			this.interpolationMode = Animation.DefaultInterpolationMode;
+			this.rotationInterpolationMode = Animation.DefaultRotationInterpolationMode;
 
 			// Create the track lists
-			nodeTrackList = new Dictionary<ushort, NodeAnimationTrack>();
-			numericTrackList = new Dictionary<ushort, NumericAnimationTrack>();
-			vertexTrackList = new Dictionary<ushort, VertexAnimationTrack>();
+			this.nodeTrackList = new Dictionary<ushort, NodeAnimationTrack>();
+			this.numericTrackList = new Dictionary<ushort, NumericAnimationTrack>();
+			this.vertexTrackList = new Dictionary<ushort, VertexAnimationTrack>();
 		}
 
 		#endregion
@@ -179,7 +179,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -190,7 +190,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return length;
+				return this.length;
 			}
 		}
 
@@ -201,11 +201,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return interpolationMode;
+				return this.interpolationMode;
 			}
 			set
 			{
-				interpolationMode = value;
+				this.interpolationMode = value;
 			}
 		}
 
@@ -216,11 +216,11 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return rotationInterpolationMode;
+				return this.rotationInterpolationMode;
 			}
 			set
 			{
-				rotationInterpolationMode = value;
+				this.rotationInterpolationMode = value;
 			}
 		}
 
@@ -232,7 +232,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return nodeTrackList;
+				return this.nodeTrackList;
 			}
 		}
 
@@ -244,7 +244,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return numericTrackList;
+				return this.numericTrackList;
 			}
 		}
 
@@ -256,7 +256,7 @@ namespace Axiom.Animating
 		{
 			get
 			{
-				return vertexTrackList;
+				return this.vertexTrackList;
 			}
 		}
 
@@ -304,7 +304,7 @@ namespace Axiom.Animating
 			var track = new NodeAnimationTrack( this, handle );
 
 			// add the track to the list
-			nodeTrackList[ handle ] = track;
+			this.nodeTrackList[ handle ] = track;
 
 			return track;
 		}
@@ -334,7 +334,7 @@ namespace Axiom.Animating
 			var track = new NumericAnimationTrack( this, handle );
 
 			// add the track to the list
-			numericTrackList[ handle ] = track;
+			this.numericTrackList[ handle ] = track;
 
 			return track;
 		}
@@ -365,7 +365,7 @@ namespace Axiom.Animating
 			var track = new VertexAnimationTrack( this, handle, animType );
 
 			// add the track to the list
-			vertexTrackList[ handle ] = track;
+			this.vertexTrackList[ handle ] = track;
 
 			return track;
 		}
@@ -400,15 +400,15 @@ namespace Axiom.Animating
 		public void Apply( float time, float weight, bool accumulate, float scale )
 		{
 			// loop through tracks and update them all with current time
-			foreach ( var nodeTrack in nodeTrackList.Values )
+			foreach ( var nodeTrack in this.nodeTrackList.Values )
 			{
 				nodeTrack.Apply( time, weight, accumulate, scale );
 			}
-			foreach ( var numericTrack in numericTrackList.Values )
+			foreach ( var numericTrack in this.numericTrackList.Values )
 			{
 				numericTrack.Apply( time, weight, accumulate, scale );
 			}
-			foreach ( var vertexTrack in vertexTrackList.Values )
+			foreach ( var vertexTrack in this.vertexTrackList.Values )
 			{
 				vertexTrack.Apply( time, weight, accumulate, scale );
 			}
@@ -417,7 +417,7 @@ namespace Axiom.Animating
 		public void Apply( Skeleton skeleton, float time, float weight, bool accumulate, float scale )
 		{
 			// loop through tracks and update them all with current time
-			foreach ( var pair in nodeTrackList )
+			foreach ( var pair in this.nodeTrackList )
 			{
 				var track = pair.Value;
 				var bone = skeleton.GetBone( pair.Key );
@@ -427,7 +427,7 @@ namespace Axiom.Animating
 
 		public void Apply( Entity entity, float time, float weight, bool software, bool hardware )
 		{
-			foreach ( var pair in vertexTrackList )
+			foreach ( var pair in this.vertexTrackList )
 			{
 				int handle = pair.Key;
 				var track = pair.Value;

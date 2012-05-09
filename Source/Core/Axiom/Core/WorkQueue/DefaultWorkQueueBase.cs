@@ -74,14 +74,14 @@ namespace Axiom.Core
 			{
 				get
 				{
-					return _handler;
+					return this._handler;
 				}
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			public RequestHandlerHolder( IRequestHandler handler )
 			{
-				_handler = handler;
+				this._handler = handler;
 			}
 
 			/// <summary>
@@ -91,9 +91,9 @@ namespace Axiom.Core
 			public void DisconnectHandler()
 			{
 				// write lock - must wait for all requests to finish
-				lock ( _mutex )
+				lock ( this._mutex )
 				{
-					_handler = null;
+					this._handler = null;
 				}
 			}
 
@@ -107,13 +107,13 @@ namespace Axiom.Core
 				// Read mutex so that multiple requests can be processed by the
 				// same handler in parallel if required
 				Response response = null;
-				lock ( _mutex )
+				lock ( this._mutex )
 				{
-					if ( _handler != null )
+					if ( this._handler != null )
 					{
-						if ( _handler.CanHandleRequest( req, srcQ ) )
+						if ( this._handler.CanHandleRequest( req, srcQ ) )
 						{
-							response = _handler.HandleRequest( req, srcQ );
+							response = this._handler.HandleRequest( req, srcQ );
 						}
 					}
 				}
@@ -147,7 +147,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -163,16 +163,16 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return workerThreadCount;
+				return this.workerThreadCount;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				workerThreadCount = value;
-				if ( workerThreadCount == 0 )
+				this.workerThreadCount = value;
+				if ( this.workerThreadCount == 0 )
 				{
-					workerThreadCount = 1;
+					this.workerThreadCount = 1;
 				}
 			}
 		}
@@ -195,13 +195,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return workerRenderSystemAccess;
+				return this.workerRenderSystemAccess;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				workerRenderSystemAccess = value;
+				this.workerRenderSystemAccess = value;
 			}
 		}
 
@@ -211,14 +211,14 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return paused;
+				return this.paused;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
 				lock ( requestMutex )
-					paused = value;
+					this.paused = value;
 			}
 		}
 
@@ -228,14 +228,14 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return acceptRequests;
+				return this.acceptRequests;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
 				lock ( requestMutex )
-					acceptRequests = value;
+					this.acceptRequests = value;
 			}
 		}
 
@@ -245,13 +245,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return responseTimeLimitMS;
+				return this.responseTimeLimitMS;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				responseTimeLimitMS = value;
+				this.responseTimeLimitMS = value;
 			}
 		}
 
@@ -263,7 +263,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return shuttingDown;
+				return this.shuttingDown;
 			}
 		}
 
@@ -292,8 +292,8 @@ namespace Axiom.Core
 			: base()
 		{
 			this.name = name;
-			workerThreadCount = 1;
-			responseTimeLimitMS = 8;
+			this.workerThreadCount = 1;
+			this.responseTimeLimitMS = 8;
 			AreRequestsAccepted = true;
 		}
 
@@ -306,8 +306,8 @@ namespace Axiom.Core
 				{
 					//Shutdown(); // can't call here; abstract function
 
-					requestQueue.Clear();
-					responseQueue.Clear();
+					this.requestQueue.Clear();
+					this.responseQueue.Clear();
 				}
 			}
 
@@ -320,13 +320,13 @@ namespace Axiom.Core
 		{
 			lock ( requestHandlerMutex )
 			{
-				if ( !requestHandlers.ContainsKey( channel ) )
+				if ( !this.requestHandlers.ContainsKey( channel ) )
 				{
-					requestHandlers.Add( channel, new List<RequestHandlerHolder>() );
+					this.requestHandlers.Add( channel, new List<RequestHandlerHolder>() );
 				}
 
 				bool duplicate = false;
-				foreach ( var j in requestHandlers[ channel ] )
+				foreach ( var j in this.requestHandlers[ channel ] )
 				{
 					if ( j.Handler == rh )
 					{
@@ -336,7 +336,7 @@ namespace Axiom.Core
 				}
 				if ( !duplicate )
 				{
-					requestHandlers[ channel ].Add( new RequestHandlerHolder( rh ) );
+					this.requestHandlers[ channel ].Add( new RequestHandlerHolder( rh ) );
 				}
 			}
 		}
@@ -347,16 +347,16 @@ namespace Axiom.Core
 		{
 			lock ( requestHandlerMutex )
 			{
-				if ( requestHandlers.ContainsKey( channel ) )
+				if ( this.requestHandlers.ContainsKey( channel ) )
 				{
-					foreach ( var j in requestHandlers[ channel ] )
+					foreach ( var j in this.requestHandlers[ channel ] )
 					{
 						if ( j.Handler == rh )
 						{
 							// Disconnect - this will make it safe across copies of the list
 							// this is threadsafe and will wait for existing processes to finish
 							j.DisconnectHandler();
-							requestHandlers[ channel ].Remove( j );
+							this.requestHandlers[ channel ].Remove( j );
 							break;
 						}
 					}
@@ -368,14 +368,14 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public override void AddResponseHandler( ushort channel, WorkQueue.IResponseHandler rh )
 		{
-			if ( !responseHandlers.ContainsKey( channel ) )
+			if ( !this.responseHandlers.ContainsKey( channel ) )
 			{
-				responseHandlers.Add( channel, new List<IResponseHandler>() );
+				this.responseHandlers.Add( channel, new List<IResponseHandler>() );
 			}
 
-			if ( !responseHandlers[ channel ].Contains( rh ) )
+			if ( !this.responseHandlers[ channel ].Contains( rh ) )
 			{
-				responseHandlers[ channel ].Add( rh );
+				this.responseHandlers[ channel ].Add( rh );
 			}
 		}
 
@@ -383,11 +383,11 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public override void RemoveResponseHandler( ushort channel, WorkQueue.IResponseHandler rh )
 		{
-			if ( responseHandlers.ContainsKey( channel ) )
+			if ( this.responseHandlers.ContainsKey( channel ) )
 			{
-				if ( responseHandlers[ channel ].Contains( rh ) )
+				if ( this.responseHandlers[ channel ].Contains( rh ) )
 				{
-					responseHandlers[ channel ].Remove( rh );
+					this.responseHandlers[ channel ].Remove( rh );
 				}
 			}
 		}
@@ -417,17 +417,17 @@ namespace Axiom.Core
 			// lock to acquire rid and push request to the queue
 			lock ( requestMutex )
 			{
-				if ( !acceptRequests || shuttingDown )
+				if ( !this.acceptRequests || this.shuttingDown )
 				{
 					return 0;
 				}
 
-				rid = ++requestCount;
+				rid = ++this.requestCount;
 				req = new Request( channel, requestType, rData, retryCount, rid );
 
 				LogManager.Instance.Write( LogMessageLevel.Trivial, false,
 				                           "DefaultWorkQueueBase('{0}') - QUEUED(thread:{1}): ID={2} channel={3} requestType={4}",
-				                           name, GetThreadName(), rid, channel, requestType );
+				                           this.name, GetThreadName(), rid, channel, requestType );
 
 #if AXIOM_THREAD_SUPPORT
 				if ( !forceSynchronous )
@@ -457,7 +457,7 @@ namespace Axiom.Core
 			// lock to push request to the queue
 			lock ( requestMutex )
 			{
-				if ( shuttingDown )
+				if ( this.shuttingDown )
 				{
 					return;
 				}
@@ -466,7 +466,7 @@ namespace Axiom.Core
 
 				LogManager.Instance.Write( LogMessageLevel.Trivial, false,
 				                           "DefaultWorkQueueBase('{0}') - REQUEUED(thread:{1}): ID={2} channel={3} requestType={4}",
-				                           name, GetThreadName(), rid, channel, requestType );
+				                           this.name, GetThreadName(), rid, channel, requestType );
 
 #if AXIOM_THREAD_SUPPORT
 				requestQueue.Add( req );
@@ -486,7 +486,7 @@ namespace Axiom.Core
 
 			lock ( processMutex )
 			{
-				foreach ( var i in processQueue )
+				foreach ( var i in this.processQueue )
 				{
 					if ( i.ID == id )
 					{
@@ -498,7 +498,7 @@ namespace Axiom.Core
 
 			lock ( requestMutex )
 			{
-				foreach ( var i in requestQueue )
+				foreach ( var i in this.requestQueue )
 				{
 					if ( i.ID == id )
 					{
@@ -510,7 +510,7 @@ namespace Axiom.Core
 
 			lock ( responseMutex )
 			{
-				foreach ( var i in responseQueue )
+				foreach ( var i in this.responseQueue )
 				{
 					if ( i.Request.ID == id )
 					{
@@ -527,7 +527,7 @@ namespace Axiom.Core
 		{
 			lock ( processMutex )
 			{
-				foreach ( var i in processQueue )
+				foreach ( var i in this.processQueue )
 				{
 					if ( i.Channel == channel )
 					{
@@ -538,7 +538,7 @@ namespace Axiom.Core
 
 			lock ( requestMutex )
 			{
-				foreach ( var i in requestQueue )
+				foreach ( var i in this.requestQueue )
 				{
 					if ( i.Channel == channel )
 					{
@@ -549,7 +549,7 @@ namespace Axiom.Core
 
 			lock ( responseMutex )
 			{
-				foreach ( var i in responseQueue )
+				foreach ( var i in this.responseQueue )
 				{
 					if ( i.Request.Channel == channel )
 					{
@@ -565,7 +565,7 @@ namespace Axiom.Core
 		{
 			lock ( processMutex )
 			{
-				foreach ( var i in processQueue )
+				foreach ( var i in this.processQueue )
 				{
 					i.AbortRequest();
 				}
@@ -573,7 +573,7 @@ namespace Axiom.Core
 
 			lock ( requestMutex )
 			{
-				foreach ( var i in requestQueue )
+				foreach ( var i in this.requestQueue )
 				{
 					i.AbortRequest();
 				}
@@ -581,7 +581,7 @@ namespace Axiom.Core
 
 			lock ( responseMutex )
 			{
-				foreach ( var i in responseQueue )
+				foreach ( var i in this.responseQueue )
 				{
 					i.AbortRequest();
 				}
@@ -606,10 +606,10 @@ namespace Axiom.Core
 			{
 				lock ( requestMutex )
 				{
-					if ( requestQueue.Count > 0 )
+					if ( this.requestQueue.Count > 0 )
 					{
-						request = requestQueue.RemoveFromHead();
-						processQueue.Add( request );
+						request = this.requestQueue.RemoveFromHead();
+						this.processQueue.Add( request );
 					}
 				}
 			}
@@ -631,11 +631,11 @@ namespace Axiom.Core
 
 			lock ( processMutex )
 			{
-				for ( int i = 0; i < processQueue.Count; ++i )
+				for ( int i = 0; i < this.processQueue.Count; ++i )
 				{
-					if ( processQueue[ i ] == r )
+					if ( this.processQueue[ i ] == r )
 					{
-						processQueue.RemoveAt( i );
+						this.processQueue.RemoveAt( i );
 						break;
 					}
 				}
@@ -669,7 +669,7 @@ namespace Axiom.Core
 						// Queue response
 						lock ( responseMutex )
 						{
-							responseQueue.Add( response );
+							this.responseQueue.Add( response );
 							// no need to wake thread, this is processed by the main thread
 						}
 					}
@@ -678,7 +678,7 @@ namespace Axiom.Core
 				{
 					// no response, delete request
 					LogManager.Instance.Write(
-						"DefaultWorkQueueBase('{0}') warning: no handler processed request {1}, channel {2}, type {3}", name, r.ID,
+						"DefaultWorkQueueBase('{0}') warning: no handler processed request {1}, channel {2}, type {3}", this.name, r.ID,
 						r.Channel, r.Type );
 					//OGRE_DELETE r;
 				}
@@ -697,13 +697,13 @@ namespace Axiom.Core
 				Response response = null;
 				lock ( responseMutex )
 				{
-					if ( responseQueue.Count == 0 )
+					if ( this.responseQueue.Count == 0 )
 					{
 						break; // exit loop
 					}
 					else
 					{
-						response = responseQueue.RemoveFromHead();
+						response = this.responseQueue.RemoveFromHead();
 					}
 				}
 
@@ -714,10 +714,10 @@ namespace Axiom.Core
 				}
 
 				//time limit
-				if ( responseTimeLimitMS > 0 )
+				if ( this.responseTimeLimitMS > 0 )
 				{
 					msCurrent = Root.Instance.Timer.Milliseconds;
-					if ( msCurrent - msStart > responseTimeLimitMS )
+					if ( msCurrent - msStart > this.responseTimeLimitMS )
 					{
 						break;
 					}
@@ -733,13 +733,13 @@ namespace Axiom.Core
 
 			// lock the list only to make a copy of it, to maximise parallelism
 			lock ( requestHandlerMutex )
-				handlerListCopy = new Dictionary<ushort, List<RequestHandlerHolder>>( requestHandlers );
+				handlerListCopy = new Dictionary<ushort, List<RequestHandlerHolder>>( this.requestHandlers );
 
 			var dbgMsg = new StringBuilder();
 			dbgMsg.AppendFormat( "{0}): ID={1} channel={2} requestType={3}", GetThreadName(), r.ID, r.Channel, r.Type );
 
 			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_REQUEST_START({1}",
-			                           name, dbgMsg.ToString() );
+			                           this.name, dbgMsg.ToString() );
 			if ( handlerListCopy.ContainsKey( r.Channel ) )
 			{
 				List<RequestHandlerHolder> handlers = handlerListCopy[ r.Channel ];
@@ -756,7 +756,7 @@ namespace Axiom.Core
 			}
 
 			LogManager.Instance.Write( LogMessageLevel.Trivial, false,
-			                           "DefaultWorkQueueBase('{0}') - PROCESS_REQUEST_END({1} processed={2}", name,
+			                           "DefaultWorkQueueBase('{0}') - PROCESS_REQUEST_END({1} processed={2}", this.name,
 			                           dbgMsg.ToString(), response != null );
 
 			return response;
@@ -770,21 +770,21 @@ namespace Axiom.Core
 			                     r.Request.ID, r.Succeeded, r.Messages, r.Request.Channel, r.Request.Type );
 
 			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_RESPONSE_START({1}",
-			                           name, dbgMsg.ToString() );
+			                           this.name, dbgMsg.ToString() );
 			ushort channel = r.Request.Channel;
-			if ( responseHandlers.ContainsKey( channel ) )
+			if ( this.responseHandlers.ContainsKey( channel ) )
 			{
-				for ( int j = responseHandlers[ channel ].Count - 1; j >= 0; --j )
+				for ( int j = this.responseHandlers[ channel ].Count - 1; j >= 0; --j )
 				{
-					if ( responseHandlers[ channel ][ j ].CanHandleResponse( r, this ) )
+					if ( this.responseHandlers[ channel ][ j ].CanHandleResponse( r, this ) )
 					{
-						responseHandlers[ channel ][ j ].HandleResponse( r, this );
+						this.responseHandlers[ channel ][ j ].HandleResponse( r, this );
 					}
 				}
 			}
 
 			LogManager.Instance.Write( LogMessageLevel.Trivial, false, "DefaultWorkQueueBase('{0}') - PROCESS_RESPONSE_END({1}",
-			                           name, dbgMsg.ToString() );
+			                           this.name, dbgMsg.ToString() );
 		}
 	};
 }

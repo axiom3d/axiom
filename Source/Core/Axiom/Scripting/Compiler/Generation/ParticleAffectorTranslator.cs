@@ -53,7 +53,7 @@ namespace Axiom.Scripting.Compiler
 			public ParticleAffectorTranslator()
 				: base()
 			{
-				_Affector = null;
+				this._Affector = null;
 			}
 
 			#region Translator Implementation
@@ -84,7 +84,7 @@ namespace Axiom.Scripting.Compiler
 				}
 
 				var system = (ParticleSystem)obj.Parent.Context;
-				_Affector = system.AddAffector( type );
+				this._Affector = system.AddAffector( type );
 
 				foreach ( var i in obj.Children )
 				{
@@ -114,7 +114,7 @@ namespace Axiom.Scripting.Compiler
 							}
 						}
 
-						if ( !_Affector.SetParam( prop.Name, value ) )
+						if ( !this._Affector.SetParam( prop.Name, value ) )
 						{
 							compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 						}

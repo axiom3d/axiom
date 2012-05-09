@@ -151,7 +151,7 @@ namespace Axiom.Core
 		{
 			lock ( initSync )
 			{
-				++numThreadsRegisteredWithRS;
+				++this.numThreadsRegisteredWithRS;
 
 #if AXIOM_THREAD_SUPPORT
 	// wake up main thread

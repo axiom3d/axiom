@@ -54,59 +54,59 @@ namespace Axiom.Graphics
 		public DefaultHardwareVertexBuffer( VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage )
 			: base( null, vertexDeclaration, numVertices, usage, true, false ) // always software, never shadowed
 		{
-			mpData = new byte[base.sizeInBytes];
+			this.mpData = new byte[base.sizeInBytes];
 		}
 
 		public DefaultHardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration,
 		                                    int numVertices, BufferUsage usage )
 			: base( manager, vertexDeclaration, numVertices, usage, true, false ) // always software, never shadowed
 		{
-			mpData = new byte[base.sizeInBytes];
+			this.mpData = new byte[base.sizeInBytes];
 		}
 
 		public override void ReadData( int offset, int length, BufferBase dest )
 		{
-			var data = Memory.PinObject( mpData ).Offset( offset );
+			var data = Memory.PinObject( this.mpData ).Offset( offset );
 			Memory.Copy( dest, data, length );
-			Memory.UnpinObject( mpData );
+			Memory.UnpinObject( this.mpData );
 		}
 
 		public override void WriteData( int offset, int length, Array data, bool discardWholeBuffer )
 		{
 			var pSource = Memory.PinObject( data );
-			var pIntData = Memory.PinObject( mpData ).Offset( offset );
+			var pIntData = Memory.PinObject( this.mpData ).Offset( offset );
 			Memory.Copy( pSource, pIntData, length );
 			Memory.UnpinObject( data );
-			Memory.UnpinObject( mpData );
+			Memory.UnpinObject( this.mpData );
 		}
 
 		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
 		{
-			var pIntData = Memory.PinObject( mpData ).Offset( offset );
+			var pIntData = Memory.PinObject( this.mpData ).Offset( offset );
 			Memory.Copy( src, pIntData, length );
-			Memory.UnpinObject( mpData );
+			Memory.UnpinObject( this.mpData );
 		}
 
 		public override void Unlock()
 		{
-			Memory.UnpinObject( mpData );
+			Memory.UnpinObject( this.mpData );
 			base.isLocked = false;
 		}
 
 		public override BufferBase Lock( int offset, int length, BufferLocking locking )
 		{
 			base.isLocked = true;
-			return Memory.PinObject( mpData ).Offset( offset );
+			return Memory.PinObject( this.mpData ).Offset( offset );
 		}
 
 		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{
-			return Memory.PinObject( mpData ).Offset( offset );
+			return Memory.PinObject( this.mpData ).Offset( offset );
 		}
 
 		protected override void UnlockImpl()
 		{
-			Memory.UnpinObject( mpData );
+			Memory.UnpinObject( this.mpData );
 		}
 	}
 }

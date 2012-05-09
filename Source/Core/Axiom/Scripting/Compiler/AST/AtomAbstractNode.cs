@@ -68,11 +68,11 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				if ( !_parsed )
+				if ( !this._parsed )
 				{
 					_parse();
 				}
-				return _isNumber;
+				return this._isNumber;
 			}
 		}
 
@@ -82,11 +82,11 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				if ( !_parsed )
+				if ( !this._parsed )
 				{
 					_parse();
 				}
-				return _number;
+				return this._number;
 			}
 		}
 
@@ -99,8 +99,8 @@ namespace Axiom.Scripting.Compiler.AST
 
 		private void _parse()
 		{
-			_isNumber = float.TryParse( _value, _parseStyle, _culture, out _number );
-			_parsed = true;
+			this._isNumber = float.TryParse( this._value, this._parseStyle, this._culture, out this._number );
+			this._parsed = true;
 		}
 
 		#region AbstractNode Implementation
@@ -111,7 +111,7 @@ namespace Axiom.Scripting.Compiler.AST
 			var node = new AtomAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Id = Id;
+			node.Id = this.Id;
 			node._value = Value;
 			return node;
 		}
@@ -121,12 +121,12 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				return _value;
+				return this._value;
 			}
 
 			set
 			{
-				_value = value;
+				this._value = value;
 			}
 		}
 

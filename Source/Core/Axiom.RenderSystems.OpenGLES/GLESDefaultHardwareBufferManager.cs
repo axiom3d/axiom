@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,33 +25,34 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-using System;
+
 using Axiom.Graphics;
-using Axiom.Core;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
 	/// <summary>
-	/// Specialization of HardwareBufferManager to emulate hardware buffers.
+	///   Specialization of HardwareBufferManager to emulate hardware buffers.
 	/// </summary>
 	/// <remarks>
-	///  You might want to instantiate this class if you want to utilize
-	///  classes like MeshSerializer without having initialized the 
-	///  rendering system (which is required to create a 'real' hardware
-	///  buffer manager.
+	/// You might want to instantiate this class if you want to utilize classes like MeshSerializer without having initialized the rendering system 
+	/// (which is required to create a 'real' hardware buffer manager.)
 	/// </remarks>
-	public class GLESDefaultHardwareBufferManager : HardwareBufferManager
+	public class GLESDefaultHardwareBufferManager : HardwareBufferManagerBase
 	{
 		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
 		{
@@ -58,43 +60,40 @@ namespace Axiom.RenderSystems.OpenGLES
 		}
 
 		/// <summary>
-		/// Creates a vertex buffer
+		///   Creates a vertex buffer
 		/// </summary>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVerts"></param>
-		/// <param name="usage"></param>
-		/// <param name="useShadowBuffer"></param>
-		/// <returns></returns>
+		/// <param name="vertexSize"> </param>
+		/// <param name="numVerts"> </param>
+		/// <param name="usage"> </param>
+		/// <param name="useShadowBuffer"> </param>
+		/// <returns> </returns>
 		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
 			return new GLESDefaultHardwareVertexBuffer( vertexSize, numVerts, usage );
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="numIndices"></param>
-		/// <param name="usage"></param>
-		/// <returns></returns>
+		/// <param name="type"> </param>
+		/// <param name="numIndices"> </param>
+		/// <param name="usage"> </param>
+		/// <returns> </returns>
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
 		{
 			return CreateIndexBuffer( type, numIndices, usage, false );
 		}
 
 		/// <summary>
-		/// Creates an index buffer
+		///   Creates an index buffer
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="numIndices"></param>
-		/// <param name="usage"></param>
-		/// <param name="useShadowBuffer"></param>
-		/// <returns></returns>
+		/// <param name="type"> </param>
+		/// <param name="numIndices"> </param>
+		/// <param name="usage"> </param>
+		/// <param name="useShadowBuffer"> </param>
+		/// <returns> </returns>
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
 		{
 			return new GLESDefaultHardwareIndexBuffer( type, numIndices, usage );
 		}
-
 	}
 }
-

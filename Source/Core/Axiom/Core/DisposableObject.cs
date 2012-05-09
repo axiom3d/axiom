@@ -81,10 +81,10 @@ namespace Axiom.Core
 		private List<ObjectEntry> _getOrCreateObjectList( Type type )
 		{
 			List<ObjectEntry> objectList;
-			if ( !_objects.TryGetValue( type, out objectList ) )
+			if ( !this._objects.TryGetValue( type, out objectList ) )
 			{
 				objectList = new List<ObjectEntry>();
-				_objects.Add( type, objectList );
+				this._objects.Add( type, objectList );
 			}
 			return objectList;
 		}
@@ -103,7 +103,7 @@ namespace Axiom.Core
                     var msg = new StringBuilder();
 #endif
 					// Dispose managed resources.
-					foreach ( var item in _objects )
+					foreach ( var item in this._objects )
 					{
 						var typeName = item.Key.Name;
 						var objectList = item.Value;

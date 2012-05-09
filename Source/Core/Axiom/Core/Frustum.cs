@@ -85,11 +85,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _projectionType;
+				return this._projectionType;
 			}
 			set
 			{
-				_projectionType = value;
+				this._projectionType = value;
 				InvalidateFrustum();
 			}
 		}
@@ -120,13 +120,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return _fieldOfView;
+				return this._fieldOfView;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				_fieldOfView = value;
+				this._fieldOfView = value;
 				InvalidateFrustum();
 			}
 		}
@@ -166,11 +166,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _farDistance;
+				return this._farDistance;
 			}
 			set
 			{
-				_farDistance = value;
+				this._farDistance = value;
 				InvalidateFrustum();
 				InvalidateView(); //XEONX FIX: Now the IsObjectVisible() will work properly
 			}
@@ -200,13 +200,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _nearDistance;
+				return this._nearDistance;
 			}
 			set
 			{
 				Debug.Assert( value > 0, "Near clip distance must be greater than zero." );
 
-				_nearDistance = value;
+				this._nearDistance = value;
 				InvalidateFrustum();
 				InvalidateView(); //XEONX FIX: Now the IsObjectVisible() will work properly
 			}
@@ -235,11 +235,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _aspectRatio;
+				return this._aspectRatio;
 			}
 			set
 			{
-				_aspectRatio = value;
+				this._aspectRatio = value;
 				InvalidateFrustum();
 			}
 		}
@@ -260,11 +260,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _frustumOffset;
+				return this._frustumOffset;
 			}
 			set
 			{
-				_frustumOffset = value;
+				this._frustumOffset = value;
 				UpdateFrustum();
 			}
 		}
@@ -281,15 +281,15 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _focalLength;
+				return this._focalLength;
 			}
 			set
 			{
-				if ( _focalLength <= 0 )
+				if ( this._focalLength <= 0 )
 				{
 					throw new AxiomException( "Focal length must be greater than zero." );
 				}
-				_focalLength = value;
+				this._focalLength = value;
 				InvalidateFrustum();
 			}
 		}
@@ -308,14 +308,14 @@ namespace Axiom.Core
 #if AXIOM_NO_VIEWPORT_ORIENTATIONMODE
                 throw new AxiomException( "Getting Frustrum orientation mode is not supported" );
 #endif
-				return _orientationMode;
+				return this._orientationMode;
 			}
 			set
 			{
 #if AXIOM_NO_VIEWPORT_ORIENTATIONMODE
                 throw new AxiomException( "Setting Frustrum orientation mode is not supported" );
 #endif
-				_orientationMode = value;
+				this._orientationMode = value;
 				InvalidateFrustum();
 			}
 		}
@@ -370,7 +370,7 @@ namespace Axiom.Core
 			{
 				UpdateFrustum();
 
-				return _projectionMatrixRS;
+				return this._projectionMatrixRS;
 			}
 		}
 
@@ -415,7 +415,7 @@ namespace Axiom.Core
 			{
 				UpdateFrustum();
 
-				return _projectionMatrixRSDepth;
+				return this._projectionMatrixRSDepth;
 			}
 		}
 
@@ -445,12 +445,12 @@ namespace Axiom.Core
 			{
 				UpdateFrustum();
 
-				return _projectionMatrix;
+				return this._projectionMatrix;
 			}
 			set
 			{
 				{
-					_projectionMatrix = value;
+					this._projectionMatrix = value;
 				}
 			}
 		}
@@ -473,11 +473,11 @@ namespace Axiom.Core
 			{
 				UpdateView();
 
-				return _viewMatrix;
+				return this._viewMatrix;
 			}
 			set
 			{
-				_viewMatrix = value;
+				this._viewMatrix = value;
 			}
 		}
 
@@ -490,7 +490,7 @@ namespace Axiom.Core
 			get
 			{
 				UpdateFrustumPlanes();
-				return _planes;
+				return this._planes;
 			}
 		}
 
@@ -506,24 +506,25 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( useObliqueDepthProjection )
+				if ( this.useObliqueDepthProjection )
 				{
 					// always out of date since plane needs to be in view space
 					if ( IsViewOutOfDate )
 					{
-						_recalculateFrustum = true;
+						this._recalculateFrustum = true;
 					}
 
 					// update derived plane
-					if ( linkedObliqueProjPlane != null && !( lastLinkedObliqueProjPlane == linkedObliqueProjPlane.DerivedPlane ) )
+					if ( this.linkedObliqueProjPlane != null &&
+					     !( this.lastLinkedObliqueProjPlane == this.linkedObliqueProjPlane.DerivedPlane ) )
 					{
-						obliqueProjPlane = linkedObliqueProjPlane.DerivedPlane;
-						lastLinkedObliqueProjPlane = obliqueProjPlane;
-						_recalculateFrustum = true;
+						this.obliqueProjPlane = this.linkedObliqueProjPlane.DerivedPlane;
+						this.lastLinkedObliqueProjPlane = this.obliqueProjPlane;
+						this._recalculateFrustum = true;
 					}
 				}
 
-				return _recalculateFrustum;
+				return this._recalculateFrustum;
 			}
 		}
 
@@ -542,27 +543,27 @@ namespace Axiom.Core
 				// are we attached to another node?
 				if ( parentNode != null )
 				{
-					if ( _recalculateView || parentNode.DerivedOrientation != _lastParentOrientation ||
-					     parentNode.DerivedPosition != _lastParentPosition )
+					if ( this._recalculateView || parentNode.DerivedOrientation != this._lastParentOrientation ||
+					     parentNode.DerivedPosition != this._lastParentPosition )
 					{
 						// we are out of date with the parent scene node
-						_lastParentOrientation = parentNode.DerivedOrientation;
-						_lastParentPosition = parentNode.DerivedPosition;
-						_recalculateView = true;
+						this._lastParentOrientation = parentNode.DerivedOrientation;
+						this._lastParentPosition = parentNode.DerivedPosition;
+						this._recalculateView = true;
 					}
 				}
 
 				// deriving direction from linked plane?
-				if ( isReflected && linkedReflectionPlane != null &&
-				     !( lastLinkedReflectionPlane == linkedReflectionPlane.DerivedPlane ) )
+				if ( this.isReflected && this.linkedReflectionPlane != null &&
+				     !( this.lastLinkedReflectionPlane == this.linkedReflectionPlane.DerivedPlane ) )
 				{
-					_reflectionPlane = linkedReflectionPlane.DerivedPlane;
-					_reflectionMatrix = Utility.BuildReflectionMatrix( _reflectionPlane );
-					lastLinkedReflectionPlane = linkedReflectionPlane.DerivedPlane;
-					_recalculateView = true;
+					this._reflectionPlane = this.linkedReflectionPlane.DerivedPlane;
+					this._reflectionMatrix = Utility.BuildReflectionMatrix( this._reflectionPlane );
+					this.lastLinkedReflectionPlane = this.linkedReflectionPlane.DerivedPlane;
+					this._recalculateView = true;
 				}
 
-				return _recalculateView;
+				return this._recalculateView;
 			}
 		}
 
@@ -575,7 +576,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _customViewMatrix;
+				return this._customViewMatrix;
 			}
 		}
 
@@ -588,7 +589,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _customProjectionMatrix;
+				return this._customProjectionMatrix;
 			}
 		}
 
@@ -643,7 +644,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return isReflected;
+				return this.isReflected;
 			}
 		}
 
@@ -663,11 +664,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _reflectionMatrix;
+				return this._reflectionMatrix;
 			}
 			protected set
 			{
-				_reflectionMatrix = value;
+				this._reflectionMatrix = value;
 			}
 		}
 
@@ -687,11 +688,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _reflectionPlane;
+				return this._reflectionPlane;
 			}
 			protected set
 			{
-				_reflectionPlane = value;
+				this._reflectionPlane = value;
 			}
 		}
 
@@ -748,11 +749,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _orthoHeight;
+				return this._orthoHeight;
 			}
 			set
 			{
-				_orthoHeight = value;
+				this._orthoHeight = value;
 				InvalidateFrustum();
 			}
 		}
@@ -764,11 +765,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _orthoHeight*_aspectRatio;
+				return this._orthoHeight*this._aspectRatio;
 			}
 			set
 			{
-				_orthoHeight = value/_aspectRatio;
+				this._orthoHeight = value/this._aspectRatio;
 				InvalidateFrustum();
 			}
 		}
@@ -796,47 +797,47 @@ namespace Axiom.Core
 		{
 			for ( var i = 0; i < 6; i++ )
 			{
-				_planes[ i ] = new Plane();
+				this._planes[ i ] = new Plane();
 			}
 
-			_fieldOfView = Utility.PI/4.0f;
-			_nearDistance = 100.0f;
-			_farDistance = 100000.0f;
-			_aspectRatio = 1.33333333333333f;
-			_orthoHeight = 1000.0f;
-			_frustumExtentsManuallySet = false;
-			_recalculateFrustum = true;
-			_recalculateView = true;
+			this._fieldOfView = Utility.PI/4.0f;
+			this._nearDistance = 100.0f;
+			this._farDistance = 100000.0f;
+			this._aspectRatio = 1.33333333333333f;
+			this._orthoHeight = 1000.0f;
+			this._frustumExtentsManuallySet = false;
+			this._recalculateFrustum = true;
+			this._recalculateView = true;
 
 			// Init matrices
-			_viewMatrix = Matrix4.Zero;
-			_projectionMatrix = Matrix4.Zero;
-			_projectionMatrixRS = Matrix4.Zero;
+			this._viewMatrix = Matrix4.Zero;
+			this._projectionMatrix = Matrix4.Zero;
+			this._projectionMatrixRS = Matrix4.Zero;
 
-			_projectionType = Projection.Perspective;
+			this._projectionType = Projection.Perspective;
 
-			_lastParentPosition = Vector3.Zero;
-			_lastParentOrientation = Quaternion.Identity;
+			this._lastParentPosition = Vector3.Zero;
+			this._lastParentOrientation = Quaternion.Identity;
 
 			// init vertex data
-			_vertexData.vertexDeclaration.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
-			_vertexData.vertexStart = 0;
-			_vertexData.vertexCount = 32;
-			_vertexData.vertexBufferBinding.SetBinding( 0,
-			                                            HardwareBufferManager.Instance.CreateVertexBuffer(
-			                                            	_vertexData.vertexDeclaration, _vertexData.vertexCount,
-			                                            	BufferUsage.DynamicWriteOnly ) );
+			this._vertexData.vertexDeclaration.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
+			this._vertexData.vertexStart = 0;
+			this._vertexData.vertexCount = 32;
+			this._vertexData.vertexBufferBinding.SetBinding( 0,
+			                                                 HardwareBufferManager.Instance.CreateVertexBuffer(
+			                                                 	this._vertexData.vertexDeclaration, this._vertexData.vertexCount,
+			                                                 	BufferUsage.DynamicWriteOnly ) );
 
-			_material = (Material)MaterialManager.Instance[ "BaseWhite" ];
+			this._material = (Material)MaterialManager.Instance[ "BaseWhite" ];
 
-			_customProjectionMatrix = false;
-			_customViewMatrix = false;
+			this._customProjectionMatrix = false;
+			this._customViewMatrix = false;
 
-			_frustumOffset = new Vector2( 0.0f, 0.0f );
-			_focalLength = 1.0f;
+			this._frustumOffset = new Vector2( 0.0f, 0.0f );
+			this._focalLength = 1.0f;
 
-			lastLinkedReflectionPlane = new Plane();
-			lastLinkedObliqueProjPlane = new Plane();
+			this.lastLinkedReflectionPlane = new Plane();
+			this.lastLinkedObliqueProjPlane = new Plane();
 
 			UpdateView();
 		}
@@ -850,8 +851,8 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void DisableCustomNearClipPlane()
 		{
-			useObliqueDepthProjection = false;
-			linkedObliqueProjPlane = null;
+			this.useObliqueDepthProjection = false;
+			this.linkedObliqueProjPlane = null;
 			InvalidateFrustum();
 		}
 
@@ -875,11 +876,11 @@ namespace Axiom.Core
 
 		public void SetCustomViewMatrix( bool enable, Matrix4 viewMatrix )
 		{
-			_customViewMatrix = enable;
+			this._customViewMatrix = enable;
 			if ( enable )
 			{
 				Debug.Assert( viewMatrix.IsAffine );
-				_viewMatrix = viewMatrix;
+				this._viewMatrix = viewMatrix;
 			}
 			InvalidateView();
 		}
@@ -891,10 +892,10 @@ namespace Axiom.Core
 
 		public void SetCustomProjectionMatrix( bool enable, Matrix4 projMatrix )
 		{
-			_customProjectionMatrix = enable;
+			this._customProjectionMatrix = enable;
 			if ( enable )
 			{
-				_projectionMatrix = projMatrix;
+				this._projectionMatrix = projMatrix;
 			}
 
 			InvalidateFrustum();
@@ -906,8 +907,8 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void DisableReflection()
 		{
-			isReflected = false;
-			lastLinkedReflectionPlane.Normal = Vector3.Zero;
+			this.isReflected = false;
+			this.lastLinkedReflectionPlane.Normal = Vector3.Zero;
 			InvalidateView();
 		}
 
@@ -940,9 +941,9 @@ namespace Axiom.Core
 		/// <param name="plane">The plane to link to to perform the clipping.</param>
 		public virtual void EnableCustomNearClipPlane( IDerivedPlaneProvider plane )
 		{
-			useObliqueDepthProjection = true;
-			linkedObliqueProjPlane = plane;
-			obliqueProjPlane = plane.DerivedPlane;
+			this.useObliqueDepthProjection = true;
+			this.linkedObliqueProjPlane = plane;
+			this.obliqueProjPlane = plane.DerivedPlane;
 			InvalidateFrustum();
 		}
 
@@ -975,9 +976,9 @@ namespace Axiom.Core
 		/// <param name="plane">The plane to link to to perform the clipping.</param>
 		public virtual void EnableCustomNearClipPlane( Plane plane )
 		{
-			useObliqueDepthProjection = true;
-			linkedObliqueProjPlane = null;
-			obliqueProjPlane = plane;
+			this.useObliqueDepthProjection = true;
+			this.linkedObliqueProjPlane = null;
+			this.obliqueProjPlane = plane;
 			InvalidateFrustum();
 		}
 
@@ -991,10 +992,10 @@ namespace Axiom.Core
 		/// <param name="plane"></param>
 		public virtual void EnableReflection( Plane plane )
 		{
-			isReflected = true;
-			_reflectionPlane = plane;
-			linkedReflectionPlane = null;
-			_reflectionMatrix = Utility.BuildReflectionMatrix( plane );
+			this.isReflected = true;
+			this._reflectionPlane = plane;
+			this.linkedReflectionPlane = null;
+			this._reflectionMatrix = Utility.BuildReflectionMatrix( plane );
 			InvalidateView();
 		}
 
@@ -1007,11 +1008,11 @@ namespace Axiom.Core
 		/// <param name="plane"></param>
 		public virtual void EnableReflection( IDerivedPlaneProvider plane )
 		{
-			isReflected = true;
-			linkedReflectionPlane = plane;
-			_reflectionPlane = linkedReflectionPlane.DerivedPlane;
-			_reflectionMatrix = Utility.BuildReflectionMatrix( _reflectionPlane );
-			lastLinkedReflectionPlane = _reflectionPlane;
+			this.isReflected = true;
+			this.linkedReflectionPlane = plane;
+			this._reflectionPlane = this.linkedReflectionPlane.DerivedPlane;
+			this._reflectionMatrix = Utility.BuildReflectionMatrix( this._reflectionPlane );
+			this.lastLinkedReflectionPlane = this._reflectionPlane;
 			InvalidateView();
 		}
 
@@ -1021,7 +1022,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected virtual Vector3 GetPositionForViewUpdate()
 		{
-			return _lastParentPosition;
+			return this._lastParentPosition;
 		}
 
 		/// <summary>
@@ -1030,7 +1031,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		protected virtual Quaternion GetOrientationForViewUpdate()
 		{
-			return _lastParentOrientation;
+			return this._lastParentOrientation;
 		}
 
 		/// <summary>
@@ -1082,19 +1083,19 @@ namespace Axiom.Core
 			for ( var plane = 0; plane < 6; plane++ )
 			{
 				// skip far plane if infinite view frustum
-				if ( _farDistance == 0 && plane == (int)FrustumPlane.Far )
+				if ( this._farDistance == 0 && plane == (int)FrustumPlane.Far )
 				{
 					continue;
 				}
 
-				if ( _planes[ plane ].GetSide( corners[ 0 ] ) == PlaneSide.Negative &&
-				     _planes[ plane ].GetSide( corners[ 1 ] ) == PlaneSide.Negative &&
-				     _planes[ plane ].GetSide( corners[ 2 ] ) == PlaneSide.Negative &&
-				     _planes[ plane ].GetSide( corners[ 3 ] ) == PlaneSide.Negative &&
-				     _planes[ plane ].GetSide( corners[ 4 ] ) == PlaneSide.Negative &&
-				     _planes[ plane ].GetSide( corners[ 5 ] ) == PlaneSide.Negative &&
-				     _planes[ plane ].GetSide( corners[ 6 ] ) == PlaneSide.Negative &&
-				     _planes[ plane ].GetSide( corners[ 7 ] ) == PlaneSide.Negative )
+				if ( this._planes[ plane ].GetSide( corners[ 0 ] ) == PlaneSide.Negative &&
+				     this._planes[ plane ].GetSide( corners[ 1 ] ) == PlaneSide.Negative &&
+				     this._planes[ plane ].GetSide( corners[ 2 ] ) == PlaneSide.Negative &&
+				     this._planes[ plane ].GetSide( corners[ 3 ] ) == PlaneSide.Negative &&
+				     this._planes[ plane ].GetSide( corners[ 4 ] ) == PlaneSide.Negative &&
+				     this._planes[ plane ].GetSide( corners[ 5 ] ) == PlaneSide.Negative &&
+				     this._planes[ plane ].GetSide( corners[ 6 ] ) == PlaneSide.Negative &&
+				     this._planes[ plane ].GetSide( corners[ 7 ] ) == PlaneSide.Negative )
 				{
 					// ALL corners on negative side therefore out of view
 					culledBy = (FrustumPlane)plane;
@@ -1135,14 +1136,14 @@ namespace Axiom.Core
 			// If so, object is not visible
 			for ( var plane = 0; plane < 6; plane++ )
 			{
-				if ( _farDistance == 0 && plane == (int)FrustumPlane.Far )
+				if ( this._farDistance == 0 && plane == (int)FrustumPlane.Far )
 				{
 					continue;
 				}
 
 				// If the distance from sphere center to plane is negative, and 'more negative'
 				// than the radius of the sphere, sphere is outside frustum
-				if ( _planes[ plane ].GetDistance( sphere.Center ) < -sphere.Radius )
+				if ( this._planes[ plane ].GetDistance( sphere.Center ) < -sphere.Radius )
 				{
 					// ALL corners on negative side therefore out of view
 					culledBy = (FrustumPlane)plane;
@@ -1184,12 +1185,12 @@ namespace Axiom.Core
 			// If so, object is not visible
 			for ( var plane = 0; plane < 6; plane++ )
 			{
-				if ( _farDistance == 0 && plane == (int)FrustumPlane.Far )
+				if ( this._farDistance == 0 && plane == (int)FrustumPlane.Far )
 				{
 					continue;
 				}
 
-				if ( _planes[ plane ].GetSide( vertex ) == PlaneSide.Negative )
+				if ( this._planes[ plane ].GetSide( vertex ) == PlaneSide.Negative )
 				{
 					// ALL corners on negative side therefore out of view
 					culledBy = (FrustumPlane)plane;
@@ -1245,10 +1246,10 @@ namespace Axiom.Core
 		/// </summary>
 		protected virtual void InvalidateFrustum()
 		{
-			_recalculateFrustum = true;
-			_recalculateFrustumPlanes = true;
-			_recalculateWorldSpaceCorners = true;
-			_recalculateVertexData = true;
+			this._recalculateFrustum = true;
+			this._recalculateFrustumPlanes = true;
+			this._recalculateWorldSpaceCorners = true;
+			this._recalculateVertexData = true;
 		}
 
 		/// <summary>
@@ -1256,17 +1257,17 @@ namespace Axiom.Core
 		/// </summary>
 		protected virtual void InvalidateView()
 		{
-			_recalculateView = true;
-			_recalculateFrustumPlanes = true;
-			_recalculateWorldSpaceCorners = true;
+			this._recalculateView = true;
+			this._recalculateFrustumPlanes = true;
+			this._recalculateWorldSpaceCorners = true;
 		}
 
 		protected void CalculateProjectionParameters( out Real vpLeft, out Real vpRight, out Real vpBottom, out Real vpTop )
 		{
-			if ( _customProjectionMatrix )
+			if ( this._customProjectionMatrix )
 			{
 				// Convert clipspace corners to camera space
-				var invProj = _projectionMatrix.Inverse();
+				var invProj = this._projectionMatrix.Inverse();
 				var topLeft = new Vector3( -0.5f, 0.5f, 0.0f );
 				var bottomRight = new Vector3( 0.5f, -0.5f, 0.0f );
 
@@ -1278,38 +1279,38 @@ namespace Axiom.Core
 				vpRight = bottomRight.x;
 				vpBottom = bottomRight.y;
 			}
-			else if ( _frustumExtentsManuallySet )
+			else if ( this._frustumExtentsManuallySet )
 			{
-				vpLeft = _left;
-				vpRight = _right;
-				vpTop = _top;
-				vpBottom = _bottom;
+				vpLeft = this._left;
+				vpRight = this._right;
+				vpTop = this._top;
+				vpBottom = this._bottom;
 			}
 				// Calculate general projection parameters
 			else if ( ProjectionType == Projection.Perspective )
 			{
 				// Calculate general projection parameters
 
-				Real thetaY = _fieldOfView*0.5;
+				Real thetaY = this._fieldOfView*0.5;
 				Real tanThetaY = Utility.Tan( thetaY );
-				var tanThetaX = tanThetaY*_aspectRatio;
+				var tanThetaX = tanThetaY*this._aspectRatio;
 
 				// Unknown how to apply frustum offset to orthographic camera, just ignore here
-				var nearFocal = _nearDistance/_focalLength;
-				Real nearOffsetX = _frustumOffset.x*nearFocal;
-				Real nearOffsetY = _frustumOffset.y*nearFocal;
-				var half_w = tanThetaX*_nearDistance;
-				var half_h = tanThetaY*_nearDistance;
+				var nearFocal = this._nearDistance/this._focalLength;
+				Real nearOffsetX = this._frustumOffset.x*nearFocal;
+				Real nearOffsetY = this._frustumOffset.y*nearFocal;
+				var half_w = tanThetaX*this._nearDistance;
+				var half_h = tanThetaY*this._nearDistance;
 
 				vpLeft = -half_w + nearOffsetX;
 				vpRight = +half_w + nearOffsetX;
 				vpBottom = -half_h + nearOffsetY;
 				vpTop = +half_h + nearOffsetY;
 
-				_left = vpLeft;
-				_right = vpRight;
-				_top = vpTop;
-				_bottom = vpBottom;
+				this._left = vpLeft;
+				this._right = vpRight;
+				this._top = vpTop;
+				this._bottom = vpBottom;
 			}
 			else //if (ProjectionType == Projection.Orthographic)
 			{
@@ -1322,10 +1323,10 @@ namespace Axiom.Core
 				vpBottom = -half_h;
 				vpTop = +half_h;
 
-				_left = vpLeft;
-				_right = vpRight;
-				_top = vpTop;
-				_bottom = vpBottom;
+				this._left = vpLeft;
+				this._right = vpRight;
+				this._top = vpTop;
+				this._bottom = vpBottom;
 			}
 		}
 
@@ -1346,7 +1347,7 @@ namespace Axiom.Core
 
 			CalculateProjectionParameters( out vpLeft, out vpRight, out vpBottom, out vpTop );
 
-			if ( !_customProjectionMatrix )
+			if ( !this._customProjectionMatrix )
 			{
 				// The code below will dealing with general projection
 				// parameters, similar glFrustum and glOrtho.
@@ -1355,27 +1356,27 @@ namespace Axiom.Core
 
 				Real inv_w = 1.0f/( vpRight - vpLeft );
 				Real inv_h = 1.0f/( vpTop - vpBottom );
-				Real inv_d = 1.0f/( _farDistance - _nearDistance );
+				Real inv_d = 1.0f/( this._farDistance - this._nearDistance );
 
 				// Recalc if frustum params changed
-				if ( _projectionType == Projection.Perspective )
+				if ( this._projectionType == Projection.Perspective )
 				{
 					// Calc matrix elements
-					Real A = 2.0f*_nearDistance*inv_w;
-					Real B = 2.0f*_nearDistance*inv_h;
+					Real A = 2.0f*this._nearDistance*inv_w;
+					Real B = 2.0f*this._nearDistance*inv_h;
 					Real C = ( vpRight + vpLeft )*inv_w;
 					Real D = ( vpTop + vpBottom )*inv_h;
 					Real q, qn;
-					if ( _farDistance == 0.0f )
+					if ( this._farDistance == 0.0f )
 					{
 						// Infinite far plane
 						q = Frustum.InfiniteFarPlaneAdjust - 1.0f;
-						qn = _nearDistance*( Frustum.InfiniteFarPlaneAdjust - 2.0f );
+						qn = this._nearDistance*( Frustum.InfiniteFarPlaneAdjust - 2.0f );
 					}
 					else
 					{
-						q = -( _farDistance + _nearDistance )*inv_d;
-						qn = -2.0f*( _farDistance*_nearDistance )*inv_d;
+						q = -( this._farDistance + this._nearDistance )*inv_d;
+						qn = -2.0f*( this._farDistance*this._nearDistance )*inv_d;
 					}
 
 					// NB: This creates 'uniform' perspective projection matrix,
@@ -1393,16 +1394,16 @@ namespace Axiom.Core
 					// q = - (far + near) / (far - near)
 					// qn = - 2 * (far * near) / (far - near)
 
-					_projectionMatrix = Matrix4.Zero;
-					_projectionMatrix.m00 = A;
-					_projectionMatrix.m02 = C;
-					_projectionMatrix.m11 = B;
-					_projectionMatrix.m12 = D;
-					_projectionMatrix.m22 = q;
-					_projectionMatrix.m23 = qn;
-					_projectionMatrix.m32 = -1.0f;
+					this._projectionMatrix = Matrix4.Zero;
+					this._projectionMatrix.m00 = A;
+					this._projectionMatrix.m02 = C;
+					this._projectionMatrix.m11 = B;
+					this._projectionMatrix.m12 = D;
+					this._projectionMatrix.m22 = q;
+					this._projectionMatrix.m23 = qn;
+					this._projectionMatrix.m32 = -1.0f;
 
-					if ( useObliqueDepthProjection )
+					if ( this.useObliqueDepthProjection )
 					{
 						// Translate the plane into view space
 
@@ -1410,7 +1411,7 @@ namespace Axiom.Core
 						// camera and return a cull frustum view matrix
 						UpdateView();
 
-						var plane = _viewMatrix*obliqueProjPlane;
+						var plane = this._viewMatrix*this.obliqueProjPlane;
 
 						// Thanks to Eric Lenyel for posting this calculation
 						// at www.terathon.com
@@ -1427,39 +1428,39 @@ namespace Axiom.Core
                         Math::Sign(plane.normal.y), 1.0f, 1.0f);
                          */
 						var q1 = new Vector4();
-						q1.x = ( System.Math.Sign( plane.Normal.x ) + _projectionMatrix.m02 )/_projectionMatrix.m00;
-						q1.y = ( System.Math.Sign( plane.Normal.y ) + _projectionMatrix.m12 )/_projectionMatrix.m11;
+						q1.x = ( System.Math.Sign( plane.Normal.x ) + this._projectionMatrix.m02 )/this._projectionMatrix.m00;
+						q1.y = ( System.Math.Sign( plane.Normal.y ) + this._projectionMatrix.m12 )/this._projectionMatrix.m11;
 						q1.z = -1.0f;
-						q1.w = ( 1.0f + _projectionMatrix.m22 )/_projectionMatrix.m23;
+						q1.w = ( 1.0f + this._projectionMatrix.m22 )/this._projectionMatrix.m23;
 
 						// Calculate the scaled plane vector
 						var clipPlane4d = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
 						var c = clipPlane4d*( 2.0f/( clipPlane4d.Dot( q1 ) ) );
 
 						// Replace the third row of the projection matrix
-						_projectionMatrix.m20 = c.x;
-						_projectionMatrix.m21 = c.y;
-						_projectionMatrix.m22 = c.z + 1.0f;
-						_projectionMatrix.m23 = c.w;
+						this._projectionMatrix.m20 = c.x;
+						this._projectionMatrix.m21 = c.y;
+						this._projectionMatrix.m22 = c.z + 1.0f;
+						this._projectionMatrix.m23 = c.w;
 					}
 				} // perspective
-				else if ( _projectionType == Projection.Orthographic )
+				else if ( this._projectionType == Projection.Orthographic )
 				{
 					var A = 2.0f*inv_w;
 					var B = 2.0f*inv_h;
 					Real C = -( vpRight + vpLeft )*inv_w;
 					Real D = -( vpTop + vpBottom )*inv_h;
 					Real q, qn;
-					if ( _farDistance == 0.0f )
+					if ( this._farDistance == 0.0f )
 					{
 						// Can not do infinite far plane here, avoid divided zero only
-						q = -Frustum.InfiniteFarPlaneAdjust/_nearDistance;
+						q = -Frustum.InfiniteFarPlaneAdjust/this._nearDistance;
 						qn = -Frustum.InfiniteFarPlaneAdjust - 1.0f;
 					}
 					else
 					{
 						q = -2.0f*inv_d;
-						qn = -( _farDistance + _nearDistance )*inv_d;
+						qn = -( this._farDistance + this._nearDistance )*inv_d;
 					}
 
 					// NB: This creates 'uniform' orthographic projection matrix,
@@ -1477,34 +1478,34 @@ namespace Axiom.Core
 					// q = - 2 / (far - near)
 					// qn = - (far + near) / (far - near)
 
-					_projectionMatrix = Matrix4.Zero;
-					_projectionMatrix.m00 = A;
-					_projectionMatrix.m03 = C;
-					_projectionMatrix.m11 = B;
-					_projectionMatrix.m13 = D;
-					_projectionMatrix.m22 = q;
-					_projectionMatrix.m23 = qn;
-					_projectionMatrix.m33 = 1.0f;
+					this._projectionMatrix = Matrix4.Zero;
+					this._projectionMatrix.m00 = A;
+					this._projectionMatrix.m03 = C;
+					this._projectionMatrix.m11 = B;
+					this._projectionMatrix.m13 = D;
+					this._projectionMatrix.m22 = q;
+					this._projectionMatrix.m23 = qn;
+					this._projectionMatrix.m33 = 1.0f;
 				} // ortho
 			} // if !_customProjectionMatrix
 
 			// grab a reference to the current render system
 			var renderSystem = Root.Instance.RenderSystem;
 			// API specific
-			renderSystem.ConvertProjectionMatrix( _projectionMatrix, out _projectionMatrixRS );
+			renderSystem.ConvertProjectionMatrix( this._projectionMatrix, out this._projectionMatrixRS );
 			// API specific for Gpu Programs
-			renderSystem.ConvertProjectionMatrix( _projectionMatrix, out _projectionMatrixRSDepth, true );
+			renderSystem.ConvertProjectionMatrix( this._projectionMatrix, out this._projectionMatrixRSDepth, true );
 
 			// Calculate bounding box (local)
 			// Box is from 0, down -Z, max dimensions as determined from far plane
 			// If infinite view frustum just pick a far value
-			var farDist = ( _farDistance == 0.0f ) ? InfiniteFarPlaneDistance : _farDistance;
+			var farDist = ( this._farDistance == 0.0f ) ? InfiniteFarPlaneDistance : this._farDistance;
 
 			// Near plane bounds
 			var min = new Vector3( vpLeft, vpBottom, -farDist );
 			var max = new Vector3( vpRight, vpTop, 0 );
 
-			if ( _customProjectionMatrix )
+			if ( this._customProjectionMatrix )
 			{
 				// Some custom projection matrices can have unusual inverted settings
 				// So make sure the AABB is the right way around to start with
@@ -1514,20 +1515,20 @@ namespace Axiom.Core
 			}
 
 			var radio = 1.0f;
-			if ( _projectionType == Projection.Perspective )
+			if ( this._projectionType == Projection.Perspective )
 			{
 				// Merge with far plane bounds
-				radio = _farDistance/_nearDistance;
-				min.Floor( new Vector3( vpLeft*radio, vpBottom*radio, -_farDistance ) );
+				radio = this._farDistance/this._nearDistance;
+				min.Floor( new Vector3( vpLeft*radio, vpBottom*radio, -this._farDistance ) );
 				max.Ceil( new Vector3( vpRight*radio, vpTop*radio, 0 ) );
 			}
 
-			_boundingBox.SetExtents( min, max );
+			this._boundingBox.SetExtents( min, max );
 
-			_recalculateFrustum = false;
+			this._recalculateFrustum = false;
 
 			// Signal to update frustum clipping planes
-			_recalculateFrustumPlanes = true;
+			this._recalculateFrustumPlanes = true;
 		}
 
 		protected void UpdateFrustumPlanes()
@@ -1535,7 +1536,7 @@ namespace Axiom.Core
 			UpdateView();
 			UpdateFrustum();
 
-			if ( _recalculateFrustumPlanes )
+			if ( this._recalculateFrustumPlanes )
 			{
 				_updateFrustumPlanes();
 			}
@@ -1546,46 +1547,46 @@ namespace Axiom.Core
 			// -------------------------
 			// Update the frustum planes
 			// -------------------------
-			var combo = _projectionMatrix*_viewMatrix;
+			var combo = this._projectionMatrix*this._viewMatrix;
 
-			_planes[ (int)FrustumPlane.Left ].Normal.x = combo[ 3, 0 ] + combo[ 0, 0 ];
-			_planes[ (int)FrustumPlane.Left ].Normal.y = combo[ 3, 1 ] + combo[ 0, 1 ];
-			_planes[ (int)FrustumPlane.Left ].Normal.z = combo[ 3, 2 ] + combo[ 0, 2 ];
-			_planes[ (int)FrustumPlane.Left ].D = combo[ 3, 3 ] + combo[ 0, 3 ];
+			this._planes[ (int)FrustumPlane.Left ].Normal.x = combo[ 3, 0 ] + combo[ 0, 0 ];
+			this._planes[ (int)FrustumPlane.Left ].Normal.y = combo[ 3, 1 ] + combo[ 0, 1 ];
+			this._planes[ (int)FrustumPlane.Left ].Normal.z = combo[ 3, 2 ] + combo[ 0, 2 ];
+			this._planes[ (int)FrustumPlane.Left ].D = combo[ 3, 3 ] + combo[ 0, 3 ];
 
-			_planes[ (int)FrustumPlane.Right ].Normal.x = combo[ 3, 0 ] - combo[ 0, 0 ];
-			_planes[ (int)FrustumPlane.Right ].Normal.y = combo[ 3, 1 ] - combo[ 0, 1 ];
-			_planes[ (int)FrustumPlane.Right ].Normal.z = combo[ 3, 2 ] - combo[ 0, 2 ];
-			_planes[ (int)FrustumPlane.Right ].D = combo[ 3, 3 ] - combo[ 0, 3 ];
+			this._planes[ (int)FrustumPlane.Right ].Normal.x = combo[ 3, 0 ] - combo[ 0, 0 ];
+			this._planes[ (int)FrustumPlane.Right ].Normal.y = combo[ 3, 1 ] - combo[ 0, 1 ];
+			this._planes[ (int)FrustumPlane.Right ].Normal.z = combo[ 3, 2 ] - combo[ 0, 2 ];
+			this._planes[ (int)FrustumPlane.Right ].D = combo[ 3, 3 ] - combo[ 0, 3 ];
 
-			_planes[ (int)FrustumPlane.Top ].Normal.x = combo[ 3, 0 ] - combo[ 1, 0 ];
-			_planes[ (int)FrustumPlane.Top ].Normal.y = combo[ 3, 1 ] - combo[ 1, 1 ];
-			_planes[ (int)FrustumPlane.Top ].Normal.z = combo[ 3, 2 ] - combo[ 1, 2 ];
-			_planes[ (int)FrustumPlane.Top ].D = combo[ 3, 3 ] - combo[ 1, 3 ];
+			this._planes[ (int)FrustumPlane.Top ].Normal.x = combo[ 3, 0 ] - combo[ 1, 0 ];
+			this._planes[ (int)FrustumPlane.Top ].Normal.y = combo[ 3, 1 ] - combo[ 1, 1 ];
+			this._planes[ (int)FrustumPlane.Top ].Normal.z = combo[ 3, 2 ] - combo[ 1, 2 ];
+			this._planes[ (int)FrustumPlane.Top ].D = combo[ 3, 3 ] - combo[ 1, 3 ];
 
-			_planes[ (int)FrustumPlane.Bottom ].Normal.x = combo[ 3, 0 ] + combo[ 1, 0 ];
-			_planes[ (int)FrustumPlane.Bottom ].Normal.y = combo[ 3, 1 ] + combo[ 1, 1 ];
-			_planes[ (int)FrustumPlane.Bottom ].Normal.z = combo[ 3, 2 ] + combo[ 1, 2 ];
-			_planes[ (int)FrustumPlane.Bottom ].D = combo[ 3, 3 ] + combo[ 1, 3 ];
+			this._planes[ (int)FrustumPlane.Bottom ].Normal.x = combo[ 3, 0 ] + combo[ 1, 0 ];
+			this._planes[ (int)FrustumPlane.Bottom ].Normal.y = combo[ 3, 1 ] + combo[ 1, 1 ];
+			this._planes[ (int)FrustumPlane.Bottom ].Normal.z = combo[ 3, 2 ] + combo[ 1, 2 ];
+			this._planes[ (int)FrustumPlane.Bottom ].D = combo[ 3, 3 ] + combo[ 1, 3 ];
 
-			_planes[ (int)FrustumPlane.Near ].Normal.x = combo[ 3, 0 ] + combo[ 2, 0 ];
-			_planes[ (int)FrustumPlane.Near ].Normal.y = combo[ 3, 1 ] + combo[ 2, 1 ];
-			_planes[ (int)FrustumPlane.Near ].Normal.z = combo[ 3, 2 ] + combo[ 2, 2 ];
-			_planes[ (int)FrustumPlane.Near ].D = combo[ 3, 3 ] + combo[ 2, 3 ];
+			this._planes[ (int)FrustumPlane.Near ].Normal.x = combo[ 3, 0 ] + combo[ 2, 0 ];
+			this._planes[ (int)FrustumPlane.Near ].Normal.y = combo[ 3, 1 ] + combo[ 2, 1 ];
+			this._planes[ (int)FrustumPlane.Near ].Normal.z = combo[ 3, 2 ] + combo[ 2, 2 ];
+			this._planes[ (int)FrustumPlane.Near ].D = combo[ 3, 3 ] + combo[ 2, 3 ];
 
-			_planes[ (int)FrustumPlane.Far ].Normal.x = combo[ 3, 0 ] - combo[ 2, 0 ];
-			_planes[ (int)FrustumPlane.Far ].Normal.y = combo[ 3, 1 ] - combo[ 2, 1 ];
-			_planes[ (int)FrustumPlane.Far ].Normal.z = combo[ 3, 2 ] - combo[ 2, 2 ];
-			_planes[ (int)FrustumPlane.Far ].D = combo[ 3, 3 ] - combo[ 2, 3 ];
+			this._planes[ (int)FrustumPlane.Far ].Normal.x = combo[ 3, 0 ] - combo[ 2, 0 ];
+			this._planes[ (int)FrustumPlane.Far ].Normal.y = combo[ 3, 1 ] - combo[ 2, 1 ];
+			this._planes[ (int)FrustumPlane.Far ].Normal.z = combo[ 3, 2 ] - combo[ 2, 2 ];
+			this._planes[ (int)FrustumPlane.Far ].D = combo[ 3, 3 ] - combo[ 2, 3 ];
 
 			// Renormalise any normals which were not unit length
 			for ( var i = 0; i < 6; i++ )
 			{
-				float length = _planes[ i ].Normal.Normalize();
-				_planes[ i ].D /= length;
+				float length = this._planes[ i ].Normal.Normalize();
+				this._planes[ i ].D /= length;
 			}
 
-			_recalculateFrustumPlanes = false;
+			this._recalculateFrustumPlanes = false;
 		}
 
 		/// <summary>
@@ -1619,26 +1620,26 @@ namespace Axiom.Core
 
 			// Get orientation from quaternion
 
-			if ( !_customViewMatrix )
+			if ( !this._customViewMatrix )
 			{
 				Quaternion orientation = GetOrientationForViewUpdate();
 				Vector3 position = GetPositionForViewUpdate();
 
-				_viewMatrix = Axiom.Math.Matrix4.MakeViewMatrix( position, orientation,
-				                                                 isReflected ? ReflectionMatrix : Matrix4.Zero );
+				this._viewMatrix = Axiom.Math.Matrix4.MakeViewMatrix( position, orientation,
+				                                                      this.isReflected ? ReflectionMatrix : Matrix4.Zero );
 			}
 
-			_recalculateView = false;
+			this._recalculateView = false;
 
 			//Signal to update frustum clipping planes
-			_recalculateFrustumPlanes = true;
+			this._recalculateFrustumPlanes = true;
 			//Signal to update world space corners
-			_recalculateWorldSpaceCorners = true;
+			this._recalculateWorldSpaceCorners = true;
 			//Signal to update frustum if oblique plane enabled,
 			//since plane needs to be in view space
-			if ( useObliqueDepthProjection )
+			if ( this.useObliqueDepthProjection )
 			{
-				_recalculateFrustum = true;
+				this._recalculateFrustum = true;
 			}
 		}
 
@@ -1646,7 +1647,7 @@ namespace Axiom.Core
 		{
 			UpdateView();
 
-			if ( _recalculateWorldSpaceCorners )
+			if ( this._recalculateWorldSpaceCorners )
 			{
 				_updateWorldSpaceCorners();
 			}
@@ -1654,7 +1655,7 @@ namespace Axiom.Core
 
 		protected virtual void _updateWorldSpaceCorners()
 		{
-			var eyeToWorld = _viewMatrix.InverseAffine();
+			var eyeToWorld = this._viewMatrix.InverseAffine();
 
 			// Note: Even though we could be dealing with general a projection matrix here,
 			//       it is incompatible with the infinite far plane, thus, we need to work
@@ -1665,32 +1666,32 @@ namespace Axiom.Core
 			CalculateProjectionParameters( out nearLeft, out nearRight, out nearBottom, out nearTop );
 
 			// Treat infinite fardist as some arbitrary far value
-			Real farDist = ( _farDistance == 0 ) ? 100000 : _farDistance;
+			Real farDist = ( this._farDistance == 0 ) ? 100000 : this._farDistance;
 
 			// Calc far palne corners
-			Real ratio = _projectionType == Projection.Perspective ? _farDistance/_nearDistance : 1;
+			Real ratio = this._projectionType == Projection.Perspective ? this._farDistance/this._nearDistance : 1;
 			var farLeft = nearLeft*ratio;
 			var farRight = nearRight*ratio;
 			var farBottom = nearBottom*ratio;
 			var farTop = nearTop*ratio;
 
 			// near
-			_worldSpaceCorners[ 0 ] = eyeToWorld.TransformAffine( new Vector3( nearRight, nearTop, -_nearDistance ) );
-			_worldSpaceCorners[ 1 ] = eyeToWorld.TransformAffine( new Vector3( nearLeft, nearTop, -_nearDistance ) );
-			_worldSpaceCorners[ 2 ] = eyeToWorld.TransformAffine( new Vector3( nearLeft, nearBottom, -_nearDistance ) );
-			_worldSpaceCorners[ 3 ] = eyeToWorld.TransformAffine( new Vector3( nearRight, nearBottom, -_nearDistance ) );
+			this._worldSpaceCorners[ 0 ] = eyeToWorld.TransformAffine( new Vector3( nearRight, nearTop, -this._nearDistance ) );
+			this._worldSpaceCorners[ 1 ] = eyeToWorld.TransformAffine( new Vector3( nearLeft, nearTop, -this._nearDistance ) );
+			this._worldSpaceCorners[ 2 ] = eyeToWorld.TransformAffine( new Vector3( nearLeft, nearBottom, -this._nearDistance ) );
+			this._worldSpaceCorners[ 3 ] = eyeToWorld.TransformAffine( new Vector3( nearRight, nearBottom, -this._nearDistance ) );
 			// far
-			_worldSpaceCorners[ 4 ] = eyeToWorld.TransformAffine( new Vector3( farRight, farTop, -_farDistance ) );
-			_worldSpaceCorners[ 5 ] = eyeToWorld.TransformAffine( new Vector3( farLeft, farTop, -_farDistance ) );
-			_worldSpaceCorners[ 6 ] = eyeToWorld.TransformAffine( new Vector3( farLeft, farBottom, -_farDistance ) );
-			_worldSpaceCorners[ 7 ] = eyeToWorld.TransformAffine( new Vector3( farRight, farBottom, -_farDistance ) );
+			this._worldSpaceCorners[ 4 ] = eyeToWorld.TransformAffine( new Vector3( farRight, farTop, -this._farDistance ) );
+			this._worldSpaceCorners[ 5 ] = eyeToWorld.TransformAffine( new Vector3( farLeft, farTop, -this._farDistance ) );
+			this._worldSpaceCorners[ 6 ] = eyeToWorld.TransformAffine( new Vector3( farLeft, farBottom, -this._farDistance ) );
+			this._worldSpaceCorners[ 7 ] = eyeToWorld.TransformAffine( new Vector3( farRight, farBottom, -this._farDistance ) );
 
-			_recalculateWorldSpaceCorners = false;
+			this._recalculateWorldSpaceCorners = false;
 		}
 
 		protected virtual void UpdateVertexData()
 		{
-			if ( _recalculateVertexData )
+			if ( this._recalculateVertexData )
 			{
 				// Note: Even though we could be dealing with general a projection matrix here,
 				//       it is incompatible with the infinite far plane, thus, we need to work
@@ -1701,10 +1702,10 @@ namespace Axiom.Core
 				CalculateProjectionParameters( out nearLeft, out nearRight, out nearBottom, out nearTop );
 
 				// Treat infinite fardist as some arbitrary far value
-				Real farDist = ( _farDistance == 0 ) ? 100000 : _farDistance;
+				Real farDist = ( this._farDistance == 0 ) ? 100000 : this._farDistance;
 
 				// Calc far palne corners
-				Real ratio = _projectionType == Projection.Perspective ? _farDistance/_nearDistance : 1;
+				Real ratio = this._projectionType == Projection.Perspective ? this._farDistance/this._nearDistance : 1;
 				var farLeft = nearLeft*ratio;
 				var farRight = nearRight*ratio;
 				var farBottom = nearBottom*ratio;
@@ -1714,7 +1715,7 @@ namespace Axiom.Core
 				// 0 is the origin
 				// 1, 2, 3, 4 are the points on the near plane, top left first, clockwise
 				// 5, 6, 7, 8 are the points on the far plane, top left first, clockwise
-				var buffer = _vertexData.vertexBufferBinding.GetBuffer( 0 );
+				var buffer = this._vertexData.vertexBufferBinding.GetBuffer( 0 );
 
 				var posPtr = buffer.Lock( BufferLocking.Discard );
 
@@ -1728,31 +1729,31 @@ namespace Axiom.Core
 					// near plane (remember frustum is going in -Z direction)
 					pPos[ pos++ ] = nearLeft;
 					pPos[ pos++ ] = nearTop;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 					pPos[ pos++ ] = nearRight;
 					pPos[ pos++ ] = nearTop;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 
 					pPos[ pos++ ] = nearRight;
 					pPos[ pos++ ] = nearTop;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 					pPos[ pos++ ] = nearRight;
 					pPos[ pos++ ] = nearBottom;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 
 					pPos[ pos++ ] = nearRight;
 					pPos[ pos++ ] = nearBottom;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 					pPos[ pos++ ] = nearLeft;
 					pPos[ pos++ ] = nearBottom;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 
 					pPos[ pos++ ] = nearLeft;
 					pPos[ pos++ ] = nearBottom;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 					pPos[ pos++ ] = nearLeft;
 					pPos[ pos++ ] = nearTop;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 
 					// far plane (remember frustum is going in -Z direction)
 					pPos[ pos++ ] = farLeft;
@@ -1789,54 +1790,54 @@ namespace Axiom.Core
 					pPos[ pos++ ] = 0.0f;
 					pPos[ pos++ ] = nearLeft;
 					pPos[ pos++ ] = nearTop;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 
 					pPos[ pos++ ] = 0.0f;
 					pPos[ pos++ ] = 0.0f;
 					pPos[ pos++ ] = 0.0f;
 					pPos[ pos++ ] = nearRight;
 					pPos[ pos++ ] = nearTop;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 
 					pPos[ pos++ ] = 0.0f;
 					pPos[ pos++ ] = 0.0f;
 					pPos[ pos++ ] = 0.0f;
 					pPos[ pos++ ] = nearRight;
 					pPos[ pos++ ] = nearBottom;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 
 					pPos[ pos++ ] = 0.0f;
 					pPos[ pos++ ] = 0.0f;
 					pPos[ pos++ ] = 0.0f;
 					pPos[ pos++ ] = nearLeft;
 					pPos[ pos++ ] = nearBottom;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 
 					// Sides of the box
 					pPos[ pos++ ] = nearLeft;
 					pPos[ pos++ ] = nearTop;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 					pPos[ pos++ ] = farLeft;
 					pPos[ pos++ ] = farTop;
 					pPos[ pos++ ] = -farDist;
 
 					pPos[ pos++ ] = nearRight;
 					pPos[ pos++ ] = nearTop;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 					pPos[ pos++ ] = farRight;
 					pPos[ pos++ ] = farTop;
 					pPos[ pos++ ] = -farDist;
 
 					pPos[ pos++ ] = nearRight;
 					pPos[ pos++ ] = nearBottom;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 					pPos[ pos++ ] = farRight;
 					pPos[ pos++ ] = farBottom;
 					pPos[ pos++ ] = -farDist;
 
 					pPos[ pos++ ] = nearLeft;
 					pPos[ pos++ ] = nearBottom;
-					pPos[ pos++ ] = -_nearDistance;
+					pPos[ pos++ ] = -this._nearDistance;
 					pPos[ pos++ ] = farLeft;
 					pPos[ pos++ ] = farBottom;
 					pPos[ pos++ ] = -farDist;
@@ -1845,7 +1846,7 @@ namespace Axiom.Core
 				// don't forget to unlock!
 				buffer.Unlock();
 
-				_recalculateVertexData = false;
+				this._recalculateVertexData = false;
 			}
 		}
 
@@ -1859,35 +1860,35 @@ namespace Axiom.Core
 		/// <param name="h">Height of the area to be visible</param>
 		public void SetOrthoWindow( float w, float h )
 		{
-			_orthoHeight = h;
-			_aspectRatio = w/h;
+			this._orthoHeight = h;
+			this._aspectRatio = w/h;
 			InvalidateFrustum();
 		}
 
 		public void SetFrustumExtents( float left, float right, float top, float bottom )
 		{
-			_frustumExtentsManuallySet = true;
-			_left = left;
-			_right = right;
-			_top = top;
-			_bottom = bottom;
+			this._frustumExtentsManuallySet = true;
+			this._left = left;
+			this._right = right;
+			this._top = top;
+			this._bottom = bottom;
 
 			InvalidateFrustum();
 		}
 
 		public void ResetFrustumExtents()
 		{
-			_frustumExtentsManuallySet = false;
+			this._frustumExtentsManuallySet = false;
 			InvalidateFrustum();
 		}
 
 		public void GetFrustumExtents( out float left, out float right, out float top, out float bottom )
 		{
 			UpdateFrustum();
-			left = _left;
-			right = _right;
-			top = _top;
-			bottom = _bottom;
+			left = this._left;
+			right = this._right;
+			top = this._top;
+			bottom = this._bottom;
 		}
 
 		#endregion Methods
@@ -1908,7 +1909,7 @@ namespace Axiom.Core
 				var index = (int)plane;
 
 				// access the planes array by index
-				return _planes[ index ];
+				return this._planes[ index ];
 			}
 		}
 
@@ -1923,7 +1924,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return ( _farDistance == 0 ) ? InfiniteFarPlaneDistance : _farDistance;
+				return ( this._farDistance == 0 ) ? InfiniteFarPlaneDistance : this._farDistance;
 			}
 		}
 
@@ -1934,7 +1935,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _boundingBox;
+				return this._boundingBox;
 			}
 		}
 
@@ -1990,7 +1991,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _material;
+				return this._material;
 			}
 		}
 
@@ -2001,7 +2002,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _material.GetBestTechnique();
+				return this._material.GetBestTechnique();
 			}
 		}
 
@@ -2013,11 +2014,11 @@ namespace Axiom.Core
 			{
 				UpdateVertexData();
 
-				renderOperation.operationType = OperationType.LineList;
-				renderOperation.useIndices = false;
-				renderOperation.vertexData = _vertexData;
+				this.renderOperation.operationType = OperationType.LineList;
+				this.renderOperation.useIndices = false;
+				this.renderOperation.vertexData = this._vertexData;
 
-				return renderOperation;
+				return this.renderOperation;
 			}
 		}
 
@@ -2036,7 +2037,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return dummyLightList;
+				return this.dummyLightList;
 			}
 		}
 
@@ -2116,7 +2117,7 @@ namespace Axiom.Core
 			{
 				UpdateWorldSpaceCorners();
 
-				return _worldSpaceCorners;
+				return this._worldSpaceCorners;
 			}
 		}
 
@@ -2134,30 +2135,30 @@ namespace Axiom.Core
 
 		public Vector4 GetCustomParameter( int index )
 		{
-			if ( customParams[ index ] == null )
+			if ( this.customParams[ index ] == null )
 			{
 				throw new Exception( "A parameter was not found at the given index" );
 			}
 			else
 			{
-				return (Vector4)customParams[ index ];
+				return (Vector4)this.customParams[ index ];
 			}
 		}
 
 		public void SetCustomParameter( int index, Vector4 val )
 		{
-			while ( customParams.Count <= index )
+			while ( this.customParams.Count <= index )
 			{
-				customParams.Add( Vector4.Zero );
+				this.customParams.Add( Vector4.Zero );
 			}
-			customParams[ index ] = val;
+			this.customParams[ index ] = val;
 		}
 
 		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
 		{
-			if ( customParams[ entry.Data ] != null )
+			if ( this.customParams[ entry.Data ] != null )
 			{
-				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)customParams[ entry.Data ] );
+				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)this.customParams[ entry.Data ] );
 			}
 		}
 
@@ -2196,32 +2197,32 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if ( this.renderOperation != null )
 					{
-						if ( !renderOperation.IsDisposed )
+						if ( !this.renderOperation.IsDisposed )
 						{
-							renderOperation.Dispose();
+							this.renderOperation.Dispose();
 						}
 
-						renderOperation = null;
+						this.renderOperation = null;
 					}
 
-					if ( _vertexData != null )
+					if ( this._vertexData != null )
 					{
-						if ( !_vertexData.IsDisposed )
+						if ( !this._vertexData.IsDisposed )
 						{
-							_vertexData.Dispose();
+							this._vertexData.Dispose();
 						}
 
-						_vertexData = null;
+						this._vertexData = null;
 					}
 
-					if ( _material != null )
+					if ( this._material != null )
 					{
-						_material = null;
+						this._material = null;
 					}
 
-					dummyLightList.Clear();
+					this.dummyLightList.Clear();
 				}
 
 				// There are no unmanaged resources to release, but

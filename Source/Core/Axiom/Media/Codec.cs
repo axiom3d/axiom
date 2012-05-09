@@ -76,7 +76,7 @@ namespace Axiom.Media
 			{
 				get
 				{
-					return _tuple.First;
+					return this._tuple.First;
 				}
 			}
 
@@ -84,13 +84,13 @@ namespace Axiom.Media
 			{
 				get
 				{
-					return _tuple.Second;
+					return this._tuple.Second;
 				}
 			}
 
 			public DecodeResult( Stream s, CodecData data )
 			{
-				_tuple = new Tuple<Stream, CodecData>( s, data );
+				this._tuple = new Tuple<Stream, CodecData>( s, data );
 			}
 		};
 

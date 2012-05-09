@@ -53,7 +53,7 @@ namespace Axiom.Scripting.Compiler
 			public CompositorTranslator()
 				: base()
 			{
-				_Compositor = null;
+				this._Compositor = null;
 			}
 
 			#region Translator Implementation
@@ -100,28 +100,28 @@ namespace Axiom.Scripting.Compiler
 
 					if ( checkForExistingComp == null )
 					{
-						_Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+						this._Compositor = (Compositor)CompositorManager.Instance.Create( obj.Name, compiler.ResourceGroup );
 					}
 					else
 					{
-						_Compositor = checkForExistingComp;
+						this._Compositor = checkForExistingComp;
 					}
 				}
 				else
 				{
-					_Compositor = (Compositor)compObject;
+					this._Compositor = (Compositor)compObject;
 				}
 
-				if ( _Compositor == null )
+				if ( this._Compositor == null )
 				{
 					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
 					return;
 				}
 
 				// Prepare the compositor
-				_Compositor.RemoveAllTechniques();
-				_Compositor.Origin = obj.File;
-				obj.Context = _Compositor;
+				this._Compositor.RemoveAllTechniques();
+				this._Compositor.Origin = obj.File;
+				obj.Context = this._Compositor;
 
 				foreach ( var i in obj.Children )
 				{

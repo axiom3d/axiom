@@ -61,7 +61,7 @@ namespace Axiom.Scripting.Compiler.AST
 			var node = new VariableSetAbstractNode( Parent );
 			node.File = File;
 			node.Line = Line;
-			node.Name = Name;
+			node.Name = this.Name;
 			return node;
 		}
 
@@ -70,11 +70,11 @@ namespace Axiom.Scripting.Compiler.AST
 		{
 			get
 			{
-				return Name;
+				return this.Name;
 			}
 			set
 			{
-				Name = value;
+				this.Name = value;
 			}
 		}
 

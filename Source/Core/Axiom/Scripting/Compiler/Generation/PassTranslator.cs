@@ -72,13 +72,13 @@ namespace Axiom.Scripting.Compiler
 				var obj = (ObjectAbstractNode)node;
 
 				var technique = (Technique)obj.Parent.Context;
-				_pass = technique.CreatePass();
-				obj.Context = _pass;
+				this._pass = technique.CreatePass();
+				obj.Context = this._pass;
 
 				// Get the name of the technique
 				if ( !string.IsNullOrEmpty( obj.Name ) )
 				{
-					_pass.Name = obj.Name;
+					this._pass.Name = obj.Name;
 				}
 
 				// Set the properties for the material
@@ -107,14 +107,14 @@ namespace Axiom.Scripting.Compiler
 									if ( prop.Values[ 0 ] is AtomAbstractNode &&
 									     ( (AtomAbstractNode)prop.Values[ 0 ] ).Id == (uint)Keywords.ID_VERTEX_COLOUR )
 									{
-										_pass.VertexColorTracking = _pass.VertexColorTracking | TrackVertexColor.Ambient;
+										this._pass.VertexColorTracking = this._pass.VertexColorTracking | TrackVertexColor.Ambient;
 									}
 									else
 									{
 										var val = ColorEx.White;
 										if ( getColor( prop.Values, 0, out val ) )
 										{
-											_pass.Ambient = val;
+											this._pass.Ambient = val;
 										}
 										else
 										{
@@ -144,14 +144,14 @@ namespace Axiom.Scripting.Compiler
 									if ( prop.Values[ 0 ] is AtomAbstractNode &&
 									     ( (AtomAbstractNode)prop.Values[ 0 ] ).Id == (uint)Keywords.ID_VERTEX_COLOUR )
 									{
-										_pass.VertexColorTracking = _pass.VertexColorTracking | TrackVertexColor.Diffuse;
+										this._pass.VertexColorTracking = this._pass.VertexColorTracking | TrackVertexColor.Diffuse;
 									}
 									else
 									{
 										ColorEx val;
 										if ( getColor( prop.Values, 0, out val ) )
 										{
-											_pass.Diffuse = val;
+											this._pass.Diffuse = val;
 										}
 										else
 										{
@@ -181,14 +181,14 @@ namespace Axiom.Scripting.Compiler
 									if ( prop.Values[ 0 ] is AtomAbstractNode &&
 									     ( (AtomAbstractNode)prop.Values[ 0 ] ).Id == (uint)Keywords.ID_VERTEX_COLOUR )
 									{
-										_pass.VertexColorTracking = _pass.VertexColorTracking | TrackVertexColor.Specular;
+										this._pass.VertexColorTracking = this._pass.VertexColorTracking | TrackVertexColor.Specular;
 
 										if ( prop.Values.Count >= 2 )
 										{
 											Real val = 0;
 											if ( getReal( prop.Values[ prop.Values.Count - 1 ], out val ) )
 											{
-												_pass.Shininess = val;
+												this._pass.Shininess = val;
 											}
 											else
 											{
@@ -215,14 +215,14 @@ namespace Axiom.Scripting.Compiler
 											{
 												if ( prop.Values.Count == 4 )
 												{
-													_pass.Specular = val;
+													this._pass.Specular = val;
 
 													var i3 = getNodeAt( prop.Values, 3 );
 
 													Real shininess = 0.0f;
 													if ( getReal( i3, out shininess ) )
 													{
-														_pass.Shininess = shininess;
+														this._pass.Shininess = shininess;
 													}
 													else
 													{
@@ -240,7 +240,7 @@ namespace Axiom.Scripting.Compiler
 													}
 													else
 													{
-														_pass.Specular = val;
+														this._pass.Specular = val;
 													}
 
 													var i4 = getNodeAt( prop.Values, 4 );
@@ -248,7 +248,7 @@ namespace Axiom.Scripting.Compiler
 													Real shininess = 0.0f;
 													if ( getReal( i4, out shininess ) )
 													{
-														_pass.Shininess = shininess;
+														this._pass.Shininess = shininess;
 													}
 													else
 													{
@@ -286,14 +286,14 @@ namespace Axiom.Scripting.Compiler
 									if ( prop.Values[ 0 ] is AtomAbstractNode &&
 									     ( (AtomAbstractNode)prop.Values[ 0 ] ).Id == (uint)Keywords.ID_VERTEX_COLOUR )
 									{
-										_pass.VertexColorTracking = _pass.VertexColorTracking | TrackVertexColor.Emissive;
+										this._pass.VertexColorTracking = this._pass.VertexColorTracking | TrackVertexColor.Emissive;
 									}
 									else
 									{
 										ColorEx val;
 										if ( getColor( prop.Values, 0, out val ) )
 										{
-											_pass.SelfIllumination = val;
+											this._pass.SelfIllumination = val;
 										}
 										else
 										{
@@ -326,20 +326,20 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_ADD:
-												_pass.SetSceneBlending( SceneBlendType.Add );
+												this._pass.SetSceneBlending( SceneBlendType.Add );
 												break;
 
 											case Keywords.ID_MODULATE:
-												_pass.SetSceneBlending( SceneBlendType.Modulate );
+												this._pass.SetSceneBlending( SceneBlendType.Modulate );
 												break;
 
 											case Keywords.ID_COLOUR_BLEND:
-												_pass.SetSceneBlending( SceneBlendType.TransparentColor );
+												this._pass.SetSceneBlending( SceneBlendType.TransparentColor );
 
 												break;
 
 											case Keywords.ID_ALPHA_BLEND:
-												_pass.SetSceneBlending( SceneBlendType.TransparentAlpha );
+												this._pass.SetSceneBlending( SceneBlendType.TransparentAlpha );
 												break;
 
 											default:
@@ -361,7 +361,7 @@ namespace Axiom.Scripting.Compiler
 									if ( getEnumeration<SceneBlendFactor>( i0, compiler, out sbf0 ) &&
 									     getEnumeration<SceneBlendFactor>( i1, compiler, out sbf1 ) )
 									{
-										_pass.SetSceneBlending( sbf0, sbf1 );
+										this._pass.SetSceneBlending( sbf0, sbf1 );
 									}
 									else
 									{
@@ -445,7 +445,7 @@ namespace Axiom.Scripting.Compiler
 												return;
 										}
 
-										_pass.SetSeparateSceneBlending( sbt0, sbt1 );
+										this._pass.SetSeparateSceneBlending( sbt0, sbt1 );
 									}
 									else
 									{
@@ -468,7 +468,7 @@ namespace Axiom.Scripting.Compiler
 										     getEnumeration<SceneBlendFactor>( i2, compiler, out sbf2 ) &&
 										     getEnumeration<SceneBlendFactor>( i3, compiler, out sbf3 ) )
 										{
-											_pass.SetSeparateSceneBlending( sbf0, sbf1, sbf2, sbf3 );
+											this._pass.SetSeparateSceneBlending( sbf0, sbf1, sbf2, sbf3 );
 										}
 										else
 										{
@@ -507,23 +507,23 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_ADD:
-												_pass.SceneBlendingOperation = SceneBlendOperation.Add;
+												this._pass.SceneBlendingOperation = SceneBlendOperation.Add;
 												break;
 
 											case Keywords.ID_SUBTRACT:
-												_pass.SceneBlendingOperation = SceneBlendOperation.Subtract;
+												this._pass.SceneBlendingOperation = SceneBlendOperation.Subtract;
 												break;
 
 											case Keywords.ID_REVERSE_SUBTRACT:
-												_pass.SceneBlendingOperation = SceneBlendOperation.ReverseSubtract;
+												this._pass.SceneBlendingOperation = SceneBlendOperation.ReverseSubtract;
 												break;
 
 											case Keywords.ID_MIN:
-												_pass.SceneBlendingOperation = SceneBlendOperation.Min;
+												this._pass.SceneBlendingOperation = SceneBlendOperation.Min;
 												break;
 
 											case Keywords.ID_MAX:
-												_pass.SceneBlendingOperation = SceneBlendOperation.Max;
+												this._pass.SceneBlendingOperation = SceneBlendOperation.Max;
 												break;
 
 											default:
@@ -618,7 +618,7 @@ namespace Axiom.Scripting.Compiler
 												break;
 										}
 
-										_pass.SetSeparateSceneBlendingOperation( op, alphaOp );
+										this._pass.SetSeparateSceneBlendingOperation( op, alphaOp );
 									}
 									else
 									{
@@ -647,7 +647,7 @@ namespace Axiom.Scripting.Compiler
 									var val = true;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										_pass.DepthCheck = val;
+										this._pass.DepthCheck = val;
 									}
 									else
 									{
@@ -676,7 +676,7 @@ namespace Axiom.Scripting.Compiler
 									var val = true;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										_pass.DepthWrite = val;
+										this._pass.DepthWrite = val;
 									}
 									else
 									{
@@ -711,7 +711,7 @@ namespace Axiom.Scripting.Compiler
 											getFloat( i1, out val1 );
 										}
 
-										_pass.SetDepthBias( val0, val1 );
+										this._pass.SetDepthBias( val0, val1 );
 									}
 									else
 									{
@@ -740,7 +740,7 @@ namespace Axiom.Scripting.Compiler
 									CompareFunction func;
 									if ( getEnumeration<CompareFunction>( prop.Values[ 0 ], compiler, out func ) )
 									{
-										_pass.DepthFunction = func;
+										this._pass.DepthFunction = func;
 									}
 									else
 									{
@@ -805,7 +805,7 @@ namespace Axiom.Scripting.Compiler
 											var val = 0;
 											if ( getInt( i1, out val ) )
 											{
-												_pass.SetAlphaRejectSettings( func, val );
+												this._pass.SetAlphaRejectSettings( func, val );
 											}
 											else
 											{
@@ -815,7 +815,7 @@ namespace Axiom.Scripting.Compiler
 										}
 										else
 										{
-											_pass.AlphaRejectFunction = func;
+											this._pass.AlphaRejectFunction = func;
 										}
 									}
 									else
@@ -845,7 +845,7 @@ namespace Axiom.Scripting.Compiler
 									var val = true;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										_pass.IsAlphaToCoverageEnabled = val;
+										this._pass.IsAlphaToCoverageEnabled = val;
 									}
 									else
 									{
@@ -1028,15 +1028,15 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_CLOCKWISE:
-												_pass.CullingMode = CullingMode.Clockwise;
+												this._pass.CullingMode = CullingMode.Clockwise;
 												break;
 
 											case Keywords.ID_ANTICLOCKWISE:
-												_pass.CullingMode = CullingMode.CounterClockwise;
+												this._pass.CullingMode = CullingMode.CounterClockwise;
 												break;
 
 											case Keywords.ID_NONE:
-												_pass.CullingMode = CullingMode.None;
+												this._pass.CullingMode = CullingMode.None;
 												break;
 
 											default:
@@ -1075,15 +1075,15 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_FRONT:
-												_pass.ManualCullingMode = ManualCullingMode.Front;
+												this._pass.ManualCullingMode = ManualCullingMode.Front;
 												break;
 
 											case Keywords.ID_BACK:
-												_pass.ManualCullingMode = ManualCullingMode.Back;
+												this._pass.ManualCullingMode = ManualCullingMode.Back;
 												break;
 
 											case Keywords.ID_NONE:
-												_pass.ManualCullingMode = ManualCullingMode.None;
+												this._pass.ManualCullingMode = ManualCullingMode.None;
 												break;
 
 											default:
@@ -1149,7 +1149,7 @@ namespace Axiom.Scripting.Compiler
 									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										_pass.LightingEnabled = val;
+										this._pass.LightingEnabled = val;
 									}
 									else
 									{
@@ -1181,15 +1181,15 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_FLAT:
-												_pass.ShadingMode = Shading.Flat;
+												this._pass.ShadingMode = Shading.Flat;
 												break;
 
 											case Keywords.ID_GOURAUD:
-												_pass.ShadingMode = Shading.Gouraud;
+												this._pass.ShadingMode = Shading.Gouraud;
 												break;
 
 											case Keywords.ID_PHONG:
-												_pass.ShadingMode = Shading.Phong;
+												this._pass.ShadingMode = Shading.Phong;
 												break;
 
 											default:
@@ -1228,15 +1228,15 @@ namespace Axiom.Scripting.Compiler
 										switch ( (Keywords)atom.Id )
 										{
 											case Keywords.ID_SOLID:
-												_pass.PolygonMode = PolygonMode.Solid;
+												this._pass.PolygonMode = PolygonMode.Solid;
 												break;
 
 											case Keywords.ID_POINTS:
-												_pass.PolygonMode = PolygonMode.Points;
+												this._pass.PolygonMode = PolygonMode.Points;
 												break;
 
 											case Keywords.ID_WIREFRAME:
-												_pass.PolygonMode = PolygonMode.Wireframe;
+												this._pass.PolygonMode = PolygonMode.Wireframe;
 												break;
 
 											default:
@@ -1396,7 +1396,7 @@ namespace Axiom.Scripting.Compiler
 											i2 = getNodeAt( prop.Values, 8 );
 										}
 
-										_pass.SetFog( val, mode, clr, dens, start, end );
+										this._pass.SetFog( val, mode, clr, dens, start, end );
 									}
 									else
 									{
@@ -1425,7 +1425,7 @@ namespace Axiom.Scripting.Compiler
 									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										_pass.ColorWriteEnabled = val;
+										this._pass.ColorWriteEnabled = val;
 									}
 									else
 									{
@@ -1454,7 +1454,7 @@ namespace Axiom.Scripting.Compiler
 									var val = 0;
 									if ( getInt( prop.Values[ 0 ], out val ) )
 									{
-										_pass.MaxSimultaneousLights = val;
+										this._pass.MaxSimultaneousLights = val;
 									}
 									else
 									{
@@ -1511,7 +1511,7 @@ namespace Axiom.Scripting.Compiler
 										var atom = (AtomAbstractNode)i0;
 										if ( atom.Id == (uint)Keywords.ID_ONCE )
 										{
-											_pass.IteratePerLight = false;
+											this._pass.IteratePerLight = false;
 										}
 										else if ( atom.Id == (uint)Keywords.ID_ONCE_PER_LIGHT )
 										{
@@ -1522,7 +1522,7 @@ namespace Axiom.Scripting.Compiler
 												switch ( (Keywords)atom.Id )
 												{
 													case Keywords.ID_POINT:
-														_pass.IteratePerLight = true;
+														this._pass.IteratePerLight = true;
 														break;
 
 													case Keywords.ID_DIRECTIONAL:
@@ -1550,7 +1550,7 @@ namespace Axiom.Scripting.Compiler
 										else if ( atom.IsNumber )
 										{
 											//TODO
-											_pass.IterationCount = Int32.Parse( atom.Value );
+											this._pass.IterationCount = Int32.Parse( atom.Value );
 
 											var i1 = getNodeAt( prop.Values, 1 );
 											if ( i1 != null && i1 is AtomAbstractNode )
@@ -1565,7 +1565,7 @@ namespace Axiom.Scripting.Compiler
 														switch ( (Keywords)atom.Id )
 														{
 															case Keywords.ID_POINT:
-																_pass.IteratePerLight = true;
+																this._pass.IteratePerLight = true;
 																break;
 
 															case Keywords.ID_DIRECTIONAL:
@@ -1609,7 +1609,7 @@ namespace Axiom.Scripting.Compiler
 																switch ( (Keywords)atom.Id )
 																{
 																	case Keywords.ID_POINT:
-																		_pass.IteratePerLight = true;
+																		this._pass.IteratePerLight = true;
 																		break;
 
 																	case Keywords.ID_DIRECTIONAL:
@@ -1679,7 +1679,7 @@ namespace Axiom.Scripting.Compiler
 									Real val = 0.0f;
 									if ( getReal( prop.Values[ 0 ], out val ) )
 									{
-										_pass.PointSize = val;
+										this._pass.PointSize = val;
 									}
 									else
 									{
@@ -1708,7 +1708,7 @@ namespace Axiom.Scripting.Compiler
 									var val = false;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										_pass.PointSpritesEnabled = val;
+										this._pass.PointSpritesEnabled = val;
 									}
 									else
 									{
@@ -1843,7 +1843,7 @@ namespace Axiom.Scripting.Compiler
 									Real val = 0.0f;
 									if ( getReal( prop.Values[ 0 ], out val ) )
 									{
-										_pass.PointMinSize = val;
+										this._pass.PointMinSize = val;
 									}
 									else
 									{
@@ -1872,7 +1872,7 @@ namespace Axiom.Scripting.Compiler
 									Real val = 0.0f;
 									if ( getReal( prop.Values[ 0 ], out val ) )
 									{
-										_pass.PointMaxSize = val;
+										this._pass.PointMaxSize = val;
 									}
 									else
 									{

@@ -64,7 +64,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return boundSurfaces;
+				return this.boundSurfaces;
 			}
 		}
 
@@ -108,12 +108,12 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void BindSurface( int attachment, RenderTexture target )
 		{
-			for ( var i = boundSurfaces.Count; i <= attachment; ++i )
+			for ( var i = this.boundSurfaces.Count; i <= attachment; ++i )
 			{
-				boundSurfaces.Add( null );
+				this.boundSurfaces.Add( null );
 			}
 
-			boundSurfaces[ attachment ] = target;
+			this.boundSurfaces[ attachment ] = target;
 			BindSurfaceImpl( attachment, target );
 		}
 
@@ -129,9 +129,9 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void UnbindSurface( int attachment )
 		{
-			if ( attachment < boundSurfaces.Count )
+			if ( attachment < this.boundSurfaces.Count )
 			{
-				boundSurfaces[ attachment ] = null;
+				this.boundSurfaces[ attachment ] = null;
 			}
 			UnbindSurfaceImpl( attachment );
 		}

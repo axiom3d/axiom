@@ -105,27 +105,27 @@ namespace Axiom.Scripting.Compiler
 
 					if ( checkForExistingMat == null )
 					{
-						_material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+						this._material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
 					}
 					else
 					{
-						_material = checkForExistingMat;
+						this._material = checkForExistingMat;
 					}
 				}
 				else
 				{
-					_material = (Material)mat;
+					this._material = (Material)mat;
 
-					if ( _material == null )
+					if ( this._material == null )
 					{
 						compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line,
 						                   "failed to find or create material \"" + obj.Name + "\"" );
 					}
 				}
 
-				_material.RemoveAllTechniques();
-				obj.Context = _material;
-				_material.Origin = obj.File;
+				this._material.RemoveAllTechniques();
+				obj.Context = this._material;
+				this._material.Origin = obj.File;
 
 				foreach ( var i in obj.Children )
 				{
@@ -153,7 +153,7 @@ namespace Axiom.Scripting.Compiler
 										                   "lod_values expects only numbers as arguments" );
 									}
 								}
-								_material.SetLodLevels( lods );
+								this._material.SetLodLevels( lods );
 							}
 								break;
 
@@ -165,7 +165,7 @@ namespace Axiom.Scripting.Compiler
 							{
 								// Set strategy to distance strategy
 								LodStrategy strategy = DistanceLodStrategy.Instance;
-								_material.LodStrategy = strategy;
+								this._material.LodStrategy = strategy;
 
 								// Real in lod distances
 								var lods = new LodValueList();
@@ -182,7 +182,7 @@ namespace Axiom.Scripting.Compiler
 										                   "lod_values expects only numbers as arguments" );
 									}
 								}
-								_material.SetLodLevels( lods );
+								this._material.SetLodLevels( lods );
 							}
 								break;
 
@@ -212,7 +212,7 @@ namespace Axiom.Scripting.Compiler
 
 										if ( result )
 										{
-											_material.LodStrategy = strategy;
+											this._material.LodStrategy = strategy;
 										}
 									}
 
@@ -243,7 +243,7 @@ namespace Axiom.Scripting.Compiler
 									var val = true;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										_material.ReceiveShadows = val;
+										this._material.ReceiveShadows = val;
 									}
 									else
 									{
@@ -272,7 +272,7 @@ namespace Axiom.Scripting.Compiler
 									var val = true;
 									if ( getBoolean( prop.Values[ 0 ], out val ) )
 									{
-										_material.TransparencyCastsShadows = val;
+										this._material.TransparencyCastsShadows = val;
 									}
 									else
 									{
@@ -301,7 +301,7 @@ namespace Axiom.Scripting.Compiler
 									String name, value;
 									if ( getString( i0, out name ) && getString( i1, out value ) )
 									{
-										_textureAliases.Add( name, value );
+										this._textureAliases.Add( name, value );
 									}
 									else
 									{
@@ -326,11 +326,11 @@ namespace Axiom.Scripting.Compiler
 				}
 
 				// Apply the texture aliases
-				ScriptCompilerEvent locEvt = new PreApplyTextureAliasesScriptCompilerEvent( _material, ref _textureAliases );
+				ScriptCompilerEvent locEvt = new PreApplyTextureAliasesScriptCompilerEvent( this._material, ref this._textureAliases );
 				compiler._fireEvent( ref locEvt );
 
-				_material.ApplyTextureAliases( _textureAliases );
-				_textureAliases.Clear();
+				this._material.ApplyTextureAliases( this._textureAliases );
+				this._textureAliases.Clear();
 			}
 
 			#endregion Translator Implementation

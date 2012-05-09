@@ -60,7 +60,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _type;
+				return this._type;
 			}
 		}
 
@@ -71,8 +71,8 @@ namespace Axiom.Core
 
 		public ObjectCreator( Assembly assembly, Type type )
 		{
-			_assembly = assembly;
-			_type = type;
+			this._assembly = assembly;
+			this._type = type;
 		}
 
 		public ObjectCreator( string assemblyName, string className )
@@ -83,37 +83,37 @@ namespace Axiom.Core
 #if SILVERLIGHT
 				_assembly = Assembly.Load(assemblyFile);
 #else
-				_assembly = Assembly.LoadFrom( assemblyFile );
+				this._assembly = Assembly.LoadFrom( assemblyFile );
 #endif
 			}
 			catch ( Exception )
 			{
-				_assembly = Assembly.GetExecutingAssembly();
+				this._assembly = Assembly.GetExecutingAssembly();
 			}
 
-			_type = _assembly.GetType( className );
+			this._type = this._assembly.GetType( className );
 		}
 
 		public ObjectCreator( string className )
 		{
-			_assembly = Assembly.GetExecutingAssembly();
-			_type = _assembly.GetType( className );
+			this._assembly = Assembly.GetExecutingAssembly();
+			this._type = this._assembly.GetType( className );
 		}
 
 		public string GetAssemblyTitle()
 		{
-			var title = Attribute.GetCustomAttribute( _assembly, typeof ( AssemblyTitleAttribute ) );
+			var title = Attribute.GetCustomAttribute( this._assembly, typeof ( AssemblyTitleAttribute ) );
 			if ( title == null )
 			{
-				return _assembly.GetName().Name;
+				return this._assembly.GetName().Name;
 			}
 			return ( (AssemblyTitleAttribute)title ).Title;
 		}
 
 		public T CreateInstance<T>() where T : class
 		{
-			var type = _type;
-			var assembly = _assembly;
+			var type = this._type;
+			var assembly = this._assembly;
 #if !( XBOX || XBOX360 )
 			// Check interfaces or Base type for casting purposes
 			if ( type.GetInterface( typeof ( T ).Name, false ) != null || type.BaseType.Name == typeof ( T ).Name )
@@ -172,7 +172,7 @@ namespace Axiom.Core
 		public DynamicLoader( string assemblyFilename )
 			: this()
 		{
-			_assemblyFilename = assemblyFilename;
+			this._assemblyFilename = assemblyFilename;
 		}
 
 		#endregion Construction and Destruction
@@ -181,26 +181,26 @@ namespace Axiom.Core
 
 		public Assembly GetAssembly()
 		{
-			if ( _assembly == null )
+			if ( this._assembly == null )
 			{
 				lock ( _mutex )
 				{
-					if ( String.IsNullOrEmpty( _assemblyFilename ) )
+					if ( String.IsNullOrEmpty( this._assemblyFilename ) )
 					{
-						_assembly = Assembly.GetExecutingAssembly();
+						this._assembly = Assembly.GetExecutingAssembly();
 					}
 					else
 					{
-						Debug.WriteLine( String.Format( "Loading {0}", _assemblyFilename ) );
+						Debug.WriteLine( String.Format( "Loading {0}", this._assemblyFilename ) );
 #if SILVERLIGHT
 						_assembly = Assembly.Load(_assemblyFilename);
 #else
-						_assembly = Assembly.LoadFrom( _assemblyFilename );
+						this._assembly = Assembly.LoadFrom( this._assemblyFilename );
 #endif
 					}
 				}
 			}
-			return _assembly;
+			return this._assembly;
 		}
 
 		public IList<ObjectCreator> Find( Type baseType )

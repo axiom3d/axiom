@@ -75,7 +75,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return parent;
+				return this.parent;
 			}
 		}
 
@@ -95,11 +95,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return inputMode;
+				return this.inputMode;
 			}
 			set
 			{
-				inputMode = value;
+				this.inputMode = value;
 			}
 		}
 
@@ -119,11 +119,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return outputName;
+				return this.outputName;
 			}
 			set
 			{
-				outputName = value;
+				this.outputName = value;
 			}
 		}
 
@@ -143,7 +143,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return passes;
+				return this.passes;
 			}
 		}
 
@@ -165,11 +165,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return onlyInitial;
+				return this.onlyInitial;
 			}
 			set
 			{
-				onlyInitial = value;
+				this.onlyInitial = value;
 			}
 		}
 
@@ -189,11 +189,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return visibilityMask;
+				return this.visibilityMask;
 			}
 			set
 			{
-				visibilityMask = value;
+				this.visibilityMask = value;
 			}
 		}
 
@@ -213,11 +213,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return lodBias;
+				return this.lodBias;
 			}
 			set
 			{
-				lodBias = value;
+				this.lodBias = value;
 			}
 		}
 
@@ -237,11 +237,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return materialScheme;
+				return this.materialScheme;
 			}
 			set
 			{
-				materialScheme = value;
+				this.materialScheme = value;
 			}
 		}
 
@@ -264,7 +264,7 @@ namespace Axiom.Graphics
 			get
 			{
 				// A target pass is supported if all passes are supported
-				foreach ( var pass in passes )
+				foreach ( var pass in this.passes )
 				{
 					if ( !pass.IsSupported )
 					{
@@ -282,17 +282,17 @@ namespace Axiom.Graphics
 		public CompositionTargetPass( CompositionTechnique parent )
 		{
 			this.parent = parent;
-			inputMode = CompositorInputMode.None;
-			passes = new List<CompositionPass>();
-			onlyInitial = false;
-			visibilityMask = 0xFFFFFFFF;
-			lodBias = 1.0f;
-			materialScheme = MaterialManager.DefaultSchemeName;
+			this.inputMode = CompositorInputMode.None;
+			this.passes = new List<CompositionPass>();
+			this.onlyInitial = false;
+			this.visibilityMask = 0xFFFFFFFF;
+			this.lodBias = 1.0f;
+			this.materialScheme = MaterialManager.DefaultSchemeName;
 			ShadowsEnabled = true;
 
 			if ( Root.Instance.RenderSystem != null )
 			{
-				materialScheme = Root.Instance.RenderSystem.DefaultViewportMaterialScheme;
+				this.materialScheme = Root.Instance.RenderSystem.DefaultViewportMaterialScheme;
 			}
 		}
 
@@ -306,23 +306,23 @@ namespace Axiom.Graphics
 		public CompositionPass CreatePass()
 		{
 			var t = new CompositionPass( this );
-			passes.Add( t );
+			this.passes.Add( t );
 			return t;
 		}
 
 		public void RemovePass( int index )
 		{
-			Debug.Assert( index < passes.Count, "Index out of bounds." );
-			passes[ index ].Dispose();
-			passes[ index ] = null;
+			Debug.Assert( index < this.passes.Count, "Index out of bounds." );
+			this.passes[ index ].Dispose();
+			this.passes[ index ] = null;
 		}
 
 		public void RemoveAllPasses()
 		{
-			for ( int i = 0; i < passes.Count; i++ )
+			for ( int i = 0; i < this.passes.Count; i++ )
 			{
-				passes[ i ].Dispose();
-				passes[ i ] = null;
+				this.passes[ i ].Dispose();
+				this.passes[ i ] = null;
 			}
 		}
 

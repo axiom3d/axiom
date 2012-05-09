@@ -286,7 +286,7 @@ namespace Axiom.Serialization
 					var index = ReadShort( reader );
 					var name = ReadString( reader );
 
-					var sub = mesh.GetSubMesh( index );
+					var sub = this.mesh.GetSubMesh( index );
 
 					if ( sub != null )
 					{
@@ -314,10 +314,10 @@ namespace Axiom.Serialization
 
 			// Never automatically build edge lists for this version
 			// expect them in the file or not at all
-			mesh.AutoBuildEdgeLists = false;
+			this.mesh.AutoBuildEdgeLists = false;
 
 			// is this mesh animated?
-			isSkeletallyAnimated = ReadBool( reader );
+			this.isSkeletallyAnimated = ReadBool( reader );
 
 			// find all sub chunks
 			if ( !IsEOF( reader ) )
@@ -336,10 +336,10 @@ namespace Axiom.Serialization
 					switch ( chunkID )
 					{
 						case MeshChunkID.Geometry:
-							mesh.SharedVertexData = new VertexData();
+							this.mesh.SharedVertexData = new VertexData();
 
 							// read geometry into shared vertex data
-							ReadGeometry( reader, mesh.SharedVertexData );
+							ReadGeometry( reader, this.mesh.SharedVertexData );
 
 							// TODO: trap errors here
 							break;
@@ -418,25 +418,25 @@ namespace Axiom.Serialization
 			WriteChunk( writer, MeshChunkID.Mesh, 0 );
 
 			// bool skeletallyAnimated
-			WriteBool( writer, mesh.HasSkeleton );
+			WriteBool( writer, this.mesh.HasSkeleton );
 
 			// Write shared geometry
-			if ( mesh.SharedVertexData != null )
+			if ( this.mesh.SharedVertexData != null )
 			{
-				WriteGeometry( writer, mesh.SharedVertexData );
+				WriteGeometry( writer, this.mesh.SharedVertexData );
 			}
 
 			// Write Submeshes
-			for ( var i = 0; i < mesh.SubMeshCount; ++i )
+			for ( var i = 0; i < this.mesh.SubMeshCount; ++i )
 			{
-				var subMesh = mesh.GetSubMesh( i );
+				var subMesh = this.mesh.GetSubMesh( i );
 				LogManager.Instance.Write( "Writing submesh {0} ...", subMesh.Name );
 				WriteSubMesh( writer, subMesh );
 				LogManager.Instance.Write( "Submesh exported." );
 			}
 
 			// Write skeleton info if required
-			if ( mesh.Skeleton != null )
+			if ( this.mesh.Skeleton != null )
 			{
 				// Write skeleton link
 				LogManager.Instance.Write( "Exporting skeleton link..." );
@@ -445,7 +445,7 @@ namespace Axiom.Serialization
 
 				// Write bone assignments
 				LogManager.Instance.Write( "Exporting shared geometry bone assignments..." );
-				var weights = mesh.BoneAssignmentList;
+				var weights = this.mesh.BoneAssignmentList;
 				foreach ( var v in weights.Keys )
 				{
 					var vbaList = weights[ v ];
@@ -458,7 +458,7 @@ namespace Axiom.Serialization
 			}
 
 			// Write LOD data if any
-			if ( mesh.LodLevelCount > 1 )
+			if ( this.mesh.LodLevelCount > 1 )
 			{
 				LogManager.Instance.Write( "Exporting LOD information..." );
 				WriteMeshLodInfo( writer );
@@ -482,11 +482,11 @@ namespace Axiom.Serialization
 
 			//Write morph animation
 			LogManager.Instance.Write( "Exporting morph animations..." );
-			if ( mesh.PoseList.Count > 0 )
+			if ( this.mesh.PoseList.Count > 0 )
 			{
 				WritePoses( writer );
 			}
-			if ( mesh.HasVertexAnimation )
+			if ( this.mesh.HasVertexAnimation )
 			{
 				WriteAnimations( writer );
 			}
@@ -499,7 +499,7 @@ namespace Axiom.Serialization
 
 			// Write Attachment Points
 			LogManager.Instance.Write( "Exporting attachment points..." );
-			foreach ( var ap in mesh.AttachmentPoints )
+			foreach ( var ap in this.mesh.AttachmentPoints )
 			{
 				WriteAttachmentPoint( writer, ap );
 			}
@@ -708,7 +708,7 @@ namespace Axiom.Serialization
 			var start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.MeshSkeletonLink, 0 );
 
-			WriteString( writer, mesh.SkeletonName );
+			WriteString( writer, this.mesh.SkeletonName );
 
 			var end_offset = writer.Seek( 0, SeekOrigin.Current );
 			writer.Seek( (int)start_offset, SeekOrigin.Begin );
@@ -722,9 +722,9 @@ namespace Axiom.Serialization
 			WriteMeshLodSummary( writer );
 
 			// Start from 1 to skip the LOD 0 entry
-			for ( var i = 1; i < mesh.LodLevelCount; ++i )
+			for ( var i = 1; i < this.mesh.LodLevelCount; ++i )
 			{
-				var usage = mesh.GetLodLevel( i );
+				var usage = this.mesh.GetLodLevel( i );
 				WriteMeshLodUsage( writer, usage, i );
 			}
 
@@ -737,9 +737,9 @@ namespace Axiom.Serialization
 		protected virtual void WriteMeshLodSummary( BinaryWriter writer )
 		{
 			WriteChunk( writer, MeshChunkID.MeshLOD, 0 );
-			WriteString( writer, mesh.LodStrategy.Name );
-			WriteShort( writer, (short)mesh.LodLevelCount );
-			WriteBool( writer, mesh.IsLodManual );
+			WriteString( writer, this.mesh.LodStrategy.Name );
+			WriteShort( writer, (short)this.mesh.LodLevelCount );
+			WriteBool( writer, this.mesh.IsLodManual );
 		}
 
 		protected void WriteMeshLodUsage( BinaryWriter writer, MeshLodUsage usage, int usageIndex )
@@ -747,15 +747,15 @@ namespace Axiom.Serialization
 			var start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.MeshLODUsage, 0 );
 
-			if ( mesh.IsLodManual )
+			if ( this.mesh.IsLodManual )
 			{
 				WriteMeshLodManual( writer, usage );
 			}
 			else
 			{
-				for ( var i = 0; i < mesh.SubMeshCount; ++i )
+				for ( var i = 0; i < this.mesh.SubMeshCount; ++i )
 				{
-					var subMesh = mesh.GetSubMesh( i );
+					var subMesh = this.mesh.GetSubMesh( i );
 					WriteMeshLodGenerated( writer, subMesh, usageIndex );
 				}
 			}
@@ -815,9 +815,9 @@ namespace Axiom.Serialization
 			var start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.MeshBounds, 0 );
 
-			WriteVector3( writer, mesh.BoundingBox.Minimum );
-			WriteVector3( writer, mesh.BoundingBox.Maximum );
-			WriteFloat( writer, mesh.BoundingSphereRadius );
+			WriteVector3( writer, this.mesh.BoundingBox.Minimum );
+			WriteVector3( writer, this.mesh.BoundingBox.Maximum );
+			WriteFloat( writer, this.mesh.BoundingSphereRadius );
 
 			// Save chunk size back into Header
 			var end_offset = writer.Seek( 0, SeekOrigin.Current );
@@ -835,9 +835,9 @@ namespace Axiom.Serialization
 			WriteChunk( writer, MeshChunkID.SubMeshNameTable, 0 );
 
 			// Loop through and save out the index and names
-			for ( short i = 0; i < mesh.SubMeshCount; ++i )
+			for ( short i = 0; i < this.mesh.SubMeshCount; ++i )
 			{
-				var subMesh = mesh.GetSubMesh( i );
+				var subMesh = this.mesh.GetSubMesh( i );
 				WriteSubMeshNameTableElement( writer, i, subMesh.Name );
 			}
 
@@ -867,7 +867,7 @@ namespace Axiom.Serialization
 			var start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.Poses, 0 );
 
-			foreach ( var pose in mesh.PoseList )
+			foreach ( var pose in this.mesh.PoseList )
 			{
 				WritePose( writer, pose );
 			}
@@ -915,9 +915,9 @@ namespace Axiom.Serialization
 			var start_offset = writer.Seek( 0, SeekOrigin.Current );
 			WriteChunk( writer, MeshChunkID.Animations, 0 );
 
-			for ( ushort animIndex = 0; animIndex < mesh.AnimationCount; ++animIndex )
+			for ( ushort animIndex = 0; animIndex < this.mesh.AnimationCount; ++animIndex )
 			{
-				var anim = mesh.GetAnimation( animIndex );
+				var anim = this.mesh.GetAnimation( animIndex );
 				WriteAnimation( writer, anim );
 			}
 
@@ -1039,12 +1039,12 @@ namespace Axiom.Serialization
 		{
 			MeshChunkID chunkID;
 
-			var subMesh = mesh.CreateSubMesh();
+			var subMesh = this.mesh.CreateSubMesh();
 
 			// get the material name
 			var materialName = ReadString( reader );
 
-			MeshManager.Instance.FireProcessMaterialName( mesh, materialName );
+			MeshManager.Instance.FireProcessMaterialName( this.mesh, materialName );
 
 			subMesh.MaterialName = materialName;
 
@@ -1063,7 +1063,8 @@ namespace Axiom.Serialization
 			{
 				// create the index buffer
 				idxBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size32, subMesh.indexData.indexCount,
-				                                                              mesh.IndexBufferUsage, mesh.UseIndexShadowBuffer );
+				                                                              this.mesh.IndexBufferUsage,
+				                                                              this.mesh.UseIndexShadowBuffer );
 
 				var indices = idxBuffer.Lock( BufferLocking.Discard );
 
@@ -1078,7 +1079,8 @@ namespace Axiom.Serialization
 				// 16-bit
 				// create the index buffer
 				idxBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, subMesh.indexData.indexCount,
-				                                                              mesh.IndexBufferUsage, mesh.UseIndexShadowBuffer );
+				                                                              this.mesh.IndexBufferUsage,
+				                                                              this.mesh.UseIndexShadowBuffer );
 
 				var indices = idxBuffer.Lock( BufferLocking.Discard );
 
@@ -1241,7 +1243,7 @@ namespace Axiom.Serialization
 				LogManager.Instance.Write(
 					"Warning: VET_COLOUR element type is deprecated, you should use " +
 					"one of the more specific types to indicate the byte order. " + "Use OgreMeshUpgrade on {0} as soon as possible. ",
-					mesh.Name );
+					this.mesh.Name );
 			}
 		}
 
@@ -1269,8 +1271,8 @@ namespace Axiom.Serialization
 
 			// create/populate vertex buffer
 			var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( data.vertexDeclaration.Clone( bindIdx ),
-			                                                                data.vertexCount, mesh.VertexBufferUsage,
-			                                                                mesh.UseVertexShadowBuffer );
+			                                                                data.vertexCount, this.mesh.VertexBufferUsage,
+			                                                                this.mesh.UseVertexShadowBuffer );
 
 			var bufferPtr = buffer.Lock( BufferLocking.Discard );
 
@@ -1284,9 +1286,9 @@ namespace Axiom.Serialization
 
 		protected virtual void ReadSkeletonLink( BinaryReader reader )
 		{
-			mesh.SkeletonName = ReadString( reader );
+			this.mesh.SkeletonName = ReadString( reader );
 
-			MeshManager.Instance.FireProcessSkeletonName( mesh, mesh.SkeletonName );
+			MeshManager.Instance.FireProcessSkeletonName( this.mesh, this.mesh.SkeletonName );
 		}
 
 		protected virtual void ReadMeshBoneAssignment( BinaryReader reader )
@@ -1299,7 +1301,7 @@ namespace Axiom.Serialization
 			assignment.weight = ReadFloat( reader );
 
 			// add the assignment to the mesh
-			mesh.AddBoneAssignment( assignment );
+			this.mesh.AddBoneAssignment( assignment );
 		}
 
 		protected virtual void ReadSubMeshBoneAssignment( BinaryReader reader, SubMesh sub )
@@ -1320,19 +1322,19 @@ namespace Axiom.Serialization
 			// Read the strategy to be used for this mesh
 			var strategyName = ReadString( reader );
 			var strategy = LodStrategyManager.Instance.GetStrategy( strategyName );
-			mesh.LodStrategy = strategy;
+			this.mesh.LodStrategy = strategy;
 
 			// number of lod levels
 			var lodLevelCount = ReadShort( reader );
 			// bool manual;  (true for manual alternate meshes, false for generated)
-			mesh.IsLodManual = ReadBool( reader ); //readBools(stream, &(pMesh->mIsLodManual), 1);
+			this.mesh.IsLodManual = ReadBool( reader ); //readBools(stream, &(pMesh->mIsLodManual), 1);
 
 			// Preallocate submesh lod face data if not manual
-			if ( !mesh.IsLodManual )
+			if ( !this.mesh.IsLodManual )
 			{
-				for ( ushort i = 0; i < mesh.SubMeshCount; ++i )
+				for ( ushort i = 0; i < this.mesh.SubMeshCount; ++i )
 				{
-					var sm = mesh.GetSubMesh( i );
+					var sm = this.mesh.GetSubMesh( i );
 
 					// TODO: Create typed collection and implement resize
 					for ( var j = 1; j < lodLevelCount; j++ )
@@ -1349,7 +1351,7 @@ namespace Axiom.Serialization
 
 					if ( chunkId != MeshChunkID.MeshLODUsage )
 					{
-						throw new AxiomException( "Missing MeshLODUsage stream in '{0}'.", mesh.Name );
+						throw new AxiomException( "Missing MeshLODUsage stream in '{0}'.", this.mesh.Name );
 					}
 
 					// Read depth
@@ -1357,7 +1359,7 @@ namespace Axiom.Serialization
 					usage.Value = ReadFloat( reader );
 					usage.UserValue = Utility.Sqrt( usage.Value );
 
-					if ( mesh.IsLodManual )
+					if ( this.mesh.IsLodManual )
 					{
 						ReadMeshLodUsageManual( reader, i, ref usage );
 					}
@@ -1368,9 +1370,9 @@ namespace Axiom.Serialization
 					usage.EdgeData = null;
 
 					// Save usage
-					mesh.MeshLodUsageList.Add( usage );
+					this.mesh.MeshLodUsageList.Add( usage );
 				}
-				Debug.Assert( mesh.LodLevelCount == lodLevelCount );
+				Debug.Assert( this.mesh.LodLevelCount == lodLevelCount );
 			}
 		}
 
@@ -1380,7 +1382,7 @@ namespace Axiom.Serialization
 
 			if ( chunkId != MeshChunkID.MeshLODManual )
 			{
-				throw new AxiomException( "Missing MeshLODManual chunk in '{0}'.", mesh.Name );
+				throw new AxiomException( "Missing MeshLODManual chunk in '{0}'.", this.mesh.Name );
 			}
 
 			usage.ManualName = ReadString( reader );
@@ -1397,17 +1399,17 @@ namespace Axiom.Serialization
 			// get one set of detail per submesh
 			MeshChunkID chunkId;
 
-			for ( var i = 0; i < mesh.SubMeshCount; i++ )
+			for ( var i = 0; i < this.mesh.SubMeshCount; i++ )
 			{
 				chunkId = ReadChunk( reader );
 
 				if ( chunkId != MeshChunkID.MeshLODGenerated )
 				{
-					throw new AxiomException( "Missing MeshLodGenerated chunk in '{0}'", mesh.Name );
+					throw new AxiomException( "Missing MeshLodGenerated chunk in '{0}'", this.mesh.Name );
 				}
 
 				// get the current submesh
-				var sm = mesh.GetSubMesh( i );
+				var sm = this.mesh.GetSubMesh( i );
 
 				// drop another index data object into the list
 				var indexData = new IndexData();
@@ -1422,8 +1424,8 @@ namespace Axiom.Serialization
 				if ( is32bit )
 				{
 					indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size32, indexData.indexCount,
-					                                                                          mesh.IndexBufferUsage,
-					                                                                          mesh.UseIndexShadowBuffer );
+					                                                                          this.mesh.IndexBufferUsage,
+					                                                                          this.mesh.UseIndexShadowBuffer );
 
 					// lock the buffer
 					var data = indexData.indexBuffer.Lock( BufferLocking.Discard );
@@ -1437,8 +1439,8 @@ namespace Axiom.Serialization
 				else
 				{
 					indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, indexData.indexCount,
-					                                                                          mesh.IndexBufferUsage,
-					                                                                          mesh.UseIndexShadowBuffer );
+					                                                                          this.mesh.IndexBufferUsage,
+					                                                                          this.mesh.UseIndexShadowBuffer );
 
 					// lock the buffer
 					var data = indexData.indexBuffer.Lock( BufferLocking.Discard );
@@ -1461,10 +1463,10 @@ namespace Axiom.Serialization
 			var max = ReadVector3( reader );
 
 			// set the mesh's aabb
-			mesh.BoundingBox = new AxisAlignedBox( min, max );
+			this.mesh.BoundingBox = new AxisAlignedBox( min, max );
 
 			// set the bounding sphere radius
-			mesh.BoundingSphereRadius = ReadFloat( reader );
+			this.mesh.BoundingSphereRadius = ReadFloat( reader );
 		}
 
 		protected virtual void ReadEdgeList( BinaryReader reader )
@@ -1484,7 +1486,7 @@ namespace Axiom.Serialization
 					// Only load in non-manual levels; others will be connected up by Mesh on demand
 					if ( !isManual )
 					{
-						var usage = mesh.GetLodLevel( lodIndex );
+						var usage = this.mesh.GetLodLevel( lodIndex );
 
 						usage.EdgeData = new EdgeData();
 
@@ -1559,20 +1561,20 @@ namespace Axiom.Serialization
 							// Populate edgeGroup.vertexData references
 							// If there is shared vertex data, vertexSet 0 is that, 
 							// otherwise 0 is first dedicated
-							if ( mesh.SharedVertexData != null )
+							if ( this.mesh.SharedVertexData != null )
 							{
 								if ( edgeGroup.vertexSet == 0 )
 								{
-									edgeGroup.vertexData = mesh.SharedVertexData;
+									edgeGroup.vertexData = this.mesh.SharedVertexData;
 								}
 								else
 								{
-									edgeGroup.vertexData = mesh.GetSubMesh( edgeGroup.vertexSet - 1 ).vertexData;
+									edgeGroup.vertexData = this.mesh.GetSubMesh( edgeGroup.vertexSet - 1 ).vertexData;
 								}
 							}
 							else
 							{
-								edgeGroup.vertexData = mesh.GetSubMesh( edgeGroup.vertexSet ).vertexData;
+								edgeGroup.vertexData = this.mesh.GetSubMesh( edgeGroup.vertexSet ).vertexData;
 							}
 
 							// add the edge group to the list
@@ -1595,7 +1597,7 @@ namespace Axiom.Serialization
 				}
 			}
 
-			mesh.IsEdgeListBuilt = true;
+			this.mesh.IsEdgeListBuilt = true;
 		}
 
 		protected virtual void ReadPoses( BinaryReader reader )
@@ -1608,7 +1610,7 @@ namespace Axiom.Serialization
 				{
 					var name = ReadString( reader );
 					var target = ReadUShort( reader );
-					var pose = mesh.CreatePose( target, name );
+					var pose = this.mesh.CreatePose( target, name );
 
 					while ( !IsEOF( reader ) && ( chunkID = ReadChunk( reader ) ) == MeshChunkID.PoseVertex )
 					{
@@ -1658,7 +1660,7 @@ namespace Axiom.Serialization
 		{
 			var name = ReadString( reader );
 			var length = ReadFloat( reader );
-			var anim = mesh.CreateAnimation( name, length );
+			var anim = this.mesh.CreateAnimation( name, length );
 
 			// Read the tracks for this animation
 			if ( !IsEOF( reader ) )
@@ -1690,7 +1692,7 @@ namespace Axiom.Serialization
 			var type = ReadUShort( reader );
 			var target = ReadUShort( reader );
 
-			var track = anim.CreateVertexTrack( target, mesh.GetVertexDataByTrackHandle( target ), (VertexAnimationType)type );
+			var track = anim.CreateVertexTrack( target, this.mesh.GetVertexDataByTrackHandle( target ), (VertexAnimationType)type );
 			// Now read the key frames for this track
 			if ( !IsEOF( reader ) )
 			{
@@ -1787,7 +1789,7 @@ namespace Axiom.Serialization
 			var q = ReadQuat( reader );
 
 			// create the attachment point
-			var ap = mesh.CreateAttachmentPoint( name, q, position );
+			var ap = this.mesh.CreateAttachmentPoint( name, q, position );
 		}
 
 		#endregion Protected

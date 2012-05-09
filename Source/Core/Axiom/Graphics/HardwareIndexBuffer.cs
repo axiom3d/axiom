@@ -72,7 +72,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return type;
+				return this.type;
 			}
 		}
 
@@ -92,7 +92,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return numIndices;
+				return this.numIndices;
 			}
 		}
 
@@ -113,7 +113,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return indexSize;
+				return this.indexSize;
 			}
 		}
 
@@ -138,25 +138,25 @@ namespace Axiom.Graphics
 		{
 			this.type = type;
 			this.numIndices = numIndices;
-			Manager = manager;
+			this.Manager = manager;
 			// calc the index buffer size
 			sizeInBytes = numIndices;
 
 			if ( type == IndexType.Size32 )
 			{
-				indexSize = Memory.SizeOf( typeof ( int ) );
+				this.indexSize = Memory.SizeOf( typeof ( int ) );
 			}
 			else
 			{
-				indexSize = Memory.SizeOf( typeof ( short ) );
+				this.indexSize = Memory.SizeOf( typeof ( short ) );
 			}
 
-			sizeInBytes *= indexSize;
+			sizeInBytes *= this.indexSize;
 
 			// create a shadow buffer if required
 			if ( useShadowBuffer )
 			{
-				shadowBuffer = new DefaultHardwareIndexBuffer( Manager, type, numIndices, BufferUsage.Dynamic );
+				shadowBuffer = new DefaultHardwareIndexBuffer( this.Manager, type, numIndices, BufferUsage.Dynamic );
 			}
 		}
 
@@ -167,9 +167,9 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
-					if ( Manager != null )
+					if ( this.Manager != null )
 					{
-						Manager.NotifyIndexBufferDestroyed( this );
+						this.Manager.NotifyIndexBufferDestroyed( this );
 					}
 
 					shadowBuffer.SafeDispose();

@@ -73,8 +73,8 @@ namespace Axiom.Math
 		/// </summary>
 		public Sphere()
 		{
-			radius = 1.0f;
-			center = Vector3.Zero;
+			this.radius = 1.0f;
+			this.center = Vector3.Zero;
 		}
 
 		/// <summary>
@@ -99,11 +99,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return center;
+				return this.center;
 			}
 			set
 			{
-				center = value;
+				this.center = value;
 			}
 		}
 
@@ -114,11 +114,11 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return radius;
+				return this.radius;
 			}
 			set
 			{
-				radius = value;
+				this.radius = value;
 			}
 		}
 
@@ -143,7 +143,7 @@ namespace Axiom.Math
 
 		public override int GetHashCode()
 		{
-			return center.GetHashCode() ^ radius.GetHashCode();
+			return this.center.GetHashCode() ^ this.radius.GetHashCode();
 		}
 
 
@@ -154,7 +154,7 @@ namespace Axiom.Math
 		/// <returns>True if the spheres intersect, false otherwise.</returns>
 		public bool Intersects( Sphere sphere )
 		{
-			return ( ( sphere.center - center ).Length <= ( sphere.radius + radius ) );
+			return ( ( sphere.center - this.center ).Length <= ( sphere.radius + this.radius ) );
 		}
 
 		/// <summary>
@@ -184,7 +184,7 @@ namespace Axiom.Math
 		/// <returns>True if the vector intersects, false otherwise.</returns>
 		public bool Intersects( Vector3 vector )
 		{
-			return ( vector - center ).Length <= radius;
+			return ( vector - this.center ).Length <= this.radius;
 		}
 
 		#endregion Intersection methods

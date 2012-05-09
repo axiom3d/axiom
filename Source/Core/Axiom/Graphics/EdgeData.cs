@@ -72,7 +72,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return edgeGroups;
+				return this.edgeGroups;
 			}
 		}
 
@@ -96,9 +96,9 @@ namespace Axiom.Graphics
 		/// </param>
 		public void UpdateTriangleLightFacing( Vector4 lightPos )
 		{
-			for ( var i = 0; i < triangles.Count; i++ )
+			for ( var i = 0; i < this.triangles.Count; i++ )
 			{
-				var tri = (Triangle)triangles[ i ];
+				var tri = (Triangle)this.triangles[ i ];
 
 				float dot = tri.normal.Dot( lightPos );
 
@@ -125,9 +125,9 @@ namespace Axiom.Graphics
 				var pVert = posPtr.ToFloatPointer();
 
 				// Iterate over the triangles
-				for ( var i = 0; i < triangles.Count; i++ )
+				for ( var i = 0; i < this.triangles.Count; i++ )
 				{
-					var t = (Triangle)triangles[ i ];
+					var t = (Triangle)this.triangles[ i ];
 
 					// Only update tris which are using this vertex set
 					if ( t.vertexSet == vertexSet )
@@ -156,17 +156,17 @@ namespace Axiom.Graphics
 			log.Write( "Edge Data" );
 			log.Write( "---------" );
 
-			for ( var i = 0; i < triangles.Count; i++ )
+			for ( var i = 0; i < this.triangles.Count; i++ )
 			{
-				var t = (Triangle)triangles[ i ];
+				var t = (Triangle)this.triangles[ i ];
 
 				log.Write( "Triangle {0} = [indexSet={1}, vertexSet={2}, v0={3}, v1={4}, v2={5}]", i, t.indexSet, t.vertexSet,
 				           t.vertIndex[ 0 ], t.vertIndex[ 1 ], t.vertIndex[ 2 ] );
 			}
 
-			for ( var i = 0; i < edgeGroups.Count; i++ )
+			for ( var i = 0; i < this.edgeGroups.Count; i++ )
 			{
-				var group = (EdgeGroup)edgeGroups[ i ];
+				var group = (EdgeGroup)this.edgeGroups[ i ];
 
 				log.Write( "Edge Group vertexSet={0}", group.vertexSet );
 
@@ -232,8 +232,8 @@ namespace Axiom.Graphics
 			/// </summary>
 			public Triangle()
 			{
-				vertIndex = new int[3];
-				sharedVertIndex = new int[3];
+				this.vertIndex = new int[3];
+				this.sharedVertIndex = new int[3];
 			}
 
 			public override string ToString()
@@ -241,8 +241,9 @@ namespace Axiom.Graphics
 				return
 					string.Format(
 						"IndexSet {0} VertexSet {1} VertIndices({2},{3},{4}) SharedVerts({5},{6},{7}) Normal({8},{9},{10},{11}) LightFacing {12})",
-						indexSet, vertexSet, vertIndex[ 0 ], vertIndex[ 1 ], vertIndex[ 2 ], sharedVertIndex[ 0 ], sharedVertIndex[ 1 ],
-						sharedVertIndex[ 2 ], normal.x, normal.y, normal.z, normal.w, lightFacing );
+						this.indexSet, this.vertexSet, this.vertIndex[ 0 ], this.vertIndex[ 1 ], this.vertIndex[ 2 ],
+						this.sharedVertIndex[ 0 ], this.sharedVertIndex[ 1 ],
+						this.sharedVertIndex[ 2 ], this.normal.x, this.normal.y, this.normal.z, this.normal.w, this.lightFacing );
 			}
 
 			#endregion Fields
@@ -285,16 +286,17 @@ namespace Axiom.Graphics
 			/// </summary>
 			public Edge()
 			{
-				triIndex = new int[2];
-				vertIndex = new int[2];
-				sharedVertIndex = new int[2];
+				this.triIndex = new int[2];
+				this.vertIndex = new int[2];
+				this.sharedVertIndex = new int[2];
 			}
 
 			public override string ToString()
 			{
 				return string.Format( "TriIndex({0},{1}) VertIndex({2},{3}) SharedVertIndex({4},{5}) IsDegenerate = {6}",
-				                      triIndex[ 0 ], triIndex[ 1 ], vertIndex[ 0 ], vertIndex[ 1 ], sharedVertIndex[ 0 ],
-				                      sharedVertIndex[ 1 ], isDegenerate );
+				                      this.triIndex[ 0 ], this.triIndex[ 1 ], this.vertIndex[ 0 ], this.vertIndex[ 1 ],
+				                      this.sharedVertIndex[ 0 ],
+				                      this.sharedVertIndex[ 1 ], this.isDegenerate );
 			}
 		}
 

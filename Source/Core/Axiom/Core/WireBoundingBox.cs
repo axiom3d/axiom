@@ -274,7 +274,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return Radius;
+				return this.Radius;
 			}
 		}
 

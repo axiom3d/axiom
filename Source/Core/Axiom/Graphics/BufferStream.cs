@@ -102,7 +102,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return owner.Size;
+				return this.owner.Size;
 			}
 		}
 
@@ -113,7 +113,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return position;
+				return this.position;
 			}
 			set
 			{
@@ -122,7 +122,7 @@ namespace Axiom.Graphics
 					throw new ArgumentException( "Position of the buffer may not exceed the length." );
 				}
 
-				position = value;
+				this.position = value;
 			}
 		}
 
@@ -141,37 +141,37 @@ namespace Axiom.Graphics
 
 		public void Write( Vector3 vec, int offset )
 		{
-			tmp[ 0 ] = vec;
+			this.tmp[ 0 ] = vec;
 
-			Write( tmp, offset );
+			Write( this.tmp, offset );
 		}
 
 		public void Write( Vector4 vec, int offset )
 		{
-			tmp[ 0 ] = vec;
+			this.tmp[ 0 ] = vec;
 
-			Write( tmp, offset );
+			Write( this.tmp, offset );
 		}
 
 		public void Write( float val, int offset )
 		{
-			tmp[ 0 ] = val;
+			this.tmp[ 0 ] = val;
 
-			Write( tmp, offset );
+			Write( this.tmp, offset );
 		}
 
 		public void Write( short val, int offset )
 		{
-			tmp[ 0 ] = val;
+			this.tmp[ 0 ] = val;
 
-			Write( tmp, offset );
+			Write( this.tmp, offset );
 		}
 
 		public void Write( byte val, int offset )
 		{
-			tmp[ 0 ] = val;
+			this.tmp[ 0 ] = val;
 
-			Write( tmp, offset );
+			Write( this.tmp, offset );
 		}
 
 		public void Write( System.Array val )
@@ -195,12 +195,12 @@ namespace Axiom.Graphics
 		public void Write( System.Array val, int offset, int count )
 		{
 			// can't write to unlocked buffers
-			if ( !owner.IsLocked )
+			if ( !this.owner.IsLocked )
 			{
 				throw new AxiomException( "Cannot write to a buffer stream when the buffer is not locked." );
 			}
 
-			var newOffset = position + offset;
+			var newOffset = this.position + offset;
 
 			// ensure we won't go past the end of the stream
 			if ( newOffset + count > Length )
@@ -217,7 +217,7 @@ namespace Axiom.Graphics
 			{
 				// get byte pointers for the source and target
 				var b = handle.ToBytePointer();
-				var dataPtr = data.ToBytePointer();
+				var dataPtr = this.data.ToBytePointer();
 
 				// copy the data from the source to the target
 				for ( var i = 0; i < count; i++ )
@@ -251,17 +251,17 @@ namespace Axiom.Graphics
 			{
 					// seeks from the beginning of the stream
 				case SeekOrigin.Begin:
-					position = offset;
+					this.position = offset;
 					break;
 
 					// offset is from the current stream position
 				case SeekOrigin.Current:
-					if ( position + offset > Length )
+					if ( this.position + offset > Length )
 					{
 						throw new ArgumentException( "Cannot seek past the end of the stream." );
 					}
 
-					position = position + offset;
+					this.position = this.position + offset;
 					break;
 
 					// seeks backwards from the end of the stream
@@ -271,11 +271,11 @@ namespace Axiom.Graphics
 						throw new ArgumentException( "Cannot seek past the beginning of the stream." );
 					}
 
-					position = Length - offset;
+					this.position = Length - offset;
 					break;
 			}
 
-			return position;
+			return this.position;
 		}
 
 		#endregion Methods

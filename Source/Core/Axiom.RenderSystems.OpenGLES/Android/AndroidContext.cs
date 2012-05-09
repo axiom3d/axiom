@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,33 +25,38 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
 
 using System;
-using Axiom.Utilities;
+
 using Axiom.Core;
+
 using Javax.Microedition.Khronos.Egl;
-using EGLCONTEXT = Javax.Microedition.Khronos.Egl.EGLContext;
+
 using OpenTK.Graphics;
 using OpenTK.Platform.Android;
+
+using EGLCONTEXT = Javax.Microedition.Khronos.Egl.EGLContext;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES.Android
 {
 	/// <summary>
-	/// 
 	/// </summary>
-	class AndroidContext : GLESContext
+	internal class AndroidContext : GLESContext
 	{
 		protected EGLConfig _config;
 		protected AndroidSupport _glSupport;
@@ -59,35 +65,28 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		protected EGLDisplay _eglDisplay;
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public EGLSurface Drawable
 		{
-			get
-			{
-				return _drawable;
-			}
+			get { return this._drawable; }
 		}
 
-		class DummyInfo : OpenTK.Platform.IWindowInfo
+		private class DummyInfo : OpenTK.Platform.IWindowInfo
 		{
-			public void Dispose()
-			{
-			}
+			public void Dispose() {}
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="eglDisplay"></param>
-		/// <param name="support"></param>
-		/// <param name="fbconfig"></param>
-		/// <param name="drawable"></param>
+		/// <param name="eglDisplay"> </param>
+		/// <param name="support"> </param>
+		/// <param name="fbconfig"> </param>
+		/// <param name="drawable"> </param>
 		public AndroidContext( AndroidGraphicsContext glContext, AndroidSupport support )
 		{
-			_glSupport = support;
+			this._glSupport = support;
 			//_drawable = drawable;
-			_context = glContext;
+			this._context = glContext;
 			//_config = fbconfig;
 			//_eglDisplay = eglDisplay;
 
@@ -108,21 +107,18 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public override void SetCurrent()
-		{			
+		{
 			//bool ret = EGLCONTEXT.EGL11.EglMakeCurrent(
 			//    _eglDisplay, _drawable, _drawable, _context );
 			//if ( !ret )
 			//{
 			//    throw new AxiomException( "Fail to make context current" );
 			//}
-
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public override void EndCurrent()
 		{
@@ -133,17 +129,15 @@ namespace Axiom.RenderSystems.OpenGLES.Android
 		{
 			if ( Root.Instance != null && Root.Instance.RenderSystem != null )
 			{
-				GLESRenderSystem rendersystem = (GLESRenderSystem)Root.Instance.RenderSystem;
+				var rendersystem = (GLESRenderSystem) Root.Instance.RenderSystem;
 				//Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglDestroyContext( _eglDisplay, _context );
 				rendersystem.UnregisterContext( this );
 			}
-
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <returns></returns>
+		/// <returns> </returns>
 		public override GLESContext Clone()
 		{
 			throw new NotImplementedException();

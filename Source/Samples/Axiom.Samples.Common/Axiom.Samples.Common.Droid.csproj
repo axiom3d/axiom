@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AD8DEE23-E6AF-4DBC-9A26-9AEA7319F39A}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Axiom.Samples.Common</RootNamespace>
+    <AssemblyName>Axiom.Samples.Common</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <AndroidSupportedAbis>armeabi</AndroidSupportedAbis>
+    <AndroidStoreUncompressedFileExtensions />
+    <MandroidI18n />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="SharpInputSystem.Core, Version=0.4.0.19833, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Lib\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sample.cs" />
+    <Compile Include="SampleContext.cs" />
+    <Compile Include="SamplePlugin.cs" />
+    <Compile Include="SdkCameraManager.cs" />
+    <Compile Include="SdkSample.cs" />
+    <Compile Include="Tray\Button.cs" />
+    <Compile Include="Tray\CheckBox.cs" />
+    <Compile Include="Tray\DecorWidget.cs" />
+    <Compile Include="Tray\ISdkTrayListener.cs" />
+    <Compile Include="Tray\Label.cs" />
+    <Compile Include="Tray\LogoWidget.cs" />
+    <Compile Include="Tray\ParamsPanel.cs" />
+    <Compile Include="Tray\ProgressBar.cs" />
+    <Compile Include="Tray\SdkTrays.cs" />
+    <Compile Include="Tray\SelectMenu.cs" />
+    <Compile Include="Tray\Separator.cs" />
+    <Compile Include="Tray\Slider.cs" />
+    <Compile Include="Tray\TextBox.cs" />
+    <Compile Include="Tray\Widget.cs" />
+    <Compile Include="Tray\WidgetEventArgs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.Droid.csproj">
+      <Project>{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}</Project>
+      <Name>Axiom.Droid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Framework\Axiom.Framework\Axiom.Framework.Droid.csproj">
+      <Project>{8C6DB9C4-C16A-4B46-BD27-76765982C40B}</Project>
+      <Name>Axiom.Framework.Droid</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

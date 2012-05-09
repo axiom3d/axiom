@@ -53,7 +53,7 @@ namespace Axiom.Scripting.Compiler
 			public TechniqueTranslator()
 				: base()
 			{
-				_technique = null;
+				this._technique = null;
 			}
 
 			#region Translator Implementation
@@ -71,13 +71,13 @@ namespace Axiom.Scripting.Compiler
 
 				// Create the technique from the material
 				var material = (Material)obj.Parent.Context;
-				_technique = material.CreateTechnique();
-				obj.Context = _technique;
+				this._technique = material.CreateTechnique();
+				obj.Context = this._technique;
 
 				// Get the name of the technique
 				if ( !string.IsNullOrEmpty( obj.Name ) )
 				{
-					_technique.Name = obj.Name;
+					this._technique.Name = obj.Name;
 				}
 
 				// Set the properties for the technique
@@ -106,7 +106,7 @@ namespace Axiom.Scripting.Compiler
 									string scheme;
 									if ( getString( prop.Values[ 0 ], out scheme ) )
 									{
-										_technique.Scheme = scheme;
+										this._technique.Scheme = scheme;
 									}
 									else
 									{
@@ -135,7 +135,7 @@ namespace Axiom.Scripting.Compiler
 									int val;
 									if ( getInt( prop.Values[ 0 ], out val ) )
 									{
-										_technique.LodIndex = val;
+										this._technique.LodIndex = val;
 									}
 									else
 									{
@@ -172,7 +172,8 @@ namespace Axiom.Scripting.Compiler
 
 										compiler._fireEvent( ref evt );
 										evtMatName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
-										_technique.ShadowCasterMaterial = (Material)MaterialManager.Instance[ evtMatName ]; // Use the processed name
+										this._technique.ShadowCasterMaterial = (Material)MaterialManager.Instance[ evtMatName ];
+											// Use the processed name
 									}
 									else
 									{
@@ -210,7 +211,7 @@ namespace Axiom.Scripting.Compiler
 
 										compiler._fireEvent( ref evt );
 										evtName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
-										_technique.ShadowReceiverMaterial = (Material)MaterialManager.Instance[ evtName ];
+										this._technique.ShadowReceiverMaterial = (Material)MaterialManager.Instance[ evtName ];
 									}
 									else
 									{
@@ -271,7 +272,7 @@ namespace Axiom.Scripting.Compiler
 
 										if ( rule.Vendor != GPUVendor.Unknown )
 										{
-											_technique.AddGPUVenderRule( rule );
+											this._technique.AddGPUVenderRule( rule );
 										}
 									}
 									else
@@ -338,7 +339,7 @@ namespace Axiom.Scripting.Compiler
 											}
 										}
 
-										_technique.AddGPUDeviceNameRule( rule );
+										this._technique.AddGPUDeviceNameRule( rule );
 									}
 									else
 									{

@@ -186,24 +186,24 @@ namespace Axiom.Core
 			: base( name )
 		{
 			// Default to point light, white diffuse light, linear attenuation, fair range
-			type = LightType.Point;
-			diffuse = ColorEx.White;
-			specular = ColorEx.Black;
-			range = 100000;
-			attenuationConst = 1.0f;
-			attenuationLinear = 0.0f;
-			attenuationQuad = 0.0f;
+			this.type = LightType.Point;
+			this.diffuse = ColorEx.White;
+			this.specular = ColorEx.Black;
+			this.range = 100000;
+			this.attenuationConst = 1.0f;
+			this.attenuationLinear = 0.0f;
+			this.attenuationQuad = 0.0f;
 
 			// Center in world, direction irrelevant but set anyway
-			position = Vector3.Zero;
-			direction = Vector3.UnitZ;
+			this.position = Vector3.Zero;
+			this.direction = Vector3.UnitZ;
 
 			// Default some spot values
-			spotInner = 30.0f;
-			spotOuter = 40.0f;
-			spotFalloff = 1.0f;
+			this.spotInner = 30.0f;
+			this.spotOuter = 40.0f;
+			this.spotFalloff = 1.0f;
 
-			localTransformDirty = false;
+			this.localTransformDirty = false;
 		}
 
 		#endregion Constructors
@@ -217,11 +217,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return type;
+				return this.type;
 			}
 			set
 			{
-				type = value;
+				this.type = value;
 			}
 		}
 
@@ -232,12 +232,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return position;
+				return this.position;
 			}
 			set
 			{
-				position = value;
-				localTransformDirty = true;
+				this.position = value;
+				this.localTransformDirty = true;
 			}
 		}
 
@@ -248,7 +248,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return direction;
+				return this.direction;
 			}
 			set
 			{
@@ -258,9 +258,9 @@ namespace Axiom.Core
 					value = DefaultDirection;
 				}
 
-				direction = value;
-				direction.Normalize();
-				localTransformDirty = true;
+				this.direction = value;
+				this.direction.Normalize();
+				this.localTransformDirty = true;
 			}
 		}
 
@@ -271,11 +271,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return spotInner;
+				return this.spotInner;
 			}
 			set
 			{
-				spotInner = value;
+				this.spotInner = value;
 			}
 		}
 
@@ -286,11 +286,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return spotOuter;
+				return this.spotOuter;
 			}
 			set
 			{
-				spotOuter = value;
+				this.spotOuter = value;
 			}
 		}
 
@@ -301,11 +301,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return spotFalloff;
+				return this.spotFalloff;
 			}
 			set
 			{
-				spotFalloff = value;
+				this.spotFalloff = value;
 			}
 		}
 
@@ -316,11 +316,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return diffuse;
+				return this.diffuse;
 			}
 			set
 			{
-				diffuse = value;
+				this.diffuse = value;
 			}
 		}
 
@@ -331,11 +331,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return specular;
+				return this.specular;
 			}
 			set
 			{
-				specular = value;
+				this.specular = value;
 			}
 		}
 
@@ -346,11 +346,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return range;
+				return this.range;
 			}
 			set
 			{
-				range = value;
+				this.range = value;
 			}
 		}
 
@@ -361,11 +361,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return attenuationConst;
+				return this.attenuationConst;
 			}
 			set
 			{
-				attenuationConst = value;
+				this.attenuationConst = value;
 			}
 		}
 
@@ -376,11 +376,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return attenuationLinear;
+				return this.attenuationLinear;
 			}
 			set
 			{
-				attenuationLinear = value;
+				this.attenuationLinear = value;
 			}
 		}
 
@@ -391,11 +391,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return attenuationQuad;
+				return this.attenuationQuad;
 			}
 			set
 			{
-				attenuationQuad = value;
+				this.attenuationQuad = value;
 			}
 		}
 
@@ -415,14 +415,14 @@ namespace Axiom.Core
 			// this is called to force an update
 			Update();
 
-			if ( cameraRelative && _cameraToBeRelativeTo != null )
+			if ( cameraRelative && this._cameraToBeRelativeTo != null )
 			{
 				throw new NotImplementedException();
 				//return mDerivedCamRelativePosition;
 			}
 			else
 			{
-				return derivedPosition;
+				return this.derivedPosition;
 			}
 		}
 
@@ -436,7 +436,7 @@ namespace Axiom.Core
 				// this is called to force an update
 				Update();
 
-				return derivedDirection;
+				return this.derivedDirection;
 			}
 		}
 
@@ -465,13 +465,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return shadowNearDistance;
+				return this.shadowNearDistance;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				shadowNearDistance = value;
+				this.shadowNearDistance = value;
 			}
 		}
 
@@ -479,13 +479,13 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return ownShadowFarDistance ? shadowFarDistance : Manager.ShadowFarDistance;
+				return this.ownShadowFarDistance ? this.shadowFarDistance : Manager.ShadowFarDistance;
 			}
 			set
 			{
-				ownShadowFarDistance = true;
-				shadowFarDistance = value;
-				shadowFarDistanceSquared = value*value;
+				this.ownShadowFarDistance = true;
+				this.shadowFarDistance = value;
+				this.shadowFarDistanceSquared = value*value;
 			}
 		}
 
@@ -493,7 +493,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return ownShadowFarDistance ? shadowFarDistanceSquared : Manager.ShadowFarDistanceSquared;
+				return this.ownShadowFarDistance ? this.shadowFarDistanceSquared : Manager.ShadowFarDistanceSquared;
 			}
 		}
 
@@ -501,11 +501,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return powerScale;
+				return this.powerScale;
 			}
 			set
 			{
-				powerScale = value;
+				this.powerScale = value;
 			}
 		}
 
@@ -517,11 +517,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return tempSquaredDist;
+				return this.tempSquaredDist;
 			}
 			set
 			{
-				tempSquaredDist = value;
+				this.tempSquaredDist = value;
 			}
 		}
 
@@ -536,26 +536,26 @@ namespace Axiom.Core
 		{
 			if ( parentNode != null )
 			{
-				if ( !localTransformDirty && parentNode.DerivedOrientation == lastParentOrientation &&
-				     parentNode.DerivedPosition == lastParentPosition )
+				if ( !this.localTransformDirty && parentNode.DerivedOrientation == this.lastParentOrientation &&
+				     parentNode.DerivedPosition == this.lastParentPosition )
 				{
 				}
 				else
 				{
 					// we are out of date with the scene node we are attached to
-					lastParentOrientation = parentNode.DerivedOrientation;
-					lastParentPosition = parentNode.DerivedPosition;
-					derivedDirection = lastParentOrientation*direction;
-					derivedPosition = ( lastParentOrientation*position ) + lastParentPosition;
+					this.lastParentOrientation = parentNode.DerivedOrientation;
+					this.lastParentPosition = parentNode.DerivedPosition;
+					this.derivedDirection = this.lastParentOrientation*this.direction;
+					this.derivedPosition = ( this.lastParentOrientation*this.position ) + this.lastParentPosition;
 				}
 			}
 			else
 			{
-				derivedPosition = position;
-				derivedDirection = direction;
+				this.derivedPosition = this.position;
+				this.derivedDirection = this.direction;
 			}
 
-			localTransformDirty = false;
+			this.localTransformDirty = false;
 		}
 
 		/// <summary>
@@ -590,7 +590,7 @@ namespace Axiom.Core
 		{
 			Vector4 vec;
 
-			if ( type == LightType.Directional )
+			if ( this.type == LightType.Directional )
 			{
 				// negate direction as 'position'
 				vec = -DerivedDirection;
@@ -630,9 +630,9 @@ namespace Axiom.Core
 				throw new Exception("Setting the spotlight range is only valid for spotlights.");
 			}*/
 
-			spotInner = innerAngle;
-			spotOuter = outerAngle;
-			spotFalloff = falloff;
+			this.spotInner = innerAngle;
+			this.spotOuter = outerAngle;
+			this.spotFalloff = falloff;
 		}
 
 		/// <summary>
@@ -645,9 +645,9 @@ namespace Axiom.Core
 		public virtual void SetAttenuation( float range, float constant, float linear, float quadratic )
 		{
 			this.range = range;
-			attenuationConst = constant;
-			attenuationLinear = linear;
-			attenuationQuad = quadratic;
+			this.attenuationConst = constant;
+			this.attenuationLinear = linear;
+			this.attenuationQuad = quadratic;
 		}
 
 		/// <summary>
@@ -672,8 +672,8 @@ namespace Axiom.Core
 
 			// First check if the light is close to the near plane, since
 			// in this case we have to build a degenerate clip volume
-			nearClipVolume.planes.Clear();
-			nearClipVolume.outside = PlaneSide.Negative;
+			this.nearClipVolume.planes.Clear();
+			this.nearClipVolume.outside = PlaneSide.Negative;
 
 			// Homogenous position
 			var lightPos = GetAs4DVector();
@@ -716,7 +716,7 @@ namespace Axiom.Core
 						normal = -normal;
 					}
 					// NB last param to Plane constructor is negated because it's -d
-					nearClipVolume.planes.Add( new Plane( normal, normal.Dot( corners[ i ] ) ) );
+					this.nearClipVolume.planes.Add( new Plane( normal, normal.Dot( corners[ i ] ) ) );
 				}
 
 				// Now do the near plane plane
@@ -726,7 +726,7 @@ namespace Axiom.Core
 					// remember the -d negation in plane constructor
 					normal = eyeToWorld*-Vector3.UnitZ;
 					normal.Normalize();
-					nearClipVolume.planes.Add( new Plane( normal, -normal.Dot( camera.DerivedPosition ) ) );
+					this.nearClipVolume.planes.Add( new Plane( normal, -normal.Dot( camera.DerivedPosition ) ) );
 				}
 				else
 				{
@@ -734,18 +734,18 @@ namespace Axiom.Core
 					// remember the -d negation in plane constructor
 					normal = eyeToWorld*Vector3.UnitZ;
 					normal.Normalize();
-					nearClipVolume.planes.Add( new Plane( normal, -normal.Dot( camera.DerivedPosition ) ) );
+					this.nearClipVolume.planes.Add( new Plane( normal, -normal.Dot( camera.DerivedPosition ) ) );
 				}
 
 				// Finally, for a point/spot light we can add a sixth plane
 				// This prevents false positives from behind the light
-				if ( type != LightType.Directional )
+				if ( this.type != LightType.Directional )
 				{
 					// Direction from light to centre point of viewport
 					normal = ( eyeToWorld*new Vector3( 0, 0, -n ) ) - lightPos3;
 					normal.Normalize();
 					// remember the -d negation in plane constructor
-					nearClipVolume.planes.Add( new Plane( normal, normal.Dot( lightPos3 ) ) );
+					this.nearClipVolume.planes.Add( new Plane( normal, normal.Dot( lightPos3 ) ) );
 				}
 			}
 			else
@@ -753,11 +753,11 @@ namespace Axiom.Core
 				// light is close to being on the near plane
 				// degenerate volume including the entire scene
 				// we will always require light / dark caps
-				nearClipVolume.planes.Add( new Plane( Vector3.UnitZ, -n ) );
-				nearClipVolume.planes.Add( new Plane( -Vector3.UnitZ, n ) );
+				this.nearClipVolume.planes.Add( new Plane( Vector3.UnitZ, -n ) );
+				this.nearClipVolume.planes.Add( new Plane( -Vector3.UnitZ, n ) );
 			}
 
-			return nearClipVolume;
+			return this.nearClipVolume;
 		}
 
 		/// <summary>
@@ -790,7 +790,7 @@ namespace Axiom.Core
 
 			var infiniteViewDistance = ( camera.Far == 0 );
 
-			frustumClipVolumes.Clear();
+			this.frustumClipVolumes.Clear();
 
 			for ( var n = 0; n < 6; n++ )
 			{
@@ -814,8 +814,8 @@ namespace Axiom.Core
 					// Ok, this is a valid one
 					// clockwise verts mean we can cross-product and always get normals
 					// facing into the volume we create
-					frustumClipVolumes.Add( new PlaneBoundedVolume() );
-					var vol = (PlaneBoundedVolume)frustumClipVolumes[ frustumClipVolumes.Count - 1 ];
+					this.frustumClipVolumes.Add( new PlaneBoundedVolume() );
+					var vol = (PlaneBoundedVolume)this.frustumClipVolumes[ this.frustumClipVolumes.Count - 1 ];
 
 					switch ( frustumPlane )
 					{
@@ -884,7 +884,7 @@ namespace Axiom.Core
 
 					// Finally, for a point/spot light we can add a sixth plane
 					// This prevents false positives from behind the light
-					if ( type != LightType.Directional )
+					if ( this.type != LightType.Directional )
 					{
 						// re-use our own plane normal
 						// remember the -d negation in plane constructor
@@ -893,7 +893,7 @@ namespace Axiom.Core
 				}
 			}
 
-			return frustumClipVolumes;
+			return this.frustumClipVolumes;
 		}
 
 		#endregion Methods
@@ -917,12 +917,12 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _customShadowCameraSetup;
+				return this._customShadowCameraSetup;
 			}
 
 			set
 			{
-				_customShadowCameraSetup = value;
+				this._customShadowCameraSetup = value;
 			}
 		}
 
@@ -932,7 +932,7 @@ namespace Axiom.Core
 		/// <seealso cref="IShadowCameraSetup"/>
 		public virtual void ResetCustomShadowCameraSetup()
 		{
-			_customShadowCameraSetup = null;
+			this._customShadowCameraSetup = null;
 		}
 
 		#endregion CustomShadowCameraSetup Implementation
@@ -953,8 +953,8 @@ namespace Axiom.Core
 		{
 			set
 			{
-				_cameraToBeRelativeTo = value;
-				_derivedCamRelativeDirty = true;
+				this._cameraToBeRelativeTo = value;
+				this._derivedCamRelativeDirty = true;
 			}
 		}
 
@@ -1014,17 +1014,17 @@ namespace Axiom.Core
 
 			public override void SetValue( Real val )
 			{
-				light.AttenuationConstant = val;
+				this.light.AttenuationConstant = val;
 			}
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( val + light.AttenuationConstant );
+				SetValue( val + this.light.AttenuationConstant );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( light.AttenuationConstant );
+				SetAsBaseValue( this.light.AttenuationConstant );
 			}
 		}
 
@@ -1045,17 +1045,17 @@ namespace Axiom.Core
 
 			public override void SetValue( Real val )
 			{
-				light.AttenuationLinear = val;
+				this.light.AttenuationLinear = val;
 			}
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( val + light.AttenuationLinear );
+				SetValue( val + this.light.AttenuationLinear );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( light.AttenuationLinear );
+				SetAsBaseValue( this.light.AttenuationLinear );
 			}
 		}
 
@@ -1076,17 +1076,17 @@ namespace Axiom.Core
 
 			public override void SetValue( Real val )
 			{
-				light.AttenuationQuadratic = val;
+				this.light.AttenuationQuadratic = val;
 			}
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( val + light.AttenuationQuadratic );
+				SetValue( val + this.light.AttenuationQuadratic );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( light.AttenuationQuadratic );
+				SetAsBaseValue( this.light.AttenuationQuadratic );
 			}
 		}
 
@@ -1107,17 +1107,17 @@ namespace Axiom.Core
 
 			public override void SetValue( Real val )
 			{
-				light.AttenuationRange = val;
+				this.light.AttenuationRange = val;
 			}
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( val + light.AttenuationRange );
+				SetValue( val + this.light.AttenuationRange );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( light.AttenuationRange );
+				SetAsBaseValue( this.light.AttenuationRange );
 			}
 		}
 
@@ -1137,18 +1137,18 @@ namespace Axiom.Core
 
 			public override void SetValue( Vector4 val )
 			{
-				light.SetAttenuation( val.x, val.y, val.z, val.w );
+				this.light.SetAttenuation( val.x, val.y, val.z, val.w );
 			}
 
 			public override void ApplyDeltaValue( Vector4 val )
 			{
-				var v = light.GetAs4DVector();
+				var v = this.light.GetAs4DVector();
 				SetValue( new Vector4( v.x + val.x, v.y + val.y, v.z + val.z, v.w + val.w ) );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( light.GetAs4DVector() );
+				SetAsBaseValue( this.light.GetAs4DVector() );
 			}
 		}
 
@@ -1169,18 +1169,18 @@ namespace Axiom.Core
 
 			public override void SetValue( ColorEx val )
 			{
-				light.Diffuse = val;
+				this.light.Diffuse = val;
 			}
 
 			public override void ApplyDeltaValue( ColorEx val )
 			{
-				var c = light.Diffuse;
+				var c = this.light.Diffuse;
 				SetValue( new ColorEx( c.a*val.a, c.r + val.r, c.g + val.g, c.b + val.b ) );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( light.Diffuse );
+				SetAsBaseValue( this.light.Diffuse );
 			}
 		}
 
@@ -1201,18 +1201,18 @@ namespace Axiom.Core
 
 			public override void SetValue( ColorEx val )
 			{
-				light.Specular = val;
+				this.light.Specular = val;
 			}
 
 			public override void ApplyDeltaValue( ColorEx val )
 			{
-				var c = light.Specular;
+				var c = this.light.Specular;
 				SetValue( new ColorEx( c.a + val.a, c.r + val.r, c.g + val.g, c.b + val.b ) );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( light.Specular );
+				SetAsBaseValue( this.light.Specular );
 			}
 		}
 
@@ -1232,17 +1232,17 @@ namespace Axiom.Core
 
 			public override void SetValue( Real val )
 			{
-				light.SpotlightFalloff = val;
+				this.light.SpotlightFalloff = val;
 			}
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( light.SpotlightFalloff + val );
+				SetValue( this.light.SpotlightFalloff + val );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( light.SpotlightFalloff );
+				SetAsBaseValue( this.light.SpotlightFalloff );
 			}
 		}
 
@@ -1262,17 +1262,17 @@ namespace Axiom.Core
 
 			public override void SetValue( Real val )
 			{
-				light.SpotlightInnerAngle = Utility.RadiansToDegrees( (Real)val );
+				this.light.SpotlightInnerAngle = Utility.RadiansToDegrees( (Real)val );
 			}
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( Utility.DegreesToRadians( light.SpotlightInnerAngle ) + val );
+				SetValue( Utility.DegreesToRadians( this.light.SpotlightInnerAngle ) + val );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( Utility.DegreesToRadians( light.SpotlightInnerAngle ) );
+				SetAsBaseValue( Utility.DegreesToRadians( this.light.SpotlightInnerAngle ) );
 			}
 		}
 
@@ -1292,17 +1292,17 @@ namespace Axiom.Core
 
 			public override void SetValue( Real val )
 			{
-				light.SpotlightOuterAngle = Utility.RadiansToDegrees( (Real)val );
+				this.light.SpotlightOuterAngle = Utility.RadiansToDegrees( (Real)val );
 			}
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( Utility.DegreesToRadians( light.SpotlightOuterAngle ) + val );
+				SetValue( Utility.DegreesToRadians( this.light.SpotlightOuterAngle ) + val );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( Utility.DegreesToRadians( light.SpotlightOuterAngle ) );
+				SetAsBaseValue( Utility.DegreesToRadians( this.light.SpotlightOuterAngle ) );
 			}
 		}
 
@@ -1358,7 +1358,7 @@ namespace Axiom.Core
 		{
 			var other = obj as Light;
 
-			if ( other.tempSquaredDist > tempSquaredDist )
+			if ( other.tempSquaredDist > this.tempSquaredDist )
 			{
 				return 1;
 			}
@@ -1430,9 +1430,9 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		internal Real DeriveShadowNearClipDistance( Camera camera )
 		{
-			if ( shadowNearDistance > 0 )
+			if ( this.shadowNearDistance > 0 )
 			{
-				return shadowNearDistance;
+				return this.shadowNearDistance;
 			}
 			else
 			{
@@ -1447,19 +1447,19 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		internal Real DeriveShadowFarClipDistance( Camera camera )
 		{
-			if ( shadowFarDistance >= 0 )
+			if ( this.shadowFarDistance >= 0 )
 			{
-				return shadowFarDistance;
+				return this.shadowFarDistance;
 			}
 			else
 			{
-				if ( type == LightType.Directional )
+				if ( this.type == LightType.Directional )
 				{
 					return 0;
 				}
 				else
 				{
-					return range;
+					return this.range;
 				}
 			}
 		}

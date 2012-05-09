@@ -53,18 +53,18 @@ namespace Axiom.Scripting
 
 		public ScriptableProperties( IScriptableObject owner )
 		{
-			_owner = owner;
+			this._owner = owner;
 		}
 
 		public string this[ string property ]
 		{
 			get
 			{
-				return _owner[ property ];
+				return this._owner[ property ];
 			}
 			set
 			{
-				_owner[ property ] = value;
+				this._owner[ property ] = value;
 			}
 		}
 	}
@@ -100,17 +100,17 @@ namespace Axiom.Scripting
 
 		public ScriptablePropertyAttribute( string scriptPropertyName )
 		{
-			ScriptPropertyName = scriptPropertyName;
+			this.ScriptPropertyName = scriptPropertyName;
 		}
 
 		public ScriptablePropertyAttribute( string scriptPropertyName, string description )
 		{
-			ScriptPropertyName = scriptPropertyName;
+			this.ScriptPropertyName = scriptPropertyName;
 		}
 
 		public ScriptablePropertyAttribute( string scriptPropertyName, string description, Type owner )
 		{
-			ScriptPropertyName = scriptPropertyName;
+			this.ScriptPropertyName = scriptPropertyName;
 		}
 	}
 
@@ -125,7 +125,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return _classParameters.Values;
+				return this._classParameters.Values;
 			}
 		}
 
@@ -135,8 +135,8 @@ namespace Axiom.Scripting
 		protected ScriptableObject()
 			: base()
 		{
-			_classParameters = _getTypePropertyMap( GetType() );
-			_properties = new ScriptableProperties( this );
+			this._classParameters = _getTypePropertyMap( GetType() );
+			this._properties = new ScriptableProperties( this );
 		}
 
 		#region Static Implementation
@@ -204,7 +204,7 @@ namespace Axiom.Scripting
 		{
 			get
 			{
-				return _properties;
+				return this._properties;
 			}
 		}
 
@@ -228,7 +228,7 @@ namespace Axiom.Scripting
 			{
 				IPropertyCommand command;
 
-				if ( _classParameters.TryGetValue( property, out command ) )
+				if ( this._classParameters.TryGetValue( property, out command ) )
 				{
 					return command.Get( this );
 				}
@@ -242,7 +242,7 @@ namespace Axiom.Scripting
 			{
 				IPropertyCommand command;
 
-				if ( _classParameters.TryGetValue( property, out command ) )
+				if ( this._classParameters.TryGetValue( property, out command ) )
 				{
 					command.Set( this, value );
 				}

@@ -83,14 +83,14 @@ namespace Axiom.Media
 
 			internal void Write( BinaryWriter br )
 			{
-				br.Write( size );
-				br.Write( flags );
-				br.Write( fourCC );
-				br.Write( rgbBits );
-				br.Write( redMask );
-				br.Write( greenMask );
-				br.Write( blueMask );
-				br.Write( alphaMask );
+				br.Write( this.size );
+				br.Write( this.flags );
+				br.Write( this.fourCC );
+				br.Write( this.rgbBits );
+				br.Write( this.redMask );
+				br.Write( this.greenMask );
+				br.Write( this.blueMask );
+				br.Write( this.alphaMask );
 			}
 		};
 
@@ -116,10 +116,10 @@ namespace Axiom.Media
 
 			internal void Write( BinaryWriter br )
 			{
-				br.Write( caps1 );
-				br.Write( caps2 );
-				br.Write( reserved[ 0 ] );
-				br.Write( reserved[ 1 ] );
+				br.Write( this.caps1 );
+				br.Write( this.caps2 );
+				br.Write( this.reserved[ 0 ] );
+				br.Write( this.reserved[ 1 ] );
 			}
 		};
 
@@ -168,23 +168,23 @@ namespace Axiom.Media
 
 			internal void Write( BinaryWriter br )
 			{
-				br.Write( size );
-				br.Write( flags );
-				br.Write( height );
-				br.Write( width );
-				br.Write( sizeOrPitch );
-				br.Write( depth );
-				br.Write( mipMapCount );
+				br.Write( this.size );
+				br.Write( this.flags );
+				br.Write( this.height );
+				br.Write( this.width );
+				br.Write( this.sizeOrPitch );
+				br.Write( this.depth );
+				br.Write( this.mipMapCount );
 
-				foreach ( var cur in reserved1 )
+				foreach ( var cur in this.reserved1 )
 				{
 					br.Write( cur );
 				}
 
-				pixelFormat.Write( br );
-				caps.Write( br );
+				this.pixelFormat.Write( br );
+				this.caps.Write( br );
 
-				br.Write( reserved2 );
+				br.Write( this.reserved2 );
 			}
 		};
 
@@ -432,7 +432,7 @@ namespace Axiom.Media
 				var ddsHeaderSizeOrPitch = 0;
 				var ddsHeaderCaps1 = 0;
 				var ddsHeaderCaps2 = 0;
-				var ddsMagic = DDS_MAGIC;
+				var ddsMagic = this.DDS_MAGIC;
 
 				// Initalise the header flags
 				ddsHeaderFlags = ( isVolume )
@@ -1142,7 +1142,7 @@ namespace Axiom.Media
 					_flipEndian( data, sizeof ( int ), 1 );
 				}
 
-				if ( DDS_MAGIC == fileType )
+				if ( this.DDS_MAGIC == fileType )
 				{
 					return "dds";
 				}

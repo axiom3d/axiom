@@ -65,7 +65,7 @@ namespace Axiom.Core
 		/// </summary>
 		public void Start()
 		{
-			_timer.Start();
+			this._timer.Start();
 		}
 
 		#endregion Methods
@@ -80,7 +80,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _timer.ElapsedTicks;
+				return this._timer.ElapsedTicks;
 			}
 		}
 
@@ -104,7 +104,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _timer.IsRunning;
+				return this._timer.IsRunning;
 			}
 		}
 
@@ -142,15 +142,15 @@ namespace Axiom.Core
 		public void Reset()
 		{
 			// reset by restarting the timer
-			_timer.Reset();
-			_timer.Start();
+			this._timer.Reset();
+			this._timer.Start();
 		}
 
 		public long Microseconds
 		{
 			get
 			{
-				return _timer.ElapsedMilliseconds/10;
+				return this._timer.ElapsedMilliseconds/10;
 			}
 		}
 
@@ -158,7 +158,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _timer.ElapsedMilliseconds;
+				return this._timer.ElapsedMilliseconds;
 			}
 		}
 

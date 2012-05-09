@@ -183,7 +183,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return textureDefinitions;
+				return this.textureDefinitions;
 			}
 		}
 
@@ -199,7 +199,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return targetPasses;
+				return this.targetPasses;
 			}
 		}
 
@@ -215,7 +215,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return outputTarget;
+				return this.outputTarget;
 			}
 		}
 
@@ -233,11 +233,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return schemeName;
+				return this.schemeName;
 			}
 			set
 			{
-				schemeName = value;
+				this.schemeName = value;
 			}
 		}
 
@@ -254,11 +254,11 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return compositorLogicName;
+				return this.compositorLogicName;
 			}
 			set
 			{
-				compositorLogicName = value;
+				this.compositorLogicName = value;
 			}
 		}
 
@@ -274,7 +274,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return parent;
+				return this.parent;
 			}
 		}
 
@@ -287,9 +287,9 @@ namespace Axiom.Graphics
 		public CompositionTechnique( Compositor parent )
 		{
 			this.parent = parent;
-			outputTarget = new CompositionTargetPass( this );
-			textureDefinitions = new List<TextureDefinition>();
-			targetPasses = new List<CompositionTargetPass>();
+			this.outputTarget = new CompositionTargetPass( this );
+			this.textureDefinitions = new List<TextureDefinition>();
+			this.targetPasses = new List<CompositionTargetPass>();
 		}
 
 		#region TextureDefinition Management
@@ -303,7 +303,7 @@ namespace Axiom.Graphics
 		{
 			var t = new TextureDefinition();
 			t.Name = name;
-			textureDefinitions.Add( t );
+			this.textureDefinitions.Add( t );
 			return t;
 		}
 
@@ -313,8 +313,9 @@ namespace Axiom.Graphics
 		/// <param name="index"></param>
 		public virtual void RemoveTextureDefinition( int index )
 		{
-			Debug.Assert( index < textureDefinitions.Count, "Index out of bounds, CompositionTechnqiuq.RemoveTextureDefinition" );
-			textureDefinitions.RemoveAt( index );
+			Debug.Assert( index < this.textureDefinitions.Count,
+			              "Index out of bounds, CompositionTechnqiuq.RemoveTextureDefinition" );
+			this.textureDefinitions.RemoveAt( index );
 		}
 
 		/// <summary>
@@ -324,8 +325,8 @@ namespace Axiom.Graphics
 		/// <returns>texture definition for the given index</returns>
 		public virtual TextureDefinition GetTextureDefinition( int index )
 		{
-			Debug.Assert( index < textureDefinitions.Count, "Index out of bounds, CompositionTechnqiuq.GetTextureDefinition" );
-			return textureDefinitions[ index ];
+			Debug.Assert( index < this.textureDefinitions.Count, "Index out of bounds, CompositionTechnqiuq.GetTextureDefinition" );
+			return this.textureDefinitions[ index ];
 		}
 
 		/// <summary>
@@ -335,7 +336,7 @@ namespace Axiom.Graphics
 		/// <returns>texture definition for the given name.if noone exists, null</returns>
 		public virtual TextureDefinition GetTextureDefinition( string name )
 		{
-			foreach ( var t in textureDefinitions )
+			foreach ( var t in this.textureDefinitions )
 			{
 				if ( t.Name == name )
 				{
@@ -351,7 +352,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void RemoveAllTextureDefinitions()
 		{
-			textureDefinitions.Clear();
+			this.textureDefinitions.Clear();
 		}
 
 		#endregion TextureDefinition Management
@@ -365,7 +366,7 @@ namespace Axiom.Graphics
 		public virtual CompositionTargetPass CreateTargetPass()
 		{
 			var t = new CompositionTargetPass( this );
-			targetPasses.Add( t );
+			this.targetPasses.Add( t );
 			return t;
 		}
 
@@ -375,10 +376,10 @@ namespace Axiom.Graphics
 		/// <param name="index">index of the target pass to remove to.</param>
 		public virtual void RemoveTargetPass( int index )
 		{
-			Debug.Assert( index < targetPasses.Count, "Index out of bounds, CompositionTechnqiuqe.RemoveTargetPass" );
-			targetPasses[ index ].Dispose();
-			targetPasses[ index ] = null;
-			targetPasses.RemoveAt( index );
+			Debug.Assert( index < this.targetPasses.Count, "Index out of bounds, CompositionTechnqiuqe.RemoveTargetPass" );
+			this.targetPasses[ index ].Dispose();
+			this.targetPasses[ index ] = null;
+			this.targetPasses.RemoveAt( index );
 		}
 
 		/// <summary>
@@ -388,8 +389,8 @@ namespace Axiom.Graphics
 		/// <returns>target pass for the given index</returns>
 		public virtual CompositionTargetPass GetTargetPass( int index )
 		{
-			Debug.Assert( index < targetPasses.Count, "Index out of bounds, CompositionTechnqiuqe.GetTargetPass" );
-			return targetPasses[ index ];
+			Debug.Assert( index < this.targetPasses.Count, "Index out of bounds, CompositionTechnqiuqe.GetTargetPass" );
+			return this.targetPasses[ index ];
 		}
 
 		/// <summary>
@@ -397,12 +398,12 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void RemoveAllTargetPasses()
 		{
-			for ( int i = 0; i < targetPasses.Count; i++ )
+			for ( int i = 0; i < this.targetPasses.Count; i++ )
 			{
-				targetPasses[ i ].Dispose();
-				targetPasses[ i ] = null;
+				this.targetPasses[ i ].Dispose();
+				this.targetPasses[ i ] = null;
 			}
-			targetPasses.Clear();
+			this.targetPasses.Clear();
 		}
 
 		#endregion TargetPass Management
@@ -422,12 +423,12 @@ namespace Axiom.Graphics
 		public virtual bool IsSupported( bool allowTextureDegradation )
 		{
 			// Check output target pass is supported
-			if ( !outputTarget.IsSupported )
+			if ( !this.outputTarget.IsSupported )
 			{
 				return false;
 			}
 			// Check all target passes is supported
-			foreach ( var targetPass in targetPasses )
+			foreach ( var targetPass in this.targetPasses )
 			{
 				if ( !targetPass.IsSupported )
 				{
@@ -437,7 +438,7 @@ namespace Axiom.Graphics
 
 			var texMgr = TextureManager.Instance;
 			// Check all Texture Definitions is supported
-			foreach ( var td in textureDefinitions )
+			foreach ( var td in this.textureDefinitions )
 			{
 				// Firstly check MRTs
 				if ( td.PixelFormats.Count > Root.Instance.RenderSystem.Capabilities.MultiRenderTargetCount )
@@ -480,8 +481,8 @@ namespace Axiom.Graphics
 					return;
 					RemoveAllTextureDefinitions();
 					RemoveAllTargetPasses();
-					outputTarget.Dispose();
-					outputTarget = null;
+					this.outputTarget.Dispose();
+					this.outputTarget = null;
 				}
 			}
 			base.dispose( disposeManagedResources );

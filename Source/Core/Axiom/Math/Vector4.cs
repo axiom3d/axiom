@@ -105,7 +105,7 @@ namespace Axiom.Math
 		/// <returns>A Real representing the dot product value.</returns>
 		public Real Dot( Vector4 vec )
 		{
-			return x*vec.x + y*vec.y + z*vec.z + w*vec.w;
+			return this.x*vec.x + this.y*vec.y + this.z*vec.z + this.w*vec.w;
 		}
 
 		#endregion Methods
@@ -268,7 +268,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pX = &x )
+					fixed ( Real* pX = &this.x )
 					{
 						return *( pX + index );
 					}
@@ -291,7 +291,7 @@ namespace Axiom.Math
 #else
 				unsafe
 				{
-					fixed ( Real* pX = &x )
+					fixed ( Real* pX = &this.x )
 					{
 						*( pX + index ) = value;
 					}
@@ -311,7 +311,7 @@ namespace Axiom.Math
 		/// <returns>A string representation of a Vector4.</returns>
 		public override string ToString()
 		{
-			return string.Format( "<{0},{1},{2},{3}>", x, y, z, w );
+			return string.Format( "<{0},{1},{2},{3}>", this.x, this.y, this.z, this.w );
 		}
 
 		/// <summary>
@@ -325,7 +325,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public override int GetHashCode()
 		{
-			return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode() ^ w.GetHashCode();
+			return this.x.GetHashCode() ^ this.y.GetHashCode() ^ this.z.GetHashCode() ^ this.w.GetHashCode();
 		}
 
 		/// <summary>

@@ -1,4 +1,5 @@
 #region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -24,33 +25,34 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion LGPL License
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
-using System;
+
 using Axiom.Graphics;
-using Axiom.Media;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES
 {
 	public class GLESRenderTexture : RenderTexture
 	{
-
 		/// <summary>
-		/// 
 		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="target"></param>
-		/// <param name="writeGamma"></param>
-		/// <param name="fsaa"></param>
+		/// <param name="name"> </param>
+		/// <param name="target"> </param>
+		/// <param name="writeGamma"> </param>
+		/// <param name="fsaa"> </param>
 		public GLESRenderTexture( string name, GLESSurfaceDescription target, bool writeGamma, int fsaa )
 			: base( target.Buffer, target.ZOffset )
 		{
@@ -62,17 +64,12 @@ namespace Axiom.RenderSystems.OpenGLES
 		#region RenderTexture Implementation
 
 		/// <summary>
-		/// 
 		/// </summary>
 		public override bool RequiresTextureFlipping
 		{
-			get
-			{
-				return true;
-			}
+			get { return true; }
 		}
 
 		#endregion RenderTexture Implementation
 	}
 }
-

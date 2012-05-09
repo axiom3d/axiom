@@ -147,7 +147,8 @@ namespace Axiom.Core
 			if ( instance == null )
 			{
 				// find and load a platform manager assembly
-				var files = Directory.GetFiles( ".", "Axiom.Platforms.*.dll" ).ToArray();
+				var cwd = Assembly.GetExecutingAssembly().CodeBase;
+				var files = Directory.GetFiles( cwd, "Axiom.Platforms.*.dll" ).ToArray();
 				var file = "";
 
 				// make sure there is 1 platform manager available

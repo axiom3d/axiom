@@ -64,7 +64,7 @@ namespace Axiom.Controllers.Canned
 
 		public override Real Execute( Real sourceValue )
 		{
-			return AdjustInput( sourceValue*rate );
+			return AdjustInput( sourceValue*this.rate );
 		}
 	}
 }

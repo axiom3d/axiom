@@ -111,24 +111,24 @@ namespace Axiom.Samples
 		/// <param name="height"></param>
 		public TextBox( String name, String caption, Real width, Real height )
 		{
-			lines = new List<string>();
+			this.lines = new List<string>();
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/TextBox", "BorderPanel", name );
 			element.Width = width;
 			element.Height = height;
 			var container = (OverlayElementContainer)element;
-			textArea = (TextArea)container.Children[ Name + "/TextBoxText" ];
-			captionBar = (BorderPanel)container.Children[ Name + "/TextBoxCaptionBar" ];
-			captionBar.Width = width - 4;
-			captionTextArea = (TextArea)captionBar.Children[ captionBar.Name + "/TextBoxCaption" ];
+			this.textArea = (TextArea)container.Children[ Name + "/TextBoxText" ];
+			this.captionBar = (BorderPanel)container.Children[ Name + "/TextBoxCaptionBar" ];
+			this.captionBar.Width = width - 4;
+			this.captionTextArea = (TextArea)this.captionBar.Children[ this.captionBar.Name + "/TextBoxCaption" ];
 			Caption = caption;
-			scrollTrack = (BorderPanel)container.Children[ Name + "/TextBoxScrollTrack" ];
-			scrollHandle = (Panel)scrollTrack.Children[ scrollTrack.Name + "/TextBoxScrollHandle" ];
-			scrollHandle.Hide();
-			isDragging = false;
-			scrollPercentage = 0;
-			startingLine = 0;
-			padding = 15;
-			text = "";
+			this.scrollTrack = (BorderPanel)container.Children[ Name + "/TextBoxScrollTrack" ];
+			this.scrollHandle = (Panel)this.scrollTrack.Children[ this.scrollTrack.Name + "/TextBoxScrollHandle" ];
+			this.scrollHandle.Hide();
+			this.isDragging = false;
+			this.scrollPercentage = 0;
+			this.startingLine = 0;
+			this.padding = 15;
+			this.text = "";
 			RefitContents();
 		}
 
@@ -143,12 +143,12 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				padding = value;
+				this.padding = value;
 				RefitContents();
 			}
 			get
 			{
-				return padding;
+				return this.padding;
 			}
 		}
 
@@ -159,11 +159,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return captionTextArea.Text;
+				return this.captionTextArea.Text;
 			}
 			set
 			{
-				captionTextArea.Text = value;
+				this.captionTextArea.Text = value;
 			}
 		}
 
@@ -174,33 +174,33 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return text;
+				return this.text;
 			}
 			set
 			{
-				text = value;
-				lines.Clear();
+				this.text = value;
+				this.lines.Clear();
 
-				var font = (Font)FontManager.Instance.GetByName( textArea.FontName );
+				var font = (Font)FontManager.Instance.GetByName( this.textArea.FontName );
 
-				String current = text;
+				String current = this.text;
 				bool firstWord = true;
 				int lastSpace = 0;
 				int lineBegin = 0;
 				Real lineWidth = 0;
-				Real rightBoundary = element.Width - 2*padding + scrollTrack.Left + 10;
+				Real rightBoundary = element.Width - 2*this.padding + this.scrollTrack.Left + 10;
 				bool insert = true;
 				for ( int i = 0; i < current.Length; i++ )
 				{
 					if ( current[ i ] == ' ' )
 					{
-						if ( textArea.SpaceWidth != 0 )
+						if ( this.textArea.SpaceWidth != 0 )
 						{
-							lineWidth += textArea.SpaceWidth;
+							lineWidth += this.textArea.SpaceWidth;
 						}
 						else
 						{
-							lineWidth += font.GetGlyphAspectRatio( ' ' )*textArea.CharHeight;
+							lineWidth += font.GetGlyphAspectRatio( ' ' )*this.textArea.CharHeight;
 						}
 						firstWord = false;
 						lastSpace = i;
@@ -210,14 +210,14 @@ namespace Axiom.Samples
 					{
 						firstWord = true;
 						lineWidth = 0;
-						lines.Add( current.Substring( lineBegin, i - lineBegin ) );
+						this.lines.Add( current.Substring( lineBegin, i - lineBegin ) );
 						lineBegin = i + 1;
 						insert = true;
 					}
 					else
 					{
 						// use glyph information to calculate line width
-						lineWidth += font.GetGlyphAspectRatio( current[ i ] )*textArea.CharHeight;
+						lineWidth += font.GetGlyphAspectRatio( current[ i ] )*this.textArea.CharHeight;
 						if ( lineWidth > rightBoundary && insert )
 						{
 							if ( firstWord )
@@ -245,21 +245,21 @@ namespace Axiom.Samples
 					}
 				}
 
-				lines.Add( current.Substring( lineBegin ) );
+				this.lines.Add( current.Substring( lineBegin ) );
 
 				int maxLines = HeightInLines;
 
-				if ( lines.Count > maxLines ) // if too much text, filter based on scroll percentage
+				if ( this.lines.Count > maxLines ) // if too much text, filter based on scroll percentage
 				{
-					scrollHandle.Show();
+					this.scrollHandle.Show();
 					FilterLines();
 				}
 				else // otherwise just show all the text
 				{
-					textArea.Text = current;
-					scrollHandle.Hide();
-					scrollPercentage = 0;
-					scrollHandle.Top = 0;
+					this.textArea.Text = current;
+					this.scrollHandle.Hide();
+					this.scrollPercentage = 0;
+					this.scrollHandle.Top = 0;
 				}
 			}
 		}
@@ -271,11 +271,11 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return textArea.HorizontalAlignment;
+				return this.textArea.HorizontalAlignment;
 			}
 			set
 			{
-				textArea.HorizontalAlignment = value;
+				this.textArea.HorizontalAlignment = value;
 				RefitContents();
 			}
 		}
@@ -287,13 +287,13 @@ namespace Axiom.Samples
 		{
 			set
 			{
-				scrollPercentage = Math.Utility.Clamp<Real>( value, 1, 0 );
-				scrollHandle.Top = (int)( value*( scrollTrack.Height - scrollHandle.Height ) );
+				this.scrollPercentage = Math.Utility.Clamp<Real>( value, 1, 0 );
+				this.scrollHandle.Top = (int)( value*( this.scrollTrack.Height - this.scrollHandle.Height ) );
 				FilterLines();
 			}
 			get
 			{
-				return scrollPercentage;
+				return this.scrollPercentage;
 			}
 		}
 
@@ -304,7 +304,7 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return (int)( ( element.Height - 2*padding - captionBar.Height + 5 )/textArea.CharHeight );
+				return (int)( ( element.Height - 2*this.padding - this.captionBar.Height + 5 )/this.textArea.CharHeight );
 			}
 		}
 
@@ -334,21 +334,21 @@ namespace Axiom.Samples
 		/// </summary>
 		public void RefitContents()
 		{
-			scrollTrack.Height = element.Height - captionBar.Height - 20;
-			scrollTrack.Top = captionBar.Height + 10;
+			this.scrollTrack.Height = element.Height - this.captionBar.Height - 20;
+			this.scrollTrack.Top = this.captionBar.Height + 10;
 
-			textArea.Top = captionBar.Height + padding - 5;
-			if ( textArea.HorizontalAlignment == HorizontalAlignment.Right )
+			this.textArea.Top = this.captionBar.Height + this.padding - 5;
+			if ( this.textArea.HorizontalAlignment == HorizontalAlignment.Right )
 			{
-				textArea.Left = -padding + scrollTrack.Left;
+				this.textArea.Left = -this.padding + this.scrollTrack.Left;
 			}
-			else if ( textArea.HorizontalAlignment == HorizontalAlignment.Left )
+			else if ( this.textArea.HorizontalAlignment == HorizontalAlignment.Left )
 			{
-				textArea.Left = padding;
+				this.textArea.Left = this.padding;
 			}
 			else
 			{
-				textArea.Left = scrollTrack.Left/2;
+				this.textArea.Left = this.scrollTrack.Left/2;
 			}
 
 			Text = Text;
@@ -360,26 +360,26 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorPressed( Vector2 cursorPos )
 		{
-			if ( !scrollHandle.IsVisible )
+			if ( !this.scrollHandle.IsVisible )
 			{
 				return; // don't care about clicks if text not scrollable
 			}
 
-			Vector2 co = Widget.CursorOffset( scrollHandle, cursorPos );
+			Vector2 co = Widget.CursorOffset( this.scrollHandle, cursorPos );
 
 			if ( co.LengthSquared <= 81 )
 			{
-				isDragging = true;
-				dragOffset = co.y;
+				this.isDragging = true;
+				this.dragOffset = co.y;
 			}
-			else if ( Widget.IsCursorOver( scrollTrack, cursorPos ) )
+			else if ( Widget.IsCursorOver( this.scrollTrack, cursorPos ) )
 			{
-				Real newTop = scrollHandle.Top + co.y;
-				Real lowerBoundary = scrollTrack.Height - scrollHandle.Height;
-				scrollHandle.Top = Math.Utility.Clamp<Real>( newTop, lowerBoundary, 0 );
+				Real newTop = this.scrollHandle.Top + co.y;
+				Real lowerBoundary = this.scrollTrack.Height - this.scrollHandle.Height;
+				this.scrollHandle.Top = Math.Utility.Clamp<Real>( newTop, lowerBoundary, 0 );
 
 				// update text area contents based on new scroll percentage
-				scrollPercentage = Math.Utility.Clamp<Real>( newTop/lowerBoundary, 1, 0 );
+				this.scrollPercentage = Math.Utility.Clamp<Real>( newTop/lowerBoundary, 1, 0 );
 				FilterLines();
 			}
 
@@ -392,7 +392,7 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorReleased( Vector2 cursorPos )
 		{
-			isDragging = false;
+			this.isDragging = false;
 
 			base.OnCursorReleased( cursorPos );
 		}
@@ -403,15 +403,15 @@ namespace Axiom.Samples
 		/// <param name="cursorPos"></param>
 		public override void OnCursorMoved( Vector2 cursorPos )
 		{
-			if ( isDragging )
+			if ( this.isDragging )
 			{
-				Vector2 co = Widget.CursorOffset( scrollHandle, cursorPos );
-				Real newTop = scrollHandle.Top + co.y - dragOffset;
-				Real lowerBoundary = scrollTrack.Height - scrollHandle.Height;
-				scrollHandle.Top = Math.Utility.Clamp<Real>( newTop, lowerBoundary, 0 );
+				Vector2 co = Widget.CursorOffset( this.scrollHandle, cursorPos );
+				Real newTop = this.scrollHandle.Top + co.y - this.dragOffset;
+				Real lowerBoundary = this.scrollTrack.Height - this.scrollHandle.Height;
+				this.scrollHandle.Top = Math.Utility.Clamp<Real>( newTop, lowerBoundary, 0 );
 
 				// update text area contents based on new scroll percentage
-				scrollPercentage = Math.Utility.Clamp<Real>( newTop/lowerBoundary, 1, 0 );
+				this.scrollPercentage = Math.Utility.Clamp<Real>( newTop/lowerBoundary, 1, 0 );
 				FilterLines();
 			}
 
@@ -423,7 +423,7 @@ namespace Axiom.Samples
 		/// </summary>
 		public override void OnLostFocus()
 		{
-			isDragging = false; // stop dragging if cursor was lost
+			this.isDragging = false; // stop dragging if cursor was lost
 			base.OnLostFocus();
 		}
 
@@ -434,16 +434,16 @@ namespace Axiom.Samples
 		{
 			String shown = "";
 			int maxLines = HeightInLines;
-			var newStart = (int)( scrollPercentage*( lines.Count - maxLines ) + 0.5f );
+			var newStart = (int)( this.scrollPercentage*( this.lines.Count - maxLines ) + 0.5f );
 
-			startingLine = newStart;
+			this.startingLine = newStart;
 
 			for ( int i = 0; i < maxLines; i++ )
 			{
-				shown += lines[ startingLine + i ] + "\n";
+				shown += this.lines[ this.startingLine + i ] + "\n";
 			}
 
-			textArea.Text = shown; // show just the filtered lines
+			this.textArea.Text = shown; // show just the filtered lines
 		}
 
 		#endregion methods

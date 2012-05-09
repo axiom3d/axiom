@@ -67,27 +67,27 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return buttonState;
+				return this.buttonState;
 			}
 			protected set
 			{
 				if ( value == ButtonState.Over )
 				{
-					BorderPanel.BorderMaterialName = "SdkTrays/Button/Over";
-					BorderPanel.MaterialName = "SdkTrays/Button/Over";
+					this.BorderPanel.BorderMaterialName = "SdkTrays/Button/Over";
+					this.BorderPanel.MaterialName = "SdkTrays/Button/Over";
 				}
 				else if ( value == ButtonState.Up )
 				{
-					BorderPanel.BorderMaterialName = "SdkTrays/Button/Up";
-					BorderPanel.MaterialName = "SdkTrays/Button/Up";
+					this.BorderPanel.BorderMaterialName = "SdkTrays/Button/Up";
+					this.BorderPanel.MaterialName = "SdkTrays/Button/Up";
 				}
 				else
 				{
-					BorderPanel.BorderMaterialName = "SdkTrays/Button/Down";
-					BorderPanel.MaterialName = "SdkTrays/Button/Down";
+					this.BorderPanel.BorderMaterialName = "SdkTrays/Button/Down";
+					this.BorderPanel.MaterialName = "SdkTrays/Button/Down";
 				}
 
-				buttonState = value;
+				this.buttonState = value;
 			}
 		}
 
@@ -98,14 +98,14 @@ namespace Axiom.Samples
 		{
 			get
 			{
-				return TextArea.Text;
+				return this.TextArea.Text;
 			}
 			set
 			{
-				TextArea.Text = value;
-				if ( isFitToContents )
+				this.TextArea.Text = value;
+				if ( this.isFitToContents )
 				{
-					element.Width = GetCaptionWidth( Caption, TextArea ) + element.Height - 12;
+					element.Width = GetCaptionWidth( Caption, this.TextArea ) + element.Height - 12;
 				}
 			}
 		}
@@ -126,17 +126,17 @@ namespace Axiom.Samples
 		public Button( String name, String caption, Real width )
 		{
 			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Button", "BorderPanel", name );
-			BorderPanel = (BorderPanel)element;
-			TextArea = (TextArea)BorderPanel.Children[ BorderPanel.Name + "/ButtonCaption" ];
-			TextArea.Top = -( TextArea.CharHeight/2 ); //
+			this.BorderPanel = (BorderPanel)element;
+			this.TextArea = (TextArea)this.BorderPanel.Children[ this.BorderPanel.Name + "/ButtonCaption" ];
+			this.TextArea.Top = -( this.TextArea.CharHeight/2 ); //
 			if ( width > 0 )
 			{
 				element.Width = width;
-				isFitToContents = false;
+				this.isFitToContents = false;
 			}
 			else
 			{
-				isFitToContents = true;
+				this.isFitToContents = true;
 			}
 
 			Caption = caption;

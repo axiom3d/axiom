@@ -305,7 +305,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return x*x + y*y + z*z + w*w;
+				return this.x*this.x + this.y*this.y + this.z*this.z + this.w*this.w;
 			}
 		}
 
@@ -316,15 +316,15 @@ namespace Axiom.Math
 		{
 			get
 			{
-				var fTx = 2.0f*x;
-				var fTy = 2.0f*y;
-				var fTz = 2.0f*z;
-				var fTwy = fTy*w;
-				var fTwz = fTz*w;
-				var fTxy = fTy*x;
-				var fTxz = fTz*x;
-				var fTyy = fTy*y;
-				var fTzz = fTz*z;
+				var fTx = 2.0f*this.x;
+				var fTy = 2.0f*this.y;
+				var fTz = 2.0f*this.z;
+				var fTwy = fTy*this.w;
+				var fTwz = fTz*this.w;
+				var fTxy = fTy*this.x;
+				var fTxz = fTz*this.x;
+				var fTyy = fTy*this.y;
+				var fTzz = fTz*this.z;
 
 				return new Vector3( 1.0f - ( fTyy + fTzz ), fTxy + fTwz, fTxz - fTwy );
 			}
@@ -337,15 +337,15 @@ namespace Axiom.Math
 		{
 			get
 			{
-				var fTx = 2.0f*x;
-				var fTy = 2.0f*y;
-				var fTz = 2.0f*z;
-				var fTwx = fTx*w;
-				var fTwz = fTz*w;
-				var fTxx = fTx*x;
-				var fTxy = fTy*x;
-				var fTyz = fTz*y;
-				var fTzz = fTz*z;
+				var fTx = 2.0f*this.x;
+				var fTy = 2.0f*this.y;
+				var fTz = 2.0f*this.z;
+				var fTwx = fTx*this.w;
+				var fTwz = fTz*this.w;
+				var fTxx = fTx*this.x;
+				var fTxy = fTy*this.x;
+				var fTyz = fTz*this.y;
+				var fTzz = fTz*this.z;
 
 				return new Vector3( fTxy - fTwz, 1.0f - ( fTxx + fTzz ), fTyz + fTwx );
 			}
@@ -358,15 +358,15 @@ namespace Axiom.Math
 		{
 			get
 			{
-				var fTx = 2.0f*x;
-				var fTy = 2.0f*y;
-				var fTz = 2.0f*z;
-				var fTwx = fTx*w;
-				var fTwy = fTy*w;
-				var fTxx = fTx*x;
-				var fTxz = fTz*x;
-				var fTyy = fTy*y;
-				var fTyz = fTz*y;
+				var fTx = 2.0f*this.x;
+				var fTy = 2.0f*this.y;
+				var fTz = 2.0f*this.z;
+				var fTwx = fTx*this.w;
+				var fTwy = fTy*this.w;
+				var fTxx = fTx*this.x;
+				var fTxz = fTz*this.x;
+				var fTyy = fTy*this.y;
+				var fTyz = fTz*this.y;
 
 				return new Vector3( fTxz + fTwy, fTyz - fTwx, 1.0f - ( fTxx + fTyy ) );
 			}
@@ -418,12 +418,12 @@ namespace Axiom.Math
 			}
 			get
 			{
-				var test = x*y + z*w;
+				var test = this.x*this.y + this.z*this.w;
 				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
 				{
 					return 0f;
 				}
-				return (Real)Utility.ATan2( 2*x*w - 2*y*z, 1 - 2*x*x - 2*z*z );
+				return (Real)Utility.ATan2( 2*this.x*this.w - 2*this.y*this.z, 1 - 2*this.x*this.x - 2*this.z*this.z );
 			}
 		}
 
@@ -438,12 +438,12 @@ namespace Axiom.Math
 			}
 			get
 			{
-				var test = x*y + z*w;
+				var test = this.x*this.y + this.z*this.w;
 				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
 				{
-					return Utility.Sign( test )*2*Utility.ATan2( x, w );
+					return Utility.Sign( test )*2*Utility.ATan2( this.x, this.w );
 				}
-				return Utility.ATan2( 2*y*w - 2*x*z, 1 - 2*y*y - 2*z*z );
+				return Utility.ATan2( 2*this.y*this.w - 2*this.x*this.z, 1 - 2*this.y*this.y - 2*this.z*this.z );
 			}
 		}
 
@@ -457,7 +457,7 @@ namespace Axiom.Math
 			}
 			get
 			{
-				var test = x*y + z*w;
+				var test = this.x*this.y + this.z*this.w;
 				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
 				{
 					return Utility.Sign( test )*Utility.PI/2;
@@ -620,29 +620,29 @@ namespace Axiom.Math
 		public void ToEulerAngles( out Real pitch, out Real yaw, out Real roll )
 		{
 			var halfPi = Utility.PI/2;
-			var test = x*y + z*w;
+			var test = this.x*this.y + this.z*this.w;
 			if ( test > 0.499f )
 			{
 				// singularity at north pole
-				yaw = 2*Utility.ATan2( x, w );
+				yaw = 2*Utility.ATan2( this.x, this.w );
 				roll = halfPi;
 				pitch = 0;
 			}
 			else if ( test < -0.499f )
 			{
 				// singularity at south pole
-				yaw = -2*Utility.ATan2( x, w );
+				yaw = -2*Utility.ATan2( this.x, this.w );
 				roll = -halfPi;
 				pitch = 0;
 			}
 			else
 			{
-				var sqx = x*x;
-				var sqy = y*y;
-				var sqz = z*z;
-				yaw = Utility.ATan2( 2*y*w - 2*x*z, 1 - 2*sqy - 2*sqz );
+				var sqx = this.x*this.x;
+				var sqy = this.y*this.y;
+				var sqz = this.z*this.z;
+				yaw = Utility.ATan2( 2*this.y*this.w - 2*this.x*this.z, 1 - 2*sqy - 2*sqz );
 				roll = (Real)Utility.ASin( 2*test );
-				pitch = Utility.ATan2( 2*x*w - 2*y*z, 1 - 2*sqx - 2*sqz );
+				pitch = Utility.ATan2( 2*this.x*this.w - 2*this.y*this.z, 1 - 2*sqx - 2*sqz );
 			}
 
 			if ( pitch <= Real.Epsilon )
@@ -708,7 +708,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Real Dot( Quaternion quat )
 		{
-			return w*quat.w + x*quat.x + y*quat.y + z*quat.z;
+			return this.w*quat.w + this.x*quat.x + this.y*quat.y + this.z*quat.z;
 		}
 
 		/// <summary>
@@ -718,10 +718,10 @@ namespace Axiom.Math
 		{
 			var factor = 1.0f/Utility.Sqrt( Norm );
 
-			w = w*factor;
-			x = x*factor;
-			y = y*factor;
-			z = z*factor;
+			this.w = this.w*factor;
+			this.x = this.x*factor;
+			this.y = this.y*factor;
+			this.z = this.z*factor;
 		}
 
 		/// <summary>
@@ -735,15 +735,15 @@ namespace Axiom.Math
 			// The quaternion representing the rotation is
 			//   q = cos(A/2)+sin(A/2)*(x*i+y*j+z*k)
 
-			var sqrLength = x*x + y*y + z*z;
+			var sqrLength = this.x*this.x + this.y*this.y + this.z*this.z;
 
 			if ( sqrLength > 0.0f )
 			{
-				angle = 2.0f*(Real)Utility.ACos( w );
+				angle = 2.0f*(Real)Utility.ACos( this.w );
 				var invLength = Utility.InvSqrt( sqrLength );
-				axis.x = x*invLength;
-				axis.y = y*invLength;
-				axis.z = z*invLength;
+				axis.x = this.x*invLength;
+				axis.y = this.y*invLength;
+				axis.z = this.z*invLength;
 			}
 			else
 			{
@@ -762,18 +762,18 @@ namespace Axiom.Math
 		{
 			var rotation = new Matrix3();
 
-			var tx = 2.0f*x;
-			var ty = 2.0f*y;
-			var tz = 2.0f*z;
-			var twx = tx*w;
-			var twy = ty*w;
-			var twz = tz*w;
-			var txx = tx*x;
-			var txy = ty*x;
-			var txz = tz*x;
-			var tyy = ty*y;
-			var tyz = tz*y;
-			var tzz = tz*z;
+			var tx = 2.0f*this.x;
+			var ty = 2.0f*this.y;
+			var tz = 2.0f*this.z;
+			var twx = tx*this.w;
+			var twy = ty*this.w;
+			var twz = tz*this.w;
+			var txx = tx*this.x;
+			var txy = ty*this.x;
+			var txz = tz*this.x;
+			var tyy = ty*this.y;
+			var tyz = tz*this.y;
+			var tzz = tz*this.z;
 
 			rotation.m00 = 1.0f - ( tyy + tzz );
 			rotation.m01 = txy - twz;
@@ -794,11 +794,11 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public Quaternion Inverse()
 		{
-			var norm = w*w + x*x + y*y + z*z;
+			var norm = this.w*this.w + this.x*this.x + this.y*this.y + this.z*this.z;
 			if ( norm > 0.0f )
 			{
 				var inverseNorm = 1.0f/norm;
-				return new Quaternion( w*inverseNorm, -x*inverseNorm, -y*inverseNorm, -z*inverseNorm );
+				return new Quaternion( this.w*inverseNorm, -this.x*inverseNorm, -this.y*inverseNorm, -this.z*inverseNorm );
 			}
 			else
 			{
@@ -815,7 +815,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return new Quaternion( w, -x, -y, -z );
+				return new Quaternion( this.w, -this.x, -this.y, -this.z );
 			}
 		}
 
@@ -962,23 +962,23 @@ namespace Axiom.Math
 			// start off with a zero quat
 			var result = Quaternion.Zero;
 
-			if ( Utility.Abs( w ) < 1.0f )
+			if ( Utility.Abs( this.w ) < 1.0f )
 			{
-				var angle = (Real)Utility.ACos( w );
+				var angle = (Real)Utility.ACos( this.w );
 				var sin = Utility.Sin( angle );
 
 				if ( Utility.Abs( sin ) >= EPSILON )
 				{
 					var coeff = angle/sin;
-					result.x = coeff*x;
-					result.y = coeff*y;
-					result.z = coeff*z;
+					result.x = coeff*this.x;
+					result.y = coeff*this.y;
+					result.z = coeff*this.z;
 				}
 				else
 				{
-					result.x = x;
-					result.y = y;
-					result.z = z;
+					result.x = this.x;
+					result.y = this.y;
+					result.z = this.z;
 				}
 			}
 
@@ -995,7 +995,7 @@ namespace Axiom.Math
 			// exp(q) = cos(A)+sin(A)*(x*i+y*j+z*k).  If sin(A) is near zero,
 			// use exp(q) = cos(A)+A*(x*i+y*j+z*k) since A/sin(A) has limit 1.
 
-			var angle = Utility.Sqrt( x*x + y*y + z*z );
+			var angle = Utility.Sqrt( this.x*this.x + this.y*this.y + this.z*this.z );
 			var sin = Utility.Sin( angle );
 
 			// start off with a zero quat
@@ -1007,15 +1007,15 @@ namespace Axiom.Math
 			{
 				var coeff = sin/angle;
 
-				result.x = coeff*x;
-				result.y = coeff*y;
-				result.z = coeff*z;
+				result.x = coeff*this.x;
+				result.y = coeff*this.y;
+				result.z = coeff*this.z;
 			}
 			else
 			{
-				result.x = x;
-				result.y = y;
-				result.z = z;
+				result.x = this.x;
+				result.y = this.y;
+				result.z = this.z;
 			}
 
 			return result;
@@ -1032,12 +1032,12 @@ namespace Axiom.Math
 		/// <returns>A string representation of a Quaternion.</returns>
 		public override string ToString()
 		{
-			return string.Format( CultureInfo.InvariantCulture, "Quaternion({0}, {1}, {2}, {3})", w, x, y, z );
+			return string.Format( CultureInfo.InvariantCulture, "Quaternion({0}, {1}, {2}, {3})", this.w, this.x, this.y, this.z );
 		}
 
 		public override int GetHashCode()
 		{
-			return (int)x ^ (int)y ^ (int)z ^ (int)w;
+			return (int)this.x ^ (int)this.y ^ (int)this.z ^ (int)this.w;
 		}
 
 		public override bool Equals( object obj )

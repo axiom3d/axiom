@@ -36,7 +36,7 @@ namespace Axiom.Graphics
 			{
 				get
 				{
-					return _parameters;
+					return this._parameters;
 				}
 			}
 
@@ -106,7 +106,7 @@ namespace Axiom.Graphics
 			public GpuSharedParametersUsage( GpuSharedParameters sharedParams, GpuProgramParameters gparams )
 			{
 				SharedParameters = sharedParams;
-				_parameters = gparams;
+				this._parameters = gparams;
 				InitCopyData();
 			}
 
@@ -117,14 +117,14 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			protected void InitCopyData()
 			{
-				CopyDataList.Clear();
+				this.CopyDataList.Clear();
 				var sharedMap = SharedParameters.ConstantDefinitions.Map;
 				foreach ( var i in sharedMap )
 				{
 					var name = i.Key;
 					var sharedDef = i.Value;
 
-					var instDef = _parameters.FindNamedConstantDefinition( name, false );
+					var instDef = this._parameters.FindNamedConstantDefinition( name, false );
 					if ( instDef != null )
 					{
 						// Check that the definitions are the same
@@ -133,12 +133,12 @@ namespace Axiom.Graphics
 							var e = new CopyDataEntry();
 							e.SrcDefinition = sharedDef;
 							e.DstDefinition = instDef;
-							CopyDataList.Add( e );
+							this.CopyDataList.Add( e );
 						}
 					}
 				}
 
-				CopyDataVersion = SharedParameters.Version;
+				this.CopyDataVersion = SharedParameters.Version;
 			}
 
 			#endregion
@@ -156,24 +156,24 @@ namespace Axiom.Graphics
 			public void CopySharedParamsToTargetParams()
 			{
 				// check copy data version
-				if ( CopyDataVersion != SharedParameters.Version )
+				if ( this.CopyDataVersion != SharedParameters.Version )
 				{
 					InitCopyData();
 				}
 
-				foreach ( var e in CopyDataList )
+				foreach ( var e in this.CopyDataList )
 				{
 					if ( e.DstDefinition.IsFloat )
 					{
 						var dst = SharedParameters.FloatConstants;
-						var src = _parameters.floatConstants;
+						var src = this._parameters.floatConstants;
 						var pSrc = e.SrcDefinition.PhysicalIndex;
 						var pDst = e.DstDefinition.PhysicalIndex;
 
 
 						// Deal with matrix transposition here!!!
 						// transposition is specific to the dest param set, shared params don't do it
-						if ( _parameters.TransposeMatrices && e.DstDefinition.ConstantType == GpuConstantType.Matrix_4X4 )
+						if ( this._parameters.TransposeMatrices && e.DstDefinition.ConstantType == GpuConstantType.Matrix_4X4 )
 						{
 							for ( var row = 0; row < 4; ++row )
 							{
@@ -208,7 +208,7 @@ namespace Axiom.Graphics
 					else
 					{
 						var dst = SharedParameters.IntConstants;
-						var src = _parameters.intConstants;
+						var src = this._parameters.intConstants;
 						var pSrc = e.SrcDefinition.PhysicalIndex;
 						var pDst = e.DstDefinition.PhysicalIndex;
 

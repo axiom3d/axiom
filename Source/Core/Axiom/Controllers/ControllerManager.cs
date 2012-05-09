@@ -114,7 +114,7 @@ namespace Axiom.Controllers
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return frameTimeController;
+				return this.frameTimeController;
 			}
 		}
 
@@ -132,7 +132,7 @@ namespace Axiom.Controllers
 		public Controller<Real> CreateController( IControllerValue<Real> destination, IControllerFunction<Real> function )
 		{
 			// call the overloaded method passing in our precreated frame time controller value as the source
-			return CreateController( frameTimeController, destination, function );
+			return CreateController( this.frameTimeController, destination, function );
 		}
 
 		/// <summary>
@@ -149,25 +149,25 @@ namespace Axiom.Controllers
 			var controller = new Controller<Real>( source, destination, function );
 
 			// add the new controller to our list
-			controllers.Add( controller );
+			this.controllers.Add( controller );
 
 			return controller;
 		}
 
 		public void DestroyController( Controller<Real> controller )
 		{
-			controllers.Remove( controller );
+			this.controllers.Remove( controller );
 		}
 
 		public Controller<Real> CreateFrameTimePassthroughController( IControllerValue<Real> dest )
 		{
-			return CreateController( frameTimeController, dest, passthroughFunction );
+			return CreateController( this.frameTimeController, dest, this.passthroughFunction );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public Real GetElapsedTime()
 		{
-			return ( (FrameTimeControllerValue)frameTimeController ).ElapsedTime;
+			return ( (FrameTimeControllerValue)this.frameTimeController ).ElapsedTime;
 		}
 
 
@@ -372,7 +372,7 @@ namespace Axiom.Controllers
 			function = new WaveformControllerFunction( waveType, baseVal, frequency, phase, amplitude, true );
 
 			// finally, create the controller using frame time as the source value
-			return CreateController( frameTimeController, val, function );
+			return CreateController( this.frameTimeController, val, function );
 		}
 
 		/// <summary>
@@ -382,14 +382,14 @@ namespace Axiom.Controllers
 		public void UpdateAll()
 		{
 			var thisFrameNumber = Root.Instance.CurrentFrameCount;
-			if ( thisFrameNumber != lastFrameNumber )
+			if ( thisFrameNumber != this.lastFrameNumber )
 			{
 				// loop through each controller and tell it to update
-				foreach ( var controller in controllers )
+				foreach ( var controller in this.controllers )
 				{
 					controller.Update();
 				}
-				lastFrameNumber = thisFrameNumber;
+				this.lastFrameNumber = thisFrameNumber;
 			}
 		}
 
@@ -406,8 +406,8 @@ namespace Axiom.Controllers
 			{
 				if ( disposeManagedResources )
 				{
-					controllers.Clear();
-					controllers = null;
+					this.controllers.Clear();
+					this.controllers = null;
 					instance = null;
 				}
 			}

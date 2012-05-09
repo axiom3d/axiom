@@ -53,7 +53,7 @@ namespace Axiom.Scripting.Compiler
 			public ParticleSystemTranslator()
 				: base()
 			{
-				_System = null;
+				this._System = null;
 			}
 
 			#region Translator Implementation
@@ -91,24 +91,24 @@ namespace Axiom.Scripting.Compiler
 
 				if ( !processed )
 				{
-					_System = ParticleSystemManager.Instance.CreateTemplate( obj.Name, compiler.ResourceGroup );
+					this._System = ParticleSystemManager.Instance.CreateTemplate( obj.Name, compiler.ResourceGroup );
 				}
 				else
 				{
-					_System = (ParticleSystem)sysObject;
+					this._System = (ParticleSystem)sysObject;
 				}
 
-				if ( _System == null )
+				if ( this._System == null )
 				{
 					compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line );
 					return;
 				}
 
-				_System.Origin = obj.File;
-				_System.RemoveAllEmitters();
-				_System.RemoveAllAffectors();
+				this._System.Origin = obj.File;
+				this._System.RemoveAllEmitters();
+				this._System.RemoveAllAffectors();
 
-				obj.Context = _System;
+				obj.Context = this._System;
 
 				foreach ( var i in obj.Children )
 				{
@@ -136,11 +136,11 @@ namespace Axiom.Scripting.Compiler
 										compiler._fireEvent( ref locEvt );
 										var locEvtName = ( (ProcessResourceNameScriptCompilerEvent)locEvt ).Name;
 
-										if ( !_System.SetParameter( "material", locEvtName ) )
+										if ( !this._System.SetParameter( "material", locEvtName ) )
 										{
-											if ( _System.Renderer != null )
+											if ( this._System.Renderer != null )
 											{
-												if ( !_System.Renderer.SetParameter( "material", locEvtName ) )
+												if ( !this._System.Renderer.SetParameter( "material", locEvtName ) )
 												{
 													compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
 													                   "material property could not be set with material \"" + locEvtName + "\"" );
@@ -182,11 +182,11 @@ namespace Axiom.Scripting.Compiler
 										}
 									}
 
-									if ( !_System.SetParameter( name, value ) )
+									if ( !this._System.SetParameter( name, value ) )
 									{
-										if ( _System.Renderer != null )
+										if ( this._System.Renderer != null )
 										{
-											if ( !_System.Renderer.SetParameter( name, value ) )
+											if ( !this._System.Renderer.SetParameter( name, value ) )
 											{
 												compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
 											}

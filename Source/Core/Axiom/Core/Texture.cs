@@ -86,13 +86,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return width;
+				return this.width;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				width = srcWidth = value;
+				this.width = this.srcWidth = value;
 			}
 		}
 
@@ -113,13 +113,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return height;
+				return this.height;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				height = srcHeight = value;
+				this.height = this.srcHeight = value;
 			}
 		}
 
@@ -140,13 +140,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return depth;
+				return this.depth;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				depth = srcDepth = value;
+				this.depth = this.srcDepth = value;
 			}
 		}
 
@@ -172,7 +172,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return PixelUtil.HasAlpha( format );
+				return PixelUtil.HasAlpha( this.format );
 			}
 		}
 
@@ -193,13 +193,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return treatLuminanceAsAlpha;
+				return this.treatLuminanceAsAlpha;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				treatLuminanceAsAlpha = value;
+				this.treatLuminanceAsAlpha = value;
 			}
 		}
 
@@ -223,13 +223,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return gamma;
+				return this.gamma;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				gamma = value;
+				this.gamma = value;
 			}
 		}
 
@@ -249,7 +249,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return format;
+				return this.format;
 			}
 		}
 
@@ -270,13 +270,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mipmapCount;
+				return this.mipmapCount;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				requestedMipmapCount = mipmapCount = value;
+				this.requestedMipmapCount = this.mipmapCount = value;
 			}
 		}
 
@@ -298,7 +298,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mipmapsHardwareGenerated;
+				return this.mipmapsHardwareGenerated;
 			}
 		}
 
@@ -319,13 +319,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return textureType;
+				return this.textureType;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				textureType = value;
+				this.textureType = value;
 			}
 		}
 
@@ -347,13 +347,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return usage;
+				return this.usage;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				usage = value;
+				this.usage = value;
 			}
 		}
 
@@ -371,7 +371,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return srcWidth;
+				return this.srcWidth;
 			}
 		}
 
@@ -389,7 +389,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return srcHeight;
+				return this.srcHeight;
 			}
 		}
 
@@ -414,7 +414,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return srcDepth;
+				return this.srcDepth;
 			}
 		}
 
@@ -432,7 +432,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return srcFormat;
+				return this.srcFormat;
 			}
 		}
 
@@ -450,7 +450,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return desiredFormat;
+				return this.desiredFormat;
 			}
 		}
 
@@ -473,13 +473,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return desiredIntegerBitDepth;
+				return this.desiredIntegerBitDepth;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				desiredIntegerBitDepth = value;
+				this.desiredIntegerBitDepth = value;
 			}
 		}
 
@@ -495,13 +495,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return desiredFloatBitDepth;
+				return this.desiredFloatBitDepth;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				desiredFloatBitDepth = value;
+				this.desiredFloatBitDepth = value;
 			}
 		}
 
@@ -520,7 +520,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return fsaa;
+				return this.fsaa;
 			}
 		}
 
@@ -534,7 +534,7 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return fsaaHint;
+				return this.fsaaHint;
 			}
 		}
 
@@ -584,13 +584,13 @@ namespace Axiom.Core
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return hwGamma;
+				return this.hwGamma;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				hwGamma = value;
+				this.hwGamma = value;
 			}
 		}
 
@@ -734,9 +734,9 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void SetFormat( PixelFormat pf )
 		{
-			format = pf;
-			desiredFormat = pf;
-			srcFormat = pf;
+			this.format = pf;
+			this.desiredFormat = pf;
+			this.srcFormat = pf;
 
 			srcBpp = PixelUtil.GetNumElemBytes( pf );
 		}
@@ -747,8 +747,8 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void SetDesiredBitDepths( ushort integerBitDepth, ushort floatBitDepth )
 		{
-			desiredIntegerBitDepth = integerBitDepth;
-			desiredFloatBitDepth = floatBitDepth;
+			this.desiredIntegerBitDepth = integerBitDepth;
+			this.desiredFloatBitDepth = floatBitDepth;
 		}
 
 		/// <see cref="Resource.calculateSize"/>
@@ -780,35 +780,36 @@ namespace Axiom.Core
 			}
 
 			// Set desired texture size and properties from images[0]
-			srcWidth = width = images[ 0 ].Width;
-			srcHeight = height = images[ 0 ].Height;
-			srcDepth = depth = images[ 0 ].Depth;
+			this.srcWidth = this.width = images[ 0 ].Width;
+			this.srcHeight = this.height = images[ 0 ].Height;
+			this.srcDepth = this.depth = images[ 0 ].Depth;
 
 			// Get source image format and adjust if required
-			srcFormat = images[ 0 ].Format;
-			if ( treatLuminanceAsAlpha && srcFormat == PixelFormat.L8 )
+			this.srcFormat = images[ 0 ].Format;
+			if ( this.treatLuminanceAsAlpha && this.srcFormat == PixelFormat.L8 )
 			{
-				srcFormat = PixelFormat.A8;
+				this.srcFormat = PixelFormat.A8;
 			}
 
-			if ( desiredFormat != PixelFormat.Unknown )
+			if ( this.desiredFormat != PixelFormat.Unknown )
 			{
 				// If have desired format, use it
-				format = desiredFormat;
+				this.format = this.desiredFormat;
 			}
 			else
 			{
 				// Get the format according with desired bit depth
-				format = PixelUtil.GetFormatForBitDepths( srcFormat, desiredIntegerBitDepth, desiredFloatBitDepth );
+				this.format = PixelUtil.GetFormatForBitDepths( this.srcFormat, this.desiredIntegerBitDepth,
+				                                               this.desiredFloatBitDepth );
 			}
 
 			// The custom mipmaps in the image have priority over everything
 			var imageMips = images[ 0 ].NumMipMaps;
 			if ( imageMips > 0 )
 			{
-				mipmapCount = requestedMipmapCount = imageMips;
+				this.mipmapCount = this.requestedMipmapCount = imageMips;
 				// Disable flag for auto mip generation
-				usage &= ~TextureUsage.AutoMipMap;
+				this.usage &= ~TextureUsage.AutoMipMap;
 			}
 
 			// Create the texture
@@ -843,14 +844,14 @@ namespace Axiom.Core
 				msg.AppendFormat( "Texture: {0}: Loading {1} faces( {2}, {3}x{4}x{5} ) with", _name, faces,
 				                  PixelUtil.GetFormatName( images[ 0 ].Format ), images[ 0 ].Width, images[ 0 ].Height,
 				                  images[ 0 ].Depth );
-				if ( !( mipmapsHardwareGenerated && mipmapCount == 0 ) )
+				if ( !( this.mipmapsHardwareGenerated && this.mipmapCount == 0 ) )
 				{
-					msg.AppendFormat( " {0}", mipmapCount );
+					msg.AppendFormat( " {0}", this.mipmapCount );
 				}
 
-				if ( ( usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap )
+				if ( ( this.usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap )
 				{
-					msg.AppendFormat( "{0} generated mipmaps", mipmapsHardwareGenerated ? " hardware" : string.Empty );
+					msg.AppendFormat( "{0} generated mipmaps", this.mipmapsHardwareGenerated ? " hardware" : string.Empty );
 				}
 				else
 				{
@@ -886,9 +887,9 @@ namespace Axiom.Core
 					}
 
 					// Sets to treated format in case is difference
-					src.Format = srcFormat;
+					src.Format = this.srcFormat;
 
-					if ( gamma != 1.0f )
+					if ( this.gamma != 1.0f )
 					{
 						// Apply gamma correction
 						// Do not overwrite original image but do gamma correction in temporary buffer
@@ -899,7 +900,7 @@ namespace Axiom.Core
 						var corrected = new PixelBox( src.Width, src.Height, src.Depth, src.Format, buffer );
 						PixelConverter.BulkPixelConversion( src, corrected );
 
-						Image.ApplyGamma( corrected.Data, gamma, corrected.ConsecutiveSize, PixelUtil.GetNumElemBits( src.Format ) );
+						Image.ApplyGamma( corrected.Data, this.gamma, corrected.ConsecutiveSize, PixelUtil.GetNumElemBits( src.Format ) );
 
 						// Destination: entire texture. BlitFromMemory does
 						// the scaling to a power of two for us when needed
@@ -915,7 +916,7 @@ namespace Axiom.Core
 			}
 
 			// Update size (the final size, not including temp space)
-			Size = FaceCount*PixelUtil.GetMemorySize( width, height, depth, format );
+			Size = FaceCount*PixelUtil.GetMemorySize( this.width, this.height, this.depth, this.format );
 		}
 
 		/// <summary>
@@ -934,10 +935,10 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void CreateInternalResources()
 		{
-			if ( !internalResourcesCreated )
+			if ( !this.internalResourcesCreated )
 			{
 				createInternalResources();
-				internalResourcesCreated = true;
+				this.internalResourcesCreated = true;
 			}
 		}
 
@@ -952,10 +953,10 @@ namespace Axiom.Core
 		[OgreVersion( 1, 7, 2 )]
 		public void FreeInternalResources()
 		{
-			if ( internalResourcesCreated )
+			if ( this.internalResourcesCreated )
 			{
 				freeInternalResources();
-				internalResourcesCreated = false;
+				this.internalResourcesCreated = false;
 			}
 		}
 
@@ -986,7 +987,7 @@ namespace Axiom.Core
 			}
 
 			var numMips = Axiom.Math.Utility.Min( MipmapCount, target.MipmapCount );
-			if ( ( usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap ||
+			if ( ( this.usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap ||
 			     ( target.Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap )
 			{
 				numMips = 0;

@@ -79,7 +79,7 @@ namespace Axiom.Serialization
 		public Serializer()
 		{
 			// default binary file version
-			version = "[Serializer_v1.00]";
+			this.version = "[Serializer_v1.00]";
 		}
 
 		#endregion Constructor
@@ -94,7 +94,7 @@ namespace Axiom.Serialization
 		/// </remarks>
 		protected void IgnoreCurrentChunk( BinaryReader reader )
 		{
-			Seek( reader, currentChunkLength - ChunkOverheadSize );
+			Seek( reader, this.currentChunkLength - ChunkOverheadSize );
 		}
 
 		/// <summary>
@@ -595,7 +595,7 @@ namespace Axiom.Serialization
 			}
 #endif
 			// read the length for this chunk
-			currentChunkLength = ReadInt( reader );
+			this.currentChunkLength = ReadInt( reader );
 
 			return id;
 		}
@@ -636,10 +636,10 @@ namespace Axiom.Serialization
 				var fileVersion = ReadString( reader );
 
 				// read the version string
-				if ( version != fileVersion )
+				if ( this.version != fileVersion )
 				{
 					throw new AxiomException( "Invalid file: version incompatible, file reports {0}, Serializer is version {1}",
-					                          fileVersion, version );
+					                          fileVersion, this.version );
 				}
 			}
 			else

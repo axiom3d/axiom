@@ -202,29 +202,29 @@ namespace Axiom.Graphics
 				switch ( technique )
 				{
 					case 1: // weld across everything
-						weldVertices = true;
-						weldVerticesAcrossVertexSets = true;
-						weldVerticesAcrossIndexSets = true;
+						this.weldVertices = true;
+						this.weldVerticesAcrossVertexSets = true;
+						this.weldVerticesAcrossIndexSets = true;
 						break;
 					case 2: // weld across index sets only
-						weldVertices = true;
-						weldVerticesAcrossVertexSets = false;
-						weldVerticesAcrossIndexSets = true;
+						this.weldVertices = true;
+						this.weldVerticesAcrossVertexSets = false;
+						this.weldVerticesAcrossIndexSets = true;
 						break;
 					case 3: // weld across vertex sets only
-						weldVertices = true;
-						weldVerticesAcrossVertexSets = true;
-						weldVerticesAcrossIndexSets = false;
+						this.weldVertices = true;
+						this.weldVerticesAcrossVertexSets = true;
+						this.weldVerticesAcrossIndexSets = false;
 						break;
 					case 4: // weld within same index & vertex set only
-						weldVertices = true;
-						weldVerticesAcrossVertexSets = false;
-						weldVerticesAcrossIndexSets = false;
+						this.weldVertices = true;
+						this.weldVerticesAcrossVertexSets = false;
+						this.weldVerticesAcrossIndexSets = false;
 						break;
 					case 5: // never weld
-						weldVertices = false;
-						weldVerticesAcrossVertexSets = false;
-						weldVerticesAcrossIndexSets = false;
+						this.weldVertices = false;
+						this.weldVerticesAcrossVertexSets = false;
+						this.weldVerticesAcrossIndexSets = false;
 						break;
 				} // switch
 
@@ -248,19 +248,19 @@ namespace Axiom.Graphics
 				}
 			}
 
-			return edgeData;
+			return this.edgeData;
 		}
 
 		private void AttemptBuild()
 		{
 			// reset
-			vertices.Clear();
-			uniqueEdges.Clear();
+			this.vertices.Clear();
+			this.uniqueEdges.Clear();
 
-			edgeData = new EdgeData();
+			this.edgeData = new EdgeData();
 
 			// resize the edge group list to equal the number of vertex sets
-			edgeData.edgeGroups.Capacity = vertexDataList.Count;
+			this.edgeData.edgeGroups.Capacity = vertexDataList.Count;
 
 			// Initialize edge group data
 			for ( var i = 0; i < vertexDataList.Count; i++ )
@@ -268,7 +268,7 @@ namespace Axiom.Graphics
 				var group = new EdgeData.EdgeGroup();
 				group.vertexSet = i;
 				group.vertexData = (VertexData)vertexDataList[ i ];
-				edgeData.edgeGroups.Add( group );
+				this.edgeData.edgeGroups.Add( group );
 			}
 
 			// Stage 1: Build triangles and initial edge list.
@@ -331,10 +331,10 @@ namespace Axiom.Graphics
 				var count16 = 0;
 				var count32 = 0;
 
-				var triStart = edgeData.triangles.Count;
+				var triStart = this.edgeData.triangles.Count;
 
 				// iterate over all the groups of 3 indices
-				edgeData.triangles.Capacity = triStart + iterations;
+				this.edgeData.triangles.Capacity = triStart + iterations;
 
 				for ( var t = 0; t < iterations; t++ )
 				{
@@ -405,7 +405,7 @@ namespace Axiom.Graphics
 					tri.normal = Utility.CalculateFaceNormal( v[ 0 ], v[ 1 ], v[ 2 ] );
 
 					// Add triangle to list
-					edgeData.triangles.Add( tri );
+					this.edgeData.triangles.Add( tri );
 
 					try
 					{
@@ -460,12 +460,12 @@ namespace Axiom.Graphics
 			vertPair.vertexIndex1 = sharedVertIndex0;
 			vertPair.vertexIndex2 = sharedVertIndex1;
 
-			if ( uniqueEdges.Contains( vertPair ) )
+			if ( this.uniqueEdges.Contains( vertPair ) )
 			{
 				throw new AxiomException( "Edge is shared by too many triangles." );
 			}
 
-			uniqueEdges.Add( vertPair );
+			this.uniqueEdges.Add( vertPair );
 
 			// create a new edge and initialize as degenerate
 			var e = new EdgeData.Edge();
@@ -478,7 +478,7 @@ namespace Axiom.Graphics
 			e.vertIndex[ 0 ] = vertexIndex0;
 			e.vertIndex[ 1 ] = vertexIndex1;
 
-			( (EdgeData.EdgeGroup)edgeData.edgeGroups[ vertexSet ] ).edges.Add( e );
+			( (EdgeData.EdgeGroup)this.edgeData.edgeGroups[ vertexSet ] ).edges.Add( e );
 		}
 
 		/// <summary>
@@ -488,9 +488,9 @@ namespace Axiom.Graphics
 		{
 			var triIndex = 0;
 
-			for ( var i = 0; i < edgeData.triangles.Count; i++, triIndex++ )
+			for ( var i = 0; i < this.edgeData.triangles.Count; i++, triIndex++ )
 			{
-				var tri = (EdgeData.Triangle)edgeData.triangles[ i ];
+				var tri = (EdgeData.Triangle)this.edgeData.triangles[ i ];
 				EdgeData.Edge e = null;
 
 				if ( tri.sharedVertIndex[ 0 ] > tri.sharedVertIndex[ 1 ] )
@@ -536,9 +536,9 @@ namespace Axiom.Graphics
 		protected EdgeData.Edge FindEdge( int sharedIndex1, int sharedIndex2 )
 		{
 			// Iterate over the existing edges
-			for ( var i = 0; i < edgeData.edgeGroups.Count; i++ )
+			for ( var i = 0; i < this.edgeData.edgeGroups.Count; i++ )
 			{
-				var edgeGroup = (EdgeData.EdgeGroup)edgeData.edgeGroups[ i ];
+				var edgeGroup = (EdgeData.EdgeGroup)this.edgeData.edgeGroups[ i ];
 
 				for ( var j = 0; j < edgeGroup.edges.Count; j++ )
 				{
@@ -561,16 +561,16 @@ namespace Axiom.Graphics
 		/// <returns></returns>
 		protected int FindOrCreateCommonVertex( Vector3 vec, int vertexSet, int indexSet, int originalIndex )
 		{
-			for ( var index = 0; index < vertices.Count; index++ )
+			for ( var index = 0; index < this.vertices.Count; index++ )
 			{
-				var commonVec = (CommonVertex)vertices[ index ];
+				var commonVec = (CommonVertex)this.vertices[ index ];
 
 				if ( Utility.RealEqual( vec.x, commonVec.position.x, 1e-04f ) &&
 				     Utility.RealEqual( vec.y, commonVec.position.y, 1e-04f ) &&
 				     Utility.RealEqual( vec.z, commonVec.position.z, 1e-04f ) &&
-				     ( commonVec.vertexSet == vertexSet || weldVerticesAcrossVertexSets ) &&
-				     ( commonVec.indexSet == indexSet || weldVerticesAcrossIndexSets ) &&
-				     ( commonVec.originalIndex == originalIndex || weldVertices ) )
+				     ( commonVec.vertexSet == vertexSet || this.weldVerticesAcrossVertexSets ) &&
+				     ( commonVec.indexSet == indexSet || this.weldVerticesAcrossIndexSets ) &&
+				     ( commonVec.originalIndex == originalIndex || this.weldVertices ) )
 				{
 					return index;
 				}
@@ -578,12 +578,12 @@ namespace Axiom.Graphics
 
 			// Not found, insert
 			var newCommon = new CommonVertex();
-			newCommon.index = vertices.Count;
+			newCommon.index = this.vertices.Count;
 			newCommon.position = vec;
 			newCommon.vertexSet = vertexSet;
 			newCommon.indexSet = indexSet;
 			newCommon.originalIndex = originalIndex;
-			vertices.Add( newCommon );
+			this.vertices.Add( newCommon );
 
 			return newCommon.index;
 		}
@@ -665,11 +665,11 @@ namespace Axiom.Graphics
 
 				// Log common vertex list
 				log.Write( "." );
-				log.Write( "Common vertex list - vertex count {0}", vertices.Count );
+				log.Write( "Common vertex list - vertex count {0}", this.vertices.Count );
 
-				for ( i = 0; i < vertices.Count; i++ )
+				for ( i = 0; i < this.vertices.Count; i++ )
 				{
-					var c = (CommonVertex)vertices[ i ];
+					var c = (CommonVertex)this.vertices[ i ];
 
 					log.Write( "Common vertex {0}: (vertexSet={1}, originalIndex={2}, position={3}", i, c.vertexSet, c.index,
 					           c.position );

@@ -109,11 +109,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _sharedVertexData;
+				return this._sharedVertexData;
 			}
 			set
 			{
-				_sharedVertexData = value;
+				this._sharedVertexData = value;
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _subMeshList.Count;
+				return this._subMeshList.Count;
 			}
 		}
 
@@ -160,17 +160,17 @@ namespace Axiom.Core
 			get
 			{
 				// OPTIMIZE: Cloning to prevent direct modification
-				return (AxisAlignedBox)_boundingBox.Clone();
+				return (AxisAlignedBox)this._boundingBox.Clone();
 			}
 			set
 			{
-				_boundingBox = value;
+				this._boundingBox = value;
 
-				float sqLen1 = _boundingBox.Minimum.LengthSquared;
-				float sqLen2 = _boundingBox.Maximum.LengthSquared;
+				float sqLen1 = this._boundingBox.Minimum.LengthSquared;
+				float sqLen2 = this._boundingBox.Maximum.LengthSquared;
 
 				// update the bounding sphere radius as well
-				_boundingSphereRadius = Utility.Sqrt( Utility.Max( sqLen1, sqLen2 ) );
+				this._boundingSphereRadius = Utility.Sqrt( Utility.Max( sqLen1, sqLen2 ) );
 			}
 		}
 
@@ -190,11 +190,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _boundingSphereRadius;
+				return this._boundingSphereRadius;
 			}
 			set
 			{
-				_boundingSphereRadius = value;
+				this._boundingSphereRadius = value;
 			}
 		}
 
@@ -212,11 +212,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _skeleton;
+				return this._skeleton;
 			}
 			protected set
 			{
-				_skeleton = value;
+				this._skeleton = value;
 			}
 		}
 
@@ -234,26 +234,26 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _skeletonName;
+				return this._skeletonName;
 			}
 			set
 			{
-				_skeletonName = value;
+				this._skeletonName = value;
 
-				if ( _skeletonName == null || _skeletonName.Length == 0 )
+				if ( this._skeletonName == null || this._skeletonName.Length == 0 )
 				{
-					_skeleton = null;
+					this._skeleton = null;
 				}
 				else
 				{
 					try
 					{
 						// load the skeleton
-						_skeleton = (Skeleton)SkeletonManager.Instance.Load( _skeletonName, Group );
+						this._skeleton = (Skeleton)SkeletonManager.Instance.Load( this._skeletonName, Group );
 					}
 					catch ( Exception )
 					{
-						LogManager.Instance.Write( "Unable to load skeleton " + _skeletonName + " for Mesh " + Name +
+						LogManager.Instance.Write( "Unable to load skeleton " + this._skeletonName + " for Mesh " + Name +
 						                           ". This Mesh will not be animated. You can ignore this message if you are using an offline tool." );
 					}
 				}
@@ -271,7 +271,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return ( _skeletonName.Length != 0 );
+				return ( this._skeletonName.Length != 0 );
 			}
 		}
 
@@ -290,7 +290,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _boneAssignmentList;
+				return this._boneAssignmentList;
 			}
 		}
 
@@ -319,11 +319,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _vertexBufferUsage;
+				return this._vertexBufferUsage;
 			}
 			protected set
 			{
-				_vertexBufferUsage = value;
+				this._vertexBufferUsage = value;
 			}
 		}
 
@@ -343,11 +343,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _indexBufferUsage;
+				return this._indexBufferUsage;
 			}
 			protected set
 			{
-				_indexBufferUsage = value;
+				this._indexBufferUsage = value;
 			}
 		}
 
@@ -367,11 +367,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _useVertexShadowBuffer;
+				return this._useVertexShadowBuffer;
 			}
 			protected set
 			{
-				_useVertexShadowBuffer = value;
+				this._useVertexShadowBuffer = value;
 			}
 		}
 
@@ -391,11 +391,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _useIndexShadowBuffer;
+				return this._useIndexShadowBuffer;
 			}
 			protected set
 			{
-				_useIndexShadowBuffer = value;
+				this._useIndexShadowBuffer = value;
 			}
 		}
 
@@ -416,7 +416,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _isPreparedForShadowVolumes;
+				return this._isPreparedForShadowVolumes;
 			}
 		}
 
@@ -438,11 +438,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _autoBuildEdgeLists;
+				return this._autoBuildEdgeLists;
 			}
 			set
 			{
-				_autoBuildEdgeLists = value;
+				this._autoBuildEdgeLists = value;
 			}
 		}
 
@@ -462,11 +462,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _edgeListsBuilt;
+				return this._edgeListsBuilt;
 			}
 			protected internal set
 			{
-				_edgeListsBuilt = value;
+				this._edgeListsBuilt = value;
 			}
 		}
 
@@ -485,7 +485,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _attachmentPoints;
+				return this._attachmentPoints;
 			}
 		}
 
@@ -503,7 +503,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _animationsList.Count;
+				return this._animationsList.Count;
 			}
 		}
 
@@ -512,7 +512,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _animationsList.Count > 0;
+				return this._animationsList.Count > 0;
 			}
 		}
 
@@ -530,11 +530,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				if ( _animationTypesDirty )
+				if ( this._animationTypesDirty )
 				{
 					DetermineAnimationTypes();
 				}
-				return _sharedVertexDataAnimationType;
+				return this._sharedVertexDataAnimationType;
 			}
 		}
 
@@ -552,7 +552,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _animationTypesDirty;
+				return this._animationTypesDirty;
 			}
 		}
 
@@ -572,7 +572,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _poseList;
+				return this._poseList;
 			}
 		}
 
@@ -590,11 +590,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _triangleIntersector;
+				return this._triangleIntersector;
 			}
 			set
 			{
-				_triangleIntersector = value;
+				this._triangleIntersector = value;
 			}
 		}
 
@@ -609,30 +609,30 @@ namespace Axiom.Core
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			// This will be set to false by serializers 1.3 and above
-			_autoBuildEdgeLists = true;
+			this._autoBuildEdgeLists = true;
 
 			// default to static write only for speed
-			_vertexBufferUsage = BufferUsage.StaticWriteOnly;
-			_indexBufferUsage = BufferUsage.StaticWriteOnly;
+			this._vertexBufferUsage = BufferUsage.StaticWriteOnly;
+			this._indexBufferUsage = BufferUsage.StaticWriteOnly;
 
 			// default to having shadow buffers
-			_useVertexShadowBuffer = true;
-			_useIndexShadowBuffer = true;
+			this._useVertexShadowBuffer = true;
+			this._useIndexShadowBuffer = true;
 
 			// Initialize to default strategy
-			_lodStrategy = LodStrategyManager.Instance.DefaultStrategy;
+			this._lodStrategy = LodStrategyManager.Instance.DefaultStrategy;
 
 			// Init first (manual) lod
 			var lod = new MeshLodUsage();
 			lod.UserValue = float.NaN; // User value not used for base lod level
-			lod.Value = _lodStrategy.BaseValue;
+			lod.Value = this._lodStrategy.BaseValue;
 			lod.EdgeData = null;
 			lod.ManualMesh = null;
-			meshLodUsageList.Add( lod );
+			this.meshLodUsageList.Add( lod );
 
 
 			// always use software blending for now
-			useSoftwareBlending = true;
+			this.useSoftwareBlending = true;
 
 			SkeletonName = "";
 		}
@@ -659,7 +659,7 @@ namespace Axiom.Core
 		/// </remarks>
 		public EdgeData GetEdgeList( int lodIndex )
 		{
-			if ( !_edgeListsBuilt )
+			if ( !this._edgeListsBuilt )
 			{
 				BuildEdgeList();
 			}
@@ -683,12 +683,12 @@ namespace Axiom.Core
 		/// <param name="boneAssignment">Bone assignment to add.</param>
 		public void AddBoneAssignment( VertexBoneAssignment boneAssignment )
 		{
-			if ( !_boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
+			if ( !this._boneAssignmentList.ContainsKey( boneAssignment.vertexIndex ) )
 			{
-				_boneAssignmentList[ boneAssignment.vertexIndex ] = new List<VertexBoneAssignment>();
+				this._boneAssignmentList[ boneAssignment.vertexIndex ] = new List<VertexBoneAssignment>();
 			}
-			_boneAssignmentList[ boneAssignment.vertexIndex ].Add( boneAssignment );
-			boneAssignmentsOutOfDate = true;
+			this._boneAssignmentList[ boneAssignment.vertexIndex ].Add( boneAssignment );
+			this.boneAssignmentsOutOfDate = true;
 		}
 
 		/// <summary>
@@ -699,16 +699,16 @@ namespace Axiom.Core
 		{
 			var vertexSetCount = 0;
 
-			if ( _sharedVertexData != null )
+			if ( this._sharedVertexData != null )
 			{
-				builder.AddVertexData( _sharedVertexData );
+				builder.AddVertexData( this._sharedVertexData );
 				vertexSetCount++;
 			}
 
 			// Prepare the builder using the submesh information
-			for ( var i = 0; i < _subMeshList.Count; i++ )
+			for ( var i = 0; i < this._subMeshList.Count; i++ )
 			{
-				var sm = _subMeshList[ i ];
+				var sm = this._subMeshList[ i ];
 
 				if ( sm.useSharedVertices )
 				{
@@ -748,18 +748,18 @@ namespace Axiom.Core
 		/// </summary>
 		public void BuildEdgeList()
 		{
-			if ( _edgeListsBuilt )
+			if ( this._edgeListsBuilt )
 			{
 				return;
 			}
 
 			// loop over LODs
-			for ( var lodIndex = 0; lodIndex < meshLodUsageList.Count; lodIndex++ )
+			for ( var lodIndex = 0; lodIndex < this.meshLodUsageList.Count; lodIndex++ )
 			{
 				// use getLodLevel to enforce loading of manual mesh lods
 				var usage = GetLodLevel( lodIndex );
 
-				if ( _isLodManual && lodIndex != 0 )
+				if ( this._isLodManual && lodIndex != 0 )
 				{
 					// Delegate edge building to manual mesh
 					// It should have already built its own edge list while loading
@@ -777,23 +777,23 @@ namespace Axiom.Core
 				}
 			}
 
-			_edgeListsBuilt = true;
+			this._edgeListsBuilt = true;
 		}
 
 		public void FreeEdgeList()
 		{
-			if ( !_edgeListsBuilt )
+			if ( !this._edgeListsBuilt )
 			{
 				return;
 			}
 
-			for ( var i = 0; i < meshLodUsageList.Count; ++i )
+			for ( var i = 0; i < this.meshLodUsageList.Count; ++i )
 			{
-				var usage = meshLodUsageList[ i ];
+				var usage = this.meshLodUsageList[ i ];
 				usage.EdgeData = null;
 			}
 
-			_edgeListsBuilt = false;
+			this._edgeListsBuilt = false;
 		}
 
 		/// <summary>
@@ -806,7 +806,7 @@ namespace Axiom.Core
 			// Add this mesh's vertex and index data structures for lod 0
 			AddVertexAndIndexSets( builder, 0 );
 			// Create the list of triangles
-			_triangleIntersector = new TriangleIntersector( builder.Build() );
+			this._triangleIntersector = new TriangleIntersector( builder.Build() );
 		}
 
 		/// <summary>
@@ -867,7 +867,7 @@ namespace Axiom.Core
 							continue;
 						}
 
-						usedVertexData = _sharedVertexData;
+						usedVertexData = this._sharedVertexData;
 						sharedGeometryDone = true;
 					}
 					else
@@ -1069,8 +1069,8 @@ namespace Axiom.Core
 		/// </remarks>
 		public void ClearBoneAssignments()
 		{
-			_boneAssignmentList.Clear();
-			boneAssignmentsOutOfDate = true;
+			this._boneAssignmentList.Clear();
+			this.boneAssignmentsOutOfDate = true;
 		}
 
 		/// <summary>
@@ -1078,7 +1078,7 @@ namespace Axiom.Core
 		/// </summary>
 		protected internal void CompileBoneAssignments()
 		{
-			var maxBones = RationalizeBoneAssignments( _sharedVertexData.vertexCount, _boneAssignmentList );
+			var maxBones = RationalizeBoneAssignments( this._sharedVertexData.vertexCount, this._boneAssignmentList );
 
 			// check for no bone assignments
 			if ( maxBones == 0 )
@@ -1086,9 +1086,9 @@ namespace Axiom.Core
 				return;
 			}
 
-			CompileBoneAssignments( _boneAssignmentList, maxBones, _sharedVertexData );
+			CompileBoneAssignments( this._boneAssignmentList, maxBones, this._sharedVertexData );
 
-			boneAssignmentsOutOfDate = false;
+			this.boneAssignmentsOutOfDate = false;
 		}
 
 		/// <summary>
@@ -1320,9 +1320,9 @@ namespace Axiom.Core
 			var foundExisting = false;
 			var firstOne = true;
 
-			for ( var i = 0; i < _subMeshList.Count; i++ )
+			for ( var i = 0; i < this._subMeshList.Count; i++ )
 			{
-				var sm = _subMeshList[ i ];
+				var sm = this._subMeshList[ i ];
 
 				VertexData vertexData;
 
@@ -1333,7 +1333,7 @@ namespace Axiom.Core
 						continue;
 					}
 
-					vertexData = _sharedVertexData;
+					vertexData = this._sharedVertexData;
 					sharedGeometryDone = true;
 				}
 				else
@@ -1415,9 +1415,9 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SubMesh GetSubMesh( int index )
 		{
-			Debug.Assert( index < _subMeshList.Count, "index < subMeshList.Count" );
+			Debug.Assert( index < this._subMeshList.Count, "index < subMeshList.Count" );
 
-			return _subMeshList[ index ];
+			return this._subMeshList[ index ];
 		}
 
 		/// <summary>
@@ -1427,9 +1427,9 @@ namespace Axiom.Core
 		/// <returns>The track handle to use for animation tracks associated with the give submesh</returns>
 		public int GetTrackHandle( string name )
 		{
-			for ( var i = 0; i < _subMeshList.Count; i++ )
+			for ( var i = 0; i < this._subMeshList.Count; i++ )
 			{
-				if ( _subMeshList[ i ].name == name )
+				if ( this._subMeshList[ i ].name == name )
 				{
 					return i + 1;
 				}
@@ -1446,9 +1446,9 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public SubMesh GetSubMesh( string name )
 		{
-			for ( var i = 0; i < _subMeshList.Count; i++ )
+			for ( var i = 0; i < this._subMeshList.Count; i++ )
 			{
-				var sub = _subMeshList[ i ];
+				var sub = this._subMeshList[ i ];
 
 				if ( sub.name == name )
 				{
@@ -1467,13 +1467,13 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public void RemoveSubMesh( string name )
 		{
-			for ( var i = 0; i < _subMeshList.Count; i++ )
+			for ( var i = 0; i < this._subMeshList.Count; i++ )
 			{
-				var sub = _subMeshList[ i ];
+				var sub = this._subMeshList[ i ];
 
 				if ( sub.name == name )
 				{
-					_subMeshList.RemoveAt( i );
+					this._subMeshList.RemoveAt( i );
 					return;
 				}
 			}
@@ -1497,18 +1497,18 @@ namespace Axiom.Core
 			if ( HasSkeleton )
 			{
 				// delegate the animation set to the skeleton
-				_skeleton.InitAnimationState( animSet );
+				this._skeleton.InitAnimationState( animSet );
 
 				// Take the opportunity to update the compiled bone assignments
-				if ( boneAssignmentsOutOfDate )
+				if ( this.boneAssignmentsOutOfDate )
 				{
 					CompileBoneAssignments();
 				}
 
 				// compile bone assignments for each sub mesh
-				for ( var i = 0; i < _subMeshList.Count; i++ )
+				for ( var i = 0; i < this._subMeshList.Count; i++ )
 				{
-					var subMesh = _subMeshList[ i ];
+					var subMesh = this._subMeshList[ i ];
 
 					if ( subMesh.boneAssignmentsOutOfDate )
 					{
@@ -1518,7 +1518,7 @@ namespace Axiom.Core
 			}
 
 			// Animation states for vertex animation
-			foreach ( var animation in _animationsList.Values )
+			foreach ( var animation in this._animationsList.Values )
 			{
 				// Only create a new animation state if it doesn't exist
 				// We can have the same named animation in both skeletal and vertex
@@ -1540,7 +1540,7 @@ namespace Axiom.Core
 		/// <summary>Returns whether or not this mesh has the named vertex animation.</summary>
 		public bool ContainsAnimation( string name )
 		{
-			return _animationsList.ContainsKey( name );
+			return this._animationsList.ContainsKey( name );
 		}
 
 		/// <summary>
@@ -1554,8 +1554,8 @@ namespace Axiom.Core
 		/// <param name="skeleton"></param>
 		public void NotifySkeleton( Skeleton skeleton )
 		{
-			_skeleton = skeleton;
-			_skeletonName = skeleton.Name;
+			this._skeleton = skeleton;
+			this._skeletonName = skeleton.Name;
 		}
 
 		/// <summary>
@@ -1580,19 +1580,19 @@ namespace Axiom.Core
 		/// </remarks>
 		public void PrepareForShadowVolume()
 		{
-			if ( _isPreparedForShadowVolumes )
+			if ( this._isPreparedForShadowVolumes )
 			{
 				return;
 			}
 
-			if ( _sharedVertexData != null )
+			if ( this._sharedVertexData != null )
 			{
-				_sharedVertexData.PrepareForShadowVolume();
+				this._sharedVertexData.PrepareForShadowVolume();
 			}
 
-			for ( var i = 0; i < _subMeshList.Count; i++ )
+			for ( var i = 0; i < this._subMeshList.Count; i++ )
 			{
-				var sm = _subMeshList[ i ];
+				var sm = this._subMeshList[ i ];
 
 				if ( !sm.useSharedVertices )
 				{
@@ -1600,7 +1600,7 @@ namespace Axiom.Core
 				}
 			}
 
-			_isPreparedForShadowVolumes = true;
+			this._isPreparedForShadowVolumes = true;
 		}
 
 		/// <summary>
@@ -1700,7 +1700,7 @@ namespace Axiom.Core
 			subMesh.Parent = this;
 
 			// add to the list of child meshes
-			_subMeshList.Add( subMesh );
+			this._subMeshList.Add( subMesh );
 
 			return subMesh;
 		}
@@ -1745,8 +1745,8 @@ namespace Axiom.Core
 		/// </param>
 		public void SetVertexBufferPolicy( BufferUsage usage, bool useShadowBuffer )
 		{
-			_vertexBufferUsage = usage;
-			_useVertexShadowBuffer = useShadowBuffer;
+			this._vertexBufferUsage = usage;
+			this._useVertexShadowBuffer = useShadowBuffer;
 		}
 
 		/// <summary>
@@ -1775,8 +1775,8 @@ namespace Axiom.Core
 		/// </param>
 		public void SetIndexBufferPolicy( BufferUsage usage, bool useShadowBuffer )
 		{
-			_indexBufferUsage = usage;
-			_useIndexShadowBuffer = useShadowBuffer;
+			this._indexBufferUsage = usage;
+			this._useIndexShadowBuffer = useShadowBuffer;
 		}
 
 		/// <summary>
@@ -1785,11 +1785,11 @@ namespace Axiom.Core
 		/// <param name="manualLodEntries"></param>
 		public void AddManualLodEntries( List<MeshLodUsage> manualLodEntries )
 		{
-			Debug.Assert( meshLodUsageList.Count == 1 );
-			_isLodManual = true;
+			Debug.Assert( this.meshLodUsageList.Count == 1 );
+			this._isLodManual = true;
 			foreach ( var usage in manualLodEntries )
 			{
-				meshLodUsageList.Add( usage );
+				this.meshLodUsageList.Add( usage );
 			}
 		}
 
@@ -1803,7 +1803,7 @@ namespace Axiom.Core
 		public virtual AttachmentPoint CreateAttachmentPoint( string name, Quaternion rotation, Vector3 translation )
 		{
 			var ap = new AttachmentPoint( name, null, rotation, translation );
-			_attachmentPoints.Add( ap );
+			this._attachmentPoints.Add( ap );
 			return ap;
 		}
 
@@ -1819,7 +1819,7 @@ namespace Axiom.Core
 			// done, allow caller to force if they need to
 
 			// Initialize all types to nothing
-			_sharedVertexDataAnimationType = VertexAnimationType.None;
+			this._sharedVertexDataAnimationType = VertexAnimationType.None;
 			for ( var sm = 0; sm < SubMeshCount; sm++ )
 			{
 				var subMesh = GetSubMesh( sm );
@@ -1828,7 +1828,7 @@ namespace Axiom.Core
 
 			// Scan all animations and determine the type of animation tracks
 			// relating to each vertex data
-			foreach ( var anim in _animationsList.Values )
+			foreach ( var anim in this._animationsList.Values )
 			{
 				foreach ( var track in anim.VertexTracks.Values )
 				{
@@ -1836,15 +1836,15 @@ namespace Axiom.Core
 					if ( handle == 0 )
 					{
 						// shared data
-						if ( _sharedVertexDataAnimationType != VertexAnimationType.None &&
-						     _sharedVertexDataAnimationType != track.AnimationType )
+						if ( this._sharedVertexDataAnimationType != VertexAnimationType.None &&
+						     this._sharedVertexDataAnimationType != track.AnimationType )
 						{
 							// Mixing of morph and pose animation on same data is not allowed
 							throw new Exception( "Animation tracks for shared vertex data on mesh " + Name +
 							                     " try to mix vertex animation types, which is " +
 							                     "not allowed, in Mesh.DetermineAnimationTypes" );
 						}
-						_sharedVertexDataAnimationType = track.AnimationType;
+						this._sharedVertexDataAnimationType = track.AnimationType;
 					}
 					else
 					{
@@ -1863,7 +1863,7 @@ namespace Axiom.Core
 				}
 			}
 
-			_animationTypesDirty = false;
+			this._animationTypesDirty = false;
 		}
 
 		/// <summary>
@@ -1874,15 +1874,15 @@ namespace Axiom.Core
 		public Animation CreateAnimation( string name, float length )
 		{
 			// Check name not used
-			if ( _animationsList.ContainsKey( name ) )
+			if ( this._animationsList.ContainsKey( name ) )
 			{
 				throw new Exception( "An animation with the name " + name + " already exists" + ", in Mesh.CreateAnimation" );
 			}
 			var ret = new Animation( name, length );
 			// Add to list
-			_animationsList[ name ] = ret;
+			this._animationsList[ name ] = ret;
 			// Mark animation types dirty
-			_animationTypesDirty = true;
+			this._animationTypesDirty = true;
 			return ret;
 		}
 
@@ -1893,7 +1893,7 @@ namespace Axiom.Core
 		public Animation GetAnimation( string name )
 		{
 			Animation ret;
-			if ( !_animationsList.TryGetValue( name, out ret ) )
+			if ( !this._animationsList.TryGetValue( name, out ret ) )
 			{
 				return null;
 			}
@@ -1906,11 +1906,11 @@ namespace Axiom.Core
 		public Animation GetAnimation( ushort index )
 		{
 			// If you hit this assert, then the index is out of bounds.
-			Debug.Assert( index < _animationsList.Count );
+			Debug.Assert( index < this._animationsList.Count );
 			// ??? The only way I can figure out to do this is with
 			// ??? a loop over the elements.
 			ushort i = 0;
-			foreach ( var animation in _animationsList.Values )
+			foreach ( var animation in this._animationsList.Values )
 			{
 				if ( i == index )
 				{
@@ -1925,7 +1925,7 @@ namespace Axiom.Core
 		/// <summary>Returns whether this mesh contains the named vertex animation.</summary>
 		public bool HasAnimation( string name )
 		{
-			return _animationsList.ContainsKey( name );
+			return this._animationsList.ContainsKey( name );
 		}
 
 		/// <summary>Removes vertex Animation from this mesh.</summary>
@@ -1935,15 +1935,15 @@ namespace Axiom.Core
 			{
 				throw new Exception( "No animation entry found named " + name + ", in Mesh.RemoveAnimation" );
 			}
-			_animationsList.Remove( name );
-			_animationTypesDirty = true;
+			this._animationsList.Remove( name );
+			this._animationTypesDirty = true;
 		}
 
 		/// <summary>Removes all morph Animations from this mesh.</summary>
 		public void RemoveAllAnimations()
 		{
-			_animationsList.Clear();
-			_animationTypesDirty = true;
+			this._animationsList.Clear();
+			this._animationTypesDirty = true;
 		}
 
 		/// <summary>
@@ -1957,7 +1957,7 @@ namespace Axiom.Core
 		{
 			if ( handle == 0 )
 			{
-				return _sharedVertexData;
+				return this._sharedVertexData;
 			}
 			else
 			{
@@ -1988,7 +1988,7 @@ namespace Axiom.Core
 			{
 				throw new Exception( "Index out of bounds, in Mesh.GetPose" );
 			}
-			return _poseList[ index ];
+			return this._poseList[ index ];
 		}
 
 		/// <summary>Retrieve an existing Pose by name.</summary>
@@ -2021,7 +2021,7 @@ namespace Axiom.Core
 		/// <remarks>This will invalidate any animation tracks referring to this pose or those after it.</remarks>
 		public void RemovePose( ushort index )
 		{
-			if ( index >= _poseList.Count )
+			if ( index >= this._poseList.Count )
 			{
 				throw new Exception( "Index out of bounds, in Mesh.RemovePose" );
 			}
@@ -2032,7 +2032,7 @@ namespace Axiom.Core
 		/// <remarks>This will invalidate any animation tracks referring to this pose or those after it.</remarks>
 		public void RemovePose( string name )
 		{
-			for ( var i = 0; i < _poseList.Count; i++ )
+			for ( var i = 0; i < this._poseList.Count; i++ )
 			{
 				var pose = PoseList[ i ];
 				if ( pose.Name == name )
@@ -2047,7 +2047,7 @@ namespace Axiom.Core
 		/// <summary>Destroy all poses.</summary>
 		public void RemoveAllPoses()
 		{
-			_poseList.Clear();
+			this._poseList.Clear();
 		}
 
 		#endregion Methods
@@ -2073,11 +2073,11 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _isLodManual;
+				return this._isLodManual;
 			}
 			protected internal set
 			{
-				_isLodManual = value;
+				this._isLodManual = value;
 			}
 		}
 
@@ -2091,19 +2091,19 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return _lodStrategy;
+				return this._lodStrategy;
 			}
 			set
 			{
-				_lodStrategy = value;
-				Debug.Assert( meshLodUsageList.Count > 0 );
+				this._lodStrategy = value;
+				Debug.Assert( this.meshLodUsageList.Count > 0 );
 
-				meshLodUsageList[ 0 ].Value = _lodStrategy.BaseValue;
+				this.meshLodUsageList[ 0 ].Value = this._lodStrategy.BaseValue;
 
 				// Re-transform user lod values (starting at index 1, no need to transform base value)
-				foreach ( var meshLodUsage in meshLodUsageList )
+				foreach ( var meshLodUsage in this.meshLodUsageList )
 				{
-					meshLodUsage.Value = _lodStrategy.TransformUserValue( meshLodUsage.UserValue );
+					meshLodUsage.Value = this._lodStrategy.TransformUserValue( meshLodUsage.UserValue );
 				}
 			}
 		}
@@ -2119,7 +2119,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return meshLodUsageList;
+				return this.meshLodUsageList;
 			}
 		}
 
@@ -2130,7 +2130,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return meshLodUsageList.Count;
+				return this.meshLodUsageList.Count;
 			}
 		}
 
@@ -2141,13 +2141,13 @@ namespace Axiom.Core
 
 			LogManager.Instance.Write( "Generating {0} lower LODs for mesh {1}.", lodValues.Count, Name );
 
-			foreach ( var subMesh in _subMeshList )
+			foreach ( var subMesh in this._subMeshList )
 			{
 				// check if triangles are present
 				if ( subMesh.IndexData.indexCount > 0 )
 				{
 					// Set up data for reduction
-					var vertexData = subMesh.useSharedVertices ? _sharedVertexData : subMesh.vertexData;
+					var vertexData = subMesh.useSharedVertices ? this._sharedVertexData : subMesh.vertexData;
 
 					var pm = new ProgressiveMesh( vertexData, subMesh.indexData );
 					pm.Build( (ushort)lodValues.Count, subMesh.lodFaceList, reductionMethod, reductionValue );
@@ -2168,10 +2168,10 @@ namespace Axiom.Core
 				// Record usage
 				var lod = new MeshLodUsage();
 				lod.UserValue = value;
-				lod.Value = _lodStrategy.TransformUserValue( value );
+				lod.Value = this._lodStrategy.TransformUserValue( value );
 				lod.EdgeData = null;
 				lod.ManualMesh = null;
-				meshLodUsageList.Add( lod );
+				this.meshLodUsageList.Add( lod );
 			}
 		}
 
@@ -2179,21 +2179,21 @@ namespace Axiom.Core
 		{
 			if ( !IsLodManual )
 			{
-				foreach ( var subMesh in _subMeshList )
+				foreach ( var subMesh in this._subMeshList )
 				{
 					subMesh.RemoveLodLevels();
 				}
 			}
 
 			FreeEdgeList();
-			meshLodUsageList.Clear();
+			this.meshLodUsageList.Clear();
 			var lod = new MeshLodUsage();
 			lod.UserValue = float.NaN;
-			lod.Value = _lodStrategy.BaseValue;
+			lod.Value = this._lodStrategy.BaseValue;
 			lod.EdgeData = null;
 			lod.ManualMesh = null;
-			meshLodUsageList.Add( lod );
-			_isLodManual = false;
+			this.meshLodUsageList.Add( lod );
+			this._isLodManual = false;
 		}
 
 		/// <summary>
@@ -2203,7 +2203,7 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public int GetLodIndex( Real value )
 		{
-			return _lodStrategy.GetIndex( value, meshLodUsageList );
+			return this._lodStrategy.GetIndex( value, this.meshLodUsageList );
 		}
 
 		/// <summary>
@@ -2213,17 +2213,17 @@ namespace Axiom.Core
 		/// <returns></returns>
 		public MeshLodUsage GetLodLevel( int index )
 		{
-			Debug.Assert( index < meshLodUsageList.Count, "index < lodUsageList.Count" );
+			Debug.Assert( index < this.meshLodUsageList.Count, "index < lodUsageList.Count" );
 
-			var usage = meshLodUsageList[ index ];
+			var usage = this.meshLodUsageList[ index ];
 
 			// load the manual lod mesh for this level if not done already
-			if ( _isLodManual && index > 0 && usage.ManualMesh == null )
+			if ( this._isLodManual && index > 0 && usage.ManualMesh == null )
 			{
 				usage.ManualMesh = MeshManager.Instance.Load( usage.ManualName, Group );
 
 				// get the edge data, if required
-				if ( !_autoBuildEdgeLists )
+				if ( !this._autoBuildEdgeLists )
 				{
 					usage.EdgeData = usage.ManualMesh.GetEdgeList( 0 );
 				}
@@ -2849,11 +2849,11 @@ namespace Axiom.Core
 			// prepare the mesh for a shadow volume?
 			if ( MeshManager.Instance.PrepareAllMeshesForShadowVolumes )
 			{
-				if ( _edgeListsBuilt || _autoBuildEdgeLists )
+				if ( this._edgeListsBuilt || this._autoBuildEdgeLists )
 				{
 					PrepareForShadowVolume();
 				}
-				if ( !_edgeListsBuilt && _autoBuildEdgeLists )
+				if ( !this._edgeListsBuilt && this._autoBuildEdgeLists )
 				{
 					BuildEdgeList();
 				}
@@ -2863,9 +2863,9 @@ namespace Axiom.Core
 			// transformation of user values must occur after loading is complete.
 
 			// Transform user lod values
-			foreach ( var mlu in meshLodUsageList )
+			foreach ( var mlu in this.meshLodUsageList )
 			{
-				mlu.Value = _lodStrategy.TransformUserValue( mlu.UserValue );
+				mlu.Value = this._lodStrategy.TransformUserValue( mlu.UserValue );
 			}
 
 			// meshLoadMeter.Exit();
@@ -2877,36 +2877,36 @@ namespace Axiom.Core
 		protected override void unload()
 		{
 			// Dispose managed resources.
-			if ( _skeleton != null )
+			if ( this._skeleton != null )
 			{
 				if ( !Skeleton.IsDisposed )
 				{
-					_skeleton.Dispose();
+					this._skeleton.Dispose();
 				}
 
-				_skeleton = null;
+				this._skeleton = null;
 			}
 
-			foreach ( var subMesh in _subMeshList )
+			foreach ( var subMesh in this._subMeshList )
 			{
 				if ( !subMesh.IsDisposed )
 				{
 					subMesh.Dispose();
 				}
 			}
-			_subMeshList.Clear();
+			this._subMeshList.Clear();
 
-			if ( _sharedVertexData != null )
+			if ( this._sharedVertexData != null )
 			{
-				if ( !_sharedVertexData.IsDisposed )
+				if ( !this._sharedVertexData.IsDisposed )
 				{
-					_sharedVertexData.Dispose();
+					this._sharedVertexData.Dispose();
 				}
 
-				_sharedVertexData = null;
+				this._sharedVertexData = null;
 			}
 
-			_isPreparedForShadowVolumes = false;
+			this._isPreparedForShadowVolumes = false;
 
 			//// TODO: SubMeshNameCount
 			//// TODO: Remove LOD levels

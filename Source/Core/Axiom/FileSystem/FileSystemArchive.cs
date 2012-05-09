@@ -143,7 +143,7 @@ namespace Axiom.FileSystem
 			}
 			if ( currentDir == "" )
 			{
-				currentDir = _basePath;
+				currentDir = this._basePath;
 			}
 
 			var files = getFiles( currentDir, pattern, recursive );
@@ -244,7 +244,7 @@ namespace Axiom.FileSystem
 			_directoryStack.Push( CurrentDirectory );
 #elif !( XBOX || XBOX360 )
 			string cwd = Directory.GetCurrentDirectory();
-			_directoryStack.Push( cwd );
+			this._directoryStack.Push( cwd );
 #endif
 			changeDirectory( dir );
 		}
@@ -252,7 +252,7 @@ namespace Axiom.FileSystem
 		/// <summary>Utility method to pop a previous directory off the stack and change to it </summary>
 		private void popDirectory()
 		{
-			if ( _directoryStack.Count == 0 )
+			if ( this._directoryStack.Count == 0 )
 			{
 #if !( XBOX || XBOX360 )
 				throw new AxiomException( "No directories left in the stack." );
@@ -260,7 +260,7 @@ namespace Axiom.FileSystem
 				return;
 #endif
 			}
-			string cwd = _directoryStack.Pop();
+			string cwd = this._directoryStack.Pop();
 			changeDirectory( cwd );
 		}
 
@@ -296,25 +296,26 @@ namespace Axiom.FileSystem
 			if(!Application.Current.HasElevatedPermissions)
 				throw new AxiomException( "FileSystem Access needs ElevatedPermissions!" );
 #endif
-			_basePath = Path.GetFullPath( Name ) + Path.DirectorySeparatorChar;
+			this._basePath = Path.GetFullPath( Name ) + Path.DirectorySeparatorChar;
 			IsReadOnly = false;
 
-			SafeDirectoryChange( _basePath, () =>
-			                                {
-			                                	try
-			                                	{
+			SafeDirectoryChange( this._basePath, () =>
+			                                     {
+			                                     	try
+			                                     	{
 #if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || ANDROID || IOS )
-			                                		File.Create( _basePath + @"__testWrite.Axiom", 1, FileOptions.DeleteOnClose );
+			                                     		File.Create( this._basePath + @"__testWrite.Axiom", 1,
+			                                     		             FileOptions.DeleteOnClose );
 #else
 													File.Create( _basePath + @"__testWrite.Axiom", 1 );
 													File.Delete( _basePath + @"__testWrite.Axiom" );
 #endif
-			                                	}
-			                                	catch ( Exception )
-			                                	{
-			                                		IsReadOnly = true;
-			                                	}
-			                                } );
+			                                     	}
+			                                     	catch ( Exception )
+			                                     	{
+			                                     		IsReadOnly = true;
+			                                     	}
+			                                     } );
 		}
 
 		public override Stream Create( string filename, bool overwrite )
@@ -325,7 +326,7 @@ namespace Axiom.FileSystem
 			}
 
 			Stream stream = null;
-			var fullPath = _basePath + Path.DirectorySeparatorChar + filename;
+			var fullPath = this._basePath + Path.DirectorySeparatorChar + filename;
 			var exists = File.Exists( fullPath );
 			if ( !exists || overwrite )
 			{
@@ -359,16 +360,16 @@ namespace Axiom.FileSystem
 		{
 			Stream strm = null;
 
-			SafeDirectoryChange( _basePath, () =>
-			                                {
-			                                	if ( File.Exists( _basePath + filename ) )
-			                                	{
-			                                		var fi = new System.IO.FileInfo( _basePath + filename );
-			                                		strm =
-			                                			(Stream)
-			                                			fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
-			                                	}
-			                                } );
+			SafeDirectoryChange( this._basePath, () =>
+			                                     {
+			                                     	if ( File.Exists( this._basePath + filename ) )
+			                                     	{
+			                                     		var fi = new System.IO.FileInfo( this._basePath + filename );
+			                                     		strm =
+			                                     			(Stream)
+			                                     			fi.Open( FileMode.Open, readOnly ? FileAccess.Read : FileAccess.ReadWrite );
+			                                     	}
+			                                     } );
 
 			return strm;
 		}
@@ -387,7 +388,7 @@ namespace Axiom.FileSystem
 		{
 			var ret = new List<string>();
 
-			SafeDirectoryChange( _basePath, () => findFiles( pattern, recursive, ret, null ) );
+			SafeDirectoryChange( this._basePath, () => findFiles( pattern, recursive, ret, null ) );
 
 			return ret;
 		}
@@ -396,14 +397,14 @@ namespace Axiom.FileSystem
 		{
 			var ret = new FileInfoList();
 
-			SafeDirectoryChange( _basePath, () => findFiles( pattern, recursive, null, ret ) );
+			SafeDirectoryChange( this._basePath, () => findFiles( pattern, recursive, null, ret ) );
 
 			return ret;
 		}
 
 		public override bool Exists( string fileName )
 		{
-			return File.Exists( _basePath + fileName );
+			return File.Exists( this._basePath + fileName );
 		}
 
 		#endregion Archive Implementation

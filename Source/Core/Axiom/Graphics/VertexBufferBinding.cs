@@ -78,7 +78,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return bindingMap;
+				return this.bindingMap;
 			}
 		}
 
@@ -89,7 +89,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return bindingMap.Count;
+				return this.bindingMap.Count;
 			}
 		}
 
@@ -109,7 +109,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return highIndex++;
+				return this.highIndex++;
 			}
 		}
 
@@ -118,7 +118,7 @@ namespace Axiom.Graphics
 		{
 			get
 			{
-				return bindingMap.Any( i => i.Value.IsInstanceData );
+				return this.bindingMap.Any( i => i.Value.IsInstanceData );
 			}
 		}
 
@@ -144,8 +144,8 @@ namespace Axiom.Graphics
 		/// <param name="buffer">Vertex buffer to bind.</param>
 		public virtual void SetBinding( short index, HardwareVertexBuffer buffer )
 		{
-			bindingMap[ index ] = buffer;
-			highIndex = (short)Utility.Max( highIndex, index + 1 );
+			this.bindingMap[ index ] = buffer;
+			this.highIndex = (short)Utility.Max( this.highIndex, index + 1 );
 		}
 
 		/// <summary>
@@ -154,9 +154,9 @@ namespace Axiom.Graphics
 		/// <param name="index">Index of the buffer binding to remove.</param>
 		public virtual void UnsetBinding( short index )
 		{
-			Debug.Assert( bindingMap.ContainsKey( index ), "Cannot find buffer for index" + index );
+			Debug.Assert( this.bindingMap.ContainsKey( index ), "Cannot find buffer for index" + index );
 
-			bindingMap.Remove( index );
+			this.bindingMap.Remove( index );
 		}
 
 		/// <summary>
@@ -164,7 +164,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public virtual void UnsetAllBindings()
 		{
-			bindingMap.Clear();
+			this.bindingMap.Clear();
 		}
 
 		/// <summary>
@@ -174,9 +174,9 @@ namespace Axiom.Graphics
 		/// <returns>Buffer at the specified index.</returns>
 		public virtual HardwareVertexBuffer GetBuffer( short index )
 		{
-			Debug.Assert( bindingMap.ContainsKey( index ), "No buffer is bound to index " + index );
+			Debug.Assert( this.bindingMap.ContainsKey( index ), "No buffer is bound to index " + index );
 
-			var buf = bindingMap[ index ];
+			var buf = this.bindingMap[ index ];
 
 			return buf;
 		}
@@ -184,7 +184,7 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool IsBufferBound( short source )
 		{
-			return bindingMap.ContainsKey( source );
+			return this.bindingMap.ContainsKey( source );
 		}
 
 		#endregion Methods
@@ -202,17 +202,17 @@ namespace Axiom.Graphics
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( bindingMap != null )
+					if ( this.bindingMap != null )
 					{
-						foreach ( var item in bindingMap.Values )
+						foreach ( var item in this.bindingMap.Values )
 						{
 							if ( !item.IsDisposed )
 							{
 								item.Dispose();
 							}
 						}
-						bindingMap.Clear();
-						bindingMap = null;
+						this.bindingMap.Clear();
+						this.bindingMap = null;
 					}
 				}
 

@@ -171,18 +171,18 @@ namespace Axiom.Animating
 		{
 			this.type = type;
 
-			valueObject = null;
+			this.valueObject = null;
 		}
 
 		public AnimableType Type
 		{
 			get
 			{
-				return type;
+				return this.type;
 			}
 			set
 			{
-				type = value;
+				this.type = value;
 			}
 		}
 
@@ -201,48 +201,48 @@ namespace Axiom.Animating
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( int val )
 		{
-			valueObject = val;
+			this.valueObject = val;
 		}
 
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( Real val )
 		{
-			valueObject = val;
+			this.valueObject = val;
 		}
 
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( Vector2 val )
 		{
-			valueObject = val;
+			this.valueObject = val;
 		}
 
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( Vector3 val )
 		{
-			valueObject = val;
+			this.valueObject = val;
 		}
 
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( Vector4 val )
 		{
-			valueObject = val;
+			this.valueObject = val;
 		}
 
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( Quaternion val )
 		{
-			valueObject = val;
+			this.valueObject = val;
 		}
 
 		/// Internal method to set a value as base
 		public virtual void SetAsBaseValue( ColorEx val )
 		{
-			valueObject = val.Clone();
+			this.valueObject = val.Clone();
 		}
 
 		private void SetAsBaseValue( Object val )
 		{
-			switch ( type )
+			switch ( this.type )
 			{
 				case AnimableType.Int:
 					SetAsBaseValue( (int)val );
@@ -270,28 +270,28 @@ namespace Axiom.Animating
 
 		public void ResetToBaseValue()
 		{
-			switch ( type )
+			switch ( this.type )
 			{
 				case AnimableType.Int:
-					SetValue( (int)valueObject );
+					SetValue( (int)this.valueObject );
 					break;
 				case AnimableType.Real:
-					SetValue( (Real)valueObject );
+					SetValue( (Real)this.valueObject );
 					break;
 				case AnimableType.Vector2:
-					SetValue( (Vector2)valueObject );
+					SetValue( (Vector2)this.valueObject );
 					break;
 				case AnimableType.Vector3:
-					SetValue( (Vector3)valueObject );
+					SetValue( (Vector3)this.valueObject );
 					break;
 				case AnimableType.Vector4:
-					SetValue( (Vector4)valueObject );
+					SetValue( (Vector4)this.valueObject );
 					break;
 				case AnimableType.Quaternion:
-					SetValue( (Quaternion)valueObject );
+					SetValue( (Quaternion)this.valueObject );
 					break;
 				case AnimableType.ColorEx:
-					SetValue( (ColorEx)valueObject );
+					SetValue( (ColorEx)this.valueObject );
 					break;
 			}
 		}
@@ -341,7 +341,7 @@ namespace Axiom.Animating
 		/// Set value 
 		public virtual void SetValue( Object val )
 		{
-			switch ( type )
+			switch ( this.type )
 			{
 				case AnimableType.Int:
 					SetValue( (int)val );
@@ -412,7 +412,7 @@ namespace Axiom.Animating
 		/// Apply the specified delta 
 		public virtual void ApplyDeltaValue( Object val )
 		{
-			switch ( type )
+			switch ( this.type )
 			{
 				case AnimableType.Int:
 					ApplyDeltaValue( (int)val );
