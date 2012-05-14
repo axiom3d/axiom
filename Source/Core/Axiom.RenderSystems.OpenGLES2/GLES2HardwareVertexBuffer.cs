@@ -62,21 +62,25 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				throw new AxiomException( "Only supported with shadowBuffer" );
 			}
-            int[] buffers = new int[32];
+			int[] buffers = new int[32];
 			GL.GenBuffers( 1, buffers );
-            
-			if ( this._bufferID == 0 )
+			GLES2Config.GlCheckError( this );
+			this._bufferID = buffers[ 0 ];
+
+			if ( this._bufferID != 0 )
 			{
 				throw new AxiomException( "Cannot create GL ES vertex buffer" );
 			}
 
 			( Root.Instance.RenderSystem as GLES2RenderSystem ).BindGLBuffer( GLenum.ArrayBuffer, this._bufferID );
 			GL.BufferData( GLenum.ArrayBuffer, new IntPtr( sizeInBytes ), IntPtr.Zero, GLES2HardwareBufferManager.GetGLUsage( usage ) );
+			GLES2Config.GlCheckError( this );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
 			GL.DeleteBuffers( 1, ref this._bufferID );
+			GLES2Config.GlCheckError( this );
 
 			( Root.Instance.RenderSystem as GLES2RenderSystem ).DeleteGLBuffer( GLenum.ArrayBuffer, this._bufferID );
 
@@ -126,6 +130,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				{
 					//Discard the buffer
 					GL.BufferData( GLenum.ArrayBuffer, new IntPtr( sizeInBytes) , IntPtr.Zero, GLES2HardwareBufferManager.GetGLUsage( usage ) );
+					GLES2Config.GlCheckError( this );
 				}
 				if ( ( usage & BufferUsage.WriteOnly ) == BufferUsage.WriteOnly )
 				{
@@ -133,6 +138,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				}
 
 				var pbuffer = GL.Oes.MapBuffer( GLenum.ArrayBuffer, access );
+				GLES2Config.GlCheckError( this );
 
 				if ( pbuffer == IntPtr.Zero )
 				{
