@@ -133,7 +133,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			//Generate warning texture
 			int width = 8, height = 8;
-			var data = new int[ width & height ];
+			var data = new int[ width * height ];
 
 			//Yellow/black stripes
 			for ( int y = 0; y < height; y++ )

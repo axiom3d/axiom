@@ -55,10 +55,13 @@ namespace Axiom.RenderSystems.OpenGLES2
 	{
 		private string _version, _vendor;
 
-		protected Dictionary<string, ConfigOption> Options;
+        protected ConfigOptionMap Options;
 		protected string ExtensionList;
 
-		public GLES2Support() {}
+		public GLES2Support()
+        {
+            Options = new ConfigOptionMap();
+        }
 
 		public virtual void AddConfig() {}
 
@@ -93,7 +96,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			//Set version string
 			var pcVer = GL.GetString( OpenTK.Graphics.ES20.All.Version );
-
+            if (pcVer == null || pcVer.Length == 0)
+            {
+                pcVer = "UNKOWN";
+            }
 			string tmpStr = pcVer;
 			LogManager.Instance.Write( "GL_VERSION = " + tmpStr );
 			int spacePos = -1;
@@ -109,13 +115,19 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				this._version = tmpStr.Substring( 0, spacePos );
 			}
-			else
-			{
-				this._version = tmpStr.Remove( ' ' );
-			}
-
+            else if (tmpStr.Contains(' '))
+            {
+                this._version = tmpStr.Remove(' ');
+            }
+            else
+            {
+                this._version = tmpStr;
+            }
 			//Get vendor
 			tmpStr = GL.GetString( OpenTK.Graphics.ES20.All.Vendor );
+            if (tmpStr == null || tmpStr == string.Empty)
+                tmpStr = "UNKOWN";
+
 			LogManager.Instance.Write( "GL_VENDOR = " + tmpStr );
 			spacePos = -1;
 			for ( int i = 0; i < tmpStr.Length; i++ )
@@ -130,18 +142,27 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				this._vendor = tmpStr.Substring( 0, spacePos );
 			}
-			else
-			{
-				this._vendor = tmpStr.Remove( ' ' );
-			}
-
+            else if (tmpStr.Contains(' '))
+            {
+                this._vendor = tmpStr.Remove(' ');
+            }
+            else
+            {
+                this._vendor = tmpStr;
+            }
 			//Get renderer
 			tmpStr = GL.GetString( OpenTK.Graphics.ES20.All.Vendor );
+            if (tmpStr == null || tmpStr == string.Empty)
+                tmpStr = "UNKOWN";
+
 			LogManager.Instance.Write( "GL_RENDERER = " + tmpStr );
 
 			//Set extension list
 
 			var pcExt = GL.GetString( OpenTK.Graphics.ES20.All.Extensions );
+            if (pcExt == null)
+                pcExt = string.Empty;
+
 			LogManager.Instance.Write( "GL_EXTENSIONS = " + pcExt );
 			this.ExtensionList = pcExt;
 		}
@@ -167,7 +188,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		/// </summary>
 		public virtual ConfigOptionMap ConfigOptions
 		{
-			get { return (ConfigOptionMap) this.Options; }
+			get { return this.Options; }
 			set { this.Options = value; }
 		}
 
