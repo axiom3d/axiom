@@ -477,10 +477,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 			string deviceName = OpenTK.Graphics.ES20.GL.GetString( OpenTK.Graphics.ES20.All.Renderer );
 			string vendorName = OpenTK.Graphics.ES20.GL.GetString( OpenTK.Graphics.ES20.All.Vendor );
 
-			deviceName = (deviceName == null) ? string.Empty : deviceName;
-			vendorName = (vendorName == null) ? string.Empty : vendorName;
+			deviceName = deviceName ?? string.Empty;
+			vendorName = vendorName ?? string.Empty;
 
-			if ( deviceName != null && deviceName != string.Empty )
+			if ( !string.IsNullOrEmpty( deviceName ) )
 			{
 				rsc.DeviceName = deviceName;
 			}
