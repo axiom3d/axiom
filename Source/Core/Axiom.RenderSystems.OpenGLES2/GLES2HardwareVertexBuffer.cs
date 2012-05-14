@@ -62,7 +62,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				throw new AxiomException( "Only supported with shadowBuffer" );
 			}
-			int[] buffers = new int[32];
+
+			int[] buffers = new int[1];
 			GL.GenBuffers( 1, buffers );
 			GLES2Config.GlCheckError( this );
 			this._bufferID = buffers[ 0 ];
