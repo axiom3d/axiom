@@ -144,6 +144,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 			this.activeVertexGpuProgram = null;
 			this.activeFragmentGpuProgram = null;
 
+            typeEnumMap = new Dictionary<string, GLenum>();
 			//Fill in the relationship between type names and enums
 			this.typeEnumMap.Add( "float", GLenum.Float );
 			this.typeEnumMap.Add( "vec2", GLenum.FloatVec2 );

@@ -62,9 +62,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				throw new AxiomException( "Only supported with shadowBuffer" );
 			}
-
-			GL.GenBuffers( 1, ref this._bufferID );
-
+            int[] buffers = new int[32];
+			GL.GenBuffers( 1, buffers );
+            
 			if ( this._bufferID == 0 )
 			{
 				throw new AxiomException( "Cannot create GL ES vertex buffer" );
