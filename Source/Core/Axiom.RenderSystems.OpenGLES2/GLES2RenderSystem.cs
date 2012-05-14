@@ -477,8 +477,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 			string deviceName = OpenTK.Graphics.ES20.GL.GetString( OpenTK.Graphics.ES20.All.Renderer );
 			string vendorName = OpenTK.Graphics.ES20.GL.GetString( OpenTK.Graphics.ES20.All.Vendor );
 
-            deviceName = (deviceName == null) ? string.Empty : deviceName;
-            vendorName = (vendorName == null) ? string.Empty : vendorName;
+			deviceName = (deviceName == null) ? string.Empty : deviceName;
+			vendorName = (vendorName == null) ? string.Empty : vendorName;
 
 			if ( deviceName != null && deviceName != string.Empty )
 			{
@@ -781,24 +781,24 @@ namespace Axiom.RenderSystems.OpenGLES2
 				var tokens = this.glSupport.GLVersion.Split( '.' );
 				if ( tokens.Length > 0 )
 				{
-                    if (tokens[0] != "UNKOWN")
-                    {
-                        driverVersion.Major = int.Parse(tokens[0]);
-                        if (tokens.Length > 1)
-                        {
-                            driverVersion.Minor = int.Parse(tokens[1]);
-                        }
-                        if (tokens.Length > 2)
-                        {
-                            driverVersion.Release = int.Parse(tokens[2]);
-                        }
-                    }
-                    else
-                    {
-                        driverVersion.Major = 0;
-                        driverVersion.Minor = 0;
-                        driverVersion.Release = 0;
-                    }
+					if (tokens[0] != "UNKOWN")
+					{
+						driverVersion.Major = int.Parse(tokens[0]);
+						if (tokens.Length > 1)
+						{
+							driverVersion.Minor = int.Parse(tokens[1]);
+						}
+						if (tokens.Length > 2)
+						{
+							driverVersion.Release = int.Parse(tokens[2]);
+						}
+					}
+					else
+					{
+						driverVersion.Major = 0;
+						driverVersion.Minor = 0;
+						driverVersion.Release = 0;
+					}
 				}
 				driverVersion.Build = 0;
 
@@ -1943,11 +1943,11 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		public GLES2Support GLES2Support
 		{
-            get
-            {
-                //todo: add conditional for Apple devices
-                return new Android.AndroidSupport();
-            }
+			get
+			{
+				//todo: add conditional for Apple devices
+				return new Android.AndroidSupport();
+			}
 		}
 
 		//RenderSystem overrides
