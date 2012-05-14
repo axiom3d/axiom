@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			GLES2Config.GlCheckError( this );
 			this._bufferID = buffers[ 0 ];
 
-			if ( this._bufferID != 0 )
+			if ( this._bufferID == 0 )
 			{
 				throw new AxiomException( "Cannot create GL ES vertex buffer" );
 			}
