@@ -35,7 +35,7 @@
 
 using System;
 
-using OpenGL = OpenTK.Graphics.ES11.GL;
+using OpenGL = OpenTK.Graphics.ES20.GL;
 
 #endregion Namespace Declarations
 

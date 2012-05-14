@@ -42,6 +42,12 @@
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging, Version=2.0.0.4042, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\Lib\SharpInputSystem\Core\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip.Axiom, Version=1.9.1.9000, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\..\Lib\DotNetZip\Phone\Ionic.Zip.Axiom.dll</HintPath>
+    </Reference>
     <Reference Include="Mono.Android" />
     <Reference Include="OpenTK" />
     <Reference Include="mscorlib" />
