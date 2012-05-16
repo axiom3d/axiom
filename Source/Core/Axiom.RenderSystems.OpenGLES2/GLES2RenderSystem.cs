@@ -56,7 +56,7 @@ using Axiom.RenderSystems.OpenGLES2.GLSLES;
 			
 namespace Axiom.RenderSystems.OpenGLES2
 {
-	public class GLES2RenderSystem : RenderSystem
+	public partial class GLES2RenderSystem : RenderSystem
 	{
 		private Matrix4 viewMatrix;
 		private Matrix4 worldMatrix;
@@ -112,7 +112,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			enableFixedPipeline = false;
 #endif
 
-			this.glSupport = this.GLES2Support;
+			CreateGlSupport();
 
 			this.worldMatrix = Matrix4.Identity;
 			this.viewMatrix = Matrix4.Identity;
@@ -1941,14 +1941,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			get { return this.mainContext; }
 		}
 
-		public GLES2Support GLES2Support
-		{
-			get
-			{
-				//todo: add conditional for Apple devices
-				return new Android.AndroidSupport();
-			}
-		}
+		partial void CreateGlSupport();
 
 		//RenderSystem overrides
 		public override string Name
