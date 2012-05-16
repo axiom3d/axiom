@@ -45,6 +45,7 @@
     <Compile Include="..\GlobalAssemblyInfo.cs">
       <Link>Properties\GlobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="EGL\EGLSupport.cs" />
     <Compile Include="EGL\Win32\Win32EGLContext.cs" />
     <Compile Include="EGL\Win32\Win32EGLRenderTexture.cs" />
     <Compile Include="EGL\Win32\Win32EGLSupport.cs" />
