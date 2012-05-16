@@ -837,19 +837,20 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				bufSize = PixelUtil.GetMemorySize( converted.Width, converted.Height, converted.Depth, converted.Format );
-				var data = new byte[bufSize];
+                var data = new byte[ bufSize ];
 				using ( var dest = BufferBase.Wrap( data ) )
 				{
 					Memory.Copy( converted.Data, dest, bufSize );
 				}
 
-				//TODO note sliceWidth and rowWidth are ignored..
-				D3D9.ImageInformation info;
 				try
 				{
-					//D3D9.D3DX9.LoadVolumeFromMemory() not accessible 'cause D3D9.D3DX9 static class is not public
-					D3D9.Volume.FromFileInMemory( dstBufferResources.Volume, data, D3D9.Filter.Default, 0, srcBox, destBox, null,
-					                              out info );
+                    using ( var srcData = BufferBase.Wrap( data ) )
+                    {
+                        var srcMemoryPtr = new IntPtr( srcData.Ptr );
+                        dstBufferResources.Volume.LoadFromMemory( null, destBox, srcMemoryPtr, D3D9Helper.ConvertEnum( converted.Format ),
+                            rowWidth, slicePitch, null, srcBox, D3D9.Filter.Default, 0 );
+                    }
 				}
 				catch ( Exception e )
 				{
