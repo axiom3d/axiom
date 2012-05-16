@@ -1,13 +1,28 @@
 <!-- Common Settings used by SharpDX projects -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <AxiomUseNewCompilers Condition=" '$(AxiomUseNewCompilers)' == '' ">false</AxiomUseNewCompilers>
+    <!--
+      AxiomSafeCodeMode 
+        Mixed - allow both safe and unsafe methods
+        SafeOnly - Only allow safe methods
+    -->
+    <AxiomSafeCodeMode Condition=" '$(AxiomUseSafeCodeOnly)' == '' ">Mixed</AxiomSafeCodeMode>
+    <AxiomBigEndian Condition=" '$(AxiomBigEndian)' == '' ">false</AxiomBigEndian>
     <AxiomSign Condition=" '$(AxiomSign)' == '' ">false</AxiomSign>
+    <AxiomGlobalDefines Condition=" '$(AxiomUseNewCompilers)' == 'true' ">$(AxiomGlobalDefines);AXIOM_USENEWCOMPILERS</AxiomGlobalDefines>
+    <AxiomGlobalDefines Condition=" '$(AxiomSafeCodeMode)' == 'SafeOnly' ">$(AxiomGlobalDefines);AXIOM_SAFE_ONLY</AxiomGlobalDefines>
+    <AxiomGlobalDefines Condition=" '$(AxiomSafeCodeMode)' == 'Mixed' ">$(AxiomGlobalDefines);AXIOM_SAFE_MIXED</AxiomGlobalDefines>
+    <AxiomGlobalDefines Condition=" '$(AxiomBigEndian)' == 'true' ">$(AxiomGlobalDefines);AXIOM_BIG_ENDIAN</AxiomGlobalDefines>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <OutputType>Library</OutputType>
     <FileAlignment>512</FileAlignment>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks Condition=" '$(AxiomSafeCodeMode)' == 'Mixed' ">true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks Condition=" '$(AxiomSafeCodeMode)' == 'SafeOnly' ">false</AllowUnsafeBlocks>
     <PlatformTarget>x86</PlatformTarget>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -43,7 +58,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Net40Debug'  Or '$(Configuration)' == 'SL5Debug'  Or '$(Configuration)' == 'Win8Debug' ">
     <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
-    <DefineConstants>TRACE;DEBUG;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;$(TargetFrameworkDefine);$(AxiomGlobalDefines)</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
     <Optimize>false</Optimize>
@@ -55,7 +70,7 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' Or '$(Configuration)' == 'Net40Release' Or '$(Configuration)' == 'SL5Release' Or '$(Configuration)' == 'Win8Release' ">
     <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
     <DocumentationFile>bin\Release\$(TargetFrameworkVersion)\$(AssemblyName).xml</DocumentationFile>
-    <DefineConstants>TRACE;$(TargetFrameworkDefine)</DefineConstants>
+    <DefineConstants>TRACE;$(TargetFrameworkDefine);$(AxiomGlobalDefines)</DefineConstants>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <ErrorReport>prompt</ErrorReport>
@@ -86,7 +101,7 @@
     <DefineConstants>$(DefineConstants);WIN8</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' And '$(AxiomSign)' == 'true'">
-    <DefineConstants>TRACE;WinFormsInterop;AXIOM_SIGNED</DefineConstants>
+    <DefineConstants>$(DefineConstants);AXIOM_SIGNED</DefineConstants>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>$(SolutionDir)axiom.snk</AssemblyOriginatorKeyFile>
     <DelaySign>true</DelaySign>
