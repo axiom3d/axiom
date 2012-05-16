@@ -2528,8 +2528,7 @@ namespace Axiom.RenderSystems.DirectX9
 					dx9ClipPlane = DX.Plane.Transform( dx9ClipPlane, xform );
 				}
 
-				//TODO Re-activate CliPlane features
-				//ActiveD3D9Device.SetClipPlane( i, dx9ClipPlane );
+                ActiveD3D9Device.SetClipPlane( i, new DX.Vector4( dx9ClipPlane.Normal, dx9ClipPlane.D ) );
 			}
 			var bits = ( 1ul << ( planes.Count + 1 ) ) - 1;
 			_setRenderState( D3D9.RenderState.ClipPlaneEnable, (int)bits );
@@ -2574,16 +2573,11 @@ namespace Axiom.RenderSystems.DirectX9
 			ActiveD3D9Device.Clear( flags, color.ToARGB(), depth, stencil );
 		}
 
-		[OgreVersion( 1, 7, 2790 )]
-		public void SetClipPlane( ushort index, Real a, Real b, Real c, Real d )
-		{
-			var plane = new float[]
-			            {
-			            	a, b, c, d
-			            };
-			//TODO Re-activate CliPlane features
-			//ActiveD3D9Device.SetClipPlane( index, plane);// new DX.Plane( a, b, c, d ) );
-		}
+        [OgreVersion( 1, 7, 2790 )]
+        public void SetClipPlane( ushort index, Real a, Real b, Real c, Real d )
+        {
+            ActiveD3D9Device.SetClipPlane( index, new DX.Vector4( a, b, c, d ) );
+        }
 
 		[OgreVersion( 1, 7, 2790 )]
 		public void EnableClipPlane( ushort index, bool enable )
