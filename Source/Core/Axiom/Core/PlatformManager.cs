@@ -148,6 +148,9 @@ namespace Axiom.Core
 			{
 				// find and load a platform manager assembly
 				var cwd = Assembly.GetExecutingAssembly().CodeBase;
+				var uri = new Uri( cwd );
+				if ( uri.IsFile )
+					cwd = Path.GetDirectoryName(uri.LocalPath);
 				var files = Directory.GetFiles( cwd, "Axiom.Platforms.*.dll" ).ToArray();
 				var file = "";
 

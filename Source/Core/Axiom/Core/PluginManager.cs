@@ -150,6 +150,9 @@ namespace Axiom.Core
 		{
 #if !(SILVERLIGHT|| XBOX || XBOX360 || WINDOWS_PHONE )
 			var cwd = Assembly.GetExecutingAssembly().CodeBase;
+			var uri = new Uri( cwd );
+			if ( uri.IsFile )
+				cwd = Path.GetDirectoryName( uri.LocalPath );
 #else
 			var cwd = ".";
 #endif
