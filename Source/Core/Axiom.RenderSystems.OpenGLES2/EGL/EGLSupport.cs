@@ -37,17 +37,15 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-using Axiom.Graphics;
-
 #endregion Namespace Declarations
 
-namespace Axiom.RenderSystems.OpenGLES2
+namespace Axiom.RenderSystems.OpenGLES2.EGL
 {
-    public partial class GLES2RenderSystem 
+    internal class EGLSupport : GLES2Support
     {
-        partial void CreateGlSupport()
+        public override string ValidateConfig()
         {
-            this.glSupport = new Android.AndroidSupport();
+            throw new NotImplementedException();
         }
     }
 }
