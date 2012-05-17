@@ -42,6 +42,8 @@ namespace Axiom.Samples.Browser
             var miscParams = new NamedParameterList();
             var width = 800;
             var height = 600;
+            miscParams.Add("externalWindowInfo", this.GlWindowInfo);
+            miscParams.Add("externalGLContext", GLGraphicsContext);
             this.RenderWindow = Root.CreateRenderWindow("AndroidMainWindow", width, height, true, miscParams);
         }
 		/// <summary>
