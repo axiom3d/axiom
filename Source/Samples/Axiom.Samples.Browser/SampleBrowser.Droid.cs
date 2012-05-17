@@ -2,7 +2,7 @@ using System;
 
 using OpenTK;
 using OpenTK.Graphics;
-using OpenTK.Graphics.ES11;
+using OpenTK.Graphics.ES20;
 using OpenTK.Platform;
 using OpenTK.Platform.Android;
 
@@ -16,9 +16,15 @@ namespace Axiom.Samples.Browser
 {
 	public class SampleBrowser : Axiom.Samples.SampleBrowser
 	{
-		public SampleBrowser()
-		{
-		}
+        private IGraphicsContext GLGraphicsContext;
+        private IWindowInfo GlWindowInfo;
+
+        public SampleBrowser(IGraphicsContext iGraphicsContext, IWindowInfo iWindowInfo)
+        {
+            // TODO: Complete member initialization
+            this.GLGraphicsContext = iGraphicsContext;
+            this.GlWindowInfo = iWindowInfo;
+        }
 		
 		protected override bool OneTimeConfig()
 		{
