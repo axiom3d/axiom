@@ -11,6 +11,7 @@ using Android.Content;
 
 using Axiom.Core;
 using SIS = SharpInputSystem;
+using Axiom.Collections;
 
 namespace Axiom.Samples.Browser
 {
@@ -35,6 +36,14 @@ namespace Axiom.Samples.Browser
 			return true;
 		}
 
+        protected override void CreateWindow()
+        {
+            Root.Initialize(false, "Axiom Sample Browser");
+            var miscParams = new NamedParameterList();
+            var width = 800;
+            var height = 600;
+            this.RenderWindow = Root.CreateRenderWindow("AndroidMainWindow", width, height, true, miscParams);
+        }
 		/// <summary>
 		/// Sets up SIS input.
 		/// </summary>

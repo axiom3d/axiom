@@ -93,13 +93,15 @@ namespace Axiom.Samples.Browser
         public override void Resume()
         {
             base.Resume();
-            this.browser.UnpauseCurrentSample();
+            if ( this.browser != null )
+                this.browser.UnpauseCurrentSample();
         }
 
         public override void Pause()
         {
             base.Pause();
-            this.browser.PauseCurrentSample();
+            if (this.browser != null)
+                this.browser.PauseCurrentSample();
         }
     }
 }

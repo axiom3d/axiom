@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-  <axiom.samples.browser.sampleBrowserView 
+  <Axiom.Samples.Browser.SampleBrowserView 
       android:id="@+id/samplebrowserview"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
