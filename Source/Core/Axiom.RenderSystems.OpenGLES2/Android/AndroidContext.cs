@@ -49,98 +49,49 @@ using OpenTK.Graphics;
 using OpenTK.Platform.Android;
 
 using EGLCONTEXT = Javax.Microedition.Khronos.Egl.EGLContext;
+using OpenTK;
+using OpenTK.Platform;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES2.Android
 {
-	/// <summary>
-	/// </summary>
-	internal class AndroidContext : GLES2Context
-	{
-		protected EGLConfig _config;
-		protected AndroidSupport _glSupport;
-		protected EGLSurface _drawable;
-		protected IGraphicsContext _context;
-		protected EGLDisplay _eglDisplay;
+    internal class AndroidContext : GLES2Context
+    {
+        private AndroidSupport glSupport;
+        private IGraphicsContext glContext;
+        private IWindowInfo windowInfo;
 
-		/// <summary>
-		/// </summary>
-		public EGLSurface Drawable
-		{
-			get { return this._drawable; }
-		}
+        public AndroidContext(AndroidSupport glsupport, IGraphicsContext glcontext, IWindowInfo windowInfo)
+        {
+            this.glSupport = glsupport;
+            this.glContext = glcontext;
+            this.windowInfo = windowInfo;
+        }
 
-		private class DummyInfo : OpenTK.Platform.IWindowInfo
-		{
-			public void Dispose() {}
-		}
+        public override void SetCurrent()
+        {
+            glContext.MakeCurrent(windowInfo);
+        }
 
-		/// <summary>
-		/// </summary>
-		/// <param name="eglDisplay"> </param>
-		/// <param name="support"> </param>
-		/// <param name="fbconfig"> </param>
-		/// <param name="drawable"> </param>
-		public AndroidContext( AndroidGraphicsContext glContext, AndroidSupport support )
-		{
-			this._glSupport = support;
-			//_drawable = drawable;
-			this._context = glContext;
-			//_config = fbconfig;
-			//_eglDisplay = eglDisplay;
+        public override void EndCurrent()
+        {
+            
+        }
 
-			//Contract.Requires(_drawable != null);
-			//GLESRenderSystem rendersystem = (GLESRenderSystem)Root.Instance.RenderSystem;
-			//GLESContext mainContext = rendersystem.MainContext;
-			//EGLCONTEXT shareContext = null;
-			//if (mainContext != null)
-			//{
-			//    shareContext = mainContext.con;
-			//}
-			//if (mainContext == null)
-			//{
-			//    throw new AxiomException("Unable to create a suitable EGLContext");
-			//}
+        public override GLES2Context Clone()
+        {
+            return new AndroidContext(glSupport, glContext, windowInfo);
+        }
 
-			// _context = _glSupport.CreateNewContext(_eglDisplay, _config, shareContext);
-		}
+        public override void Dispose()
+        {
+        }
 
-		/// <summary>
-		/// </summary>
-		public override void SetCurrent()
-		{
-			//bool ret = EGLCONTEXT.EGL11.EglMakeCurrent(
-			//    _eglDisplay, _drawable, _drawable, _context );
-			//if ( !ret )
-			//{
-			//    throw new AxiomException( "Fail to make context current" );
-			//}
-		}
-
-		/// <summary>
-		/// </summary>
-		public override void EndCurrent()
-		{
-			//EGLCONTEXT.EGL11.EglMakeCurrent( _eglDisplay, null, null, null );
-		}
-
-		public override void Dispose()
-		{
-			if ( Root.Instance != null && Root.Instance.RenderSystem != null )
-			{
-				var rendersystem = (GLES2RenderSystem) Root.Instance.RenderSystem;
-				//Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglDestroyContext( _eglDisplay, _context );
-				rendersystem.UnregisterContext( this );
-			}
-		}
-
-		/// <summary>
-		/// </summary>
-		/// <returns> </returns>
-		public override GLES2Context Clone()
-		{
-			throw new NotImplementedException();
-		}
-	}
+        public IGraphicsContext GraphicsContext
+        {
+            get { return glContext; }
+        }
+       
+    }
 }

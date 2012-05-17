@@ -777,11 +777,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 			if ( this.glInitialized == false )
 			{
 				this.InitializeContext( win );
-
 				var tokens = this.glSupport.GLVersion.Split( '.' );
 				if ( tokens.Length > 0 )
 				{
-					if (tokens[0] != "UNKOWN")
+					if (tokens[0] != "UNKOWN" && tokens[0] != "OpenGL")
 					{
 						driverVersion.Major = int.Parse(tokens[0]);
 						if (tokens.Length > 1)

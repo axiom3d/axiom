@@ -51,222 +51,126 @@ using OpenTK.Platform.Android;
 
 using NativeWindowType = System.IntPtr;
 using NativeDisplayType = System.IntPtr;
+using Axiom.Core;
+using Axiom.Collections;
+using OpenTK.Platform;
+using OpenTK;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES2.Android
 {
-	internal class AndroidWindow : RenderWindow
-	{
-		private bool _isClosed;
-		private bool _isVisible;
-		private bool _isTopLevel;
-		private bool _isExternal;
-		private bool _isGLControl;
+    internal class AndroidWindow : RenderWindow
+    {
+        protected AndroidSupport glSupport;
+        protected AndroidContext context;
+        protected bool closed;
+        IWindowInfo windowInfo;
 
-		private AndroidContext _glContext;
-		private AndroidSupport _glSupport;
-		private EGLContext _context;
-		private NativeWindowType _window;
-		private NativeDisplayType _nativeDisplay;
-		private EGLDisplay _eglDisplay;
-		private EGLConfig _eglConfig;
-		private EGLSurface _eglSurface;
+        public AndroidWindow(AndroidSupport glSupport)
+        {
+            this.glSupport = glSupport;
+            this.closed = false;
+            this.context = null;
+        }
+        ~AndroidWindow()
+        {
+            if (context != null)
+                context = null;
+        }
+        protected AndroidContext CreateGLContext(int handle)
+        {
+            return new AndroidContext(glSupport, context.GraphicsContext, windowInfo);
+        }
+        protected void GetLeftAndTopFromNativeWindow(out int left, out int top, uint width, uint height)
+        {
+            left = top = 0;
+        }
+        protected void InitNativeCreatedWindow(NamedParameterList miscParams)
+        {
+            LogManager.Instance.Write("\tInitNativeCreateWindow called");
+           
+            if (miscParams != null)
+            {
+                if(miscParams.ContainsKey("externalWindowInfo"))
+                {
+                    this.windowInfo = (IWindowInfo)miscParams["externalWindowInfo"];
+                }
+                if(miscParams.ContainsKey("externalGLContext"))
+                {
+                    var value = miscParams["externalGLContext"];
+                        if (value is IGraphicsContext)
+                        {
+                            context = new AndroidContext(glSupport, (value as IGraphicsContext), windowInfo);
+                        }
+                        else
+                        {
+                            InvalidCastException ex = new InvalidCastException();
+                            throw new AxiomException("externalGLContext must be of type IGraphicsContext", ex);
+                        }
+                    }
+                }
+            }
+        
+        protected void CreateNativeWindow(int left, int top, uint width, uint height, string title)
+        {
+            LogManager.Instance.Write("\tCreateNativeWindow called");
+        }
+        public override void Reposition(int left, int top)
+        {
+            LogManager.Instance.Write("\tReposition called");
+        }
+        public override void Resize(int width, int height)
+        {
+            LogManager.Instance.Write("\tresize called");
 
-		/// <summary>
-		/// </summary>
-		/// <param name="display"> </param>
-		/// <param name="win"> </param>
-		/// <returns> </returns>
-		protected EGLSurface CreateSurfaceFromWindow( EGLDisplay display, NativeWindowType win )
-		{
-			throw new NotImplementedException();
-		}
+        }
+        public override void CopyContentsToMemory(PixelBox pb, FrameBuffer buffer)
+        {
 
-		public AndroidWindow()
-		{
-			//OpenTK.Platform.Utilities.CreateGraphicsContext(new OpenTK.Graphics.GraphicsMode(), null, 1, 1, OpenTK.Graphics.GraphicsContextFlags.Default);
-		}
+        }
+        public override void Create(string name, int width, int height, bool fullScreen, NamedParameterList miscParams)
+        {
+            LogManager.Instance.Write("\tCreate called");
+            InitNativeCreatedWindow(miscParams);
 
-		#region RenderWindow Members
+            this.name = name;
+            this.width = width;
+            this.height = height;
+            this.left = 0;
+            this.top = 0;
+            this.active = true;
 
-		public override bool RequiresTextureFlipping
-		{
-			get { throw new NotImplementedException(); }
-		}
+            this.closed = false;
+        }
+        public override void Destroy()
+        {
+            LogManager.Instance.Write("Destroy called");
+        }
+        public override bool IsClosed
+        {
+            get { return closed; }
+        }
+        public override bool RequiresTextureFlipping
+        {
+            get { return false; }
+        }
+        public override object this[string attribute]
+        {
+            get
+            {
+                if (attribute == "WINDOWINFO")
+                {
+                    return windowInfo;
+                }
+                else if (attribute == "GLCONTEXT")
+                {
+                    return context;
+                }
+                return base[attribute];
+            }
+        }
 
-		public override object this[ string attribute ]
-		{
-			get
-			{
-				switch ( attribute.ToLower() )
-				{
-					case "glcontext":
-						return this._glContext;
-					case "window":
-						return this._window;
-					case "nativewindow":
-						return this._window;
-					default:
-						return null;
-				}
-			}
-		}
+    }
 
-		public override bool IsClosed
-		{
-			get { return this._window == null && this._glContext == null; }
-		}
-
-		public override void Reposition( int left, int right )
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void Destroy()
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void Resize( int width, int height )
-		{
-			throw new NotImplementedException();
-		}
-
-		/// <summary>
-		/// </summary>
-		/// <param name="name"> </param>
-		/// <param name="width"> </param>
-		/// <param name="height"> </param>
-		/// <param name="fullScreen"> </param>
-		/// <param name="miscParams"> </param>
-		public override void Create( string name, int width, int height, bool fullScreen, Collections.NamedParameterList miscParams )
-		{
-			string title = name;
-			bool vsync = false;
-			int depthBuffer = GraphicsMode.Default.Depth;
-			float displayFrequency = 60f;
-			string border = "resizable";
-
-			this.name = name;
-			this.width = width;
-			this.height = height;
-			this.colorDepth = 32;
-			IsFullScreen = fullScreen;
-
-			#region Parameter Handling
-
-			if ( miscParams != null )
-			{
-				foreach ( var entry in miscParams )
-				{
-					switch ( entry.Key )
-					{
-						case "title":
-							title = entry.Value.ToString();
-							break;
-						case "left":
-							left = Int32.Parse( entry.Value.ToString() );
-							break;
-						case "top":
-							top = Int32.Parse( entry.Value.ToString() );
-							break;
-						case "fsaa":
-							this.fsaa = Int32.Parse( entry.Value.ToString() );
-							break;
-						case "colourDepth":
-						case "colorDepth":
-							this.colorDepth = Int32.Parse( entry.Value.ToString() );
-							break;
-						case "vsync":
-							vsync = entry.Value.ToString() != "No";
-							break;
-						case "displayFrequency":
-							displayFrequency = Int32.Parse( entry.Value.ToString() );
-							break;
-						case "depthBuffer":
-							depthBuffer = Int32.Parse( entry.Value.ToString() );
-							break;
-						case "border":
-							border = entry.Value.ToString().ToLower();
-							break;
-
-						case "externalWindowInfo":
-							var androidContext = (AndroidGraphicsContext) entry.Value;
-							this._glContext = new AndroidContext( androidContext, this._glSupport );
-							break;
-
-						case "externalWindowHandle":
-							object handle = entry.Value;
-							IntPtr ptr = IntPtr.Zero;
-							if ( handle is IntPtr )
-							{
-								ptr = (IntPtr) handle;
-							}
-							else if ( handle is int )
-							{
-								ptr = new IntPtr( (int) handle );
-							}
-							this._window = ptr;
-
-							fullScreen = false;
-							IsActive = true;
-							break;
-
-						case "externalWindow":
-							fullScreen = false;
-							IsActive = true;
-							break;
-
-						default:
-							break;
-					}
-				}
-			}
-
-			#endregion Parameter Handling
-		}
-
-		/// <summary>
-		/// </summary>
-		/// <param name="pb"> </param>
-		/// <param name="buffer"> </param>
-		public override void CopyContentsToMemory( PixelBox pb, RenderTarget.FrameBuffer buffer )
-		{
-			throw new NotImplementedException();
-		}
-
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					//if ( _glContext != null ) // Do We Not Have A Rendering Context?
-					//{
-					//    _glContext.SetCurrent();
-					//    _glContext.Dispose();
-					//    _glContext = null;
-					//}
-
-					//if ( _window != null )
-					//{
-					//    if ( IsFullScreen )
-					//        displayDevice.RestoreResolution();
-
-					//    _window.Close();
-					//    _window = null;
-					//}
-				}
-
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
-
-		#endregion RenderWindow Members
-	}
 }

@@ -58,308 +58,84 @@ using EGLCONTEXT = Javax.Microedition.Khronos.Egl.EGLContext;
 
 namespace Axiom.RenderSystems.OpenGLES2.Android
 {
-	internal class AndroidSupport : GLES2Support
-	{
-		protected EGLDisplay _glDisplay;
-		protected NativeDisplayType _nativeDislpay;
-		protected bool _isExternalDisplay;
-		protected bool _randr;
+    internal class AndroidSupport : GLES2Support
+    {
+        public AndroidSupport()
+        { }
 
-		private readonly List<KeyValuePair<Size, short>> _videoModes;
-		private KeyValuePair<Size, short> _originalMode;
-		private KeyValuePair<Size, short> _currentMode;
-		private readonly List<string> _sampleLevels;
+        public void SwitchMode(uint width, uint height, short frequency)
+        { }
+        public override RenderWindow CreateWindow(bool autoCreateWindow, GLES2RenderSystem renderSystem, string windowTitle)
+        {
+            LogManager.Instance.Write("/tGLSupport CreateWindow called");
 
-		/// <summary>
-		/// </summary>
-		public EGLDisplay GLDisplay
-		{
-			get
-			{
-				var majorMinor = new int[ 2 ];
-				this._glDisplay = Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglGetDisplay( this._nativeDislpay );
-				if ( this._glDisplay == Javax.Microedition.Khronos.Egl.EGL10Consts.EglNoDisplay )
-				{
-					throw new AxiomException( "Couldn't open EGLDisplay " + DisplayName );
-				}
+            RenderWindow window = null;
+            if (autoCreateWindow)
+            {
+                NamedParameterList miscParams = new NamedParameterList();
+                bool fullscreen = true;
+                int w = 800, h = 600;
 
-				if ( !Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglInitialize( this._glDisplay, majorMinor ) )
-				{
-					throw new AxiomException( "Couldn't open EGLDisplay " + DisplayName );
-				}
-				return this._glDisplay;
-			}
-			set { this._glDisplay = value; }
-		}
+                if (Options.ContainsKey("Display Frequency"))
+                {
+                    miscParams.Add("displayFrequency", Options["Display Frequency"]);
+                }
+                window = renderSystem.CreateRenderWindow(windowTitle, w, h, fullscreen, miscParams);
 
-		/// <summary>
-		/// </summary>
-		public string DisplayName
-		{
-			get { return "TODO"; }
-		}
+            }
 
-		/// <summary>
-		/// </summary>
-		public AndroidSupport()
-			: base()
-		{
-			this._videoModes = new List<KeyValuePair<Size, short>>();
-			this._originalMode = new KeyValuePair<Size, short>();
-			this._sampleLevels = new List<string>();
-			this._currentMode = new KeyValuePair<Size, short>();
-		}
+            return window;
+        }
+        public override RenderWindow NewWindow(string name, int width, int height, bool fullScreen, NamedParameterList miscParams)
+        {
+            LogManager.Instance.Write("TGLSupport NewWindow called");
+            
+            AndroidWindow window = new AndroidWindow(this);
+            
+            window.Create(name, width, height, fullScreen, miscParams);
 
-		public override void AddConfig()
-		{
-			var optFullsreen = new ConfigOption( "Full Screen", "No", false );
-			var optVideoMode = new ConfigOption( "Video Mode", "640 x 320", false );
-			var optDisplayFrequenzy = new ConfigOption( "Display Frequency", "60", false );
-			var optFSAA = new ConfigOption( "FSAA", "1", false );
-			var optRTTMode = new ConfigOption( "RTT Preferred Mode", "FBO", false );
-			optFullsreen.PossibleValues.Add( 0, "Yes" );
-			optFullsreen.PossibleValues.Add( 1, "No" );
+            return window;
+        }
+        public override void Start()
+        {
+            LogManager.Instance.Write("/tGLSupport start called");
+        }
+        internal override void Stop()
+        {
+            LogManager.Instance.Write("/tGLSupport stop called");
+        }
+        public override void AddConfig()
+        {
+            LogManager.Instance.Write("/tGLSupport AddConfig called");
 
-			optFullsreen.Value = optFullsreen.PossibleValues[ 0 ];
-			int index = 0;
-			foreach ( var mode in this._videoModes )
-			{
-				string resolution = mode.Key.Width + " x " + mode.Key.Height;
-				if ( !optVideoMode.PossibleValues.ContainsValue( resolution ) )
-				{
-					optVideoMode.PossibleValues.Add( index++, resolution );
-				}
-			}
-			index = 0;
-			optVideoMode.Value = this._currentMode.Key.Width + " x " + this._currentMode.Key.Height;
+            //currently no config options supported
+            RefreshConfig();
+        }
+        public void RefreshConfig()
+        {
+        }
+        public override string ValidateConfig()
+        {
+            return string.Empty;
+        }
+        public override Graphics.Collections.ConfigOptionMap ConfigOptions
+        {
+            get
+            {
+                return base.ConfigOptions;
+            }
+            set
+            {
+                base.ConfigOptions = value;
+            }
+        }
+        public string DisplayName
+        {
+            get
+            {
+                return "Android GLES2 Support";
+            }
 
-			if ( this._sampleLevels.Count > 0 )
-			{
-				foreach ( string fssa in this._sampleLevels )
-				{
-					optFSAA.PossibleValues.Add( index++, fssa );
-				}
-
-				optFSAA.Value = optFSAA.PossibleValues[ 0 ];
-			}
-
-			optRTTMode.PossibleValues.Add( 0, "FBO" );
-			optRTTMode.PossibleValues.Add( 1, "PBuffer" );
-			optRTTMode.PossibleValues.Add( 2, "Copy" );
-			optRTTMode.Value = optRTTMode.PossibleValues[ 0 ];
-
-			Options[ optFullsreen.Name ] = optFullsreen;
-			Options[ optVideoMode.Name ] = optVideoMode;
-			Options[ optDisplayFrequenzy.Name ] = optDisplayFrequenzy;
-			Options[ optFSAA.Name ] = optFSAA;
-			Options[ optRTTMode.Name ] = optRTTMode;
-
-			RefreshConfig();
-		}
-
-		/// <summary>
-		/// </summary>
-		protected void RefreshConfig()
-		{
-			ConfigOption optVideoMode = ConfigOptions[ "Video Mode" ];
-			ConfigOption optDisplayFrequency = ConfigOptions[ "Display Frequency" ];
-
-			int vidIndex = 0;
-			int freqIndex = 0;
-			int addIndex = 0;
-			while ( vidIndex < optVideoMode.PossibleValues.Count && freqIndex < optDisplayFrequency.PossibleValues.Count )
-			{
-				optDisplayFrequency.PossibleValues.Clear();
-				foreach ( var value in this._videoModes )
-				{
-					string mode = value.Key.Width + " x " + value.Key.Height;
-					if ( mode == optVideoMode.Value )
-					{
-						string frequenzy = value.Value.ToString() + " MHz";
-						optDisplayFrequency.PossibleValues.Add( addIndex++, frequenzy );
-					}
-				}
-				if ( optDisplayFrequency.PossibleValues.Count > 0 )
-				{
-					optDisplayFrequency.Value = optDisplayFrequency.PossibleValues[ 0 ];
-				}
-				else
-				{
-					optVideoMode.Value = this._videoModes[ 0 ].Key.Width + " x " + this._videoModes[ 0 ].Key.Height;
-					optDisplayFrequency.Value = this._videoModes[ 0 ].Value.ToString() + " MHz";
-				}
-				vidIndex++;
-				freqIndex++;
-			}
-		}
-
-		/// <summary>
-		/// </summary>
-		/// <param name="attribList"> </param>
-		/// <param name="elements"> </param>
-		/// <returns> </returns>
-		public EGLConfig[] ChooseGLConfig( int[] attribList, int[] elements )
-		{
-			EGLConfig[] configs;
-			if ( Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglChooseConfig( this._glDisplay, attribList, null, 0, elements ) == false )
-			{
-				throw new AxiomException( "Failed to choose config" );
-			}
-
-			configs = new EGLConfig[ Marshal.SizeOf( typeof ( EGLConfig ) ) * elements.Length ];
-			if ( Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglChooseConfig( this._glDisplay, attribList, configs, configs.Length, elements ) == false )
-			{
-				throw new AxiomException( "Failed to choose config" );
-			}
-
-			return configs;
-		}
-
-		/// <summary>
-		/// </summary>
-		/// <param name="glConfig"> </param>
-		/// <param name="attribute"> </param>
-		/// <param name="value"> </param>
-		/// <returns> </returns>
-		public bool GetGLConfigAttrib( EGLConfig glConfig, int attribute, int[] value )
-		{
-			bool status = false;
-			status = Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglGetConfigAttrib( this._glDisplay, glConfig, attribute, value );
-			return status;
-		}
-
-
-		/// <summary>
-		/// </summary>
-		/// <param name="context"> </param>
-		/// <returns> </returns>
-		public EGLConfig GetGLConfigFromContext( EGLCONTEXT context )
-		{
-#warning CAN NOT CAST EGLCONFIG > INT[], how's that possible? :S
-			throw new NotSupportedException();
-			//EGLConfig glConfig = null;
-			//if (!Javax.Microedition.Khronos.Egl.EGLContext.EGL11.EglQueryContext(_glDisplay, context,
-			//    Javax.Microedition.Khronos.Egl.EGL10Consts.EglConfigId, null))
-			//{
-			//    throw new AxiomException("Fail to get config from context");
-			//}
-			//return glConfig;
-		}
-
-		public EGLConfig GetConfigFromDrawable( EGLSurface drawable, int width, int height )
-		{
-#warning CAN NOT CAST EGLCONFIG > INT[], how's that possible? :S
-			throw new NotSupportedException();
-			//EGLConfig glConfig = null;
-			//if (!EGLCONTEXT.EGL11.EglQuerySurface(_glDisplay, drawable, Javax.Microedition.Khronos.Egl.EGL10Consts.EglConfigId, null))
-			//{
-			//    throw new AxiomException("Fail to get config from drawable");
-			//}
-			//EGLCONTEXT.EGL11.EglQuerySurface(_glDisplay, drawable, Javax.Microedition.Khronos.Egl.EGL10Consts.EglWidth, new int[] { width });
-			//EGLCONTEXT.EGL11.EglQuerySurface(_glDisplay, drawable, Javax.Microedition.Khronos.Egl.EGL10Consts.EglHeight, new int[] { height });
-
-			//return glConfig;
-		}
-
-		/// <summary>
-		/// </summary>
-		/// <param name="eglDisplay"> </param>
-		/// <param name="glConfig"> </param>
-		/// <param name="shareList"> </param>
-		/// <returns> </returns>
-		public EGLCONTEXT CreateNewContext( EGLDisplay eglDisplay, EGLConfig glConfig, EGLCONTEXT shareList )
-		{
-			var contexAttrs = new int[] { 1, 2, EGL10Consts.EglNone };
-			EGLCONTEXT context = null;
-			if ( eglDisplay == null )
-			{
-				context = EGLCONTEXT.EGL11.EglCreateContext( this._glDisplay, glConfig, shareList, contexAttrs );
-			}
-			else
-			{
-				context = EGLCONTEXT.EGL11.EglCreateContext( this._glDisplay, glConfig, null, contexAttrs );
-			}
-
-			if ( context == null )
-			{
-				throw new AxiomException( "Fail to create New context" );
-			}
-
-			return context;
-		}
-
-		/// <summary>
-		/// </summary>
-		/// <returns> </returns>
-		public override string ValidateConfig()
-		{
-			//TODO
-			return string.Empty;
-		}
-
-		/// <summary>
-		/// </summary>
-		/// <param name="autoCreateWindow"> </param>
-		/// <param name="renderSystem"> </param>
-		/// <param name="windowTitle"> </param>
-		/// <returns> </returns>
-		public override RenderWindow CreateWindow( bool autoCreateWindow, GLES2RenderSystem renderSystem, string windowTitle )
-		{
-			RenderWindow window = null;
-			if ( autoCreateWindow )
-			{
-				var miscParams = new NamedParameterList();
-				bool fullScreen = false;
-				int width = 640;
-				int height = 480;
-				if ( Options[ "Full Screen" ] != null )
-				{
-					fullScreen = Options[ "Full Screen" ].Value == "Yes";
-				}
-				if ( Options[ "Display Frequency" ] != null )
-				{
-					miscParams[ "displayFrequency" ] = Options[ "Display Frequency" ].Value;
-				}
-				if ( Options[ "Video Mode" ] != null )
-				{
-					string val = Options[ "Video Mode" ].Value;
-					int xIndex = val.IndexOf( "x" );
-
-					if ( xIndex != -1 )
-					{
-						width = int.Parse( val.Substring( 0, xIndex ) );
-						height = int.Parse( val.Substring( xIndex + 1 ) );
-					}
-				}
-				if ( Options[ "FSAA" ] != null )
-				{
-					miscParams[ "FSAA" ] = Options[ "FSAA" ].Value;
-				}
-
-				window = renderSystem.CreateRenderWindow( windowTitle, width, height, fullScreen, miscParams );
-			}
-			return window;
-		}
-
-		public override Graphics.RenderWindow NewWindow( string name, int width, int height, bool fullScreen, Collections.NamedParameterList miscParams = null )
-		{
-			var window = new AndroidWindow();
-			window.Create( name, width, height, fullScreen, miscParams );
-			return window;
-		}
-
-		/// <summary>
-		/// </summary>
-		public override void Start()
-		{
-			LogManager.Instance.Write( "*** Starting OpenTKGLES Subsystem ***" );
-		}
-
-		/// <summary>
-		/// </summary>
-		internal override void Stop()
-		{
-			LogManager.Instance.Write( "*** Stopping OpenTKGLES Subsystem ***" );
-		}
-	}
+        }
+    }
 }
