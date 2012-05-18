@@ -61,12 +61,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 				case PixelFormat.L8:
 				case PixelFormat.L16:
+				case PixelFormat.FLOAT16_R:
 					return GLenum.Luminance;
-
-				case PixelFormat.FLOAT16_RGB:
-					return GLenum.Rgb;
-				case PixelFormat.FLOAT16_RGBA:
-					return GLenum.Rgba;
 
 				case PixelFormat.BYTE_LA:
 				case PixelFormat.SHORT_GR:
@@ -86,6 +82,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				case PixelFormat.B5G6R5:
 				case PixelFormat.R8G8B8:
 				case PixelFormat.B8G8R8:
+				case PixelFormat.FLOAT16_RGB:
 					return GLenum.Rgb;
 
 				case PixelFormat.A1R5G5B5:
@@ -97,6 +94,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				case PixelFormat.B8G8R8A8:
 				case PixelFormat.X8B8G8R8:
 				case PixelFormat.A8B8G8R8:
+				case PixelFormat.FLOAT16_RGBA:
 					return GLenum.Rgba;
 
 				case PixelFormat.FLOAT32_GR:
