@@ -97,7 +97,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			//Scale to nearest power 2
 			w = GLES2PixelUtil.OptionalPO2( images[ imgIdx ].Width );
-			w = GLES2PixelUtil.OptionalPO2( images[ imgIdx ].Height );
+			h = GLES2PixelUtil.OptionalPO2( images[ imgIdx ].Height );
 			if ( ( images[ imgIdx ].Width != w ) || ( images[ imgIdx ].Height != h ) )
 			{
 				images[ imgIdx ].Resize( w, h );
