@@ -90,7 +90,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			return this.ExtensionList.Contains( ext );
 		}
 
-		internal virtual void Stop() {}
+		public virtual void Stop() {}
 
 		internal virtual void InitializeExtensions()
 		{

@@ -43,8 +43,6 @@ using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Configuration;
 
-using Android.Graphics;
-
 using Axiom.Core;
 
 using GL = OpenTK.Graphics.ES20.GL;

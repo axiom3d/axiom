@@ -52,77 +52,100 @@ namespace Axiom.RenderSystems.OpenGLES2
 	{
 		#region NestedTypes
 
-		private struct FormatProperties
-		{
-			public bool valid; //This format can be used as RTT (FBO)
+        /// <summary>
+        /// Frame Buffer Object properties for a certain texture format.
+        /// </summary>
+        private class FormatProperties
+        {
+            /// <summary>
+            /// This format can be used as RTT (FBO)
+            /// </summary>
+            public bool Valid;
 
-			public struct Mode
-			{
-				public int depth;
-				public int stencil;
-			}
+            /// <summary>
+            /// Allowed modes/properties for this pixel format
+            /// </summary>
+            public struct Mode
+            {
+                /// <summary>
+                /// Depth format (0=no depth)
+                /// </summary>
+                public int Depth;
 
-			public List<Mode> modes;
-		}
+                /// <summary>
+                /// Stencil format (0=no stencil)
+                /// </summary>
+                public int Stencil;
+            };
 
-		private class RBFormat
-		{
-			public readonly GLenum format;
-			public readonly int width;
-			public readonly int height;
-			public readonly int samples;
+            public readonly List<Mode> Modes = new List<Mode>();
+        };
 
-			public RBFormat( GLenum format, int width, int height, int samples )
-			{
-				this.format = format;
-				this.width = width;
-				this.height = height;
-				this.samples = samples;
-			}
+        /// <summary>
+        /// Stencil and depth renderbuffers of the same format are re-used between surfaces of the
+        /// same size and format. This can save a lot of memory when a large amount of rendertargets
+        /// are used.
+        /// </summary>
+        private class RBFormat
+        {
+            public readonly GLenum Format;
+            public readonly int Width;
+            public readonly int Height;
+            public readonly int Samples;
 
-			private bool LessThan( RBFormat other )
-			{
-				if ( this.format < other.format )
-				{
-					return true;
-				}
-				else if ( this.format == other.format )
-				{
-					if ( this.width < other.width )
-					{
-						return true;
-					}
-					else if ( this.width == other.width )
-					{
-						if ( this.height < other.height )
-						{
-							return true;
-						}
-						else if ( this.height == other.height )
-						{
-							if ( this.samples < other.samples )
-							{
-								return true;
-							}
-						}
-					}
-				}
+            public RBFormat(GLenum format, int width, int height, int samples)
+            {
+                this.Format = format;
+                this.Width = width;
+                this.Height = height;
+                this.Samples = samples;
+            }
 
-				return false;
-			}
+            private bool LessThan(RBFormat other)
+            {
+                if (this.Format < other.Format)
+                {
+                    return true;
+                }
+                else if (this.Format == other.Format)
+                {
+                    if (this.Width < other.Width)
+                    {
+                        return true;
+                    }
+                    else if (this.Width == other.Width)
+                    {
+                        if (this.Height < other.Height)
+                        {
+                            return true;
+                        }
+                        else if (this.Height == other.Height)
+                        {
+                            if (this.Samples < other.Samples)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
 
-			public static bool operator <( RBFormat lhs, RBFormat rhs )
-			{
-				return lhs.LessThan( rhs );
-			}
+                return false;
+            }
 
-			public static bool operator >( RBFormat lhs, RBFormat rhs )
-			{
-				return !( lhs.LessThan( rhs ) || lhs == rhs );
-			}
-		}
+            // Overloaded comparison operators for usage in Dictionary
 
-		private struct RBRef
+            public static bool operator <(RBFormat lhs, RBFormat rhs)
+            {
+                return lhs.LessThan(rhs);
+            }
+
+            public static bool operator >(RBFormat lhs, RBFormat rhs)
+            {
+                return !(lhs.LessThan(rhs) || lhs == rhs);
+            }
+        }
+
+        private struct RBRef
 		{
 			public readonly GLES2RenderBuffer buffer;
 			private int refCount;
@@ -163,6 +186,11 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		public GLES2FBOManager()
 		{
+            for (int x = 0; x < this.props.GetLength(0); x++)
+            {
+                this.props[x] = new FormatProperties();
+            }
+
 			this.DetectFBOFormats();
 			GL.GenFramebuffers( 1, ref this.tempFBO );
 		}
@@ -216,7 +244,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			FormatProperties prop = this.props[ (int) internalColorFormat ];
 			int bestmode = 0;
 			int bestscore = -1;
-			for ( int mode = 0; mode < prop.modes.Count; mode++ )
+			for ( int mode = 0; mode < prop.Modes.Count; mode++ )
 			{
 				int desirability = 0;
 				/// Find most desirable mode
@@ -225,24 +253,24 @@ namespace Axiom.RenderSystems.OpenGLES2
 				/// desirability == 2000...3000  if depth, no stencil
 				/// desirability == 3000+        if depth and stencil
 				/// beyond this, the total numer of bits (stencil+depth) is maximised
-				if ( prop.modes[ mode ].stencil > 0 )
+				if ( prop.Modes[ mode ].Stencil > 0 )
 				{
 					desirability += 1000;
 				}
-				if ( prop.modes[ mode ].depth > 0 )
+				if ( prop.Modes[ mode ].Depth > 0 )
 				{
 					desirability += 2000;
 				}
-				if ( depthBits[ prop.modes[ mode ].depth ] == 24 ) //Prefer 24 bit for now
+				if ( depthBits[ prop.Modes[ mode ].Depth ] == 24 ) //Prefer 24 bit for now
 				{
 					desirability += 500;
 				}
-				if ( depthFormats[ prop.modes[ mode ].depth ] == GLenum.Depth24Stencil8Oes ) //Prefer 24/8 packed
+				if ( depthFormats[ prop.Modes[ mode ].Depth ] == GLenum.Depth24Stencil8Oes ) //Prefer 24/8 packed
 				{
 					desirability += 5000;
 				}
 
-				desirability += stencilBits[ prop.modes[ mode ].stencil ] + depthBits[ prop.modes[ mode ].depth ];
+				desirability += stencilBits[ prop.Modes[ mode ].Stencil ] + depthBits[ prop.Modes[ mode ].Depth ];
 
 				if ( desirability > bestscore )
 				{
@@ -250,8 +278,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 					bestmode = mode;
 				}
 			}
-			depthFormat = depthFormats[ prop.modes[ bestmode ].depth ];
-			stencilFormat = stencilFormats[ prop.modes[ bestmode ].stencil ];
+			depthFormat = depthFormats[ prop.Modes[ bestmode ].Depth ];
+			stencilFormat = stencilFormats[ prop.Modes[ bestmode ].Stencil ];
 		}
 
 		public override bool CheckFormat( Media.PixelFormat format )
@@ -321,7 +349,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			GLenum target = GLenum.Texture2D;
 			for ( int x = 0; x < (int) PixelFormat.Count; x++ )
 			{
-				this.props[ x ].valid = false;
+				this.props[ x ].Valid = false;
 
 				//Fetch gl format token
 				var fmt = GLES2PixelUtil.GetGLInternalFormat( (PixelFormat) x );
@@ -362,7 +390,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				// might still be supported, so we must continue probing.
 				if ( fmt == GLenum.None || status == GLenum.FramebufferComplete )
 				{
-					this.props[ x ].valid = true;
+					this.props[ x ].Valid = true;
 					var sb = new StringBuilder();
 					sb.Append( "FBO " + PixelUtil.GetFormatName( (PixelFormat) x ) + " depth/stencil support: " );
 
@@ -380,9 +408,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 									//Add mode to allowed modes
 									sb.Append( "D" + depthBits[ depth ] + "S" + stencilBits[ stencil ] + " " );
 									var mode = new FormatProperties.Mode();
-									mode.depth = depth;
-									mode.stencil = stencil;
-									this.props[ x ].modes.Add( mode );
+									mode.Depth = depth;
+                                    mode.Stencil = stencil;
+                                    this.props[x].Modes.Add(mode);
 								}
 							}
 						}
@@ -394,9 +422,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 								//Add mode to allowed modes
 								sb.Append( "Packed-D" + depthBits[ depth ] + "S" + 8 + " " );
 								var mode = new FormatProperties.Mode();
-								mode.depth = depth;
-								mode.stencil = 0; //unuse
-								this.props[ x ].modes.Add( mode );
+								mode.Depth = depth;
+								mode.Stencil = 0; //unuse
+								this.props[ x ].Modes.Add( mode );
 							}
 						}
 					}
@@ -415,7 +443,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			string fmtstring = string.Empty;
 			for ( int x = 0; x < (int) PixelFormat.Count; x++ )
 			{
-				if ( this.props[ x ].valid )
+				if ( this.props[ x ].Valid )
 				{
 					fmtstring += PixelUtil.GetFormatName( (PixelFormat) x ) + " ";
 				}
