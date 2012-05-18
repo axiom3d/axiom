@@ -14,7 +14,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Diagnostics;
 
 #if SILVERLIGHT
 using System.Windows;

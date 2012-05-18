@@ -154,7 +154,7 @@ namespace Axiom.Core
 				++this.numThreadsRegisteredWithRS;
 
 #if AXIOM_THREAD_SUPPORT
-	// wake up main thread
+				// wake up main thread
 				Monitor.PulseAll( initSync );
 #endif
 			}
@@ -172,8 +172,8 @@ namespace Axiom.Core
 			shuttingDown = true;
 			AbortAllRequests();
 #if AXIOM_THREAD_SUPPORT
-            lock ( requestMutex )
-			    Monitor.PulseAll( requestMutex );
+			lock ( requestMutex )
+				Monitor.PulseAll( requestMutex );
 
 			// all our threads should have been woken now, so join
 			foreach ( var i in workers )
@@ -189,8 +189,8 @@ namespace Axiom.Core
 		protected override void NotifyWorkers()
 		{
 #if AXIOM_THREAD_SUPPORT
-	// wake up waiting thread
-            Monitor.Pulse( requestMutex );
+			// wake up waiting thread
+			Monitor.Pulse( requestMutex );
 #endif
 		}
 
@@ -201,7 +201,7 @@ namespace Axiom.Core
 		protected virtual void WaitForNextRequest()
 		{
 #if AXIOM_THREAD_SUPPORT
-	// Lock; note that OGRE_THREAD_WAIT will free the lock
+			// Lock; note that OGRE_THREAD_WAIT will free the lock
 			lock ( requestMutex )
 			{
 				if ( requestQueue.Count == 0 )

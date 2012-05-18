@@ -94,7 +94,7 @@ namespace Axiom.Graphics
 				for ( var i = 0; i < maxArrayIndex; i++ )
 				{
 					var arrayName = string.Format( "{0}[{1}]", paramName, i );
-					this.Map.Add( arrayName, arrayDef );
+					this.Map.Add( arrayName.ToLower(), arrayDef );
 					// increment location
 					arrayDef.PhysicalIndex += arrayDef.ElementSize;
 				}
