@@ -432,7 +432,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				}
 			}
 
-			GL.TexSubImage2D( this.faceTarget, this.level, dest.Left, dest.Top, dest.Width, dest.Height, GLES2PixelUtil.GetGLOriginFormat( data.Format ), GLES2PixelUtil.GetGLOriginFormat( data.Format ), data.Data.Pin() );
+			GL.TexSubImage2D( this.faceTarget, this.level, dest.Left, dest.Top, dest.Width, dest.Height, GLES2PixelUtil.GetGLOriginFormat( data.Format ), GLES2PixelUtil.GetGLOriginDataType( data.Format ), data.Data.Pin() );
 			GLES2Config.GlCheckError( this );
 		}
 
