@@ -339,6 +339,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				Glenum dataType = GLES2PixelUtil.GetGLOriginDataType( scaled.Format );
 
 				GL.TexImage2D( this.faceTarget, mip, (int)glFormat, width, height, 0, glFormat, dataType, scaled.Data.Pin() );
+				GLES2Config.GlCheckError( this );
 
 				if ( mip != 0 )
 				{
@@ -370,6 +371,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		protected override void Upload( PixelBox data, BasicBox dest )
 		{
 			GL.BindTexture( this.target, this.textureID );
+			GLES2Config.GlCheckError( this );
 
 			if ( PixelUtil.IsCompressed( data.Format ) )
 			{
@@ -405,6 +407,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 				}
 
 				GL.PixelStore( Glenum.UnpackAlignment, 1 );
+				GLES2Config.GlCheckError( this );
+
 				this.BuildMipmaps( data );
 			}
 			else
@@ -424,10 +428,12 @@ namespace Axiom.RenderSystems.OpenGLES2
 				{
 					//Standard alignment of 4 is not right
 					GL.PixelStore( Glenum.UnpackAlignment, 1 );
+					GLES2Config.GlCheckError( this );
 				}
 			}
 
 			GL.TexSubImage2D( this.faceTarget, this.level, dest.Left, dest.Top, dest.Width, dest.Height, GLES2PixelUtil.GetGLOriginFormat( data.Format ), GLES2PixelUtil.GetGLOriginFormat( data.Format ), data.Data.Pin() );
+			GLES2Config.GlCheckError( this );
 		}
 
 		protected override void Download( PixelBox data )
@@ -470,6 +476,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		public override void BindToFramebuffer( Glenum attachment, int zoffset )
 		{
 			GL.FramebufferTexture2D( Glenum.Framebuffer, attachment, this.faceTarget, this.textureID, this.level );
+			GLES2Config.GlCheckError( this );
 		}
 
 		public override void Blit( HardwarePixelBuffer src, BasicBox srcBox, BasicBox dstBox )
@@ -588,26 +595,31 @@ namespace Axiom.RenderSystems.OpenGLES2
 			GlInternalFormat = format;
 			//Genearte renderbuffer
 			GL.GenRenderbuffers( 1, ref this.renderBufferID );
+			GLES2Config.GlCheckError( this );
 			//Bind it to FBO
 			GL.BindRenderbuffer( Glenum.Renderbuffer, this.renderBufferID );
+			GLES2Config.GlCheckError( this );
 
 			//Allocate storage for depth buffer
 			if ( numSamples > 0 ) {}
 			else
 			{
 				GL.RenderbufferStorage( Glenum.Renderbuffer, format, width, height );
+				GLES2Config.GlCheckError( this );
 			}
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
 			GL.DeleteRenderbuffers( 1, ref this.renderBufferID );
+			GLES2Config.GlCheckError( this );
 			base.dispose( disposeManagedResources );
 		}
 
 		public override void BindToFramebuffer( Glenum attachment, int zoffset )
 		{
 			GL.FramebufferRenderbuffer( Glenum.Framebuffer, attachment, Glenum.Renderbuffer, this.renderBufferID );
+			GLES2Config.GlCheckError( this );
 		}
 	}
 }
