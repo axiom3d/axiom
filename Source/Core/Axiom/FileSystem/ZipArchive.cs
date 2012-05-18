@@ -113,7 +113,7 @@ namespace Axiom.FileSystem
 			Load();
 			if ( pattern.Contains( "*" ) )
 			{
-				pattern = pattern.Replace( ".", Path.DirectorySeparatorChar + "." ).Replace( "*", ".*" );
+				pattern = pattern.Replace( ".", @"\." ).Replace( "*", ".*" ) + "$";
 			}
 			var ex = new Regex( pattern );
 

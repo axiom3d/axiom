@@ -66,6 +66,9 @@
     <Compile Include="SampleBrowserView.cs" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidAsset Include="..\media\Archives\SdkTrays.zip">
+      <Link>Assets\Archives\SdkTrays.zip</Link>
+    </AndroidAsset>
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>

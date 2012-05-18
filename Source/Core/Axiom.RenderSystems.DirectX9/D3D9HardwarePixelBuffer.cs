@@ -93,11 +93,11 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					if ( disposeManagedResources )
 					{
-						Surface.SafeDispose();
-						Surface = null;
+						this.Surface.SafeDispose();
+						this.Surface = null;
 
-						Volume.SafeDispose();
-						Volume = null;
+						this.Volume.SafeDispose();
+						this.Volume = null;
 					}
 				}
 
@@ -165,12 +165,12 @@ namespace Axiom.RenderSystems.DirectX9
 
 					DestroyRenderTexture();
 
-					foreach ( var it in mapDeviceToBufferResources.Values )
+					foreach ( var it in this.mapDeviceToBufferResources.Values )
 					{
 						it.SafeDispose();
 					}
 
-					mapDeviceToBufferResources.Clear();
+					this.mapDeviceToBufferResources.Clear();
 
 					//Leaving critical section
 					UnlockDeviceAccess();
@@ -200,7 +200,7 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( bufferResources == null )
 			{
 				bufferResources = new BufferResources();
-				mapDeviceToBufferResources.Add( dev, bufferResources );
+				this.mapDeviceToBufferResources.Add( dev, bufferResources );
 				isNewBuffer = true;
 			}
 
@@ -223,9 +223,9 @@ namespace Axiom.RenderSystems.DirectX9
 				UpdateRenderTexture( writeGamma, fsaa, srcName );
 			}
 
-			if ( isNewBuffer && ownerTexture.IsManuallyLoaded )
+			if ( isNewBuffer && this.ownerTexture.IsManuallyLoaded )
 			{
-				foreach ( var it in mapDeviceToBufferResources )
+				foreach ( var it in this.mapDeviceToBufferResources )
 				{
 					if ( it.Value != bufferResources && it.Value.Surface != null && it.Key.TestCooperativeLevel().Success &&
 					     dev.TestCooperativeLevel().Success )
@@ -265,7 +265,7 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( bufferResources == null )
 			{
 				bufferResources = new BufferResources();
-				mapDeviceToBufferResources.Add( dev, bufferResources );
+				this.mapDeviceToBufferResources.Add( dev, bufferResources );
 				isNewBuffer = true;
 			}
 
@@ -282,9 +282,9 @@ namespace Axiom.RenderSystems.DirectX9
 			slicePitch = Height*Width;
 			sizeInBytes = PixelUtil.GetMemorySize( Width, Height, Depth, Format );
 
-			if ( isNewBuffer && ownerTexture.IsManuallyLoaded )
+			if ( isNewBuffer && this.ownerTexture.IsManuallyLoaded )
 			{
-				foreach ( var it in mapDeviceToBufferResources )
+				foreach ( var it in this.mapDeviceToBufferResources )
 				{
 					if ( it.Value != bufferResources && it.Value.Volume != null && it.Key.TestCooperativeLevel().Success &&
 					     dev.TestCooperativeLevel().Success )
@@ -312,9 +312,9 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		protected BufferResources GetBufferResources( D3D9.Device d3d9Device )
 		{
-			if ( mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
+			if ( this.mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
 			{
-				return mapDeviceToBufferResources[ d3d9Device ];
+				return this.mapDeviceToBufferResources[ d3d9Device ];
 			}
 
 			return null;
@@ -329,10 +329,10 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			LockDeviceAccess();
 
-			if ( mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
+			if ( this.mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
 			{
-				mapDeviceToBufferResources[ d3d9Device ].SafeDispose();
-				mapDeviceToBufferResources.Remove( d3d9Device );
+				this.mapDeviceToBufferResources[ d3d9Device ].SafeDispose();
+				this.mapDeviceToBufferResources.Remove( d3d9Device );
 			}
 
 			//Leaving critical section
@@ -507,15 +507,15 @@ namespace Axiom.RenderSystems.DirectX9
 			// Set locking flags according to options
 			var flags = D3D9Helper.ConvertEnum( options, usage );
 
-			if ( mapDeviceToBufferResources.Count == 0 )
+			if ( this.mapDeviceToBufferResources.Count == 0 )
 			{
 				throw new AxiomException( "There are no resources attached to this pixel buffer !!" );
 			}
 
 			lockedBox = lockBox;
-			lockFlags = flags;
+			this.lockFlags = flags;
 
-			var bufferResources = mapDeviceToBufferResources.First().Value;
+			var bufferResources = this.mapDeviceToBufferResources.First().Value;
 
 			// Lock the source buffer.
 			var lockedBuf = LockBuffer( bufferResources, lockBox, flags );
@@ -572,13 +572,13 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			LockDeviceAccess();
 
-			if ( mapDeviceToBufferResources.Count == 0 )
+			if ( this.mapDeviceToBufferResources.Count == 0 )
 			{
 				throw new AxiomException( "There are no resources attached to this pixel buffer !!" );
 			}
 
 			// 1. Update duplicates buffers.
-			foreach ( var it in mapDeviceToBufferResources )
+			foreach ( var it in this.mapDeviceToBufferResources )
 			{
 				var bufferResources = it.Value;
 
@@ -587,9 +587,9 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// 2. Unlock the locked buffer.
-			var bufferRes = mapDeviceToBufferResources.First().Value;
+			var bufferRes = this.mapDeviceToBufferResources.First().Value;
 			UnlockBuffer( bufferRes );
-			if ( doMipmapGen )
+			if ( this.doMipmapGen )
 			{
 				GenMipmaps( bufferRes.MipTex );
 			}
@@ -633,7 +633,7 @@ namespace Axiom.RenderSystems.DirectX9
 			LockDeviceAccess();
 
 			var _src = (D3D9HardwarePixelBuffer)rsrc;
-			foreach ( var it in mapDeviceToBufferResources )
+			foreach ( var it in this.mapDeviceToBufferResources )
 			{
 				var srcBufferResources = ( (D3D9HardwarePixelBuffer)rsrc ).GetBufferResources( it.Key );
 				var dstBufferResources = it.Value;
@@ -741,7 +741,7 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			LockDeviceAccess();
 
-			foreach ( var it in mapDeviceToBufferResources )
+			foreach ( var it in this.mapDeviceToBufferResources )
 			{
 				BlitFromMemory( src, dstBox, it.Value );
 			}
@@ -858,7 +858,7 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 			}
 
-			if ( doMipmapGen )
+			if ( this.doMipmapGen )
 			{
 				GenMipmaps( dstBufferResources.MipTex );
 			}
@@ -880,7 +880,7 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			LockDeviceAccess();
 
-			var pair = mapDeviceToBufferResources.First();
+			var pair = this.mapDeviceToBufferResources.First();
 			BlitToMemory( srcBox, dst, pair.Value, pair.Key );
 
 			//Leaving critical section
@@ -1000,7 +1000,7 @@ namespace Axiom.RenderSystems.DirectX9
 			Debug.Assert( mipTex != null );
 
 			// Mipmapping
-			if ( HWMipmaps )
+			if ( this.HWMipmaps )
 			{
 				// Hardware mipmaps
 				mipTex.GenerateMipSubLevels();
@@ -1028,7 +1028,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		public override void ClearSliceRTT( int zoffset )
 		{
-			renderTexture = null;
+			this.renderTexture = null;
 		}
 
 		/// <summary>
@@ -1058,7 +1058,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( bufferResources != null )
 			{
-				ownerTexture.CreateTextureResources( d3d9Device );
+				this.ownerTexture.CreateTextureResources( d3d9Device );
 				bufferResources = GetBufferResources( d3d9Device );
 			}
 
@@ -1075,7 +1075,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( bufferResources != null )
 			{
-				ownerTexture.CreateTextureResources( d3d9Device );
+				this.ownerTexture.CreateTextureResources( d3d9Device );
 				bufferResources = GetBufferResources( d3d9Device );
 			}
 
@@ -1089,8 +1089,8 @@ namespace Axiom.RenderSystems.DirectX9
 		public override RenderTexture GetRenderTarget( int zoffset )
 		{
 			Debug.Assert( ( (int)usage & (int)TextureUsage.RenderTarget ) != 0 );
-			Debug.Assert( renderTexture != null );
-			return renderTexture;
+			Debug.Assert( this.renderTexture != null );
+			return this.renderTexture;
 		}
 
 		/// <summary>
@@ -1099,13 +1099,13 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		protected void UpdateRenderTexture( bool writeGamma, int fsaa, string srcName )
 		{
-			if ( renderTexture == null )
+			if ( this.renderTexture == null )
 			{
 				//romeoxbm: in Ogre, there was an (int)this instead of that this.ID
 				// Check if we should use that id or, alternatively, the hashcode
 				var name = string.Format( "rtt/{0}/{1}", ID, srcName );
-				renderTexture = new D3D9RenderTexture( name, this, writeGamma, fsaa );
-				Root.Instance.RenderSystem.AttachRenderTarget( renderTexture );
+				this.renderTexture = new D3D9RenderTexture( name, this, writeGamma, fsaa );
+				Root.Instance.RenderSystem.AttachRenderTarget( this.renderTexture );
 			}
 		}
 
@@ -1115,10 +1115,10 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		protected void DestroyRenderTexture()
 		{
-			if ( renderTexture != null )
+			if ( this.renderTexture != null )
 			{
-				Root.Instance.RenderSystem.DestroyRenderTarget( renderTexture.Name );
-				renderTexture = null;
+				Root.Instance.RenderSystem.DestroyRenderTarget( this.renderTexture.Name );
+				this.renderTexture = null;
 			}
 		}
 

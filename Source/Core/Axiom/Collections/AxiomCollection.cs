@@ -51,7 +51,7 @@ namespace Axiom.Collections
 	///	Serves as a basis for strongly typed collections in the engine.
 	/// </summary>
 #if NET_40 && !(WINDOWS_PHONE || XBOX || XBOX360)
-    public class AxiomCollection<T> : System.Collections.Concurrent.ConcurrentDictionary<string, T>
+	public class AxiomCollection<T> : System.Collections.Concurrent.ConcurrentDictionary<string, T>
 #else
 	public class AxiomCollection<T> : Dictionary<string, T>
 #endif
@@ -87,7 +87,7 @@ namespace Axiom.Collections
 
 		protected AxiomCollection( Object parent )
 #if NET_40 && !(WINDOWS_PHONE || XBOX || XBOX360)
-            : base( Environment.ProcessorCount, InitialCapacity )
+			: base( Environment.ProcessorCount, InitialCapacity )
 #else
 			: base( InitialCapacity )
 #endif
@@ -130,8 +130,8 @@ namespace Axiom.Collections
 		public virtual bool TryRemove( string key )
 		{
 #if NET_40 && !(WINDOWS_PHONE || XBOX || XBOX360)
-            T val;
-            return base.TryRemove( key, out val );
+			T val;
+			return base.TryRemove( key, out val );
 #else
 			if ( base.ContainsKey( key ) )
 			{

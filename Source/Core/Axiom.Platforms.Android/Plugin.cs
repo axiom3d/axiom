@@ -41,6 +41,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using Axiom.Core;
 using Axiom.Media;
+using Axiom.FileSystem;
 
 #endregion Namespace Declarations
 
@@ -53,6 +54,9 @@ namespace Axiom.Platform.Android
 		public void Initialize()
 		{
 			CodecManager.Instance.RegisterCodec( new AndroidImageCodec( "png" ) );
+            ArchiveManager.Instance.AddArchiveFactory(new AndroidZipAssetArchiveFactory(global::Android.App.Application.Context.Assets));
+            ArchiveManager.Instance.AddArchiveFactory(new AndroidFolderAssetArchiveFactory(global::Android.App.Application.Context.Assets));
+
 		}
 
 		public void Shutdown() {}

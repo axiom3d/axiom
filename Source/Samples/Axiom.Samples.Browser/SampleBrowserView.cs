@@ -79,7 +79,7 @@ namespace Axiom.Samples.Browser
             // in case any are registered
             base.OnLoad(e);
 
-            this.browser = new SampleBrowser( this.GraphicsContext, this.WindowInfo );
+            this.browser = new SampleBrowser( this.Context, this.GraphicsContext, this.WindowInfo );
             
             // Run the render loop
             browser.Go();           
