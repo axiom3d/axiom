@@ -83,7 +83,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		private HardwareBufferManager hardwareBufferManager;
 		private GLES2RTTManager rttManager;
 		private OpenTK.Graphics.ES20.TextureUnit activeTextureUnit;
-		private Dictionary<GLenum, int> activeBufferMap;
+		private Dictionary<GLenum, int> activeBufferMap = new Dictionary<GLenum,int>();
 		private bool glInitialized;
 		private GLenum polygonMode;
 		private readonly List<int> renderAttribsBound;
@@ -1422,7 +1422,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			if ( op.useIndices )
 			{
-				this.BindGLBuffer( GLenum.ElementArrayBuffer, ( op.indexData.indexBuffer as GLES2HardwareIndexBuffer ).GLBufferID );
+				this.BindGLBuffer( GLenum.ElementArrayBuffer, ( op.indexData.indexBuffer as GLES2HardwareIndexBuffer ).BufferID );
 
 				bufferData = op.indexData.indexStart * op.indexData.indexBuffer.IndexSize;
 
