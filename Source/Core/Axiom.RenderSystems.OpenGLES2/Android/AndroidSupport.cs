@@ -100,7 +100,7 @@ namespace Axiom.RenderSystems.OpenGLES2.Android
         {
             LogManager.Instance.Write("/tGLSupport start called");
         }
-        internal override void Stop()
+        public override void Stop()
         {
             LogManager.Instance.Write("/tGLSupport stop called");
         }
