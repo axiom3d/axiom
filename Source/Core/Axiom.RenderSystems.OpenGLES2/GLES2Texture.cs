@@ -62,6 +62,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			this.textureID = 0;
 			this.glSupport = support;
+			this.surfaceList = new List<HardwarePixelBuffer>();
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -108,16 +109,16 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			if ( face == FaceCount )
 			{
-				throw new AxiomException( "Face index out of range" );
+				throw new IndexOutOfRangeException( string.Format( "Face index is out of range. Face : {0}, Facecount : {1}.", face, FaceCount ) );
 			}
 
 			if ( mipmap > mipmapCount )
 			{
-				throw new AxiomException( "Mipmap index out of range" );
+				throw new IndexOutOfRangeException( string.Format( "Mipmap index is out of range. Mipmap : {0}, Mipmapcount : {1}.", mipmap, MipmapCount ) );
 			}
 
 			int idx = face * ( MipmapCount + 1 ) + mipmap;
-
+			Utilities.Contract.Requires( idx < this.surfaceList.Count, String.Format( "[GLESTexture( Name={0} ) ] Index( {1} ) > Surfacelist.Count( {2} )", Name, idx, this.surfaceList.Count ) );
 			return this.surfaceList[ idx ];
 		}
 
@@ -368,7 +369,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			//Now the only copy is on the stack and will be cleaned in case of
 			//exceptions being thrown from _loadImages
-			this.loadedImages.Clear();
+			//this.loadedImages.Clear();
 
 			Image[] images = this.loadedImages.ToArray();
 
@@ -403,7 +404,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				int width = Width;
 				int height = Height;
 
-				for ( int mip = 0; mip < MipmapCount; mip++ )
+				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
 					GLES2HardwarePixelBuffer buf = new GLES2TextureBuffer( _name, this.GLES2TextureTarget, this.textureID, width, height, GLES2PixelUtil.GetClosestGLInternalFormat( format, hwGamma ), (GLenum) GLES2PixelUtil.GetGLOriginDataType( format ), face, mip, (BufferUsage) ( usage ), doSoftware && mip == 0, hwGamma, fsaa );
 
