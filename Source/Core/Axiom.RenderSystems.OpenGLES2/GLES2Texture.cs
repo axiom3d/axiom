@@ -408,7 +408,6 @@ namespace Axiom.RenderSystems.OpenGLES2
 				{
 					GLES2HardwarePixelBuffer buf = new GLES2TextureBuffer( _name, this.GLES2TextureTarget, this.textureID, width, height, GLES2PixelUtil.GetClosestGLInternalFormat( format, hwGamma ), (GLenum) GLES2PixelUtil.GetGLOriginDataType( format ), face, mip, (BufferUsage) ( usage ), doSoftware && mip == 0, hwGamma, fsaa );
 
-
 					this.surfaceList.Add( buf );
 
 					//check for error

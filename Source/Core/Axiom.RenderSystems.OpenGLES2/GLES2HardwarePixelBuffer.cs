@@ -242,7 +242,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 			this.level = level;
 			this.softwareMipmap = crappyCard;
 
+			GLES2Config.GlCheckError( this );
 			GL.BindTexture( target, this.textureID );
+			GLES2Config.GlCheckError( this );
 
 			//Get face identifier
 			this.faceTarget = this.target;
@@ -251,34 +253,33 @@ namespace Axiom.RenderSystems.OpenGLES2
 				this.faceTarget = Glenum.TextureCubeMapPositiveX + face;
 			}
 			//Calculate the width and height of the texture at this mip level
-			width = this.level == 0 ? width : (int)(width / Math.Utility.Pow( 2, level ));
-			height = this.level == 0 ? height : (int)(height / Math.Utility.Pow( 2, level ));
+			this.width = this.level == 0 ? width : (int)(width / Math.Utility.Pow( 2, level ));
+			this.height = this.level == 0 ? height : (int)(height / Math.Utility.Pow( 2, level ));
 
-			if ( width < 1 )
+			if ( this.width < 1 )
 			{
-				width = 1;
+				this.width = 1;
 			}
-			if ( height < 1 )
+			if ( this.height < 1 )
 			{
-				height = 1;
+				this.height = 1;
 			}
 
 			//Only 2D is supporte so depth is always 1
-			depth = 1;
+			this.depth = 1;
 
-			GlInternalFormat = internalFormat;
+			this.GlInternalFormat = internalFormat;
 			this.format = GLES2PixelUtil.GetClosestAxiomFormat( internalFormat, format );
 
-			rowPitch = width;
-			slicePitch = height * width;
-			sizeInBytes = PixelUtil.GetMemorySize( width, height, depth, this.format );
-
+			rowPitch = this.width;
+			slicePitch = this.height * this.width;
+			sizeInBytes = PixelUtil.GetMemorySize( this.width, this.height, this.depth, this.format );
 			//Setup a pixel box
-			Buffer = new PixelBox( width, height, depth, this.format );
+			Buffer = new PixelBox( this.width, this.height, this.depth, this.format );
 
-			if ( width == 0 || height == 0 || depth == 0 )
+			if ( this.width == 0 || this.height == 0 || this.depth == 0 )
 			{
-				//We are invalid, ndo not allocat a buffer
+				//We are invalid, do not allocat a buffer
 				return;
 			}
 
@@ -286,9 +287,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				//Create render target for each slice
 
-				for ( int zoffset = 0; zoffset < depth; zoffset++ )
+				for ( int zoffset = 0; zoffset < this.depth; zoffset++ )
 				{
-					var name = "rtt/ " + Size.ToString() + "/" + baseName;
+					var name = "rtt/ " + GetHashCode() + "/" + baseName;
 					var rtarget = new GLES2SurfaceDesc { buffer = this, zoffset = zoffset };
 					var trt = GLES2RTTManager.Instance.CreateRenderTexture( name, rtarget, writeGamma, fsaa );
 					this.sliceTRT.Add( trt );
