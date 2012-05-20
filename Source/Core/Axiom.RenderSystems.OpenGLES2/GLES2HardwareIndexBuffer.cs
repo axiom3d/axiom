@@ -108,7 +108,8 @@ namespace Axiom.RenderSystems.OpenGLES2
             else
             {
                 OpenGL.BindBuffer(All.ElementArrayBuffer, this._bufferId);
-                if (!OpenGLOES.UnmapBuffer(All.ElementArrayBuffer))
+				GLES2Config.GlCheckError( this );
+				if ( !OpenGLOES.UnmapBuffer( All.ElementArrayBuffer ) )
                 {
                     throw new AxiomException("Buffer data corrupted, please reload");
                 }
@@ -156,18 +157,21 @@ namespace Axiom.RenderSystems.OpenGLES2
             if (retPtr == null)
             {
                 OpenGL.BindBuffer(All.ElementArrayBuffer, this._bufferId);
-                // Use glMapBuffer
+				GLES2Config.GlCheckError( this );
+				// Use glMapBuffer
                 if (locking == BufferLocking.Discard)
                 {
                     OpenGL.BufferData(All.ElementArrayBuffer, new IntPtr(sizeInBytes), IntPtr.Zero, GLES2HardwareBufferManager.GetGLUsage(usage));
-                }
+					GLES2Config.GlCheckError( this );
+				}
                 if ((usage & BufferUsage.WriteOnly) != 0)
                 {
                     access = All.WriteOnlyOes;
                 }
 
                 IntPtr pBuffer = OpenGLOES.MapBuffer(All.ElementArrayBuffer, access);
-                if (pBuffer == IntPtr.Zero)
+				GLES2Config.GlCheckError( this );
+				if ( pBuffer == IntPtr.Zero )
                 {
                     throw new AxiomException("Index Buffer: Out of memory");
                 }
@@ -232,7 +236,8 @@ namespace Axiom.RenderSystems.OpenGLES2
                 if (discardWholeBuffer)
                 {
                     OpenGL.BufferData(All.ElementArrayBuffer, new IntPtr(sizeInBytes), IntPtr.Zero, GLES2HardwareBufferManager.GetGLUsage(usage));
-                }
+					GLES2Config.GlCheckError( this );
+				}
                 // Now update the real buffer
                 OpenGL.BufferSubData(All.ElementArrayBuffer, new IntPtr(offset), new IntPtr(length), ref srcPtr);
                 GLES2Config.GlCheckError(this);
