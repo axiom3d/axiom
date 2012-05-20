@@ -185,6 +185,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 			string uniformName = string.Empty;
 
 			GL.GetProgram( programObject, GLenum.ActiveUniformMaxLength, ref maxLength );
+			GLES2Config.GlCheckError( this );
 
 			//If the max length of active uniforms is 0, then there are 0 active.
 			//There won't be any to extract so we can return
@@ -197,6 +198,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 
 			//Get the number of active uniforms
 			GL.GetProgram( programObject, GLenum.ActiveUniforms, ref uniformCount );
+			GLES2Config.GlCheckError( this );
 
 			//Loop over each of the active uniforms, and add them to the reference container
 			//only do this for user defined uniforms, ignore built in gl state uniforms
@@ -206,10 +208,12 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				GLenum glType = GLenum.None;
 				int tmp = 0;
 				GL.GetActiveUniform( programObject, index, maxLength, ref tmp, ref arraySize, ref glType, uniformName );
+				GLES2Config.GlCheckError( this );
 
 				//don't add built in uniforms
 				newGLUniformReference = new GLUniformReference();
 				newGLUniformReference.Location = GL.GetUniformLocation( programObject, uniformName );
+				GLES2Config.GlCheckError( this );
 				if ( newGLUniformReference.Location >= 0 )
 				{
 					//User defined uniform found, add it to the reference list
