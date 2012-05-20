@@ -63,6 +63,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 		~GLSLESLinkProgram()
 		{
 			GL.DeleteProgram( glProgramHandle );
+			GLES2Config.GlCheckError( this );
 		}
 
 		protected override void CompileAndLink()
@@ -86,7 +87,9 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 
 			//The link
 			GL.LinkProgram( glProgramHandle );
+			GLES2Config.GlCheckError( this );
 			GL.GetProgram( glProgramHandle, GLenum.LinkStatus, ref linked );
+			GLES2Config.GlCheckError( this );
 
 			triedToLinkAndFailed = ( linked == 0 ) ? true : false;
 		}
@@ -118,6 +121,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 			if ( linked != 0 )
 			{
 				GL.UseProgram( glProgramHandle );
+				GLES2Config.GlCheckError( this );
 			}
 		}
 
@@ -128,6 +132,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				GL.GetError();
 
 				glProgramHandle = GL.CreateProgram();
+				GLES2Config.GlCheckError( this );
 #if !AXIOM_NO_GLES2_GLSL_OPTIMIZER
 				if ( vertexProgram != null )
 				{
@@ -174,12 +179,14 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 								unsafe
 								{
 									GL.Uniform1( currentUniform.Location, glArraySize, parms.GetFloatPointer( def.PhysicalIndex ).Pointer.ToFloatPointer() );
+									GLES2Config.GlCheckError( this );
 								}
 								break;
 							case GpuProgramParameters.GpuConstantType.Float2:
 								unsafe
 								{
 									GL.Uniform2( currentUniform.Location, glArraySize, parms.GetFloatPointer( def.PhysicalIndex ).Pointer.ToFloatPointer() );
+									GLES2Config.GlCheckError( this );
 								}
 								break;
 							case GpuProgramParameters.GpuConstantType.Float3:
@@ -192,48 +199,56 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 								unsafe
 								{
 									GL.Uniform4( currentUniform.Location, glArraySize, parms.GetFloatPointer( def.PhysicalIndex ).Pointer.ToFloatPointer() );
+									GLES2Config.GlCheckError( this );
 								}
 								break;
 							case GpuProgramParameters.GpuConstantType.Matrix_2X2:
 								unsafe
 								{
 									GL.UniformMatrix2( currentUniform.Location, glArraySize, false, parms.GetFloatPointer( def.PhysicalIndex ).Pointer.ToFloatPointer() );
+									GLES2Config.GlCheckError( this );
 								}
 								break;
 							case GpuProgramParameters.GpuConstantType.Matrix_3X3:
 								unsafe
 								{
 									GL.UniformMatrix3( currentUniform.Location, glArraySize, false, parms.GetFloatPointer( def.PhysicalIndex ).Pointer.ToFloatPointer() );
+									GLES2Config.GlCheckError( this );
 								}
 								break;
 							case GpuProgramParameters.GpuConstantType.Matrix_4X4:
 								unsafe
 								{
 									GL.UniformMatrix4( currentUniform.Location, glArraySize, false, parms.GetFloatPointer( def.PhysicalIndex ).Pointer.ToFloatPointer() );
+									GLES2Config.GlCheckError( this );
 								}
 								break;
 							case GpuProgramParameters.GpuConstantType.Int1:
 								unsafe
 								{
 									GL.Uniform1( currentUniform.Location, glArraySize, parms.GetIntPointer( def.PhysicalIndex ).Pointer.ToIntPointer() );
+									GLES2Config.GlCheckError( this );
 								}
 								break;
 							case GpuProgramParameters.GpuConstantType.Int2:
 								unsafe
 								{
 									GL.Uniform2( currentUniform.Location, glArraySize, parms.GetIntPointer( def.PhysicalIndex ).Pointer.ToIntPointer() );
+									GLES2Config.GlCheckError( this );
 								}
 								break;
 							case GpuProgramParameters.GpuConstantType.Int3:
 								unsafe
 								{
 									GL.Uniform3( currentUniform.Location, glArraySize, parms.GetIntPointer( def.PhysicalIndex ).Pointer.ToIntPointer() );
+									GLES2Config.GlCheckError( this );
 								}
 								break;
 							case GpuProgramParameters.GpuConstantType.Int4:
 								unsafe
 								{
 									GL.Uniform4( currentUniform.Location, glArraySize, parms.GetIntPointer( def.PhysicalIndex ).Pointer.ToIntPointer() );
+									GLES2Config.GlCheckError( this );
 								}
 								break;
 							case GpuProgramParameters.GpuConstantType.Sampler1D:
@@ -246,6 +261,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 								unsafe
 								{
 									GL.Uniform1( currentUniform.Location, 1, parms.GetIntPointer( def.PhysicalIndex ).Pointer.ToIntPointer() );
+									GLES2Config.GlCheckError( this );
 								}
 								break;
 						}
@@ -267,6 +283,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 						unsafe
 						{
 							GL.Uniform1( currentUniform.Location, 1, parms.GetFloatPointer( index ).Pointer.ToFloatPointer() );
+							GLES2Config.GlCheckError( this );
 							//There will only be one multipass entry
 							return;
 						}
