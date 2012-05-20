@@ -101,6 +101,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 		~GLSLESProgramCommon()
 		{
 			OpenTK.Graphics.ES20.GL.DeleteProgram( this.glProgramHandle );
+			GLES2Config.GlCheckError( this );
 		}
 
 		protected virtual void BuildGLUniformReferences() {}
@@ -156,11 +157,13 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 			{
 				string attString = this.GetAttributeSemanticString( semantic );
 				int attrib = GL.GetAttribLocation( this.glProgramHandle, attString );
+				GLES2Config.GlCheckError( this );
 
 				//sadly position is a special case
 				if ( attrib == NotFoundCustomAttributesIndex && semantic == VertexElementSemantic.Position )
 				{
 					attrib = GL.GetAttribLocation( this.glProgramHandle, "position" );
+					GLES2Config.GlCheckError( this );
 				}
 
 				//for uv and other case the index is a part of the name
@@ -168,6 +171,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				{
 					string attStringWithSemantic = attString + index.ToString();
 					attrib = GL.GetAttribLocation( this.glProgramHandle, attStringWithSemantic );
+					GLES2Config.GlCheckError( this );
 				}
 
 				//update customAttributes with the index we found (or didnt' find)
