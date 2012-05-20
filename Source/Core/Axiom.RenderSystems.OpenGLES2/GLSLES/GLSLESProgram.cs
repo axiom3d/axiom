@@ -127,10 +127,13 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 			if ( IsSupported )
 			{
 				GL.DeleteShader( this.glShaderHandle );
+				GLES2Config.GlCheckError( this );
 
-				if ( false ) //Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+				// TODO : Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+				if ( false ) 
 				{
 					GL.DeleteProgram( this.glProgramHandle );
+					GLES2Config.GlCheckError( this );
 				}
 			}
 		}
@@ -281,7 +284,8 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 
 			// Therefore instead, parse the source code manually and extract the uniforms
 			CreateParameterMappingStructures( true );
-			if ( false ) //Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+			// TODO: Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+			if ( false ) 
 			{
 				GLSLESProgramPipelineManager.Instance.ExtractConstantDefs( source, constantDefs, Name );
 			}
@@ -334,6 +338,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				int r = 0;
 				var sourceArray = new string[] { source };
 				GL.ShaderSource( this.glShaderHandle, 1, sourceArray, ref r );
+				GLES2Config.GlCheckError( this );
 
 				if ( this.Compile() )
 				{
@@ -372,10 +377,13 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 					shaderType = GLenum.FragmentShader;
 				}
 				this.glShaderHandle = GL.CreateShader( shaderType );
+				GLES2Config.GlCheckError( this );
 
-				if ( false ) //Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+				//TODO : Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
+				if ( false ) 
 				{
 					this.glProgramHandle = GL.CreateProgram();
+					GLES2Config.GlCheckError( this );
 				}
 			}
 
@@ -385,15 +393,18 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				var sourceArray = new string[] { source };
 				int r = 0;
 				GL.ShaderSource( this.glShaderHandle, 1, sourceArray, ref r );
+				GLES2Config.GlCheckError( this );
 			}
 			if ( checkErrors )
 			{
 				LogManager.Instance.Write( "GLSL ES compiling: " + Name );
 			}
 			GL.CompileShader( this.glShaderHandle );
+			GLES2Config.GlCheckError( this );
 
 			//check for compile errors
 			GL.GetShader( this.glShaderHandle, GLenum.CompileStatus, ref this.compiled );
+			GLES2Config.GlCheckError( this );
 			if ( this.compiled == 0 && checkErrors )
 			{
 				string message = "GLSL ES compile log: " + Name;
@@ -412,11 +423,13 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 		public void AttachToProgramObject( int programObject )
 		{
 			GL.AttachShader( programObject, this.glShaderHandle );
+			GLES2Config.GlCheckError( this );
 		}
 
 		public void DetachFromProgramObject( int programObject )
 		{
 			GL.DetachShader( programObject, this.glShaderHandle );
+			GLES2Config.GlCheckError( this );
 		}
 
 		public int GLShaderHandle
