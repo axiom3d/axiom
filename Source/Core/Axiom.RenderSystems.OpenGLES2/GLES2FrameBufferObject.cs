@@ -62,6 +62,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			this._manager = manager;
 			this._numSamples = fsaa;
 			GL.GenFramebuffers( 1, ref this._fb );
+			GLES2Config.GlCheckError( this );
 
 			this._numSamples = 0;
 			this._multiSampleFB = 0;
@@ -77,6 +78,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			if ( this._numSamples > 0 )
 			{
 				GL.GenFramebuffers( 1, ref this._multiSampleFB );
+				GLES2Config.GlCheckError( this );
 			}
 
 			//Initialize state
@@ -125,6 +127,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			//Bind it to FBO
 			var fb = this._multiSampleFB > 0 ? this._multiSampleFB : this._fb;
 			GL.BindFramebuffer( GLenum.Framebuffer, fb );
+			GLES2Config.GlCheckError( this );
 		}
 
 		/// <summary>
@@ -149,6 +152,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			var glDepthBuffer = depthBuffer as GLES2DepthBuffer;
 			GL.BindFramebuffer( GLenum.Framebuffer, this._multiSampleFB > 0 ? this._multiSampleFB : this._fb );
+			GLES2Config.GlCheckError( this );
 
 			if ( glDepthBuffer != null )
 			{
@@ -171,18 +175,23 @@ namespace Axiom.RenderSystems.OpenGLES2
 			else
 			{
 				GL.FramebufferRenderbuffer( GLenum.Framebuffer, GLenum.DepthAttachment, GLenum.Renderbuffer, 0 );
+				GLES2Config.GlCheckError( this );
 
 				GL.FramebufferRenderbuffer( GLenum.Framebuffer, GLenum.StencilAttachment, GLenum.Renderbuffer, 0 );
+				GLES2Config.GlCheckError( this );
 			}
 		}
 
 		public void DetachDepthBuffer()
 		{
 			GL.BindFramebuffer( GLenum.Framebuffer, this._multiSampleFB > 0 ? this._multiSampleFB : this._fb );
+			GLES2Config.GlCheckError( this );
 
 			GL.FramebufferRenderbuffer( GLenum.Framebuffer, GLenum.DepthAttachment, GLenum.Renderbuffer, 0 );
+			GLES2Config.GlCheckError( this );
 
 			GL.FramebufferRenderbuffer( GLenum.Framebuffer, GLenum.StencilAttachment, GLenum.Renderbuffer, 0 );
+			GLES2Config.GlCheckError( this );
 		}
 
 		public GLES2SurfaceDesc GetSurface( int attachment )
@@ -217,6 +226,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			//Bind simple buffer to add color attachments
 			GL.BindFramebuffer( OpenTK.Graphics.ES20.All.Framebuffer, this._fb );
+			GLES2Config.GlCheckError( this );
 
 			//bind all attachment points to frame buffer
 			for ( int x = 0; x < maxSupportedMRTs; x++ )
@@ -243,6 +253,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				{
 					//Detach
 					GL.FramebufferRenderbuffer( GLenum.Framebuffer, (GLenum) ( (int) GLenum.ColorAttachment0 ) + x, GLenum.Renderbuffer, 0 );
+					GLES2Config.GlCheckError( this );
 				}
 			}
 			//Now deal with depth/stencil
@@ -250,6 +261,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				//Bind multisample buffer
 				GL.BindFramebuffer( GLenum.Framebuffer, this._multiSampleFB );
+				GLES2Config.GlCheckError( this );
 
 				//Create AA render buffer (color)
 				//note, this can be shared too because we blit it to the final FBO
@@ -281,6 +293,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			//Check status
 			var status = GL.CheckFramebufferStatus( GLenum.Framebuffer );
+			GLES2Config.GlCheckError( this );
 
 			//Possible todo:
 			/*Port notes
@@ -291,6 +304,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			 */
 
 			GL.BindFramebuffer( GLenum.Framebuffer, 0 );
+			GLES2Config.GlCheckError( this );
 
 			switch ( status )
 			{
@@ -337,10 +351,12 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			//Delete framebuffer object
 			GL.DeleteFramebuffers( 1, ref this._fb );
+			GLES2Config.GlCheckError( this );
 
 			if ( this._multiSampleFB > 0 )
 			{
 				GL.DeleteFramebuffers( 1, ref this._multiSampleFB );
+				GLES2Config.GlCheckError( this );
 			}
 		}
 	}
