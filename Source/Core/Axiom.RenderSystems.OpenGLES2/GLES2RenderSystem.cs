@@ -46,6 +46,7 @@ using Axiom.Configuration;
 using Axiom.Core;
 
 using GL = OpenTK.Graphics.ES20.GL;
+using All = OpenTK.Graphics.ES20.All;
 using GLenum = OpenTK.Graphics.ES20.All;
 
 using Axiom.RenderSystems.OpenGLES2.GLSLES;
@@ -63,7 +64,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		private FilterOptions minFilter, mipFilter;
 
 		private readonly int[] textureCoordIndex = new int[ Config.MaxTextureLayers ];
-		private readonly OpenTK.Graphics.ES20.All[] textureTypes = new OpenTK.Graphics.ES20.All[ Config.MaxTextureLayers ];
+		private readonly All[] textureTypes = new All[ Config.MaxTextureLayers ];
 
 		private int fixedFunctionTextureUnits;
 		private bool lasta2c = false;
@@ -158,47 +159,47 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		#region GLES2 Specific
 
-		private OpenTK.Graphics.ES20.All GetTextureAddressingMode( TextureAddressing tam )
+		private All GetTextureAddressingMode( TextureAddressing tam )
 		{
 			switch ( tam )
 			{
 				case TextureAddressing.Mirror:
-					return OpenTK.Graphics.ES20.All.MirroredRepeat;
+					return All.MirroredRepeat;
 				case TextureAddressing.Clamp:
 				case TextureAddressing.Border:
-					return OpenTK.Graphics.ES20.All.ClampToEdge;
+					return All.ClampToEdge;
 				case TextureAddressing.Wrap:
 				default:
-					return OpenTK.Graphics.ES20.All.Repeat;
+					return All.Repeat;
 			}
 		}
 
-		private OpenTK.Graphics.ES20.All GetBlendMode( SceneBlendFactor axiomBlend )
+		private All GetBlendMode( SceneBlendFactor axiomBlend )
 		{
 			switch ( axiomBlend )
 			{
 				case SceneBlendFactor.One:
-					return OpenTK.Graphics.ES20.All.One;
+					return All.One;
 				case SceneBlendFactor.Zero:
-					return OpenTK.Graphics.ES20.All.Zero;
+					return All.Zero;
 				case SceneBlendFactor.DestColor:
-					return OpenTK.Graphics.ES20.All.DstColor;
+					return All.DstColor;
 				case SceneBlendFactor.SourceColor:
-					return OpenTK.Graphics.ES20.All.SrcColor;
+					return All.SrcColor;
 				case SceneBlendFactor.OneMinusDestColor:
-					return OpenTK.Graphics.ES20.All.OneMinusDstColor;
+					return All.OneMinusDstColor;
 				case SceneBlendFactor.OneMinusSourceColor:
-					return OpenTK.Graphics.ES20.All.OneMinusSrcColor;
+					return All.OneMinusSrcColor;
 				case SceneBlendFactor.DestAlpha:
-					return OpenTK.Graphics.ES20.All.DstAlpha;
+					return All.DstAlpha;
 				case SceneBlendFactor.SourceAlpha:
-					return OpenTK.Graphics.ES20.All.SrcAlpha;
+					return All.SrcAlpha;
 				case SceneBlendFactor.OneMinusDestAlpha:
-					return OpenTK.Graphics.ES20.All.OneMinusDstAlpha;
+					return All.OneMinusDstAlpha;
 				case SceneBlendFactor.OneMinusSourceAlpha:
-					return OpenTK.Graphics.ES20.All.OneMinusSrcAlpha;
+					return All.OneMinusSrcAlpha;
 				default: //To keep compiler happy
-					return OpenTK.Graphics.ES20.All.One;
+					return All.One;
 			}
 		}
 
@@ -390,6 +391,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			float curAniso = 0;
 			GL.GetTexParameter( this.textureTypes[ unit ], GLenum.TextureMaxAnisotropyExt, ref curAniso );
+			GLES2Config.GlCheckError( this );
 
 			return ( curAniso != 0 ) ? curAniso : 1;
 		}
@@ -414,6 +416,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 				//Update GL
 				GL.BindBuffer( target, buffer );
+				GLES2Config.GlCheckError( this );
 			}
 			else
 			{
@@ -424,6 +427,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 					//Update GL
 					GL.BindBuffer( target, buffer );
+					GLES2Config.GlCheckError( this );
 				}
 			}
 		}
@@ -472,8 +476,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 			rsc.SetCategoryRelevant( CapabilitiesCategory.GL, true );
 			rsc.DriverVersion = driverVersion;
 
-			string deviceName = OpenTK.Graphics.ES20.GL.GetString( OpenTK.Graphics.ES20.All.Renderer );
-			string vendorName = OpenTK.Graphics.ES20.GL.GetString( OpenTK.Graphics.ES20.All.Vendor );
+			string deviceName = GL.GetString( All.Renderer );
+			GLES2Config.GlCheckError( this );
+			string vendorName = GL.GetString( All.Vendor );
+			GLES2Config.GlCheckError( this );
 
 			deviceName = deviceName ?? string.Empty;
 			vendorName = vendorName ?? string.Empty;
@@ -506,12 +512,14 @@ namespace Axiom.RenderSystems.OpenGLES2
 			//Multitexturing support and set number of texture units;
 
 			int units = 0;
-			OpenTK.Graphics.ES20.GL.GetInteger( OpenTK.Graphics.ES20.All.MaxTextureImageUnits, ref units );
+			GL.GetInteger( All.MaxTextureImageUnits, ref units );
+			GLES2Config.GlCheckError( this );
 			rsc.TextureUnitCount = units;
 
 			//check hardware stenicl support and set bit depth
 			int stencil = -1;
-			OpenTK.Graphics.ES20.GL.GetInteger( OpenTK.Graphics.ES20.All.StencilBits, ref stencil );
+			GL.GetInteger( All.StencilBits, ref stencil );
+			GLES2Config.GlCheckError( this );
 
 			if ( stencil != -1 )
 			{
@@ -584,7 +592,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			//Point size
 			var psRange = new float[ 2 ] { 0.0f, 0.0f };
-			OpenTK.Graphics.ES20.GL.GetFloat( OpenTK.Graphics.ES20.All.AliasedPointSizeRange, psRange );
+			GL.GetFloat( All.AliasedPointSizeRange, psRange );
+			GLES2Config.GlCheckError( this );
 			rsc.MaxPointSize = psRange[ 1 ];
 
 			//Point sprites
@@ -616,15 +625,17 @@ namespace Axiom.RenderSystems.OpenGLES2
 			//    rsc.SetCapability(Graphics.Capabilities.SeparateShaderObjects);
 
 			float floatConstantCount = 0;
-			OpenTK.Graphics.ES20.GL.GetFloat( OpenTK.Graphics.ES20.All.MaxVertexUniformVectors, ref floatConstantCount );
-			rsc.VertexProgramConstantFloatCount = (int) floatConstantCount;
+			GL.GetFloat( All.MaxVertexUniformVectors, ref floatConstantCount );
+			GLES2Config.GlCheckError( this );
+			rsc.VertexProgramConstantFloatCount = (int)floatConstantCount;
 			rsc.VertexProgramConstantBoolCount = (int) floatConstantCount;
 			rsc.VertexProgramConstantIntCount = (int) floatConstantCount;
 
 			//Fragment Program Properties
 			floatConstantCount = 0;
-			OpenTK.Graphics.ES20.GL.GetFloat( OpenTK.Graphics.ES20.All.MaxFragmentUniformVectors, ref floatConstantCount );
-			rsc.FragmentProgramConstantFloatCount = (int) floatConstantCount;
+			GL.GetFloat( All.MaxFragmentUniformVectors, ref floatConstantCount );
+			GLES2Config.GlCheckError( this );
+			rsc.FragmentProgramConstantFloatCount = (int)floatConstantCount;
 			rsc.FragmentProgramConstantBoolCount = (int) floatConstantCount;
 			rsc.FragmentProgramConstantIntCount = (int) floatConstantCount;
 
@@ -963,22 +974,25 @@ namespace Axiom.RenderSystems.OpenGLES2
 				{
 					//Assume 2D
 					//TODO:
-					this.textureTypes[ unit ] = OpenTK.Graphics.ES20.All.Texture2D;
+					this.textureTypes[ unit ] = All.Texture2D;
 				}
 
 				if ( tex != null )
 				{
-					OpenTK.Graphics.ES20.GL.BindTexture( this.textureTypes[ unit ], tex.GLID );
+					GL.BindTexture( this.textureTypes[ unit ], tex.GLID );
+					GLES2Config.GlCheckError( this );
 				}
 				else
 				{
-					OpenTK.Graphics.ES20.GL.BindTexture( this.textureTypes[ unit ], ( textureManager as GLES2TextureManager ).WarningTextureID );
+					GL.BindTexture( this.textureTypes[ unit ], ( textureManager as GLES2TextureManager ).WarningTextureID );
+					GLES2Config.GlCheckError( this );
 				}
 			}
 			else
 			{
 				//Bind zero texture
-				OpenTK.Graphics.ES20.GL.BindTexture( OpenTK.Graphics.ES20.All.Texture2D, 0 );
+				GL.BindTexture( All.Texture2D, 0 );
+				GLES2Config.GlCheckError( this );
 			}
 
 			this.ActivateGLTextureUnit( 0 );
@@ -1007,8 +1021,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 
 			GL.TexParameter( this.textureTypes[ unit ], GLenum.TextureWrapS, (int) this.GetTextureAddressingMode( uvw.U ) );
+			GLES2Config.GlCheckError( this );
 
-			OpenTK.Graphics.ES20.GL.TexParameter( this.textureTypes[ unit ], OpenTK.Graphics.ES20.All.TextureWrapT, (int) this.GetTextureAddressingMode( uvw.V ) );
+			GL.TexParameter( this.textureTypes[ unit ], All.TextureWrapT, (int) this.GetTextureAddressingMode( uvw.V ) );
+			GLES2Config.GlCheckError( this );
 
 			this.ActivateGLTextureUnit( 0 );
 		}
@@ -1034,13 +1050,15 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				throw new AxiomException( "Cannot begin frame - no viewport selected." );
 			}
-			GL.Enable( OpenTK.Graphics.ES20.All.ScissorTest );
+			GL.Enable( All.ScissorTest );
+			GLES2Config.GlCheckError( this );
 		}
 
 		public override void EndFrame()
 		{
 			//Deactive the viewport clipping
-			GL.Disable( OpenTK.Graphics.ES20.All.ScissorTest );
+			GL.Disable( All.ScissorTest );
+			GLES2Config.GlCheckError( this );
 
 			//unbind GPU programs at end of frame
 			//this is mostly to avoid holding bound programs that might get deleted
@@ -1061,17 +1079,21 @@ namespace Axiom.RenderSystems.OpenGLES2
 			if ( constantBias != 0 || slopeScaleBias != 0 )
 			{
 				GL.Enable( GLenum.PolygonOffsetFill );
+				GLES2Config.GlCheckError( this );
 				GL.PolygonOffset( -slopeScaleBias, -constantBias );
+				GLES2Config.GlCheckError( this );
 			}
 			else
 			{
 				GL.Disable( GLenum.PolygonOffsetFill );
+				GLES2Config.GlCheckError( this );
 			}
 		}
 
 		public override void SetColorBufferWriteEnabled( bool red, bool green, bool blue, bool alpha )
 		{
 			GL.ColorMask( red, green, blue, alpha );
+			GLES2Config.GlCheckError( this );
 
 			//record this
 			this.colorWrite[ 0 ] = red;
@@ -1225,20 +1247,29 @@ namespace Axiom.RenderSystems.OpenGLES2
 				flip = ( invertVertexWinding && !activeRenderTarget.RequiresTextureFlipping ) || ( !invertVertexWinding && activeRenderTarget.RequiresTextureFlipping );
 				//Back
 				GL.StencilMaskSeparate( GLenum.Back, mask );
+				GLES2Config.GlCheckError( this );
 				GL.StencilFuncSeparate( GLenum.Back, this.ConvertCompareFunction( function ), refValue, mask );
+				GLES2Config.GlCheckError( this );
 				GL.StencilOpSeparate( GLenum.Back, this.ConvertStencilOp( stencilFailOp, !flip ), this.ConvertStencilOp( depthFailOp, !flip ), this.ConvertStencilOp( passOp, !flip ) );
+				GLES2Config.GlCheckError( this );
 
 				//Front
 				GL.StencilMaskSeparate( GLenum.Front, mask );
+				GLES2Config.GlCheckError( this );
 				GL.StencilFuncSeparate( GLenum.Front, this.ConvertCompareFunction( function ), refValue, mask );
+				GLES2Config.GlCheckError( this );
 				GL.StencilOpSeparate( GLenum.Front, this.ConvertStencilOp( stencilFailOp, flip ), this.ConvertStencilOp( depthFailOp, flip ), this.ConvertStencilOp( passOp, flip ) );
+				GLES2Config.GlCheckError( this );
 			}
 			else
 			{
 				flip = ( faceCount == 0 ) ? false : true;
 				GL.StencilMask( mask );
+				GLES2Config.GlCheckError( this );
 				GL.StencilFunc( this.ConvertCompareFunction( function ), refValue, mask );
+				GLES2Config.GlCheckError( this );
 				GL.StencilOp( this.ConvertStencilOp( stencilFailOp, flip ), this.ConvertStencilOp( depthFailOp, flip ), this.ConvertStencilOp( passOp, flip ) );
+				GLES2Config.GlCheckError( this );
 			}
 		}
 
@@ -1264,6 +1295,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 					this.minFilter = filter;
 					//Combine with exisiting mip filter
 					GL.TexParameter( this.textureTypes[ unit ], GLenum.TextureMinFilter, (int) this.CombinedMinMipFilter );
+					GLES2Config.GlCheckError( this );
 					break;
 				case FilterType.Mag:
 				{
@@ -1272,10 +1304,12 @@ namespace Axiom.RenderSystems.OpenGLES2
 						case FilterOptions.Anisotropic:
 						case FilterOptions.Linear:
 							GL.TexParameter( this.textureTypes[ unit ], GLenum.TextureMagFilter, (int) GLenum.Linear );
+							GLES2Config.GlCheckError( this );
 							break;
 						case FilterOptions.None:
 						case FilterOptions.Point:
 							GL.TexParameter( this.textureTypes[ unit ], GLenum.TextureMagFilter, (int) GLenum.Nearest );
+							GLES2Config.GlCheckError( this );
 							break;
 					}
 				}
@@ -1285,6 +1319,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 					//Combine with exsiting min filter
 					GL.TexParameter( this.textureTypes[ unit ], GLenum.TextureMinFilter, (int) this.CombinedMinMipFilter );
+					GLES2Config.GlCheckError( this );
 					break;
 			}
 
@@ -1305,6 +1340,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			float largest_supported_anisotropy = 0;
 			GL.GetFloat( GLenum.MaxTextureMaxAnisotropyExt, ref largest_supported_anisotropy );
+			GLES2Config.GlCheckError( this );
 
 			if ( maxAnisotropy > largest_supported_anisotropy )
 			{
@@ -1313,6 +1349,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			if ( this.GetCurrentAnisotropy( unit ) != maxAnisotropy )
 			{
 				GL.TexParameter( this.textureTypes[ unit ], GLenum.TextureMaxAnisotropyExt, maxAnisotropy );
+				GLES2Config.GlCheckError( this );
 			}
 
 			this.ActivateGLTextureUnit( 0 );
@@ -1389,8 +1426,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 				}
 
 				GL.VertexAttribPointer( attrib, typeCount, GLES2HardwareBufferManager.GetGLType( elem.Type ), normalized, vertexBuffer.VertexSize, ref bufferData );
+				GLES2Config.GlCheckError( this );
 
 				GL.EnableVertexAttribArray( attrib );
+				GLES2Config.GlCheckError( this );
 
 				this.renderAttribsBound.Add( attrib );
 			}
@@ -1436,6 +1475,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 						this.SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationNum, derivedDepthBiasSlopeScale );
 					}
 					GL.DrawElements( ( this.polygonMode == GLenum.PolygonOffsetFill ) ? primType : this.polygonMode, op.indexData.indexCount, indexType, ref bufferData );
+					GLES2Config.GlCheckError( this );
 				} while ( UpdatePassIterationRenderState() );
 			}
 			else
@@ -1448,6 +1488,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 						this.SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationNum, derivedDepthBiasSlopeScale );
 					}
 					GL.DrawArrays( ( this.polygonMode == GLenum.PolygonOffsetFill ) ? primType : this.polygonMode, 0, op.vertexData.vertexCount );
+					GLES2Config.GlCheckError( this );
 				} while ( UpdatePassIterationRenderState() );
 			}
 
@@ -1455,6 +1496,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			foreach ( var ai in this.renderAttribsBound )
 			{
 				GL.DisableVertexAttribArray( ai );
+				GLES2Config.GlCheckError( this );
 			}
 
 			this.renderAttribsBound.Clear();
@@ -1472,6 +1514,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			if ( enable )
 			{
 				GL.Enable( GLenum.ScissorTest );
+				GLES2Config.GlCheckError( this );
 				//NB GL uses width / height rather than right / bottom
 				x = left;
 				if ( flipping )
@@ -1485,10 +1528,12 @@ namespace Axiom.RenderSystems.OpenGLES2
 				w = right - left;
 				h = bottom - top;
 				GL.Scissor( x, y, w, h );
+				GLES2Config.GlCheckError( this );
 			}
 			else
 			{
 				GL.Disable( GLenum.ScissorTest );
+				GLES2Config.GlCheckError( this );
 				//GL requires you to reset the scissor when disabling
 				w = activeViewport.ActualWidth;
 				h = activeViewport.ActualHeight;
@@ -1502,6 +1547,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 					y = targetHeight - activeViewport.ActualTop - h;
 				}
 				GL.Scissor( x, y, w, h );
+				GLES2Config.GlCheckError( this );
 			}
 		}
 
@@ -1517,8 +1563,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 				if ( colorMask )
 				{
 					GL.ColorMask( true, true, true, true );
+					GLES2Config.GlCheckError( this );
 				}
 				GL.ClearColor( color.r, color.g, color.b, color.a );
+				GLES2Config.GlCheckError( this );
 			}
 			if ( ( buffers & FrameBufferType.Depth ) == FrameBufferType.Depth )
 			{
@@ -1527,15 +1575,19 @@ namespace Axiom.RenderSystems.OpenGLES2
 				if ( !this.depthWrite )
 				{
 					GL.DepthMask( true );
+					GLES2Config.GlCheckError( this );
 				}
 				GL.ClearDepth( depth );
+				GLES2Config.GlCheckError( this );
 			}
 			if ( ( buffers & FrameBufferType.Stencil ) == FrameBufferType.Stencil )
 			{
 				flags |= (int) GLenum.StencilBufferBit;
 				//Enable buffer for writing if it isn't
 				GL.StencilMask( 0xFFFFFFFF );
+				GLES2Config.GlCheckError( this );
 				GL.ClearStencil( stencil );
+				GLES2Config.GlCheckError( this );
 			}
 
 			//Should be enable scissor test due the clear region
@@ -1545,52 +1597,62 @@ namespace Axiom.RenderSystems.OpenGLES2
 			if ( !scissorTestEnabled )
 			{
 				GL.Enable( GLenum.ScissorTest );
+				GLES2Config.GlCheckError( this );
 			}
 			//Sets the scissor box as same as viewport
 
 			var viewport = new int[ 4 ];
 			var scissor = new int[ 4 ];
 			GL.GetInteger( GLenum.Viewport, viewport );
+			GLES2Config.GlCheckError( this );
 			GL.GetInteger( GLenum.ScissorBox, scissor );
+			GLES2Config.GlCheckError( this );
 
 			bool scissorBoxDifference = viewport[ 0 ] != scissor[ 0 ] || viewport[ 1 ] != scissor[ 1 ] || viewport[ 2 ] != scissor[ 2 ] || viewport[ 3 ] != scissor[ 3 ];
 
 			if ( scissorBoxDifference )
 			{
 				GL.Scissor( viewport[ 0 ], viewport[ 1 ], viewport[ 2 ], viewport[ 3 ] );
+				GLES2Config.GlCheckError( this );
 			}
 
 			this.DiscardBuffers = (int) buffers;
 
 			//Clear buffers
 			GL.Clear( flags );
+			GLES2Config.GlCheckError( this );
 
 			//Restore scissor box
 			if ( scissorBoxDifference )
 			{
 				GL.Scissor( scissor[ 0 ], scissor[ 1 ], scissor[ 2 ], scissor[ 3 ] );
+				GLES2Config.GlCheckError( this );
 			}
 
 			//Restore scissor test
 			if ( !scissorTestEnabled )
 			{
 				GL.Disable( GLenum.ScissorTest );
+				GLES2Config.GlCheckError( this );
 			}
 
 			//Reset buffer write state
 			if ( this.depthWrite && ( buffers & FrameBufferType.Depth ) == FrameBufferType.Depth )
 			{
 				GL.DepthMask( false );
+				GLES2Config.GlCheckError( this );
 			}
 
 			if ( colorMask && ( buffers & FrameBufferType.Color ) == FrameBufferType.Color )
 			{
 				GL.ColorMask( this.colorWrite[ 0 ], this.colorWrite[ 1 ], this.colorWrite[ 2 ], this.colorWrite[ 3 ] );
+				GLES2Config.GlCheckError( this );
 			}
 
 			if ( ( buffers & FrameBufferType.Stencil ) == FrameBufferType.Stencil )
 			{
 				GL.StencilMask( this.stencilMask );
+				GLES2Config.GlCheckError( this );
 			}
 		}
 
@@ -1743,39 +1805,43 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			if ( src == SceneBlendFactor.One && dest == SceneBlendFactor.Zero )
 			{
-				OpenTK.Graphics.ES20.GL.Disable( OpenTK.Graphics.ES20.All.Blend );
+				GL.Disable( All.Blend );
+				GLES2Config.GlCheckError( this );
 			}
 			else
 			{
-				OpenTK.Graphics.ES20.GL.Enable( OpenTK.Graphics.ES20.All.Blend );
-				OpenTK.Graphics.ES20.GL.BlendFunc( sourceBlend, destBlend );
+				GL.Enable( All.Blend );
+				GLES2Config.GlCheckError( this );
+				GL.BlendFunc( sourceBlend, destBlend );
+				GLES2Config.GlCheckError( this );
 			}
 
-			var func = OpenTK.Graphics.ES20.All.FuncAdd;
+			var func = All.FuncAdd;
 			switch ( op )
 			{
 				case SceneBlendOperation.Add:
-					func = OpenTK.Graphics.ES20.All.FuncAdd;
+					func = All.FuncAdd;
 					break;
 				case SceneBlendOperation.Subtract:
-					func = OpenTK.Graphics.ES20.All.FuncSubtract;
+					func = All.FuncSubtract;
 					break;
 				case SceneBlendOperation.ReverseSubtract:
-					func = OpenTK.Graphics.ES20.All.FuncReverseSubtract;
+					func = All.FuncReverseSubtract;
 					break;
 				case SceneBlendOperation.Min:
 					//#if GL_EXT_blend_minmax
-					//func = OpenTK.Graphics.ES20.Alll.MinExt;
+					//func = Alll.MinExt;
 					//#endif
 					break;
 				case SceneBlendOperation.Max:
 					//#if GL_EXT_blend_minmax
-					//func = OpenTK.Graphics.ES20.Alll.MaxExt;
+					//func = Alll.MaxExt;
 					//#endif
 					break;
 			}
 
 			GL.BlendEquation( func );
+			GLES2Config.GlCheckError( this );
 		}
 
 		public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor, SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha, SceneBlendOperation op, SceneBlendOperation alphaOp )
@@ -1787,34 +1853,37 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero && sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
 			{
-				GL.Disable( OpenTK.Graphics.ES20.All.Blend );
+				GL.Disable( All.Blend );
+				GLES2Config.GlCheckError( this );
 			}
 			else
 			{
-				GL.Enable( OpenTK.Graphics.ES20.All.Blend );
+				GL.Enable( All.Blend );
+				GLES2Config.GlCheckError( this );
 				GL.BlendFuncSeparate( sourceBlend, destBlend, sourceBlendAlpha, destBlendAlpha );
+				GLES2Config.GlCheckError( this );
 			}
-			OpenTK.Graphics.ES20.All func = OpenTK.Graphics.ES20.All.FuncAdd, alphaFunc = OpenTK.Graphics.ES20.All.FuncAdd;
+			All func = All.FuncAdd, alphaFunc = All.FuncAdd;
 
 			switch ( op )
 			{
 				case SceneBlendOperation.Add:
-					func = OpenTK.Graphics.ES20.All.FuncAdd;
+					func = All.FuncAdd;
 					break;
 				case SceneBlendOperation.Subtract:
-					func = OpenTK.Graphics.ES20.All.FuncSubtract;
+					func = All.FuncSubtract;
 					break;
 				case SceneBlendOperation.ReverseSubtract:
-					func = OpenTK.Graphics.ES20.All.FuncReverseSubtract;
+					func = All.FuncReverseSubtract;
 					break;
 				case SceneBlendOperation.Min:
 					//#if GL_EXT_blend_minmax
-					//func = OpenTK.Graphics.ES20.Alll.MinExt;
+					//func = Alll.MinExt;
 					//#endif
 					break;
 				case SceneBlendOperation.Max:
 					//#if GL_EXT_blend_minmax
-					//func = OpenTK.Graphics.ES20.Alll.MaxExt;
+					//func = Alll.MaxExt;
 					//#endif
 					break;
 			}
@@ -1822,22 +1891,22 @@ namespace Axiom.RenderSystems.OpenGLES2
 			switch ( alphaOp )
 			{
 				case SceneBlendOperation.Add:
-					alphaFunc = OpenTK.Graphics.ES20.All.FuncAdd;
+					alphaFunc = All.FuncAdd;
 					break;
 				case SceneBlendOperation.Subtract:
-					alphaFunc = OpenTK.Graphics.ES20.All.FuncSubtract;
+					alphaFunc = All.FuncSubtract;
 					break;
 				case SceneBlendOperation.ReverseSubtract:
-					alphaFunc = OpenTK.Graphics.ES20.All.FuncReverseSubtract;
+					alphaFunc = All.FuncReverseSubtract;
 					break;
 				case SceneBlendOperation.Min:
 					//#if GL_EXT_blend_minmax
-					//func = OpenTK.Graphics.ES20.Alll.MinExt;
+					//func = Alll.MinExt;
 					//#endif
 					break;
 				case SceneBlendOperation.Max:
 					//#if GL_EXT_blend_minmax
-					//func = OpenTK.Graphics.ES20.Alll.MaxExt;
+					//func = Alll.MaxExt;
 					//#endif
 					break;
 				default:
@@ -1845,6 +1914,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 
 			GL.BlendEquationSeparate( func, alphaFunc );
+			GLES2Config.GlCheckError( this );
 		}
 
 		public override void SetAlphaRejectSettings( CompareFunction func, byte value, bool alphaToCoverage )
@@ -1860,11 +1930,13 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				if ( a2c )
 				{
-					GL.Enable( OpenTK.Graphics.ES20.All.SampleAlphaToCoverage );
+					GL.Enable( All.SampleAlphaToCoverage );
+					GLES2Config.GlCheckError( this );
 				}
 				else
 				{
-					GL.Disable( OpenTK.Graphics.ES20.All.SampleAlphaToCoverage );
+					GL.Disable( All.SampleAlphaToCoverage );
+					GLES2Config.GlCheckError( this );
 				}
 
 				this.lasta2c = a2c;
