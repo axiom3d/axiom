@@ -207,14 +207,17 @@ namespace Axiom.RenderSystems.OpenGLES2
 			if ( offset == 0 && length == sizeInBytes )
 			{
 				GL.BufferData( GLenum.ArrayBuffer, new IntPtr(sizeInBytes), src.Pin(), GLES2HardwareBufferManager.GetGLUsage( usage ) );
+				GLES2Config.GlCheckError( this );
 			}
 			else
 			{
 				if ( discardWholeBuffer )
 				{
 					GL.BufferData( GLenum.ArrayBuffer, new IntPtr( sizeInBytes ), IntPtr.Zero, GLES2HardwareBufferManager.GetGLUsage( usage ) );
+					GLES2Config.GlCheckError( this );
 				}
 				GL.BufferSubData( GLenum.ArrayBuffer, new IntPtr( offset), new IntPtr( length ), src.Pin() );
+				GLES2Config.GlCheckError( this );
 			}
 		}
 
@@ -230,11 +233,13 @@ namespace Axiom.RenderSystems.OpenGLES2
 				if ( lockStart == 0 && lockSize == sizeInBytes )
 				{
 					GL.BufferData( GLenum.ArrayBuffer, new IntPtr( sizeInBytes ), srcData.Pin(), GLES2HardwareBufferManager.GetGLUsage( usage ) );
+					GLES2Config.GlCheckError( this );
 				}
 				else
 				{
 					//Ogre FIXME: GPU frequently stalls here - DJR
 					GL.BufferSubData( GLenum.ArrayBuffer, new IntPtr( lockStart ), new IntPtr( lockSize ), srcData.Pin() );
+					GLES2Config.GlCheckError( this );
 				}
 
 				shadowBuffer.Unlock();
