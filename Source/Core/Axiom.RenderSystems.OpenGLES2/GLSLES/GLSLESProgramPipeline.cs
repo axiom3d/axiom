@@ -87,7 +87,9 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				//GL.ProgramParameter(programHandle, GLenum.LinkStatus, ref linkStatus);
 				vertexProgram.GLSLProgram.AttachToProgramObject( programHandle );
 				GL.LinkProgram( programHandle );
+				GLES2Config.GlCheckError( this );
 				GL.GetProgram( programHandle, GLenum.LinkStatus, ref linkStatus );
+				GLES2Config.GlCheckError( this );
 
 				if ( linkStatus != 0 )
 				{
@@ -113,7 +115,9 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				//GL.ProgramParameter(programHandle, GLenum.ProgramSeperableExt, true);
 				fragmentProgram.GLSLProgram.AttachToProgramObject( programHandle );
 				GL.LinkProgram( programHandle );
+				GLES2Config.GlCheckError( this );
 				GL.GetProgram( programHandle, GLenum.LinkStatus, ref linkStatus );
+				GLES2Config.GlCheckError( this );
 
 				if ( linkStatus != 0 )
 				{
@@ -151,16 +155,19 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				int handle = vertexProgram.GLSLProgram.GLProgramHandle;
 				string attString = GetAttributeSemanticString( semantic );
 				int attrib = GL.GetAttribLocation( handle, attString );
+				GLES2Config.GlCheckError( this );
 
 				if ( attrib == NotFoundCustomAttributesIndex && semantic == VertexElementSemantic.Position )
 				{
 					attrib = GL.GetAttribLocation( handle, "position" );
+					GLES2Config.GlCheckError( this );
 				}
 
 				if ( attrib == NotFoundCustomAttributesIndex )
 				{
 					string attStringWithSemantic = attString + index.ToString();
 					attrib = GL.GetAttribLocation( handle, attStringWithSemantic );
+					GLES2Config.GlCheckError( this );
 				}
 
 				customAttribues[ (int) semantic - 1, index ] = attrib;
