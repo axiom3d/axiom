@@ -103,7 +103,7 @@ namespace Axiom.Framework.Configuration
 		public DefaultConfigurationManager( IConfigurationDialogFactory factory, string configurationFile, string sectionName )
 			: base( configurationFile )
 		{
-			ConfigurationFactory = factory;
+			this.ConfigurationFactory = factory;
 			LogFilename = DefaultLogFileName;
 
 			if ( !String.IsNullOrEmpty( configurationFile ) )
@@ -111,20 +111,20 @@ namespace Axiom.Framework.Configuration
 				// Get current configuration file.
 				var map = new ExeConfigurationFileMap();
 				map.ExeConfigFilename = configurationFile;
-				Configuration = ConfigurationManager.OpenMappedExeConfiguration( map, ConfigurationUserLevel.None );
+				this.Configuration = ConfigurationManager.OpenMappedExeConfiguration( map, ConfigurationUserLevel.None );
 			}
 			else
 			{
-				Configuration = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.None );
+				this.Configuration = ConfigurationManager.OpenExeConfiguration( ConfigurationUserLevel.None );
 			}
 
 			// Get the section.
-			ConfigurationSection = Configuration.GetSection( sectionName ) as AxiomConfigurationSection;
+			this.ConfigurationSection = this.Configuration.GetSection( sectionName ) as AxiomConfigurationSection;
 
 
-			if ( ConfigurationSection != null && !String.IsNullOrEmpty( ConfigurationSection.LogFilename ) )
+			if ( this.ConfigurationSection != null && !String.IsNullOrEmpty( this.ConfigurationSection.LogFilename ) )
 			{
-				LogFilename = ConfigurationSection.LogFilename;
+				LogFilename = this.ConfigurationSection.LogFilename;
 			}
 		}
 
@@ -146,17 +146,17 @@ namespace Axiom.Framework.Configuration
 				throw new AxiomException( "At least one RenderSystem must be loaded." );
 			}
 
-			if ( ConfigurationSection == null )
+			if ( this.ConfigurationSection == null )
 			{
 				return false;
 			}
 
-			if ( engine.RenderSystems.ContainsKey( ConfigurationSection.RenderSystems.DefaultRenderSystem ) )
+			if ( engine.RenderSystems.ContainsKey( this.ConfigurationSection.RenderSystems.DefaultRenderSystem ) )
 			{
-				engine.RenderSystem = engine.RenderSystems[ ConfigurationSection.RenderSystems.DefaultRenderSystem ];
+				engine.RenderSystem = engine.RenderSystems[ this.ConfigurationSection.RenderSystems.DefaultRenderSystem ];
 			}
 
-			foreach ( RenderSystem renderSystemConfig in ConfigurationSection.RenderSystems )
+			foreach ( RenderSystem renderSystemConfig in this.ConfigurationSection.RenderSystems )
 			{
 				if ( engine.RenderSystems.ContainsKey( renderSystemConfig.Name ) )
 				{
@@ -173,7 +173,7 @@ namespace Axiom.Framework.Configuration
 			}
 
 			// Setup Resource Locations
-			foreach ( ResourceLocationElement locationElement in ConfigurationSection.ResourceLocations )
+			foreach ( ResourceLocationElement locationElement in this.ConfigurationSection.ResourceLocations )
 			{
 				ResourceGroupManager.Instance.AddResourceLocation( locationElement.Path, locationElement.Type, locationElement.Group,
 				                                                   bool.Parse( locationElement.Recurse ), false );
@@ -197,36 +197,36 @@ namespace Axiom.Framework.Configuration
 		/// <param name="defaultRenderer"></param>
 		public override void SaveConfiguration( Root engine, string defaultRenderer )
 		{
-			for ( int index = 0; index < ConfigurationSection.RenderSystems.Count; index++ )
+			for ( int index = 0; index < this.ConfigurationSection.RenderSystems.Count; index++ )
 			{
-				ConfigurationSection.RenderSystems.Remove( ConfigurationSection.RenderSystems[ 0 ] );
+				this.ConfigurationSection.RenderSystems.Remove( this.ConfigurationSection.RenderSystems[ 0 ] );
 			}
 
 			foreach ( var key in engine.RenderSystems.Keys )
 			{
-				ConfigurationSection.RenderSystems.Add( new RenderSystem
-				                                        {
-				                                        	Name = key,
-				                                        	Options = new RenderSystemOptionElementCollection()
-				                                        } );
+				this.ConfigurationSection.RenderSystems.Add( new RenderSystem
+				                                             {
+				                                             	Name = key,
+				                                             	Options = new RenderSystemOptionElementCollection()
+				                                             } );
 
 				foreach ( ConfigOption item in engine.RenderSystems[ key ].ConfigOptions )
 				{
-					ConfigurationSection.RenderSystems[ key ].Options.Add( new RenderSystemOption
-					                                                       {
-					                                                       	Name = item.Name,
-					                                                       	Value = item.Value
-					                                                       } );
+					this.ConfigurationSection.RenderSystems[ key ].Options.Add( new RenderSystemOption
+					                                                            {
+					                                                            	Name = item.Name,
+					                                                            	Value = item.Value
+					                                                            } );
 				}
 			}
 
 			if ( !string.IsNullOrEmpty( defaultRenderer ) &&
-			     ConfigurationSection.RenderSystems.DefaultRenderSystem != defaultRenderer )
+			     this.ConfigurationSection.RenderSystems.DefaultRenderSystem != defaultRenderer )
 			{
-				ConfigurationSection.RenderSystems.DefaultRenderSystem = defaultRenderer;
+				this.ConfigurationSection.RenderSystems.DefaultRenderSystem = defaultRenderer;
 			}
 
-			Configuration.Save( ConfigurationSaveMode.Modified );
+			this.Configuration.Save( ConfigurationSaveMode.Modified );
 		}
 
 		/// <summary>
@@ -236,8 +236,9 @@ namespace Axiom.Framework.Configuration
 		/// <returns></returns>
 		public override bool ShowConfigDialog( Root engine )
 		{
-			IConfigurationDialog configDialog = ConfigurationFactory.CreateConfigurationDialog( engine,
-			                                                                                    ResourceGroupManager.Instance );
+			IConfigurationDialog configDialog = this.ConfigurationFactory.CreateConfigurationDialog( engine,
+			                                                                                         ResourceGroupManager.
+			                                                                                         	Instance );
 			DialogResult result = configDialog.Show();
 			return result == DialogResult.Ok;
 		}

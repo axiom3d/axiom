@@ -10,15 +10,15 @@ namespace Axiom.Components.RTShaderSystem
 
 		public FunctionAtom()
 		{
-			groupExecutionOrder = -1;
-			internalExecutionOrder = -1;
+			this.groupExecutionOrder = -1;
+			this.internalExecutionOrder = -1;
 		}
 
 		public int GroupExecutionOrder
 		{
 			get
 			{
-				return groupExecutionOrder;
+				return this.groupExecutionOrder;
 			}
 		}
 
@@ -26,7 +26,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return internalExecutionOrder;
+				return this.internalExecutionOrder;
 			}
 		}
 

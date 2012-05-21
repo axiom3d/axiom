@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -122,14 +122,14 @@ namespace OctreeZone
 			: base( creator, name )
 		{
 			mZoneTypeName = "ZoneType_Terrain";
-			mUseCustomMaterial = false;
-			mUseNamedParameterLodMorph = false;
-			mLodMorphParamIndex = 3;
-			mTerrainRoot = null;
-			mActivePageSource = null;
-			mPagingEnabled = false;
-			mLivePageMargin = 0;
-			mBufferedPageMargin = 0;
+			this.mUseCustomMaterial = false;
+			this.mUseNamedParameterLodMorph = false;
+			this.mLodMorphParamIndex = 3;
+			this.mTerrainRoot = null;
+			this.mActivePageSource = null;
+			this.mPagingEnabled = false;
+			this.mLivePageMargin = 0;
+			this.mBufferedPageMargin = 0;
 		}
 
 		/// Terrain size, detail etc
@@ -137,7 +137,7 @@ namespace OctreeZone
 		{
 			get
 			{
-				return mOptions;
+				return this.mOptions;
 			}
 		}
 
@@ -146,7 +146,7 @@ namespace OctreeZone
 		{
 			get
 			{
-				return mLevelIndex;
+				return this.mLevelIndex;
 			}
 		}
 
@@ -155,7 +155,7 @@ namespace OctreeZone
 		{
 			get
 			{
-				return mIndexCache;
+				return this.mIndexCache;
 			}
 		}
 
@@ -163,7 +163,7 @@ namespace OctreeZone
 		{
 			get
 			{
-				return mTerrainZonePages.Count;
+				return this.mTerrainZonePages.Count;
 			}
 		}
 
@@ -171,7 +171,7 @@ namespace OctreeZone
 		{
 			get
 			{
-				return mTerrainRoot;
+				return this.mTerrainRoot;
 			}
 		}
 
@@ -191,9 +191,9 @@ namespace OctreeZone
 			}
 
 			// Shut down page source to free terrain pages
-			if ( null != mActivePageSource )
+			if ( null != this.mActivePageSource )
 			{
-				mActivePageSource.Shutdown();
+				this.mActivePageSource.Shutdown();
 			}
 		}
 
@@ -309,9 +309,9 @@ namespace OctreeZone
 				setMaxPixelError( Convert.ToInt32( val ) );
 			}
 
-			mDetailTextureName = config.getSetting( "DetailTexture" );
+			this.mDetailTextureName = config.getSetting( "DetailTexture" );
 
-			mWorldTextureName = config.getSetting( "WorldTexture" );
+			this.mWorldTextureName = config.getSetting( "WorldTexture" );
 
 			if ( config.getSetting( "VertexColours" ) == "yes" )
 			{
@@ -383,7 +383,7 @@ namespace OctreeZone
 		//-------------------------------------------------------------------------
 		public void SetupTerrainMaterial()
 		{
-			if ( string.IsNullOrEmpty( mCustomMaterialName ) )
+			if ( string.IsNullOrEmpty( this.mCustomMaterialName ) )
 			{
 				// define our own material
 				Options.terrainMaterial = (Material)MaterialManager.Instance.GetByName( TERRAIN_MATERIAL_NAME );
@@ -402,13 +402,13 @@ namespace OctreeZone
 
 				Pass pass = Options.terrainMaterial.GetTechnique( 0 ).GetPass( 0 );
 
-				if ( mWorldTextureName != "" )
+				if ( this.mWorldTextureName != "" )
 				{
-					pass.CreateTextureUnitState( mWorldTextureName, 0 );
+					pass.CreateTextureUnitState( this.mWorldTextureName, 0 );
 				}
-				if ( mDetailTextureName != "" )
+				if ( this.mDetailTextureName != "" )
 				{
-					pass.CreateTextureUnitState( mDetailTextureName, 1 );
+					pass.CreateTextureUnitState( this.mDetailTextureName, 1 );
 				}
 
 				Options.terrainMaterial.Lighting = Options.lit;
@@ -475,8 +475,8 @@ namespace OctreeZone
 
 
 					// Set param index
-					mLodMorphParamName = "";
-					mLodMorphParamIndex = 4;
+					this.mLodMorphParamName = "";
+					this.mLodMorphParamIndex = 4;
 				}
 
 				Options.terrainMaterial.Load();
@@ -484,7 +484,7 @@ namespace OctreeZone
 			else
 			{
 				// Custom material
-				Options.terrainMaterial = (Material)MaterialManager.Instance.GetByName( mCustomMaterialName );
+				Options.terrainMaterial = (Material)MaterialManager.Instance.GetByName( this.mCustomMaterialName );
 				Options.terrainMaterial.Load();
 			}
 
@@ -513,14 +513,14 @@ namespace OctreeZone
 						}
 						if ( !found )
 						{
-							if ( mLodMorphParamName != "" )
+							if ( this.mLodMorphParamName != "" )
 							{
-								paras.SetNamedAutoConstant( mLodMorphParamName, GpuProgramParameters.AutoConstantType.Custom,
+								paras.SetNamedAutoConstant( this.mLodMorphParamName, GpuProgramParameters.AutoConstantType.Custom,
 								                            TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID );
 							}
 							else
 							{
-								paras.SetAutoConstant( mLodMorphParamIndex, GpuProgramParameters.AutoConstantType.Custom,
+								paras.SetAutoConstant( this.mLodMorphParamIndex, GpuProgramParameters.AutoConstantType.Custom,
 								                       TerrainZoneRenderable.MORPH_CUSTOM_PARAM_ID );
 							}
 						}
@@ -533,28 +533,28 @@ namespace OctreeZone
 		public void SetupTerrainZonePages( PCZSceneNode parentNode )
 		{
 			//create a root terrain node.
-			if ( null == mTerrainRoot )
+			if ( null == this.mTerrainRoot )
 			{
-				mTerrainRoot = (PCZSceneNode)( parentNode.CreateChildSceneNode( Name + "_Node" ) );
-				SetEnclosureNode( mTerrainRoot );
+				this.mTerrainRoot = (PCZSceneNode)( parentNode.CreateChildSceneNode( Name + "_Node" ) );
+				SetEnclosureNode( this.mTerrainRoot );
 			}
 			//setup the page array.
-			var pageSlots = (ushort)( 1 + ( mBufferedPageMargin*2 ) );
+			var pageSlots = (ushort)( 1 + ( this.mBufferedPageMargin*2 ) );
 			ushort i, j;
 			for ( i = 0; i < pageSlots; ++i )
 			{
-				mTerrainZonePages.Add( new TerrainZonePageRow() );
+				this.mTerrainZonePages.Add( new TerrainZonePageRow() );
 				;
 				for ( j = 0; j < pageSlots; ++j )
 				{
-					mTerrainZonePages[ i ].Add( null );
+					this.mTerrainZonePages[ i ].Add( null );
 				}
 			}
 
 			// If we're not paging, load immediate for convenience
-			if ( mActivePageSource != null && !mPagingEnabled )
+			if ( this.mActivePageSource != null && !this.mPagingEnabled )
 			{
-				mActivePageSource.RequestPage( 0, 0 );
+				this.mActivePageSource.RequestPage( 0, 0 );
 			}
 		}
 
@@ -595,7 +595,7 @@ namespace OctreeZone
 				ResourceGroupManager.Instance.ClearResourceGroup( ResourceGroupManager.Instance.WorldResourceGroupName );
 			}
 			DestroyLevelIndexes();
-			mTerrainZonePages.Clear();
+			this.mTerrainZonePages.Clear();
 			// Load the configuration
 			LoadConfig( stream );
 			InitLevelIndexes();
@@ -615,19 +615,19 @@ namespace OctreeZone
 		//-------------------------------------------------------------------------
 		public void ClearZone()
 		{
-			mTerrainZonePages.Clear();
+			this.mTerrainZonePages.Clear();
 			DestroyLevelIndexes();
 			// Octree has destroyed our root
-			mTerrainRoot = null;
+			this.mTerrainRoot = null;
 		}
 
 		//-------------------------------------------------------------------------
 		public override void NotifyBeginRenderScene()
 		{
 			// For now, no paging and expect immediate response
-			if ( mTerrainZonePages.Count != 0 && mTerrainZonePages[ 0 ][ 0 ] == null )
+			if ( this.mTerrainZonePages.Count != 0 && this.mTerrainZonePages[ 0 ][ 0 ] == null )
 			{
-				mActivePageSource.RequestPage( 0, 0 );
+				this.mActivePageSource.RequestPage( 0, 0 );
 			}
 		}
 
@@ -636,13 +636,13 @@ namespace OctreeZone
 		{
 			Debug.Assert( pageX == 0 && pageZ == 0, "Multiple pages not yet supported" );
 
-			Debug.Assert( mTerrainZonePages[ pageX ][ pageZ ] == null, "Page at that index not yet expired!" );
+			Debug.Assert( this.mTerrainZonePages[ pageX ][ pageZ ] == null, "Page at that index not yet expired!" );
 			// Insert page into list
-			mTerrainZonePages[ pageX ][ pageZ ] = page;
+			this.mTerrainZonePages[ pageX ][ pageZ ] = page;
 			// Attach page to terrain root
-			if ( page.PageSceneNode.Parent != mTerrainRoot )
+			if ( page.PageSceneNode.Parent != this.mTerrainRoot )
 			{
-				mTerrainRoot.AddChild( page.PageSceneNode );
+				this.mTerrainRoot.AddChild( page.PageSceneNode );
 			}
 		}
 
@@ -668,7 +668,7 @@ namespace OctreeZone
 		//-------------------------------------------------------------------------
 		public TerrainZonePage GetTerrainZonePage( Vector3 pt )
 		{
-			if ( mPagingEnabled )
+			if ( this.mPagingEnabled )
 			{
 				// TODO
 				return null;
@@ -676,18 +676,18 @@ namespace OctreeZone
 			else
 			{
 				// Single page
-				if ( mTerrainZonePages.Count == 0 || mTerrainZonePages[ 0 ] == null )
+				if ( this.mTerrainZonePages.Count == 0 || this.mTerrainZonePages[ 0 ] == null )
 				{
 					return null;
 				}
-				return mTerrainZonePages[ 0 ][ 0 ];
+				return this.mTerrainZonePages[ 0 ][ 0 ];
 			}
 		}
 
 		//-------------------------------------------------------------------------
 		public TerrainZonePage GetTerrainZonePage( ushort x, ushort z )
 		{
-			if ( mPagingEnabled )
+			if ( this.mPagingEnabled )
 			{
 				// TODO
 				return null;
@@ -695,15 +695,15 @@ namespace OctreeZone
 			else
 			{
 				// Single page
-				if ( mTerrainZonePages.Count == 0 || mTerrainZonePages[ 0 ] == null )
+				if ( this.mTerrainZonePages.Count == 0 || this.mTerrainZonePages[ 0 ] == null )
 				{
 					return null;
 				}
 				if ( x > Options.pageSize || z > Options.pageSize )
 				{
-					return mTerrainZonePages[ 0 ][ 0 ];
+					return this.mTerrainZonePages[ 0 ][ 0 ];
 				}
-				return mTerrainZonePages[ x ][ z ];
+				return this.mTerrainZonePages[ x ][ z ];
 			}
 		}
 
@@ -763,13 +763,13 @@ namespace OctreeZone
 		//-------------------------------------------------------------------------
 		private void SetWorldTexture( string textureName )
 		{
-			mWorldTextureName = textureName;
+			this.mWorldTextureName = textureName;
 		}
 
 		//-------------------------------------------------------------------------
 		private void SetDetailTexture( string textureName )
 		{
-			mDetailTextureName = textureName;
+			this.mDetailTextureName = textureName;
 		}
 
 		//-------------------------------------------------------------------------
@@ -811,29 +811,29 @@ namespace OctreeZone
 		//-------------------------------------------------------------------------
 		private void setCustomMaterial( string materialName )
 		{
-			mCustomMaterialName = materialName;
+			this.mCustomMaterialName = materialName;
 			if ( materialName != "" )
 			{
-				mUseCustomMaterial = true;
+				this.mUseCustomMaterial = true;
 			}
 			else
 			{
-				mUseCustomMaterial = false;
+				this.mUseCustomMaterial = false;
 			}
 		}
 
 		//-------------------------------------------------------------------------
 		private void setCustomMaterialMorphFactorParam( string paramName )
 		{
-			mUseNamedParameterLodMorph = true;
-			mLodMorphParamName = paramName;
+			this.mUseNamedParameterLodMorph = true;
+			this.mLodMorphParamName = paramName;
 		}
 
 		//-------------------------------------------------------------------------
 		private void setCustomMaterialMorphFactorParam( int paramIndex )
 		{
-			mUseNamedParameterLodMorph = false;
-			mLodMorphParamIndex = paramIndex;
+			this.mUseNamedParameterLodMorph = false;
+			this.mLodMorphParamIndex = paramIndex;
 		}
 
 		//-------------------------------------------------------------------------
@@ -959,28 +959,28 @@ namespace OctreeZone
 		//-------------------------------------------------------------------------
 		public void registerPageSource( string typeName, TerrainZonePageSource source )
 		{
-			if ( mPageSources.ContainsKey( typeName ) )
+			if ( this.mPageSources.ContainsKey( typeName ) )
 			{
 				throw new AxiomException( "The page source " + typeName + " is already registered. registerPageSource" );
 			}
-			mPageSources.Add( typeName, source );
+			this.mPageSources.Add( typeName, source );
 			LogManager.Instance.Write( "TerrainZone: Registered a new PageSource for type " + typeName );
 		}
 
 		//-------------------------------------------------------------------------
 		public void SelectPageSource( string typeName, TerrainZonePageSourceOptionList optionList )
 		{
-			if ( !mPageSources.ContainsKey( typeName ) )
+			if ( !this.mPageSources.ContainsKey( typeName ) )
 			{
 				throw new AxiomException( "Cannot locate a TerrainZonePageSource for type " + typeName + ". SelectPageSource" );
 			}
 
-			if ( null != mActivePageSource )
+			if ( null != this.mActivePageSource )
 			{
-				mActivePageSource.Shutdown();
+				this.mActivePageSource.Shutdown();
 			}
-			mActivePageSource = mPageSources[ typeName ];
-			mActivePageSource.Initialize( this, Options.tileSize, Options.pageSize, mPagingEnabled, optionList );
+			this.mActivePageSource = this.mPageSources[ typeName ];
+			this.mActivePageSource.Initialize( this, Options.tileSize, Options.pageSize, this.mPagingEnabled, optionList );
 
 			LogManager.Instance.Write( "TerrainZone: Activated PageSource " + typeName );
 		}
@@ -1112,7 +1112,7 @@ namespace OctreeZone
 		//-------------------------------------------------------------------------
 		public override void NotifyWorldGeometryRenderQueue( int qid )
 		{
-			foreach ( TerrainZonePageRow row in mTerrainZonePages )
+			foreach ( TerrainZonePageRow row in this.mTerrainZonePages )
 			{
 				foreach ( TerrainZonePage page in row )
 				{
@@ -1137,7 +1137,7 @@ namespace OctreeZone
 
 		~TerrainZoneFactory()
 		{
-			mTerrainZonePageSources.Clear();
+			this.mTerrainZonePageSources.Clear();
 		}
 
 		public override bool SupportsPCZoneType( string zoneType )
@@ -1151,7 +1151,7 @@ namespace OctreeZone
 			var tz = new TerrainZone( pczsm, zoneName );
 			// Create & register default sources (one per zone)
 			var ps = new HeightmapTerrainZonePageSource();
-			mTerrainZonePageSources.Add( ps );
+			this.mTerrainZonePageSources.Add( ps );
 			tz.registerPageSource( "Heightmap", ps );
 			return tz;
 		}

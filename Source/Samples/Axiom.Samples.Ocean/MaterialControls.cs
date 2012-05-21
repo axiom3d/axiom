@@ -21,7 +21,7 @@ namespace Axiom.Samples.Ocean
 		{
 			get
 			{
-				return displayName;
+				return this.displayName;
 			}
 		}
 
@@ -32,7 +32,7 @@ namespace Axiom.Samples.Ocean
 		{
 			get
 			{
-				return materialName;
+				return this.materialName;
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Axiom.Samples.Ocean
 		{
 			get
 			{
-				return shaderControlsContainer.Count;
+				return this.shaderControlsContainer.Count;
 			}
 		}
 
@@ -94,7 +94,7 @@ namespace Axiom.Samples.Ocean
 				newControl.MinVal = float.Parse( lineParams[ 3 ].Trim() );
 				newControl.MaxVal = float.Parse( lineParams[ 4 ].Trim() );
 				newControl.ElementIndex = int.Parse( lineParams[ 5 ].Trim() );
-				shaderControlsContainer.Add( newControl );
+				this.shaderControlsContainer.Add( newControl );
 			}
 			catch
 			{
@@ -110,7 +110,7 @@ namespace Axiom.Samples.Ocean
 		public ShaderControl GetShaderControl( int index )
 		{
 			Contract.Requires( index < ShaderControlsCount );
-			return shaderControlsContainer[ index ];
+			return this.shaderControlsContainer[ index ];
 		}
 	}
 }

@@ -64,18 +64,18 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return light;
+				return this.light;
 			}
 			set
 			{
-				light = value;
-				lightNode = light.ParentNode;
-				lightPosition = light.GetDerivedPosition();
-				lightOrientation = GetLightOrientation();
+				this.light = value;
+				this.lightNode = this.light.ParentNode;
+				this.lightPosition = this.light.GetDerivedPosition();
+				this.lightOrientation = GetLightOrientation();
 
-				base.FieldOfView = Utility.DegreesToRadians( light.SpotlightOuterAngle );
+				base.FieldOfView = Utility.DegreesToRadians( this.light.SpotlightOuterAngle );
 				base.Near = 1;
-				base.Far = light.AttenuationRange;
+				base.Far = this.light.AttenuationRange;
 				base.AspectRatio = 1;
 				base.ProjectionType = Projection.Perspective;
 
@@ -115,8 +115,8 @@ namespace Axiom.SceneManagers.Bsp
 			// This is most efficiently done using 3x3 Matrices
 
 			// Get orientation from quaternion
-			Quaternion orientation = lightOrientation;
-			Vector3 position = lightPosition;
+			Quaternion orientation = this.lightOrientation;
+			Vector3 position = this.lightPosition;
 			Matrix3 rotation = orientation.ToRotationMatrix();
 
 			Vector3 left = rotation.GetColumn( 0 );
@@ -139,10 +139,10 @@ namespace Axiom.SceneManagers.Bsp
 
 		protected Quaternion GetLightOrientation()
 		{
-			Vector3 zAdjustVec = -light.DerivedDirection;
+			Vector3 zAdjustVec = -this.light.DerivedDirection;
 			Vector3 xAxis, yAxis, zAxis;
 
-			Quaternion orientation = ( lightNode == null ) ? Quaternion.Identity : lightNode.DerivedOrientation;
+			Quaternion orientation = ( this.lightNode == null ) ? Quaternion.Identity : this.lightNode.DerivedOrientation;
 
 			// Get axes from current quaternion
 			// get the vector components of the derived orientation vector

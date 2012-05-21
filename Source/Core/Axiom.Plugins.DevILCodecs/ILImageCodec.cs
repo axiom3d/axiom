@@ -71,7 +71,7 @@ namespace Axiom.Plugins.DevILCodecs
 		{
 			get
 			{
-				return _type;
+				return this._type;
 			}
 		}
 
@@ -82,8 +82,8 @@ namespace Axiom.Plugins.DevILCodecs
 		[OgreVersion( 1, 7, 2 )]
 		public ILImageCodec( string type, int ilType )
 		{
-			_type = type;
-			_ilType = ilType;
+			this._type = type;
+			this._ilType = ilType;
 			InitializeIL();
 		}
 
@@ -171,7 +171,7 @@ namespace Axiom.Plugins.DevILCodecs
 			Il.ilSetInteger( Il.IL_KEEP_DXTC_DATA, Il.IL_TRUE );
 
 			// load the data into DevIL
-			Il.ilLoadL( _ilType, buffer, buffer.Length );
+			Il.ilLoadL( this._ilType, buffer, buffer.Length );
 
 			// check for an error
 			var ilError = Il.ilGetError();

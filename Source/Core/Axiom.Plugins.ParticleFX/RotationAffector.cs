@@ -80,17 +80,18 @@ namespace Axiom.ParticleFX
 			: base( psys )
 		{
 			type = "Rotator";
-			rotationSpeedRangeStart = 0;
-			rotationSpeedRangeEnd = 0;
-			rotationRangeStart = 0;
-			rotationRangeEnd = 0;
+			this.rotationSpeedRangeStart = 0;
+			this.rotationSpeedRangeEnd = 0;
+			this.rotationRangeStart = 0;
+			this.rotationRangeEnd = 0;
 		}
 
 		public override void InitParticle( ref Particle particle )
 		{
-			particle.Rotation = rotationRangeStart + ( Utility.UnitRandom()*( rotationRangeEnd - rotationRangeStart ) );
-			particle.RotationSpeed = rotationSpeedRangeStart +
-			                         ( Utility.UnitRandom()*( rotationSpeedRangeEnd - rotationSpeedRangeStart ) );
+			particle.Rotation = this.rotationRangeStart +
+			                    ( Utility.UnitRandom()*( this.rotationRangeEnd - this.rotationRangeStart ) );
+			particle.RotationSpeed = this.rotationSpeedRangeStart +
+			                         ( Utility.UnitRandom()*( this.rotationSpeedRangeEnd - this.rotationSpeedRangeStart ) );
 		}
 
 		public override void AffectParticles( ParticleSystem system, Real timeElapsed )

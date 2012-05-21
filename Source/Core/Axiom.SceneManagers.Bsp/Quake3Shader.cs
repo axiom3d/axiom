@@ -78,7 +78,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return _pass.Count;
+				return this._pass.Count;
 			}
 		}
 
@@ -90,7 +90,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return _pass;
+				return this._pass;
 			}
 		}
 
@@ -122,11 +122,11 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return _cullingMode;
+				return this._cullingMode;
 			}
 			set
 			{
-				_cullingMode = value;
+				this._cullingMode = value;
 			}
 		}
 
@@ -149,8 +149,8 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			DeformFunc = ShaderDeformFunc.None;
 			DeformParams = new float[5];
-			_cullingMode = ManualCullingMode.Back;
-			_pass = new List<ShaderPass>();
+			this._cullingMode = ManualCullingMode.Back;
+			this._pass = new List<ShaderPass>();
 		}
 
 		#endregion Construction and Destruction
@@ -196,21 +196,21 @@ namespace Axiom.SceneManagers.Bsp
 
 			LogManager.Instance.Write( "Using Q3 shader {0}", Name );
 
-			for ( int p = 0; p < _pass.Count; ++p )
+			for ( int p = 0; p < this._pass.Count; ++p )
 			{
 				TextureUnitState t;
 
 				// Create basic texture
-				if ( _pass[ p ].textureName == "$lightmap" )
+				if ( this._pass[ p ].textureName == "$lightmap" )
 				{
 					string lightmapName = String.Format( "@lightmap{0}", lightmapNumber );
 					t = pass.CreateTextureUnitState( lightmapName );
 				}
 
 					// Animated texture support
-				else if ( _pass[ p ].animNumFrames > 0 )
+				else if ( this._pass[ p ].animNumFrames > 0 )
 				{
-					float sequenceTime = _pass[ p ].animNumFrames/_pass[ p ].animFps;
+					float sequenceTime = this._pass[ p ].animNumFrames/this._pass[ p ].animFps;
 
 					/* Pre-load textures
 					We need to know if each one was loaded OK since extensions may change for each
@@ -218,14 +218,14 @@ namespace Axiom.SceneManagers.Bsp
 					Pain in the arse - have to check for each frame as letters<n>.tga for example
 					is different per frame!
 					*/
-					for ( uint alt = 0; alt < _pass[ p ].animNumFrames; ++alt )
+					for ( uint alt = 0; alt < this._pass[ p ].animNumFrames; ++alt )
 					{
-						if ( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].frames[ alt ] ) )
+						if ( !ResourceGroupManager.Instance.ResourceExists( groupName, this._pass[ p ].frames[ alt ] ) )
 						{
 							// Try alternate extension
-							_pass[ p ].frames[ alt ] = GetAlternateName( _pass[ p ].frames[ alt ] );
+							this._pass[ p ].frames[ alt ] = GetAlternateName( this._pass[ p ].frames[ alt ] );
 
-							if ( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].frames[ alt ] ) )
+							if ( !ResourceGroupManager.Instance.ResourceExists( groupName, this._pass[ p ].frames[ alt ] ) )
 							{
 								// stuffed - no texture
 								continue;
@@ -234,44 +234,44 @@ namespace Axiom.SceneManagers.Bsp
 					}
 
 					t = pass.CreateTextureUnitState( "" );
-					t.SetAnimatedTextureName( _pass[ p ].frames, _pass[ p ].animNumFrames, sequenceTime );
+					t.SetAnimatedTextureName( this._pass[ p ].frames, this._pass[ p ].animNumFrames, sequenceTime );
 
 					if ( t.IsBlank )
 					{
-						for ( int alt = 0; alt < _pass[ p ].animNumFrames; alt++ )
+						for ( int alt = 0; alt < this._pass[ p ].animNumFrames; alt++ )
 						{
-							_pass[ p ].frames[ alt ] = GetAlternateName( _pass[ p ].frames[ alt ] );
+							this._pass[ p ].frames[ alt ] = GetAlternateName( this._pass[ p ].frames[ alt ] );
 						}
 
-						t.SetAnimatedTextureName( _pass[ p ].frames, _pass[ p ].animNumFrames, sequenceTime );
+						t.SetAnimatedTextureName( this._pass[ p ].frames, this._pass[ p ].animNumFrames, sequenceTime );
 					}
 				}
 				else
 				{
 					// Quake3 can still include alternate extension filenames e.g. jpg instead of tga
 					// Pain in the arse - have to check for failure
-					if ( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].textureName ) )
+					if ( !ResourceGroupManager.Instance.ResourceExists( groupName, this._pass[ p ].textureName ) )
 					{
 						// Try alternate extension
-						_pass[ p ].textureName = GetAlternateName( _pass[ p ].textureName );
+						this._pass[ p ].textureName = GetAlternateName( this._pass[ p ].textureName );
 
-						if ( !ResourceGroupManager.Instance.ResourceExists( groupName, _pass[ p ].textureName ) )
+						if ( !ResourceGroupManager.Instance.ResourceExists( groupName, this._pass[ p ].textureName ) )
 						{
 							// stuffed - no texture
 							continue;
 						}
 					}
 
-					t = pass.CreateTextureUnitState( _pass[ p ].textureName );
+					t = pass.CreateTextureUnitState( this._pass[ p ].textureName );
 				}
 
 				// Blending
 				if ( p == 0 )
 				{
 					// scene blend
-					material.SetSceneBlending( _pass[ p ].blendSrc, _pass[ p ].blendDest );
+					material.SetSceneBlending( this._pass[ p ].blendSrc, this._pass[ p ].blendDest );
 
-					if ( material.IsTransparent && ( _pass[ p ].blendSrc != SceneBlendFactor.SourceAlpha ) )
+					if ( material.IsTransparent && ( this._pass[ p ].blendSrc != SceneBlendFactor.SourceAlpha ) )
 					{
 						material.DepthWrite = false;
 					}
@@ -279,85 +279,88 @@ namespace Axiom.SceneManagers.Bsp
 					t.SetColorOperation( LayerBlendOperation.Replace );
 
 					// Alpha Settings
-					pass.SetAlphaRejectSettings( _pass[ p ].alphaFunc, _pass[ p ].alphaVal );
+					pass.SetAlphaRejectSettings( this._pass[ p ].alphaFunc, this._pass[ p ].alphaVal );
 				}
 				else
 				{
-					if ( _pass[ p ].customBlend )
+					if ( this._pass[ p ].customBlend )
 					{
 						// Fallback for now
 						t.SetColorOperation( LayerBlendOperation.Modulate );
 					}
 					else
 					{
-						t.SetColorOperation( _pass[ p ].blend );
+						t.SetColorOperation( this._pass[ p ].blend );
 					}
 
 					// Alpha mode, prefer 'most alphary'
 					CompareFunction currFunc = pass.AlphaRejectFunction;
 					int currValue = pass.AlphaRejectValue;
-					if ( _pass[ p ].alphaFunc > currFunc || ( _pass[ p ].alphaFunc == currFunc && _pass[ p ].alphaVal < currValue ) )
+					if ( this._pass[ p ].alphaFunc > currFunc ||
+					     ( this._pass[ p ].alphaFunc == currFunc && this._pass[ p ].alphaVal < currValue ) )
 					{
-						pass.SetAlphaRejectSettings( _pass[ p ].alphaFunc, _pass[ p ].alphaVal );
+						pass.SetAlphaRejectSettings( this._pass[ p ].alphaFunc, this._pass[ p ].alphaVal );
 					}
 				}
 
 				// Tex coords
-				if ( _pass[ p ].texGen == ShaderTextureGen.Base )
+				if ( this._pass[ p ].texGen == ShaderTextureGen.Base )
 				{
 					t.TextureCoordSet = 0;
 				}
-				else if ( _pass[ p ].texGen == ShaderTextureGen.Lightmap )
+				else if ( this._pass[ p ].texGen == ShaderTextureGen.Lightmap )
 				{
 					t.TextureCoordSet = 1;
 				}
-				else if ( _pass[ p ].texGen == ShaderTextureGen.Environment )
+				else if ( this._pass[ p ].texGen == ShaderTextureGen.Environment )
 				{
 					t.SetEnvironmentMap( true, EnvironmentMap.Planar );
 				}
 
 				// Tex mod
 				// Scale
-				t.SetTextureScaleU( _pass[ p ].tcModScale[ 0 ] );
-				t.SetTextureScaleV( _pass[ p ].tcModScale[ 1 ] );
+				t.SetTextureScaleU( this._pass[ p ].tcModScale[ 0 ] );
+				t.SetTextureScaleV( this._pass[ p ].tcModScale[ 1 ] );
 
 				// Procedural mods
 				// Custom - don't use mod if generating environment
 				// Because I do env a different way it look horrible
-				if ( _pass[ p ].texGen != ShaderTextureGen.Environment )
+				if ( this._pass[ p ].texGen != ShaderTextureGen.Environment )
 				{
-					if ( _pass[ p ].tcModRotate != 0.0f )
+					if ( this._pass[ p ].tcModRotate != 0.0f )
 					{
-						t.SetRotateAnimation( _pass[ p ].tcModRotate );
+						t.SetRotateAnimation( this._pass[ p ].tcModRotate );
 					}
 
-					if ( ( _pass[ p ].tcModScroll[ 0 ] != 0.0f ) || ( _pass[ p ].tcModScroll[ 1 ] != 0.0f ) )
+					if ( ( this._pass[ p ].tcModScroll[ 0 ] != 0.0f ) || ( this._pass[ p ].tcModScroll[ 1 ] != 0.0f ) )
 					{
-						if ( _pass[ p ].tcModTurbOn )
+						if ( this._pass[ p ].tcModTurbOn )
 						{
 							// Turbulent scroll
-							if ( _pass[ p ].tcModScroll[ 0 ] != 0.0f )
+							if ( this._pass[ p ].tcModScroll[ 0 ] != 0.0f )
 							{
-								t.SetTransformAnimation( TextureTransform.TranslateU, WaveformType.Sine, _pass[ p ].tcModTurb[ 0 ],
-								                         _pass[ p ].tcModTurb[ 3 ], _pass[ p ].tcModTurb[ 2 ], _pass[ p ].tcModTurb[ 1 ] );
+								t.SetTransformAnimation( TextureTransform.TranslateU, WaveformType.Sine, this._pass[ p ].tcModTurb[ 0 ],
+								                         this._pass[ p ].tcModTurb[ 3 ], this._pass[ p ].tcModTurb[ 2 ],
+								                         this._pass[ p ].tcModTurb[ 1 ] );
 							}
-							if ( _pass[ p ].tcModScroll[ 1 ] != 0.0f )
+							if ( this._pass[ p ].tcModScroll[ 1 ] != 0.0f )
 							{
-								t.SetTransformAnimation( TextureTransform.TranslateV, WaveformType.Sine, _pass[ p ].tcModTurb[ 0 ],
-								                         _pass[ p ].tcModTurb[ 3 ], _pass[ p ].tcModTurb[ 2 ], _pass[ p ].tcModTurb[ 1 ] );
+								t.SetTransformAnimation( TextureTransform.TranslateV, WaveformType.Sine, this._pass[ p ].tcModTurb[ 0 ],
+								                         this._pass[ p ].tcModTurb[ 3 ], this._pass[ p ].tcModTurb[ 2 ],
+								                         this._pass[ p ].tcModTurb[ 1 ] );
 							}
 						}
 						else
 						{
 							// Constant scroll
-							t.SetScrollAnimation( _pass[ p ].tcModScroll[ 0 ], _pass[ p ].tcModScroll[ 1 ] );
+							t.SetScrollAnimation( this._pass[ p ].tcModScroll[ 0 ], this._pass[ p ].tcModScroll[ 1 ] );
 						}
 					}
 
-					if ( _pass[ p ].tcModStretchWave != ShaderWaveType.None )
+					if ( this._pass[ p ].tcModStretchWave != ShaderWaveType.None )
 					{
 						WaveformType wft = WaveformType.Sine;
-						switch ( _pass[ p ].tcModStretchWave )
+						switch ( this._pass[ p ].tcModStretchWave )
 						{
 							case ShaderWaveType.Sin:
 								wft = WaveformType.Sine;
@@ -377,16 +380,16 @@ namespace Axiom.SceneManagers.Bsp
 						}
 
 						// Create wave-based stretcher
-						t.SetTransformAnimation( TextureTransform.ScaleU, wft, _pass[ p ].tcModStretchParams[ 3 ],
-						                         _pass[ p ].tcModStretchParams[ 0 ], _pass[ p ].tcModStretchParams[ 2 ],
-						                         _pass[ p ].tcModStretchParams[ 1 ] );
-						t.SetTransformAnimation( TextureTransform.ScaleV, wft, _pass[ p ].tcModStretchParams[ 3 ],
-						                         _pass[ p ].tcModStretchParams[ 0 ], _pass[ p ].tcModStretchParams[ 2 ],
-						                         _pass[ p ].tcModStretchParams[ 1 ] );
+						t.SetTransformAnimation( TextureTransform.ScaleU, wft, this._pass[ p ].tcModStretchParams[ 3 ],
+						                         this._pass[ p ].tcModStretchParams[ 0 ], this._pass[ p ].tcModStretchParams[ 2 ],
+						                         this._pass[ p ].tcModStretchParams[ 1 ] );
+						t.SetTransformAnimation( TextureTransform.ScaleV, wft, this._pass[ p ].tcModStretchParams[ 3 ],
+						                         this._pass[ p ].tcModStretchParams[ 0 ], this._pass[ p ].tcModStretchParams[ 2 ],
+						                         this._pass[ p ].tcModStretchParams[ 1 ] );
 					}
 				}
 				// Address mode
-				t.SetTextureAddressingMode( _pass[ p ].addressMode );
+				t.SetTextureAddressingMode( this._pass[ p ].addressMode );
 			}
 
 			// Do farbox (create new material)
@@ -410,7 +413,7 @@ namespace Axiom.SceneManagers.Bsp
 			//}
 
 			material.CullingMode = Axiom.Graphics.CullingMode.None;
-			material.ManualCullingMode = _cullingMode;
+			material.ManualCullingMode = this._cullingMode;
 			material.Lighting = false;
 			material.Load();
 

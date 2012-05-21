@@ -66,11 +66,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return _randomness;
+				return this._randomness;
 			}
 			set
 			{
-				_randomness = value;
+				this._randomness = value;
 			}
 		}
 
@@ -83,11 +83,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return _scope;
+				return this._scope;
 			}
 			set
 			{
-				_scope = value;
+				this._scope = value;
 			}
 		}
 
@@ -100,11 +100,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return _keepVelocity;
+				return this._keepVelocity;
 			}
 			set
 			{
-				_keepVelocity = value;
+				this._keepVelocity = value;
 			}
 		}
 
@@ -114,9 +114,9 @@ namespace Axiom.ParticleFX
 			type = "DirectionRandomizer";
 
 			// defaults
-			_randomness = 1.0f;
-			_scope = 1.0f;
-			_keepVelocity = false;
+			this._randomness = 1.0f;
+			this._scope = 1.0f;
+			this._keepVelocity = false;
 		}
 
 		/// <summary>
@@ -135,20 +135,20 @@ namespace Axiom.ParticleFX
 
 			foreach ( Particle p in system.Particles )
 			{
-				if ( _scope > Utility.UnitRandom() )
+				if ( this._scope > Utility.UnitRandom() )
 				{
 					if ( !p.Direction.IsZeroLength )
 					{
-						if ( _keepVelocity )
+						if ( this._keepVelocity )
 						{
 							length = p.Direction.Length;
 						}
 
-						p.Direction += new Vector3( Utility.RangeRandom( -_randomness, _randomness )*timeElapsed,
-						                            Utility.RangeRandom( -_randomness, _randomness )*timeElapsed,
-						                            Utility.RangeRandom( -_randomness, _randomness )*timeElapsed );
+						p.Direction += new Vector3( Utility.RangeRandom( -this._randomness, this._randomness )*timeElapsed,
+						                            Utility.RangeRandom( -this._randomness, this._randomness )*timeElapsed,
+						                            Utility.RangeRandom( -this._randomness, this._randomness )*timeElapsed );
 
-						if ( _keepVelocity )
+						if ( this._keepVelocity )
 						{
 							p.Direction *= length/p.Direction.Length;
 						}

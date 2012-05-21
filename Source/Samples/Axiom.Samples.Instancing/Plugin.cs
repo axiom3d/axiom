@@ -34,9 +34,9 @@ namespace Axiom.Samples.Instancing
 
 		public override void Initialize()
 		{
-			sample = new InstancingSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new InstancingSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

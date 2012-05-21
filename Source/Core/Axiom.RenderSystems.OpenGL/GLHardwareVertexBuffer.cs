@@ -64,16 +64,16 @@ namespace Axiom.RenderSystems.OpenGL
 		                               BufferUsage usage, bool useShadowBuffer )
 			: base( manager, vertexDeclaration, numVertices, usage, false, useShadowBuffer )
 		{
-			bufferID = 0;
+			this.bufferID = 0;
 
-			Gl.glGenBuffersARB( 1, out bufferID );
+			Gl.glGenBuffersARB( 1, out this.bufferID );
 
-			if ( bufferID == 0 )
+			if ( this.bufferID == 0 )
 			{
 				throw new Exception( "Cannot create GL vertex buffer" );
 			}
 
-			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
+			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, this.bufferID );
 
 			// initialize this buffer.  we dont have data yet tho
 			Gl.glBufferDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero, GLHelper.ConvertEnum( usage ) );
@@ -102,7 +102,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// bind this buffer
-			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
+			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, this.bufferID );
 
 			if ( locking == BufferLocking.Discard )
 			{
@@ -143,7 +143,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// </summary>
 		protected override void UnlockImpl()
 		{
-			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
+			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, this.bufferID );
 
 			// Unmap the buffer to unlock it
 			if ( Gl.glUnmapBufferARB( Gl.GL_ARRAY_BUFFER_ARB ) == 0 )
@@ -163,7 +163,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="discardWholeBuffer"></param>
 		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
 		{
-			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
+			Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, this.bufferID );
 
 			if ( useShadowBuffer )
 			{
@@ -217,7 +217,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			else
 			{
-				Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, bufferID );
+				Gl.glBindBufferARB( Gl.GL_ARRAY_BUFFER_ARB, this.bufferID );
 
 				Gl.glGetBufferSubDataARB( Gl.GL_ARRAY_BUFFER_ARB, new IntPtr( offset ), new IntPtr( length ), dest.Pin() );
 				// TAO 2.0
@@ -243,11 +243,11 @@ namespace Axiom.RenderSystems.OpenGL
 
 				try
 				{
-					Gl.glDeleteBuffersARB( 1, ref bufferID );
+					Gl.glDeleteBuffersARB( 1, ref this.bufferID );
 				}
 				catch ( AccessViolationException ave )
 				{
-					LogManager.Instance.Write( "Error Deleting Vertexbuffer[{0}].", bufferID );
+					LogManager.Instance.Write( "Error Deleting Vertexbuffer[{0}].", this.bufferID );
 				}
 			}
 
@@ -267,7 +267,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return bufferID;
+				return this.bufferID;
 			}
 		}
 

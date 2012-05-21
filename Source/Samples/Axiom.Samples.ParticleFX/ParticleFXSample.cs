@@ -58,7 +58,7 @@ namespace Axiom.Samples.ParticleFX
 		[OgreVersion( 1, 7, 2 )]
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			fountainPivot.Yaw( evt.TimeSinceLastFrame*30 ); // spin the fountains around
+			this.fountainPivot.Yaw( evt.TimeSinceLastFrame*30 ); // spin the fountains around
 			return base.FrameRenderingQueued( evt ); // don't forget the parent class updates!
 		}
 
@@ -116,14 +116,16 @@ namespace Axiom.Samples.ParticleFX
 			ps = ParticleSystemManager.Instance.CreateSystem( "Aureola", "Examples/Aureola" );
 			SceneManager.RootSceneNode.AttachObject( ps );
 			// create shared pivot node for spinning the fountains
-			fountainPivot = SceneManager.RootSceneNode.CreateChildSceneNode();
+			this.fountainPivot = SceneManager.RootSceneNode.CreateChildSceneNode();
 
 			ps = ParticleSystemManager.Instance.CreateSystem( "Fountain1", "Examples/PurpleFountain" ); // create fountain 1
 			// attach the fountain to a child node of the pivot at a distance and angle
-			fountainPivot.CreateChildSceneNode( new Vector3( 200, -100, 0 ), new Quaternion( 20, 0, 0, 1 ) ).AttachObject( ps );
+			this.fountainPivot.CreateChildSceneNode( new Vector3( 200, -100, 0 ), new Quaternion( 20, 0, 0, 1 ) ).AttachObject(
+				ps );
 			ps = ParticleSystemManager.Instance.CreateSystem( "Fountain2", "Examples/PurpleFountain" ); // create fountain 2
 			// attach the fountain to a child node of the pivot at a distance and angle
-			fountainPivot.CreateChildSceneNode( new Vector3( -200, -100, 0 ), new Quaternion( 20, 0, 0, 1 ) ).AttachObject( ps );
+			this.fountainPivot.CreateChildSceneNode( new Vector3( -200, -100, 0 ), new Quaternion( 20, 0, 0, 1 ) ).AttachObject(
+				ps );
 		}
 
 		[AxiomHelper( 0, 9 )]

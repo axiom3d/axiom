@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -57,35 +57,35 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			// setup created glcontrol / gtk control
 			this.windowInfo = windowInfo;
-			graphicsContext = new GraphicsContext( GraphicsMode.Default, this.windowInfo );
+			this.graphicsContext = new GraphicsContext( GraphicsMode.Default, this.windowInfo );
 			Initialized = true;
 		}
 
 		public OpenTKGLContext( Control control, Control parent )
 		{
 			// replaces form's (parent) picturebox (control) by glControl
-			glControl = new GLControl();
-			glControl.VSync = false;
-			glControl.Dock = control.Dock;
-			glControl.BackColor = control.BackColor;
-			glControl.Location = control.Location;
-			glControl.Name = control.Name;
-			glControl.Size = control.Size;
-			glControl.TabIndex = control.TabIndex;
-			glControl.Show();
+			this.glControl = new GLControl();
+			this.glControl.VSync = false;
+			this.glControl.Dock = control.Dock;
+			this.glControl.BackColor = control.BackColor;
+			this.glControl.Location = control.Location;
+			this.glControl.Name = control.Name;
+			this.glControl.Size = control.Size;
+			this.glControl.TabIndex = control.TabIndex;
+			this.glControl.Show();
 
 			int count = 0;
-			while ( glControl.Context == null && ++count < 10 )
+			while ( this.glControl.Context == null && ++count < 10 )
 			{
 				System.Threading.Thread.Sleep( 10 );
 			}
-			if ( glControl.Context == null )
+			if ( this.glControl.Context == null )
 			{
 				throw new Exception( "glControl.Context == null" );
 			}
 
 			var form = (Form)parent;
-			form.Controls.Add( glControl );
+			form.Controls.Add( this.glControl );
 			control.Hide();
 
 			if (
@@ -107,37 +107,37 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return graphicsContext.VSync;
+				return this.graphicsContext.VSync;
 			}
 			set
 			{
-				graphicsContext.VSync = value;
+				this.graphicsContext.VSync = value;
 			}
 		}
 
 		public void SwapBuffers()
 		{
-			if ( glControl != null )
+			if ( this.glControl != null )
 			{
-				glControl.MakeCurrent();
-				glControl.SwapBuffers();
+				this.glControl.MakeCurrent();
+				this.glControl.SwapBuffers();
 			}
-			else if ( graphicsContext != null )
+			else if ( this.graphicsContext != null )
 			{
-				graphicsContext.MakeCurrent( windowInfo );
-				graphicsContext.SwapBuffers();
+				this.graphicsContext.MakeCurrent( this.windowInfo );
+				this.graphicsContext.SwapBuffers();
 			}
 		}
 
 		public override void SetCurrent()
 		{
-			if ( glControl != null )
+			if ( this.glControl != null )
 			{
-				glControl.MakeCurrent();
+				this.glControl.MakeCurrent();
 			}
-			else if ( graphicsContext != null )
+			else if ( this.graphicsContext != null )
 			{
-				graphicsContext.MakeCurrent( windowInfo );
+				this.graphicsContext.MakeCurrent( this.windowInfo );
 			}
 		}
 

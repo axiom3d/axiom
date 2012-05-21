@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -58,7 +58,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public GLFBOMultiRenderTarget( GLFBORTTManager manager, string name )
 			: base( name )
 		{
-			_manager = manager;
+			this._manager = manager;
 		}
 
 		#endregion Construction and Destruction
@@ -82,13 +82,13 @@ namespace Axiom.RenderSystems.OpenGL
 			var fbObject = (GLFrameBufferObject)target[ "FBO" ];
 			Proclaim.NotNull( fbObject );
 
-			_fbo.BindSurface( attachment, fbObject.SurfaceDesc );
+			this._fbo.BindSurface( attachment, fbObject.SurfaceDesc );
 
 			// Initialize?
 
 			// Set width and height
-			width = _fbo.Width;
-			height = _fbo.Height;
+			width = this._fbo.Width;
+			height = this._fbo.Height;
 		}
 
 		/// <summary>
@@ -97,9 +97,9 @@ namespace Axiom.RenderSystems.OpenGL
 		[OgreVersion( 1, 7, 2 )]
 		protected override void UnbindSurfaceImpl( int attachment )
 		{
-			_fbo.UnbindSurface( attachment );
-			width = _fbo.Width;
-			height = _fbo.Height;
+			this._fbo.UnbindSurface( attachment );
+			width = this._fbo.Width;
+			height = this._fbo.Height;
 		}
 
 		#endregion Methods
@@ -112,7 +112,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( attribute == "FBO" )
 				{
-					return _fbo;
+					return this._fbo;
 				}
 
 				return base[ attribute ];

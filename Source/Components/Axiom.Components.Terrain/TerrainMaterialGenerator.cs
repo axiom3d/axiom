@@ -131,10 +131,10 @@ namespace Axiom.Components.Terrain
 		/// <param name="elemCount"></param>
 		public TerrainLayerSamplerElement( byte src, TerrainLayerSamplerSemantic sem, byte elemStart, byte elemCount )
 		{
-			Source = src;
-			Semantic = sem;
-			ElementStart = elemStart;
-			ElementCount = elemCount;
+			this.Source = src;
+			this.Semantic = sem;
+			this.ElementStart = elemStart;
+			this.ElementCount = elemCount;
 		}
 	}
 
@@ -170,8 +170,8 @@ namespace Axiom.Components.Terrain
 		/// <param name="format"></param>
 		public TerrainLayerSampler( string aliasName, PixelFormat format )
 		{
-			Alias = aliasName;
-			Format = format;
+			this.Alias = aliasName;
+			this.Format = format;
 		}
 	}
 
@@ -290,7 +290,7 @@ namespace Axiom.Components.Terrain
 		{
 			get
 			{
-				return mProfiles;
+				return this.mProfiles;
 			}
 		}
 
@@ -301,21 +301,21 @@ namespace Axiom.Components.Terrain
 		{
 			set
 			{
-				if ( mActiveProfile != value )
+				if ( this.mActiveProfile != value )
 				{
-					mActiveProfile = value;
+					this.mActiveProfile = value;
 					MarkChanged();
 				}
 			}
 			get
 			{
 				// default if not chosen yet
-				if ( mActiveProfile == null && mProfiles.Count > 0 )
+				if ( this.mActiveProfile == null && this.mProfiles.Count > 0 )
 				{
-					mActiveProfile = mProfiles[ 0 ];
+					this.mActiveProfile = this.mProfiles[ 0 ];
 				}
 
-				return mActiveProfile;
+				return this.mActiveProfile;
 			}
 		}
 
@@ -327,7 +327,7 @@ namespace Axiom.Components.Terrain
 		{
 			get
 			{
-				return mChangeCounter;
+				return this.mChangeCounter;
 			}
 		}
 
@@ -338,7 +338,7 @@ namespace Axiom.Components.Terrain
 		{
 			get
 			{
-				return mLayerDecl;
+				return this.mLayerDecl;
 			}
 		}
 
@@ -356,15 +356,15 @@ namespace Axiom.Components.Terrain
 		{
 			set
 			{
-				if ( mDebugLevel != value )
+				if ( this.mDebugLevel != value )
 				{
-					mDebugLevel = value;
+					this.mDebugLevel = value;
 					MarkChanged();
 				}
 			}
 			get
 			{
-				return mDebugLevel;
+				return this.mDebugLevel;
 			}
 		}
 
@@ -375,7 +375,7 @@ namespace Axiom.Components.Terrain
 		{
 			get
 			{
-				return mCompositeMapRTT;
+				return this.mCompositeMapRTT;
 			}
 		}
 
@@ -414,7 +414,7 @@ namespace Axiom.Components.Terrain
 			{
 				get
 				{
-					return mParent;
+					return this.mParent;
 				}
 			}
 
@@ -425,7 +425,7 @@ namespace Axiom.Components.Terrain
 			{
 				get
 				{
-					return mName;
+					return this.mName;
 				}
 			}
 
@@ -436,7 +436,7 @@ namespace Axiom.Components.Terrain
 			{
 				get
 				{
-					return mDesc;
+					return this.mDesc;
 				}
 			}
 
@@ -452,9 +452,9 @@ namespace Axiom.Components.Terrain
 			/// <param name="description"></param>
 			public Profile( TerrainMaterialGenerator parent, string name, string description )
 			{
-				mParent = parent;
-				mName = name;
-				mDesc = description;
+				this.mParent = parent;
+				this.mName = name;
+				this.mDesc = description;
 			}
 
 			/// <summary>
@@ -463,9 +463,9 @@ namespace Axiom.Components.Terrain
 			/// <param name="profile"></param>
 			public Profile( Profile profile )
 			{
-				mParent = profile.mParent;
-				mName = profile.mName;
-				mDesc = profile.mDesc;
+				this.mParent = profile.mParent;
+				this.mName = profile.mName;
+				this.mDesc = profile.mDesc;
 			}
 
 			#endregion
@@ -569,13 +569,13 @@ terrain.CompositeMap);
 		/// <param name="name">name of the profile</param>
 		public virtual void SetActiveProfile( string name )
 		{
-			if ( mActiveProfile == null || mActiveProfile.Name != name )
+			if ( this.mActiveProfile == null || this.mActiveProfile.Name != name )
 			{
-				for ( int i = 0; i < mProfiles.Count; ++i )
+				for ( int i = 0; i < this.mProfiles.Count; ++i )
 				{
-					if ( mProfiles[ i ].Name == name )
+					if ( this.mProfiles[ i ].Name == name )
 					{
-						ActiveProfile = mProfiles[ i ];
+						ActiveProfile = this.mProfiles[ i ];
 						break;
 					}
 				}
@@ -593,7 +593,7 @@ terrain.CompositeMap);
 		/// <returns></returns>
 		public virtual bool CanGenerateUsingDeclaration( TerrainLayerDeclaration decl )
 		{
-			return decl == mLayerDecl;
+			return decl == this.mLayerDecl;
 		}
 
 		/// <summary>
@@ -651,7 +651,7 @@ terrain.CompositeMap);
 		/// </summary>
 		public void MarkChanged()
 		{
-			++mChangeCounter;
+			++this.mChangeCounter;
 		}
 
 		/// <summary>
@@ -735,69 +735,70 @@ terrain.CompositeMap);
 		public virtual void RenderCompositeMap( int size, Rectangle rect, Material mat, Texture destCompositeMap )
 		{
 			//return;
-			if ( mCompositeMapSM == null )
+			if ( this.mCompositeMapSM == null )
 			{
 				//dedicated SceneManager
 
-				mCompositeMapSM = Root.Instance.CreateSceneManager( SceneType.ExteriorClose, "TerrainMaterialGenerator_SceneManager" );
+				this.mCompositeMapSM = Root.Instance.CreateSceneManager( SceneType.ExteriorClose,
+				                                                         "TerrainMaterialGenerator_SceneManager" );
 				float camDist = 100;
 				float halfCamDist = camDist*0.5f;
-				mCompositeMapCam = mCompositeMapSM.CreateCamera( "TerrainMaterialGenerator_Camera" );
-				mCompositeMapCam.Position = new Vector3( 0, 0, camDist );
+				this.mCompositeMapCam = this.mCompositeMapSM.CreateCamera( "TerrainMaterialGenerator_Camera" );
+				this.mCompositeMapCam.Position = new Vector3( 0, 0, camDist );
 				//mCompositeMapCam.LookAt(Vector3.Zero);
-				mCompositeMapCam.ProjectionType = Projection.Orthographic;
-				mCompositeMapCam.Near = 10;
-				mCompositeMapCam.Far = 999999*3;
+				this.mCompositeMapCam.ProjectionType = Projection.Orthographic;
+				this.mCompositeMapCam.Near = 10;
+				this.mCompositeMapCam.Far = 999999*3;
 				//mCompositeMapCam.AspectRatio = camDist / camDist;
-				mCompositeMapCam.SetOrthoWindow( camDist, camDist );
+				this.mCompositeMapCam.SetOrthoWindow( camDist, camDist );
 				// Just in case material relies on light auto params
-				mCompositeMapLight = mCompositeMapSM.CreateLight( "TerrainMaterialGenerator_Light" );
-				mCompositeMapLight.Type = LightType.Directional;
+				this.mCompositeMapLight = this.mCompositeMapSM.CreateLight( "TerrainMaterialGenerator_Light" );
+				this.mCompositeMapLight.Type = LightType.Directional;
 
 				RenderSystem rSys = Root.Instance.RenderSystem;
 				float hOffset = rSys.HorizontalTexelOffset/(float)size;
 				float vOffset = rSys.VerticalTexelOffset/(float)size;
 
 				//setup scene
-				mCompositeMapPlane = mCompositeMapSM.CreateManualObject( "TerrainMaterialGenerator_ManualObject" );
-				mCompositeMapPlane.Begin( mat.Name, OperationType.TriangleList );
-				mCompositeMapPlane.Position( -halfCamDist, halfCamDist, 0 );
-				mCompositeMapPlane.TextureCoord( 0 - hOffset, 0 - vOffset );
-				mCompositeMapPlane.Position( -halfCamDist, -halfCamDist, 0 );
-				mCompositeMapPlane.TextureCoord( 0 - hOffset, 1 - vOffset );
-				mCompositeMapPlane.Position( halfCamDist, -halfCamDist, 0 );
-				mCompositeMapPlane.TextureCoord( 1 - hOffset, 1 - vOffset );
-				mCompositeMapPlane.Position( halfCamDist, halfCamDist, 0 );
-				mCompositeMapPlane.TextureCoord( 1 - hOffset, 0 - vOffset );
-				mCompositeMapPlane.Quad( 0, 1, 2, 3 );
-				mCompositeMapPlane.End();
-				mCompositeMapSM.RootSceneNode.AttachObject( mCompositeMapPlane );
+				this.mCompositeMapPlane = this.mCompositeMapSM.CreateManualObject( "TerrainMaterialGenerator_ManualObject" );
+				this.mCompositeMapPlane.Begin( mat.Name, OperationType.TriangleList );
+				this.mCompositeMapPlane.Position( -halfCamDist, halfCamDist, 0 );
+				this.mCompositeMapPlane.TextureCoord( 0 - hOffset, 0 - vOffset );
+				this.mCompositeMapPlane.Position( -halfCamDist, -halfCamDist, 0 );
+				this.mCompositeMapPlane.TextureCoord( 0 - hOffset, 1 - vOffset );
+				this.mCompositeMapPlane.Position( halfCamDist, -halfCamDist, 0 );
+				this.mCompositeMapPlane.TextureCoord( 1 - hOffset, 1 - vOffset );
+				this.mCompositeMapPlane.Position( halfCamDist, halfCamDist, 0 );
+				this.mCompositeMapPlane.TextureCoord( 1 - hOffset, 0 - vOffset );
+				this.mCompositeMapPlane.Quad( 0, 1, 2, 3 );
+				this.mCompositeMapPlane.End();
+				this.mCompositeMapSM.RootSceneNode.AttachObject( this.mCompositeMapPlane );
 			} //end if
 
 			// update
-			mCompositeMapPlane.SetMaterialName( 0, mat.Name );
-			mCompositeMapLight.Direction = TerrainGlobalOptions.LightMapDirection;
-			mCompositeMapLight.Diffuse = TerrainGlobalOptions.CompositeMapDiffuse;
-			mCompositeMapSM.AmbientLight = TerrainGlobalOptions.CompositeMapAmbient;
+			this.mCompositeMapPlane.SetMaterialName( 0, mat.Name );
+			this.mCompositeMapLight.Direction = TerrainGlobalOptions.LightMapDirection;
+			this.mCompositeMapLight.Diffuse = TerrainGlobalOptions.CompositeMapDiffuse;
+			this.mCompositeMapSM.AmbientLight = TerrainGlobalOptions.CompositeMapAmbient;
 
 
 			//check for size change (allow smaller to be reused)
-			if ( mCompositeMapRTT != null && size != mCompositeMapRTT.Width )
+			if ( this.mCompositeMapRTT != null && size != this.mCompositeMapRTT.Width )
 			{
-				TextureManager.Instance.Remove( mCompositeMapRTT );
-				mCompositeMapRTT = null;
+				TextureManager.Instance.Remove( this.mCompositeMapRTT );
+				this.mCompositeMapRTT = null;
 			}
-			if ( mCompositeMapRTT == null )
+			if ( this.mCompositeMapRTT == null )
 			{
-				mCompositeMapRTT = TextureManager.Instance.CreateManual( mCompositeMapSM.Name + "/compRTT",
-				                                                         ResourceGroupManager.DefaultResourceGroupName,
-				                                                         TextureType.TwoD, size, size, 0, PixelFormat.BYTE_RGBA,
-				                                                         TextureUsage.RenderTarget );
+				this.mCompositeMapRTT = TextureManager.Instance.CreateManual( this.mCompositeMapSM.Name + "/compRTT",
+				                                                              ResourceGroupManager.DefaultResourceGroupName,
+				                                                              TextureType.TwoD, size, size, 0, PixelFormat.BYTE_RGBA,
+				                                                              TextureUsage.RenderTarget );
 
-				RenderTarget rtt = mCompositeMapRTT.GetBuffer().GetRenderTarget();
+				RenderTarget rtt = this.mCompositeMapRTT.GetBuffer().GetRenderTarget();
 				// don't render all the time, only on demand
 				rtt.IsAutoUpdated = false;
-				Viewport vp = rtt.AddViewport( mCompositeMapCam );
+				Viewport vp = rtt.AddViewport( this.mCompositeMapCam );
 				// don't render overlays
 				vp.ShowOverlays = false;
 			}
@@ -810,9 +811,9 @@ terrain.CompositeMap);
 			float vpwidth = (float)rect.Width/(float)size;
 			float vpheight = (float)rect.Height/(float)size;
 
-			RenderTarget rtt2 = mCompositeMapRTT.GetBuffer().GetRenderTarget();
+			RenderTarget rtt2 = this.mCompositeMapRTT.GetBuffer().GetRenderTarget();
 			Viewport vp2 = rtt2.GetViewport( 0 );
-			mCompositeMapCam.SetWindow( vpleft, vptop, vpright, vpbottom );
+			this.mCompositeMapCam.SetWindow( vpleft, vptop, vpright, vpbottom );
 			rtt2.Update();
 			vp2.Update();
 			// We have an RTT, we want to copy the results into a regular texture
@@ -820,29 +821,29 @@ terrain.CompositeMap);
 			// around. We use a single RTT to serve all terrain pages which is more
 			// efficient.
 			var box = new BasicBox( (int)rect.Left, (int)rect.Top, (int)rect.Right, (int)rect.Bottom );
-			destCompositeMap.GetBuffer().Blit( mCompositeMapRTT.GetBuffer(), box, box );
+			destCompositeMap.GetBuffer().Blit( this.mCompositeMapRTT.GetBuffer(), box, box );
 		}
 
 		public void Dispose()
 		{
-			if ( mProfiles != null )
+			if ( this.mProfiles != null )
 			{
-				mProfiles.Clear();
-				mProfiles = null;
+				this.mProfiles.Clear();
+				this.mProfiles = null;
 			}
-			if ( mCompositeMapRTT != null && TextureManager.Instance != null )
+			if ( this.mCompositeMapRTT != null && TextureManager.Instance != null )
 			{
-				TextureManager.Instance.Remove( mCompositeMapRTT );
-				mCompositeMapRTT = null;
+				TextureManager.Instance.Remove( this.mCompositeMapRTT );
+				this.mCompositeMapRTT = null;
 			}
-			if ( mCompositeMapSM != null && Root.Instance != null )
+			if ( this.mCompositeMapSM != null && Root.Instance != null )
 			{
 				// will also delete cam and objects etc
-				Root.Instance.DestroySceneManager( mCompositeMapSM );
-				mCompositeMapSM = null;
-				mCompositeMapCam = null;
-				mCompositeMapPlane = null;
-				mCompositeMapLight = null;
+				Root.Instance.DestroySceneManager( this.mCompositeMapSM );
+				this.mCompositeMapSM = null;
+				this.mCompositeMapCam = null;
+				this.mCompositeMapPlane = null;
+				this.mCompositeMapLight = null;
 			}
 		}
 

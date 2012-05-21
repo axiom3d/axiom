@@ -11,14 +11,14 @@ namespace Axiom.Components.RTShaderSystem
 
 		public FunctionInvocation( FunctionInvocation other )
 		{
-			functionName = other.functionName;
-			returnType = other.returnType;
+			this.functionName = other.functionName;
+			this.returnType = other.returnType;
 			internalExecutionOrder = other.internalExecutionOrder;
 			groupExecutionOrder = other.groupExecutionOrder;
 
 			foreach ( var op in other.operands )
 			{
-				operands.Add( op );
+				this.operands.Add( op );
 			}
 		}
 
@@ -42,20 +42,20 @@ namespace Axiom.Components.RTShaderSystem
 		public override void WriteSourceCode( System.IO.StreamWriter stream, string targetLanguage )
 		{
 			//Write function name.
-			stream.Write( functionName + "(" );
+			stream.Write( this.functionName + "(" );
 
 			//Write paramters 
 			int curIndLevel = 0;
 
-			for ( int it = 0; it < operands.Count; it++ )
+			for ( int it = 0; it < this.operands.Count; it++ )
 			{
-				stream.Write( operands[ it ].ToString() );
+				stream.Write( this.operands[ it ].ToString() );
 				it++;
 
 				int opIndLevel = 0;
-				if ( it != operands.Count )
+				if ( it != this.operands.Count )
 				{
-					opIndLevel = operands[ it ].IndirectionLevel;
+					opIndLevel = this.operands[ it ].IndirectionLevel;
 				}
 
 				if ( curIndLevel < opIndLevel )
@@ -77,7 +77,7 @@ namespace Axiom.Components.RTShaderSystem
 					{
 						stream.Write( "][" );
 					}
-					else if ( it != operands.Count )
+					else if ( it != this.operands.Count )
 					{
 						stream.Write( ", " );
 					}
@@ -93,7 +93,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return operands;
+				return this.operands;
 			}
 		}
 
@@ -114,7 +114,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		public void PushOperand( Parameter parameter, Operand.OpSemantic opSemantic, int opMask, int indirectionalLevel )
 		{
-			operands.Add( new Operand( parameter, opSemantic, opMask, indirectionalLevel ) );
+			this.operands.Add( new Operand( parameter, opSemantic, opMask, indirectionalLevel ) );
 		}
 
 		#region Operator overloads

@@ -108,7 +108,7 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				instance = this;
 				ResourceType = "BspLevel";
-				shaderManager = new Quake3ShaderManager();
+				this.shaderManager = new Quake3ShaderManager();
 				ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
 			}
 			else
@@ -138,7 +138,7 @@ namespace Axiom.SceneManagers.Bsp
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					shaderManager.Dispose();
+					this.shaderManager.Dispose();
 					ResourceGroupManager.Instance.UnregisterResourceManager( "BspLevel" );
 					instance = null;
 				}

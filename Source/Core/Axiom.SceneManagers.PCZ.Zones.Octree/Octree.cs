@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -106,11 +106,11 @@ namespace OctreeZone
 		{
 			get
 			{
-				return nunodeList;
+				return this.nunodeList;
 			}
 			set
 			{
-				nunodeList = value;
+				this.nunodeList = value;
 			}
 		}
 
@@ -118,7 +118,7 @@ namespace OctreeZone
 		{
 			get
 			{
-				return nodeList;
+				return this.nodeList;
 			}
 			//set{nodeList = value;}
 		}
@@ -128,18 +128,18 @@ namespace OctreeZone
 			get
 			{
 				// Create a WireBoundingBox if needed
-				if ( wireBoundingBox == null )
+				if ( this.wireBoundingBox == null )
 				{
-					wireBoundingBox = new WireBoundingBox();
+					this.wireBoundingBox = new WireBoundingBox();
 				}
 
-				wireBoundingBox.BoundingBox = box;
-				return wireBoundingBox;
+				this.wireBoundingBox.BoundingBox = this.box;
+				return this.wireBoundingBox;
 			}
 
 			set
 			{
-				wireBoundingBox = value;
+				this.wireBoundingBox = value;
 			}
 		}
 
@@ -147,11 +147,11 @@ namespace OctreeZone
 		{
 			get
 			{
-				return halfSize;
+				return this.halfSize;
 			}
 			set
 			{
-				halfSize = value;
+				this.halfSize = value;
 			}
 		}
 
@@ -159,11 +159,11 @@ namespace OctreeZone
 		{
 			get
 			{
-				return box;
+				return this.box;
 			}
 			set
 			{
-				box = value;
+				this.box = value;
 			}
 		}
 
@@ -171,7 +171,7 @@ namespace OctreeZone
 
 		public Octree( PCZone zone, Octree parent )
 		{
-			wireBoundingBox = null;
+			this.wireBoundingBox = null;
 			HalfSize = new Vector3();
 
 			this.parent = parent;
@@ -185,7 +185,7 @@ namespace OctreeZone
 				{
 					for ( int k = 0; k < 2; k++ )
 					{
-						Children[ i, j, k ] = null;
+						this.Children[ i, j, k ] = null;
 					}
 				}
 			}
@@ -193,8 +193,8 @@ namespace OctreeZone
 
 		public void AddNode( PCZSceneNode node )
 		{
-			nodeList[ node.Name ] = node;
-			( (OctreeZoneData)node.GetZoneData( zone ) ).Octant = this;
+			this.nodeList[ node.Name ] = node;
+			( (OctreeZoneData)node.GetZoneData( this.zone ) ).Octant = this;
 
 			//update total counts.
 			Ref();
@@ -220,7 +220,7 @@ namespace OctreeZone
 			//    }
 			//}
 
-			( (OctreeZoneData)node.GetZoneData( zone ) ).Octant = null;
+			( (OctreeZoneData)node.GetZoneData( this.zone ) ).Octant = null;
 			NodeList.Remove( node );
 			UnRef();
 		}
@@ -250,10 +250,10 @@ namespace OctreeZone
 		/// </summary>
 		public void GetChildIndexes( AxisAlignedBox aabox, out int x, out int y, out int z )
 		{
-			Vector3 max = box.Maximum;
+			Vector3 max = this.box.Maximum;
 			Vector3 min = aabox.Minimum;
 
-			Vector3 Center = box.Maximum.MidPoint( box.Minimum );
+			Vector3 Center = this.box.Maximum.MidPoint( this.box.Minimum );
 			Vector3 CheckCenter = aabox.Maximum.MidPoint( aabox.Minimum );
 
 			if ( CheckCenter.x > Center.x )
@@ -296,30 +296,30 @@ namespace OctreeZone
 		{
 			get
 			{
-				Vector3[] Corners = box.Corners;
-				box.SetExtents( Corners[ 0 ] - HalfSize, Corners[ 4 ] + HalfSize );
+				Vector3[] Corners = this.box.Corners;
+				this.box.SetExtents( Corners[ 0 ] - HalfSize, Corners[ 4 ] + HalfSize );
 
-				return box;
+				return this.box;
 			}
 		}
 
 		public void Ref()
 		{
-			nunodeList++;
+			this.nunodeList++;
 
-			if ( parent != null )
+			if ( this.parent != null )
 			{
-				parent.Ref();
+				this.parent.Ref();
 			}
 		}
 
 		public void UnRef()
 		{
-			nunodeList--;
+			this.nunodeList--;
 
-			if ( parent != null )
+			if ( this.parent != null )
 			{
-				parent.UnRef();
+				this.parent.UnRef();
 			}
 		}
 
@@ -562,7 +562,7 @@ namespace OctreeZone
 
 		public void _getCullBounds( out AxisAlignedBox b )
 		{
-			b = new AxisAlignedBox( box.Minimum - halfSize, box.Maximum + halfSize );
+			b = new AxisAlignedBox( this.box.Minimum - this.halfSize, this.box.Maximum + this.halfSize );
 		}
 
 
@@ -584,9 +584,9 @@ namespace OctreeZone
 				full = ( isect == Intersection.INSIDE );
 			}
 
-			foreach ( PCZSceneNode on in nodeList.Values )
+			foreach ( PCZSceneNode on in this.nodeList.Values )
 			{
-				if ( on != exclude && ( on.HomeZone == zone || includeVisitors ) )
+				if ( on != exclude && ( on.HomeZone == this.zone || includeVisitors ) )
 				{
 					if ( full )
 					{
@@ -609,42 +609,42 @@ namespace OctreeZone
 
 			Octree child;
 
-			if ( ( child = Children[ 0, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 0, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 0, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 0, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
@@ -667,9 +667,9 @@ namespace OctreeZone
 				full = ( isect == Intersection.INSIDE );
 			}
 
-			foreach ( PCZSceneNode on in nodeList.Values )
+			foreach ( PCZSceneNode on in this.nodeList.Values )
 			{
-				if ( on != exclude && ( on.HomeZone == zone || includeVisitors ) )
+				if ( on != exclude && ( on.HomeZone == this.zone || includeVisitors ) )
 				{
 					if ( full )
 					{
@@ -692,42 +692,42 @@ namespace OctreeZone
 
 			Octree child;
 
-			if ( ( child = Children[ 0, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 0, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 0, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 0, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
@@ -751,9 +751,9 @@ namespace OctreeZone
 			}
 
 
-			foreach ( PCZSceneNode on in nodeList.Values )
+			foreach ( PCZSceneNode on in this.nodeList.Values )
 			{
-				if ( on != exclude && ( on.HomeZone == zone || includeVisitors ) )
+				if ( on != exclude && ( on.HomeZone == this.zone || includeVisitors ) )
 				{
 					if ( full )
 					{
@@ -776,42 +776,42 @@ namespace OctreeZone
 
 			Octree child;
 
-			if ( ( child = Children[ 0, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 0, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 0, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 0, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
@@ -837,9 +837,9 @@ namespace OctreeZone
 			}
 
 
-			foreach ( PCZSceneNode on in nodeList.Values )
+			foreach ( PCZSceneNode on in this.nodeList.Values )
 			{
-				if ( on != exclude && ( on.HomeZone == zone || includeVisitors ) )
+				if ( on != exclude && ( on.HomeZone == this.zone || includeVisitors ) )
 				{
 					if ( full )
 					{
@@ -862,42 +862,42 @@ namespace OctreeZone
 
 			Octree child;
 
-			if ( ( child = Children[ 0, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 0, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 0, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 1, 0 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 0 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 0, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 0, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 0, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 0, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 0, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 0, 1, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
 
-			if ( ( child = Children[ 1, 1, 1 ] ) != null )
+			if ( ( child = this.Children[ 1, 1, 1 ] ) != null )
 			{
 				child._findNodes( t, ref list, exclude, includeVisitors, full );
 			}
@@ -957,15 +957,15 @@ namespace OctreeZone
 		public OctreeZoneData( PCZSceneNode node, PCZone zone )
 			: base( node, zone )
 		{
-			mOctant = null;
-			mOctreeWorldAABB = AxisAlignedBox.Null;
+			this.mOctant = null;
+			this.mOctreeWorldAABB = AxisAlignedBox.Null;
 		}
 
 		/* Update the octreezone specific data for a node */
 
 		public override void update()
 		{
-			mOctreeWorldAABB.IsNull = true;
+			this.mOctreeWorldAABB.IsNull = true;
 
 			// need to use object iterator here.
 			foreach ( PCZSceneNode m in mAssociatedNode.Children )
@@ -974,13 +974,13 @@ namespace OctreeZone
 				//mOctreeWorldAABB.Merge(m.GetWorldBoundingBox(true));
 				AxisAlignedBox b = m.WorldAABB;
 				b.Transform( m.Parent.FullTransform );
-				mOctreeWorldAABB.Merge( b );
+				this.mOctreeWorldAABB.Merge( b );
 			}
 
 			// update the Octant for the node because things might have moved.
 			// if it hasn't been added to the octree, add it, and if has moved
 			// enough to leave it's current node, we'll update it.
-			if ( !mOctreeWorldAABB.IsNull )
+			if ( !this.mOctreeWorldAABB.IsNull )
 			{
 				( (OctreeZone)mAssociatedZone ).UpdateNodeOctant( this );
 			}
@@ -990,7 +990,7 @@ namespace OctreeZone
 		{
 			get
 			{
-				return mOctreeWorldAABB;
+				return this.mOctreeWorldAABB;
 			}
 		}
 
@@ -1035,11 +1035,11 @@ namespace OctreeZone
 		{
 			get
 			{
-				return mOctant;
+				return this.mOctant;
 			}
 			set
 			{
-				mOctant = value;
+				this.mOctant = value;
 			}
 		}
 	}

@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -69,13 +69,13 @@ namespace Axiom.SceneManagers.PortalConnected
 		public PCZLight( string name )
 			: base( name )
 		{
-			needsUpdate = true; // need to update the first time, regardless of attachment or movement
+			this.needsUpdate = true; // need to update the first time, regardless of attachment or movement
 		}
 
 
 		~PCZLight()
 		{
-			affectedZonesList.Clear();
+			this.affectedZonesList.Clear();
 		}
 
 		//-----------------------------------------------------------------------
@@ -84,7 +84,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public void ClearAffectedZones()
 		{
-			affectedZonesList.Clear();
+			this.affectedZonesList.Clear();
 		}
 
 		//-----------------------------------------------------------------------
@@ -93,22 +93,22 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public void AddZoneToAffectedZonesList( PCZone zone )
 		{
-			affectedZonesList.Add( zone );
+			this.affectedZonesList.Add( zone );
 		}
 
 		/** check if a zone is in the list of zones affected by the light */
 
 		public bool AffectsZone( PCZone zone )
 		{
-			return affectedZonesList.Contains( zone );
+			return this.affectedZonesList.Contains( zone );
 		}
 
 		public void UpdateZones( PCZone defaultZone, ulong frameCount )
 		{
 			//update the zones this light affects
 			PCZone homeZone;
-			affectedZonesList.Clear();
-			affectsVisibleZone = false;
+			this.affectedZonesList.Clear();
+			this.affectsVisibleZone = false;
 			var sn = (PCZSceneNode)( ParentSceneNode );
 			if ( null != sn )
 			{
@@ -116,20 +116,20 @@ namespace Axiom.SceneManagers.PortalConnected
 				homeZone = sn.HomeZone;
 				if ( null != homeZone )
 				{
-					affectedZonesList.Add( homeZone );
+					this.affectedZonesList.Add( homeZone );
 					if ( homeZone.LastVisibleFrame == frameCount )
 					{
-						affectsVisibleZone = true;
+						this.affectsVisibleZone = true;
 					}
 				}
 				else
 				{
 					// error - scene node has no homezone!
 					// just say it affects the default zone and leave it at that.
-					affectedZonesList.Add( defaultZone );
+					this.affectedZonesList.Add( defaultZone );
 					if ( defaultZone.LastVisibleFrame == frameCount )
 					{
-						affectsVisibleZone = true;
+						this.affectsVisibleZone = true;
 					}
 					return;
 				}
@@ -138,10 +138,10 @@ namespace Axiom.SceneManagers.PortalConnected
 			{
 				// ERROR! not connected to a scene node,
 				// just say it affects the default zone and leave it at that.
-				affectedZonesList.Add( defaultZone );
+				this.affectedZonesList.Add( defaultZone );
 				if ( defaultZone.LastVisibleFrame == frameCount )
 				{
-					affectsVisibleZone = true;
+					this.affectsVisibleZone = true;
 				}
 				return;
 			}
@@ -158,9 +158,9 @@ namespace Axiom.SceneManagers.PortalConnected
 		//-----------------------------------------------------------------------
 		public void RemoveZoneFromAffectedZonesList( PCZone zone )
 		{
-			if ( affectedZonesList.Contains( zone ) )
+			if ( this.affectedZonesList.Contains( zone ) )
 			{
-				affectedZonesList.Remove( zone );
+				this.affectedZonesList.Remove( zone );
 			}
 		}
 
@@ -170,7 +170,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			//TODO: Check implementation of this
 			//_notifyMoved();   // inform ogre Light of movement
 			localTransformDirty = true;
-			needsUpdate = true; // set need update flag
+			this.needsUpdate = true; // set need update flag
 		}
 
 		//-----------------------------------------------------------------------
@@ -179,13 +179,13 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				if ( needsUpdate ) // if this light has moved, return true immediately
+				if ( this.needsUpdate ) // if this light has moved, return true immediately
 				{
 					return true;
 				}
 
 				// if any zones affected by this light have updated portals, then this light needs updating too
-				foreach ( PCZone zone in affectedZonesList )
+				foreach ( PCZone zone in this.affectedZonesList )
 				{
 					if ( zone.PortalsUpdated )
 					{
@@ -198,7 +198,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 			set
 			{
-				needsUpdate = value;
+				this.needsUpdate = value;
 			}
 		}
 
@@ -206,11 +206,11 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return affectsVisibleZone;
+				return this.affectsVisibleZone;
 			}
 			set
 			{
-				affectsVisibleZone = value;
+				this.affectsVisibleZone = value;
 			}
 		}
 	}

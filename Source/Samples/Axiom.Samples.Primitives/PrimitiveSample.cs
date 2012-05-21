@@ -64,22 +64,22 @@ namespace Axiom.Samples.Primitives
 				return false;
 			}
 
-			_color.x += evt.TimeSinceLastFrame*.6f;
-			if ( _color.x > 1 )
+			this._color.x += evt.TimeSinceLastFrame*.6f;
+			if ( this._color.x > 1 )
 			{
-				_color.x = 0;
+				this._color.x = 0;
 			}
 
-			_color.y += evt.TimeSinceLastFrame*.6f;
-			if ( _color.y > 1 )
+			this._color.y += evt.TimeSinceLastFrame*.6f;
+			if ( this._color.y > 1 )
 			{
-				_color.y = 0;
+				this._color.y = 0;
 			}
 
-			_color.z += evt.TimeSinceLastFrame*.6f;
-			if ( _color.z > 1 )
+			this._color.z += evt.TimeSinceLastFrame*.6f;
+			if ( this._color.z > 1 )
 			{
-				_color.z = 0;
+				this._color.z = 0;
 			}
 			return base.FrameStarted( evt );
 		}
@@ -87,10 +87,10 @@ namespace Axiom.Samples.Primitives
 		protected override void SetupContent()
 		{
 			// create a 3d line
-			_line = new Line3d( new Vector3( 0, 0, 30 ), Vector3.UnitY, 50, ColorEx.Blue );
+			this._line = new Line3d( new Vector3( 0, 0, 30 ), Vector3.UnitY, 50, ColorEx.Blue );
 
-			_tri = new Triangle( new Vector3( -25, 0, 0 ), new Vector3( 0, 50, 0 ), new Vector3( 25, 0, 0 ), ColorEx.Red,
-			                     ColorEx.Blue, ColorEx.Green );
+			this._tri = new Triangle( new Vector3( -25, 0, 0 ), new Vector3( 0, 50, 0 ), new Vector3( 25, 0, 0 ), ColorEx.Red,
+			                          ColorEx.Blue, ColorEx.Green );
 
 			// create a node for the line
 			var node = SceneManager.RootSceneNode.CreateChildSceneNode();
@@ -99,8 +99,8 @@ namespace Axiom.Samples.Primitives
 			triNode.Position = new Vector3( 50, 0, 0 );
 
 			// add the line and triangle to the scene
-			lineNode.AttachObject( _line );
-			triNode.AttachObject( _tri );
+			lineNode.AttachObject( this._line );
+			triNode.AttachObject( this._tri );
 
 			// create a node rotation controller value, which will mark the specified scene node as a target of the rotation
 			// we want to rotate along the Y axis for the triangle and Z for the line (just for the hell of it)
@@ -125,8 +125,8 @@ namespace Axiom.Samples.Primitives
 
 		protected override void CleanupContent()
 		{
-			_line.SafeDispose();
-			_tri.SafeDispose();
+			this._line.SafeDispose();
+			this._tri.SafeDispose();
 		}
 	};
 

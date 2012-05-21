@@ -148,15 +148,15 @@ namespace Axiom.Components.Terrain
 			{
 				set
 				{
-					if ( value != mLayerNormalMappingEnabled )
+					if ( value != this.mLayerNormalMappingEnabled )
 					{
-						mLayerNormalMappingEnabled = value;
+						this.mLayerNormalMappingEnabled = value;
 						mParent.MarkChanged();
 					}
 				}
 				get
 				{
-					return mLayerNormalMappingEnabled;
+					return this.mLayerNormalMappingEnabled;
 				}
 			}
 
@@ -167,15 +167,15 @@ namespace Axiom.Components.Terrain
 			{
 				set
 				{
-					if ( value != mLayerParallaxMappingEnabled )
+					if ( value != this.mLayerParallaxMappingEnabled )
 					{
-						mLayerParallaxMappingEnabled = value;
+						this.mLayerParallaxMappingEnabled = value;
 						mParent.MarkChanged();
 					}
 				}
 				get
 				{
-					return mLayerParallaxMappingEnabled;
+					return this.mLayerParallaxMappingEnabled;
 				}
 			}
 
@@ -186,15 +186,15 @@ namespace Axiom.Components.Terrain
 			{
 				set
 				{
-					if ( value != mLayerSpecularMappingEnabled )
+					if ( value != this.mLayerSpecularMappingEnabled )
 					{
-						mLayerSpecularMappingEnabled = value;
+						this.mLayerSpecularMappingEnabled = value;
 						mParent.MarkChanged();
 					}
 				}
 				get
 				{
-					return mLayerSpecularMappingEnabled;
+					return this.mLayerSpecularMappingEnabled;
 				}
 			}
 
@@ -206,15 +206,15 @@ namespace Axiom.Components.Terrain
 			{
 				set
 				{
-					if ( value != mGlobalColorMapEnabled )
+					if ( value != this.mGlobalColorMapEnabled )
 					{
-						mGlobalColorMapEnabled = value;
+						this.mGlobalColorMapEnabled = value;
 						mParent.MarkChanged();
 					}
 				}
 				get
 				{
-					return mGlobalColorMapEnabled;
+					return this.mGlobalColorMapEnabled;
 				}
 			}
 
@@ -226,15 +226,15 @@ namespace Axiom.Components.Terrain
 			{
 				set
 				{
-					if ( value != mLightMapEnabled )
+					if ( value != this.mLightMapEnabled )
 					{
-						mLightMapEnabled = value;
+						this.mLightMapEnabled = value;
 						mParent.MarkChanged();
 					}
 				}
 				get
 				{
-					return mLightMapEnabled;
+					return this.mLightMapEnabled;
 				}
 			}
 
@@ -246,15 +246,15 @@ namespace Axiom.Components.Terrain
 			{
 				set
 				{
-					if ( value != mCompositeMapEnabled )
+					if ( value != this.mCompositeMapEnabled )
 					{
-						mCompositeMapEnabled = value;
+						this.mCompositeMapEnabled = value;
 						mParent.MarkChanged();
 					}
 				}
 				get
 				{
-					return mCompositeMapEnabled;
+					return this.mCompositeMapEnabled;
 				}
 			}
 
@@ -271,12 +271,12 @@ namespace Axiom.Components.Terrain
 			public SM2Profile( TerrainMaterialGenerator parent, string name, string description )
 				: base( parent, name, description )
 			{
-				mLayerNormalMappingEnabled = true;
-				mLayerParallaxMappingEnabled = true;
-				mLayerSpecularMappingEnabled = true;
-				mGlobalColorMapEnabled = true;
-				mLightMapEnabled = false;
-				mCompositeMapEnabled = true;
+				this.mLayerNormalMappingEnabled = true;
+				this.mLayerParallaxMappingEnabled = true;
+				this.mLayerSpecularMappingEnabled = true;
+				this.mGlobalColorMapEnabled = true;
+				this.mLightMapEnabled = false;
+				this.mCompositeMapEnabled = true;
 			}
 
 			#endregion
@@ -314,9 +314,9 @@ namespace Axiom.Components.Terrain
 				GpuProgramManager gmgr = GpuProgramManager.Instance;
 				HighLevelGpuProgramManager hmgr = HighLevelGpuProgramManager.Instance;
 
-				if ( mShaderGen == null )
+				if ( this.mShaderGen == null )
 				{
-					bool check2x = mLayerNormalMappingEnabled || mLayerParallaxMappingEnabled;
+					bool check2x = this.mLayerNormalMappingEnabled || this.mLayerParallaxMappingEnabled;
 
 					/* if (hmgr.IsLanguageSupported("cg") &&
                          (check2x && (gmgr.IsSyntaxSupported("fp40") || gmgr.IsSyntaxSupported("ps_2_x"))) ||
@@ -325,19 +325,19 @@ namespace Axiom.Components.Terrain
                      else*/
 					if ( hmgr.IsLanguageSupported( "hlsl" ) )
 					{
-						mShaderGen = new ShaderHelperHLSL();
+						this.mShaderGen = new ShaderHelperHLSL();
 					}
 					else if ( hmgr.IsLanguageSupported( "glsl" ) )
 					{
-						mShaderGen = new ShaderHelperGLSL();
+						this.mShaderGen = new ShaderHelperGLSL();
 					}
 					else
 					{
 						//TODO
 					}
 				}
-				HighLevelGpuProgram vprog = mShaderGen.GenerateVertexProgram( this, terrain, tt );
-				HighLevelGpuProgram fprog = mShaderGen.GenerateFragmentProgram( this, terrain, tt );
+				HighLevelGpuProgram vprog = this.mShaderGen.GenerateVertexProgram( this, terrain, tt );
+				HighLevelGpuProgram fprog = this.mShaderGen.GenerateFragmentProgram( this, terrain, tt );
 
 				pass.SetVertexProgram( vprog.Name );
 				pass.SetFragmentProgram( fprog.Name );
@@ -385,7 +385,7 @@ namespace Axiom.Components.Terrain
 						tu = pass.CreateTextureUnitState( terrain.GetLayerTextureName( (byte)i, 1 ) );
 					}
 				} //end if
-				else if ( mCompositeMapEnabled )
+				else if ( this.mCompositeMapEnabled )
 				{
 					// LOW_LOD textures
 					// composite map
@@ -425,7 +425,7 @@ namespace Axiom.Components.Terrain
 				AddTechnique( mat, terrain, TechniqueType.HighLod );
 
 				//LOD
-				if ( mCompositeMapEnabled )
+				if ( this.mCompositeMapEnabled )
 				{
 					AddTechnique( mat, terrain, TechniqueType.LowLod );
 					var lodValues = new LodValueList();
@@ -497,7 +497,7 @@ namespace Axiom.Components.Terrain
 			/// <param name="terrain"></param>
 			public override void UpdateParams( Material mat, Terrain terrain )
 			{
-				mShaderGen.UpdateParams( this, mat, terrain, false );
+				this.mShaderGen.UpdateParams( this, mat, terrain, false );
 			}
 
 			/// <summary>
@@ -507,7 +507,7 @@ namespace Axiom.Components.Terrain
 			/// <param name="terrain"></param>
 			public override void UpdateParamsForCompositeMap( Material mat, Terrain terrain )
 			{
-				mShaderGen.UpdateParams( this, mat, terrain, true );
+				this.mShaderGen.UpdateParams( this, mat, terrain, true );
 			}
 
 			/// <summary>
@@ -518,8 +518,8 @@ namespace Axiom.Components.Terrain
 			{
 				terrain.IsMorphRequired = true;
 				terrain.NormalMapRequired = true;
-				terrain.SetLightMapRequired( mLightMapEnabled, true );
-				terrain.CompositeMapRequired = mCompositeMapEnabled;
+				terrain.SetLightMapRequired( this.mLightMapEnabled, true );
+				terrain.CompositeMapRequired = this.mCompositeMapEnabled;
 			}
 
 			#endregion

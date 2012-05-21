@@ -47,9 +47,9 @@ namespace Axiom.Samples.Terrain
 
 		public override void Initialize()
 		{
-			sample = new TerrainSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new TerrainSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	};
 }

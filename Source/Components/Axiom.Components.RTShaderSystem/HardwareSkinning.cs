@@ -25,12 +25,12 @@ namespace Axiom.Components.RTShaderSystem
 		public SkinningData( bool isValid, int maxBoneCount, int maxWeightCount, SkinningType sType,
 		                     bool correctAntipodality, bool scalingShearingSupport )
 		{
-			IsValid = isValid;
-			MaxBoneCount = maxBoneCount;
-			MaxWeightCount = maxWeightCount;
-			SkinningType = sType;
-			CorrectAntipodalityHandling = correctAntipodality;
-			ScalingShearingSupport = scalingShearingSupport;
+			this.IsValid = isValid;
+			this.MaxBoneCount = maxBoneCount;
+			this.MaxWeightCount = maxWeightCount;
+			this.SkinningType = sType;
+			this.CorrectAntipodalityHandling = correctAntipodality;
+			this.ScalingShearingSupport = scalingShearingSupport;
 		}
 	}
 
@@ -46,8 +46,8 @@ namespace Axiom.Components.RTShaderSystem
 
 		public HardwareSkinning()
 		{
-			creator = null;
-			skinningType = RTShaderSystem.SkinningType.Linear;
+			this.creator = null;
+			this.skinningType = RTShaderSystem.SkinningType.Linear;
 		}
 
 		public void SetHardwareSkinningParam( int boneCount, int weightCount, SkinningType skinningType,
@@ -57,23 +57,23 @@ namespace Axiom.Components.RTShaderSystem
 
 			if ( skinningType == RTShaderSystem.SkinningType.DualQuaternion )
 			{
-				if ( dualQuat == null )
+				if ( this.dualQuat == null )
 				{
-					dualQuat = new DualQuaternionSkinning();
+					this.dualQuat = new DualQuaternionSkinning();
 				}
-				activeTechnique = dualQuat;
+				this.activeTechnique = this.dualQuat;
 			}
 			else
 			{
-				if ( linear == null )
+				if ( this.linear == null )
 				{
-					linear = new LinearSkinning();
+					this.linear = new LinearSkinning();
 				}
-				activeTechnique = linear;
+				this.activeTechnique = this.linear;
 			}
 
-			activeTechnique.SetHardwareSkinningParam( boneCount, weightCount, correctAntipodalityHandling,
-			                                          scalingShearingSupport );
+			this.activeTechnique.SetHardwareSkinningParam( boneCount, weightCount, correctAntipodalityHandling,
+			                                               scalingShearingSupport );
 		}
 
 		public override bool PreAddToRenderState( TargetRenderState targetRenderState, Graphics.Pass srcPass,
@@ -87,32 +87,32 @@ namespace Axiom.Components.RTShaderSystem
 			{
 			}
 			//If there is no associated techniqe, default to linear skinning as a pass-through
-			if ( activeTechnique == null )
+			if ( this.activeTechnique == null )
 			{
 				SetHardwareSkinningParam( 0, 0, RTShaderSystem.SkinningType.Linear, false, false );
 			}
-			int boneCount = activeTechnique.BoneCount;
-			int weightCount = activeTechnique.WeightCount;
+			int boneCount = this.activeTechnique.BoneCount;
+			int weightCount = this.activeTechnique.WeightCount;
 
 			bool doBoneCalculations = isValid && ( boneCount != 0 ) && ( boneCount <= 256 ) && ( weightCount != 0 ) &&
 			                          ( weightCount <= 4 ) &&
-			                          ( ( creator == null ) || ( boneCount <= creator.MaxCalculableBoneCount ) );
+			                          ( ( this.creator == null ) || ( boneCount <= this.creator.MaxCalculableBoneCount ) );
 
-			activeTechnique.DoBoneCalculations = doBoneCalculations;
+			this.activeTechnique.DoBoneCalculations = doBoneCalculations;
 
 
-			if ( ( doBoneCalculations ) && ( creator != null ) )
+			if ( ( doBoneCalculations ) && ( this.creator != null ) )
 			{
 				//update the receiver and caster materials
 				if ( dstPass.Parent.ShadowCasterMaterial == null )
 				{
-					Material mat = creator.GetCustomShadowCasterMaterial( skinningType, weightCount - 1 );
+					Material mat = this.creator.GetCustomShadowCasterMaterial( this.skinningType, weightCount - 1 );
 					dstPass.Parent.SetShadowCasterMaterial( mat.Name );
 				}
 
 				if ( dstPass.Parent.ShadowReceiverMaterial == null )
 				{
-					Material mat = creator.GetCustomShadowCasterMaterial( skinningType, weightCount - 1 );
+					Material mat = this.creator.GetCustomShadowCasterMaterial( this.skinningType, weightCount - 1 );
 					dstPass.Parent.SetShadowReceiverMaterial( mat.Name );
 				}
 			}
@@ -121,17 +121,17 @@ namespace Axiom.Components.RTShaderSystem
 
 		protected override bool ResolveParameters( ProgramSet programSet )
 		{
-			return activeTechnique.ResolveParameters( programSet );
+			return this.activeTechnique.ResolveParameters( programSet );
 		}
 
 		protected override bool ResolveDependencies( ProgramSet programSet )
 		{
-			return activeTechnique.ResolveDependencies( programSet );
+			return this.activeTechnique.ResolveDependencies( programSet );
 		}
 
 		protected override bool AddFunctionInvocations( ProgramSet programSet )
 		{
-			return activeTechnique.AddFunctionInvocations( programSet );
+			return this.activeTechnique.AddFunctionInvocations( programSet );
 		}
 
 		public void SetCreator( HardwareSkinningFactory creator )
@@ -151,7 +151,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return activeTechnique.BoneCount;
+				return this.activeTechnique.BoneCount;
 			}
 		}
 
@@ -159,7 +159,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return activeTechnique.WeightCount;
+				return this.activeTechnique.WeightCount;
 			}
 		}
 
@@ -167,7 +167,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return skinningType;
+				return this.skinningType;
 			}
 		}
 
@@ -175,7 +175,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return activeTechnique.HasCorrectAntipodalityHandling;
+				return this.activeTechnique.HasCorrectAntipodalityHandling;
 			}
 		}
 
@@ -183,7 +183,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return activeTechnique.HasScalingShearingSupport;
+				return this.activeTechnique.HasScalingShearingSupport;
 			}
 		}
 

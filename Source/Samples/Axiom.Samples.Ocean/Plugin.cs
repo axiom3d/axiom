@@ -14,9 +14,9 @@ namespace Axiom.Samples.Ocean
 
 		public override void Initialize()
 		{
-			sample = new OceanSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new OceanSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

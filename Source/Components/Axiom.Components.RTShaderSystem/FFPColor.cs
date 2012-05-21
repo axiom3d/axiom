@@ -29,17 +29,17 @@ namespace Axiom.Components.RTShaderSystem
 
 		public FFPColor()
 		{
-			resolveStageFlags = (int)StageFlags.PsOutputDiffuse;
+			this.resolveStageFlags = (int)StageFlags.PsOutputDiffuse;
 		}
 
 		public void AddResolveStageMask( int mask )
 		{
-			resolveStageFlags |= mask;
+			this.resolveStageFlags |= mask;
 		}
 
 		public void RemoveResolveStageMask( int mask )
 		{
-			resolveStageFlags &= ~mask;
+			this.resolveStageFlags &= ~mask;
 		}
 
 		public override bool PreAddToRenderState( TargetRenderState targetRenderState, Graphics.Pass srcPass,
@@ -62,70 +62,70 @@ namespace Axiom.Components.RTShaderSystem
 			Function vsMain = vsProgram.EntryPointFunction;
 			Function psMain = psProgram.EntryPointFunction;
 
-			bool success = ( resolveStageFlags & (int)StageFlags.VsInputDiffuse ) == 1;
+			bool success = ( this.resolveStageFlags & (int)StageFlags.VsInputDiffuse ) == 1;
 			if ( success )
 			{
-				vsInputDiffuse = vsMain.ResolveInputParameter( Parameter.SemanticType.Color, 0,
-				                                               Parameter.ContentType.ColorDiffuse,
-				                                               Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+				this.vsInputDiffuse = vsMain.ResolveInputParameter( Parameter.SemanticType.Color, 0,
+				                                                    Parameter.ContentType.ColorDiffuse,
+				                                                    Graphics.GpuProgramParameters.GpuConstantType.Float4 );
 			}
-			success = ( resolveStageFlags & (int)StageFlags.VsInputSpecular ) == 1;
+			success = ( this.resolveStageFlags & (int)StageFlags.VsInputSpecular ) == 1;
 			if ( success )
 			{
-				vsInputSpecular = vsMain.ResolveInputParameter( Parameter.SemanticType.Color, 1,
-				                                                Parameter.ContentType.ColorSpecular,
-				                                                Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+				this.vsInputSpecular = vsMain.ResolveInputParameter( Parameter.SemanticType.Color, 1,
+				                                                     Parameter.ContentType.ColorSpecular,
+				                                                     Graphics.GpuProgramParameters.GpuConstantType.Float4 );
 			}
 
 			//Resolve VS color outputs if have inputs from vertex stream
-			if ( vsInputDiffuse != null || ( resolveStageFlags & (int)StageFlags.VsOutputdiffuse ) == 1 )
+			if ( this.vsInputDiffuse != null || ( this.resolveStageFlags & (int)StageFlags.VsOutputdiffuse ) == 1 )
 			{
-				vsOutputDiffuse = vsMain.ResolveOutputParameter( Parameter.SemanticType.Color, 0,
-				                                                 Parameter.ContentType.ColorDiffuse,
-				                                                 Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+				this.vsOutputDiffuse = vsMain.ResolveOutputParameter( Parameter.SemanticType.Color, 0,
+				                                                      Parameter.ContentType.ColorDiffuse,
+				                                                      Graphics.GpuProgramParameters.GpuConstantType.Float4 );
 			}
 
-			if ( vsInputSpecular != null || ( resolveStageFlags & (int)StageFlags.VsOutputSpecular ) == 1 )
+			if ( this.vsInputSpecular != null || ( this.resolveStageFlags & (int)StageFlags.VsOutputSpecular ) == 1 )
 			{
-				vsOutputSpecular = vsMain.ResolveOutputParameter( Parameter.SemanticType.Color, 1,
-				                                                  Parameter.ContentType.ColorSpecular,
-				                                                  Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+				this.vsOutputSpecular = vsMain.ResolveOutputParameter( Parameter.SemanticType.Color, 1,
+				                                                       Parameter.ContentType.ColorSpecular,
+				                                                       Graphics.GpuProgramParameters.GpuConstantType.Float4 );
 			}
 
 			//Resolve PS color inputs if we have inputs from vertex shader.
-			if ( vsOutputDiffuse != null || ( resolveStageFlags & (int)StageFlags.PsInputDiffuse ) == 1 )
+			if ( this.vsOutputDiffuse != null || ( this.resolveStageFlags & (int)StageFlags.PsInputDiffuse ) == 1 )
 			{
-				psInputDiffuse = psMain.ResolveInputParameter( Parameter.SemanticType.Color, 0,
-				                                               Parameter.ContentType.ColorDiffuse,
-				                                               Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+				this.psInputDiffuse = psMain.ResolveInputParameter( Parameter.SemanticType.Color, 0,
+				                                                    Parameter.ContentType.ColorDiffuse,
+				                                                    Graphics.GpuProgramParameters.GpuConstantType.Float4 );
 			}
 
-			if ( vsOutputSpecular != null || ( resolveStageFlags & (int)StageFlags.PsInputSpecular ) == 1 )
+			if ( this.vsOutputSpecular != null || ( this.resolveStageFlags & (int)StageFlags.PsInputSpecular ) == 1 )
 			{
-				psInputDiffuse = psMain.ResolveInputParameter( Parameter.SemanticType.Color, 1,
-				                                               Parameter.ContentType.ColorSpecular,
-				                                               Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+				this.psInputDiffuse = psMain.ResolveInputParameter( Parameter.SemanticType.Color, 1,
+				                                                    Parameter.ContentType.ColorSpecular,
+				                                                    Graphics.GpuProgramParameters.GpuConstantType.Float4 );
 			}
 
 			//Resolve PS output diffuse color
-			if ( ( resolveStageFlags & (int)StageFlags.PsOutputDiffuse ) == 1 )
+			if ( ( this.resolveStageFlags & (int)StageFlags.PsOutputDiffuse ) == 1 )
 			{
-				psOutputDiffuse = psMain.ResolveOutputParameter( Parameter.SemanticType.Color, 0,
-				                                                 Parameter.ContentType.ColorDiffuse,
-				                                                 Graphics.GpuProgramParameters.GpuConstantType.Float4 );
-				if ( psOutputDiffuse == null )
+				this.psOutputDiffuse = psMain.ResolveOutputParameter( Parameter.SemanticType.Color, 0,
+				                                                      Parameter.ContentType.ColorDiffuse,
+				                                                      Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+				if ( this.psOutputDiffuse == null )
 				{
 					return false;
 				}
 			}
 
 			//Resolve PS output specular color
-			if ( ( resolveStageFlags & (int)StageFlags.PsOutputSpecular ) == 1 )
+			if ( ( this.resolveStageFlags & (int)StageFlags.PsOutputSpecular ) == 1 )
 			{
-				psOutputSpecular = psMain.ResolveOutputParameter( Parameter.SemanticType.Color, 1,
-				                                                  Parameter.ContentType.ColorSpecular,
-				                                                  Graphics.GpuProgramParameters.GpuConstantType.Float4 );
-				if ( psOutputSpecular == null )
+				this.psOutputSpecular = psMain.ResolveOutputParameter( Parameter.SemanticType.Color, 1,
+				                                                       Parameter.ContentType.ColorSpecular,
+				                                                       Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+				if ( this.psOutputSpecular == null )
 				{
 					return false;
 				}
@@ -156,9 +156,9 @@ namespace Axiom.Components.RTShaderSystem
 			//Create vertex shader color invocations
 			Parameter vsDiffuse, vsSpecular;
 			internalCounter = 0;
-			if ( vsInputDiffuse != null )
+			if ( this.vsInputDiffuse != null )
 			{
-				vsDiffuse = vsInputDiffuse;
+				vsDiffuse = this.vsInputDiffuse;
 			}
 			else
 			{
@@ -176,19 +176,19 @@ namespace Axiom.Components.RTShaderSystem
 				vsMain.AddAtomInstance( curFuncInvocation );
 			}
 
-			if ( vsOutputDiffuse != null )
+			if ( this.vsOutputDiffuse != null )
 			{
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign,
 				                                            (int)FFPRenderState.FFPVertexShaderStage.VSColor,
 				                                            internalCounter++ );
 				curFuncInvocation.PushOperand( vsDiffuse, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsOutputDiffuse, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.vsOutputDiffuse, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 			}
 
-			if ( vsInputSpecular != null )
+			if ( this.vsInputSpecular != null )
 			{
-				vsSpecular = vsInputSpecular;
+				vsSpecular = this.vsInputSpecular;
 			}
 			else
 			{
@@ -206,13 +206,13 @@ namespace Axiom.Components.RTShaderSystem
 				vsMain.AddAtomInstance( curFuncInvocation );
 			}
 
-			if ( vsOutputSpecular != null )
+			if ( this.vsOutputSpecular != null )
 			{
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign,
 				                                            (int)FFPRenderState.FFPVertexShaderStage.VSColor,
 				                                            internalCounter++ );
 				curFuncInvocation.PushOperand( vsSpecular, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsOutputSpecular, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.vsOutputSpecular, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 			}
 
@@ -221,9 +221,9 @@ namespace Axiom.Components.RTShaderSystem
 			internalCounter = 0;
 
 			//Handle diffuse color
-			if ( psInputDiffuse != null )
+			if ( this.psInputDiffuse != null )
 			{
-				psDiffuse = psInputDiffuse;
+				psDiffuse = this.psInputDiffuse;
 			}
 			else
 			{
@@ -242,9 +242,9 @@ namespace Axiom.Components.RTShaderSystem
 			}
 
 			//Handle specular color
-			if ( psInputSpecular != null )
+			if ( this.psInputSpecular != null )
 			{
-				psSpecular = psInputSpecular;
+				psSpecular = this.psInputSpecular;
 			}
 			else
 			{
@@ -263,39 +263,39 @@ namespace Axiom.Components.RTShaderSystem
 			}
 
 			//Assign diffuse color
-			if ( psOutputDiffuse != null )
+			if ( this.psOutputDiffuse != null )
 			{
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign,
 				                                            (int)FFPRenderState.FFPFragmentShaderStage.PSColorBegin,
 				                                            internalCounter++ );
 				curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( psOutputDiffuse, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.psOutputDiffuse, Operand.OpSemantic.Out );
 				psMain.AddAtomInstance( curFuncInvocation );
 			}
 
 			//Assign specular color
-			if ( psOutputSpecular != null )
+			if ( this.psOutputSpecular != null )
 			{
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign,
 				                                            (int)FFPRenderState.FFPFragmentShaderStage.PSColorBegin,
 				                                            internalCounter++ );
 				curFuncInvocation.PushOperand( psSpecular, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( psOutputSpecular, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.psOutputSpecular, Operand.OpSemantic.Out );
 				psMain.AddAtomInstance( curFuncInvocation );
 			}
 
 			//Add specular to out color
 			internalCounter = 0;
-			if ( psOutputDiffuse != null && psSpecular != null )
+			if ( this.psOutputDiffuse != null && psSpecular != null )
 			{
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAdd,
 				                                            (int)FFPRenderState.FFPFragmentShaderStage.PSColorEnd,
 				                                            internalCounter++ );
-				curFuncInvocation.PushOperand( psOutputDiffuse, Operand.OpSemantic.In,
+				curFuncInvocation.PushOperand( this.psOutputDiffuse, Operand.OpSemantic.In,
 				                               ( Operand.OpMask.X | Operand.OpMask.Y | Operand.OpMask.Z ) );
 				curFuncInvocation.PushOperand( psSpecular, Operand.OpSemantic.In,
 				                               ( Operand.OpMask.X | Operand.OpMask.Y | Operand.OpMask.Z ) );
-				curFuncInvocation.PushOperand( psOutputDiffuse, Operand.OpSemantic.Out,
+				curFuncInvocation.PushOperand( this.psOutputDiffuse, Operand.OpSemantic.Out,
 				                               ( Operand.OpMask.X | Operand.OpMask.Y | Operand.OpMask.Z ) );
 				psMain.AddAtomInstance( curFuncInvocation );
 			}
@@ -310,11 +310,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return resolveStageFlags;
+				return this.resolveStageFlags;
 			}
 			set
 			{
-				resolveStageFlags = value;
+				this.resolveStageFlags = value;
 			}
 		}
 

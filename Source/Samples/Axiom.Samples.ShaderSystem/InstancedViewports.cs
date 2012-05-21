@@ -36,8 +36,8 @@ namespace Axiom.Samples.ShaderSystem
 
 		public InstancedViewports()
 		{
-			monitorsCount = new Vector2( 1.0f, 1.0f );
-			monitorsCountChanged = true;
+			this.monitorsCount = new Vector2( 1.0f, 1.0f );
+			this.monitorsCountChanged = true;
 		}
 
 		public override bool PreAddToRenderState( TargetRenderState targetRenderState, Graphics.Pass srcPass,
@@ -50,12 +50,12 @@ namespace Axiom.Samples.ShaderSystem
 		                                              Graphics.AutoParamDataSource source,
 		                                              Core.Collections.LightList lightList )
 		{
-			if ( monitorsCountChanged )
+			if ( this.monitorsCountChanged )
 			{
-				vsInMonitorsCount.SetGpuParameter( monitorsCount + new Vector2( 0.0001f, 0.0001f ) );
-				psInMonitorsCount.SetGpuParameter( monitorsCount + new Vector2( 0.0001f, 0.0001f ) );
+				this.vsInMonitorsCount.SetGpuParameter( this.monitorsCount + new Vector2( 0.0001f, 0.0001f ) );
+				this.psInMonitorsCount.SetGpuParameter( this.monitorsCount + new Vector2( 0.0001f, 0.0001f ) );
 
-				monitorsCountChanged = false;
+				this.monitorsCountChanged = false;
 			}
 		}
 
@@ -69,81 +69,85 @@ namespace Axiom.Samples.ShaderSystem
 
 			//Resolve vertex shader output position in projective space.
 
-			vsInPosition = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
-			                                             Parameter.ContentType.PositionObjectSpace,
-			                                             Graphics.GpuProgramParameters.GpuConstantType.Float4 );
-			if ( vsInPosition == null )
+			this.vsInPosition = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
+			                                                  Parameter.ContentType.PositionObjectSpace,
+			                                                  Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.vsInPosition == null )
 			{
 				return false;
 			}
 
-			vsOriginalOutPositionProjectiveSpace = vsMain.ResolveOutputParameter( Parameter.SemanticType.Position, 0,
-			                                                                      Parameter.ContentType.PositionProjectiveSpace,
-			                                                                      Graphics.GpuProgramParameters.GpuConstantType.
-			                                                                      	Float4 );
-			if ( vsOriginalOutPositionProjectiveSpace == null )
+			this.vsOriginalOutPositionProjectiveSpace = vsMain.ResolveOutputParameter( Parameter.SemanticType.Position, 0,
+			                                                                           Parameter.ContentType.
+			                                                                           	PositionProjectiveSpace,
+			                                                                           Graphics.GpuProgramParameters.
+			                                                                           	GpuConstantType.
+			                                                                           	Float4 );
+			if ( this.vsOriginalOutPositionProjectiveSpace == null )
 			{
 				return false;
 			}
 
 			var positionProjectiveSpaceAsTexcoord = (Parameter.ContentType)( Parameter.ContentType.CustomContentBegin + 1 );
-			vsOutPositionProjectiveSpace = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
-			                                                              positionProjectiveSpaceAsTexcoord,
-			                                                              Graphics.GpuProgramParameters.GpuConstantType.Float4 );
-			if ( vsOutPositionProjectiveSpace == null )
+			this.vsOutPositionProjectiveSpace = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
+			                                                                   positionProjectiveSpaceAsTexcoord,
+			                                                                   Graphics.GpuProgramParameters.GpuConstantType.
+			                                                                   	Float4 );
+			if ( this.vsOutPositionProjectiveSpace == null )
 			{
 				return false;
 			}
 
 			//Resolve ps input position in projective space
-			psInPositionProjectiveSpace = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
-			                                                            vsOutPositionProjectiveSpace.Index,
-			                                                            vsOutPositionProjectiveSpace.Content,
-			                                                            Graphics.GpuProgramParameters.GpuConstantType.Float4 );
-			if ( psInPositionProjectiveSpace == null )
+			this.psInPositionProjectiveSpace = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
+			                                                                 this.vsOutPositionProjectiveSpace.Index,
+			                                                                 this.vsOutPositionProjectiveSpace.Content,
+			                                                                 Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.psInPositionProjectiveSpace == null )
 			{
 				return false;
 			}
 
 			//Resolve vertex shader uniform monitors count
-			vsInMonitorsCount = vsProgram.ResolveParameter( Graphics.GpuProgramParameters.GpuConstantType.Float2, -1,
-			                                                Graphics.GpuProgramParameters.GpuParamVariability.Global,
-			                                                "monitorsCount" );
-			if ( vsInMonitorsCount == null )
+			this.vsInMonitorsCount = vsProgram.ResolveParameter( Graphics.GpuProgramParameters.GpuConstantType.Float2, -1,
+			                                                     Graphics.GpuProgramParameters.GpuParamVariability.Global,
+			                                                     "monitorsCount" );
+			if ( this.vsInMonitorsCount == null )
 			{
 				return false;
 			}
 
 			//Resolve pixel shader uniform monitors count
-			psInMonitorsCount = psProgram.ResolveParameter( Graphics.GpuProgramParameters.GpuConstantType.Float2, -1,
-			                                                Graphics.GpuProgramParameters.GpuParamVariability.Global,
-			                                                "monitorsCount" );
-			if ( psInMonitorsCount == null )
+			this.psInMonitorsCount = psProgram.ResolveParameter( Graphics.GpuProgramParameters.GpuConstantType.Float2, -1,
+			                                                     Graphics.GpuProgramParameters.GpuParamVariability.Global,
+			                                                     "monitorsCount" );
+			if ( this.psInMonitorsCount == null )
 			{
 				return false;
 			}
 
 			//Resolve the current world & view matrices concatenated
-			worldViewMatrix = vsProgram.ResolveAutoParameterInt( Graphics.GpuProgramParameters.AutoConstantType.WorldViewMatrix,
-			                                                     0 );
-			if ( worldViewMatrix == null )
+			this.worldViewMatrix =
+				vsProgram.ResolveAutoParameterInt( Graphics.GpuProgramParameters.AutoConstantType.WorldViewMatrix,
+				                                   0 );
+			if ( this.worldViewMatrix == null )
 			{
 				return false;
 			}
 
 			//Resolve the current projection matrix
-			projectionMatrix = vsProgram.ResolveAutoParameterInt(
+			this.projectionMatrix = vsProgram.ResolveAutoParameterInt(
 				Graphics.GpuProgramParameters.AutoConstantType.ProjectionMatrix, 0 );
-			if ( projectionMatrix == null )
+			if ( this.projectionMatrix == null )
 			{
 				return false;
 			}
 
 			var monitorIndex = Parameter.ContentType.TextureCoordinate3;
 			//Resolve vertex shader monitor index
-			vsInMonitorIndex = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 3, monitorIndex,
-			                                                 Graphics.GpuProgramParameters.GpuConstantType.Float4 );
-			if ( vsInMonitorIndex == null )
+			this.vsInMonitorIndex = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 3, monitorIndex,
+			                                                      Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.vsInMonitorIndex == null )
 			{
 				return false;
 			}
@@ -154,44 +158,48 @@ namespace Axiom.Samples.ShaderSystem
 			Parameter.ContentType matrixR3 = Parameter.ContentType.TextureCoordinate7;
 
 			//Resolve vertex shader viewport offset matrix
-			vsInViewportOffsetMatrixR0 = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 4, matrixR0,
-			                                                           Graphics.GpuProgramParameters.GpuConstantType.Float4 );
-			if ( vsInViewportOffsetMatrixR0 == null )
+			this.vsInViewportOffsetMatrixR0 = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 4,
+			                                                                matrixR0,
+			                                                                Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.vsInViewportOffsetMatrixR0 == null )
 			{
 				return false;
 			}
-			vsInViewportOffsetMatrixR1 = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 4, matrixR1,
-			                                                           Graphics.GpuProgramParameters.GpuConstantType.Float4 );
-			if ( vsInViewportOffsetMatrixR1 == null )
+			this.vsInViewportOffsetMatrixR1 = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 4,
+			                                                                matrixR1,
+			                                                                Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.vsInViewportOffsetMatrixR1 == null )
 			{
 				return false;
 			}
-			vsInViewportOffsetMatrixR2 = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 4, matrixR2,
-			                                                           Graphics.GpuProgramParameters.GpuConstantType.Float4 );
-			if ( vsInViewportOffsetMatrixR2 == null )
+			this.vsInViewportOffsetMatrixR2 = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 4,
+			                                                                matrixR2,
+			                                                                Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.vsInViewportOffsetMatrixR2 == null )
 			{
 				return false;
 			}
-			vsInViewportOffsetMatrixR3 = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 4, matrixR3,
-			                                                           Graphics.GpuProgramParameters.GpuConstantType.Float4 );
-			if ( vsInViewportOffsetMatrixR3 == null )
+			this.vsInViewportOffsetMatrixR3 = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 4,
+			                                                                matrixR3,
+			                                                                Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.vsInViewportOffsetMatrixR3 == null )
 			{
 				return false;
 			}
 
-			vsOutMonitorIndex = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1, monitorIndex,
-			                                                   Graphics.GpuProgramParameters.GpuConstantType.Float4 );
-			if ( vsOutMonitorIndex == null )
+			this.vsOutMonitorIndex = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1, monitorIndex,
+			                                                        Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.vsOutMonitorIndex == null )
 			{
 				return false;
 			}
 
 			//Resolve ps input monitor index
-			psInMonitorIndex = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
-			                                                 vsOutMonitorIndex.Index,
-			                                                 vsOutMonitorIndex.Content,
-			                                                 Graphics.GpuProgramParameters.GpuConstantType.Float4 );
-			if ( psInMonitorIndex == null )
+			this.psInMonitorIndex = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
+			                                                      this.vsOutMonitorIndex.Index,
+			                                                      this.vsOutMonitorIndex.Content,
+			                                                      Graphics.GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.psInMonitorIndex == null )
 			{
 				return false;
 			}
@@ -241,28 +249,28 @@ namespace Axiom.Samples.ShaderSystem
 			int internalCounter = 0;
 
 			funcInvocation = new FunctionInvocation( SGXFuncInstancedViewportsTransform, groupOrder, internalCounter++ );
-			funcInvocation.PushOperand( vsInPosition, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( worldViewMatrix, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( projectionMatrix, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( vsInViewportOffsetMatrixR0, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( vsInViewportOffsetMatrixR1, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( vsInViewportOffsetMatrixR2, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( vsInViewportOffsetMatrixR3, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( vsInMonitorsCount, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( vsInMonitorIndex, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( vsOriginalOutPositionProjectiveSpace, Operand.OpSemantic.Out );
+			funcInvocation.PushOperand( this.vsInPosition, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.worldViewMatrix, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.projectionMatrix, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.vsInViewportOffsetMatrixR0, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.vsInViewportOffsetMatrixR1, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.vsInViewportOffsetMatrixR2, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.vsInViewportOffsetMatrixR3, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.vsInMonitorsCount, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.vsInMonitorIndex, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.vsOriginalOutPositionProjectiveSpace, Operand.OpSemantic.Out );
 			vsMain.AddAtomInstance( funcInvocation );
 
 			//Output position in projective space
 			funcInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder, internalCounter++ );
-			funcInvocation.PushOperand( vsOriginalOutPositionProjectiveSpace, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( vsOutPositionProjectiveSpace, Operand.OpSemantic.Out );
+			funcInvocation.PushOperand( this.vsOriginalOutPositionProjectiveSpace, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.vsOutPositionProjectiveSpace, Operand.OpSemantic.Out );
 			vsMain.AddAtomInstance( funcInvocation );
 
 			//Output monitor index
 			funcInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder, internalCounter++ );
-			funcInvocation.PushOperand( vsInMonitorIndex, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( vsOutMonitorIndex, Operand.OpSemantic.Out );
+			funcInvocation.PushOperand( this.vsInMonitorIndex, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.vsOutMonitorIndex, Operand.OpSemantic.Out );
 			vsMain.AddAtomInstance( funcInvocation );
 
 			return true;
@@ -273,9 +281,9 @@ namespace Axiom.Samples.ShaderSystem
 			FunctionInvocation funcInvocation = null;
 			int internalCounter = 0;
 			funcInvocation = new FunctionInvocation( SGXFuncInstancedViewportsDiscardOutOfBounds, groupOrder, internalCounter++ );
-			funcInvocation.PushOperand( psInMonitorsCount, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( psInMonitorIndex, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( psInPositionProjectiveSpace, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.psInMonitorsCount, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.psInMonitorIndex, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.psInPositionProjectiveSpace, Operand.OpSemantic.In );
 
 			psMain.AddAtomInstance( funcInvocation );
 
@@ -286,12 +294,12 @@ namespace Axiom.Samples.ShaderSystem
 		{
 			get
 			{
-				return monitorsCount;
+				return this.monitorsCount;
 			}
 			set
 			{
-				monitorsCount = value;
-				monitorsCountChanged = true;
+				this.monitorsCount = value;
+				this.monitorsCountChanged = true;
 			}
 		}
 

@@ -81,7 +81,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return key;
+				return this.key;
 			}
 		}
 
@@ -92,7 +92,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return InputReader.GetKeyChar( key, modifiers );
+				return InputReader.GetKeyChar( this.key, modifiers );
 			}
 		}
 

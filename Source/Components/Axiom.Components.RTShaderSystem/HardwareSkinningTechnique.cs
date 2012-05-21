@@ -28,11 +28,11 @@
 
 		public HardwareSkinningTechnique()
 		{
-			boneCount = 0;
-			weightCount = 0;
-			correctAntipodalityHandling = false;
-			scalingShearingSupport = false;
-			doBoneCalculations = false;
+			this.boneCount = 0;
+			this.weightCount = 0;
+			this.correctAntipodalityHandling = false;
+			this.scalingShearingSupport = false;
+			this.doBoneCalculations = false;
 		}
 
 		internal void SetHardwareSkinningParam( int boneCount, int weightCount, bool correctAntipodalityHandling,
@@ -48,7 +48,7 @@
 		{
 			get
 			{
-				return boneCount;
+				return this.boneCount;
 			}
 		}
 
@@ -56,7 +56,7 @@
 		{
 			get
 			{
-				return weightCount;
+				return this.weightCount;
 			}
 		}
 
@@ -64,7 +64,7 @@
 		{
 			get
 			{
-				return correctAntipodalityHandling;
+				return this.correctAntipodalityHandling;
 			}
 		}
 
@@ -72,7 +72,7 @@
 		{
 			get
 			{
-				return scalingShearingSupport;
+				return this.scalingShearingSupport;
 			}
 		}
 
@@ -80,11 +80,11 @@
 		{
 			get
 			{
-				return doBoneCalculations;
+				return this.doBoneCalculations;
 			}
 			set
 			{
-				doBoneCalculations = value;
+				this.doBoneCalculations = value;
 			}
 		}
 

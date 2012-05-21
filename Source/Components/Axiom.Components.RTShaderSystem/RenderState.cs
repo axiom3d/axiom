@@ -16,18 +16,18 @@ namespace Axiom.Components.RTShaderSystem
 		public RenderState()
 		{
 			LightCountAutoUpdate = true;
-			lightCount[ 0 ] = 0;
-			lightCount[ 1 ] = 0;
-			lightCount[ 2 ] = 0;
+			this.lightCount[ 0 ] = 0;
+			this.lightCount[ 1 ] = 0;
+			this.lightCount[ 2 ] = 0;
 		}
 
 		public void Reset()
 		{
-			for ( int i = 0; i < SubRenderStateList.Count; i++ )
+			for ( int i = 0; i < this.SubRenderStateList.Count; i++ )
 			{
-				ShaderGenerator.Instance.DestroySubRenderState( SubRenderStateList[ i ] );
+				ShaderGenerator.Instance.DestroySubRenderState( this.SubRenderStateList[ i ] );
 			}
-			SubRenderStateList.Clear();
+			this.SubRenderStateList.Clear();
 		}
 
 
@@ -35,9 +35,9 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			bool addSubRenderState = true;
 
-			for ( int i = 0; i < SubRenderStateList.Count; i++ )
+			for ( int i = 0; i < this.SubRenderStateList.Count; i++ )
 			{
-				SubRenderState it = SubRenderStateList[ i ];
+				SubRenderState it = this.SubRenderStateList[ i ];
 				//Case the same instance already exists-> do not add to list
 				if ( it == subRenderState )
 				{
@@ -57,18 +57,18 @@ namespace Axiom.Components.RTShaderSystem
 
 			if ( addSubRenderState )
 			{
-				SubRenderStateList.Add( subRenderState );
+				this.SubRenderStateList.Add( subRenderState );
 			}
 		}
 
 		public virtual void RemoveTemplateSubRenderState( SubRenderState subRenderState )
 		{
-			for ( int i = 0; i < SubRenderStateList.Count; i++ )
+			for ( int i = 0; i < this.SubRenderStateList.Count; i++ )
 			{
-				if ( SubRenderStateList[ i ] == subRenderState )
+				if ( this.SubRenderStateList[ i ] == subRenderState )
 				{
-					ShaderGenerator.Instance.DestroySubRenderState( SubRenderStateList[ i ] );
-					SubRenderStateList.RemoveAt( i );
+					ShaderGenerator.Instance.DestroySubRenderState( this.SubRenderStateList[ i ] );
+					this.SubRenderStateList.RemoveAt( i );
 					break;
 				}
 			}
@@ -85,9 +85,9 @@ namespace Axiom.Components.RTShaderSystem
 
 		public virtual void SetLightCount( int[] currLightCount )
 		{
-			lightCount[ 0 ] = lightCount[ 0 ];
-			lightCount[ 1 ] = lightCount[ 1 ];
-			lightCount[ 2 ] = lightCount[ 2 ];
+			this.lightCount[ 0 ] = this.lightCount[ 0 ];
+			this.lightCount[ 1 ] = this.lightCount[ 1 ];
+			this.lightCount[ 2 ] = this.lightCount[ 2 ];
 		}
 
 		public virtual void Dispose()
@@ -101,7 +101,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return SubRenderStateList;
+				return this.SubRenderStateList;
 			}
 		}
 	}
@@ -124,8 +124,8 @@ namespace Axiom.Components.RTShaderSystem
 
 		public TargetRenderState()
 		{
-			programSet = null;
-			subRenderStateSortValid = false;
+			this.programSet = null;
+			this.subRenderStateSortValid = false;
 		}
 
 		/// <summary>
@@ -222,13 +222,13 @@ namespace Axiom.Components.RTShaderSystem
 
 		protected void SortSubRenderStates()
 		{
-			if ( subRenderStateSortValid == false )
+			if ( this.subRenderStateSortValid == false )
 			{
 				if ( SubRenderStateList.Count > 1 )
 				{
 					SubRenderStateList.Sort( new TargetRenderStateComparer() );
 
-					subRenderStateSortValid = true;
+					this.subRenderStateSortValid = true;
 				}
 			}
 		}
@@ -256,7 +256,7 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				SubRenderState srcSubRenderState = SubRenderStateList[ i ];
 
-				if ( srcSubRenderState.CreateCpuSubPrograms( programSet ) == false )
+				if ( srcSubRenderState.CreateCpuSubPrograms( this.programSet ) == false )
 				{
 					Axiom.Core.LogManager.Instance.Write(
 						"RTShader.TargetRenderState: Could not generate sub render program of type: {0}",
@@ -270,23 +270,23 @@ namespace Axiom.Components.RTShaderSystem
 		internal ProgramSet CreateProgramSet()
 		{
 			DestroyProgramSet();
-			programSet = new ProgramSet();
-			return programSet;
+			this.programSet = new ProgramSet();
+			return this.programSet;
 		}
 
 		internal void DestroyProgramSet()
 		{
-			if ( programSet != null )
+			if ( this.programSet != null )
 			{
-				programSet.Dispose();
-				programSet = null;
+				this.programSet.Dispose();
+				this.programSet = null;
 			}
 		}
 
 		public void AddSubRenderStateInstance( SubRenderState subRenderState )
 		{
 			base.SubRenderStateList.Add( subRenderState );
-			subRenderStateSortValid = false;
+			this.subRenderStateSortValid = false;
 		}
 
 		protected void RemoveSubRenderStateInstance( SubRenderState subRenderState )

@@ -711,12 +711,12 @@ namespace Axiom.Components.RTShaderSystem
 		public Parameter( Axiom.Graphics.GpuProgramParameters.GpuConstantType type, string name, SemanticType semantic,
 		                  int index, ContentType content, int size )
 		{
-			_name = name;
-			_type = type;
-			_semantic = semantic;
-			_index = index;
-			_content = content;
-			_size = size;
+			this._name = name;
+			this._type = type;
+			this._semantic = semantic;
+			this._index = index;
+			this._content = content;
+			this._size = size;
 		}
 
 		public Parameter()
@@ -730,7 +730,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return _name;
+				return this._name;
 			}
 		}
 
@@ -741,7 +741,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return _semantic;
+				return this._semantic;
 			}
 		}
 
@@ -752,7 +752,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return _type;
+				return this._type;
 			}
 		}
 
@@ -763,7 +763,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return _index;
+				return this._index;
 			}
 		}
 
@@ -774,7 +774,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return _content;
+				return this._content;
 			}
 		}
 
@@ -785,7 +785,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return _size > 0;
+				return this._size > 0;
 			}
 		}
 
@@ -796,11 +796,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return _size;
+				return this._size;
 			}
 			set
 			{
-				_size = value;
+				this._size = value;
 			}
 		}
 
@@ -817,7 +817,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		public override string ToString()
 		{
-			return _name;
+			return this._name;
 		}
 	}
 
@@ -839,7 +839,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return value;
+				return this.value;
 			}
 			protected set
 			{
@@ -1216,9 +1216,9 @@ namespace Axiom.Components.RTShaderSystem
 		public AutoShaderParameter( Axiom.Graphics.GpuProgramParameters.AutoConstantType autoType, string name,
 		                            Axiom.Graphics.GpuProgramParameters.GpuConstantType type )
 		{
-			Name = name;
-			AutoType = autoType;
-			Type = type;
+			this.Name = name;
+			this.AutoType = autoType;
+			this.Type = type;
 		}
 	}
 }

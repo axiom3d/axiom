@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: ManualObject.cs 1085 2007-08-13 20:37:24Z jprice $"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information

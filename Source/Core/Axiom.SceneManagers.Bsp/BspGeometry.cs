@@ -59,15 +59,15 @@ namespace Axiom.SceneManagers.Bsp
 
 		public BspGeometry()
 		{
-			geometryMat = (Material)MaterialManager.Instance.GetByName( "Axiom/BspGeometryMaterial" );
+			this.geometryMat = (Material)MaterialManager.Instance.GetByName( "Axiom/BspGeometryMaterial" );
 
-			if ( geometryMat == null )
+			if ( this.geometryMat == null )
 			{
-				geometryMat =
+				this.geometryMat =
 					(Material)
 					MaterialManager.Instance.Create( "Axiom/BspGeometryMaterial", ResourceGroupManager.Instance.WorldResourceGroupName );
-				geometryMat.ReceiveShadows = true;
-				technique = geometryMat.GetTechnique( 0 );
+				this.geometryMat.ReceiveShadows = true;
+				this.technique = this.geometryMat.GetTechnique( 0 );
 			}
 		}
 
@@ -93,7 +93,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return geometryMat;
+				return this.geometryMat;
 			}
 		}
 
@@ -108,7 +108,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return technique;
+				return this.technique;
 			}
 		}
 
@@ -121,7 +121,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return renderOperation;
+				return this.renderOperation;
 			}
 		}
 
@@ -381,11 +381,11 @@ namespace Axiom.SceneManagers.Bsp
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					if ( renderOperation != null )
+					if ( this.renderOperation != null )
 					{
-						renderOperation.vertexData = null;
-						renderOperation.indexData = null;
-						renderOperation = null;
+						this.renderOperation.vertexData = null;
+						this.renderOperation.indexData = null;
+						this.renderOperation = null;
 					}
 				}
 

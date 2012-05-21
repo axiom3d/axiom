@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
-//     <id value="$Id: GLFrameBufferObject.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -65,7 +65,7 @@ namespace Axiom.RenderSystems.OpenGL
 			get
 			{
 				//assert( _color[ 0 ].buffer );
-				return _color[ 0 ].Buffer.Height;
+				return this._color[ 0 ].Buffer.Height;
 			}
 		}
 
@@ -74,7 +74,7 @@ namespace Axiom.RenderSystems.OpenGL
 			get
 			{
 				//assert( _color[ 0 ].buffer );
-				return _color[ 0 ].Buffer.Width;
+				return this._color[ 0 ].Buffer.Width;
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace Axiom.RenderSystems.OpenGL
 			get
 			{
 				//assert( _color[ 0 ].buffer );
-				return _color[ 0 ].Buffer.Format;
+				return this._color[ 0 ].Buffer.Format;
 			}
 		}
 
@@ -101,7 +101,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return _manager;
+				return this._manager;
 			}
 		}
 
@@ -111,7 +111,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return _surfaceDesc;
+				return this._surfaceDesc;
 			}
 		}
 
@@ -121,13 +121,13 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public GLFrameBufferObject( GLFBORTTManager manager )
 		{
-			_manager = manager;
+			this._manager = manager;
 
 			/// Generate framebuffer object
-			Gl.glGenFramebuffersEXT( 1, out _frameBuffer );
+			Gl.glGenFramebuffersEXT( 1, out this._frameBuffer );
 
 			/// Initialize state
-			_color = new GLSurfaceDesc[Config.MaxMultipleRenderTargets];
+			this._color = new GLSurfaceDesc[Config.MaxMultipleRenderTargets];
 		}
 
 		~GLFrameBufferObject()
@@ -147,9 +147,9 @@ namespace Axiom.RenderSystems.OpenGL
 		public void BindSurface( int attachment, GLSurfaceDesc target )
 		{
 			//assert( attachment < OGRE_MAX_MULTIPLE_RENDER_TARGETS );
-			_color[ attachment ] = target;
+			this._color[ attachment ] = target;
 			// Re-initialise
-			if ( _color[ 0 ].Buffer != null )
+			if ( this._color[ 0 ].Buffer != null )
 			{
 				_initialize();
 			}
@@ -162,9 +162,9 @@ namespace Axiom.RenderSystems.OpenGL
 		public void UnbindSurface( int attachment )
 		{
 			//assert( attachment < OGRE_MAX_MULTIPLE_RENDER_TARGETS );
-			_color[ attachment ].Buffer = null;
+			this._color[ attachment ].Buffer = null;
 			// Re-initialise if buffer 0 still bound
-			if ( _color[ 0 ].Buffer == null )
+			if ( this._color[ 0 ].Buffer == null )
 			{
 				_initialize();
 			}
@@ -176,7 +176,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public void Bind()
 		{
 			/// Bind it to FBO
-			Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, _frameBuffer );
+			Gl.glBindFramebufferEXT( Gl.GL_FRAMEBUFFER_EXT, this._frameBuffer );
 		}
 
 		/// <summary>
@@ -191,10 +191,10 @@ namespace Axiom.RenderSystems.OpenGL
 		private void _initialize()
 		{
 			// Release depth and stencil, if they were bound
-			_manager.ReleaseRenderBuffer( _depth );
-			_manager.ReleaseRenderBuffer( _stencil );
+			this._manager.ReleaseRenderBuffer( this._depth );
+			this._manager.ReleaseRenderBuffer( this._stencil );
 			/// First buffer must be bound
-			if ( _color[ 0 ].Buffer == null )
+			if ( this._color[ 0 ].Buffer == null )
 			{
 				throw new ArgumentException( "Attachment 0 must have surface attached." );
 			}
@@ -203,28 +203,28 @@ namespace Axiom.RenderSystems.OpenGL
 			Bind();
 
 			/// Store basic stats
-			int width = _color[ 0 ].Buffer.Width;
-			int height = _color[ 0 ].Buffer.Height;
-			int glFormat = _color[ 0 ].Buffer.GLFormat;
-			PixelFormat format = _color[ 0 ].Buffer.Format;
+			int width = this._color[ 0 ].Buffer.Width;
+			int height = this._color[ 0 ].Buffer.Height;
+			int glFormat = this._color[ 0 ].Buffer.GLFormat;
+			PixelFormat format = this._color[ 0 ].Buffer.Format;
 
 			/// Bind all attachment points to frame buffer
 			for ( int x = 0; x < Config.MaxMultipleRenderTargets; ++x )
 			{
-				if ( _color[ x ].Buffer != null )
+				if ( this._color[ x ].Buffer != null )
 				{
-					if ( _color[ x ].Buffer.Width != width || _color[ x ].Buffer.Height != height )
+					if ( this._color[ x ].Buffer.Width != width || this._color[ x ].Buffer.Height != height )
 					{
 						throw new ArgumentException(
 							String.Format(
 								"Attachment {0} has incompatible size {1}x{2}. It must be of the same as the size of surface 0, {3}x{4}.", x,
-								_color[ x ].Buffer.Width, _color[ x ].Buffer.Height, width, height ) );
+								this._color[ x ].Buffer.Width, this._color[ x ].Buffer.Height, width, height ) );
 					}
-					if ( _color[ x ].Buffer.GLFormat != glFormat )
+					if ( this._color[ x ].Buffer.GLFormat != glFormat )
 					{
 						throw new ArgumentException( String.Format( "Attachment {0} has incompatible format.", x ) );
 					}
-					_color[ x ].Buffer.BindToFramebuffer( Gl.GL_COLOR_ATTACHMENT0_EXT + x, _color[ x ].ZOffset );
+					this._color[ x ].Buffer.BindToFramebuffer( Gl.GL_COLOR_ATTACHMENT0_EXT + x, this._color[ x ].ZOffset );
 				}
 				else
 				{
@@ -234,34 +234,34 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			// Find suitable depth and stencil format that is compatible with color format
 			int depthFormat, stencilFormat;
-			_manager.GetBestDepthStencil( format, out depthFormat, out stencilFormat );
+			this._manager.GetBestDepthStencil( format, out depthFormat, out stencilFormat );
 
 			// Request surfaces
-			_depth = _manager.RequestRenderBuffer( depthFormat, width, height );
+			this._depth = this._manager.RequestRenderBuffer( depthFormat, width, height );
 			if ( depthFormat == GLFBORTTManager.GL_DEPTH24_STENCIL8_EXT )
 			{
 				// bind same buffer to depth and stencil attachments
-				_manager.RequestRenderBuffer( _depth );
-				_stencil = _depth;
+				this._manager.RequestRenderBuffer( this._depth );
+				this._stencil = this._depth;
 			}
 			else
 			{
 				// separate stencil
-				_stencil = _manager.RequestRenderBuffer( stencilFormat, width, height );
+				this._stencil = this._manager.RequestRenderBuffer( stencilFormat, width, height );
 			}
 
 			/// Attach/detach surfaces
-			if ( _depth.Buffer != null )
+			if ( this._depth.Buffer != null )
 			{
-				_depth.Buffer.BindToFramebuffer( Gl.GL_DEPTH_ATTACHMENT_EXT, _depth.ZOffset );
+				this._depth.Buffer.BindToFramebuffer( Gl.GL_DEPTH_ATTACHMENT_EXT, this._depth.ZOffset );
 			}
 			else
 			{
 				Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, Gl.GL_DEPTH_ATTACHMENT_EXT, Gl.GL_RENDERBUFFER_EXT, 0 );
 			}
-			if ( _stencil.Buffer != null )
+			if ( this._stencil.Buffer != null )
 			{
-				_stencil.Buffer.BindToFramebuffer( Gl.GL_STENCIL_ATTACHMENT_EXT, _stencil.ZOffset );
+				this._stencil.Buffer.BindToFramebuffer( Gl.GL_STENCIL_ATTACHMENT_EXT, this._stencil.ZOffset );
 			}
 			else
 			{
@@ -274,7 +274,7 @@ namespace Axiom.RenderSystems.OpenGL
 			for ( int x = 0; x < Config.MaxMultipleRenderTargets; ++x )
 			{
 				// Fill attached color buffers
-				if ( _color[ x ].Buffer != null )
+				if ( this._color[ x ].Buffer != null )
 				{
 					bufs[ x ] = Gl.GL_COLOR_ATTACHMENT0_EXT + x;
 					// Keep highest used buffer + 1
@@ -286,12 +286,12 @@ namespace Axiom.RenderSystems.OpenGL
 				}
 			}
 
-			if ( _manager.GLSupport.CheckExtension( "GL_ARB_draw_buffers" ) )
+			if ( this._manager.GLSupport.CheckExtension( "GL_ARB_draw_buffers" ) )
 			{
 				/// Drawbuffer extension supported, use it
 				Gl.glDrawBuffers( n, bufs );
 			}
-			else if ( _manager.GLSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
+			else if ( this._manager.GLSupport.CheckExtension( "GL_ATI_draw_buffers" ) )
 			{
 				Gl.glDrawBuffersATI( n, bufs );
 			}
@@ -366,19 +366,19 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					_manager.ReleaseRenderBuffer( _depth );
-					_manager.ReleaseRenderBuffer( _stencil );
-					_manager = null;
+					this._manager.ReleaseRenderBuffer( this._depth );
+					this._manager.ReleaseRenderBuffer( this._stencil );
+					this._manager = null;
 				}
 
 				/// Delete framebuffer object
 				try
 				{
-					Gl.glDeleteFramebuffersEXT( 1, ref _frameBuffer );
+					Gl.glDeleteFramebuffersEXT( 1, ref this._frameBuffer );
 				}
 				catch ( AccessViolationException ave )
 				{
-					LogManager.Instance.Write( "Error Deleting Framebuffer[{0}].", _frameBuffer );
+					LogManager.Instance.Write( "Error Deleting Framebuffer[{0}].", this._frameBuffer );
 				}
 			}
 			isDisposed = true;

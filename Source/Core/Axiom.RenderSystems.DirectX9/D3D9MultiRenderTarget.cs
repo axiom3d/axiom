@@ -86,7 +86,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// Find first non null target
 			int y;
-			for ( y = 0; y < Config.MaxMultipleRenderTargets && _renderTargets[ y ] == null; ++y )
+			for ( y = 0; y < Config.MaxMultipleRenderTargets && this._renderTargets[ y ] == null; ++y )
 			{
 				;
 			}
@@ -94,19 +94,19 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( y != Config.MaxMultipleRenderTargets )
 			{
 				// If there is another target bound, compare sizes
-				if ( _renderTargets[ y ].Width != buffer.Width || _renderTargets[ y ].Height != buffer.Height )
+				if ( this._renderTargets[ y ].Width != buffer.Width || this._renderTargets[ y ].Height != buffer.Height )
 				{
 					throw new AxiomException( "MultiRenderTarget surfaces are not the same size." );
 				}
 
 				if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.MRTDifferentBitDepths ) &&
-				     ( PixelUtil.GetNumElemBits( _renderTargets[ y ].Format ) != PixelUtil.GetNumElemBits( buffer.Format ) ) )
+				     ( PixelUtil.GetNumElemBits( this._renderTargets[ y ].Format ) != PixelUtil.GetNumElemBits( buffer.Format ) ) )
 				{
 					throw new AxiomException( "MultiRenderTarget surfaces are not of same bit depth and hardware requires it" );
 				}
 			}
 
-			_renderTargets[ attachment ] = buffer;
+			this._renderTargets[ attachment ] = buffer;
 			_checkAndUpdate();
 		}
 
@@ -117,8 +117,8 @@ namespace Axiom.RenderSystems.DirectX9
 		protected override void UnbindSurfaceImpl( int attachment )
 		{
 			Contract.Requires( attachment < Config.MaxMultipleRenderTargets );
-			_renderTargets[ attachment ].SafeDispose();
-			_renderTargets[ attachment ] = null;
+			this._renderTargets[ attachment ].SafeDispose();
+			this._renderTargets[ attachment ] = null;
 			_checkAndUpdate();
 		}
 
@@ -128,10 +128,10 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		private void _checkAndUpdate()
 		{
-			if ( _renderTargets[ 0 ] != null )
+			if ( this._renderTargets[ 0 ] != null )
 			{
-				width = _renderTargets[ 0 ].Width;
-				height = _renderTargets[ 0 ].Height;
+				width = this._renderTargets[ 0 ].Width;
+				height = this._renderTargets[ 0 ].Height;
 			}
 			else
 			{
@@ -183,9 +183,9 @@ namespace Axiom.RenderSystems.DirectX9
 					// Transfer surfaces
 					for ( var x = 0; x < Config.MaxMultipleRenderTargets; ++x )
 					{
-						if ( _renderTargets[ x ] != null )
+						if ( this._renderTargets[ x ] != null )
 						{
-							surfaces[ x ] = _renderTargets[ x ].GetSurface( D3D9RenderSystem.ActiveD3D9Device );
+							surfaces[ x ] = this._renderTargets[ x ].GetSurface( D3D9RenderSystem.ActiveD3D9Device );
 						}
 					}
 					return surfaces;

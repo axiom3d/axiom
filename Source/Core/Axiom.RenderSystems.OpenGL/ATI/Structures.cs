@@ -55,26 +55,26 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public TokenRule( OperationType op )
 		{
-			operation = op;
-			tokenID = 0;
-			symbol = "";
-			errorID = 0;
+			this.operation = op;
+			this.tokenID = 0;
+			this.symbol = "";
+			this.errorID = 0;
 		}
 
 		public TokenRule( OperationType op, Symbol tokenID )
 		{
-			operation = op;
+			this.operation = op;
 			this.tokenID = tokenID;
-			symbol = "";
-			errorID = 0;
+			this.symbol = "";
+			this.errorID = 0;
 		}
 
 		public TokenRule( OperationType op, Symbol tokenID, string symbol )
 		{
-			operation = op;
+			this.operation = op;
 			this.tokenID = tokenID;
 			this.symbol = symbol;
-			errorID = 0;
+			this.errorID = 0;
 		}
 	}
 
@@ -121,35 +121,35 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public SymbolDef( Symbol symbol, int glEnum, ContextKeyPattern ckp )
 		{
-			ID = symbol;
-			pass2Data = glEnum;
-			contextKey = (uint)ckp;
-			contextPatternSet = 0;
-			contextPatternClear = 0;
-			defTextID = 0;
-			ruleID = 0;
+			this.ID = symbol;
+			this.pass2Data = glEnum;
+			this.contextKey = (uint)ckp;
+			this.contextPatternSet = 0;
+			this.contextPatternClear = 0;
+			this.defTextID = 0;
+			this.ruleID = 0;
 		}
 
 		public SymbolDef( Symbol symbol, int glEnum, ContextKeyPattern ckp, uint cps )
 		{
-			ID = symbol;
-			pass2Data = glEnum;
-			contextKey = (uint)ckp;
-			contextPatternSet = cps;
-			contextPatternClear = 0;
-			defTextID = 0;
-			ruleID = 0;
+			this.ID = symbol;
+			this.pass2Data = glEnum;
+			this.contextKey = (uint)ckp;
+			this.contextPatternSet = cps;
+			this.contextPatternClear = 0;
+			this.defTextID = 0;
+			this.ruleID = 0;
 		}
 
 		public SymbolDef( Symbol symbol, int glEnum, ContextKeyPattern ckp, ContextKeyPattern cps )
 		{
-			ID = symbol;
-			pass2Data = glEnum;
-			contextKey = (uint)ckp;
-			contextPatternSet = (uint)cps;
-			contextPatternClear = 0;
-			defTextID = 0;
-			ruleID = 0;
+			this.ID = symbol;
+			this.pass2Data = glEnum;
+			this.contextKey = (uint)ckp;
+			this.contextPatternSet = (uint)cps;
+			this.contextPatternClear = 0;
+			this.defTextID = 0;
+			this.ruleID = 0;
 		}
 	}
 
@@ -180,10 +180,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public TokenInstruction( Symbol symbol, Symbol ID )
 		{
-			NTTRuleID = symbol;
+			this.NTTRuleID = symbol;
 			this.ID = ID;
-			line = 0;
-			pos = 0;
+			this.line = 0;
+			this.pos = 0;
 		}
 	}
 
@@ -218,9 +218,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public RegModOffset( int offset, Symbol regBase, int index )
 		{
-			MacroOffset = offset;
-			RegisterBase = (int)regBase;
-			OpParamsIndex = index;
+			this.MacroOffset = offset;
+			this.RegisterBase = (int)regBase;
+			this.OpParamsIndex = index;
 		}
 	}
 
@@ -233,10 +233,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		public MacroRegModify( TokenInstruction[] tokens, RegModOffset[] offsets )
 		{
-			Macro = tokens;
-			MacroSize = tokens.Length;
-			RegMods = offsets;
-			RegModSize = offsets.Length;
+			this.Macro = tokens;
+			this.MacroSize = tokens.Length;
+			this.RegMods = offsets;
+			this.RegModSize = offsets.Length;
 		}
 	}
 }

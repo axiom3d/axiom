@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: AssemblyInfo.cs 1004 2007-01-02 18:57:49Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
 

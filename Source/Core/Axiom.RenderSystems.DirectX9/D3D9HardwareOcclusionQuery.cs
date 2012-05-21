@@ -86,12 +86,12 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				if ( disposeManagedResources )
 				{
-					foreach ( var it in _mapDeviceToQuery )
+					foreach ( var it in this._mapDeviceToQuery )
 					{
 						it.SafeDispose();
 					}
 
-					_mapDeviceToQuery.Clear();
+					this._mapDeviceToQuery.Clear();
 					D3D9RenderSystem.ResourceManager.NotifyResourceDestroyed( this );
 				}
 			}
@@ -111,7 +111,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			var pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
 			D3D9.Query pOccQuery;
-			var queryWasFound = _mapDeviceToQuery.TryGetValue( pCurDevice, out pOccQuery );
+			var queryWasFound = this._mapDeviceToQuery.TryGetValue( pCurDevice, out pOccQuery );
 
 			// No resource exits for current device -> create it.
 			if ( !queryWasFound || pOccQuery == null )
@@ -120,7 +120,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// Grab the query of the current device.
-			pOccQuery = _mapDeviceToQuery[ pCurDevice ];
+			pOccQuery = this._mapDeviceToQuery[ pCurDevice ];
 
 			if ( pOccQuery != null )
 			{
@@ -138,12 +138,12 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			var pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
 
-			if ( !_mapDeviceToQuery.ContainsKey( pCurDevice ) )
+			if ( !this._mapDeviceToQuery.ContainsKey( pCurDevice ) )
 			{
 				throw new AxiomException( "End occlusion called without matching begin call !!" );
 			}
 
-			var pOccQuery = _mapDeviceToQuery[ pCurDevice ];
+			var pOccQuery = this._mapDeviceToQuery[ pCurDevice ];
 
 			if ( pOccQuery != null )
 			{
@@ -159,7 +159,7 @@ namespace Axiom.RenderSystems.DirectX9
 			NumOfFragments = 100000;
 			var pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
 			D3D9.Query pOccQuery;
-			var queryWasFound = _mapDeviceToQuery.TryGetValue( pCurDevice, out pOccQuery );
+			var queryWasFound = this._mapDeviceToQuery.TryGetValue( pCurDevice, out pOccQuery );
 
 			if ( !queryWasFound || pOccQuery == null )
 			{
@@ -217,7 +217,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			var pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
 			D3D9.Query pOccQuery;
-			var queryWasFound = _mapDeviceToQuery.TryGetValue( pCurDevice, out pOccQuery );
+			var queryWasFound = this._mapDeviceToQuery.TryGetValue( pCurDevice, out pOccQuery );
 
 			if ( !queryWasFound || pOccQuery == null )
 			{
@@ -251,22 +251,22 @@ namespace Axiom.RenderSystems.DirectX9
 			try
 			{
 				// create the occlusion query.
-				_mapDeviceToQuery[ d3d9Device ] = new D3D9.Query( d3d9Device, D3D9.QueryType.Occlusion );
+				this._mapDeviceToQuery[ d3d9Device ] = new D3D9.Query( d3d9Device, D3D9.QueryType.Occlusion );
 			}
 			catch
 			{
-				_mapDeviceToQuery[ d3d9Device ] = null;
+				this._mapDeviceToQuery[ d3d9Device ] = null;
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		private void _releaseQuery( D3D9.Device d3d9Device )
 		{
-			if ( _mapDeviceToQuery.ContainsKey( d3d9Device ) )
+			if ( this._mapDeviceToQuery.ContainsKey( d3d9Device ) )
 			{
 				// Remove from query resource map.
-				_mapDeviceToQuery[ d3d9Device ].SafeDispose();
-				_mapDeviceToQuery.Remove( d3d9Device );
+				this._mapDeviceToQuery[ d3d9Device ].SafeDispose();
+				this._mapDeviceToQuery.Remove( d3d9Device );
 			}
 		}
 

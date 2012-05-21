@@ -31,15 +31,15 @@ namespace Axiom.Components.RTShaderSystem
 
 		public FFPFog()
 		{
-			fogMode = FogMode.None;
-			calcMode = FFPFog.CalcMode.PerVertex;
-			passOverrideParams = false;
+			this.fogMode = FogMode.None;
+			this.calcMode = FFPFog.CalcMode.PerVertex;
+			this.passOverrideParams = false;
 		}
 
 		public override void UpdateGpuProgramsParams( IRenderable rend, Pass pass, AutoParamDataSource source,
 		                                              Core.Collections.LightList lightList )
 		{
-			if ( fogMode == FogMode.None )
+			if ( this.fogMode == FogMode.None )
 			{
 				return;
 			}
@@ -48,7 +48,7 @@ namespace Axiom.Components.RTShaderSystem
 			ColorEx newFogColor;
 			Real newFogStart, newFogEnd, newFogDensity;
 
-			if ( passOverrideParams )
+			if ( this.passOverrideParams )
 			{
 				fMode = pass.FogMode;
 				newFogColor = pass.FogColor;
@@ -70,18 +70,18 @@ namespace Axiom.Components.RTShaderSystem
 			SetFogProperties( fMode, newFogColor, newFogStart, newFogEnd, newFogDensity );
 
 			//Per pixel fog
-			if ( calcMode == CalcMode.PerPixel )
+			if ( this.calcMode == CalcMode.PerPixel )
 			{
-				fogParams.SetGpuParameter( fogParamsValue );
+				this.fogParams.SetGpuParameter( this.fogParamsValue );
 			}
 
 				//per vertex fog
 			else
 			{
-				fogParams.SetGpuParameter( fogParamsValue );
+				this.fogParams.SetGpuParameter( this.fogParamsValue );
 			}
 
-			fogColor.SetGpuParameter( fogColorValue );
+			this.fogColor.SetGpuParameter( this.fogColorValue );
 		}
 
 		public override bool PreAddToRenderState( TargetRenderState targetRenderState, Pass srcPass, Pass dstPass )
@@ -119,7 +119,7 @@ namespace Axiom.Components.RTShaderSystem
 					newFogDensity = sceneMgr.FogDensity;
 				}
 
-				passOverrideParams = false;
+				this.passOverrideParams = false;
 			}
 			//Set fog properties
 			SetFogProperties( fMode, newFogColor, newFogStart, newFogEnd, newFogDensity );
@@ -132,14 +132,14 @@ namespace Axiom.Components.RTShaderSystem
 		public void SetFogProperties( FogMode fogMode, ColorEx fogColor, float fogStart, float fogEnd, float fogDensity )
 		{
 			this.fogMode = fogMode;
-			fogColorValue = fogColor;
-			fogParamsValue = new Vector4( fogDensity, fogStart, fogEnd, fogEnd != fogStart ? 1/( fogEnd - fogStart ) : 0 );
+			this.fogColorValue = fogColor;
+			this.fogParamsValue = new Vector4( fogDensity, fogStart, fogEnd, fogEnd != fogStart ? 1/( fogEnd - fogStart ) : 0 );
 		}
 
 
 		protected override bool ResolveParameters( ProgramSet programSet )
 		{
-			if ( fogMode == FogMode.None )
+			if ( this.fogMode == FogMode.None )
 			{
 				return true;
 			}
@@ -150,64 +150,64 @@ namespace Axiom.Components.RTShaderSystem
 			Function psMain = psProgram.EntryPointFunction;
 
 			//Resolve world view matrix.
-			worldViewProjMatrix =
+			this.worldViewProjMatrix =
 				vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.WorldViewProjMatrix, 0 );
-			if ( worldViewProjMatrix == null )
+			if ( this.worldViewProjMatrix == null )
 			{
 				return false;
 			}
 
 			//Resolve vertex shader input position
-			vsInPos = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
-			                                        Parameter.ContentType.PositionObjectSpace,
-			                                        GpuProgramParameters.GpuConstantType.Float4 );
-			if ( vsInPos == null )
+			this.vsInPos = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
+			                                             Parameter.ContentType.PositionObjectSpace,
+			                                             GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.vsInPos == null )
 			{
 				return false;
 			}
 
 			//Resolve fog color
-			fogColor = psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
-			                                       GpuProgramParameters.GpuParamVariability.Global, "gFogColor" );
-			if ( fogColor == null )
+			this.fogColor = psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
+			                                            GpuProgramParameters.GpuParamVariability.Global, "gFogColor" );
+			if ( this.fogColor == null )
 			{
 				return false;
 			}
 
 			//Resolve pixel shader output diffuse color
-			psOutDiffuse = psMain.ResolveOutputParameter( Parameter.SemanticType.Color, 0,
-			                                              Parameter.ContentType.ColorDiffuse,
-			                                              GpuProgramParameters.GpuConstantType.Float4 );
-			if ( psOutDiffuse == null )
+			this.psOutDiffuse = psMain.ResolveOutputParameter( Parameter.SemanticType.Color, 0,
+			                                                   Parameter.ContentType.ColorDiffuse,
+			                                                   GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.psOutDiffuse == null )
 			{
 				return false;
 			}
 
 			//Per pixel fog
-			if ( calcMode == CalcMode.PerPixel )
+			if ( this.calcMode == CalcMode.PerPixel )
 			{
 				//Resolve fog params
-				fogParams = psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
-				                                        GpuProgramParameters.GpuParamVariability.Global, "gFogParams" );
-				if ( fogParams == null )
+				this.fogParams = psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
+				                                             GpuProgramParameters.GpuParamVariability.Global, "gFogParams" );
+				if ( this.fogParams == null )
 				{
 					return false;
 				}
 
 				//Resolve vertex shader output depth
-				vsOutDepth = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
-				                                            Parameter.ContentType.DepthViewSpace,
-				                                            GpuProgramParameters.GpuConstantType.Float1 );
-				if ( vsOutDepth == null )
+				this.vsOutDepth = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
+				                                                 Parameter.ContentType.DepthViewSpace,
+				                                                 GpuProgramParameters.GpuConstantType.Float1 );
+				if ( this.vsOutDepth == null )
 				{
 					return false;
 				}
 
 				//Resolve pixel shader input depth.
-				psInDepth = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, vsOutDepth.Index,
-				                                          vsOutDepth.Content,
-				                                          GpuProgramParameters.GpuConstantType.Float1 );
-				if ( psInDepth == null )
+				this.psInDepth = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, this.vsOutDepth.Index,
+				                                               this.vsOutDepth.Content,
+				                                               GpuProgramParameters.GpuConstantType.Float1 );
+				if ( this.psInDepth == null )
 				{
 					return false;
 				}
@@ -215,27 +215,27 @@ namespace Axiom.Components.RTShaderSystem
 				//per vertex fog
 			else
 			{
-				fogParams = vsProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
-				                                        GpuProgramParameters.GpuParamVariability.Global, "gFogParams" );
-				if ( fogParams == null )
+				this.fogParams = vsProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
+				                                             GpuProgramParameters.GpuParamVariability.Global, "gFogParams" );
+				if ( this.fogParams == null )
 				{
 					return false;
 				}
 
 				//Resolve vertex shader output fog factor
-				vsOutFogFactor = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
-				                                                Parameter.ContentType.Unknown,
-				                                                GpuProgramParameters.GpuConstantType.Float1 );
-				if ( vsOutFogFactor == null )
+				this.vsOutFogFactor = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
+				                                                     Parameter.ContentType.Unknown,
+				                                                     GpuProgramParameters.GpuConstantType.Float1 );
+				if ( this.vsOutFogFactor == null )
 				{
 					return false;
 				}
 
 				//Resolve pixel shader input fog factor
-				psInFogFactor = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
-				                                              vsOutFogFactor.Index, vsOutFogFactor.Content,
-				                                              GpuProgramParameters.GpuConstantType.Float1 );
-				if ( psInFogFactor == null )
+				this.psInFogFactor = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
+				                                                   this.vsOutFogFactor.Index, this.vsOutFogFactor.Content,
+				                                                   GpuProgramParameters.GpuConstantType.Float1 );
+				if ( this.psInFogFactor == null )
 				{
 					return false;
 				}
@@ -247,7 +247,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		protected override bool ResolveDependencies( ProgramSet programSet )
 		{
-			if ( fogMode == FogMode.None )
+			if ( this.fogMode == FogMode.None )
 			{
 				return true;
 			}
@@ -258,7 +258,7 @@ namespace Axiom.Components.RTShaderSystem
 			vsProgram.AddDependency( FFPRenderState.FFPLibFog );
 			psProgram.AddDependency( FFPRenderState.FFPLibCommon );
 			//Per pixel fog.
-			if ( calcMode == CalcMode.PerPixel )
+			if ( this.calcMode == CalcMode.PerPixel )
 			{
 				psProgram.AddDependency( FFPRenderState.FFPLibFog );
 			}
@@ -268,7 +268,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		protected override bool AddFunctionInvocations( ProgramSet programSet )
 		{
-			if ( fogMode == FogMode.None )
+			if ( this.fogMode == FogMode.None )
 			{
 				return true;
 			}
@@ -281,18 +281,18 @@ namespace Axiom.Components.RTShaderSystem
 			int internalCounter = 0;
 
 			//Per pixel fog
-			if ( calcMode == CalcMode.PerPixel )
+			if ( this.calcMode == CalcMode.PerPixel )
 			{
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncPixelFogDepth,
 				                                            (int)FFPRenderState.FFPVertexShaderStage.VSFog,
 				                                            internalCounter++ );
-				curFuncInvocation.PushOperand( worldViewProjMatrix, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsInPos, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsOutDepth, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.worldViewProjMatrix, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsInPos, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsOutDepth, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 
 				internalCounter = 0;
-				switch ( fogMode )
+				switch ( this.fogMode )
 				{
 					case FogMode.Exp:
 						curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncPixelFogLinear,
@@ -313,17 +313,17 @@ namespace Axiom.Components.RTShaderSystem
 						break;
 				}
 
-				curFuncInvocation.PushOperand( psInDepth, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( fogParams, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( fogColor, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.psInDepth, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.fogParams, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.fogColor, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out );
 				psMain.AddAtomInstance( curFuncInvocation );
 			}
 			else //Per vertex fog
 			{
 				internalCounter = 0;
-				switch ( fogMode )
+				switch ( this.fogMode )
 				{
 					case FogMode.Exp:
 						curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncVertexFogLinear,
@@ -344,10 +344,10 @@ namespace Axiom.Components.RTShaderSystem
 						break;
 				}
 
-				curFuncInvocation.PushOperand( worldViewProjMatrix, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsInPos, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( fogParams, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsOutFogFactor, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.worldViewProjMatrix, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsInPos, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.fogParams, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsOutFogFactor, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 
 				internalCounter = 0;
@@ -355,10 +355,10 @@ namespace Axiom.Components.RTShaderSystem
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncLerp,
 				                                            (int)FFPRenderState.FFPFragmentShaderStage.PSFog,
 				                                            internalCounter++ );
-				curFuncInvocation.PushOperand( fogColor, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( psInFogFactor, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.fogColor, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.psInFogFactor, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out );
 				psMain.AddAtomInstance( curFuncInvocation );
 			}
 
@@ -370,11 +370,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return calcMode;
+				return this.calcMode;
 			}
 			set
 			{
-				calcMode = value;
+				this.calcMode = value;
 			}
 		}
 

@@ -47,9 +47,9 @@ namespace Axiom.Samples.ParticleFX
 
 		public override void Initialize()
 		{
-			_sample = new ParticleFXSample();
-			Name = _sample.Metadata[ "Title" ] + " Sample";
-			AddSample( _sample );
+			this._sample = new ParticleFXSample();
+			Name = this._sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this._sample );
 		}
 	};
 }

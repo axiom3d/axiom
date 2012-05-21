@@ -73,10 +73,10 @@ namespace Axiom.ParticleFX
 		{
 			Vector3 scaledVector = Vector3.Zero;
 
-			if ( forceApp == ForceApplication.Add )
+			if ( this.forceApp == ForceApplication.Add )
 			{
 				// scale force by time
-				scaledVector = forceVector*timeElapsed;
+				scaledVector = this.forceVector*timeElapsed;
 			}
 
 			// affect each particle
@@ -84,14 +84,14 @@ namespace Axiom.ParticleFX
 			{
 				var p = (Particle)system.Particles[ i ];
 
-				if ( forceApp == ForceApplication.Add )
+				if ( this.forceApp == ForceApplication.Add )
 				{
 					p.Direction += scaledVector;
 				}
 				else
 				{
 					// Average
-					p.Direction = ( p.Direction + forceVector )/2;
+					p.Direction = ( p.Direction + this.forceVector )/2;
 				}
 			}
 		}
@@ -100,11 +100,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return forceVector;
+				return this.forceVector;
 			}
 			set
 			{
-				forceVector = value;
+				this.forceVector = value;
 			}
 		}
 
@@ -112,11 +112,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return forceApp;
+				return this.forceApp;
 			}
 			set
 			{
-				forceApp = value;
+				this.forceApp = value;
 			}
 		}
 

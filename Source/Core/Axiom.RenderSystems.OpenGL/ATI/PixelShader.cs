@@ -1116,9 +1116,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// start with machine NOP instuction
 			// this is used after the switch to see if an instruction was set up
 			// determine which MachineInstID is required based on the op instruction
-			opType = MachineInstruction.Nop;
+			this.opType = MachineInstruction.Nop;
 
-			switch ( (Symbol)opInst )
+			switch ( (Symbol)this.opInst )
 			{
 					// ALU operations
 				case Symbol.ADD:
@@ -1132,68 +1132,68 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 				case Symbol.DP2ADD:
 				case Symbol.DP3:
 				case Symbol.DP4:
-					opType = (MachineInstruction)( (int)MachineInstruction.ColorOp1 + argCnt - 1 );
+					this.opType = (MachineInstruction)( (int)MachineInstruction.ColorOp1 + this.argCnt - 1 );
 
 					// if context is ps.1.x and Macro not on or a phase marker was found then put all ALU ops in phase 2 ALU container
-					if ( ( ( ( activeContexts & (uint)ContextKeyPattern.PS_1_1 ) > 0 ) && !macroOn ) || phaseMarkerFound )
+					if ( ( ( ( activeContexts & (uint)ContextKeyPattern.PS_1_1 ) > 0 ) && !this.macroOn ) || this.phaseMarkerFound )
 					{
-						instructionPhase = PhaseType.PHASE2ALU;
+						this.instructionPhase = PhaseType.PHASE2ALU;
 					}
 					else
 					{
-						instructionPhase = PhaseType.PHASE1ALU;
+						this.instructionPhase = PhaseType.PHASE1ALU;
 					}
 
 					// check for alpha op in destination register which is OpParrams[0]
 					// if no Mask for destination then make it .rgba
-					if ( opParams[ 0 ].MaskRep == 0 )
+					if ( this.opParams[ 0 ].MaskRep == 0 )
 					{
-						opParams[ 0 ].MaskRep = Gl.GL_RED_BIT_ATI | Gl.GL_GREEN_BIT_ATI | Gl.GL_BLUE_BIT_ATI | ALPHA_BIT;
+						this.opParams[ 0 ].MaskRep = Gl.GL_RED_BIT_ATI | Gl.GL_GREEN_BIT_ATI | Gl.GL_BLUE_BIT_ATI | ALPHA_BIT;
 					}
 
-					if ( ( opParams[ 0 ].MaskRep & ALPHA_BIT ) > 0 )
+					if ( ( this.opParams[ 0 ].MaskRep & ALPHA_BIT ) > 0 )
 					{
-						do_Alpha = true;
-						opParams[ 0 ].MaskRep -= ALPHA_BIT;
-						if ( opParams[ 0 ].MaskRep == 0 )
+						this.do_Alpha = true;
+						this.opParams[ 0 ].MaskRep -= ALPHA_BIT;
+						if ( this.opParams[ 0 ].MaskRep == 0 )
 						{
-							opType = MachineInstruction.Nop; // only do alpha op
+							this.opType = MachineInstruction.Nop; // only do alpha op
 						}
 					}
 					break;
 
 				case Symbol.TEXCRD:
-					opType = MachineInstruction.PassTexCoord;
-					if ( phaseMarkerFound )
+					this.opType = MachineInstruction.PassTexCoord;
+					if ( this.phaseMarkerFound )
 					{
-						instructionPhase = PhaseType.PHASE2TEX;
+						this.instructionPhase = PhaseType.PHASE2TEX;
 					}
 					else
 					{
-						instructionPhase = PhaseType.PHASE1TEX;
+						this.instructionPhase = PhaseType.PHASE1TEX;
 					}
 					break;
 
 				case Symbol.TEXLD:
-					opType = MachineInstruction.SampleMap;
-					if ( phaseMarkerFound )
+					this.opType = MachineInstruction.SampleMap;
+					if ( this.phaseMarkerFound )
 					{
-						instructionPhase = PhaseType.PHASE2TEX;
+						this.instructionPhase = PhaseType.PHASE2TEX;
 					}
 					else
 					{
-						instructionPhase = PhaseType.PHASE1TEX;
+						this.instructionPhase = PhaseType.PHASE1TEX;
 					}
 					break;
 
 				case Symbol.TEX: // PS_1_1 emulation
-					opType = MachineInstruction.Tex;
-					instructionPhase = PhaseType.PHASE1TEX;
+					this.opType = MachineInstruction.Tex;
+					this.instructionPhase = PhaseType.PHASE1TEX;
 					break;
 
 				case Symbol.TEXCOORD: // PS_1_1 emulation
-					opType = MachineInstruction.TexCoord;
-					instructionPhase = PhaseType.PHASE1TEX;
+					this.opType = MachineInstruction.TexCoord;
+					this.instructionPhase = PhaseType.PHASE1TEX;
 					break;
 
 				case Symbol.TEXREG2AR:
@@ -1223,10 +1223,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 				case Symbol.TEXM3X3PAD:
 					// only 2 texm3x3pad instructions allowed
 					// use count to modify macro to select which mask to use
-					if ( texm3x3padCount < 2 )
+					if ( this.texm3x3padCount < 2 )
 					{
-						texm3x3pad[ 4 ].ID = (Symbol)( (int)Symbol.R + texm3x3padCount );
-						texm3x3padCount++;
+						texm3x3pad[ 4 ].ID = (Symbol)( (int)Symbol.R + this.texm3x3padCount );
+						this.texm3x3padCount++;
 						passed = ExpandMacro( texm3x3pad_MacroMods );
 					}
 					else
@@ -1241,12 +1241,12 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					break;
 
 				case Symbol.DEF:
-					opType = MachineInstruction.SetConstants;
-					instructionPhase = PhaseType.PHASE1TEX;
+					this.opType = MachineInstruction.SetConstants;
+					this.instructionPhase = PhaseType.PHASE1TEX;
 					break;
 
 				case Symbol.PHASE: // PS_1_4 only
-					phaseMarkerFound = true;
+					this.phaseMarkerFound = true;
 					break;
 			} // end of switch
 
@@ -1261,17 +1261,17 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		private void ClearMachineInstState()
 		{
 			// set current Machine Instruction State to baseline
-			opType = MachineInstruction.Nop;
-			opInst = Symbol.Invalid;
-			do_Alpha = false;
-			argCnt = 0;
+			this.opType = MachineInstruction.Nop;
+			this.opInst = Symbol.Invalid;
+			this.do_Alpha = false;
+			this.argCnt = 0;
 
 			for ( int i = 0; i < MAXOPPARRAMS; i++ )
 			{
-				opParams[ i ].Arg = Gl.GL_NONE;
-				opParams[ i ].Filled = false;
-				opParams[ i ].MaskRep = Gl.GL_NONE;
-				opParams[ i ].Mod = Gl.GL_NONE;
+				this.opParams[ i ].Arg = Gl.GL_NONE;
+				this.opParams[ i ].Filled = false;
+				this.opParams[ i ].MaskRep = Gl.GL_NONE;
+				this.opParams[ i ].Mod = Gl.GL_NONE;
 			}
 		}
 
@@ -1279,18 +1279,18 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		{
 			bool success = true;
 
-			if ( argCnt < MAXOPPARRAMS )
+			if ( this.argCnt < MAXOPPARRAMS )
 			{
-				if ( opParams[ argCnt ].Filled )
+				if ( this.opParams[ this.argCnt ].Filled )
 				{
-					argCnt++;
+					this.argCnt++;
 				}
 			}
 
-			if ( argCnt < MAXOPPARRAMS )
+			if ( this.argCnt < MAXOPPARRAMS )
 			{
-				opParams[ argCnt ].Filled = true;
-				opParams[ argCnt ].Arg = symboldef.pass2Data;
+				this.opParams[ this.argCnt ].Filled = true;
+				this.opParams[ this.argCnt ].Arg = symboldef.pass2Data;
 			}
 			else
 			{
@@ -1313,16 +1313,16 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 				// need to check last few instructions to make sure r0 is set
 				// ps.1.1 emulation uses r4 for r0 so last couple of instructions will probably require
 				// changine destination register back to r0
-				if ( lastInstructionPos < phase2ALU_mi.Count )
+				if ( this.lastInstructionPos < this.phase2ALU_mi.Count )
 				{
 					// first argument at mLastInstructionPos + 2 is destination register for all ps.1.1 ALU instructions
-					phase2ALU_mi[ lastInstructionPos + 2 ] = Gl.GL_REG_0_ATI;
+					this.phase2ALU_mi[ this.lastInstructionPos + 2 ] = Gl.GL_REG_0_ATI;
 					// if was an alpha op only then modify second last instruction destination register
-					if ( ( (MachineInstruction)phase2ALU_mi[ lastInstructionPos ] == MachineInstruction.AlphaOp1 ) ||
-					     ( (MachineInstruction)phase2ALU_mi[ lastInstructionPos ] == MachineInstruction.AlphaOp2 ) ||
-					     ( (MachineInstruction)phase2ALU_mi[ lastInstructionPos ] == MachineInstruction.AlphaOp3 ) )
+					if ( ( (MachineInstruction)this.phase2ALU_mi[ this.lastInstructionPos ] == MachineInstruction.AlphaOp1 ) ||
+					     ( (MachineInstruction)this.phase2ALU_mi[ this.lastInstructionPos ] == MachineInstruction.AlphaOp2 ) ||
+					     ( (MachineInstruction)this.phase2ALU_mi[ this.lastInstructionPos ] == MachineInstruction.AlphaOp3 ) )
 					{
-						phase2ALU_mi[ secondLastInstructionPos + 2 ] = Gl.GL_REG_0_ATI;
+						this.phase2ALU_mi[ this.secondLastInstructionPos + 2 ] = Gl.GL_REG_0_ATI;
 					}
 				} // end if (mLastInstructionPos < mMachineInstructions.size())
 			} // end if (mActiveContexts & ckp_PS_1_1)
@@ -1371,9 +1371,9 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 						// if the last instruction has not been passed on then do it now
 						// make sure the pipe is clear for a new instruction
 						BuildMachineInst();
-						if ( opInst == Symbol.Invalid )
+						if ( this.opInst == Symbol.Invalid )
 						{
-							opInst = cursymboldef.ID;
+							this.opInst = cursymboldef.ID;
 						}
 						else
 						{
@@ -1386,25 +1386,25 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					case Symbol.TEXSWIZZLE:
 						// could be a dst mask or a arg replicator
 						// if dst mask and alpha included then make up a alpha instruction: maybe best to wait until instruction args completed
-						opParams[ argCnt ].MaskRep = (uint)cursymboldef.pass2Data;
+						this.opParams[ this.argCnt ].MaskRep = (uint)cursymboldef.pass2Data;
 						break;
 
 					case Symbol.DSTMOD:
 					case Symbol.DSTSAT:
 					case Symbol.PRESRCMOD:
 					case Symbol.POSTSRCMOD:
-						opParams[ argCnt ].Mod |= cursymboldef.pass2Data;
+						this.opParams[ this.argCnt ].Mod |= cursymboldef.pass2Data;
 						break;
 
 					case Symbol.NUMVAL:
 						passed = SetOpParam( cursymboldef );
 						// keep track of how many values are used
 						// update Constants array position
-						constantsPos++;
+						this.constantsPos++;
 						break;
 
 					case Symbol.SEPERATOR:
-						argCnt++;
+						this.argCnt++;
 						break;
 				} // end of switch
 
@@ -1419,7 +1419,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			{
 				BuildMachineInst();
 				// if there are no more instructions in the pipe than OpInst should be invalid
-				if ( opInst != Symbol.Invalid )
+				if ( this.opInst != Symbol.Invalid )
 				{
 					passed = false;
 				}
@@ -1605,17 +1605,18 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			for ( int i = 0; i < MacroMod.RegModSize; i++ )
 			{
 				regmod = MacroMod.RegMods[ i ];
-				MacroMod.Macro[ regmod.MacroOffset ].ID = (Symbol)( regmod.RegisterBase + opParams[ regmod.OpParamsIndex ].Arg );
+				MacroMod.Macro[ regmod.MacroOffset ].ID =
+					(Symbol)( regmod.RegisterBase + this.opParams[ regmod.OpParamsIndex ].Arg );
 			}
 
 			// turn macro support on so that ps.1.4 ALU instructions get put in phase 1 alu instruction sequence container
-			macroOn = true;
+			this.macroOn = true;
 
 			// pass macro tokens on to be turned into machine instructions
 			// expand macro to ps.1.4 by doing recursive call to doPass2
 			bool passed = Pass2scan( MacroMod.Macro, MacroMod.MacroSize );
 
-			macroOn = false;
+			this.macroOn = false;
 
 			return passed;
 		}
@@ -1632,122 +1633,122 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// assume that an instruction will be expanded
 			bool passed = true;
 
-			if ( opType != MachineInstruction.Nop )
+			if ( this.opType != MachineInstruction.Nop )
 			{
 				// a machine instruction will be built
 				// this is currently the last one being built so keep track of it
-				if ( instructionPhase == PhaseType.PHASE2ALU )
+				if ( this.instructionPhase == PhaseType.PHASE2ALU )
 				{
-					secondLastInstructionPos = lastInstructionPos;
-					lastInstructionPos = phase2ALU_mi.Count;
+					this.secondLastInstructionPos = this.lastInstructionPos;
+					this.lastInstructionPos = this.phase2ALU_mi.Count;
 				}
 
-				switch ( opType )
+				switch ( this.opType )
 				{
 					case MachineInstruction.ColorOp1:
 					case MachineInstruction.ColorOp2:
 					case MachineInstruction.ColorOp3:
 					{
-						AddMachineInst( instructionPhase, (int)opType );
-						AddMachineInst( instructionPhase, symbolTypeLib[ (int)opInst ].pass2Data );
+						AddMachineInst( this.instructionPhase, (int)this.opType );
+						AddMachineInst( this.instructionPhase, symbolTypeLib[ (int)this.opInst ].pass2Data );
 						// send all parameters to machine inst container
-						for ( int i = 0; i <= argCnt; i++ )
+						for ( int i = 0; i <= this.argCnt; i++ )
 						{
-							AddMachineInst( instructionPhase, opParams[ i ].Arg );
-							AddMachineInst( instructionPhase, (int)opParams[ i ].MaskRep );
-							AddMachineInst( instructionPhase, opParams[ i ].Mod );
+							AddMachineInst( this.instructionPhase, this.opParams[ i ].Arg );
+							AddMachineInst( this.instructionPhase, (int)this.opParams[ i ].MaskRep );
+							AddMachineInst( this.instructionPhase, this.opParams[ i ].Mod );
 							// check if source register read is valid in this phase
-							passed &= IsRegisterReadValid( instructionPhase, i );
+							passed &= IsRegisterReadValid( this.instructionPhase, i );
 						}
 
 						// record which registers were written to and in which phase
 						// opParams[0].Arg is always the destination register r0 -> r5
-						UpdateRegisterWriteState( instructionPhase );
+						UpdateRegisterWriteState( this.instructionPhase );
 					}
 						break;
 
 					case MachineInstruction.SetConstants:
-						AddMachineInst( instructionPhase, (int)opType );
-						AddMachineInst( instructionPhase, opParams[ 0 ].Arg ); // dst
-						AddMachineInst( instructionPhase, constantsPos ); // index into constants array
+						AddMachineInst( this.instructionPhase, (int)this.opType );
+						AddMachineInst( this.instructionPhase, this.opParams[ 0 ].Arg ); // dst
+						AddMachineInst( this.instructionPhase, this.constantsPos ); // index into constants array
 						break;
 
 					case MachineInstruction.PassTexCoord:
 					case MachineInstruction.SampleMap:
 						// if source is a temp register than place instruction in phase 2 Texture ops
-						if ( ( opParams[ 1 ].Arg >= Gl.GL_REG_0_ATI ) && ( opParams[ 1 ].Arg <= Gl.GL_REG_5_ATI ) )
+						if ( ( this.opParams[ 1 ].Arg >= Gl.GL_REG_0_ATI ) && ( this.opParams[ 1 ].Arg <= Gl.GL_REG_5_ATI ) )
 						{
-							instructionPhase = PhaseType.PHASE2TEX;
+							this.instructionPhase = PhaseType.PHASE2TEX;
 						}
 
-						AddMachineInst( instructionPhase, (int)opType );
-						AddMachineInst( instructionPhase, opParams[ 0 ].Arg ); // dst
-						AddMachineInst( instructionPhase, opParams[ 1 ].Arg ); // coord
-						AddMachineInst( instructionPhase, (int)opParams[ 1 ].MaskRep + Gl.GL_SWIZZLE_STR_ATI ); // swizzle
+						AddMachineInst( this.instructionPhase, (int)this.opType );
+						AddMachineInst( this.instructionPhase, this.opParams[ 0 ].Arg ); // dst
+						AddMachineInst( this.instructionPhase, this.opParams[ 1 ].Arg ); // coord
+						AddMachineInst( this.instructionPhase, (int)this.opParams[ 1 ].MaskRep + Gl.GL_SWIZZLE_STR_ATI ); // swizzle
 						// record which registers were written to and in which phase
 						// opParams[0].Arg is always the destination register r0 -> r5
-						UpdateRegisterWriteState( instructionPhase );
+						UpdateRegisterWriteState( this.instructionPhase );
 						break;
 
 					case MachineInstruction.Tex: // PS_1_1 emulation - turn CISC into RISC - phase 1
-						AddMachineInst( instructionPhase, (int)MachineInstruction.SampleMap );
-						AddMachineInst( instructionPhase, opParams[ 0 ].Arg ); // dst
+						AddMachineInst( this.instructionPhase, (int)MachineInstruction.SampleMap );
+						AddMachineInst( this.instructionPhase, this.opParams[ 0 ].Arg ); // dst
 						// tex tx becomes texld rx, tx with x: 0 - 3
-						AddMachineInst( instructionPhase, opParams[ 0 ].Arg - Gl.GL_REG_0_ATI + Gl.GL_TEXTURE0_ARB ); // interp
+						AddMachineInst( this.instructionPhase, this.opParams[ 0 ].Arg - Gl.GL_REG_0_ATI + Gl.GL_TEXTURE0_ARB ); // interp
 						// default to str which fills rgb of destination register
-						AddMachineInst( instructionPhase, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
+						AddMachineInst( this.instructionPhase, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
 						// record which registers were written to and in which phase
 						// opParams[0].Arg is always the destination register r0 -> r5
-						UpdateRegisterWriteState( instructionPhase );
+						UpdateRegisterWriteState( this.instructionPhase );
 						break;
 
 					case MachineInstruction.TexCoord: // PS_1_1 emulation - turn CISC into RISC - phase 1
-						AddMachineInst( instructionPhase, (int)MachineInstruction.PassTexCoord );
-						AddMachineInst( instructionPhase, opParams[ 0 ].Arg ); // dst
+						AddMachineInst( this.instructionPhase, (int)MachineInstruction.PassTexCoord );
+						AddMachineInst( this.instructionPhase, this.opParams[ 0 ].Arg ); // dst
 						// texcoord tx becomes texcrd rx, tx with x: 0 - 3
-						AddMachineInst( instructionPhase, opParams[ 0 ].Arg - Gl.GL_REG_0_ATI + Gl.GL_TEXTURE0_ARB ); // interp
+						AddMachineInst( this.instructionPhase, this.opParams[ 0 ].Arg - Gl.GL_REG_0_ATI + Gl.GL_TEXTURE0_ARB ); // interp
 						// default to str which fills rgb of destination register
-						AddMachineInst( instructionPhase, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
+						AddMachineInst( this.instructionPhase, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
 						// record which registers were written to and in which phase
 						// opParams[0].Arg is always the destination register r0 -> r5
-						UpdateRegisterWriteState( instructionPhase );
+						UpdateRegisterWriteState( this.instructionPhase );
 						break;
 				} // end of switch (opType)
 			} // end of if (opType != mi_NOP)
 
-			if ( do_Alpha )
+			if ( this.do_Alpha )
 			{
 				// process alpha channel
 				//
 				// a scaler machine instruction will be built
 				// this is currently the last one being built so keep track of it
-				if ( instructionPhase == PhaseType.PHASE2ALU )
+				if ( this.instructionPhase == PhaseType.PHASE2ALU )
 				{
-					secondLastInstructionPos = lastInstructionPos;
-					lastInstructionPos = phase2ALU_mi.Count;
+					this.secondLastInstructionPos = this.lastInstructionPos;
+					this.lastInstructionPos = this.phase2ALU_mi.Count;
 				}
 
-				var alphaoptype = (MachineInstruction)( MachineInstruction.AlphaOp1 + argCnt - 1 );
-				AddMachineInst( instructionPhase, (int)alphaoptype );
-				AddMachineInst( instructionPhase, symbolTypeLib[ (int)opInst ].pass2Data );
+				var alphaoptype = (MachineInstruction)( MachineInstruction.AlphaOp1 + this.argCnt - 1 );
+				AddMachineInst( this.instructionPhase, (int)alphaoptype );
+				AddMachineInst( this.instructionPhase, symbolTypeLib[ (int)this.opInst ].pass2Data );
 
 				// put all parameters in instruction que
-				for ( int i = 0; i <= argCnt; i++ )
+				for ( int i = 0; i <= this.argCnt; i++ )
 				{
-					AddMachineInst( instructionPhase, opParams[ i ].Arg );
+					AddMachineInst( this.instructionPhase, this.opParams[ i ].Arg );
 					// destination parameter has no mask since it is the alpha channel
 					// don't push mask for parrameter 0 (dst)
 					if ( i > 0 )
 					{
-						AddMachineInst( instructionPhase, (int)opParams[ i ].MaskRep );
+						AddMachineInst( this.instructionPhase, (int)this.opParams[ i ].MaskRep );
 					}
 
-					AddMachineInst( instructionPhase, opParams[ i ].Mod );
+					AddMachineInst( this.instructionPhase, this.opParams[ i ].Mod );
 					// check if source register read is valid in this phase
-					passed &= IsRegisterReadValid( instructionPhase, i );
+					passed &= IsRegisterReadValid( this.instructionPhase, i );
 				}
 
-				UpdateRegisterWriteState( instructionPhase );
+				UpdateRegisterWriteState( this.instructionPhase );
 			}
 
 			// instruction passed on to machine instruction so clear the pipe
@@ -1759,30 +1760,30 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 		// mainly used by tests - too slow for use in binding
 		private int GetMachineInst( int Idx )
 		{
-			if ( Idx < phase1TEX_mi.Count )
+			if ( Idx < this.phase1TEX_mi.Count )
 			{
-				return (int)phase1TEX_mi[ Idx ];
+				return (int)this.phase1TEX_mi[ Idx ];
 			}
 			else
 			{
-				Idx -= phase1TEX_mi.Count;
-				if ( Idx < phase1ALU_mi.Count )
+				Idx -= this.phase1TEX_mi.Count;
+				if ( Idx < this.phase1ALU_mi.Count )
 				{
-					return (int)phase1ALU_mi[ Idx ];
+					return (int)this.phase1ALU_mi[ Idx ];
 				}
 				else
 				{
-					Idx -= phase1ALU_mi.Count;
-					if ( Idx < phase2TEX_mi.Count )
+					Idx -= this.phase1ALU_mi.Count;
+					if ( Idx < this.phase2TEX_mi.Count )
 					{
-						return (int)phase2TEX_mi[ Idx ];
+						return (int)this.phase2TEX_mi[ Idx ];
 					}
 					else
 					{
-						Idx -= phase2TEX_mi.Count;
-						if ( Idx < phase2ALU_mi.Count )
+						Idx -= this.phase2TEX_mi.Count;
+						if ( Idx < this.phase2ALU_mi.Count )
 						{
-							return (int)phase2ALU_mi[ Idx ];
+							return (int)this.phase2ALU_mi[ Idx ];
 						}
 					}
 				}
@@ -1793,7 +1794,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 		private int GetMachineInstCount()
 		{
-			return ( phase1TEX_mi.Count + phase1ALU_mi.Count + phase2TEX_mi.Count + phase2ALU_mi.Count );
+			return ( this.phase1TEX_mi.Count + this.phase1ALU_mi.Count + this.phase2TEX_mi.Count + this.phase2ALU_mi.Count );
 		}
 
 		private void AddMachineInst( PhaseType phase, int inst )
@@ -1801,63 +1802,63 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			switch ( phase )
 			{
 				case PhaseType.PHASE1TEX:
-					phase1TEX_mi.Add( inst );
+					this.phase1TEX_mi.Add( inst );
 					break;
 
 				case PhaseType.PHASE1ALU:
-					phase1ALU_mi.Add( inst );
+					this.phase1ALU_mi.Add( inst );
 					break;
 
 				case PhaseType.PHASE2TEX:
-					phase2TEX_mi.Add( inst );
+					this.phase2TEX_mi.Add( inst );
 
 					break;
 
 				case PhaseType.PHASE2ALU:
-					phase2ALU_mi.Add( inst );
+					this.phase2ALU_mi.Add( inst );
 					break;
 			} // end switch(phase)
 		}
 
 		private void ClearAllMachineInst()
 		{
-			phase1TEX_mi.Clear();
-			phase1ALU_mi.Clear();
-			phase2TEX_mi.Clear();
-			phase2ALU_mi.Clear();
+			this.phase1TEX_mi.Clear();
+			this.phase1ALU_mi.Clear();
+			this.phase2TEX_mi.Clear();
+			this.phase2ALU_mi.Clear();
 
 			// reset write state for all registers
 			for ( int i = 0; i < 6; i++ )
 			{
-				Phase_RegisterUsage[ i ].Phase1Write = false;
-				Phase_RegisterUsage[ i ].Phase2Write = false;
+				this.Phase_RegisterUsage[ i ].Phase1Write = false;
+				this.Phase_RegisterUsage[ i ].Phase2Write = false;
 			}
 
-			phaseMarkerFound = false;
-			constantsPos = -4;
+			this.phaseMarkerFound = false;
+			this.constantsPos = -4;
 			// keep track of the last instruction built
 			// this info is used at the end of pass 2 to optimize the machine code
-			lastInstructionPos = 0;
-			secondLastInstructionPos = 0;
+			this.lastInstructionPos = 0;
+			this.secondLastInstructionPos = 0;
 
-			macroOn = false; // macro's off at the beginning
-			texm3x3padCount = 0;
+			this.macroOn = false; // macro's off at the beginning
+			this.texm3x3padCount = 0;
 		}
 
 		private void UpdateRegisterWriteState( PhaseType phase )
 		{
-			int reg_offset = opParams[ 0 ].Arg - Gl.GL_REG_0_ATI;
+			int reg_offset = this.opParams[ 0 ].Arg - Gl.GL_REG_0_ATI;
 
 			switch ( phase )
 			{
 				case PhaseType.PHASE1TEX:
 				case PhaseType.PHASE1ALU:
-					Phase_RegisterUsage[ reg_offset ].Phase1Write = true;
+					this.Phase_RegisterUsage[ reg_offset ].Phase1Write = true;
 					break;
 
 				case PhaseType.PHASE2TEX:
 				case PhaseType.PHASE2ALU:
-					Phase_RegisterUsage[ reg_offset ].Phase2Write = true;
+					this.Phase_RegisterUsage[ reg_offset ].Phase2Write = true;
 					break;
 			} // end switch(phase)
 		}
@@ -1870,25 +1871,26 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			if ( ( phase == PhaseType.PHASE2ALU ) && ( param > 0 ) )
 			{
 				// is source argument a temp register r0 - r5?
-				if ( ( opParams[ param ].Arg >= Gl.GL_REG_0_ATI ) && ( opParams[ param ].Arg <= Gl.GL_REG_5_ATI ) )
+				if ( ( this.opParams[ param ].Arg >= Gl.GL_REG_0_ATI ) && ( this.opParams[ param ].Arg <= Gl.GL_REG_5_ATI ) )
 				{
-					int reg_offset = opParams[ param ].Arg - Gl.GL_REG_0_ATI;
+					int reg_offset = this.opParams[ param ].Arg - Gl.GL_REG_0_ATI;
 					// if register was not written to in phase 2 but was in phase 1
-					if ( ( Phase_RegisterUsage[ reg_offset ].Phase2Write == false ) && Phase_RegisterUsage[ reg_offset ].Phase1Write )
+					if ( ( this.Phase_RegisterUsage[ reg_offset ].Phase2Write == false ) &&
+					     this.Phase_RegisterUsage[ reg_offset ].Phase1Write )
 					{
 						// only perform register pass if there are ALU instructions in phase 1
-						if ( phase1ALU_mi.Count > 0 )
+						if ( this.phase1ALU_mi.Count > 0 )
 						{
 							// build machine instructions for passing a register from phase 1 to phase 2
 							// NB: only rgb components of register will get passed
 
 							AddMachineInst( PhaseType.PHASE2TEX, (int)MachineInstruction.PassTexCoord );
-							AddMachineInst( PhaseType.PHASE2TEX, opParams[ param ].Arg ); // dst
-							AddMachineInst( PhaseType.PHASE2TEX, opParams[ param ].Arg ); // coord
+							AddMachineInst( PhaseType.PHASE2TEX, this.opParams[ param ].Arg ); // dst
+							AddMachineInst( PhaseType.PHASE2TEX, this.opParams[ param ].Arg ); // coord
 							AddMachineInst( PhaseType.PHASE2TEX, Gl.GL_SWIZZLE_STR_ATI ); // swizzle
 
 							// mark register as being written to
-							Phase_RegisterUsage[ reg_offset ].Phase2Write = true;
+							this.Phase_RegisterUsage[ reg_offset ].Phase2Write = true;
 						}
 					}
 						// register can not be used because it has not been written to previously
@@ -1911,10 +1913,10 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			bool passed;
 
 			// there are 4 machine instruction queues to pass to the ATI fragment shader
-			passed = BindMachineInstInPassToFragmentShader( phase1TEX_mi );
-			passed &= BindMachineInstInPassToFragmentShader( phase1ALU_mi );
-			passed &= BindMachineInstInPassToFragmentShader( phase2TEX_mi );
-			passed &= BindMachineInstInPassToFragmentShader( phase2ALU_mi );
+			passed = BindMachineInstInPassToFragmentShader( this.phase1TEX_mi );
+			passed &= BindMachineInstInPassToFragmentShader( this.phase1ALU_mi );
+			passed &= BindMachineInstInPassToFragmentShader( this.phase2TEX_mi );
+			passed &= BindMachineInstInPassToFragmentShader( this.phase2ALU_mi );
 
 			return passed;
 		}
@@ -1953,7 +1955,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 			public Test1Result( char c, int line )
 			{
-				character = c;
+				this.character = c;
 				this.line = line;
 			}
 		}
@@ -1966,7 +1968,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 
 			public TestFloatResult( string test, float val, int charSize )
 			{
-				testString = test;
+				this.testString = test;
 				this.val = val;
 				this.charSize = charSize;
 			}
@@ -2000,14 +2002,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// See if PositionToNextSymbol can find a valid symbol
 			Console.WriteLine( "**Testing: PositionToNextSymbol\n" );
 
-			source = testString1;
+			source = this.testString1;
 			charPos = 0;
 			currentLine = 1;
 			endOfSource = source.Length;
 			while ( PositionToNextSymbol() )
 			{
 				Console.WriteLine( "  Character found: {0}   Line:{1}  : ", source[ charPos ], currentLine );
-				if ( ( source[ charPos ] == test1results[ resultID ].character ) && ( currentLine == test1results[ resultID ].line ) )
+				if ( ( source[ charPos ] == this.test1results[ this.resultID ].character ) &&
+				     ( currentLine == this.test1results[ this.resultID ].line ) )
 				{
 					Console.WriteLine( "Passed!" );
 				}
@@ -2016,7 +2019,7 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 					Console.WriteLine( "FAILED!" );
 				}
 
-				resultID++;
+				this.resultID++;
 				charPos++;
 			}
 
@@ -2033,22 +2036,22 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			// Does IsSymbol work properly?
 			Console.WriteLine( "**Testing: IsSymbol\n" );
 
-			source = testString3;
+			source = this.testString3;
 			charPos = 0;
 			Console.WriteLine( "  Before: {0}", source );
-			Console.WriteLine( "  Symbol to find: {0}", testSymbols );
+			Console.WriteLine( "  Symbol to find: {0}", this.testSymbols );
 
-			if ( IsSymbol( testSymbols, out resultID ) )
+			if ( IsSymbol( this.testSymbols, out this.resultID ) )
 			{
-				Console.WriteLine( "  After: {0} : {1}", source.Substring( resultID + 1 ),
-				                   ( source[ resultID + 1 ] == 'r' ) ? "Passed." : "Failed!" );
+				Console.WriteLine( "  After: {0} : {1}", source.Substring( this.resultID + 1 ),
+				                   ( source[ this.resultID + 1 ] == 'r' ) ? "Passed." : "Failed!" );
 			}
 			else
 			{
 				Console.WriteLine( "Failed!" );
 			}
 
-			Console.WriteLine( "  Symbol size: {0}", resultID );
+			Console.WriteLine( "  Symbol size: {0}", this.resultID );
 
 			Console.WriteLine( "**Finished testing: IsSymbol\n" );
 
@@ -2060,15 +2063,15 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 			int charSize = 0;
 			charPos = 0;
 
-			for ( int i = 0; i < testFloatResults.Length; i++ )
+			for ( int i = 0; i < this.testFloatResults.Length; i++ )
 			{
-				source = testFloatResults[ i ].testString;
+				source = this.testFloatResults[ i ].testString;
 				Console.WriteLine( "     Test string {0}", source );
 				IsFloatValue( out val, out charSize );
-				Console.WriteLine( "     Value is: {0}, should be {1}: {2}", val, testFloatResults[ i ].val,
-				                   ( val == testFloatResults[ i ].val ) ? "Passed" : "Failed" );
-				Console.WriteLine( "     Char size is: {0}, should be {1}: {2}", charSize, testFloatResults[ i ].charSize,
-				                   ( charSize == testFloatResults[ i ].charSize ) ? "Passed" : "Failed" );
+				Console.WriteLine( "     Value is: {0}, should be {1}: {2}", val, this.testFloatResults[ i ].val,
+				                   ( val == this.testFloatResults[ i ].val ) ? "Passed" : "Failed" );
+				Console.WriteLine( "     Char size is: {0}, should be {1}: {2}", charSize, this.testFloatResults[ i ].charSize,
+				                   ( charSize == this.testFloatResults[ i ].charSize ) ? "Passed" : "Failed" );
 			}
 
 			Console.WriteLine( "**Finished testing: IsFloatValue\n" );

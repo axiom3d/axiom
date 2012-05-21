@@ -37,7 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SharpInputSystem.Core">
-      <HintPath>..\..\..\Lib\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -48,11 +48,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Framework\Axiom.Framework\Axiom.Framework.csproj">
+    <ProjectReference Include="$(SolutionDir)\Framework\Axiom.Framework\Axiom.Framework.csproj">
       <Project>{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}</Project>
       <Name>Axiom.Framework</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj">
+    <ProjectReference Include="$(SolutionDir)\Core\Axiom\Axiom.csproj">
       <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
       <Name>Axiom</Name>
     </ProjectReference>

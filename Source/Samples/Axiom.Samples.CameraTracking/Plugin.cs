@@ -34,9 +34,9 @@ namespace Axiom.Samples.CameraTrack
 
 		public override void Initialize()
 		{
-			sample = new CameraTrackingSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new CameraTrackingSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

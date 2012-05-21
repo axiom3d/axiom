@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -53,7 +53,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public PCZoneFactory( string typeName )
 		{
-			factoryTypeName = typeName;
+			this.factoryTypeName = typeName;
 		}
 
 		public abstract bool SupportsPCZoneType( string zoneType );
@@ -63,7 +63,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return factoryTypeName;
+				return this.factoryTypeName;
 			}
 		}
 	}
@@ -95,7 +95,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		private PCZoneFactoryManager()
 		{
-			RegisterPCZoneFactory( defaultFactory );
+			RegisterPCZoneFactory( this.defaultFactory );
 		}
 
 		public static PCZoneFactoryManager Instance
@@ -114,7 +114,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		public void RegisterPCZoneFactory( PCZoneFactory factory )
 		{
 			String name = factory.FactoryTypeName;
-			pCZoneFactories.Add( name, factory );
+			this.pCZoneFactories.Add( name, factory );
 			LogManager.Instance.Write( "PCZone Factory Type '" + name + "' registered" );
 		}
 
@@ -125,9 +125,9 @@ namespace Axiom.SceneManagers.PortalConnected
 				//find and remove factory from mPCZoneFactories
 				// Note that this does not free the factory from memory, just removes from the factory manager
 				string name = factory.FactoryTypeName;
-				if ( pCZoneFactories.ContainsKey( name ) )
+				if ( this.pCZoneFactories.ContainsKey( name ) )
 				{
-					pCZoneFactories.Remove( name );
+					this.pCZoneFactories.Remove( name );
 					LogManager.Instance.Write( "PCZone Factory Type '" + name + "' unregistered" );
 				}
 			}
@@ -138,7 +138,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			//find a factory that supports this zone type and then call createPCZone() on it
 			PCZone inst = null;
-			foreach ( PCZoneFactory factory in pCZoneFactories.Values )
+			foreach ( PCZoneFactory factory in this.pCZoneFactories.Values )
 			{
 				if ( factory.SupportsPCZoneType( zoneType ) )
 				{

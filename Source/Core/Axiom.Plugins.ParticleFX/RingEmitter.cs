@@ -66,12 +66,12 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return innerX;
+				return this.innerX;
 			}
 			set
 			{
 				Debug.Assert( value > 0.0f && value < 1.0f );
-				innerX = value;
+				this.innerX = value;
 			}
 		}
 
@@ -79,12 +79,12 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return innerY;
+				return this.innerY;
 			}
 			set
 			{
 				Debug.Assert( value > 0.0f && value < 1.0f );
-				innerY = value;
+				this.innerY = value;
 			}
 		}
 
@@ -94,8 +94,8 @@ namespace Axiom.ParticleFX
 			: base( ps )
 		{
 			InitDefaults( "Ring" );
-			innerX = 0.5f;
-			innerY = 0.5f;
+			this.innerX = 0.5f;
+			this.innerY = 0.5f;
 		}
 
 		public override void InitParticle( Particle particle )

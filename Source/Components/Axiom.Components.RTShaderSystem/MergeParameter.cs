@@ -46,7 +46,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return srcParameterCount;
+				return this.srcParameterCount;
 			}
 		}
 
@@ -57,7 +57,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return srcParameter;
+				return this.srcParameter;
 			}
 		}
 
@@ -68,7 +68,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return srcParameterMask;
+				return this.srcParameterMask;
 			}
 		}
 
@@ -79,7 +79,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return dstParameterMask;
+				return this.dstParameterMask;
 			}
 		}
 
@@ -97,15 +97,15 @@ namespace Axiom.Components.RTShaderSystem
 		/// </summary>
 		public void Clear()
 		{
-			dstParameter = null;
+			this.dstParameter = null;
 			for ( int i = 0; i < 4; i++ )
 			{
-				srcParameter[ i ] = null;
-				srcParameterMask[ i ] = 0;
-				dstParameterMask[ i ] = 0;
+				this.srcParameter[ i ] = null;
+				this.srcParameterMask[ i ] = 0;
+				this.dstParameterMask[ i ] = 0;
 			}
-			srcParameterCount = 0;
-			usedFloatcount = 0;
+			this.srcParameterCount = 0;
+			this.usedFloatcount = 0;
 		}
 
 		/// <summary>
@@ -116,12 +116,12 @@ namespace Axiom.Components.RTShaderSystem
 		/// <returns> </returns>
 		public Parameter GetDestinationParameter( int usage, int index )
 		{
-			if ( dstParameter == null )
+			if ( this.dstParameter == null )
 			{
 				CreateDestinationParamter( usage, index );
 			}
 
-			return dstParameter;
+			return this.dstParameter;
 		}
 
 		/// <summary>
@@ -152,11 +152,11 @@ namespace Axiom.Components.RTShaderSystem
 
 			if ( usage == (int)Operand.OpSemantic.In )
 			{
-				dstParameter = ParameterFactory.CreateInTexcoord( dstParamType, index, Parameter.ContentType.Unknown );
+				this.dstParameter = ParameterFactory.CreateInTexcoord( dstParamType, index, Parameter.ContentType.Unknown );
 			}
 			else
 			{
-				dstParameter = ParameterFactory.CreateOutTexcoord( dstParamType, index, Parameter.ContentType.Unknown );
+				this.dstParameter = ParameterFactory.CreateOutTexcoord( dstParamType, index, Parameter.ContentType.Unknown );
 			}
 		}
 
@@ -164,12 +164,12 @@ namespace Axiom.Components.RTShaderSystem
 
 		internal int GetDestinationParameterMask( int index )
 		{
-			return dstParameterMask[ index ];
+			return this.dstParameterMask[ index ];
 		}
 
 		internal int GetSourceParameterMask( int index )
 		{
-			return srcParameterMask[ index ];
+			return this.srcParameterMask[ index ];
 		}
 	}
 }

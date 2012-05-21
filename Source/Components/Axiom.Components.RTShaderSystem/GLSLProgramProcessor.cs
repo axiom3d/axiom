@@ -15,11 +15,11 @@ namespace Axiom.Components.RTShaderSystem
 
 		public override void Dispose()
 		{
-			for ( int i = 0; i < libraryPrograms.Count; i++ )
+			for ( int i = 0; i < this.libraryPrograms.Count; i++ )
 			{
-				HighLevelGpuProgramManager.Instance.Remove( libraryPrograms[ i ] );
+				HighLevelGpuProgramManager.Instance.Remove( this.libraryPrograms[ i ] );
 			}
-			libraryPrograms.Clear();
+			this.libraryPrograms.Clear();
 		}
 
 		internal override bool PreCreateGpuPrograms( ProgramSet programSet )
@@ -122,7 +122,7 @@ namespace Axiom.Components.RTShaderSystem
 							                          sourceName );
 						}
 
-						libraryPrograms.Add( subShaderName );
+						this.libraryPrograms.Add( subShaderName );
 					}
 
 					//Check if the lib shader already attached to this shader

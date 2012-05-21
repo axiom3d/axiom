@@ -18,9 +18,9 @@ namespace Axiom.Components.RTShaderSystem
 			EntryPointFunction = null;
 			SkeletalAnimationIncluded = false;
 
-			functions = new List<Function>();
-			dependencies = new List<string>();
-			parameters = new List<UniformParameter>();
+			this.functions = new List<Function>();
+			this.dependencies = new List<string>();
+			this.parameters = new List<UniformParameter>();
 		}
 
 		/// <summary>
@@ -177,9 +177,9 @@ namespace Axiom.Components.RTShaderSystem
 				index = 0;
 
 				//find the next availalbe index of the target type
-				for ( int i = 0; i < parameters.Count; i++ )
+				for ( int i = 0; i < this.parameters.Count; i++ )
 				{
-					if ( parameters[ i ].Type == type && parameters[ i ].IsAutoConstantParameter == false )
+					if ( this.parameters[ i ].Type == type && this.parameters[ i ].IsAutoConstantParameter == false )
 					{
 						index++;
 					}
@@ -203,7 +203,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		public UniformParameter GetParameterByName( string name )
 		{
-			foreach ( var param in parameters )
+			foreach ( var param in this.parameters )
 			{
 				if ( param.Name == name )
 				{
@@ -216,7 +216,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		public UniformParameter GetParameterByType( Axiom.Graphics.GpuProgramParameters.GpuConstantType type, int index )
 		{
-			foreach ( var param in parameters )
+			foreach ( var param in this.parameters )
 			{
 				if ( param.Type == type && param.Index == index )
 				{
@@ -230,7 +230,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		public UniformParameter GetParameterByAutoType( GpuProgramParameters.AutoConstantType autoType )
 		{
-			foreach ( var param in parameters )
+			foreach ( var param in this.parameters )
 			{
 				if ( param.IsAutoConstantParameter && param.AutoConstantType == autoType )
 				{
@@ -242,7 +242,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		public Function GetFunctionByName( string name )
 		{
-			foreach ( var func in functions )
+			foreach ( var func in this.functions )
 			{
 				if ( func.Name == name )
 				{
@@ -270,7 +270,7 @@ namespace Axiom.Components.RTShaderSystem
 			}
 
 			shaderFunction = new Function( name, desc, functionType );
-			functions.Add( shaderFunction );
+			this.functions.Add( shaderFunction );
 
 			return shaderFunction;
 		}
@@ -281,14 +281,14 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="libFileName"> </param>
 		public void AddDependency( string libFileName )
 		{
-			for ( int i = 0; i < dependencies.Count; i++ )
+			for ( int i = 0; i < this.dependencies.Count; i++ )
 			{
-				if ( dependencies[ i ] == libFileName )
+				if ( this.dependencies[ i ] == libFileName )
 				{
 					return;
 				}
 			}
-			dependencies.Add( libFileName );
+			this.dependencies.Add( libFileName );
 		}
 
 		/// <summary>
@@ -297,25 +297,25 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="index"> </param>
 		public string GetDependency( int index )
 		{
-			return dependencies[ index ];
+			return this.dependencies[ index ];
 		}
 
 		private void DestroyParameters()
 		{
-			parameters.Clear();
+			this.parameters.Clear();
 		}
 
 		private void DestroyFunctions()
 		{
-			for ( int i = 0; i < functions.Count; i++ )
+			for ( int i = 0; i < this.functions.Count; i++ )
 			{
-				if ( functions[ i ] != null )
+				if ( this.functions[ i ] != null )
 				{
-					functions[ i ].Dispose();
-					functions[ i ] = null;
+					this.functions[ i ].Dispose();
+					this.functions[ i ] = null;
 				}
 			}
-			functions.Clear();
+			this.functions.Clear();
 		}
 
 		private void AddParameter( UniformParameter parameter )
@@ -325,17 +325,17 @@ namespace Axiom.Components.RTShaderSystem
 				throw new Axiom.Core.AxiomException( "Parameter <" + parameter.Name + "> already declared in program." );
 			}
 
-			parameters.Add( parameter );
+			this.parameters.Add( parameter );
 		}
 
 		private void RemoveParameter( UniformParameter parameter )
 		{
-			for ( int i = 0; i < parameters.Count; i++ )
+			for ( int i = 0; i < this.parameters.Count; i++ )
 			{
-				if ( parameters[ i ] == parameter )
+				if ( this.parameters[ i ] == parameter )
 				{
-					parameters[ i ] = null;
-					parameters.RemoveAt( i );
+					this.parameters[ i ] = null;
+					this.parameters.RemoveAt( i );
 					break;
 				}
 			}
@@ -345,7 +345,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return dependencies.Count;
+				return this.dependencies.Count;
 			}
 		}
 
@@ -353,7 +353,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return type;
+				return this.type;
 			}
 		}
 
@@ -361,7 +361,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return functions;
+				return this.functions;
 			}
 		}
 
@@ -371,7 +371,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return parameters;
+				return this.parameters;
 			}
 		}
 

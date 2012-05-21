@@ -82,7 +82,7 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return localAABB;
+				return this.localAABB;
 			}
 		}
 
@@ -93,11 +93,11 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return octant;
+				return this.octant;
 			}
 			set
 			{
-				octant = value;
+				this.octant = value;
 			}
 		}
 
@@ -160,7 +160,7 @@ namespace Axiom.SceneManagers.Octree
 			//update bounds from attached objects
 			foreach ( MovableObject obj in objectList.Values )
 			{
-				localAABB.Merge( obj.BoundingBox );
+				this.localAABB.Merge( obj.BoundingBox );
 
 				worldAABB = obj.GetWorldBoundingBox( true );
 			}

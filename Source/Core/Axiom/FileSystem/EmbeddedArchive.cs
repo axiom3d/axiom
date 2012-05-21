@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
-//     <id value="$Id: EmbeddedArchive.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -74,7 +74,7 @@ namespace Axiom.FileSystem
 
 		protected override bool DirectoryExists( string directory )
 		{
-			return ( from res in resources
+			return ( from res in this.resources
 			         where res.StartsWith( directory )
 			         select res ).Any();
 		}
@@ -123,7 +123,7 @@ namespace Axiom.FileSystem
 			            	  {
 			            	  	pattern
 			            	  }
-			            	: from res in resources
+			            	: from res in this.resources
 			            	  where res.StartsWith( dir )
 			            	  select res;
 
@@ -153,14 +153,14 @@ namespace Axiom.FileSystem
 		{
 			var named = Name + ",";
 
-			assembly = ( from a in AssemblyEx.Neighbors()
-			             where a.FullName.StartsWith( named )
-			             select a ).First();
+			this.assembly = ( from a in AssemblyEx.Neighbors()
+			                  where a.FullName.StartsWith( named )
+			                  select a ).First();
 			Name = name.Replace( '/', '.' );
-			resources = ( from resource in assembly.GetManifestResourceNames()
-			              //where resource.StartsWith(Name)
-			              select resource ).ToList();
-			resources.Sort();
+			this.resources = ( from resource in this.assembly.GetManifestResourceNames()
+			                   //where resource.StartsWith(Name)
+			                   select resource ).ToList();
+			this.resources.Sort();
 		}
 
 		#endregion Constructors and Destructors
@@ -192,12 +192,12 @@ namespace Axiom.FileSystem
 			{
 				throw new AxiomException( "Cannot create a file in a read-only archive." );
 			}
-			return assembly.GetManifestResourceStream( resources[ resources.BinarySearch( _basePath + filename ) ] );
+			return this.assembly.GetManifestResourceStream( this.resources[ this.resources.BinarySearch( _basePath + filename ) ] );
 		}
 
 		public override bool Exists( string fileName )
 		{
-			return resources.BinarySearch( _basePath + fileName ) >= 0;
+			return this.resources.BinarySearch( _basePath + fileName ) >= 0;
 		}
 
 		#endregion Archive Implementation

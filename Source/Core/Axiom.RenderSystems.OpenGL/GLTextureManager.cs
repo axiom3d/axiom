@@ -60,14 +60,14 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return _warningTextureId;
+				return this._warningTextureId;
 			}
 		}
 
 		internal GLTextureManager( BaseGLSupport glSupport )
 			: base()
 		{
-			_glSupport = glSupport;
+			this._glSupport = glSupport;
 			Is32Bit = true;
 
 			ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
@@ -77,7 +77,7 @@ namespace Axiom.RenderSystems.OpenGL
 		protected override Resource _create( string name, ulong handle, string group, bool isManual,
 		                                     IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
 		{
-			return new GLTexture( this, name, handle, group, isManual, loader, _glSupport );
+			return new GLTexture( this, name, handle, group, isManual, loader, this._glSupport );
 		}
 
 		private void _createWarningTexture()
@@ -96,8 +96,8 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// Create GL resource
-			Gl.glGenTextures( 1, out _warningTextureId );
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D, _warningTextureId );
+			Gl.glGenTextures( 1, out this._warningTextureId );
+			Gl.glBindTexture( Gl.GL_TEXTURE_2D, this._warningTextureId );
 			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAX_LEVEL, 0 );
 			Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB8, width, height, 0, Gl.GL_BGRA, Gl.GL_UNSIGNED_INT_8_8_8_8_REV, data );
 		}
@@ -223,11 +223,11 @@ namespace Axiom.RenderSystems.OpenGL
 				// if we add them, they need to be released here.
 				try
 				{
-					Gl.glDeleteTextures( 1, ref _warningTextureId );
+					Gl.glDeleteTextures( 1, ref this._warningTextureId );
 				}
 				catch ( AccessViolationException ave )
 				{
-					LogManager.Instance.Write( "Error Deleting Texture[{0}].", _warningTextureId );
+					LogManager.Instance.Write( "Error Deleting Texture[{0}].", this._warningTextureId );
 				}
 			}
 

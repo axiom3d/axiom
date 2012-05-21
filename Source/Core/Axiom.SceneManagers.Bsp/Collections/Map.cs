@@ -91,7 +91,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// </summary>
 		public Map()
 		{
-			buckets = new Hashtable();
+			this.buckets = new Hashtable();
 		}
 
 		#endregion Constructor
@@ -101,8 +101,8 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// </summary>
 		public void Clear()
 		{
-			buckets.Clear();
-			count = 0;
+			this.buckets.Clear();
+			this.count = 0;
 		}
 
 		/// <summary>
@@ -110,11 +110,11 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// </summary>
 		public void Clear( object key )
 		{
-			var bucket = (ArrayList)buckets[ key ];
+			var bucket = (ArrayList)this.buckets[ key ];
 			if ( bucket != null )
 			{
-				count -= bucket.Count;
-				buckets.Remove( key );
+				this.count -= bucket.Count;
+				this.buckets.Remove( key );
 			}
 		}
 
@@ -127,25 +127,25 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// <returns>IEnumerator to go through the items assigned to the key.</returns>
 		public IEnumerator Find( object key )
 		{
-			if ( buckets[ key ] == null )
+			if ( this.buckets[ key ] == null )
 			{
 				return null;
 			}
 			else
 			{
-				return ( (ArrayList)buckets[ key ] ).GetEnumerator();
+				return ( (ArrayList)this.buckets[ key ] ).GetEnumerator();
 			}
 		}
 
 		public IList FindBucket( object key )
 		{
-			if ( buckets[ key ] == null )
+			if ( this.buckets[ key ] == null )
 			{
 				return null;
 			}
 			else
 			{
-				return (ArrayList)buckets[ key ];
+				return (ArrayList)this.buckets[ key ];
 			}
 		}
 
@@ -156,13 +156,13 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// <param name="key">Key to look for.</param>
 		public object FindFirst( object key )
 		{
-			if ( buckets[ key ] == null )
+			if ( this.buckets[ key ] == null )
 			{
 				return null;
 			}
 			else
 			{
-				return ( (ArrayList)buckets[ key ] )[ 0 ];
+				return ( (ArrayList)this.buckets[ key ] )[ 0 ];
 			}
 		}
 
@@ -173,9 +173,9 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// <returns></returns>
 		public int Count( object key )
 		{
-			if ( buckets[ key ] != null )
+			if ( this.buckets[ key ] != null )
 			{
-				return ( (ArrayList)buckets[ key ] ).Count;
+				return ( (ArrayList)this.buckets[ key ] ).Count;
 			}
 
 			return 0;
@@ -191,20 +191,20 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			ArrayList container = null;
 
-			if ( buckets[ key ] == null )
+			if ( this.buckets[ key ] == null )
 			{
 				container = new ArrayList();
-				buckets.Add( key, container );
+				this.buckets.Add( key, container );
 			}
 			else
 			{
-				container = (ArrayList)buckets[ key ];
+				container = (ArrayList)this.buckets[ key ];
 			}
 
 			// TODO: Doing the contains check is extremely slow, so for now duplicate items are allowed
 			//if(!container.Contains(val)) {
 			container.Add( val );
-			count++;
+			this.count++;
 			//}
 		}
 
@@ -215,7 +215,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		{
 			get
 			{
-				return count;
+				return this.count;
 			}
 		}
 
@@ -227,7 +227,7 @@ namespace Axiom.SceneManagers.Bsp.Collections
 		/// <returns></returns>
 		public IEnumerator GetBucketEnumerator()
 		{
-			return buckets.Keys.GetEnumerator();
+			return this.buckets.Keys.GetEnumerator();
 		}
 	}
 }

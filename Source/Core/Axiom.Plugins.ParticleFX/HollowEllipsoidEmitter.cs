@@ -67,12 +67,12 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return innerX;
+				return this.innerX;
 			}
 			set
 			{
 				Debug.Assert( value > 0.0f && value < 1.0f );
-				innerX = value;
+				this.innerX = value;
 			}
 		}
 
@@ -80,12 +80,12 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return innerY;
+				return this.innerY;
 			}
 			set
 			{
 				Debug.Assert( value > 0.0f && value < 1.0f );
-				innerY = value;
+				this.innerY = value;
 			}
 		}
 
@@ -93,12 +93,12 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return innerZ;
+				return this.innerZ;
 			}
 			set
 			{
 				Debug.Assert( value > 0.0f && value < 1.0f );
-				innerZ = value;
+				this.innerZ = value;
 			}
 		}
 
@@ -108,9 +108,9 @@ namespace Axiom.ParticleFX
 			: base( ps )
 		{
 			InitDefaults( "HollowEllipsoid" );
-			innerX = 0.5f;
-			innerY = 0.5f;
-			innerZ = 0.5f;
+			this.innerX = 0.5f;
+			this.innerY = 0.5f;
+			this.innerZ = 0.5f;
 		}
 
 		public override void InitParticle( Particle particle )

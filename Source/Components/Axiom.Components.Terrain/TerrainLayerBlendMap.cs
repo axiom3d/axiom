@@ -76,7 +76,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mParent;
+				return this.mParent;
 			}
 		}
 
@@ -88,7 +88,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mLayerIdx;
+				return this.mLayerIdx;
 			}
 		}
 
@@ -100,7 +100,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mData;
+				return this.mData;
 			}
 		}
 
@@ -115,18 +115,18 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public TerrainLayerBlendMap( Terrain parent, byte layerIdx, HardwarePixelBuffer buf )
 		{
-			mParent = parent;
-			mLayerIdx = layerIdx;
-			mChannel = (byte)( ( mLayerIdx - 1 )%4 );
-			mDirty = false;
-			mBuffer = buf;
-			mData = new float[mBuffer.Width*mBuffer.Height*sizeof ( float )];
+			this.mParent = parent;
+			this.mLayerIdx = layerIdx;
+			this.mChannel = (byte)( ( this.mLayerIdx - 1 )%4 );
+			this.mDirty = false;
+			this.mBuffer = buf;
+			this.mData = new float[this.mBuffer.Width*this.mBuffer.Height*sizeof ( float )];
 
 			// we know which of RGBA we need to look at, now find it in the format
 			// because we can't guarantee what precise format the RS gives us
-			PixelFormat fmt = mBuffer.Format;
+			PixelFormat fmt = this.mBuffer.Format;
 			var rgbaShift = PixelUtil.GetBitShifts( fmt );
-			mChannelOffset = (byte)( rgbaShift[ mChannel ]/8 ); // /8 convert to bytes
+			this.mChannelOffset = (byte)( rgbaShift[ this.mChannel ]/8 ); // /8 convert to bytes
 #if AXIOM_BIG_ENDIAN
 	// invert (dealing bytewise)
 			mChannelOffset = (byte)( PixelUtil.GetNumElemBytes( fmt ) - mChannelOffset - 1 );
@@ -147,7 +147,7 @@ namespace Axiom.Components.Terrain
 		public void ConverWorldToUVSpace( Vector3 worldPost, ref Real outX, ref Real outY )
 		{
 			var terrainSpace = Vector3.Zero;
-			mParent.GetTerrainPosition( worldPost, ref terrainSpace );
+			this.mParent.GetTerrainPosition( worldPost, ref terrainSpace );
 			outX = terrainSpace.x;
 			outY = 1.0f - terrainSpace.y;
 		}
@@ -162,7 +162,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void ConvertUVToWorldSpace( Real x, Real y, ref Vector3 worldPos )
 		{
-			mParent.GetPosition( x, 1.0f - y, 0, ref worldPos );
+			this.mParent.GetPosition( x, 1.0f - y, 0, ref worldPos );
 		}
 
 		/// <summary>
@@ -171,8 +171,8 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void ConvertUVToImageSpace( Real x, Real y, ref int outX, ref int outY )
 		{
-			outX = (int)( x*( mBuffer.Width - 1 ) );
-			outY = (int)( y*( mBuffer.Height - 1 ) );
+			outX = (int)( x*( this.mBuffer.Width - 1 ) );
+			outY = (int)( y*( this.mBuffer.Height - 1 ) );
 		}
 
 		/// <summary>
@@ -181,8 +181,8 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void ConvertImageToUVSpace( int x, int y, ref Real outX, ref Real outY )
 		{
-			outX = x/(Real)( mBuffer.Width - 1 );
-			outY = y/(Real)( mBuffer.Height - 1 );
+			outX = x/(Real)( this.mBuffer.Width - 1 );
+			outY = y/(Real)( this.mBuffer.Height - 1 );
 		}
 
 		/// <summary>
@@ -212,7 +212,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public float GetBlendValue( int x, int y )
 		{
-			return mData[ y*mBuffer.Width + x ];
+			return this.mData[ y*this.mBuffer.Width + x ];
 		}
 
 		/// <summary>
@@ -224,7 +224,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void SetBlendValue( int x, int y, float val )
 		{
-			mData[ y*mBuffer.Width + x ] = val;
+			this.mData[ y*this.mBuffer.Width + x ] = val;
 			DirtyRect( new Rectangle( x, y, x + 1, y + 1 ) );
 		}
 
@@ -236,9 +236,9 @@ namespace Axiom.Components.Terrain
 		{
 			var rect = new Rectangle();
 			rect.Top = 0;
-			rect.Bottom = mBuffer.Height;
+			rect.Bottom = this.mBuffer.Height;
 			rect.Left = 0;
-			rect.Right = mBuffer.Width;
+			rect.Right = this.mBuffer.Width;
 			DirtyRect( rect );
 		}
 
@@ -249,17 +249,17 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void DirtyRect( Rectangle rect )
 		{
-			if ( mDirty )
+			if ( this.mDirty )
 			{
-				mDirtyBox.Left = System.Math.Min( mDirtyBox.Left, (int)rect.Left );
-				mDirtyBox.Top = System.Math.Min( mDirtyBox.Top, (int)rect.Top );
-				mDirtyBox.Right = System.Math.Max( mDirtyBox.Right, (int)rect.Right );
-				mDirtyBox.Bottom = System.Math.Max( mDirtyBox.Bottom, (int)rect.Bottom );
+				this.mDirtyBox.Left = System.Math.Min( this.mDirtyBox.Left, (int)rect.Left );
+				this.mDirtyBox.Top = System.Math.Min( this.mDirtyBox.Top, (int)rect.Top );
+				this.mDirtyBox.Right = System.Math.Max( this.mDirtyBox.Right, (int)rect.Right );
+				this.mDirtyBox.Bottom = System.Math.Max( this.mDirtyBox.Bottom, (int)rect.Bottom );
 			}
 			else
 			{
-				mDirtyBox = new BasicBox( (int)rect.Left, (int)rect.Top, (int)rect.Right, (int)rect.Bottom );
-				mDirty = true;
+				this.mDirtyBox = new BasicBox( (int)rect.Left, (int)rect.Top, (int)rect.Right, (int)rect.Bottom );
+				this.mDirty = true;
 			}
 		}
 
@@ -272,24 +272,24 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void Update()
 		{
-			if ( mData != null && mDirty )
+			if ( this.mData != null && this.mDirty )
 			{
-				using ( var mDataBuf = BufferBase.Wrap( mData ) )
+				using ( var mDataBuf = BufferBase.Wrap( this.mData ) )
 				{
-					var pSrcBase = mDataBuf + ( mDirtyBox.Top*mBuffer.Width + mDirtyBox.Left );
-					var pDstBase = mBuffer.Lock( mDirtyBox, BufferLocking.Normal ).Data;
-					pDstBase += mChannelOffset;
-					var dstInc = PixelUtil.GetNumElemBytes( mBuffer.Format );
+					var pSrcBase = mDataBuf + ( this.mDirtyBox.Top*this.mBuffer.Width + this.mDirtyBox.Left );
+					var pDstBase = this.mBuffer.Lock( this.mDirtyBox, BufferLocking.Normal ).Data;
+					pDstBase += this.mChannelOffset;
+					var dstInc = PixelUtil.GetNumElemBytes( this.mBuffer.Format );
 
 #if !AXIOM_SAFE_ONLY
 					unsafe
 #endif
 					{
-						for ( int y = 0; y < mDirtyBox.Height; ++y )
+						for ( int y = 0; y < this.mDirtyBox.Height; ++y )
 						{
-							var pSrc = ( pSrcBase + ( y*mBuffer.Width )*sizeof ( float ) ).ToFloatPointer();
-							var pDst = pDstBase + ( y*mBuffer.Width*dstInc );
-							for ( int x = 0; x < mDirtyBox.Width; ++x )
+							var pSrc = ( pSrcBase + ( y*this.mBuffer.Width )*sizeof ( float ) ).ToFloatPointer();
+							var pDst = pDstBase + ( y*this.mBuffer.Width*dstInc );
+							for ( int x = 0; x < this.mDirtyBox.Width; ++x )
 							{
 								pDst.ToBytePointer()[ 0 ] = (byte)( pSrc[ x ]*255 );
 								pDst += dstInc;
@@ -297,20 +297,20 @@ namespace Axiom.Components.Terrain
 						}
 					}
 
-					mBuffer.Unlock();
-					mDirty = false;
+					this.mBuffer.Unlock();
+					this.mDirty = false;
 				}
 
 				// make sure composite map is updated
 				// mDirtyBox is in image space, convert to terrain units
 				var compositeMapRect = new Rectangle();
-				var blendToTerrain = (float)mParent.Size/(float)mBuffer.Width;
-				compositeMapRect.Left = (long)( mDirtyBox.Left*blendToTerrain );
-				compositeMapRect.Right = (long)( mDirtyBox.Right*blendToTerrain + 1 );
-				compositeMapRect.Top = (long)( ( mBuffer.Height - mDirtyBox.Bottom )*blendToTerrain );
-				compositeMapRect.Bottom = (long)( ( mBuffer.Height - mDirtyBox.Top )*blendToTerrain + 1 );
-				mParent.DirtyCompositeMapRect( compositeMapRect );
-				mParent.UpdateCompositeMapWithDelay();
+				var blendToTerrain = (float)this.mParent.Size/(float)this.mBuffer.Width;
+				compositeMapRect.Left = (long)( this.mDirtyBox.Left*blendToTerrain );
+				compositeMapRect.Right = (long)( this.mDirtyBox.Right*blendToTerrain + 1 );
+				compositeMapRect.Top = (long)( ( this.mBuffer.Height - this.mDirtyBox.Bottom )*blendToTerrain );
+				compositeMapRect.Bottom = (long)( ( this.mBuffer.Height - this.mDirtyBox.Top )*blendToTerrain + 1 );
+				this.mParent.DirtyCompositeMapRect( compositeMapRect );
+				this.mParent.UpdateCompositeMapWithDelay();
 			}
 		}
 
@@ -341,7 +341,8 @@ namespace Axiom.Components.Terrain
 			}
 
 			//pixel conversion
-			var dstMemBox = new PixelBox( dstBox.Width, dstBox.Height, dstBox.Depth, PixelFormat.L8, BufferBase.Wrap( mData ) );
+			var dstMemBox = new PixelBox( dstBox.Width, dstBox.Height, dstBox.Depth, PixelFormat.L8,
+			                              BufferBase.Wrap( this.mData ) );
 			PixelConverter.BulkPixelConversion( src, dstMemBox );
 
 			if ( srcBox != src )
@@ -356,7 +357,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void Blit( ref PixelBox src )
 		{
-			Blit( ref src, new BasicBox( 0, 0, 0, mBuffer.Width, mBuffer.Height, 1 ) );
+			Blit( ref src, new BasicBox( 0, 0, 0, this.mBuffer.Width, this.mBuffer.Height, 1 ) );
 		}
 
 		/// <summary>
@@ -407,16 +408,16 @@ namespace Axiom.Components.Terrain
 			unsafe
 #endif
 			{
-				using ( var pDst = BufferBase.Wrap( mData ) )
+				using ( var pDst = BufferBase.Wrap( this.mData ) )
 				{
 					var pDstPtr = pDst.ToFloatPointer();
 					var pDstIdx = 0;
 					//download data
-					var box = new BasicBox( 0, 0, mBuffer.Width, mBuffer.Height );
-					var pBox = mBuffer.Lock( box, BufferLocking.ReadOnly );
+					var box = new BasicBox( 0, 0, this.mBuffer.Width, this.mBuffer.Height );
+					var pBox = this.mBuffer.Lock( box, BufferLocking.ReadOnly );
 					var pSrc = pBox.Data.ToBytePointer();
-					var pSrcIdx = (int)mChannelOffset;
-					var srcInc = PixelUtil.GetNumElemBytes( mBuffer.Format );
+					var pSrcIdx = (int)this.mChannelOffset;
+					var srcInc = PixelUtil.GetNumElemBytes( this.mBuffer.Format );
 					for ( var y = box.Top; y < box.Bottom; ++y )
 					{
 						for ( var x = box.Left; x < box.Right; ++x )
@@ -425,7 +426,7 @@ namespace Axiom.Components.Terrain
 							pSrcIdx += srcInc;
 						}
 					}
-					mBuffer.Unlock();
+					this.mBuffer.Unlock();
 				}
 			}
 		}

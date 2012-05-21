@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -53,73 +53,73 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public PCPlane()
 		{
-			mPortal = null;
+			this.mPortal = null;
 		}
 
 		public PCPlane( Plane plane )
 		{
 			this.plane = new Plane( plane );
-			mPortal = null;
+			this.mPortal = null;
 		}
 
 		public PCPlane( Vector3 rkNormal, Vector3 rkPoint )
 		{
-			plane = new Plane( rkNormal, rkPoint );
-			mPortal = null;
+			this.plane = new Plane( rkNormal, rkPoint );
+			this.mPortal = null;
 		}
 
 		public PCPlane( Vector3 rkPoint0, Vector3 rkPoint1, Vector3 rkPoint2 )
 		{
-			plane = new Plane( rkPoint0, rkPoint1, rkPoint2 );
-			mPortal = null;
+			this.plane = new Plane( rkPoint0, rkPoint1, rkPoint2 );
+			this.mPortal = null;
 		}
 
 		public PlaneSide GetSide( AxisAlignedBox box )
 		{
-			return plane.GetSide( box );
+			return this.plane.GetSide( box );
 		}
 
 		public PlaneSide GetSide( Vector3 centre, Vector3 halfSize )
 		{
-			return plane.GetSide( centre, halfSize );
+			return this.plane.GetSide( centre, halfSize );
 		}
 
 		public PlaneSide GetSide( Vector3 point )
 		{
-			return plane.GetSide( point );
+			return this.plane.GetSide( point );
 		}
 
 		public void Redefine( Vector3 point0, Vector3 point1, Vector3 point2 )
 		{
-			plane.Redefine( point0, point1, point2 );
+			this.plane.Redefine( point0, point1, point2 );
 		}
 
 		public void Redefine( Vector3 rkNormal, Vector3 rkPoint )
 		{
-			plane.Redefine( rkNormal, rkPoint );
+			this.plane.Redefine( rkNormal, rkPoint );
 		}
 
 		public void SetFromAxiomPlane( Plane axiomPlane )
 		{
-			plane = new Plane( plane );
-			mPortal = null;
+			this.plane = new Plane( this.plane );
+			this.mPortal = null;
 		}
 
 		public Portal Portal
 		{
 			get
 			{
-				return mPortal;
+				return this.mPortal;
 			}
 			set
 			{
-				mPortal = value;
+				this.mPortal = value;
 			}
 		}
 
 		~PCPlane()
 		{
-			mPortal = null;
+			this.mPortal = null;
 		}
 	}
 }

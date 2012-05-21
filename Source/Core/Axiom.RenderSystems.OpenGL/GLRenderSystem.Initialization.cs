@@ -18,17 +18,17 @@ namespace Axiom.RenderSystems.OpenGL
 		private void InitializeContext( RenderTarget primary )
 		{
 			// Set main and current context
-			_mainContext = (GLContext)primary[ "GLCONTEXT" ];
-			_currentContext = _mainContext;
+			this._mainContext = (GLContext)primary[ "GLCONTEXT" ];
+			this._currentContext = this._mainContext;
 
 			// Set primary context as active
-			if ( _currentContext != null )
+			if ( this._currentContext != null )
 			{
-				_currentContext.SetCurrent();
+				this._currentContext.SetCurrent();
 			}
 
 			// Setup GLSupport
-			_glSupport.InitializeExtensions();
+			this._glSupport.InitializeExtensions();
 
 			LogManager.Instance.Write( "***************************" );
 			LogManager.Instance.Write( "*** GL Renderer Started ***" );
@@ -66,19 +66,19 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// create the window
-			var window = _glSupport.NewWindow( name, width, height, isFullscreen, miscParams );
+			var window = this._glSupport.NewWindow( name, width, height, isFullscreen, miscParams );
 
 			// add the new render target
 			AttachRenderTarget( window );
 
-			if ( !_glInitialised )
+			if ( !this._glInitialised )
 			{
 				InitializeContext( window );
 
-				var _glSupportVersion = _glSupport.Version.Split( new[]
-				                                                  {
-				                                                  	' '
-				                                                  } )[ 0 ];
+				var _glSupportVersion = this._glSupport.Version.Split( new[]
+				                                                       {
+				                                                       	' '
+				                                                       } )[ 0 ];
 				var tokens = _glSupportVersion.Split( new[]
 				                                      {
 				                                      	'.'
@@ -115,9 +115,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 				// Initialise the main context
 				OneTimeContextInitialization();
-				if ( _currentContext != null )
+				if ( this._currentContext != null )
 				{
-					_currentContext.Initialized = true;
+					this._currentContext.Initialized = true;
 				}
 			}
 
@@ -153,7 +153,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// set texture the number of texture units
-			_fixedFunctionTextureUnits = caps.TextureUnitCount;
+			this._fixedFunctionTextureUnits = caps.TextureUnitCount;
 
 			//In GL there can be less fixed function texture units than general
 			//texture units. Get the minimum of the two.
@@ -161,9 +161,9 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				int maxTexCoords;
 				Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_COORDS_ARB, out maxTexCoords );
-				if ( _fixedFunctionTextureUnits > maxTexCoords )
+				if ( this._fixedFunctionTextureUnits > maxTexCoords )
 				{
-					_fixedFunctionTextureUnits = maxTexCoords;
+					this._fixedFunctionTextureUnits = maxTexCoords;
 				}
 			}
 
@@ -191,43 +191,43 @@ namespace Axiom.RenderSystems.OpenGL
 
 			if ( caps.HasCapability( Graphics.Capabilities.VertexBuffer ) )
 			{
-				_hardwareBufferManager = new GLHardwareBufferManager();
+				this._hardwareBufferManager = new GLHardwareBufferManager();
 			}
 			else
 			{
-				_hardwareBufferManager = new GLDefaultHardwareBufferManager();
+				this._hardwareBufferManager = new GLDefaultHardwareBufferManager();
 			}
 
 			// XXX Need to check for nv2 support and make a program manager for it
 			// XXX Probably nv1 as well for older cards
 			// GPU Program Manager setup
-			gpuProgramMgr = new GLGpuProgramManager();
+			this.gpuProgramMgr = new GLGpuProgramManager();
 
 			if ( caps.HasCapability( Graphics.Capabilities.VertexPrograms ) )
 			{
 				if ( caps.IsShaderProfileSupported( "arbvp1" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "arbvp1", new ARBGpuProgramFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "arbvp1", new ARBGpuProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "vp30" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "vp30", new ARBGpuProgramFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "vp30", new ARBGpuProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "vp40" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "vp40", new ARBGpuProgramFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "vp40", new ARBGpuProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "gp4vp" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "gp4vp", new ARBGpuProgramFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "gp4vp", new ARBGpuProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "gpu_vp" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "gpu_vp", new ARBGpuProgramFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "gpu_vp", new ARBGpuProgramFactory() );
 				}
 			}
 
@@ -236,15 +236,15 @@ namespace Axiom.RenderSystems.OpenGL
 				//TODO : Should these be createGLArbGpuProgram or createGLGpuNVparseProgram?
 				if ( caps.IsShaderProfileSupported( "nvgp4" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "nvgp4", new ARBGpuProgramFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "nvgp4", new ARBGpuProgramFactory() );
 				}
 				if ( caps.IsShaderProfileSupported( "gp4gp" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "gp4gp", new ARBGpuProgramFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "gp4gp", new ARBGpuProgramFactory() );
 				}
 				if ( caps.IsShaderProfileSupported( "gpu_gp" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "gpu_gp", new ARBGpuProgramFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "gpu_gp", new ARBGpuProgramFactory() );
 				}
 			}
 
@@ -252,50 +252,50 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( caps.IsShaderProfileSupported( "fp20" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "fp20", new Nvidia.NvparseProgramFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "fp20", new Nvidia.NvparseProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "ps_1_4" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "ps_1_4", new ATI.ATIFragmentShaderFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "ps_1_4", new ATI.ATIFragmentShaderFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "ps_1_3" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "ps_1_3", new ATI.ATIFragmentShaderFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "ps_1_3", new ATI.ATIFragmentShaderFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "ps_1_2" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "ps_1_2", new ATI.ATIFragmentShaderFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "ps_1_2", new ATI.ATIFragmentShaderFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "ps_1_1" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "ps_1_1", new ATI.ATIFragmentShaderFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "ps_1_1", new ATI.ATIFragmentShaderFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "arbfp1" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "arbfp1", new ARBGpuProgramFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "arbfp1", new ARBGpuProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "fp40" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "fp40", new ARBGpuProgramFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "fp40", new ARBGpuProgramFactory() );
 				}
 
 				if ( caps.IsShaderProfileSupported( "fp30" ) )
 				{
-					gpuProgramMgr.RegisterProgramFactory( "fp30", new ARBGpuProgramFactory() );
+					this.gpuProgramMgr.RegisterProgramFactory( "fp30", new ARBGpuProgramFactory() );
 				}
 			}
 
 			if ( caps.IsShaderProfileSupported( "glsl" ) )
 			{
 				// NFZ - check for GLSL vertex and fragment shader support successful
-				_GLSLProgramFactory = new GLSL.GLSLProgramFactory();
-				HighLevelGpuProgramManager.Instance.AddFactory( _GLSLProgramFactory );
+				this._GLSLProgramFactory = new GLSL.GLSLProgramFactory();
+				HighLevelGpuProgramManager.Instance.AddFactory( this._GLSLProgramFactory );
 				LogManager.Instance.Write( "GLSL support detected" );
 			}
 
@@ -350,7 +350,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					// Create FBO manager
 					LogManager.Instance.Write( "GL: Using GL_EXT_framebuffer_object for rendering to textures (best)" );
-					rttManager = new GLFBORTTManager( _glSupport, false );
+					this.rttManager = new GLFBORTTManager( this._glSupport, false );
 					caps.SetCapability( Graphics.Capabilities.RTTSerperateDepthBuffer );
 
 					//TODO: Check if we're using OpenGL 3.0 and add RSC_RTT_DEPTHBUFFER_RESOLUTION_LESSEQUAL flag
@@ -364,7 +364,7 @@ namespace Axiom.RenderSystems.OpenGL
 					if ( caps.HasCapability( Graphics.Capabilities.HardwareRenderToTexture ) )
 					{
 						// Use PBuffers
-						rttManager = new GLPBRTTManager( _glSupport, primary );
+						this.rttManager = new GLPBRTTManager( this._glSupport, primary );
 						LogManager.Instance.Write( "GL: Using PBuffers for rendering to textures" );
 
 						//TODO: Depth buffer sharing in pbuffer is left unsupported
@@ -373,7 +373,7 @@ namespace Axiom.RenderSystems.OpenGL
 				else
 				{
 					// No pbuffer support either -- fallback to simplest copying from framebuffer
-					rttManager = new GLCopyingRTTManager( _glSupport );
+					this.rttManager = new GLCopyingRTTManager( this._glSupport );
 					LogManager.Instance.Write( "GL: Using framebuffer copy for rendering to textures (worst)" );
 					LogManager.Instance.Write(
 						"GL: Warning: RenderTexture size is restricted to size of framebuffer. If you are on Linux, consider using GLX instead of SDL." );
@@ -394,9 +394,9 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// Create the texture manager        
-			textureManager = new GLTextureManager( _glSupport );
+			textureManager = new GLTextureManager( this._glSupport );
 
-			_glInitialised = true;
+			this._glInitialised = true;
 		}
 
 		#endregion

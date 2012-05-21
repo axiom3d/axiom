@@ -105,18 +105,18 @@ namespace Axiom.RenderSystems.DirectX9
 
 				// Find the index buffer of this device.
 				BufferResources it;
-				var wasBufferFound = _mapDeviceToBufferResources.TryGetValue( d3D9Device, out it );
+				var wasBufferFound = this._mapDeviceToBufferResources.TryGetValue( d3D9Device, out it );
 
 				// Case vertex buffer was not found for the current device -> create it.		
 				if ( !wasBufferFound || it.VertexBuffer == null )
 				{
-					CreateBuffer( d3D9Device, _bufferDesc.Pool );
-					it = _mapDeviceToBufferResources[ d3D9Device ];
+					CreateBuffer( d3D9Device, this._bufferDesc.Pool );
+					it = this._mapDeviceToBufferResources[ d3D9Device ];
 				}
 
 				if ( it.IsOutOfDate )
 				{
-					_updateBufferResources( _systemMemoryBuffer, ref it );
+					_updateBufferResources( this._systemMemoryBuffer, ref it );
 				}
 
 				it.LastUsedFrame = Root.Instance.NextFrameNumber;
@@ -137,7 +137,7 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			_mapDeviceToBufferResources = new Dictionary<D3D9.Device, BufferResources>();
+			this._mapDeviceToBufferResources = new Dictionary<D3D9.Device, BufferResources>();
 
 #if AXIOM_D3D_MANAGE_BUFFERS
 			var eResourcePool = useSystemMemory ? D3D9.Pool.SystemMemory : // If not system mem, use managed pool UNLESS buffer is discardable
@@ -148,17 +148,17 @@ namespace Axiom.RenderSystems.DirectX9
 #endif
 
 			// Set the desired memory pool.
-			_bufferDesc.Pool = eResourcePool;
+			this._bufferDesc.Pool = eResourcePool;
 
 			// Allocate the system memory buffer.
-			_systemMemoryBuffer = BufferBase.Wrap( new byte[sizeInBytes] );
+			this._systemMemoryBuffer = BufferBase.Wrap( new byte[sizeInBytes] );
 
 			// Case we have to create this buffer resource on loading.
 			if ( D3D9RenderSystem.ResourceManager.CreationPolicy == D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices )
 			{
 				foreach ( var d3d9Device in D3D9RenderSystem.ResourceCreationDevices )
 				{
-					CreateBuffer( d3d9Device, _bufferDesc.Pool );
+					CreateBuffer( d3d9Device, this._bufferDesc.Pool );
 				}
 			}
 
@@ -178,13 +178,13 @@ namespace Axiom.RenderSystems.DirectX9
 					//Entering critical section
 					this.LockDeviceAccess();
 
-					foreach ( var it in _mapDeviceToBufferResources.Values )
+					foreach ( var it in this._mapDeviceToBufferResources.Values )
 					{
 						it.VertexBuffer.SafeDispose();
 						it.SafeDispose();
 					}
-					_mapDeviceToBufferResources.Clear();
-					_systemMemoryBuffer.SafeDispose();
+					this._mapDeviceToBufferResources.Clear();
+					this._systemMemoryBuffer.SafeDispose();
 
 					D3D9RenderSystem.ResourceManager.NotifyResourceDestroyed( this );
 
@@ -211,7 +211,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( options != BufferLocking.ReadOnly )
 			{
-				foreach ( var it in _mapDeviceToBufferResources )
+				foreach ( var it in this._mapDeviceToBufferResources )
 				{
 					var bufferResources = it.Value;
 					bufferResources.IsOutOfDate = true;
@@ -245,7 +245,7 @@ namespace Axiom.RenderSystems.DirectX9
 			//Leaving critical section
 			this.UnlockDeviceAccess();
 
-			return _systemMemoryBuffer + offset;
+			return this._systemMemoryBuffer + offset;
 		}
 
 		/// <see cref="Axiom.Graphics.HardwareBuffer.UnlockImpl"/>
@@ -257,14 +257,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 			var nextFrameNumber = Root.Instance.NextFrameNumber;
 
-			foreach ( var it in _mapDeviceToBufferResources )
+			foreach ( var it in this._mapDeviceToBufferResources )
 			{
 				var bufferResources = it.Value;
 
 				if ( bufferResources.IsOutOfDate && bufferResources.VertexBuffer != null &&
 				     nextFrameNumber - bufferResources.LastUsedFrame <= 1 )
 				{
-					_updateBufferResources( _systemMemoryBuffer, ref bufferResources );
+					_updateBufferResources( this._systemMemoryBuffer, ref bufferResources );
 				}
 			}
 
@@ -313,14 +313,14 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			// Find the vertex buffer of this device.
 			BufferResources bufferResources;
-			if ( _mapDeviceToBufferResources.TryGetValue( d3d9Device, out bufferResources ) )
+			if ( this._mapDeviceToBufferResources.TryGetValue( d3d9Device, out bufferResources ) )
 			{
 				bufferResources.VertexBuffer.SafeDispose();
 			}
 			else
 			{
 				bufferResources = new BufferResources();
-				_mapDeviceToBufferResources.Add( d3d9Device, bufferResources );
+				this._mapDeviceToBufferResources.Add( d3d9Device, bufferResources );
 			}
 
 			bufferResources.VertexBuffer = null;
@@ -342,7 +342,7 @@ namespace Axiom.RenderSystems.DirectX9
 				throw new AxiomException( "Cannot restore D3D9 vertex buffer", ex );
 			}
 
-			_bufferDesc = bufferResources.VertexBuffer.Description;
+			this._bufferDesc = bufferResources.VertexBuffer.Description;
 		}
 
 		/// <summary>
@@ -404,7 +404,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( D3D9RenderSystem.ResourceManager.CreationPolicy == D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices )
 			{
-				CreateBuffer( d3d9Device, _bufferDesc.Pool );
+				CreateBuffer( d3d9Device, this._bufferDesc.Pool );
 			}
 
 			//Leaving critical section
@@ -418,11 +418,11 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			if ( _mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
+			if ( this._mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
 			{
-				_mapDeviceToBufferResources[ d3d9Device ].VertexBuffer.SafeDispose();
-				_mapDeviceToBufferResources[ d3d9Device ].SafeDispose();
-				_mapDeviceToBufferResources.Remove( d3d9Device );
+				this._mapDeviceToBufferResources[ d3d9Device ].VertexBuffer.SafeDispose();
+				this._mapDeviceToBufferResources[ d3d9Device ].SafeDispose();
+				this._mapDeviceToBufferResources.Remove( d3d9Device );
 			}
 
 			//Leaving critical section
@@ -436,11 +436,11 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			if ( _bufferDesc.Pool == D3D9.Pool.Default )
+			if ( this._bufferDesc.Pool == D3D9.Pool.Default )
 			{
-				if ( _mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
+				if ( this._mapDeviceToBufferResources.ContainsKey( d3d9Device ) )
 				{
-					_mapDeviceToBufferResources[ d3d9Device ].VertexBuffer.SafeDispose();
+					this._mapDeviceToBufferResources[ d3d9Device ].VertexBuffer.SafeDispose();
 				}
 			}
 
@@ -457,7 +457,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( D3D9RenderSystem.ResourceManager.CreationPolicy == D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices )
 			{
-				CreateBuffer( d3d9Device, _bufferDesc.Pool );
+				CreateBuffer( d3d9Device, this._bufferDesc.Pool );
 			}
 
 			//Leaving critical section

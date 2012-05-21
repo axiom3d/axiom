@@ -63,15 +63,15 @@ namespace Axiom.Plugins.FreeImageCodecs
 		{
 			get
 			{
-				return _type;
+				return this._type;
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public FreeImageCodec( string type, FI.FREE_IMAGE_TYPE freeImageType )
 		{
-			_type = type;
-			_freeImageType = freeImageType;
+			this._type = type;
+			this._freeImageType = freeImageType;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -286,8 +286,8 @@ namespace Axiom.Plugins.FreeImageCodecs
 				} //end switch
 
 				// Check support for this image type & bit depth
-				if ( !FI.FreeImage.FIFSupportsExportType( (FI.FREE_IMAGE_FORMAT)_freeImageType, imageType ) ||
-				     !FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType,
+				if ( !FI.FreeImage.FIFSupportsExportType( (FI.FREE_IMAGE_FORMAT)this._freeImageType, imageType ) ||
+				     !FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)this._freeImageType,
 				                                         PixelUtil.GetNumElemBits( requiredFormat ) ) )
 				{
 					// Ok, need to allocate a fallback
@@ -315,10 +315,10 @@ namespace Axiom.Plugins.FreeImageCodecs
 
 				// Check BPP
 				var bpp = PixelUtil.GetNumElemBits( requiredFormat );
-				if ( !FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, bpp ) )
+				if ( !FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)this._freeImageType, bpp ) )
 				{
 					if ( bpp == 32 && PixelUtil.HasAlpha( imgData.format ) &&
-					     FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, 24 ) )
+					     FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)this._freeImageType, 24 ) )
 					{
 						// drop to 24 bit (lose alpha)
 						if ( FI.FreeImage.IsLittleEndian() )
@@ -333,7 +333,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 						bpp = 24;
 					}
 					else if ( bpp == 128 && PixelUtil.HasAlpha( imgData.format ) &&
-					          FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)_freeImageType, 96 ) )
+					          FI.FreeImage.FIFSupportsExportBPP( (FI.FREE_IMAGE_FORMAT)this._freeImageType, 96 ) )
 					{
 						// drop to 96-bit floating point
 						requiredFormat = PixelFormat.FLOAT32_RGB;
@@ -411,7 +411,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 			// open memory chunk allocated by FreeImage
 			var mem = FI.FreeImage.OpenMemory( IntPtr.Zero, 0 );
 			// write data into memory
-			FI.FreeImage.SaveToMemory( (FI.FREE_IMAGE_FORMAT)_freeImageType, fiBitmap, mem, FI.FREE_IMAGE_SAVE_FLAGS.DEFAULT );
+			FI.FreeImage.SaveToMemory( (FI.FREE_IMAGE_FORMAT)this._freeImageType, fiBitmap, mem, FI.FREE_IMAGE_SAVE_FLAGS.DEFAULT );
 			// Grab data information
 			var data = IntPtr.Zero;
 			uint size = 0;
@@ -441,7 +441,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 		public override void EncodeToFile( Stream input, string outFileName, CodecData data )
 		{
 			var fiBitMap = _encode( input, data );
-			FI.FreeImage.Save( (FI.FREE_IMAGE_FORMAT)_freeImageType, fiBitMap, outFileName, FI.FREE_IMAGE_SAVE_FLAGS.DEFAULT );
+			FI.FreeImage.Save( (FI.FREE_IMAGE_FORMAT)this._freeImageType, fiBitMap, outFileName, FI.FREE_IMAGE_SAVE_FLAGS.DEFAULT );
 			FI.FreeImage.Unload( fiBitMap );
 		}
 
@@ -459,8 +459,8 @@ namespace Axiom.Plugins.FreeImageCodecs
 			{
 				fiMem = FI.FreeImage.OpenMemory( datPtr.Pin(), (uint)data.Length );
 				datPtr.UnPin();
-				ff = (FI.FREE_IMAGE_FORMAT)_freeImageType;
-				fiBitmap = FI.FreeImage.LoadFromMemory( (FI.FREE_IMAGE_FORMAT)_freeImageType, fiMem,
+				ff = (FI.FREE_IMAGE_FORMAT)this._freeImageType;
+				fiBitmap = FI.FreeImage.LoadFromMemory( (FI.FREE_IMAGE_FORMAT)this._freeImageType, fiMem,
 				                                        FI.FREE_IMAGE_LOAD_FLAGS.DEFAULT );
 			}
 

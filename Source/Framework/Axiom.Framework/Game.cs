@@ -62,23 +62,23 @@ namespace Axiom.Framework
 			CreateViewports();
 			CreateInput();
 			CreateScene();
-			Engine.StartRendering();
+			this.Engine.StartRendering();
 		}
 
 		private void PreInitialize()
 		{
-			ConfigurationManager = new DefaultConfigurationManager();
+			this.ConfigurationManager = new DefaultConfigurationManager();
 
 			// instantiate the Root singleton
-			Engine = new Root( ConfigurationManager.LogFilename );
+			this.Engine = new Root( this.ConfigurationManager.LogFilename );
 
 			// add event handlers for frame events
-			Engine.FrameStarted += Engine_FrameRenderingQueued;
+			this.Engine.FrameStarted += Engine_FrameRenderingQueued;
 		}
 
 		public virtual void LoadConfiguration()
 		{
-			ConfigurationManager.RestoreConfiguration( Engine );
+			this.ConfigurationManager.RestoreConfiguration( this.Engine );
 		}
 
 
@@ -93,21 +93,21 @@ namespace Axiom.Framework
 
 		public virtual void CreateRenderSystem()
 		{
-			if ( Engine.RenderSystem == null )
+			if ( this.Engine.RenderSystem == null )
 			{
-				RenderSystem = Engine.RenderSystem = Engine.RenderSystems.First().Value;
+				this.RenderSystem = this.Engine.RenderSystem = this.Engine.RenderSystems.First().Value;
 			}
 			else
 			{
-				RenderSystem = Engine.RenderSystem;
+				this.RenderSystem = this.Engine.RenderSystem;
 			}
 		}
 
 		public virtual void CreateRenderWindow()
 		{
-			Window = Root.Instance.Initialize( true, "Axiom Framework Window" );
+			this.Window = Root.Instance.Initialize( true, "Axiom Framework Window" );
 
-			WindowEventMonitor.Instance.RegisterListener( Window, this );
+			WindowEventMonitor.Instance.RegisterListener( this.Window, this );
 		}
 
 		public virtual void LoadContent()
@@ -118,36 +118,36 @@ namespace Axiom.Framework
 		public virtual void CreateSceneManager()
 		{
 			// Get the SceneManager, a generic one by default
-			SceneManager = Engine.CreateSceneManager( "DefaultSceneManager", "GameSMInstance" );
-			SceneManager.ClearScene();
+			this.SceneManager = this.Engine.CreateSceneManager( "DefaultSceneManager", "GameSMInstance" );
+			this.SceneManager.ClearScene();
 		}
 
 		public virtual void CreateCamera()
 		{
 			// create a camera and initialize its position
-			Camera = SceneManager.CreateCamera( "MainCamera" );
-			Camera.Position = new Vector3( 0, 0, 500 );
-			Camera.LookAt( new Vector3( 0, 0, -300 ) );
+			this.Camera = this.SceneManager.CreateCamera( "MainCamera" );
+			this.Camera.Position = new Vector3( 0, 0, 500 );
+			this.Camera.LookAt( new Vector3( 0, 0, -300 ) );
 
 			// set the near clipping plane to be very close
-			Camera.Near = 5;
+			this.Camera.Near = 5;
 
-			Camera.AutoAspectRatio = true;
+			this.Camera.AutoAspectRatio = true;
 		}
 
 		public virtual void CreateViewports()
 		{
 			// create a new viewport and set it's background color
-			Viewport = Window.AddViewport( Camera, 0, 0, 1.0f, 1.0f, 100 );
-			Viewport.BackgroundColor = ColorEx.SteelBlue;
+			this.Viewport = this.Window.AddViewport( this.Camera, 0, 0, 1.0f, 1.0f, 100 );
+			this.Viewport.BackgroundColor = ColorEx.SteelBlue;
 		}
 
 		public virtual void CreateInput()
 		{
 			var pl = new SharpInputSystem.ParameterList();
-			pl.Add( new SharpInputSystem.Parameter( "WINDOW", Window[ "WINDOW" ] ) );
+			pl.Add( new SharpInputSystem.Parameter( "WINDOW", this.Window[ "WINDOW" ] ) );
 
-			if ( RenderSystem.Name.Contains( "DirectX" ) )
+			if ( this.RenderSystem.Name.Contains( "DirectX" ) )
 			{
 				//Default mode is foreground exclusive..but, we want to show mouse - so nonexclusive
 				pl.Add( new SharpInputSystem.Parameter( "w32_mouse", "CLF_BACKGROUND" ) );
@@ -155,7 +155,7 @@ namespace Axiom.Framework
 			}
 
 			//This never returns null.. it will raise an exception on errors
-			InputManager = SharpInputSystem.InputManager.CreateInputSystem( pl );
+			this.InputManager = SharpInputSystem.InputManager.CreateInputSystem( pl );
 			//mouse = InputManager.CreateInputObject<SharpInputSystem.Mouse>( true, "" );
 			//keyboard = InputManager.CreateInputObject<SharpInputSystem.Keyboard>( true, "" );
 		}
@@ -207,28 +207,28 @@ namespace Axiom.Framework
 			{
 				if ( disposeManagedResources )
 				{
-					if ( Engine != null )
+					if ( this.Engine != null )
 					{
 						// remove event handlers
-						Engine.FrameStarted -= Engine_FrameRenderingQueued;
+						this.Engine.FrameStarted -= Engine_FrameRenderingQueued;
 					}
-					if ( SceneManager != null )
+					if ( this.SceneManager != null )
 					{
-						SceneManager.RemoveAllCameras();
+						this.SceneManager.RemoveAllCameras();
 					}
-					Camera = null;
+					this.Camera = null;
 					if ( Root.Instance != null )
 					{
-						Root.Instance.RenderSystem.DetachRenderTarget( Window );
+						Root.Instance.RenderSystem.DetachRenderTarget( this.Window );
 					}
-					if ( Window != null )
+					if ( this.Window != null )
 					{
-						WindowEventMonitor.Instance.UnregisterWindow( Window );
-						Window.Dispose();
+						WindowEventMonitor.Instance.UnregisterWindow( this.Window );
+						this.Window.Dispose();
 					}
-					if ( Engine != null )
+					if ( this.Engine != null )
 					{
-						Engine.Dispose();
+						this.Engine.Dispose();
 					}
 				}
 
@@ -279,7 +279,7 @@ namespace Axiom.Framework
 		public void WindowClosed( RenderWindow rw )
 		{
 			// Only do this for the Main Window
-			if ( rw == Window )
+			if ( rw == this.Window )
 			{
 				Root.Instance.QueueEndRendering();
 			}

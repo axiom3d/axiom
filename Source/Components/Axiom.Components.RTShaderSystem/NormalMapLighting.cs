@@ -79,16 +79,16 @@ namespace Axiom.Components.RTShaderSystem
 
 		public NormalMapLighting()
 		{
-			trackVertexColorType = TrackVertexColor.None;
-			normalMapSamplerIndex = 0;
-			vsTexCoordSetIndex = 0;
-			specularEnabled = false;
-			normalMapSpace = NormalMapSpace.Tangent;
-			normalMapMinFilter = FilterOptions.Linear;
-			normalMapMagFilter = FilterOptions.Linear;
-			normalMapMipfilter = FilterOptions.Point;
-			normalMapAnisotropy = 1;
-			normalMapMipBias = -1.0;
+			this.trackVertexColorType = TrackVertexColor.None;
+			this.normalMapSamplerIndex = 0;
+			this.vsTexCoordSetIndex = 0;
+			this.specularEnabled = false;
+			this.normalMapSpace = NormalMapSpace.Tangent;
+			this.normalMapMinFilter = FilterOptions.Linear;
+			this.normalMapMagFilter = FilterOptions.Linear;
+			this.normalMapMipfilter = FilterOptions.Point;
+			this.normalMapAnisotropy = 1;
+			this.normalMapMipBias = -1.0;
 
 			blankLight.Diffuse = ColorEx.Black;
 			blankLight.Specular = ColorEx.Black;
@@ -101,17 +101,17 @@ namespace Axiom.Components.RTShaderSystem
 
 		public void SetNormalMapFiltering( FilterOptions minFilter, FilterOptions magFilter, FilterOptions mipFilter )
 		{
-			normalMapMinFilter = minFilter;
-			normalMapMagFilter = magFilter;
-			normalMapMipfilter = mipFilter;
+			this.normalMapMinFilter = minFilter;
+			this.normalMapMagFilter = magFilter;
+			this.normalMapMipfilter = mipFilter;
 		}
 
 		public void GetNormalMapFiltering( out FilterOptions minFilter, out FilterOptions magFilter,
 		                                   out FilterOptions mipFilter )
 		{
-			minFilter = normalMapMinFilter;
-			magFilter = normalMapMagFilter;
-			mipFilter = normalMapMipfilter;
+			minFilter = this.normalMapMinFilter;
+			magFilter = this.normalMapMagFilter;
+			mipFilter = this.normalMapMipfilter;
 		}
 
 		#endregion
@@ -131,7 +131,7 @@ namespace Axiom.Components.RTShaderSystem
 		public override void UpdateGpuProgramsParams( IRenderable rend, Pass pass, AutoParamDataSource source,
 		                                              Core.Collections.LightList lightList )
 		{
-			if ( lightParamsList.Count == 0 )
+			if ( this.lightParamsList.Count == 0 )
 			{
 				return;
 			}
@@ -151,15 +151,15 @@ namespace Axiom.Components.RTShaderSystem
 
 			matWorldInvRotation = new Matrix3( vRow0, vRow1, vRow2 );
 			//update inverse rotation parameter
-			if ( worldInvRotMatrix != null )
+			if ( this.worldInvRotMatrix != null )
 			{
-				worldInvRotMatrix.SetGpuParameter( matWorldInvRotation );
+				this.worldInvRotMatrix.SetGpuParameter( matWorldInvRotation );
 			}
 
 			//update per light parameters
-			for ( int i = 0; i < lightParamsList.Count; i++ )
+			for ( int i = 0; i < this.lightParamsList.Count; i++ )
 			{
-				LightParams curParams = lightParamsList[ i ];
+				LightParams curParams = this.lightParamsList[ i ];
 
 				if ( curLightType != curParams.Type )
 				{
@@ -258,7 +258,7 @@ namespace Axiom.Components.RTShaderSystem
 				}
 
 				//Update diffuse color
-				if ( ( trackVertexColorType & TrackVertexColor.Diffuse ) == 0 )
+				if ( ( this.trackVertexColorType & TrackVertexColor.Diffuse ) == 0 )
 				{
 					color = srcLight.Diffuse*pass.Diffuse;
 					curParams.DiffuseColor.SetGpuParameter( color );
@@ -270,10 +270,10 @@ namespace Axiom.Components.RTShaderSystem
 				}
 
 				//Update specular color if need to
-				if ( specularEnabled )
+				if ( this.specularEnabled )
 				{
 					//Update diffuse color
-					if ( ( trackVertexColorType & TrackVertexColor.Diffuse ) == 0 )
+					if ( ( this.trackVertexColorType & TrackVertexColor.Diffuse ) == 0 )
 					{
 						color = srcLight.Specular*pass.Specular;
 						curParams.SpecularColor.SetGpuParameter( color );
@@ -308,16 +308,16 @@ namespace Axiom.Components.RTShaderSystem
 			Function vsMain = vsProgram.EntryPointFunction;
 			Function psMain = psProgram.EntryPointFunction;
 
-			for ( int i = 0; i < lightParamsList.Count; i++ )
+			for ( int i = 0; i < this.lightParamsList.Count; i++ )
 			{
-				switch ( lightParamsList[ i ].Type )
+				switch ( this.lightParamsList[ i ].Type )
 				{
 					case LightType.Directional:
-						lightParamsList[ i ].Direction =
+						this.lightParamsList[ i ].Direction =
 							vsProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
 							                            GpuProgramParameters.GpuParamVariability.PerObject,
 							                            "light_direction_obj_space" );
-						if ( lightParamsList[ i ].Direction == null )
+						if ( this.lightParamsList[ i ].Direction == null )
 						{
 							return false;
 						}
@@ -325,7 +325,7 @@ namespace Axiom.Components.RTShaderSystem
 
 						Parameter.ContentType pctToUse;
 
-						if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
+						if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
 						{
 							switch ( i )
 							{
@@ -353,11 +353,11 @@ namespace Axiom.Components.RTShaderSystem
 								default:
 									throw new AxiomException( "Index out of range" );
 							}
-							lightParamsList[ i ].VSOutDirection =
+							this.lightParamsList[ i ].VSOutDirection =
 								vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1, pctToUse,
 								                               GpuProgramParameters.GpuConstantType.Float3 );
 						}
-						else if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
+						else if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
 						{
 							switch ( i )
 							{
@@ -385,283 +385,283 @@ namespace Axiom.Components.RTShaderSystem
 								default:
 									throw new AxiomException( "Index out of range" );
 							}
-							lightParamsList[ i ].VSOutToLightDir =
+							this.lightParamsList[ i ].VSOutToLightDir =
 								vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1, pctToUse,
 								                               GpuProgramParameters.GpuConstantType.Float3 );
 						}
-						if ( lightParamsList[ i ].VSOutToLightDir == null )
+						if ( this.lightParamsList[ i ].VSOutToLightDir == null )
 						{
 							return false;
 						}
 
-						lightParamsList[ i ].PSInDirection =
+						this.lightParamsList[ i ].PSInDirection =
 							psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
-							                              lightParamsList[ i ].VSOutToLightDir.Index,
-							                              lightParamsList[ i ].VSOutToLightDir.Content,
-							                              lightParamsList[ i ].VSOutToLightDir.Type );
-						if ( lightParamsList[ i ].PSInDirection == null )
+							                              this.lightParamsList[ i ].VSOutToLightDir.Index,
+							                              this.lightParamsList[ i ].VSOutToLightDir.Content,
+							                              this.lightParamsList[ i ].VSOutToLightDir.Type );
+						if ( this.lightParamsList[ i ].PSInDirection == null )
 						{
 							return false;
 						}
 
 						break;
 					case LightType.Point:
-						vsInPosition = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
-						                                             Parameter.ContentType.PositionObjectSpace,
-						                                             GpuProgramParameters.GpuConstantType.Float4 );
-						if ( vsInPosition == null )
+						this.vsInPosition = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
+						                                                  Parameter.ContentType.PositionObjectSpace,
+						                                                  GpuProgramParameters.GpuConstantType.Float4 );
+						if ( this.vsInPosition == null )
 						{
 							return false;
 						}
 
-						lightParamsList[ i ].Position =
+						this.lightParamsList[ i ].Position =
 							vsProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
 							                            GpuProgramParameters.GpuParamVariability.Lights |
 							                            GpuProgramParameters.GpuParamVariability.PerObject,
 							                            "light_position_world_space" );
-						if ( lightParamsList[ i ].Position == null )
+						if ( this.lightParamsList[ i ].Position == null )
 						{
 							return false;
 						}
 
-						if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
+						if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
 						{
-							lightParamsList[ i ].VSOutToLightDir =
+							this.lightParamsList[ i ].VSOutToLightDir =
 								vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
 								                               IntToEnum( RTShaderSystem.NormalMapSpace.Tangent, i ),
 								                               GpuProgramParameters.GpuConstantType.Float3 );
 						}
-						else if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
+						else if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
 						{
-							lightParamsList[ i ].VSOutToLightDir =
+							this.lightParamsList[ i ].VSOutToLightDir =
 								vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
 								                               IntToEnum( RTShaderSystem.NormalMapSpace.Object, i ),
 								                               GpuProgramParameters.GpuConstantType.Float3 );
 						}
-						if ( lightParamsList[ i ].VSOutToLightDir == null )
+						if ( this.lightParamsList[ i ].VSOutToLightDir == null )
 						{
 							return false;
 						}
 
-						lightParamsList[ i ].PSInToLightDir =
+						this.lightParamsList[ i ].PSInToLightDir =
 							psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
-							                              lightParamsList[ i ].VSOutToLightDir.Index,
-							                              lightParamsList[ i ].VSOutToLightDir.Content,
-							                              lightParamsList[ i ].VSOutToLightDir.Type );
-						if ( lightParamsList[ i ].PSInToLightDir == null )
+							                              this.lightParamsList[ i ].VSOutToLightDir.Index,
+							                              this.lightParamsList[ i ].VSOutToLightDir.Content,
+							                              this.lightParamsList[ i ].VSOutToLightDir.Type );
+						if ( this.lightParamsList[ i ].PSInToLightDir == null )
 						{
 							return false;
 						}
 
-						lightParamsList[ i ].AttenuatParams =
+						this.lightParamsList[ i ].AttenuatParams =
 							psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
 							                            GpuProgramParameters.GpuParamVariability.Lights,
 							                            "light_attenuation" );
-						if ( lightParamsList[ i ].AttenuatParams == null )
+						if ( this.lightParamsList[ i ].AttenuatParams == null )
 						{
 							return false;
 						}
 
 						//Resolve local dir
-						if ( vsLocalDir == null )
+						if ( this.vsLocalDir == null )
 						{
-							vsLocalDir = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0,
-							                                           "lNormalMapTempDir",
-							                                           GpuProgramParameters.GpuConstantType.Float3 );
-							if ( vsLocalDir == null )
+							this.vsLocalDir = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0,
+							                                                "lNormalMapTempDir",
+							                                                GpuProgramParameters.GpuConstantType.Float3 );
+							if ( this.vsLocalDir == null )
 							{
 								return false;
 							}
 						}
 
 						//Resolve world position
-						if ( vsWorldPosition == null )
+						if ( this.vsWorldPosition == null )
 						{
-							vsWorldPosition = vsMain.ResolveLocalParameter( Parameter.SemanticType.Position, 0,
-							                                                Parameter.ContentType.PositionWorldSpace,
-							                                                GpuProgramParameters.GpuConstantType.Float3 );
-							if ( vsWorldPosition == null )
+							this.vsWorldPosition = vsMain.ResolveLocalParameter( Parameter.SemanticType.Position, 0,
+							                                                     Parameter.ContentType.PositionWorldSpace,
+							                                                     GpuProgramParameters.GpuConstantType.Float3 );
+							if ( this.vsWorldPosition == null )
 							{
 								return false;
 							}
 						}
 
 						//resolve world matrix
-						if ( worldMatrix == null )
+						if ( this.worldMatrix == null )
 						{
-							worldMatrix =
+							this.worldMatrix =
 								vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.WorldMatrix, 0 );
-							if ( worldMatrix == null )
+							if ( this.worldMatrix == null )
 							{
 								return false;
 							}
 						}
 						//resolve inverse world rotation matrix
-						if ( worldInvRotMatrix == null )
+						if ( this.worldInvRotMatrix == null )
 						{
-							worldInvRotMatrix =
+							this.worldInvRotMatrix =
 								vsProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Matrix_4X4, -1,
 								                            GpuProgramParameters.GpuParamVariability.PerObject,
 								                            "inv_world_rotation_matrix" );
-							if ( worldInvRotMatrix == null )
+							if ( this.worldInvRotMatrix == null )
 							{
 								return false;
 							}
 						}
 						break;
 					case LightType.Spotlight:
-						vsInPosition = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
-						                                             Parameter.ContentType.PositionObjectSpace,
-						                                             GpuProgramParameters.GpuConstantType.Float4 );
-						if ( vsInPosition == null )
+						this.vsInPosition = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
+						                                                  Parameter.ContentType.PositionObjectSpace,
+						                                                  GpuProgramParameters.GpuConstantType.Float4 );
+						if ( this.vsInPosition == null )
 						{
 							return false;
 						}
 
-						lightParamsList[ i ].Position =
+						this.lightParamsList[ i ].Position =
 							vsProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
 							                            GpuProgramParameters.GpuParamVariability.Lights |
 							                            GpuProgramParameters.GpuParamVariability.PerObject,
 							                            "light_position_world_space" );
-						if ( lightParamsList[ i ].Position == null )
+						if ( this.lightParamsList[ i ].Position == null )
 						{
 							return false;
 						}
 
-						if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
+						if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
 						{
-							lightParamsList[ i ].VSOutToLightDir =
+							this.lightParamsList[ i ].VSOutToLightDir =
 								vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
 								                               IntToEnum( RTShaderSystem.NormalMapSpace.Tangent, i ),
 								                               GpuProgramParameters.GpuConstantType.Float3 );
 						}
-						if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
+						if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
 						{
-							lightParamsList[ i ].VSOutToLightDir =
+							this.lightParamsList[ i ].VSOutToLightDir =
 								vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
 								                               IntToEnum( RTShaderSystem.NormalMapSpace.Object, i ),
 								                               GpuProgramParameters.GpuConstantType.Float3 );
 						}
-						if ( lightParamsList[ i ].VSOutToLightDir == null )
+						if ( this.lightParamsList[ i ].VSOutToLightDir == null )
 						{
 							return false;
 						}
 
-						lightParamsList[ i ].PSInToLightDir =
+						this.lightParamsList[ i ].PSInToLightDir =
 							psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
-							                              lightParamsList[ i ].VSOutToLightDir.Index,
-							                              lightParamsList[ i ].VSOutToLightDir.Content,
-							                              lightParamsList[ i ].VSOutToLightDir.Type );
-						if ( lightParamsList[ i ].PSInToLightDir == null )
+							                              this.lightParamsList[ i ].VSOutToLightDir.Index,
+							                              this.lightParamsList[ i ].VSOutToLightDir.Content,
+							                              this.lightParamsList[ i ].VSOutToLightDir.Type );
+						if ( this.lightParamsList[ i ].PSInToLightDir == null )
 						{
 							return false;
 						}
 
-						lightParamsList[ i ].Direction =
+						this.lightParamsList[ i ].Direction =
 							vsProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
 							                            GpuProgramParameters.GpuParamVariability.Lights |
 							                            GpuProgramParameters.GpuParamVariability.PerObject,
 							                            "light_direction_obj_space" );
-						if ( lightParamsList[ i ].Direction == null )
+						if ( this.lightParamsList[ i ].Direction == null )
 						{
 							return false;
 						}
-						if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
+						if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
 						{
-							lightParamsList[ i ].VSOutDirection =
+							this.lightParamsList[ i ].VSOutDirection =
 								vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
 								                               IntToEnum( RTShaderSystem.NormalMapSpace.Tangent, i ),
 								                               GpuProgramParameters.GpuConstantType.Float3 );
-							if ( lightParamsList[ i ].VSOutDirection == null )
+							if ( this.lightParamsList[ i ].VSOutDirection == null )
 							{
 								return false;
 							}
 						}
-						else if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
+						else if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
 						{
-							lightParamsList[ i ].VSOutDirection =
+							this.lightParamsList[ i ].VSOutDirection =
 								vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
 								                               IntToEnum( RTShaderSystem.NormalMapSpace.Object, i ),
 								                               GpuProgramParameters.GpuConstantType.Float3 );
-							if ( lightParamsList[ i ].VSOutDirection == null )
+							if ( this.lightParamsList[ i ].VSOutDirection == null )
 							{
 								return false;
 							}
 						}
-						if ( lightParamsList[ i ].VSOutDirection == null )
+						if ( this.lightParamsList[ i ].VSOutDirection == null )
 						{
 							return false;
 						}
 
-						lightParamsList[ i ].PSInDirection =
+						this.lightParamsList[ i ].PSInDirection =
 							psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
-							                              lightParamsList[ i ].VSOutDirection.Index,
-							                              lightParamsList[ i ].VSOutDirection.Content,
-							                              lightParamsList[ i ].VSOutDirection.Type );
-						if ( lightParamsList[ i ].PSInDirection == null )
+							                              this.lightParamsList[ i ].VSOutDirection.Index,
+							                              this.lightParamsList[ i ].VSOutDirection.Content,
+							                              this.lightParamsList[ i ].VSOutDirection.Type );
+						if ( this.lightParamsList[ i ].PSInDirection == null )
 						{
 							return false;
 						}
 
-						lightParamsList[ i ].AttenuatParams =
+						this.lightParamsList[ i ].AttenuatParams =
 							psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
 							                            GpuProgramParameters.GpuParamVariability.Lights,
 							                            "light_attenuation" );
-						if ( lightParamsList[ i ].AttenuatParams == null )
+						if ( this.lightParamsList[ i ].AttenuatParams == null )
 						{
 							return false;
 						}
 
-						lightParamsList[ i ].SpotParams =
+						this.lightParamsList[ i ].SpotParams =
 							psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float3, -1,
 							                            GpuProgramParameters.GpuParamVariability.Lights,
 							                            "spotlight_params" );
-						if ( lightParamsList[ i ].SpotParams == null )
+						if ( this.lightParamsList[ i ].SpotParams == null )
 						{
 							return false;
 						}
 
 						//Resolve local dir
-						if ( vsLocalDir == null )
+						if ( this.vsLocalDir == null )
 						{
-							vsLocalDir = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0,
-							                                           "lNormalMapTempDir",
-							                                           GpuProgramParameters.GpuConstantType.Float3 );
-							if ( vsLocalDir == null )
+							this.vsLocalDir = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0,
+							                                                "lNormalMapTempDir",
+							                                                GpuProgramParameters.GpuConstantType.Float3 );
+							if ( this.vsLocalDir == null )
 							{
 								return false;
 							}
 						}
 
 						//resolve world postion
-						if ( vsWorldPosition == null )
+						if ( this.vsWorldPosition == null )
 						{
-							vsWorldPosition = vsMain.ResolveLocalParameter( Parameter.SemanticType.Position, 0,
-							                                                Parameter.ContentType.PositionWorldSpace,
-							                                                GpuProgramParameters.GpuConstantType.Float3 );
-							if ( vsWorldPosition == null )
+							this.vsWorldPosition = vsMain.ResolveLocalParameter( Parameter.SemanticType.Position, 0,
+							                                                     Parameter.ContentType.PositionWorldSpace,
+							                                                     GpuProgramParameters.GpuConstantType.Float3 );
+							if ( this.vsWorldPosition == null )
 							{
 								return false;
 							}
 						}
 						//resolve world matrix
-						if ( worldMatrix == null )
+						if ( this.worldMatrix == null )
 						{
-							worldMatrix =
+							this.worldMatrix =
 								vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.WorldMatrix, 0 );
-							if ( worldMatrix == null )
+							if ( this.worldMatrix == null )
 							{
 								return false;
 							}
 						}
 						//resovle inverse world rotation matrix
-						if ( worldInvRotMatrix == null )
+						if ( this.worldInvRotMatrix == null )
 						{
-							worldInvRotMatrix =
+							this.worldInvRotMatrix =
 								vsProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Matrix_4X4, -1,
 								                            GpuProgramParameters.GpuParamVariability.PerObject,
 								                            "inv_world_rotation_matrix" );
-							if ( worldInvRotMatrix == null )
+							if ( this.worldInvRotMatrix == null )
 							{
 								return false;
 							}
@@ -670,49 +670,49 @@ namespace Axiom.Components.RTShaderSystem
 				}
 
 				//resolve diffuse color
-				if ( ( trackVertexColorType & TrackVertexColor.Diffuse ) == 0 )
+				if ( ( this.trackVertexColorType & TrackVertexColor.Diffuse ) == 0 )
 				{
-					lightParamsList[ i ].DiffuseColor =
+					this.lightParamsList[ i ].DiffuseColor =
 						psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
 						                            GpuProgramParameters.GpuParamVariability.Lights,
 						                            "derived_light_diffuse" );
-					if ( lightParamsList[ i ].DiffuseColor == null )
+					if ( this.lightParamsList[ i ].DiffuseColor == null )
 					{
 						return false;
 					}
 				}
 				else
 				{
-					lightParamsList[ i ].DiffuseColor =
+					this.lightParamsList[ i ].DiffuseColor =
 						psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
 						                            GpuProgramParameters.GpuParamVariability.Lights, "light_diffuse" );
-					if ( lightParamsList[ i ].DiffuseColor == null )
+					if ( this.lightParamsList[ i ].DiffuseColor == null )
 					{
 						return false;
 					}
 				}
 
-				if ( specularEnabled )
+				if ( this.specularEnabled )
 				{
 					//resolve specular color
-					if ( ( trackVertexColorType & TrackVertexColor.Specular ) == 0 )
+					if ( ( this.trackVertexColorType & TrackVertexColor.Specular ) == 0 )
 					{
-						lightParamsList[ i ].SpecularColor =
+						this.lightParamsList[ i ].SpecularColor =
 							psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
 							                            GpuProgramParameters.GpuParamVariability.Lights,
 							                            "derived_light_specular" );
-						if ( lightParamsList[ i ].SpecularColor == null )
+						if ( this.lightParamsList[ i ].SpecularColor == null )
 						{
 							return false;
 						}
 					}
 					else
 					{
-						lightParamsList[ i ].SpecularColor =
+						this.lightParamsList[ i ].SpecularColor =
 							psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
 							                            GpuProgramParameters.GpuParamVariability.Lights,
 							                            "light_specular" );
-						if ( lightParamsList[ i ].SpecularColor == null )
+						if ( this.lightParamsList[ i ].SpecularColor == null )
 						{
 							return false;
 						}
@@ -783,114 +783,114 @@ namespace Axiom.Components.RTShaderSystem
 			Function psMain = psProgram.EntryPointFunction;
 
 			//Resolve normal map texture sampler parameter
-			normalMapSampler = psProgram.ResolveParameter(
-				Axiom.Graphics.GpuProgramParameters.GpuConstantType.Sampler2D, normalMapSamplerIndex,
+			this.normalMapSampler = psProgram.ResolveParameter(
+				Axiom.Graphics.GpuProgramParameters.GpuConstantType.Sampler2D, this.normalMapSamplerIndex,
 				GpuProgramParameters.GpuParamVariability.PerObject, "gNormalMapSampler" );
-			if ( normalMapSampler == null )
+			if ( this.normalMapSampler == null )
 			{
 				return false;
 			}
 
 			//Get surface ambient color if need to
-			if ( ( trackVertexColorType & TrackVertexColor.Ambient ) == 0 )
+			if ( ( this.trackVertexColorType & TrackVertexColor.Ambient ) == 0 )
 			{
-				derivedAmbientLightColor =
+				this.derivedAmbientLightColor =
 					psProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.DerivedAmbientLightColor, 0 );
-				if ( derivedAmbientLightColor == null )
+				if ( this.derivedAmbientLightColor == null )
 				{
 					return false;
 				}
 			}
 			else
 			{
-				lightAmbientColor =
+				this.lightAmbientColor =
 					psProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.AmbientLightColor, 0 );
-				if ( lightAmbientColor == null )
+				if ( this.lightAmbientColor == null )
 				{
 					return false;
 				}
 
-				surfaceAmbientColor =
+				this.surfaceAmbientColor =
 					psProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.SurfaceAmbientColor, 0, 0 );
-				if ( surfaceAmbientColor == null )
+				if ( this.surfaceAmbientColor == null )
 				{
 					return false;
 				}
 			}
 
 			//Get surface diffuse color if need to
-			if ( ( trackVertexColorType & TrackVertexColor.Diffuse ) == 0 )
+			if ( ( this.trackVertexColorType & TrackVertexColor.Diffuse ) == 0 )
 			{
-				surfaceDiffuseColor =
+				this.surfaceDiffuseColor =
 					psProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.SurfaceDiffuseColor, 0 );
-				if ( surfaceDiffuseColor == null )
+				if ( this.surfaceDiffuseColor == null )
 				{
 					return false;
 				}
 			}
 
 			//Get surface specular color if need to
-			if ( ( trackVertexColorType & TrackVertexColor.Specular ) == 0 )
+			if ( ( this.trackVertexColorType & TrackVertexColor.Specular ) == 0 )
 			{
-				surfaceSpecularColor =
+				this.surfaceSpecularColor =
 					psProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.SurfaceSpecularColor, 0 );
-				if ( surfaceSpecularColor == null )
+				if ( this.surfaceSpecularColor == null )
 				{
 					return false;
 				}
 			}
 
 			//Get surface emissive color if need to
-			if ( ( trackVertexColorType & TrackVertexColor.Emissive ) == 0 )
+			if ( ( this.trackVertexColorType & TrackVertexColor.Emissive ) == 0 )
 			{
-				surfaceEmissiveColor =
+				this.surfaceEmissiveColor =
 					psProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.SurfaceEmissiveColor, 0 );
-				if ( surfaceEmissiveColor == null )
+				if ( this.surfaceEmissiveColor == null )
 				{
 					return false;
 				}
 			}
 
 			//Get derived scene color
-			derivedSceneColor =
+			this.derivedSceneColor =
 				psProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.DerivedSceneColor, 0 );
-			if ( derivedSceneColor == null )
+			if ( this.derivedSceneColor == null )
 			{
 				return false;
 			}
 
 			//Get surface shininess.
-			surfaceShininess = psProgram.ResolveAutoParameterInt(
+			this.surfaceShininess = psProgram.ResolveAutoParameterInt(
 				GpuProgramParameters.AutoConstantType.SurfaceShininess, 0 );
-			if ( surfaceShininess == null )
+			if ( this.surfaceShininess == null )
 			{
 				return false;
 			}
 
 			//Resolve input vertex shader normal
-			vsInNormal = vsMain.ResolveInputParameter( Parameter.SemanticType.Normal, 0,
-			                                           Parameter.ContentType.NormalObjectSpace,
-			                                           Axiom.Graphics.GpuProgramParameters.GpuConstantType.Float3 );
-			if ( vsInNormal == null )
+			this.vsInNormal = vsMain.ResolveInputParameter( Parameter.SemanticType.Normal, 0,
+			                                                Parameter.ContentType.NormalObjectSpace,
+			                                                Axiom.Graphics.GpuProgramParameters.GpuConstantType.Float3 );
+			if ( this.vsInNormal == null )
 			{
 				return false;
 			}
 
 			//Resolve input vertex shader tangent
-			if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
+			if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
 			{
-				vsInTangent = vsMain.ResolveInputParameter( Parameter.SemanticType.Tangent, 0,
-				                                            Parameter.ContentType.TangentObjectSpace,
-				                                            GpuProgramParameters.GpuConstantType.Float3 );
-				if ( vsInTangent == null )
+				this.vsInTangent = vsMain.ResolveInputParameter( Parameter.SemanticType.Tangent, 0,
+				                                                 Parameter.ContentType.TangentObjectSpace,
+				                                                 GpuProgramParameters.GpuConstantType.Float3 );
+				if ( this.vsInTangent == null )
 				{
 					return false;
 				}
 
 				//Resolve local vertex shader TNB matrix
-				vsTBNMatrix = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0, "lMatTBN",
-				                                            GpuProgramParameters.GpuConstantType.Matrix_3X3 );
-				if ( vsTBNMatrix == null )
+				this.vsTBNMatrix = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0, "lMatTBN",
+				                                                 GpuProgramParameters.GpuConstantType.Matrix_3X3 );
+				if ( this.vsTBNMatrix == null )
 				{
 					return false;
 				}
@@ -898,7 +898,7 @@ namespace Axiom.Components.RTShaderSystem
 
 			//resolve input vertex shader texture coordinates
 			Parameter.ContentType texCoordToUse = Parameter.ContentType.TextureCoordinate0;
-			switch ( vsTexCoordSetIndex )
+			switch ( this.vsTexCoordSetIndex )
 			{
 				case 0:
 					texCoordToUse = Parameter.ContentType.TextureCoordinate0;
@@ -927,46 +927,46 @@ namespace Axiom.Components.RTShaderSystem
 				default:
 					throw new AxiomException( "vsTexCoordIndexOut of range", new ArgumentOutOfRangeException() );
 			}
-			vsInTexcoord = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, vsTexCoordSetIndex,
-			                                             texCoordToUse, GpuProgramParameters.GpuConstantType.Float2 );
-			if ( vsInTexcoord == null )
+			this.vsInTexcoord = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, this.vsTexCoordSetIndex,
+			                                                  texCoordToUse, GpuProgramParameters.GpuConstantType.Float2 );
+			if ( this.vsInTexcoord == null )
 			{
 				return false;
 			}
 
 			//Resolve output vertex shader texture coordinates
-			vsOutTexcoord = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1, texCoordToUse,
-			                                               GpuProgramParameters.GpuConstantType.Float2 );
-			if ( vsOutTexcoord == null )
+			this.vsOutTexcoord = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1, texCoordToUse,
+			                                                    GpuProgramParameters.GpuConstantType.Float2 );
+			if ( this.vsOutTexcoord == null )
 			{
 				return false;
 			}
 
 			//resolve pixel input texture coordinates normal
-			psInTexcoord = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, vsOutTexcoord.Index,
-			                                             vsOutTexcoord.Content, vsOutTexcoord.Type );
-			if ( psInTexcoord == null )
+			this.psInTexcoord = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, this.vsOutTexcoord.Index,
+			                                                  this.vsOutTexcoord.Content, this.vsOutTexcoord.Type );
+			if ( this.psInTexcoord == null )
 			{
 				return false;
 			}
 
 			//Resolve pixel shader normal.
-			if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
+			if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
 			{
-				psNormal = psMain.ResolveLocalParameter( Parameter.SemanticType.Normal, 0,
-				                                         Parameter.ContentType.NormalObjectSpace,
-				                                         GpuProgramParameters.GpuConstantType.Float3 );
-				if ( psNormal == null )
+				this.psNormal = psMain.ResolveLocalParameter( Parameter.SemanticType.Normal, 0,
+				                                              Parameter.ContentType.NormalObjectSpace,
+				                                              GpuProgramParameters.GpuConstantType.Float3 );
+				if ( this.psNormal == null )
 				{
 					return false;
 				}
 			}
-			else if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
+			else if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
 			{
-				psNormal = psMain.ResolveLocalParameter( Parameter.SemanticType.Normal, 0,
-				                                         Parameter.ContentType.NormalTangentSpace,
-				                                         GpuProgramParameters.GpuConstantType.Float3 );
-				if ( psNormal == null )
+				this.psNormal = psMain.ResolveLocalParameter( Parameter.SemanticType.Normal, 0,
+				                                              Parameter.ContentType.NormalTangentSpace,
+				                                              GpuProgramParameters.GpuConstantType.Float3 );
+				if ( this.psNormal == null )
 				{
 					return false;
 				}
@@ -975,125 +975,125 @@ namespace Axiom.Components.RTShaderSystem
 			var inputParams = psMain.InputParameters;
 			var localParams = psMain.LocalParameters;
 
-			psDiffuse = Function.GetParameterByContent( inputParams, Parameter.ContentType.ColorDiffuse,
-			                                            GpuProgramParameters.GpuConstantType.Float4 );
-			if ( psDiffuse == null )
+			this.psDiffuse = Function.GetParameterByContent( inputParams, Parameter.ContentType.ColorDiffuse,
+			                                                 GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.psDiffuse == null )
 			{
-				psDiffuse = Function.GetParameterByContent( localParams, Parameter.ContentType.ColorDiffuse,
-				                                            GpuProgramParameters.GpuConstantType.Float4 );
-				if ( psDiffuse == null )
+				this.psDiffuse = Function.GetParameterByContent( localParams, Parameter.ContentType.ColorDiffuse,
+				                                                 GpuProgramParameters.GpuConstantType.Float4 );
+				if ( this.psDiffuse == null )
 				{
 					return false;
 				}
 			}
 
-			psOutDiffuse = psMain.ResolveOutputParameter( Parameter.SemanticType.Color, 0,
-			                                              Parameter.ContentType.ColorDiffuse,
-			                                              GpuProgramParameters.GpuConstantType.Float4 );
-			if ( psOutDiffuse == null )
-			{
-				return false;
-			}
-
-			psTempDiffuseColor = psMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0, "lNormalMapDiffuse",
+			this.psOutDiffuse = psMain.ResolveOutputParameter( Parameter.SemanticType.Color, 0,
+			                                                   Parameter.ContentType.ColorDiffuse,
 			                                                   GpuProgramParameters.GpuConstantType.Float4 );
-			if ( psTempDiffuseColor == null )
+			if ( this.psOutDiffuse == null )
 			{
 				return false;
 			}
 
-			if ( specularEnabled )
+			this.psTempDiffuseColor = psMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0, "lNormalMapDiffuse",
+			                                                        GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.psTempDiffuseColor == null )
 			{
-				psSpecular = Function.GetParameterByContent( inputParams, Parameter.ContentType.ColorSpecular,
-				                                             GpuProgramParameters.GpuConstantType.Float4 );
-				if ( psSpecular == null )
+				return false;
+			}
+
+			if ( this.specularEnabled )
+			{
+				this.psSpecular = Function.GetParameterByContent( inputParams, Parameter.ContentType.ColorSpecular,
+				                                                  GpuProgramParameters.GpuConstantType.Float4 );
+				if ( this.psSpecular == null )
 				{
-					psSpecular = Function.GetParameterByContent( localParams, Parameter.ContentType.ColorSpecular,
-					                                             GpuProgramParameters.GpuConstantType.Float4 );
-					if ( psSpecular == null )
+					this.psSpecular = Function.GetParameterByContent( localParams, Parameter.ContentType.ColorSpecular,
+					                                                  GpuProgramParameters.GpuConstantType.Float4 );
+					if ( this.psSpecular == null )
 					{
 						return false;
 					}
 				}
 
-				psTempSpecularColor = psMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0,
-				                                                    "lNormalMapSpecular",
-				                                                    GpuProgramParameters.GpuConstantType.Float4 );
-				if ( psTempSpecularColor == null )
+				this.psTempSpecularColor = psMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0,
+				                                                         "lNormalMapSpecular",
+				                                                         GpuProgramParameters.GpuConstantType.Float4 );
+				if ( this.psTempSpecularColor == null )
 				{
 					return false;
 				}
 
-				vsInPosition = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
-				                                             Parameter.ContentType.PositionObjectSpace,
-				                                             GpuProgramParameters.GpuConstantType.Float4 );
-				if ( vsInPosition == null )
+				this.vsInPosition = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
+				                                                  Parameter.ContentType.PositionObjectSpace,
+				                                                  GpuProgramParameters.GpuConstantType.Float4 );
+				if ( this.vsInPosition == null )
 				{
 					return false;
 				}
-				if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
+				if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
 				{
-					vsOutView = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
-					                                           Parameter.ContentType.PostOCameraTangentSpace,
-					                                           GpuProgramParameters.GpuConstantType.Float3 );
-					if ( vsOutView == null )
+					this.vsOutView = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
+					                                                Parameter.ContentType.PostOCameraTangentSpace,
+					                                                GpuProgramParameters.GpuConstantType.Float3 );
+					if ( this.vsOutView == null )
 					{
 						return false;
 					}
 				}
-				else if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
+				else if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
 				{
-					vsOutView = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
-					                                           Parameter.ContentType.PostOCameraTangentSpace,
-					                                           GpuProgramParameters.GpuConstantType.Float3 );
-					if ( vsOutView == null )
+					this.vsOutView = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
+					                                                Parameter.ContentType.PostOCameraTangentSpace,
+					                                                GpuProgramParameters.GpuConstantType.Float3 );
+					if ( this.vsOutView == null )
 					{
 						return false;
 					}
 				}
 
-				psInView = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, vsOutView.Index,
-				                                         vsOutView.Content, vsOutView.Type );
-				if ( psInView == null )
+				this.psInView = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, this.vsOutView.Index,
+				                                              this.vsOutView.Content, this.vsOutView.Type );
+				if ( this.psInView == null )
 				{
 					return false;
 				}
 
 				//Resolve camera position world space
-				camPosWorldSpace =
+				this.camPosWorldSpace =
 					vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.CameraPosition, 0 );
-				if ( camPosWorldSpace == null )
+				if ( this.camPosWorldSpace == null )
 				{
 					return false;
 				}
 
-				vsLocalDir = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0, "lNormalMapTempDir",
-				                                           GpuProgramParameters.GpuConstantType.Float3 );
-				if ( vsLocalDir == null )
-				{
-					return false;
-				}
-
-				vsWorldPosition = vsMain.ResolveLocalParameter( Parameter.SemanticType.Position, 0,
-				                                                Parameter.ContentType.PositionWorldSpace,
+				this.vsLocalDir = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0, "lNormalMapTempDir",
 				                                                GpuProgramParameters.GpuConstantType.Float3 );
-				if ( vsWorldPosition == null )
+				if ( this.vsLocalDir == null )
+				{
+					return false;
+				}
+
+				this.vsWorldPosition = vsMain.ResolveLocalParameter( Parameter.SemanticType.Position, 0,
+				                                                     Parameter.ContentType.PositionWorldSpace,
+				                                                     GpuProgramParameters.GpuConstantType.Float3 );
+				if ( this.vsWorldPosition == null )
 				{
 					return false;
 				}
 
 				//Resolve world matrix
-				worldMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.WorldMatrix, 0 );
-				if ( worldMatrix == null )
+				this.worldMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.WorldMatrix, 0 );
+				if ( this.worldMatrix == null )
 				{
 					return false;
 				}
 
 				//Resolve inverse world rotation matrix
-				worldInvRotMatrix = vsProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Matrix_4X4, -1,
-				                                                GpuProgramParameters.GpuParamVariability.PerObject,
-				                                                "inv_world_rotation_matrix" );
-				if ( worldInvRotMatrix == null )
+				this.worldInvRotMatrix = vsProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Matrix_4X4, -1,
+				                                                     GpuProgramParameters.GpuParamVariability.PerObject,
+				                                                     "inv_world_rotation_matrix" );
+				if ( this.worldInvRotMatrix == null )
 				{
 					return false;
 				}
@@ -1148,9 +1148,9 @@ namespace Axiom.Components.RTShaderSystem
 			}
 
 			//Add per light functions
-			for ( int i = 0; i < lightParamsList.Count; i++ )
+			for ( int i = 0; i < this.lightParamsList.Count; i++ )
 			{
-				if ( AddPSIlluminationInvocation( lightParamsList[ i ], psMain, -1 + 1, ref internalCounter ) == false )
+				if ( AddPSIlluminationInvocation( this.lightParamsList[ i ], psMain, -1 + 1, ref internalCounter ) == false )
 				{
 					return false;
 				}
@@ -1178,11 +1178,11 @@ namespace Axiom.Components.RTShaderSystem
 
 			TextureUnitState normalMapTexture = dstPass.CreateTextureUnitState();
 
-			normalMapTexture.SetTextureName( normalMapTextureName );
-			normalMapTexture.SetTextureFiltering( normalMapMinFilter, normalMapMagFilter, normalMapMipfilter );
-			normalMapTexture.TextureAnisotropy = (int)normalMapAnisotropy;
-			normalMapTexture.TextureMipmapBias = normalMapMipBias;
-			normalMapSamplerIndex = dstPass.TextureUnitStatesCount - 1;
+			normalMapTexture.SetTextureName( this.normalMapTextureName );
+			normalMapTexture.SetTextureFiltering( this.normalMapMinFilter, this.normalMapMagFilter, this.normalMapMipfilter );
+			normalMapTexture.TextureAnisotropy = (int)this.normalMapAnisotropy;
+			normalMapTexture.TextureMipmapBias = this.normalMapMipBias;
+			this.normalMapSamplerIndex = dstPass.TextureUnitStatesCount - 1;
 
 			TrackVertexColorType = ( srcPass.VertexColorTracking );
 
@@ -1244,76 +1244,76 @@ namespace Axiom.Components.RTShaderSystem
 
 
 			//Construct TNB matrix.
-			if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
+			if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
 			{
 				curFuncInvocation = new FunctionInvocation( SGXFuncConstructTbnMatrix, groupOrder, internalCounter++ );
-				curFuncInvocation.PushOperand( vsInNormal, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsInTangent, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsTBNMatrix, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.vsInNormal, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsInTangent, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsTBNMatrix, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 			}
 
 			//Output texture coordinates
 			curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder, internalCounter++ );
-			curFuncInvocation.PushOperand( vsInTexcoord, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( vsOutTexcoord, Operand.OpSemantic.Out );
+			curFuncInvocation.PushOperand( this.vsInTexcoord, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.vsOutTexcoord, Operand.OpSemantic.Out );
 			vsMain.AddAtomInstance( curFuncInvocation );
 
 			//computer world space position
-			if ( vsWorldPosition != null )
+			if ( this.vsWorldPosition != null )
 			{
 				curFuncInvocation = new FunctionInvocation( SGXFuncTransformPosition, groupOrder, internalCounter++ );
-				curFuncInvocation.PushOperand( worldMatrix, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsInPosition, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsWorldPosition, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.worldMatrix, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsInPosition, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsWorldPosition, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 			}
 
 			//compute the view vector
-			if ( vsInPosition != null && vsOutView != null )
+			if ( this.vsInPosition != null && this.vsOutView != null )
 			{
 				//View vector in world space
 
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncSubtract, groupOrder,
 				                                            internalCounter++ );
-				curFuncInvocation.PushOperand( camPosWorldSpace, Operand.OpSemantic.In,
+				curFuncInvocation.PushOperand( this.camPosWorldSpace, Operand.OpSemantic.In,
 				                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y | (int)Operand.OpMask.Z ) );
-				curFuncInvocation.PushOperand( vsWorldPosition, Operand.OpSemantic.In,
+				curFuncInvocation.PushOperand( this.vsWorldPosition, Operand.OpSemantic.In,
 				                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y | (int)Operand.OpMask.Z ) );
-				curFuncInvocation.PushOperand( vsLocalDir, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.vsLocalDir, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 
 				//Transform to object space.
 				curFuncInvocation = new FunctionInvocation( SGXFuncTranformNormal, groupOrder, internalCounter++ );
-				curFuncInvocation.PushOperand( worldInvRotMatrix, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsLocalDir, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsLocalDir, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.worldInvRotMatrix, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsLocalDir, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsLocalDir, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 
 				//Transform to tangent space
-				if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
+				if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
 				{
 					curFuncInvocation = new FunctionInvocation( SGXFuncTranformNormal, groupOrder, internalCounter++ );
-					curFuncInvocation.PushOperand( vsTBNMatrix, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( vsLocalDir, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( vsOutView, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.vsTBNMatrix, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.vsLocalDir, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.vsOutView, Operand.OpSemantic.Out );
 					vsMain.AddAtomInstance( curFuncInvocation );
 				}
 					//output object space
-				else if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
+				else if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
 				{
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder,
 					                                            internalCounter++ );
-					curFuncInvocation.PushOperand( vsLocalDir, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( vsOutView, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.vsLocalDir, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.vsOutView, Operand.OpSemantic.Out );
 					vsMain.AddAtomInstance( curFuncInvocation );
 				}
 			}
 
 			//Add per light functions
-			for ( int i = 0; i < lightParamsList.Count; i++ )
+			for ( int i = 0; i < this.lightParamsList.Count; i++ )
 			{
-				if ( AddVSIlluminationInvocation( lightParamsList[ i ], vsMain, groupOrder, ref internalCounter ) ==
+				if ( AddVSIlluminationInvocation( this.lightParamsList[ i ], vsMain, groupOrder, ref internalCounter ) ==
 				     false )
 				{
 					return false;
@@ -1331,10 +1331,10 @@ namespace Axiom.Components.RTShaderSystem
 			if ( curLightParams.Direction != null && curLightParams.VSOutDirection != null )
 			{
 				//Transform to texture space.
-				if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
+				if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
 				{
 					curFuncInvocation = new FunctionInvocation( SGXFuncTranformNormal, groupOrder, internalCounter++ );
-					curFuncInvocation.PushOperand( vsTBNMatrix, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.vsTBNMatrix, Operand.OpSemantic.In );
 					curFuncInvocation.PushOperand( curLightParams.Direction, Operand.OpSemantic.In,
 					                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 					                                 (int)Operand.OpMask.Z ) );
@@ -1342,7 +1342,7 @@ namespace Axiom.Components.RTShaderSystem
 					vsMain.AddAtomInstance( curFuncInvocation );
 				}
 					//Output object space
-				else if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
+				else if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
 				{
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder,
 					                                            internalCounter++ );
@@ -1362,31 +1362,31 @@ namespace Axiom.Components.RTShaderSystem
 				                                            internalCounter++ );
 				curFuncInvocation.PushOperand( curLightParams.Position, Operand.OpSemantic.In,
 				                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y | (int)Operand.OpMask.Z ) );
-				curFuncInvocation.PushOperand( vsWorldPosition, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsLocalDir, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.vsWorldPosition, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsLocalDir, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 
 				//Transform to object space
 				curFuncInvocation = new FunctionInvocation( SGXFuncTranformNormal, groupOrder, internalCounter++ );
-				curFuncInvocation.PushOperand( worldInvRotMatrix, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsLocalDir, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsLocalDir, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.worldInvRotMatrix, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsLocalDir, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsLocalDir, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 
-				if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
+				if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Tangent )
 				{
 					curFuncInvocation = new FunctionInvocation( SGXFuncTranformNormal, groupOrder, internalCounter++ );
-					curFuncInvocation.PushOperand( vsTBNMatrix, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( vsLocalDir, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.vsTBNMatrix, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.vsLocalDir, Operand.OpSemantic.In );
 					curFuncInvocation.PushOperand( curLightParams.VSOutToLightDir, Operand.OpSemantic.Out );
 					vsMain.AddAtomInstance( curFuncInvocation );
 				}
 					//Output object space
-				else if ( normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
+				else if ( this.normalMapSpace == RTShaderSystem.NormalMapSpace.Object )
 				{
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder,
 					                                            internalCounter++ );
-					curFuncInvocation.PushOperand( vsLocalDir, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.vsLocalDir, Operand.OpSemantic.In );
 					curFuncInvocation.PushOperand( curLightParams.VSOutToLightDir, Operand.OpSemantic.Out );
 					vsMain.AddAtomInstance( curFuncInvocation );
 				}
@@ -1399,9 +1399,9 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			FunctionInvocation curFuncInvocation = null;
 			curFuncInvocation = new FunctionInvocation( SGXFuncFetchNormal, groupOrder, internalCounter++ );
-			curFuncInvocation.PushOperand( normalMapSampler, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( psInTexcoord, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( psNormal, Operand.OpSemantic.Out );
+			curFuncInvocation.PushOperand( this.normalMapSampler, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.psInTexcoord, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.psNormal, Operand.OpSemantic.Out );
 			psMain.AddAtomInstance( curFuncInvocation );
 
 			return true;
@@ -1411,61 +1411,61 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			FunctionInvocation curFuncInvocation = null;
 
-			if ( ( trackVertexColorType & TrackVertexColor.Ambient ) == 0 &&
-			     ( trackVertexColorType & TrackVertexColor.Emissive ) == 0 )
+			if ( ( this.trackVertexColorType & TrackVertexColor.Ambient ) == 0 &&
+			     ( this.trackVertexColorType & TrackVertexColor.Emissive ) == 0 )
 			{
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder, internalCount++ );
-				curFuncInvocation.PushOperand( derivedSceneColor, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.derivedSceneColor, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.Out );
 				psMain.AddAtomInstance( curFuncInvocation );
 			}
 			else
 			{
-				if ( ( trackVertexColorType & TrackVertexColor.Ambient ) != 0 )
+				if ( ( this.trackVertexColorType & TrackVertexColor.Ambient ) != 0 )
 				{
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncModulate, groupOrder,
 					                                            internalCount++ );
-					curFuncInvocation.PushOperand( lightAmbientColor, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.lightAmbientColor, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.Out );
 					psMain.AddAtomInstance( curFuncInvocation );
 				}
 				else
 				{
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder,
 					                                            internalCount++ );
-					curFuncInvocation.PushOperand( derivedAmbientLightColor, Operand.OpSemantic.In,
+					curFuncInvocation.PushOperand( this.derivedAmbientLightColor, Operand.OpSemantic.In,
 					                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 					                                 (int)Operand.OpMask.Z ) );
-					curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In,
+					curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In,
 					                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 					                                 (int)Operand.OpMask.Z ) );
-					curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.Out );
 					psMain.AddAtomInstance( curFuncInvocation );
 				}
 
-				if ( ( trackVertexColorType & TrackVertexColor.Emissive ) != 0 )
+				if ( ( this.trackVertexColorType & TrackVertexColor.Emissive ) != 0 )
 				{
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAdd, groupOrder, internalCount++ );
-					curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.Out );
 					psMain.AddAtomInstance( curFuncInvocation );
 				}
 				else
 				{
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAdd, groupOrder, internalCount++ );
-					curFuncInvocation.PushOperand( surfaceEmissiveColor, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.surfaceEmissiveColor, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.Out );
 					psMain.AddAtomInstance( curFuncInvocation );
 				}
 			}
-			if ( specularEnabled )
+			if ( this.specularEnabled )
 			{
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder, internalCount++ );
-				curFuncInvocation.PushOperand( psSpecular, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( psTempSpecularColor, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.psSpecular, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.psTempSpecularColor, Operand.OpSemantic.Out );
 				psMain.AddAtomInstance( curFuncInvocation );
 			}
 			return true;
@@ -1476,11 +1476,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			FunctionInvocation curFuncInvocation = null;
 			//Merge diffuse color with vertex color if need to
-			if ( ( trackVertexColorType & TrackVertexColor.Diffuse ) != 0 )
+			if ( ( this.trackVertexColorType & TrackVertexColor.Diffuse ) != 0 )
 			{
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncModulate, groupOrder,
 				                                            internalCounter++ );
-				curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In,
+				curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In,
 				                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y | (int)Operand.OpMask.Z ) );
 				curFuncInvocation.PushOperand( curLightParams.DiffuseColor, Operand.OpSemantic.In,
 				                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y | (int)Operand.OpMask.Z ) );
@@ -1490,11 +1490,11 @@ namespace Axiom.Components.RTShaderSystem
 			}
 
 			//Merge specular color with vertex color if need to
-			if ( specularEnabled && ( trackVertexColorType & TrackVertexColor.Specular ) != 0 )
+			if ( this.specularEnabled && ( this.trackVertexColorType & TrackVertexColor.Specular ) != 0 )
 			{
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncModulate, groupOrder,
 				                                            internalCounter++ );
-				curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In,
+				curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In,
 				                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y | (int)Operand.OpMask.Z ) );
 				curFuncInvocation.PushOperand( curLightParams.SpecularColor, Operand.OpSemantic.In,
 				                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y | (int)Operand.OpMask.Z ) );
@@ -1506,14 +1506,14 @@ namespace Axiom.Components.RTShaderSystem
 			switch ( curLightParams.Type )
 			{
 				case LightType.Directional:
-					if ( specularEnabled )
+					if ( this.specularEnabled )
 					{
 						curFuncInvocation = new FunctionInvocation( SGXFuncLightDirectionDiffuseSpecular, groupOrder,
 						                                            internalCounter++ );
-						curFuncInvocation.PushOperand( psNormal, Operand.OpSemantic.In,
+						curFuncInvocation.PushOperand( this.psNormal, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psInView, Operand.OpSemantic.In,
+						curFuncInvocation.PushOperand( this.psInView, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
 						curFuncInvocation.PushOperand( curLightParams.PSInDirection, Operand.OpSemantic.In,
@@ -1525,17 +1525,17 @@ namespace Axiom.Components.RTShaderSystem
 						curFuncInvocation.PushOperand( curLightParams.SpecularColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( surfaceShininess, Operand.OpSemantic.In );
-						curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.In,
+						curFuncInvocation.PushOperand( this.surfaceShininess, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempSpecularColor, Operand.OpSemantic.In,
+						curFuncInvocation.PushOperand( this.psTempSpecularColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.Out,
+						curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.Out,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempSpecularColor, Operand.OpSemantic.Out,
+						curFuncInvocation.PushOperand( this.psTempSpecularColor, Operand.OpSemantic.Out,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
 						psMain.AddAtomInstance( curFuncInvocation );
@@ -1544,29 +1544,29 @@ namespace Axiom.Components.RTShaderSystem
 					{
 						curFuncInvocation = new FunctionInvocation( SGXFuncLightDirectionalDiffuse, groupOrder,
 						                                            internalCounter++ );
-						curFuncInvocation.PushOperand( psNormal, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.psNormal, Operand.OpSemantic.In );
 						curFuncInvocation.PushOperand( curLightParams.PSInDirection, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
 						curFuncInvocation.PushOperand( curLightParams.DiffuseColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.In,
+						curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.Out,
+						curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.Out,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
 						psMain.AddAtomInstance( curFuncInvocation );
 					}
 					break;
 				case LightType.Point:
-					if ( specularEnabled )
+					if ( this.specularEnabled )
 					{
 						curFuncInvocation = new FunctionInvocation( SGXFuncLightPointDiffuseSpecular, groupOrder,
 						                                            internalCounter++ );
-						curFuncInvocation.PushOperand( psNormal, Operand.OpSemantic.In );
-						curFuncInvocation.PushOperand( psInView, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.psNormal, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.psInView, Operand.OpSemantic.In );
 						curFuncInvocation.PushOperand( curLightParams.PSInToLightDir, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
@@ -1577,17 +1577,17 @@ namespace Axiom.Components.RTShaderSystem
 						curFuncInvocation.PushOperand( curLightParams.SpecularColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( surfaceShininess, Operand.OpSemantic.In );
-						curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.In,
+						curFuncInvocation.PushOperand( this.surfaceShininess, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempSpecularColor, Operand.OpSemantic.In,
+						curFuncInvocation.PushOperand( this.psTempSpecularColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.Out,
+						curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.Out,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempSpecularColor, Operand.OpSemantic.Out,
+						curFuncInvocation.PushOperand( this.psTempSpecularColor, Operand.OpSemantic.Out,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
 						psMain.AddAtomInstance( curFuncInvocation );
@@ -1596,7 +1596,7 @@ namespace Axiom.Components.RTShaderSystem
 					{
 						curFuncInvocation = new FunctionInvocation( SGXFuncLightPointDiffuse, groupOrder,
 						                                            internalCounter++ );
-						curFuncInvocation.PushOperand( psNormal, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.psNormal, Operand.OpSemantic.In );
 						curFuncInvocation.PushOperand( curLightParams.PSInToLightDir, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
@@ -1604,22 +1604,22 @@ namespace Axiom.Components.RTShaderSystem
 						curFuncInvocation.PushOperand( curLightParams.DiffuseColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.In,
+						curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.Out,
+						curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.Out,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
 						psMain.AddAtomInstance( curFuncInvocation );
 					}
 					break;
 				case LightType.Spotlight:
-					if ( specularEnabled )
+					if ( this.specularEnabled )
 					{
 						curFuncInvocation = new FunctionInvocation( SGXFuncLightSpotDiffuseSpecular, groupOrder,
 						                                            internalCounter++ );
-						curFuncInvocation.PushOperand( psNormal, Operand.OpSemantic.In );
-						curFuncInvocation.PushOperand( psInView, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.psNormal, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.psInView, Operand.OpSemantic.In );
 						curFuncInvocation.PushOperand( curLightParams.PSInToLightDir, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
@@ -1634,17 +1634,17 @@ namespace Axiom.Components.RTShaderSystem
 						curFuncInvocation.PushOperand( curLightParams.SpecularColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( surfaceShininess, Operand.OpSemantic.In );
-						curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.In,
+						curFuncInvocation.PushOperand( this.surfaceShininess, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempSpecularColor, Operand.OpSemantic.In,
+						curFuncInvocation.PushOperand( this.psTempSpecularColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.Out,
+						curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.Out,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempSpecularColor, Operand.OpSemantic.Out,
+						curFuncInvocation.PushOperand( this.psTempSpecularColor, Operand.OpSemantic.Out,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
 						psMain.AddAtomInstance( curFuncInvocation );
@@ -1653,7 +1653,7 @@ namespace Axiom.Components.RTShaderSystem
 					{
 						curFuncInvocation = new FunctionInvocation( SGXFuncLightSpotDiffuse, groupOrder,
 						                                            internalCounter++ );
-						curFuncInvocation.PushOperand( psNormal, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.psNormal, Operand.OpSemantic.In );
 						curFuncInvocation.PushOperand( curLightParams.PSInToLightDir, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
@@ -1665,10 +1665,10 @@ namespace Axiom.Components.RTShaderSystem
 						curFuncInvocation.PushOperand( curLightParams.DiffuseColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.In,
+						curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.In,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
-						curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.Out,
+						curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.Out,
 						                               ( (int)Operand.OpMask.X | (int)Operand.OpMask.Y |
 						                                 (int)Operand.OpMask.Z ) );
 						psMain.AddAtomInstance( curFuncInvocation );
@@ -1683,24 +1683,24 @@ namespace Axiom.Components.RTShaderSystem
 			var curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign,
 			                                                (int)FFPRenderState.FFPFragmentShaderStage.PSColorBegin + 1,
 			                                                internalCounter++ );
-			curFuncInvocation.PushOperand( psTempDiffuseColor, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.Out );
+			curFuncInvocation.PushOperand( this.psTempDiffuseColor, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.Out );
 			psMain.AddAtomInstance( curFuncInvocation );
 
 			curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign,
 			                                            (int)FFPRenderState.FFPFragmentShaderStage.PSColorBegin + 1,
 			                                            internalCounter++ );
-			curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out );
+			curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out );
 			psMain.AddAtomInstance( curFuncInvocation );
 
-			if ( specularEnabled )
+			if ( this.specularEnabled )
 			{
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign,
 				                                            (int)FFPRenderState.FFPFragmentShaderStage.PSColorBegin + 1,
 				                                            internalCounter++ );
-				curFuncInvocation.PushOperand( psTempSpecularColor, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( psSpecular, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.psTempSpecularColor, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.psSpecular, Operand.OpSemantic.Out );
 				psMain.AddAtomInstance( curFuncInvocation );
 			}
 
@@ -1716,11 +1716,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return vsTexCoordSetIndex;
+				return this.vsTexCoordSetIndex;
 			}
 			set
 			{
-				vsTexCoordSetIndex = value;
+				this.vsTexCoordSetIndex = value;
 			}
 		}
 
@@ -1728,11 +1728,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return normalMapSpace;
+				return this.normalMapSpace;
 			}
 			set
 			{
-				normalMapSpace = value;
+				this.normalMapSpace = value;
 			}
 		}
 
@@ -1740,11 +1740,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return normalMapTextureName;
+				return this.normalMapTextureName;
 			}
 			set
 			{
-				normalMapTextureName = value;
+				this.normalMapTextureName = value;
 			}
 		}
 
@@ -1752,11 +1752,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return normalMapAnisotropy;
+				return this.normalMapAnisotropy;
 			}
 			set
 			{
-				normalMapAnisotropy = value;
+				this.normalMapAnisotropy = value;
 			}
 		}
 
@@ -1764,11 +1764,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return normalMapMipBias;
+				return this.normalMapMipBias;
 			}
 			set
 			{
-				normalMapMipBias = value;
+				this.normalMapMipBias = value;
 			}
 		}
 
@@ -1776,11 +1776,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return trackVertexColorType;
+				return this.trackVertexColorType;
 			}
 			set
 			{
-				trackVertexColorType = value;
+				this.trackVertexColorType = value;
 			}
 		}
 
@@ -1788,11 +1788,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return specularEnabled;
+				return this.specularEnabled;
 			}
 			set
 			{
-				specularEnabled = value;
+				this.specularEnabled = value;
 			}
 		}
 

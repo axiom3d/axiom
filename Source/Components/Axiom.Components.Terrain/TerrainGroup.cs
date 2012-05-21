@@ -73,11 +73,11 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			public void UseImportData()
 			{
-				FileName = string.Empty;
+				this.FileName = string.Empty;
 				FreeImportData();
-				ImportData = new ImportData();
+				this.ImportData = new ImportData();
 				// we're going to own all the data in the def
-				ImportData.DeleteInputData = true;
+				this.ImportData.DeleteInputData = true;
 			}
 
 			/// <summary>
@@ -95,10 +95,10 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			public void FreeImportData()
 			{
-				if ( ImportData != null )
+				if ( this.ImportData != null )
 				{
-					ImportData.Dispose();
-					ImportData = null;
+					this.ImportData.Dispose();
+					this.ImportData = null;
 				}
 			}
 
@@ -145,19 +145,19 @@ namespace Axiom.Components.Terrain
 			public TerrainSlot( long x, long y )
 				: base()
 			{
-				X = x;
-				Y = y;
-				Instance = null;
-				Def = new TerrainSlotDefinition();
+				this.X = x;
+				this.Y = y;
+				this.Instance = null;
+				this.Def = new TerrainSlotDefinition();
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			public void FreeInstance()
 			{
-				if ( Instance != null )
+				if ( this.Instance != null )
 				{
-					Instance.Dispose();
-					Instance = null;
+					this.Instance.Dispose();
+					this.Instance = null;
 				}
 			}
 
@@ -205,9 +205,9 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			public RayResult( bool hit, Terrain terrain, Vector3 pos )
 			{
-				Hit = hit;
-				Terrain = terrain;
-				Position = pos;
+				this.Hit = hit;
+				this.Terrain = terrain;
+				this.Position = pos;
 			}
 		};
 
@@ -249,16 +249,16 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return _origin;
+				return this._origin;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				if ( value != _origin )
+				if ( value != this._origin )
 				{
-					_origin = value;
-					foreach ( var i in _terrainSlots.Values )
+					this._origin = value;
+					foreach ( var i in this._terrainSlots.Values )
 					{
 						if ( i.Instance != null )
 						{
@@ -275,13 +275,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return _filenamePrefix;
+				return this._filenamePrefix;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				_filenamePrefix = value;
+				this._filenamePrefix = value;
 			}
 		}
 
@@ -291,13 +291,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return _filenameExtension;
+				return this._filenameExtension;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				_filenameExtension = value;
+				this._filenameExtension = value;
 			}
 		}
 
@@ -310,7 +310,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				foreach ( var i in _terrainSlots.Values )
+				foreach ( var i in this._terrainSlots.Values )
 				{
 					if ( i.Instance != null && i.Instance.IsDerivedDataUpdateInProgress )
 					{
@@ -325,7 +325,7 @@ namespace Axiom.Components.Terrain
 		{
 			get
 			{
-				var slots = new List<TerrainSlot>( _terrainSlots.Values );
+				var slots = new List<TerrainSlot>( this._terrainSlots.Values );
 				return slots;
 			}
 		}
@@ -354,7 +354,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return _defaultImportData;
+				return this._defaultImportData;
 			}
 		}
 
@@ -366,7 +366,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return _alignment;
+				return this._alignment;
 			}
 		}
 
@@ -378,7 +378,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return _terrainWorldSize;
+				return this._terrainWorldSize;
 			}
 		}
 
@@ -390,7 +390,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return _sceneManager;
+				return this._sceneManager;
 			}
 		}
 
@@ -402,13 +402,13 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return _resourceGroup;
+				return this._resourceGroup;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				_resourceGroup = value;
+				this._resourceGroup = value;
 			}
 		}
 
@@ -424,25 +424,25 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public TerrainGroup( SceneManager sm, Alignment align, ushort terrainSize, Real terrainWorldSize )
 		{
-			_sceneManager = sm;
-			_alignment = align;
-			_terrainSize = terrainSize;
-			_terrainWorldSize = terrainWorldSize;
-			_origin = Vector3.Zero;
-			_filenamePrefix = "terrain";
-			_filenameExtension = "dat";
-			_resourceGroup = ResourceGroupManager.DefaultResourceGroupName;
-			_defaultImportData = new ImportData();
-			_defaultImportData.TerrainAlign = align;
-			_defaultImportData.WorldSize = terrainWorldSize;
+			this._sceneManager = sm;
+			this._alignment = align;
+			this._terrainSize = terrainSize;
+			this._terrainWorldSize = terrainWorldSize;
+			this._origin = Vector3.Zero;
+			this._filenamePrefix = "terrain";
+			this._filenameExtension = "dat";
+			this._resourceGroup = ResourceGroupManager.DefaultResourceGroupName;
+			this._defaultImportData = new ImportData();
+			this._defaultImportData.TerrainAlign = align;
+			this._defaultImportData.WorldSize = terrainWorldSize;
 			// by default we delete input data because we copy it, unless user
 			// passes us an ImportData where they explicitly don't want it copied
-			_defaultImportData.DeleteInputData = true;
+			this._defaultImportData.DeleteInputData = true;
 
 			WorkQueue wq = Root.Instance.WorkQueue;
-			_workQueueChannel = wq.GetChannel( "Axiom/TerrainGroup" );
-			wq.AddRequestHandler( _workQueueChannel, this );
-			wq.AddResponseHandler( _workQueueChannel, this );
+			this._workQueueChannel = wq.GetChannel( "Axiom/TerrainGroup" );
+			wq.AddRequestHandler( this._workQueueChannel, this );
+			wq.AddResponseHandler( this._workQueueChannel, this );
 		}
 
 		/// <summary>
@@ -469,8 +469,8 @@ namespace Axiom.Components.Terrain
 					RemoveAllTerrains();
 
 					WorkQueue wq = Root.Instance.WorkQueue;
-					wq.RemoveRequestHandler( _workQueueChannel, this );
-					wq.RemoveResponseHandler( _workQueueChannel, this );
+					wq.RemoveRequestHandler( this._workQueueChannel, this );
+					wq.RemoveResponseHandler( this._workQueueChannel, this );
 				}
 			}
 
@@ -493,8 +493,8 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void SetFilenameConvention( string prefix, string extension )
 		{
-			_filenamePrefix = prefix;
-			_filenameExtension = extension;
+			this._filenamePrefix = prefix;
+			this._filenameExtension = extension;
 		}
 
 		/// <summary>
@@ -542,11 +542,11 @@ namespace Axiom.Components.Terrain
 			slot.Def.UseImportData();
 
 			// Copy all settings, but make sure our primary settings are immutable
-			slot.Def.ImportData = _defaultImportData;
+			slot.Def.ImportData = this._defaultImportData;
 			slot.Def.ImportData.ConstantHeight = constantHeight;
-			slot.Def.ImportData.TerrainAlign = _alignment;
-			slot.Def.ImportData.TerrainSize = _terrainSize;
-			slot.Def.ImportData.WorldSize = _terrainWorldSize;
+			slot.Def.ImportData.TerrainAlign = this._alignment;
+			slot.Def.ImportData.TerrainSize = this._terrainSize;
+			slot.Def.ImportData.WorldSize = this._terrainWorldSize;
 		}
 
 		/// <summary>
@@ -571,9 +571,9 @@ namespace Axiom.Components.Terrain
 
 			// Copy all settings, but make sure our primary settings are immutable
 			slot.Def.ImportData = importData;
-			slot.Def.ImportData.TerrainAlign = _alignment;
-			slot.Def.ImportData.TerrainSize = _terrainSize;
-			slot.Def.ImportData.WorldSize = _terrainWorldSize;
+			slot.Def.ImportData.TerrainAlign = this._alignment;
+			slot.Def.ImportData.TerrainSize = this._terrainSize;
+			slot.Def.ImportData.WorldSize = this._terrainWorldSize;
 		}
 
 		/// <summary>
@@ -603,7 +603,7 @@ namespace Axiom.Components.Terrain
 			slot.FreeInstance();
 			slot.Def.UseImportData();
 
-			slot.Def.ImportData = _defaultImportData;
+			slot.Def.ImportData = this._defaultImportData;
 
 			// Copy all settings, but make sure our primary settings are immutable
 			// copy image - this will get deleted by importData
@@ -613,9 +613,9 @@ namespace Axiom.Components.Terrain
 				// copy (held by value)
 				slot.Def.ImportData.LayerList = layers;
 			}
-			slot.Def.ImportData.TerrainAlign = _alignment;
-			slot.Def.ImportData.TerrainSize = _terrainSize;
-			slot.Def.ImportData.WorldSize = _terrainWorldSize;
+			slot.Def.ImportData.TerrainAlign = this._alignment;
+			slot.Def.ImportData.TerrainSize = this._terrainSize;
+			slot.Def.ImportData.WorldSize = this._terrainWorldSize;
 		}
 
 #if !NET_40
@@ -653,7 +653,7 @@ namespace Axiom.Components.Terrain
 			slot.FreeInstance();
 			slot.Def.UseImportData();
 
-			slot.Def.ImportData = _defaultImportData;
+			slot.Def.ImportData = this._defaultImportData;
 
 			// Copy all settings, but make sure our primary settings are immutable
 			if ( data != null )
@@ -667,9 +667,9 @@ namespace Axiom.Components.Terrain
 				// copy (held by value)
 				slot.Def.ImportData.LayerList = layers;
 			}
-			slot.Def.ImportData.TerrainAlign = _alignment;
-			slot.Def.ImportData.TerrainSize = _terrainSize;
-			slot.Def.ImportData.WorldSize = _terrainWorldSize;
+			slot.Def.ImportData.TerrainAlign = this._alignment;
+			slot.Def.ImportData.TerrainSize = this._terrainSize;
+			slot.Def.ImportData.WorldSize = this._terrainWorldSize;
 		}
 
 #if !NET_40
@@ -717,7 +717,7 @@ namespace Axiom.Components.Terrain
 		{
 			// Just a straight iteration - for the numbers involved not worth 
 			// keeping a loaded / unloaded list
-			foreach ( var i in _terrainSlots.Values )
+			foreach ( var i in this._terrainSlots.Values )
 			{
 				LoadTerrainImpl( i, synchronous );
 			}
@@ -757,7 +757,7 @@ namespace Axiom.Components.Terrain
 		public void SaveAllTerrains( bool onlyIfModified, bool replaceManualFilenames )
 #endif
 		{
-			foreach ( var i in _terrainSlots.Values )
+			foreach ( var i in this._terrainSlots.Values )
 			{
 				TerrainSlot slot = i;
 				if ( slot.Instance != null )
@@ -833,15 +833,15 @@ namespace Axiom.Components.Terrain
 			if ( slot.Instance == null && ( !string.IsNullOrEmpty( slot.Def.FileName ) || slot.Def.ImportData != null ) )
 			{
 				// Allocate in main thread so no race conditions
-				slot.Instance = new Terrain( _sceneManager );
-				slot.Instance.ResourceGroup = _resourceGroup;
+				slot.Instance = new Terrain( this._sceneManager );
+				slot.Instance.ResourceGroup = this._resourceGroup;
 				// Use shared pool of buffers
-				slot.Instance.GpuBufferAllocator = BufferAllocator;
+				slot.Instance.GpuBufferAllocator = this.BufferAllocator;
 
 				var req = new LoadRequest();
 				req.Slot = slot;
 				req.Origin = this;
-				Root.Instance.WorkQueue.AddRequest( _workQueueChannel, WORKQUEUE_LOAD_REQUEST, req, 0, synchronous );
+				Root.Instance.WorkQueue.AddRequest( this._workQueueChannel, WORKQUEUE_LOAD_REQUEST, req, 0, synchronous );
 			}
 		}
 
@@ -884,11 +884,11 @@ namespace Axiom.Components.Terrain
 		{
 			uint key = PackIndex( x, y );
 			TerrainSlot slot = null;
-			if ( _terrainSlots.TryGetValue( key, out slot ) )
+			if ( this._terrainSlots.TryGetValue( key, out slot ) )
 			{
 				slot.Dispose();
 				slot = null;
-				_terrainSlots.Remove( key );
+				this._terrainSlots.Remove( key );
 			}
 		}
 
@@ -898,16 +898,16 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void RemoveAllTerrains()
 		{
-			foreach ( var i in _terrainSlots.Values )
+			foreach ( var i in this._terrainSlots.Values )
 			{
 				if ( !i.IsDisposed )
 				{
 					i.Dispose();
 				}
 			}
-			_terrainSlots.Clear();
+			this._terrainSlots.Clear();
 			// Also clear buffer pools, if we're clearing completely may not be representative
-			BufferAllocator.FreeAllBuffers();
+			this.BufferAllocator.FreeAllBuffers();
 		}
 
 		/// <summary>
@@ -1071,7 +1071,7 @@ namespace Axiom.Components.Terrain
 			}
 
 			// Normalise the offset  based on the world size of a square, and rebase to the bottom left
-			offset /= _terrainWorldSize;
+			offset /= this._terrainWorldSize;
 			offset += 0.5f;
 			// this is our counter moving away from the 'current' square
 			var inc = new Vector3( Math.Utility.Abs( localRayDir.x ), Math.Utility.Abs( localRayDir.y ),
@@ -1199,7 +1199,7 @@ namespace Axiom.Components.Terrain
 		public void BoxIntersects( AxisAlignedBox box, out List<Terrain> terrainList )
 		{
 			terrainList = new List<Terrain>();
-			foreach ( var i in _terrainSlots.Values )
+			foreach ( var i in this._terrainSlots.Values )
 			{
 				if ( i.Instance != null && box.Intersects( i.Instance.WorldAABB ) )
 				{
@@ -1223,7 +1223,7 @@ namespace Axiom.Components.Terrain
 		public void SphereIntersects( Sphere sphere, out List<Terrain> terrainList )
 		{
 			terrainList = new List<Terrain>();
-			foreach ( var i in _terrainSlots.Values )
+			foreach ( var i in this._terrainSlots.Values )
 			{
 				if ( i.Instance != null && sphere.Intersects( i.Instance.WorldAABB ) )
 				{
@@ -1244,14 +1244,14 @@ namespace Axiom.Components.Terrain
 			// 0,0 terrain is centred at the origin
 			Vector3 terrainPos;
 			// convert to standard xy base (z up), make relative to origin
-			Terrain.ConvertWorldToTerrainAxes( _alignment, position - _origin, out terrainPos );
+			Terrain.ConvertWorldToTerrainAxes( this._alignment, position - this._origin, out terrainPos );
 
-			Real offset = _terrainWorldSize*0.5f;
+			Real offset = this._terrainWorldSize*0.5f;
 			terrainPos.x += offset;
 			terrainPos.y += offset;
 
-			x = (long)( System.Math.Floor( terrainPos.x/_terrainWorldSize ) );
-			y = (long)( System.Math.Floor( terrainPos.y/_terrainWorldSize ) );
+			x = (long)( System.Math.Floor( terrainPos.x/this._terrainWorldSize ) );
+			y = (long)( System.Math.Floor( terrainPos.y/this._terrainWorldSize ) );
 		}
 
 		/// <summary>
@@ -1263,9 +1263,9 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void ConvertTerrainSlotToWorldPosition( long x, long y, out Vector3 position )
 		{
-			var terrainPos = new Vector3( x*_terrainWorldSize, y*_terrainWorldSize, 0 );
-			Terrain.ConvertTerrainToWorldAxes( _alignment, terrainPos, out position );
-			position += _origin;
+			var terrainPos = new Vector3( x*this._terrainWorldSize, y*this._terrainWorldSize, 0 );
+			Terrain.ConvertTerrainToWorldAxes( this._alignment, terrainPos, out position );
+			position += this._origin;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -1321,8 +1321,8 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public string GenerateFilename( long x, long y )
 		{
-			return string.Format( "{0}_{1}.{2}", _filenamePrefix, PackIndex( x, y ).ToString().PadLeft( 8, '0' ),
-			                      _filenameExtension );
+			return string.Format( "{0}_{1}.{2}", this._filenamePrefix, PackIndex( x, y ).ToString().PadLeft( 8, '0' ),
+			                      this._filenameExtension );
 		}
 
 		/// <summary>
@@ -1344,7 +1344,7 @@ namespace Axiom.Components.Terrain
 		{
 			var key = PackIndex( x, y );
 			TerrainSlot i;
-			if ( _terrainSlots.TryGetValue( key, out i ) )
+			if ( this._terrainSlots.TryGetValue( key, out i ) )
 			{
 				return i;
 			}
@@ -1352,7 +1352,7 @@ namespace Axiom.Components.Terrain
 			else if ( createIfMissing )
 			{
 				i = new TerrainSlot( x, y );
-				_terrainSlots.Add( key, i );
+				this._terrainSlots.Add( key, i );
 				return i;
 			}
 			return null;
@@ -1371,7 +1371,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void FreeTemporaryResources()
 		{
-			foreach ( var i in _terrainSlots.Values )
+			foreach ( var i in this._terrainSlots.Values )
 			{
 				if ( i.Instance != null )
 				{
@@ -1391,7 +1391,7 @@ namespace Axiom.Components.Terrain
 		public void Update( bool synchronous )
 #endif
 		{
-			foreach ( var i in _terrainSlots.Values )
+			foreach ( var i in this._terrainSlots.Values )
 			{
 				if ( i.Instance != null )
 				{
@@ -1415,7 +1415,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void UpdateGeometry()
 		{
-			foreach ( var i in _terrainSlots.Values )
+			foreach ( var i in this._terrainSlots.Values )
 			{
 				if ( i.Instance != null )
 				{
@@ -1435,7 +1435,7 @@ namespace Axiom.Components.Terrain
 		public void UpdateDerivedData( bool synchronous, byte typeMask )
 #endif
 		{
-			foreach ( var i in _terrainSlots.Values )
+			foreach ( var i in this._terrainSlots.Values )
 			{
 				if ( i.Instance != null )
 				{
@@ -1477,22 +1477,22 @@ namespace Axiom.Components.Terrain
 		{
 			stream.WriteChunkBegin( ChunkID, ChunkVersion );
 			// Base details
-			stream.Write( _alignment );
-			stream.Write( _terrainSize );
-			stream.Write( _terrainWorldSize );
-			stream.Write( _filenamePrefix );
-			stream.Write( _filenameExtension );
-			stream.Write( _resourceGroup );
-			stream.Write( _origin );
+			stream.Write( this._alignment );
+			stream.Write( this._terrainSize );
+			stream.Write( this._terrainWorldSize );
+			stream.Write( this._filenamePrefix );
+			stream.Write( this._filenameExtension );
+			stream.Write( this._resourceGroup );
+			stream.Write( this._origin );
 
 			// Default import settings (those not duplicated by the above)
-			stream.Write( _defaultImportData.ConstantHeight );
-			stream.Write( _defaultImportData.InputBias );
-			stream.Write( _defaultImportData.InputScale );
-			stream.Write( _defaultImportData.MaxBatchSize );
-			stream.Write( _defaultImportData.MinBatchSize );
-			Terrain.WriteLayerDeclaration( _defaultImportData.LayerDeclaration, ref stream );
-			Terrain.WriteLayerInstanceList( _defaultImportData.LayerList, ref stream );
+			stream.Write( this._defaultImportData.ConstantHeight );
+			stream.Write( this._defaultImportData.InputBias );
+			stream.Write( this._defaultImportData.InputScale );
+			stream.Write( this._defaultImportData.MaxBatchSize );
+			stream.Write( this._defaultImportData.MinBatchSize );
+			Terrain.WriteLayerDeclaration( this._defaultImportData.LayerDeclaration, ref stream );
+			Terrain.WriteLayerInstanceList( this._defaultImportData.LayerList, ref stream );
 
 			stream.WriteChunkEnd( ChunkID );
 		}
@@ -1520,31 +1520,31 @@ namespace Axiom.Components.Terrain
 			}
 
 			// Base details
-			stream.Read( out _alignment );
-			stream.Read( out _terrainSize );
-			stream.Read( out _terrainWorldSize );
-			stream.Read( out _filenamePrefix );
-			stream.Read( out _filenameExtension );
-			stream.Read( out _resourceGroup );
-			stream.Read( out _origin );
+			stream.Read( out this._alignment );
+			stream.Read( out this._terrainSize );
+			stream.Read( out this._terrainWorldSize );
+			stream.Read( out this._filenamePrefix );
+			stream.Read( out this._filenameExtension );
+			stream.Read( out this._resourceGroup );
+			stream.Read( out this._origin );
 
 			// Default import settings (those not duplicated by the above)
-			stream.Read( out _defaultImportData.ConstantHeight );
-			stream.Read( out _defaultImportData.InputBias );
-			stream.Read( out _defaultImportData.InputScale );
-			stream.Read( out _defaultImportData.MaxBatchSize );
-			stream.Read( out _defaultImportData.MinBatchSize );
-			_defaultImportData.LayerDeclaration = new TerrainLayerDeclaration();
-			Terrain.ReadLayerDeclaration( ref stream, ref _defaultImportData.LayerDeclaration );
-			_defaultImportData.LayerList = new List<LayerInstance>();
-			Terrain.ReadLayerInstanceList( ref stream, _defaultImportData.LayerDeclaration.Samplers.Count,
-			                               ref _defaultImportData.LayerList );
+			stream.Read( out this._defaultImportData.ConstantHeight );
+			stream.Read( out this._defaultImportData.InputBias );
+			stream.Read( out this._defaultImportData.InputScale );
+			stream.Read( out this._defaultImportData.MaxBatchSize );
+			stream.Read( out this._defaultImportData.MinBatchSize );
+			this._defaultImportData.LayerDeclaration = new TerrainLayerDeclaration();
+			Terrain.ReadLayerDeclaration( ref stream, ref this._defaultImportData.LayerDeclaration );
+			this._defaultImportData.LayerList = new List<LayerInstance>();
+			Terrain.ReadLayerInstanceList( ref stream, this._defaultImportData.LayerDeclaration.Samplers.Count,
+			                               ref this._defaultImportData.LayerList );
 
 			// copy data that would have normally happened on construction
-			_defaultImportData.TerrainAlign = _alignment;
-			_defaultImportData.TerrainSize = _terrainSize;
-			_defaultImportData.WorldSize = _terrainWorldSize;
-			_defaultImportData.DeleteInputData = true;
+			this._defaultImportData.TerrainAlign = this._alignment;
+			this._defaultImportData.TerrainSize = this._terrainSize;
+			this._defaultImportData.WorldSize = this._terrainWorldSize;
+			this._defaultImportData.DeleteInputData = true;
 
 			stream.ReadChunkEnd( ChunkID );
 		}

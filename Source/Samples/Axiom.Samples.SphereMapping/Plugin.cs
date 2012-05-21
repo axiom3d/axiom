@@ -10,9 +10,9 @@ namespace Axiom.Samples.SphereMapping
 
 		public override void Initialize()
 		{
-			sample = new SphereMappingSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new SphereMappingSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

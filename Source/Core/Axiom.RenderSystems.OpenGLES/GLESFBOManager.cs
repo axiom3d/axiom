@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: GLESFBOManager.cs 2186 2010-09-11 18:15:17Z bostich1983 $"/>
+//     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
 

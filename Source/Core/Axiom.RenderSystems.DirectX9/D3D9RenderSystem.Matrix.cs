@@ -216,13 +216,13 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return D3D9Helper.ConvertD3DMatrix( ref _dxWorldMat );
+				return D3D9Helper.ConvertD3DMatrix( ref this._dxWorldMat );
 			}
 			set
 			{
 				// save latest matrix
-				_dxWorldMat = D3D9Helper.MakeD3DMatrix( value );
-				ActiveD3D9Device.SetTransform( D3D9.TransformState.World, ref _dxWorldMat );
+				this._dxWorldMat = D3D9Helper.MakeD3DMatrix( value );
+				ActiveD3D9Device.SetTransform( D3D9.TransformState.World, ref this._dxWorldMat );
 			}
 		}
 
@@ -239,7 +239,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return _viewMatrix;
+				return this._viewMatrix;
 			}
 			set
 			{
@@ -247,13 +247,13 @@ namespace Axiom.RenderSystems.DirectX9
 				// save latest view matrix
 				// Axiom: Matrix4 is a struct thus passed by value, save an additional copy through
 				// temporary here; Ogre passes the Matrix4 by ref
-				_viewMatrix = value;
-				_viewMatrix.m20 = -_viewMatrix.m20;
-				_viewMatrix.m21 = -_viewMatrix.m21;
-				_viewMatrix.m22 = -_viewMatrix.m22;
-				_viewMatrix.m23 = -_viewMatrix.m23;
+				this._viewMatrix = value;
+				this._viewMatrix.m20 = -this._viewMatrix.m20;
+				this._viewMatrix.m21 = -this._viewMatrix.m21;
+				this._viewMatrix.m22 = -this._viewMatrix.m22;
+				this._viewMatrix.m23 = -this._viewMatrix.m23;
 
-				var dxView = D3D9Helper.MakeD3DMatrix( _viewMatrix );
+				var dxView = D3D9Helper.MakeD3DMatrix( this._viewMatrix );
 				ActiveD3D9Device.SetTransform( D3D9.TransformState.View, ref dxView );
 
 				// also mark clip planes dirty
@@ -276,22 +276,22 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return D3D9Helper.ConvertD3DMatrix( ref _dxProjMat );
+				return D3D9Helper.ConvertD3DMatrix( ref this._dxProjMat );
 			}
 			set
 			{
 				// save latest matrix
-				_dxProjMat = D3D9Helper.MakeD3DMatrix( value );
+				this._dxProjMat = D3D9Helper.MakeD3DMatrix( value );
 
 				if ( activeRenderTarget.RequiresTextureFlipping )
 				{
-					_dxProjMat.M12 = -_dxProjMat.M12;
-					_dxProjMat.M22 = -_dxProjMat.M22;
-					_dxProjMat.M32 = -_dxProjMat.M32;
-					_dxProjMat.M42 = -_dxProjMat.M42;
+					this._dxProjMat.M12 = -this._dxProjMat.M12;
+					this._dxProjMat.M22 = -this._dxProjMat.M22;
+					this._dxProjMat.M32 = -this._dxProjMat.M32;
+					this._dxProjMat.M42 = -this._dxProjMat.M42;
 				}
 
-				ActiveD3D9Device.SetTransform( D3D9.TransformState.Projection, ref _dxProjMat );
+				ActiveD3D9Device.SetTransform( D3D9.TransformState.Projection, ref this._dxProjMat );
 
 				// also mark clip planes dirty
 				if ( clipPlanes.Count != 0 )
@@ -313,7 +313,7 @@ namespace Axiom.RenderSystems.DirectX9
 			var newMat = xform;
 
 			// cache this since it's used often
-			var autoTexCoordType = _texStageDesc[ stage ].AutoTexCoordType;
+			var autoTexCoordType = this._texStageDesc[ stage ].AutoTexCoordType;
 
 			// if a vertex program is bound, we mustn't set texture transforms
 			if ( vertexProgramBound )
@@ -324,7 +324,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( autoTexCoordType == TexCoordCalcMethod.EnvironmentMap )
 			{
-				if ( ( _deviceManager.ActiveDevice.D3D9DeviceCaps.VertexProcessingCaps & D3D9.VertexProcessingCaps.TexGenSphereMap ) ==
+				if ( ( this._deviceManager.ActiveDevice.D3D9DeviceCaps.VertexProcessingCaps &
+				       D3D9.VertexProcessingCaps.TexGenSphereMap ) ==
 				     D3D9.VertexProcessingCaps.TexGenSphereMap )
 				{
 					// inverts the texture for a spheremap
@@ -353,19 +354,19 @@ namespace Axiom.RenderSystems.DirectX9
 				// Get transposed 3x3, ie since D3D is transposed just copy
 				// We want to transpose since that will invert an orthonormal matrix ie rotation
 				var viewTransposed = Matrix4.Identity;
-				viewTransposed.m00 = _viewMatrix.m00;
-				viewTransposed.m01 = _viewMatrix.m10;
-				viewTransposed.m02 = _viewMatrix.m20;
+				viewTransposed.m00 = this._viewMatrix.m00;
+				viewTransposed.m01 = this._viewMatrix.m10;
+				viewTransposed.m02 = this._viewMatrix.m20;
 				viewTransposed.m03 = 0.0f;
 
-				viewTransposed.m10 = _viewMatrix.m01;
-				viewTransposed.m11 = _viewMatrix.m11;
-				viewTransposed.m12 = _viewMatrix.m21;
+				viewTransposed.m10 = this._viewMatrix.m01;
+				viewTransposed.m11 = this._viewMatrix.m11;
+				viewTransposed.m12 = this._viewMatrix.m21;
 				viewTransposed.m13 = 0.0f;
 
-				viewTransposed.m20 = _viewMatrix.m02;
-				viewTransposed.m21 = _viewMatrix.m12;
-				viewTransposed.m22 = _viewMatrix.m22;
+				viewTransposed.m20 = this._viewMatrix.m02;
+				viewTransposed.m21 = this._viewMatrix.m12;
+				viewTransposed.m22 = this._viewMatrix.m22;
 				viewTransposed.m23 = 0.0f;
 
 				viewTransposed.m30 = 0;
@@ -382,19 +383,19 @@ namespace Axiom.RenderSystems.DirectX9
 				// Derive camera space to projector space transform
 				// To do this, we need to undo the camera view matrix, then
 				// apply the projector view & projection matrices
-				newMat = _viewMatrix.Inverse();
+				newMat = this._viewMatrix.Inverse();
 
 				if ( texProjRelative )
 				{
 					Matrix4 viewMatrix;
-					_texStageDesc[ stage ].Frustum.CalcViewMatrixRelative( texProjRelativeOrigin, out viewMatrix );
+					this._texStageDesc[ stage ].Frustum.CalcViewMatrixRelative( texProjRelativeOrigin, out viewMatrix );
 					newMat = viewMatrix*newMat;
 				}
 				else
 				{
-					newMat = _texStageDesc[ stage ].Frustum.ViewMatrix*newMat;
+					newMat = this._texStageDesc[ stage ].Frustum.ViewMatrix*newMat;
 				}
-				newMat = _texStageDesc[ stage ].Frustum.ProjectionMatrix*newMat;
+				newMat = this._texStageDesc[ stage ].Frustum.ProjectionMatrix*newMat;
 				newMat = Matrix4.ClipSpace2DToImageSpace*newMat;
 				newMat = xform*newMat;
 			}
@@ -429,7 +430,7 @@ namespace Axiom.RenderSystems.DirectX9
 					//FIXME: The actually input texture coordinate dimensions should
 					//be determine by texture coordinate vertex element. Now, just trust
 					//user supplied texture type matchs texture coordinate vertex element.
-					if ( _texStageDesc[ stage ].TexType == D3D9TextureType.Normal )
+					if ( this._texStageDesc[ stage ].TexType == D3D9TextureType.Normal )
 					{
 						/* It's 2D input texture coordinate:
 
@@ -460,7 +461,7 @@ namespace Axiom.RenderSystems.DirectX9
 					//divide u, v by q. The w and q just ignored as it wasn't used by
 					//rasterizer.
 
-					switch ( _texStageDesc[ stage ].TexType )
+					switch ( this._texStageDesc[ stage ].TexType )
 					{
 						case D3D9TextureType.Normal:
 							Utility.Swap( ref d3dMat.M13, ref d3dMat.M14 );
@@ -480,7 +481,7 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 				else
 				{
-					switch ( _texStageDesc[ stage ].TexType )
+					switch ( this._texStageDesc[ stage ].TexType )
 					{
 						case D3D9TextureType.Normal:
 							texCoordDim = TextureTransform.Count2;

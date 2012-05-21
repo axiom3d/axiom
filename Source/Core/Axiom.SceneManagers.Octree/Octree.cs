@@ -94,11 +94,11 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return numNodes;
+				return this.numNodes;
 			}
 			set
 			{
-				numNodes = value;
+				this.numNodes = value;
 			}
 		}
 
@@ -106,7 +106,7 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return nodeList;
+				return this.nodeList;
 			}
 		}
 
@@ -114,11 +114,11 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return halfSize;
+				return this.halfSize;
 			}
 			set
 			{
-				halfSize = value;
+				this.halfSize = value;
 			}
 		}
 
@@ -126,11 +126,11 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				return box;
+				return this.box;
 			}
 			set
 			{
-				box = value;
+				this.box = value;
 			}
 		}
 
@@ -138,7 +138,7 @@ namespace Axiom.SceneManagers.Octree
 
 		public Octree( Octree parent )
 		{
-			wireBoundingBox = null;
+			this.wireBoundingBox = null;
 			HalfSize = new Vector3();
 
 			this.parent = parent;
@@ -148,7 +148,7 @@ namespace Axiom.SceneManagers.Octree
 		public void AddNode( OctreeNode node )
 		{
 			// TODO: Att some points, some nodes seemed to be added if they already existed.  Investigate.
-			nodeList.Add( node );
+			this.nodeList.Add( node );
 			node.Octant = this;
 			Ref();
 		}
@@ -185,10 +185,10 @@ namespace Axiom.SceneManagers.Octree
 		/// </summary>
 		public void GetChildIndexes( AxisAlignedBox aabox, out int x, out int y, out int z )
 		{
-			Vector3 max = box.Maximum;
+			Vector3 max = this.box.Maximum;
 			Vector3 min = aabox.Minimum;
 
-			Vector3 Center = box.Maximum.MidPoint( box.Minimum );
+			Vector3 Center = this.box.Maximum.MidPoint( this.box.Minimum );
 			Vector3 CheckCenter = aabox.Maximum.MidPoint( aabox.Minimum );
 
 			if ( CheckCenter.x > Center.x )
@@ -231,30 +231,30 @@ namespace Axiom.SceneManagers.Octree
 		{
 			get
 			{
-				Vector3[] Corners = box.Corners;
-				box.SetExtents( Corners[ 0 ] - HalfSize, Corners[ 4 ] + HalfSize );
+				Vector3[] Corners = this.box.Corners;
+				this.box.SetExtents( Corners[ 0 ] - HalfSize, Corners[ 4 ] + HalfSize );
 
-				return box;
+				return this.box;
 			}
 		}
 
 		public void Ref()
 		{
-			numNodes++;
+			this.numNodes++;
 
-			if ( parent != null )
+			if ( this.parent != null )
 			{
-				parent.Ref();
+				this.parent.Ref();
 			}
 		}
 
 		public void UnRef()
 		{
-			numNodes--;
+			this.numNodes--;
 
-			if ( parent != null )
+			if ( this.parent != null )
 			{
-				parent.UnRef();
+				this.parent.UnRef();
 			}
 		}
 
@@ -263,13 +263,13 @@ namespace Axiom.SceneManagers.Octree
 			get
 			{
 				// Create a WireBoundingBox if needed
-				if ( wireBoundingBox == null )
+				if ( this.wireBoundingBox == null )
 				{
-					wireBoundingBox = new WireBoundingBox();
+					this.wireBoundingBox = new WireBoundingBox();
 				}
 
-				wireBoundingBox.BoundingBox = box;
-				return wireBoundingBox;
+				this.wireBoundingBox.BoundingBox = this.box;
+				return this.wireBoundingBox;
 			}
 		}
 	}

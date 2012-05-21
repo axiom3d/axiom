@@ -138,12 +138,12 @@ namespace Axiom.Samples.MousePicking
 		/// <param name="window">RenderWindow</param>
 		public MouseSelector( string name, Camera camera, RenderWindow window )
 		{
-			_Camera = camera;
-			_Window = window;
-			_name = name;
-			_rect = new SelectionRectangle( _name );
-			_Camera.ParentSceneNode.CreateChildSceneNode( _name + "_node" ).AttachObject( _rect );
-			Log( _name + " created, and attached to " + _name + "_node." );
+			this._Camera = camera;
+			this._Window = window;
+			this._name = name;
+			this._rect = new SelectionRectangle( this._name );
+			this._Camera.ParentSceneNode.CreateChildSceneNode( this._name + "_node" ).AttachObject( this._rect );
+			Log( this._name + " created, and attached to " + this._name + "_node." );
 		}
 
 		/// <summary>
@@ -151,8 +151,8 @@ namespace Axiom.Samples.MousePicking
 		/// </summary>
 		~MouseSelector()
 		{
-			Selection = null;
-			Selecting = false;
+			this.Selection = null;
+			this.Selecting = false;
 		}
 
 		#endregion
@@ -162,9 +162,10 @@ namespace Axiom.Samples.MousePicking
 		/// </summary>
 		private void PerformSelectionWithMouseClick()
 		{
-			Log( "MouseSelector: " + _name + " single click selecting at (" + _start.x.ToString() + ";" + _start.y.ToString() +
+			Log( "MouseSelector: " + this._name + " single click selecting at (" + this._start.x.ToString() + ";" +
+			     this._start.y.ToString() +
 			     ")" );
-			Ray mouseRay = _Camera.GetCameraToViewportRay( _start.x, _start.y );
+			Ray mouseRay = this._Camera.GetCameraToViewportRay( this._start.x, this._start.y );
 			RaySceneQuery RayScnQuery = Root.Instance.SceneManager.CreateRayQuery( mouseRay );
 			RayScnQuery.SortByDistance = true;
 			foreach ( RaySceneQueryResultEntry re in RayScnQuery.Execute() )
@@ -180,7 +181,7 @@ namespace Axiom.Samples.MousePicking
 		/// <param name="second">Vector2</param>
 		private void PerformSelectionWithSelectionBox( Math.Vector2 first, Math.Vector2 second )
 		{
-			Log( "MouseSelector: " + _name + " performing selection." );
+			Log( "MouseSelector: " + this._name + " performing selection." );
 
 			float left = first.x, right = second.x, top = first.y, bottom = second.y;
 
@@ -199,10 +200,10 @@ namespace Axiom.Samples.MousePicking
 				return;
 			}
 
-			Ray topLeft = _Camera.GetCameraToViewportRay( left, top );
-			Ray topRight = _Camera.GetCameraToViewportRay( right, top );
-			Ray bottomLeft = _Camera.GetCameraToViewportRay( left, bottom );
-			Ray bottomRight = _Camera.GetCameraToViewportRay( right, bottom );
+			Ray topLeft = this._Camera.GetCameraToViewportRay( left, top );
+			Ray topRight = this._Camera.GetCameraToViewportRay( right, top );
+			Ray bottomLeft = this._Camera.GetCameraToViewportRay( left, bottom );
+			Ray bottomRight = this._Camera.GetCameraToViewportRay( right, bottom );
 
 			var vol = new PlaneBoundedVolume();
 			vol.planes.Add( new Math.Plane( topLeft.GetPoint( 3 ), topRight.GetPoint( 3 ), bottomRight.GetPoint( 3 ) ) );
@@ -236,13 +237,13 @@ namespace Axiom.Samples.MousePicking
 		/// </summary>
 		public void DeselectObjects()
 		{
-			if ( !KeepPreviousSelection )
+			if ( !this.KeepPreviousSelection )
 			{
-				foreach ( MovableObject iter in Selection )
+				foreach ( MovableObject iter in this.Selection )
 				{
 					iter.ParentSceneNode.ShowBoundingBox = false;
 				}
-				Selection.Clear();
+				this.Selection.Clear();
 			}
 		}
 
@@ -252,11 +253,11 @@ namespace Axiom.Samples.MousePicking
 		/// <param name="obj">MovableObject</param>
 		private void SelectObject( MovableObject obj )
 		{
-			if ( !Selection.Contains( obj ) )
+			if ( !this.Selection.Contains( obj ) )
 			{
-				Log( "MouseSelector: " + _name + " selecting object " + obj.Name );
+				Log( "MouseSelector: " + this._name + " selecting object " + obj.Name );
 				obj.ParentSceneNode.ShowBoundingBox = true;
-				Selection.Add( obj );
+				this.Selection.Add( obj );
 			}
 		}
 
@@ -269,24 +270,25 @@ namespace Axiom.Samples.MousePicking
 		{
 			if ( id == SharpInputSystem.MouseButtonID.Left )
 			{
-				Selecting = true;
+				this.Selecting = true;
 				Clear();
-				switch ( SelectionMode )
+				switch ( this.SelectionMode )
 				{
 					case SelectionModeType.SelectionBox:
-						Log( "MouseSelector: Selection starting for " + _name );
+						Log( "MouseSelector: Selection starting for " + this._name );
 						Clear();
-						_start = new Vector2( evt.State.X.Absolute/(float)_Camera.Viewport.ActualWidth,
-						                      evt.State.Y.Absolute/(float)_Camera.Viewport.ActualHeight );
-						_stop = _start;
-						_rect.IsVisible = true;
-						Log( "MouseSelector: " + _name + " selecting from top(" + _start.x.ToString() + ";" + _start.y.ToString() + ")" );
-						_rect.SetCorners( _start, _stop );
+						this._start = new Vector2( evt.State.X.Absolute/(float)this._Camera.Viewport.ActualWidth,
+						                           evt.State.Y.Absolute/(float)this._Camera.Viewport.ActualHeight );
+						this._stop = this._start;
+						this._rect.IsVisible = true;
+						Log( "MouseSelector: " + this._name + " selecting from top(" + this._start.x.ToString() + ";" +
+						     this._start.y.ToString() + ")" );
+						this._rect.SetCorners( this._start, this._stop );
 						break;
 
 					case SelectionModeType.MouseClick:
-						_start = new Vector2( evt.State.X.Absolute/(float)_Camera.Viewport.ActualWidth,
-						                      evt.State.Y.Absolute/(float)_Camera.Viewport.ActualHeight );
+						this._start = new Vector2( evt.State.X.Absolute/(float)this._Camera.Viewport.ActualWidth,
+						                           evt.State.Y.Absolute/(float)this._Camera.Viewport.ActualHeight );
 						break;
 				}
 			}
@@ -298,11 +300,11 @@ namespace Axiom.Samples.MousePicking
 		/// <param name="evt"></param>
 		public void MouseMoved( SharpInputSystem.MouseEventArgs evt )
 		{
-			if ( ( SelectionMode == SelectionModeType.SelectionBox ) && Selecting == true )
+			if ( ( this.SelectionMode == SelectionModeType.SelectionBox ) && this.Selecting == true )
 			{
-				_stop = new Vector2( evt.State.X.Absolute/(float)_Camera.Viewport.ActualWidth,
-				                     evt.State.Y.Absolute/(float)_Camera.Viewport.ActualHeight );
-				_rect.SetCorners( _start, _stop );
+				this._stop = new Vector2( evt.State.X.Absolute/(float)this._Camera.Viewport.ActualWidth,
+				                          evt.State.Y.Absolute/(float)this._Camera.Viewport.ActualHeight );
+				this._rect.SetCorners( this._start, this._stop );
 			}
 		}
 
@@ -313,23 +315,24 @@ namespace Axiom.Samples.MousePicking
 		/// <param name="id"></param>
 		public void MouseReleased( SharpInputSystem.MouseEventArgs evt, SharpInputSystem.MouseButtonID id )
 		{
-			if ( id == SharpInputSystem.MouseButtonID.Left && Selecting == true )
+			if ( id == SharpInputSystem.MouseButtonID.Left && this.Selecting == true )
 			{
-				switch ( SelectionMode )
+				switch ( this.SelectionMode )
 				{
 					case SelectionModeType.SelectionBox:
-						Log( "MouseSelector: " + _name + " selecting to bottom(" + _stop.x.ToString() + ";" + _stop.y.ToString() + ")" );
-						PerformSelectionWithSelectionBox( _start, _stop );
-						Selecting = false;
-						_rect.IsVisible = false;
-						Log( "MouseSelector: " + _name + " selection complete." );
+						Log( "MouseSelector: " + this._name + " selecting to bottom(" + this._stop.x.ToString() + ";" +
+						     this._stop.y.ToString() + ")" );
+						PerformSelectionWithSelectionBox( this._start, this._stop );
+						this.Selecting = false;
+						this._rect.IsVisible = false;
+						Log( "MouseSelector: " + this._name + " selection complete." );
 						break;
 
 					case SelectionModeType.MouseClick:
 						PerformSelectionWithMouseClick();
 						break;
 				}
-				Selecting = false;
+				this.Selecting = false;
 			}
 		}
 
@@ -338,7 +341,7 @@ namespace Axiom.Samples.MousePicking
 		/// </summary>
 		public void Clear()
 		{
-			_rect.Clear();
+			this._rect.Clear();
 			DeselectObjects();
 		}
 
@@ -348,7 +351,7 @@ namespace Axiom.Samples.MousePicking
 		/// <param name="message">string</param>
 		private void Log( string message )
 		{
-			if ( VerboseLogging == true )
+			if ( this.VerboseLogging == true )
 			{
 				LogManager.Instance.Write( message );
 			}

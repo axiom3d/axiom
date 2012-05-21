@@ -34,9 +34,9 @@ namespace Axiom.Samples.BezierPatch
 
 		public override void Initialize()
 		{
-			sample = new BezierSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new BezierSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

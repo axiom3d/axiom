@@ -158,7 +158,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 					{
 						unload();
 						MicroCode.SafeDispose();
-						constTable.SafeDispose();
+						this.constTable.SafeDispose();
 					}
 					else
 					{
@@ -259,7 +259,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 			try
 			{
-				MicroCode = effectCompiler.CompileShader( effectHandle, Target, compileFlags, out constTable );
+				MicroCode = effectCompiler.CompileShader( effectHandle, Target, compileFlags, out this.constTable );
 			}
 			catch ( DX.SharpDXException ex )
 			{
@@ -320,17 +320,17 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 			MicroCode.SafeDispose();
 			MicroCode = null;
 
-			constTable.SafeDispose();
-			constTable = null;
+			this.constTable.SafeDispose();
+			this.constTable = null;
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void BuildConstantDefinitions()
 		{
 			// Derive parameter names from const table
-			Contract.RequiresNotNull( constTable, "Program not loaded!" );
+			Contract.RequiresNotNull( this.constTable, "Program not loaded!" );
 			// Get contents of the constant table
-			var desc = constTable.Description;
+			var desc = this.constTable.Description;
 
 			CreateParameterMappingStructures( true );
 
@@ -347,11 +347,11 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		[OgreVersion( 1, 7, 2790 )]
 		protected void ProcessParamElement( D3D9.EffectHandle parent, string prefix, int index )
 		{
-			var constant = constTable.GetConstant( parent, index );
+			var constant = this.constTable.GetConstant( parent, index );
 
 			// Since D3D HLSL doesn't deal with naming of array and struct parameters
 			// automatically, we have to do it by hand
-			var desc = constTable.GetConstantDescription( constant );
+			var desc = this.constTable.GetConstantDescription( constant );
 
 			var paramName = desc.Name;
 
@@ -420,7 +420,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 						}
 					}
 
-					constantDefs.Map.Add( paramName, def );
+					constantDefs.Map.Add( paramName.ToLower(), def );
 
 					// Now deal with arrays
 					constantDefs.GenerateConstantDefinitionArrayEntries( name, def );

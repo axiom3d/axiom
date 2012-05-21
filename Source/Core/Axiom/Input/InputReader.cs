@@ -308,21 +308,21 @@ namespace Axiom.Input
 				{
 					case KeyCodes.LeftAlt:
 					case KeyCodes.RightAlt:
-						modifiers |= ModifierKeys.Alt;
+						this.modifiers |= ModifierKeys.Alt;
 						break;
 
 					case KeyCodes.LeftShift:
 					case KeyCodes.RightShift:
-						modifiers |= ModifierKeys.Shift;
+						this.modifiers |= ModifierKeys.Shift;
 						break;
 
 					case KeyCodes.LeftControl:
 					case KeyCodes.RightControl:
-						modifiers |= ModifierKeys.Control;
+						this.modifiers |= ModifierKeys.Control;
 						break;
 				}
 
-				var e = new Axiom.Input.KeyEventArgs( key, modifiers );
+				var e = new Axiom.Input.KeyEventArgs( key, this.modifiers );
 				OnKeyDown( e );
 			}
 			else
@@ -331,21 +331,21 @@ namespace Axiom.Input
 				{
 					case KeyCodes.LeftAlt:
 					case KeyCodes.RightAlt:
-						modifiers &= ~ModifierKeys.Alt;
+						this.modifiers &= ~ModifierKeys.Alt;
 						break;
 
 					case KeyCodes.LeftShift:
 					case KeyCodes.RightShift:
-						modifiers &= ~ModifierKeys.Shift;
+						this.modifiers &= ~ModifierKeys.Shift;
 						break;
 
 					case KeyCodes.LeftControl:
 					case KeyCodes.RightControl:
-						modifiers &= ~ModifierKeys.Control;
+						this.modifiers &= ~ModifierKeys.Control;
 						break;
 				}
 
-				var e = new Axiom.Input.KeyEventArgs( key, modifiers );
+				var e = new Axiom.Input.KeyEventArgs( key, this.modifiers );
 				OnKeyUp( e );
 			}
 		}

@@ -69,14 +69,14 @@ namespace Axiom.RenderSystems.OpenGL
 			Contract.Requires( Root.Instance.RenderSystems.ContainsKey( "OpenGL" ) == false, "OpenGL",
 			                   "An instance of the OpenGL renderer is already loaded." );
 
-			_renderSystem = new GLRenderSystem();
+			this._renderSystem = new GLRenderSystem();
 			// add an instance of this plugin to the list of available RenderSystems
-			Root.Instance.RenderSystems.Add( "OpenGL", _renderSystem );
+			Root.Instance.RenderSystems.Add( "OpenGL", this._renderSystem );
 		}
 
 		public void Shutdown()
 		{
-			_renderSystem.Shutdown();
+			this._renderSystem.Shutdown();
 		}
 
 		#endregion Implementation of IPlugin

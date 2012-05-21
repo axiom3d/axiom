@@ -14,9 +14,9 @@ namespace Axiom.Samples.ShaderSystem
 
 		public override void Initialize()
 		{
-			sample = new ShaderSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new ShaderSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

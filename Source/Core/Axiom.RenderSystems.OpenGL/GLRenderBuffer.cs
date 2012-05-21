@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
-//     <id value="$Id: GLRenderBuffer.cs 1319 2008-07-21 15:14:04Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -67,9 +67,9 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			GLFormat = format;
 			/// Generate renderbuffer
-			Gl.glGenRenderbuffersEXT( 1, out _renderBufferId );
+			Gl.glGenRenderbuffersEXT( 1, out this._renderBufferId );
 			/// Bind it to FBO
-			Gl.glBindRenderbufferEXT( Gl.GL_RENDERBUFFER_EXT, _renderBufferId );
+			Gl.glBindRenderbufferEXT( Gl.GL_RENDERBUFFER_EXT, this._renderBufferId );
 
 			/// Allocate storage for depth buffer
 			Gl.glRenderbufferStorageEXT( Gl.GL_RENDERBUFFER_EXT, format, width, height );
@@ -82,7 +82,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void BindToFramebuffer( int attachment, int zOffset )
 		{
 			Debug.Assert( zOffset < Depth );
-			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, attachment, Gl.GL_RENDERBUFFER_EXT, _renderBufferId );
+			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, attachment, Gl.GL_RENDERBUFFER_EXT, this._renderBufferId );
 		}
 
 		protected override void dispose( bool disposeManagedResources )
@@ -94,7 +94,7 @@ namespace Axiom.RenderSystems.OpenGL
 					// Dispose managed resources.
 				}
 
-				Gl.glDeleteRenderbuffersEXT( 1, ref _renderBufferId );
+				Gl.glDeleteRenderbuffersEXT( 1, ref this._renderBufferId );
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
 			}

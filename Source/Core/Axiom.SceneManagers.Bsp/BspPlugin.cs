@@ -50,13 +50,13 @@ namespace Axiom.SceneManagers.Bsp
 	{
 		public void Initialize()
 		{
-			_bspSMFactory = new BspSceneManagerFactory();
-			Root.Instance.AddSceneManagerFactory( _bspSMFactory );
+			this._bspSMFactory = new BspSceneManagerFactory();
+			Root.Instance.AddSceneManagerFactory( this._bspSMFactory );
 		}
 
 		public void Shutdown()
 		{
-			Root.Instance.RemoveSceneManagerFactory( _bspSMFactory );
+			Root.Instance.RemoveSceneManagerFactory( this._bspSMFactory );
 		}
 
 		private BspSceneManagerFactory _bspSMFactory;

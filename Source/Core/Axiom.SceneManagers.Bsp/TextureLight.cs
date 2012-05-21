@@ -62,11 +62,11 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return isTextureLight;
+				return this.isTextureLight;
 			}
 			set
 			{
-				isTextureLight = value;
+				this.isTextureLight = value;
 			}
 		}
 
@@ -74,11 +74,11 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return intensity;
+				return this.intensity;
 			}
 			set
 			{
-				intensity = value;
+				this.intensity = value;
 			}
 		}
 
@@ -86,11 +86,11 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return priority;
+				return this.priority;
 			}
 			set
 			{
-				priority = value;
+				this.priority = value;
 			}
 		}
 
@@ -123,11 +123,11 @@ namespace Axiom.SceneManagers.Bsp
 			: base( name )
 		{
 			this.creator = creator;
-			isTextureLight = true;
+			this.isTextureLight = true;
 			diffuse = ColorEx.White;
-			textureColor = ColorEx.White;
-			intensity = LightIntensity.Normal;
-			priority = 100;
+			this.textureColor = ColorEx.White;
+			this.intensity = LightIntensity.Normal;
+			this.priority = 100;
 		}
 
 		public bool AffectsFaceGroup( StaticFaceGroup faceGroup, ManualCullingMode cullMode )
@@ -238,7 +238,8 @@ namespace Axiom.SceneManagers.Bsp
 				float scale = 0.5f/relRadius;
 
 				float brightness = relRadiusSqr/lightRadiusSqr;
-				var lightCol = new ColorEx( brightness*textureColor.a, textureColor.r, textureColor.g, textureColor.b );
+				var lightCol = new ColorEx( brightness*this.textureColor.a, this.textureColor.r, this.textureColor.g,
+				                            this.textureColor.b );
 
 				for ( int i = 0; i < vertices.Length; i++ )
 				{
@@ -258,7 +259,7 @@ namespace Axiom.SceneManagers.Bsp
 			texCoors = new Vector2[vertices.Length];
 			colors = new ColorEx[vertices.Length];
 
-			var lightCol = new ColorEx( textureColor.a, textureColor.r, textureColor.g, textureColor.b );
+			var lightCol = new ColorEx( this.textureColor.a, this.textureColor.r, this.textureColor.g, this.textureColor.b );
 
 			for ( int i = 0; i < vertices.Length; i++ )
 			{
@@ -276,7 +277,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			float angle = Utility.Abs( plane.Normal.Dot( DerivedDirection ) );
 
-			var lightCol = new ColorEx( textureColor.a*angle, textureColor.r, textureColor.g, textureColor.b );
+			var lightCol = new ColorEx( this.textureColor.a*angle, this.textureColor.r, this.textureColor.g, this.textureColor.b );
 
 			for ( int i = 0; i < vertices.Length; i++ )
 			{
@@ -336,12 +337,12 @@ namespace Axiom.SceneManagers.Bsp
 				if ( maxParam > 0f )
 				{
 					float inv = 1/maxParam;
-					textureColor.r = diffuse.r*inv;
-					textureColor.g = diffuse.g*inv;
-					textureColor.b = diffuse.b*inv;
+					this.textureColor.r = diffuse.r*inv;
+					this.textureColor.g = diffuse.g*inv;
+					this.textureColor.b = diffuse.b*inv;
 				}
 
-				textureColor.a = maxParam;
+				this.textureColor.a = maxParam;
 			}
 		}
 
@@ -354,7 +355,7 @@ namespace Axiom.SceneManagers.Bsp
 			// if the position is changed notify BspSceneManager to put it in the bsp tree
 			if ( derivedPosition != prevPosition )
 			{
-				creator.NotifyObjectMoved( this, derivedPosition );
+				this.creator.NotifyObjectMoved( this, derivedPosition );
 			}
 		}
 	}

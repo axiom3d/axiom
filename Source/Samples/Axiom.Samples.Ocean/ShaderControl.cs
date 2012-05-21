@@ -33,7 +33,7 @@ namespace Axiom.Samples.Ocean
 		{
 			get
 			{
-				return MaxVal - MinVal;
+				return this.MaxVal - this.MinVal;
 			}
 		}
 
@@ -44,7 +44,7 @@ namespace Axiom.Samples.Ocean
 		/// <returns></returns>
 		public float ConvertParamToScrollPosition( float val )
 		{
-			return val - MinVal;
+			return val - this.MinVal;
 		}
 
 		/// <summary>
@@ -54,7 +54,7 @@ namespace Axiom.Samples.Ocean
 		/// <returns></returns>
 		public float ConvertScrollPositionToParam( float val )
 		{
-			return val + MinVal;
+			return val + this.MinVal;
 		}
 	}
 }

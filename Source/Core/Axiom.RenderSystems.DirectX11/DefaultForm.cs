@@ -64,11 +64,11 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return _renderWindow;
+				return this._renderWindow;
 			}
 			set
 			{
-				_renderWindow = value;
+				this._renderWindow = value;
 			}
 		}
 
@@ -85,12 +85,12 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return _windowStyle;
+				return this._windowStyle;
 			}
 
 			set
 			{
-				_windowStyle = value;
+				this._windowStyle = value;
 			}
 		}
 
@@ -101,9 +101,9 @@ namespace Axiom.RenderSystems.DirectX9
 			get
 			{
 				var cp = base.CreateParams;
-				cp.Style = (int)_windowStyle;
-				cp.ExStyle = (int)_dwStyleEx;
-				cp.ClassStyle = (int)_classStyle;
+				cp.Style = (int)this._windowStyle;
+				cp.ExStyle = (int)this._dwStyleEx;
+				cp.ClassStyle = (int)this._classStyle;
 				return cp;
 			}
 		}
@@ -111,9 +111,9 @@ namespace Axiom.RenderSystems.DirectX9
 		public DefaultForm( WindowClassStyle classStyle, WindowsExtendedStyle dwStyleEx, string title,
 		                    WindowStyles windowStyle, int left, int top, int winWidth, int winHeight, Control parentHWnd )
 		{
-			_classStyle = classStyle;
-			_dwStyleEx = dwStyleEx;
-			_windowStyle = windowStyle;
+			this._classStyle = classStyle;
+			this._dwStyleEx = dwStyleEx;
+			this._windowStyle = windowStyle;
 
 			SuspendLayout();
 
@@ -140,7 +140,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		protected override void WndProc( ref Message m )
 		{
-			if ( !Win32MessageHandling.WndProc( _renderWindow, ref m ) )
+			if ( !Win32MessageHandling.WndProc( this._renderWindow, ref m ) )
 			{
 				base.WndProc( ref m );
 			}
@@ -148,26 +148,26 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public void _defaultFormDeactivate( object source, EventArgs e )
 		{
-			if ( _renderWindow != null )
+			if ( this._renderWindow != null )
 			{
-				_renderWindow.IsActive = false;
+				this._renderWindow.IsActive = false;
 			}
 		}
 
 		public void _defaultFormActivated( object source, EventArgs e )
 		{
-			if ( _renderWindow != null )
+			if ( this._renderWindow != null )
 			{
-				_renderWindow.IsActive = true;
+				this._renderWindow.IsActive = true;
 			}
 		}
 
 		public void _defaultFormClose( object source, System.ComponentModel.CancelEventArgs e )
 		{
 			// set the window to inactive
-			if ( _renderWindow != null )
+			if ( this._renderWindow != null )
 			{
-				_renderWindow.IsActive = false;
+				this._renderWindow.IsActive = false;
 			}
 		}
 

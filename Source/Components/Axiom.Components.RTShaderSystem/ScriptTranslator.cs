@@ -34,7 +34,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		public SGScriptTranslator()
 		{
-			generatedRenderState = null;
+			this.generatedRenderState = null;
 		}
 
 		public override void Translate( Scripting.Compiler.ScriptCompiler compiler,
@@ -56,10 +56,10 @@ namespace Axiom.Components.RTShaderSystem
 
 		public virtual SubRenderState GetGeneratedSubRenderState( string typeName )
 		{
-			if ( generatedRenderState != null )
+			if ( this.generatedRenderState != null )
 			{
 				//Get the list of the template sub render states composing this render state.
-				var rsList = generatedRenderState.TemplateSubRenderStateList;
+				var rsList = this.generatedRenderState.TemplateSubRenderStateList;
 
 				foreach ( var it in rsList )
 				{
@@ -183,8 +183,8 @@ namespace Axiom.Components.RTShaderSystem
 			if ( techniqueCreated )
 			{
 				//Attempt to get the render state which might have been created by the pass parsing
-				generatedRenderState = shaderGenerator.GetRenderState( dstTechniqueSchemeName, material.Name,
-				                                                       material.Group, (ushort)pass.Index );
+				this.generatedRenderState = shaderGenerator.GetRenderState( dstTechniqueSchemeName, material.Name,
+				                                                            material.Group, (ushort)pass.Index );
 
 				//Go over all the render state properties
 				for ( int i = 0; i < obj.Children.Count; i++ )
@@ -220,11 +220,11 @@ namespace Axiom.Components.RTShaderSystem
 			shaderGenerator.CreateScheme( dstTechniqueSchemeName );
 
 			//Update the active render state
-			generatedRenderState = shaderGenerator.GetRenderState( dstTechniqueSchemeName, materialNem,
-			                                                       (ushort)passIndex );
+			this.generatedRenderState = shaderGenerator.GetRenderState( dstTechniqueSchemeName, materialNem,
+			                                                            (ushort)passIndex );
 
 			//add the new sub render state
-			generatedRenderState.AddTemplateSubRenderState( newSubRenderState );
+			this.generatedRenderState.AddTemplateSubRenderState( newSubRenderState );
 		}
 	}
 }

@@ -34,9 +34,9 @@ namespace Axiom.Samples.CharacterSample
 
 		public override void Initialize()
 		{
-			sample = new CharacterSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new CharacterSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

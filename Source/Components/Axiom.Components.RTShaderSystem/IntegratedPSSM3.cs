@@ -45,7 +45,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			int shadowIndex = 0;
 
-			foreach ( var it in shadowTextureParamsList )
+			foreach ( var it in this.shadowTextureParamsList )
 			{
 				it.WorldViewProjMatrix.SetGpuParameter( source.GetTextureWorldViewProjMatrix( shadowIndex ) );
 				it.InvTextureSize.SetGpuParameter( source.GetInverseTextureSize( it.TextureSamplerIndex ) );
@@ -55,12 +55,12 @@ namespace Axiom.Components.RTShaderSystem
 
 			var splitPoints = new Vector4();
 
-			splitPoints.x = shadowTextureParamsList[ 0 ].MaxRange;
-			splitPoints.y = shadowTextureParamsList[ 1 ].MaxRange;
+			splitPoints.x = this.shadowTextureParamsList[ 0 ].MaxRange;
+			splitPoints.y = this.shadowTextureParamsList[ 1 ].MaxRange;
 			splitPoints.z = 0.0;
 			splitPoints.w = 0.0;
 
-			psSplitPoints.SetGpuParameter( splitPoints );
+			this.psSplitPoints.SetGpuParameter( splitPoints );
 		}
 
 		public override bool PreAddToRenderState( TargetRenderState targetRenderState, Graphics.Pass srcPass,
@@ -71,7 +71,7 @@ namespace Axiom.Components.RTShaderSystem
 				return false;
 			}
 
-			foreach ( var it in shadowTextureParamsList )
+			foreach ( var it in this.shadowTextureParamsList )
 			{
 				TextureUnitState curShadowTexture = dstPass.CreateTextureUnitState();
 
@@ -94,7 +94,7 @@ namespace Axiom.Components.RTShaderSystem
 
 			for ( int i = 1; i < newSplitPoints.Count; i++ )
 			{
-				ShadowTextureParams curParams = shadowTextureParamsList[ i - 1 ];
+				ShadowTextureParams curParams = this.shadowTextureParamsList[ i - 1 ];
 				curParams.MaxRange = newSplitPoints[ i ];
 			}
 		}
@@ -107,74 +107,74 @@ namespace Axiom.Components.RTShaderSystem
 			Function psMain = psProgram.EntryPointFunction;
 
 			//Get input position parameter
-			vsInPos = Function.GetParameterBySemantic( vsMain.InputParameters, Parameter.SemanticType.Position, 0 );
-			if ( vsInPos == null )
+			this.vsInPos = Function.GetParameterBySemantic( vsMain.InputParameters, Parameter.SemanticType.Position, 0 );
+			if ( this.vsInPos == null )
 			{
 				return false;
 			}
 
 			//Get output position parameter
-			vsOutPos = Function.GetParameterBySemantic( vsMain.OutputParameters, Parameter.SemanticType.Position, 0 );
-			if ( vsOutPos == null )
+			this.vsOutPos = Function.GetParameterBySemantic( vsMain.OutputParameters, Parameter.SemanticType.Position, 0 );
+			if ( this.vsOutPos == null )
 			{
 				return false;
 			}
 
 			//Resolve vertex shader output depth.
-			vsOutDepth = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
-			                                            Parameter.ContentType.DepthViewSpace,
-			                                            GpuProgramParameters.GpuConstantType.Float1 );
-			if ( vsOutDepth == null )
+			this.vsOutDepth = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
+			                                                 Parameter.ContentType.DepthViewSpace,
+			                                                 GpuProgramParameters.GpuConstantType.Float1 );
+			if ( this.vsOutDepth == null )
 			{
 				return false;
 			}
 
 			//Resolve input depth parameter.
-			psInDepth = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, vsOutDepth.Index,
-			                                          vsOutDepth.Content, GpuProgramParameters.GpuConstantType.Float1 );
-			if ( psInDepth == null )
+			this.psInDepth = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, this.vsOutDepth.Index,
+			                                               this.vsOutDepth.Content, GpuProgramParameters.GpuConstantType.Float1 );
+			if ( this.psInDepth == null )
 			{
 				return false;
 			}
 
 			//Get in/local specular paramter
-			psSpecular = Function.GetParameterBySemantic( psMain.InputParameters, Parameter.SemanticType.Color, 1 );
-			if ( psSpecular == null )
+			this.psSpecular = Function.GetParameterBySemantic( psMain.InputParameters, Parameter.SemanticType.Color, 1 );
+			if ( this.psSpecular == null )
 			{
-				psSpecular = Function.GetParameterBySemantic( psMain.LocalParameters, Parameter.SemanticType.Color, 1 );
-				if ( psSpecular == null )
+				this.psSpecular = Function.GetParameterBySemantic( psMain.LocalParameters, Parameter.SemanticType.Color, 1 );
+				if ( this.psSpecular == null )
 				{
 					return false;
 				}
 			}
 			//Resolve computed local shadow color parameter.
-			psLocalShadowFactor = psMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0, "lShadowFactor",
-			                                                    GpuProgramParameters.GpuConstantType.Float1 );
-			if ( psLocalShadowFactor == null )
+			this.psLocalShadowFactor = psMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, 0, "lShadowFactor",
+			                                                         GpuProgramParameters.GpuConstantType.Float1 );
+			if ( this.psLocalShadowFactor == null )
 			{
 				return false;
 			}
 
 			//Resolve computed local shadow color parameter
-			psSplitPoints = psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
-			                                            GpuProgramParameters.GpuParamVariability.Global,
-			                                            "pssm_split_points" );
-			if ( psSplitPoints == null )
+			this.psSplitPoints = psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float4, -1,
+			                                                 GpuProgramParameters.GpuParamVariability.Global,
+			                                                 "pssm_split_points" );
+			if ( this.psSplitPoints == null )
 			{
 				return false;
 			}
 
 			//Get derived scene color
-			psDerivedSceneColor =
+			this.psDerivedSceneColor =
 				psProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.DerivedSceneColor, 0 );
-			if ( psDerivedSceneColor == null )
+			if ( this.psDerivedSceneColor == null )
 			{
 				return false;
 			}
 
 			int lightIndex = 0;
 
-			foreach ( var it in shadowTextureParamsList )
+			foreach ( var it in this.shadowTextureParamsList )
 			{
 				it.WorldViewProjMatrix = vsProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Matrix_4X4, -1,
 				                                                     GpuProgramParameters.GpuParamVariability.PerObject,
@@ -293,17 +293,17 @@ namespace Axiom.Components.RTShaderSystem
 
 			//Output the vertex depth in camera space
 			curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder, internalCounter++ );
-			curFuncInvocation.PushOperand( vsOutPos, Operand.OpSemantic.In, Operand.OpMask.Z );
-			curFuncInvocation.PushOperand( vsOutDepth, Operand.OpSemantic.Out );
+			curFuncInvocation.PushOperand( this.vsOutPos, Operand.OpSemantic.In, Operand.OpMask.Z );
+			curFuncInvocation.PushOperand( this.vsOutDepth, Operand.OpSemantic.Out );
 			vsMain.AddAtomInstance( curFuncInvocation );
 
 			//compute world space position
-			foreach ( var it in shadowTextureParamsList )
+			foreach ( var it in this.shadowTextureParamsList )
 			{
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncTransform, groupOrder,
 				                                            internalCounter++ );
 				curFuncInvocation.PushOperand( it.WorldViewProjMatrix, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( vsInPos, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.vsInPos, Operand.OpSemantic.In );
 				curFuncInvocation.PushOperand( it.VSOutLightPosition, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 			}
@@ -315,14 +315,14 @@ namespace Axiom.Components.RTShaderSystem
 			Function psMain = psProgram.EntryPointFunction;
 			FunctionInvocation curFuncInvocation = null;
 
-			ShadowTextureParams splitParams0 = shadowTextureParamsList[ 0 ];
-			ShadowTextureParams splitParams1 = shadowTextureParamsList[ 1 ];
-			ShadowTextureParams splitParams2 = shadowTextureParamsList[ 2 ];
+			ShadowTextureParams splitParams0 = this.shadowTextureParamsList[ 0 ];
+			ShadowTextureParams splitParams1 = this.shadowTextureParamsList[ 1 ];
+			ShadowTextureParams splitParams2 = this.shadowTextureParamsList[ 2 ];
 
 			//Compute shadow factor
 			curFuncInvocation = new FunctionInvocation( SGXFuncComputeShadowColor3, groupOrder, internalCounter++ );
-			curFuncInvocation.PushOperand( psInDepth, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( psSplitPoints, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.psInDepth, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.psSplitPoints, Operand.OpSemantic.In );
 			curFuncInvocation.PushOperand( splitParams0.PSInLightPosition, Operand.OpSemantic.In );
 			curFuncInvocation.PushOperand( splitParams1.PSInLightPosition, Operand.OpSemantic.In );
 			curFuncInvocation.PushOperand( splitParams2.PSInLightPosition, Operand.OpSemantic.In );
@@ -332,28 +332,28 @@ namespace Axiom.Components.RTShaderSystem
 			curFuncInvocation.PushOperand( splitParams0.InvTextureSize, Operand.OpSemantic.In );
 			curFuncInvocation.PushOperand( splitParams1.InvTextureSize, Operand.OpSemantic.In );
 			curFuncInvocation.PushOperand( splitParams2.InvTextureSize, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( psLocalShadowFactor, Operand.OpSemantic.Out );
+			curFuncInvocation.PushOperand( this.psLocalShadowFactor, Operand.OpSemantic.Out );
 			psMain.AddAtomInstance( curFuncInvocation );
 
 			//Apply shadow factor on diffuse color
 			curFuncInvocation = new FunctionInvocation( SGXFuncApplyShadowFactorDiffuse, groupOrder, internalCounter++ );
-			curFuncInvocation.PushOperand( psDerivedSceneColor, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( psLocalShadowFactor, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( psLocalShadowFactor, Operand.OpSemantic.Out );
+			curFuncInvocation.PushOperand( this.psDerivedSceneColor, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.psLocalShadowFactor, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.psLocalShadowFactor, Operand.OpSemantic.Out );
 			psMain.AddAtomInstance( curFuncInvocation );
 
 			//Apply shadow factor on specular color
 			curFuncInvocation = new FunctionInvocation( SGXFuncModulateScalar, groupOrder, internalCounter++ );
-			curFuncInvocation.PushOperand( psLocalShadowFactor, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( psSpecular, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( psSpecular, Operand.OpSemantic.Out );
+			curFuncInvocation.PushOperand( this.psLocalShadowFactor, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.psSpecular, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.psSpecular, Operand.OpSemantic.Out );
 			psMain.AddAtomInstance( curFuncInvocation );
 
 			//Assign the local diffuse to output diffuse
 			curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder, internalCounter++ );
-			curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In );
-			curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out );
+			curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In );
+			curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out );
 			psMain.AddAtomInstance( curFuncInvocation );
 
 			return true;

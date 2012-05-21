@@ -140,7 +140,7 @@ namespace Axiom.Samples.Terrain
 			                     "cursor and access widgets. Use WASD keys to move. Use +/- keys when in edit mode to change content.";
 
 			// Update terrain at max 20fps
-			heightUpdateRate = 1.0f/2.0f;
+			this.heightUpdateRate = 1.0f/2.0f;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -163,16 +163,16 @@ namespace Axiom.Samples.Terrain
 			if ( Keyboard.IsKeyDown( SIS.KeyCode.Key_EQUALS ) || Keyboard.IsKeyDown( SIS.KeyCode.Key_ADD ) ||
 			     Keyboard.IsKeyDown( SIS.KeyCode.Key_MINUS ) || Keyboard.IsKeyDown( SIS.KeyCode.Key_SUBTRACT ) )
 			{
-				switch ( mode )
+				switch ( this.mode )
 				{
 					case Mode.EditHeight:
 					{
 						// we need point coords
 						Real terrainSize = ( terrain.Size - 1 );
-						var startx = (long)( ( tsPos.x - brushSizeTerrainSpace )*terrainSize );
-						var starty = (long)( ( tsPos.y - brushSizeTerrainSpace )*terrainSize );
-						var endx = (long)( ( tsPos.x + brushSizeTerrainSpace )*terrainSize );
-						var endy = (long)( ( tsPos.y + brushSizeTerrainSpace )*terrainSize );
+						var startx = (long)( ( tsPos.x - this.brushSizeTerrainSpace )*terrainSize );
+						var starty = (long)( ( tsPos.y - this.brushSizeTerrainSpace )*terrainSize );
+						var endx = (long)( ( tsPos.x + this.brushSizeTerrainSpace )*terrainSize );
+						var endy = (long)( ( tsPos.y + this.brushSizeTerrainSpace )*terrainSize );
 						startx = Utility.Max( startx, 0L );
 						starty = Utility.Max( starty, 0L );
 						endx = Utility.Min( endx, (long)terrainSize );
@@ -185,7 +185,8 @@ namespace Axiom.Samples.Terrain
 								Real tsYdist = ( y/terrainSize ) - tsPos.y;
 
 								Real weight = Utility.Min( (Real)1.0,
-								                           Utility.Sqrt( tsYdist*tsYdist + tsXdist*tsXdist )/(Real)( 0.5*brushSizeTerrainSpace ) );
+								                           Utility.Sqrt( tsYdist*tsYdist + tsXdist*tsXdist )/
+								                           (Real)( 0.5*this.brushSizeTerrainSpace ) );
 								weight = 1.0 - ( weight*weight );
 
 								var addedHeight = weight*250.0*timeElapsed;
@@ -201,22 +202,22 @@ namespace Axiom.Samples.Terrain
 								terrain.SetHeightAtPoint( x, y, newheight );
 							}
 						}
-						if ( heightUpdateCountDown == 0 )
+						if ( this.heightUpdateCountDown == 0 )
 						{
-							heightUpdateCountDown = heightUpdateRate;
+							this.heightUpdateCountDown = this.heightUpdateRate;
 						}
 					}
 						break;
 
 					case Mode.EditBlend:
 					{
-						var layer = terrain.GetLayerBlendMap( layerEdit );
+						var layer = terrain.GetLayerBlendMap( this.layerEdit );
 						// we need image coords
 						Real imgSize = terrain.LayerBlendMapSize;
-						var startx = (long)( ( tsPos.x - brushSizeTerrainSpace )*imgSize );
-						var starty = (long)( ( tsPos.y - brushSizeTerrainSpace )*imgSize );
-						var endx = (long)( ( tsPos.x + brushSizeTerrainSpace )*imgSize );
-						var endy = (long)( ( tsPos.y + brushSizeTerrainSpace )*imgSize );
+						var startx = (long)( ( tsPos.x - this.brushSizeTerrainSpace )*imgSize );
+						var starty = (long)( ( tsPos.y - this.brushSizeTerrainSpace )*imgSize );
+						var endx = (long)( ( tsPos.x + this.brushSizeTerrainSpace )*imgSize );
+						var endy = (long)( ( tsPos.y + this.brushSizeTerrainSpace )*imgSize );
 						startx = Utility.Max( startx, 0L );
 						starty = Utility.Max( starty, 0L );
 						endx = Utility.Min( endx, (long)imgSize );
@@ -229,7 +230,8 @@ namespace Axiom.Samples.Terrain
 								Real tsYdist = ( y/imgSize ) - tsPos.y;
 
 								Real weight = Utility.Min( (Real)1.0,
-								                           Utility.Sqrt( tsYdist*tsYdist + tsXdist*tsXdist )/(Real)( 0.5*brushSizeTerrainSpace ) );
+								                           Utility.Sqrt( tsYdist*tsYdist + tsXdist*tsXdist )/
+								                           (Real)( 0.5*this.brushSizeTerrainSpace ) );
 								weight = 1.0 - ( weight*weight );
 
 								float paint = weight*timeElapsed;
@@ -265,23 +267,23 @@ namespace Axiom.Samples.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			if ( mode != Mode.Normal )
+			if ( this.mode != Mode.Normal )
 			{
 				// fire ray
 				Ray ray;
 				ray = TrayManager.GetCursorRay( Camera );
 
-				var rayResult = terrainGroup.RayIntersects( ray );
+				var rayResult = this.terrainGroup.RayIntersects( ray );
 				if ( rayResult.Hit )
 				{
-					editMarker.IsVisible = true;
-					editNode.Position = rayResult.Position;
+					this.editMarker.IsVisible = true;
+					this.editNode.Position = rayResult.Position;
 
 					// figure out which terrains this affects
 					List<Axiom.Components.Terrain.Terrain> terrainList;
-					var brushSizeWorldSpace = TerrainWorldSize*brushSizeTerrainSpace;
+					var brushSizeWorldSpace = TerrainWorldSize*this.brushSizeTerrainSpace;
 					var sphere = new Sphere( rayResult.Position, brushSizeWorldSpace );
-					terrainGroup.SphereIntersects( sphere, out terrainList );
+					this.terrainGroup.SphereIntersects( sphere, out terrainList );
 
 					foreach ( var ti in terrainList )
 					{
@@ -290,17 +292,17 @@ namespace Axiom.Samples.Terrain
 				}
 				else
 				{
-					editMarker.IsVisible = false;
+					this.editMarker.IsVisible = false;
 				}
 			}
 
-			if ( !fly )
+			if ( !this.fly )
 			{
 				// clamp to terrain
 				var camPos = Camera.Position;
-				var ray = new Ray( new Vector3( camPos.x, terrainPos.y + 10000, camPos.z ), Vector3.NegativeUnitY );
+				var ray = new Ray( new Vector3( camPos.x, this.terrainPos.y + 10000, camPos.z ), Vector3.NegativeUnitY );
 
-				TerrainGroup.RayResult rayResult = terrainGroup.RayIntersects( ray );
+				TerrainGroup.RayResult rayResult = this.terrainGroup.RayIntersects( ray );
 				Real distanceAboveTerrain = 50;
 				Real fallSpeed = 300;
 				Real newy = camPos.y;
@@ -308,46 +310,46 @@ namespace Axiom.Samples.Terrain
 				{
 					if ( camPos.y > rayResult.Position.y + distanceAboveTerrain )
 					{
-						fallVelocity += evt.TimeSinceLastFrame*20;
-						fallVelocity = Utility.Min( fallVelocity, fallSpeed );
-						newy = camPos.y - fallVelocity*evt.TimeSinceLastFrame;
+						this.fallVelocity += evt.TimeSinceLastFrame*20;
+						this.fallVelocity = Utility.Min( this.fallVelocity, fallSpeed );
+						newy = camPos.y - this.fallVelocity*evt.TimeSinceLastFrame;
 					}
 					newy = Utility.Max( rayResult.Position.y + distanceAboveTerrain, newy );
 					Camera.Position = new Vector3( camPos.x, newy, camPos.z );
 				}
 			}
 
-			if ( heightUpdateCountDown > 0 )
+			if ( this.heightUpdateCountDown > 0 )
 			{
-				heightUpdateCountDown -= evt.TimeSinceLastFrame;
-				if ( heightUpdateCountDown <= 0 )
+				this.heightUpdateCountDown -= evt.TimeSinceLastFrame;
+				if ( this.heightUpdateCountDown <= 0 )
 				{
-					terrainGroup.Update();
-					heightUpdateCountDown = 0;
+					this.terrainGroup.Update();
+					this.heightUpdateCountDown = 0;
 				}
 			}
 
-			if ( terrainGroup.IsDerivedDataUpdateInProgress )
+			if ( this.terrainGroup.IsDerivedDataUpdateInProgress )
 			{
-				TrayManager.MoveWidgetToTray( infoLabel, TrayLocation.Top, 0 );
-				infoLabel.Show();
-				if ( terrainsImported )
+				TrayManager.MoveWidgetToTray( this.infoLabel, TrayLocation.Top, 0 );
+				this.infoLabel.Show();
+				if ( this.terrainsImported )
 				{
-					infoLabel.Caption = "Building terrain, please wait...";
+					this.infoLabel.Caption = "Building terrain, please wait...";
 				}
 				else
 				{
-					infoLabel.Caption = "Updating textures, patience...";
+					this.infoLabel.Caption = "Updating textures, patience...";
 				}
 			}
 			else
 			{
-				TrayManager.RemoveWidgetFromTray( infoLabel );
-				infoLabel.Hide();
-				if ( terrainsImported )
+				TrayManager.RemoveWidgetFromTray( this.infoLabel );
+				this.infoLabel.Hide();
+				if ( this.terrainsImported )
 				{
 					SaveTerrains( true );
-					terrainsImported = false;
+					this.terrainsImported = false;
 				}
 			}
 
@@ -382,7 +384,7 @@ namespace Axiom.Samples.Terrain
 				case SIS.KeyCode.Key_F10:
 					//dump
 					var tkey = 0;
-					foreach ( var ts in terrainGroup.TerrainSlots )
+					foreach ( var ts in this.terrainGroup.TerrainSlots )
 					{
 						if ( ts.Instance != null && ts.Instance.IsLoaded )
 						{
@@ -404,14 +406,14 @@ namespace Axiom.Samples.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		private void _itemSelected( SelectMenu menu )
 		{
-			if ( menu == editMenu )
+			if ( menu == this.editMenu )
 			{
-				mode = (Mode)editMenu.SelectionIndex;
+				this.mode = (Mode)this.editMenu.SelectionIndex;
 			}
 
-			else if ( menu == shadowsMenu )
+			else if ( menu == this.shadowsMenu )
 			{
-				shadowMode = (ShadowMode)shadowsMenu.SelectionIndex;
+				this.shadowMode = (ShadowMode)this.shadowsMenu.SelectionIndex;
 				_changeShadows();
 			}
 		}
@@ -419,9 +421,9 @@ namespace Axiom.Samples.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public void _checkBoxToggled( CheckBox box )
 		{
-			if ( box == flyBox )
+			if ( box == this.flyBox )
 			{
-				fly = flyBox.IsChecked;
+				this.fly = this.flyBox.IsChecked;
 			}
 		}
 
@@ -440,20 +442,20 @@ namespace Axiom.Samples.Terrain
 
 			if ( flat )
 			{
-				terrainGroup.DefineTerrain( x, y, 0 );
+				this.terrainGroup.DefineTerrain( x, y, 0 );
 			}
 			else
 			{
-				var filename = terrainGroup.GenerateFilename( x, y );
-				if ( ResourceGroupManager.Instance.ResourceExists( terrainGroup.ResourceGroup, filename ) )
+				var filename = this.terrainGroup.GenerateFilename( x, y );
+				if ( ResourceGroupManager.Instance.ResourceExists( this.terrainGroup.ResourceGroup, filename ) )
 				{
-					terrainGroup.DefineTerrain( x, y );
+					this.terrainGroup.DefineTerrain( x, y );
 				}
 				else
 				{
 					var img = _getTerrainImage( x%2 != 0, y%2 != 0 );
-					terrainGroup.DefineTerrain( x, y, img );
-					terrainsImported = true;
+					this.terrainGroup.DefineTerrain( x, y, img );
+					this.terrainsImported = true;
 				}
 			}
 		}
@@ -530,7 +532,7 @@ namespace Axiom.Samples.Terrain
 			TerrainGlobalOptions.CompositeMapDiffuse = l.Diffuse;
 
 			// Configure default import settings for if we use imported image
-			var defaultImp = terrainGroup.DefaultImportSettings;
+			var defaultImp = this.terrainGroup.DefaultImportSettings;
 			defaultImp.TerrainSize = TerrainSize;
 			defaultImp.WorldSize = TerrainWorldSize;
 			defaultImp.InputScale = 600;
@@ -619,7 +621,7 @@ namespace Axiom.Samples.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		private void _changeShadows()
 		{
-			_configureShadows( shadowMode != ShadowMode.None, shadowMode == ShadowMode.Depth );
+			_configureShadows( this.shadowMode != ShadowMode.None, this.shadowMode == ShadowMode.Depth );
 		}
 
 		private void _configureShadows( bool enabled, bool depthShadows )
@@ -712,7 +714,7 @@ namespace Axiom.Samples.Terrain
 		{
 			base.SetupView();
 
-			Camera.Position = terrainPos + new Vector3( 1683, 50, 2116 );
+			Camera.Position = this.terrainPos + new Vector3( 1683, 50, 2116 );
 			Camera.LookAt( new Vector3( 1963, 50, 1660 ) );
 			Camera.Near = 0.1f;
 			Camera.Far = 50000;
@@ -733,25 +735,25 @@ namespace Axiom.Samples.Terrain
 			TrayManager.ShowFrameStats( TrayLocation.TopRight );
 			TrayManager.ToggleAdvancedFrameStats();
 
-			infoLabel = TrayManager.CreateLabel( TrayLocation.Top, "TInfo", "", 350 );
+			this.infoLabel = TrayManager.CreateLabel( TrayLocation.Top, "TInfo", "", 350 );
 
-			editMenu = TrayManager.CreateLongSelectMenu( TrayLocation.Bottom, "EditMode", "Edit Mode", 370, 250, 3 );
-			editMenu.AddItem( "None" );
-			editMenu.AddItem( "Elevation" );
-			editMenu.AddItem( "Blend" );
-			editMenu.SelectItem( 0 ); // no edit mode
-			editMenu.SelectedIndexChanged += _itemSelected;
+			this.editMenu = TrayManager.CreateLongSelectMenu( TrayLocation.Bottom, "EditMode", "Edit Mode", 370, 250, 3 );
+			this.editMenu.AddItem( "None" );
+			this.editMenu.AddItem( "Elevation" );
+			this.editMenu.AddItem( "Blend" );
+			this.editMenu.SelectItem( 0 ); // no edit mode
+			this.editMenu.SelectedIndexChanged += _itemSelected;
 
-			flyBox = TrayManager.CreateCheckBox( TrayLocation.Bottom, "Fly", "Fly" );
-			flyBox.SetChecked( false, false );
-			flyBox.CheckChanged += _checkBoxToggled;
+			this.flyBox = TrayManager.CreateCheckBox( TrayLocation.Bottom, "Fly", "Fly" );
+			this.flyBox.SetChecked( false, false );
+			this.flyBox.CheckChanged += _checkBoxToggled;
 
-			shadowsMenu = TrayManager.CreateLongSelectMenu( TrayLocation.Bottom, "Shadows", "Shadows", 370, 250, 3 );
-			shadowsMenu.AddItem( "None" );
-			shadowsMenu.AddItem( "Color Shadows" );
-			shadowsMenu.AddItem( "Depth Shadows" );
-			shadowsMenu.SelectItem( 0 );
-			shadowsMenu.SelectedIndexChanged += _itemSelected;
+			this.shadowsMenu = TrayManager.CreateLongSelectMenu( TrayLocation.Bottom, "Shadows", "Shadows", 370, 250, 3 );
+			this.shadowsMenu.AddItem( "None" );
+			this.shadowsMenu.AddItem( "Color Shadows" );
+			this.shadowsMenu.AddItem( "Depth Shadows" );
+			this.shadowsMenu.SelectItem( 0 );
+			this.shadowsMenu.SelectedIndexChanged += _itemSelected;
 
 			var names = new List<string>();
 			names.Add( "Help" );
@@ -764,10 +766,10 @@ namespace Axiom.Samples.Terrain
 		{
 			var blankTerrain = false;
 
-			editMarker = SceneManager.CreateEntity( "editMarker", "sphere.mesh" );
-			editNode = SceneManager.RootSceneNode.CreateChildSceneNode();
-			editNode.AttachObject( editMarker );
-			editNode.Scale = new Vector3( 0.05f, 0.05f, 0.05f );
+			this.editMarker = SceneManager.CreateEntity( "editMarker", "sphere.mesh" );
+			this.editNode = SceneManager.RootSceneNode.CreateChildSceneNode();
+			this.editNode.AttachObject( this.editMarker );
+			this.editNode.Scale = new Vector3( 0.05f, 0.05f, 0.05f );
 
 			_setupControls();
 
@@ -791,9 +793,9 @@ namespace Axiom.Samples.Terrain
 
 			SceneManager.AmbientLight = new ColorEx( 0.2f, 0.2f, 0.2f );
 
-			terrainGroup = new TerrainGroup( SceneManager, Alignment.Align_X_Z, (ushort)TerrainSize, TerrainWorldSize );
-			terrainGroup.SetFilenameConvention( TerrainFilePrefix, TerrainFileSuffix );
-			terrainGroup.Origin = terrainPos;
+			this.terrainGroup = new TerrainGroup( SceneManager, Alignment.Align_X_Z, (ushort)TerrainSize, TerrainWorldSize );
+			this.terrainGroup.SetFilenameConvention( TerrainFilePrefix, TerrainFileSuffix );
+			this.terrainGroup.Origin = this.terrainPos;
 
 			_configureTerrainDefaults( l );
 #if PAGING
@@ -817,46 +819,46 @@ namespace Axiom.Samples.Terrain
 				}
 			}
 			// sync load since we want everything in place when we start
-			terrainGroup.LoadAllTerrains( true );
+			this.terrainGroup.LoadAllTerrains( true );
 #endif
 
-			if ( terrainsImported )
+			if ( this.terrainsImported )
 			{
-				foreach ( var ts in terrainGroup.TerrainSlots )
+				foreach ( var ts in this.terrainGroup.TerrainSlots )
 				{
 					_initBlendMaps( ts.Instance );
 				}
 			}
 
-			terrainGroup.FreeTemporaryResources();
+			this.terrainGroup.FreeTemporaryResources();
 
 			var e = SceneManager.CreateEntity( "TudoMesh", "tudorhouse.mesh" );
-			var entPos = new Vector3( terrainPos.x + 2043, 0, terrainPos.z + 1715 );
+			var entPos = new Vector3( this.terrainPos.x + 2043, 0, this.terrainPos.z + 1715 );
 			var rot = new Quaternion();
-			entPos.y = terrainGroup.GetHeightAtWorldPosition( entPos ) + 65.5 + terrainPos.y;
+			entPos.y = this.terrainGroup.GetHeightAtWorldPosition( entPos ) + 65.5 + this.terrainPos.y;
 			rot = Quaternion.FromAngleAxis( Utility.RangeRandom( -180, 180 ), Vector3.UnitY );
 			var sn = SceneManager.RootSceneNode.CreateChildSceneNode( entPos, rot );
 			sn.Scale = new Vector3( 0.12, 0.12, 0.12 );
 			sn.AttachObject( e );
-			houseList.Add( e );
+			this.houseList.Add( e );
 
 			e = SceneManager.CreateEntity( "TudoMesh1", "tudorhouse.mesh" );
-			entPos = new Vector3( terrainPos.x + 1850, 0, terrainPos.z + 1478 );
-			entPos.y = terrainGroup.GetHeightAtWorldPosition( entPos ) + 65.5 + terrainPos.y;
+			entPos = new Vector3( this.terrainPos.x + 1850, 0, this.terrainPos.z + 1478 );
+			entPos.y = this.terrainGroup.GetHeightAtWorldPosition( entPos ) + 65.5 + this.terrainPos.y;
 			rot = Quaternion.FromAngleAxis( Utility.RangeRandom( -180, 180 ), Vector3.UnitY );
 			sn = SceneManager.RootSceneNode.CreateChildSceneNode( entPos, rot );
 			sn.Scale = new Vector3( 0.12, 0.12, 0.12 );
 			sn.AttachObject( e );
-			houseList.Add( e );
+			this.houseList.Add( e );
 
 			e = SceneManager.CreateEntity( "TudoMesh2", "tudorhouse.mesh" );
-			entPos = new Vector3( terrainPos.x + 1970, 0, terrainPos.z + 2180 );
-			entPos.y = terrainGroup.GetHeightAtWorldPosition( entPos ) + 65.5 + terrainPos.y;
+			entPos = new Vector3( this.terrainPos.x + 1970, 0, this.terrainPos.z + 2180 );
+			entPos.y = this.terrainGroup.GetHeightAtWorldPosition( entPos ) + 65.5 + this.terrainPos.y;
 			rot = Quaternion.FromAngleAxis( Utility.RangeRandom( -180, 180 ), Vector3.UnitY );
 			sn = SceneManager.RootSceneNode.CreateChildSceneNode( entPos, rot );
 			sn.Scale = new Vector3( 0.12, 0.12, 0.12 );
 			sn.AttachObject( e );
-			houseList.Add( e );
+			this.houseList.Add( e );
 
 			//SceneManager.SetSkyDome( true, "Examples/CloudyNoonSkyBox", 5000, 8 );
 			SceneManager.SetSkyDome( true, "Examples/CloudySky", 5000, 8 );
@@ -865,9 +867,9 @@ namespace Axiom.Samples.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public override void Shutdown()
 		{
-			terrainPaging.SafeDispose();
-			pageManager.SafeDispose();
-			terrainGroup.SafeDispose();
+			this.terrainPaging.SafeDispose();
+			this.pageManager.SafeDispose();
+			this.terrainGroup.SafeDispose();
 
 			base.Shutdown();
 		}

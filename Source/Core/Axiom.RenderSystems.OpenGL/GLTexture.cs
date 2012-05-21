@@ -81,7 +81,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return _glTextureID;
+				return this._glTextureID;
 			}
 		}
 
@@ -160,8 +160,8 @@ namespace Axiom.RenderSystems.OpenGL
 		                    IManualResourceLoader loader, BaseGLSupport glSupport )
 			: base( parent, name, handle, group, isManual, loader )
 		{
-			_glSupport = glSupport;
-			_glTextureID = 0;
+			this._glSupport = glSupport;
+			this._glTextureID = 0;
 		}
 
 		~GLTexture()
@@ -284,7 +284,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			if ( IsLoaded )
 			{
-				Gl.glDeleteTextures( 1, ref _glTextureID );
+				Gl.glDeleteTextures( 1, ref this._glTextureID );
 			}
 		}
 
@@ -423,7 +423,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		private void _createSurfaceList()
 		{
-			_surfaceList.Clear();
+			this._surfaceList.Clear();
 
 			// For all faces and mipmaps, store surfaces as HardwarePixelBufferSharedPtr
 			bool wantGeneratedMips = ( Usage & TextureUsage.AutoMipMap ) != 0;
@@ -436,9 +436,11 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
-					GLHardwarePixelBuffer buf = new GLTextureBuffer( Name, GLTextureType, _glTextureID, face, mip, (BufferUsage)Usage,
-					                                                 doSoftware && mip == 0, _glSupport, HardwareGammaEnabled, FSAA );
-					_surfaceList.Add( buf );
+					GLHardwarePixelBuffer buf = new GLTextureBuffer( Name, GLTextureType, this._glTextureID, face, mip,
+					                                                 (BufferUsage)Usage,
+					                                                 doSoftware && mip == 0, this._glSupport, HardwareGammaEnabled,
+					                                                 FSAA );
+					this._surfaceList.Add( buf );
 
 					/// Check for error
 					if ( buf.Width == 0 || buf.Height == 0 || buf.Depth == 0 )
@@ -472,10 +474,10 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// Generate texture name
-			Gl.glGenTextures( 1, out _glTextureID );
+			Gl.glGenTextures( 1, out this._glTextureID );
 
 			// Set texture type
-			Gl.glBindTexture( GLTextureType, _glTextureID );
+			Gl.glBindTexture( GLTextureType, this._glTextureID );
 
 			// This needs to be set otherwise the texture doesn't get rendered
 			Gl.glTexParameteri( GLTextureType, Gl.GL_TEXTURE_MAX_LEVEL, MipmapCount );
@@ -549,16 +551,16 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected override void freeInternalResources()
 		{
-			_surfaceList.Clear();
+			this._surfaceList.Clear();
 			try
 			{
-				Gl.glDeleteTextures( 1, ref _glTextureID );
+				Gl.glDeleteTextures( 1, ref this._glTextureID );
 			}
 			catch ( AccessViolationException ave )
 			{
 				if ( LogManager.Instance != null )
 				{
-					LogManager.Instance.Write( "Failed to delete Texture[{0}]", _glTextureID );
+					LogManager.Instance.Write( "Failed to delete Texture[{0}]", this._glTextureID );
 				}
 			}
 		}
@@ -574,8 +576,8 @@ namespace Axiom.RenderSystems.OpenGL
 				throw new IndexOutOfRangeException( "MipMap index out of range" );
 			}
 			int idx = face*( MipmapCount + 1 ) + mipmap;
-			Debug.Assert( idx < _surfaceList.Count );
-			return _surfaceList[ idx ];
+			Debug.Assert( idx < this._surfaceList.Count );
+			return this._surfaceList[ idx ];
 		}
 
 		/// <summary>

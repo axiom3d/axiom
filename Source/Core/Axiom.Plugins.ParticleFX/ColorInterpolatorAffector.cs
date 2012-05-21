@@ -67,8 +67,8 @@ namespace Axiom.ParticleFX
 
 			for ( int i = 0; i < MAX_STAGES; ++i )
 			{
-				colorAdj[ i ] = init;
-				timeAdj[ i ] = 1.0f;
+				this.colorAdj[ i ] = init;
+				this.timeAdj[ i ] = 1.0f;
 			}
 		}
 
@@ -82,26 +82,26 @@ namespace Axiom.ParticleFX
 				float lifeTime = p.totalTimeToLive;
 				float particleTime = 1.0f - ( p.timeToLive/lifeTime );
 
-				if ( particleTime <= timeAdj[ 0 ] )
+				if ( particleTime <= this.timeAdj[ 0 ] )
 				{
-					p.Color = colorAdj[ 0 ];
+					p.Color = this.colorAdj[ 0 ];
 				}
-				else if ( particleTime >= timeAdj[ MAX_STAGES - 1 ] )
+				else if ( particleTime >= this.timeAdj[ MAX_STAGES - 1 ] )
 				{
-					p.Color = colorAdj[ MAX_STAGES - 1 ];
+					p.Color = this.colorAdj[ MAX_STAGES - 1 ];
 				}
 				else
 				{
 					for ( int k = 0; k < MAX_STAGES - 1; k++ )
 					{
-						if ( particleTime >= timeAdj[ k ] && particleTime < timeAdj[ k + 1 ] )
+						if ( particleTime >= this.timeAdj[ k ] && particleTime < this.timeAdj[ k + 1 ] )
 						{
-							particleTime -= timeAdj[ k ];
-							particleTime /= ( timeAdj[ k + 1 ] - timeAdj[ k ] );
-							p.Color.r = ( ( colorAdj[ k + 1 ].r*particleTime ) + ( colorAdj[ k ].r*( 1.0f - particleTime ) ) );
-							p.Color.g = ( ( colorAdj[ k + 1 ].g*particleTime ) + ( colorAdj[ k ].g*( 1.0f - particleTime ) ) );
-							p.Color.b = ( ( colorAdj[ k + 1 ].b*particleTime ) + ( colorAdj[ k ].b*( 1.0f - particleTime ) ) );
-							p.Color.a = ( ( colorAdj[ k + 1 ].a*particleTime ) + ( colorAdj[ k ].a*( 1.0f - particleTime ) ) );
+							particleTime -= this.timeAdj[ k ];
+							particleTime /= ( this.timeAdj[ k + 1 ] - this.timeAdj[ k ] );
+							p.Color.r = ( ( this.colorAdj[ k + 1 ].r*particleTime ) + ( this.colorAdj[ k ].r*( 1.0f - particleTime ) ) );
+							p.Color.g = ( ( this.colorAdj[ k + 1 ].g*particleTime ) + ( this.colorAdj[ k ].g*( 1.0f - particleTime ) ) );
+							p.Color.b = ( ( this.colorAdj[ k + 1 ].b*particleTime ) + ( this.colorAdj[ k ].b*( 1.0f - particleTime ) ) );
+							p.Color.a = ( ( this.colorAdj[ k + 1 ].a*particleTime ) + ( this.colorAdj[ k ].a*( 1.0f - particleTime ) ) );
 
 							break;
 						}

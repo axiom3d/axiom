@@ -415,8 +415,8 @@ namespace Axiom.Framework.Graphics
 
 			public Vertex( Vector3 pos, Vector2 uv )
 			{
-				Pos = pos;
-				UV = uv;
+				this.Pos = pos;
+				this.UV = uv;
 			}
 
 			#endregion Constructors

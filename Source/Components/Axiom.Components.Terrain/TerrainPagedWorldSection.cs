@@ -89,7 +89,7 @@ namespace Axiom.Components.Terrain
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return terrainGroup;
+				return this.terrainGroup;
 			}
 		}
 
@@ -244,7 +244,7 @@ namespace Axiom.Components.Terrain
 			{
 				if ( disposeManagedResources )
 				{
-					terrainGroup.Dispose();
+					this.terrainGroup.Dispose();
 				}
 			}
 
@@ -265,29 +265,29 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2, "Original name was init" )]
 		public virtual void Initialize( TerrainGroup grp )
 		{
-			if ( terrainGroup == grp )
+			if ( this.terrainGroup == grp )
 			{
 				return;
 			}
 
-			if ( terrainGroup != null )
+			if ( this.terrainGroup != null )
 			{
-				terrainGroup.Dispose();
+				this.terrainGroup.Dispose();
 			}
 
-			terrainGroup = grp;
+			this.terrainGroup = grp;
 			SyncSettings();
 
 			// Unload all existing terrain pages, because we want the paging system
 			// to be in charge of this
-			terrainGroup.RemoveAllTerrains();
+			this.terrainGroup.RemoveAllTerrains();
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected virtual void SyncSettings()
 		{
 			// Base grid on terrain settings
-			switch ( terrainGroup.Alignment )
+			switch ( this.terrainGroup.Alignment )
 			{
 				case Alignment.Align_X_Y:
 					GridStrategyData.Mode = Grid2Mode.G2D_X_Y;
@@ -302,8 +302,8 @@ namespace Axiom.Components.Terrain
 					break;
 			}
 
-			GridStrategyData.Origin = terrainGroup.Origin;
-			GridStrategyData.CellSize = terrainGroup.TerrainWorldSize;
+			GridStrategyData.Origin = this.terrainGroup.Origin;
+			GridStrategyData.CellSize = this.terrainGroup.TerrainWorldSize;
 		}
 
 		/// <summary>
@@ -319,12 +319,12 @@ namespace Axiom.Components.Terrain
 		protected override void LoadSubtypeData( StreamSerializer ser )
 		{
 			// we load the TerrainGroup information from here
-			if ( terrainGroup == null )
+			if ( this.terrainGroup == null )
 			{
-				terrainGroup = new TerrainGroup( SceneManager );
+				this.terrainGroup = new TerrainGroup( SceneManager );
 			}
 
-			terrainGroup.LoadGroupDefinition( ref ser );
+			this.terrainGroup.LoadGroupDefinition( ref ser );
 
 			// params that are in the Grid2DStrategyData will have already been loaded
 			// as part of the main load() routine
@@ -334,7 +334,7 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		protected override void SaveSubtypeData( StreamSerializer ser )
 		{
-			terrainGroup.SaveGroupDefinition( ref ser );
+			this.terrainGroup.SaveGroupDefinition( ref ser );
 
 			// params that are in the Grid2DStrategyData will have already been saved
 			// as part of the main save() routine
@@ -353,9 +353,9 @@ namespace Axiom.Components.Terrain
 				// trigger terrain load
 				long x, y;
 				// pageID is the same as a packed index
-				terrainGroup.UnpackIndex( pageID.Value, out x, out y );
-				terrainGroup.DefineTerrain( x, y );
-				terrainGroup.LoadTerrain( x, y, forceSynchronous );
+				this.terrainGroup.UnpackIndex( pageID.Value, out x, out y );
+				this.terrainGroup.DefineTerrain( x, y );
+				this.terrainGroup.LoadTerrain( x, y, forceSynchronous );
 			}
 
 			base.LoadPage( pageID, forceSynchronous );
@@ -374,8 +374,8 @@ namespace Axiom.Components.Terrain
 			// trigger terrain unload
 			long x, y;
 			// pageID is the same as a packed index
-			terrainGroup.UnpackIndex( pageID.Value, out x, out y );
-			terrainGroup.UnloadTerrain( x, y );
+			this.terrainGroup.UnpackIndex( pageID.Value, out x, out y );
+			this.terrainGroup.UnloadTerrain( x, y );
 		}
 	};
 }

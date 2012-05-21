@@ -16,11 +16,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return vsCpuProgram;
+				return this.vsCpuProgram;
 			}
 			set
 			{
-				vsCpuProgram = value;
+				this.vsCpuProgram = value;
 			}
 		}
 
@@ -28,11 +28,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return psCpuProgram;
+				return this.psCpuProgram;
 			}
 			set
 			{
-				psCpuProgram = value;
+				this.psCpuProgram = value;
 			}
 		}
 
@@ -40,11 +40,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return vsGpuProgram;
+				return this.vsGpuProgram;
 			}
 			set
 			{
-				vsGpuProgram = value;
+				this.vsGpuProgram = value;
 			}
 		}
 
@@ -52,29 +52,29 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return psGpuProgram;
+				return this.psGpuProgram;
 			}
 			set
 			{
-				psGpuProgram = value;
+				this.psGpuProgram = value;
 			}
 		}
 
 		public void Dispose()
 		{
-			if ( vsCpuProgram != null )
+			if ( this.vsCpuProgram != null )
 			{
-				ProgramManager.Instance.DestroyCpuProgram( vsCpuProgram );
-				vsCpuProgram = null;
+				ProgramManager.Instance.DestroyCpuProgram( this.vsCpuProgram );
+				this.vsCpuProgram = null;
 			}
-			if ( psCpuProgram != null )
+			if ( this.psCpuProgram != null )
 			{
-				ProgramManager.Instance.DestroyCpuProgram( psCpuProgram );
-				psCpuProgram = null;
+				ProgramManager.Instance.DestroyCpuProgram( this.psCpuProgram );
+				this.psCpuProgram = null;
 			}
 
-			vsGpuProgram = null;
-			psGpuProgram = null;
+			this.vsGpuProgram = null;
+			this.psGpuProgram = null;
 		}
 	}
 }

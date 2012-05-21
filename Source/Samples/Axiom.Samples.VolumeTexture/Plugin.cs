@@ -14,9 +14,9 @@ namespace Axiom.Samples.VolumeTexture
 
 		public override void Initialize()
 		{
-			sample = new VolumeTextureSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new VolumeTextureSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

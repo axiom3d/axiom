@@ -17,35 +17,35 @@ namespace Axiom.Components.RTShaderSystem
 
 			curFactory = new FFPTransformFactory();
 			ShaderGenerator.Instance.AddSubRenderStateFactory( curFactory );
-			ffpSubRenderStateFactoryList.Add( curFactory );
+			this.ffpSubRenderStateFactoryList.Add( curFactory );
 
 			curFactory = new FFPColorFactory();
 			ShaderGenerator.Instance.AddSubRenderStateFactory( curFactory );
-			ffpSubRenderStateFactoryList.Add( curFactory );
+			this.ffpSubRenderStateFactoryList.Add( curFactory );
 
 			curFactory = new FFPLightingFactory();
 			ShaderGenerator.Instance.AddSubRenderStateFactory( curFactory );
-			ffpSubRenderStateFactoryList.Add( curFactory );
+			this.ffpSubRenderStateFactoryList.Add( curFactory );
 
 			curFactory = new FFPTexturingFactory();
 			ShaderGenerator.Instance.AddSubRenderStateFactory( curFactory );
-			ffpSubRenderStateFactoryList.Add( curFactory );
+			this.ffpSubRenderStateFactoryList.Add( curFactory );
 
 			curFactory = new FFPFogFactory();
 			ShaderGenerator.Instance.AddSubRenderStateFactory( curFactory );
-			ffpSubRenderStateFactoryList.Add( curFactory );
+			this.ffpSubRenderStateFactoryList.Add( curFactory );
 
 			return true;
 		}
 
 		internal void Finalize()
 		{
-			for ( int it = 0; it < ffpSubRenderStateFactoryList.Count; it++ )
+			for ( int it = 0; it < this.ffpSubRenderStateFactoryList.Count; it++ )
 			{
-				ShaderGenerator.Instance.RemoveSubRenderStateFactory( ffpSubRenderStateFactoryList[ it ] );
-				ffpSubRenderStateFactoryList[ it ] = null;
+				ShaderGenerator.Instance.RemoveSubRenderStateFactory( this.ffpSubRenderStateFactoryList[ it ] );
+				this.ffpSubRenderStateFactoryList[ it ] = null;
 			}
-			ffpSubRenderStateFactoryList.Clear();
+			this.ffpSubRenderStateFactoryList.Clear();
 		}
 
 		/// <summary>

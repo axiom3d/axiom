@@ -79,11 +79,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return alphaAdjust1;
+				return this.alphaAdjust1;
 			}
 			set
 			{
-				alphaAdjust1 = value;
+				this.alphaAdjust1 = value;
 			}
 		}
 
@@ -91,11 +91,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return redAdjust1;
+				return this.redAdjust1;
 			}
 			set
 			{
-				redAdjust1 = value;
+				this.redAdjust1 = value;
 			}
 		}
 
@@ -103,11 +103,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return greenAdjust1;
+				return this.greenAdjust1;
 			}
 			set
 			{
-				greenAdjust1 = value;
+				this.greenAdjust1 = value;
 			}
 		}
 
@@ -115,11 +115,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return blueAdjust1;
+				return this.blueAdjust1;
 			}
 			set
 			{
-				blueAdjust1 = value;
+				this.blueAdjust1 = value;
 			}
 		}
 
@@ -127,11 +127,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return alphaAdjust2;
+				return this.alphaAdjust2;
 			}
 			set
 			{
-				alphaAdjust2 = value;
+				this.alphaAdjust2 = value;
 			}
 		}
 
@@ -139,11 +139,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return redAdjust2;
+				return this.redAdjust2;
 			}
 			set
 			{
-				redAdjust2 = value;
+				this.redAdjust2 = value;
 			}
 		}
 
@@ -151,11 +151,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return greenAdjust2;
+				return this.greenAdjust2;
 			}
 			set
 			{
-				greenAdjust2 = value;
+				this.greenAdjust2 = value;
 			}
 		}
 
@@ -163,11 +163,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return blueAdjust2;
+				return this.blueAdjust2;
 			}
 			set
 			{
-				blueAdjust2 = value;
+				this.blueAdjust2 = value;
 			}
 		}
 
@@ -175,11 +175,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return stateChangeVal;
+				return this.stateChangeVal;
 			}
 			set
 			{
-				stateChangeVal = value;
+				this.stateChangeVal = value;
 			}
 		}
 
@@ -208,16 +208,16 @@ namespace Axiom.ParticleFX
 			float da2, dr2, dg2, db2;
 
 			// Scale adjustments by time
-			da1 = alphaAdjust1*timeElapsed;
-			dr1 = redAdjust1*timeElapsed;
-			dg1 = greenAdjust1*timeElapsed;
-			db1 = blueAdjust1*timeElapsed;
+			da1 = this.alphaAdjust1*timeElapsed;
+			dr1 = this.redAdjust1*timeElapsed;
+			dg1 = this.greenAdjust1*timeElapsed;
+			db1 = this.blueAdjust1*timeElapsed;
 
 			// Scale adjustments by time
-			da2 = alphaAdjust2*timeElapsed;
-			dr2 = redAdjust2*timeElapsed;
-			dg2 = greenAdjust2*timeElapsed;
-			db2 = blueAdjust2*timeElapsed;
+			da2 = this.alphaAdjust2*timeElapsed;
+			dr2 = this.redAdjust2*timeElapsed;
+			dg2 = this.greenAdjust2*timeElapsed;
+			db2 = this.blueAdjust2*timeElapsed;
 
 			// loop through the particles
 

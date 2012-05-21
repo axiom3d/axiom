@@ -66,11 +66,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return alphaAdjust;
+				return this.alphaAdjust;
 			}
 			set
 			{
-				alphaAdjust = value;
+				this.alphaAdjust = value;
 			}
 		}
 
@@ -78,11 +78,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return redAdjust;
+				return this.redAdjust;
 			}
 			set
 			{
-				redAdjust = value;
+				this.redAdjust = value;
 			}
 		}
 
@@ -90,11 +90,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return greenAdjust;
+				return this.greenAdjust;
 			}
 			set
 			{
-				greenAdjust = value;
+				this.greenAdjust = value;
 			}
 		}
 
@@ -102,11 +102,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return blueAdjust;
+				return this.blueAdjust;
 			}
 			set
 			{
-				blueAdjust = value;
+				this.blueAdjust = value;
 			}
 		}
 
@@ -135,10 +135,10 @@ namespace Axiom.ParticleFX
 		{
 			float da, dr, dg, db;
 
-			da = alphaAdjust*timeElapsed;
-			dr = redAdjust*timeElapsed;
-			dg = greenAdjust*timeElapsed;
-			db = blueAdjust*timeElapsed;
+			da = this.alphaAdjust*timeElapsed;
+			dr = this.redAdjust*timeElapsed;
+			dg = this.greenAdjust*timeElapsed;
+			db = this.blueAdjust*timeElapsed;
 
 			// loop through the particles
 

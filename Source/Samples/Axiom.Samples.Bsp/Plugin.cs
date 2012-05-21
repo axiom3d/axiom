@@ -35,9 +35,9 @@ namespace Axiom.Samples.Bsp
 
 		public override void Initialize()
 		{
-			sample = new BSPSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new BSPSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

@@ -134,7 +134,7 @@ namespace Axiom.SceneManagers.Octree
 
 				for ( int corner = 0; corner < 8; corner++ )
 				{
-					distance = _planes[ plane ].GetDistance( boxCorners[ corners[ corner ] ] );
+					distance = _planes[ plane ].GetDistance( boxCorners[ this.corners[ corner ] ] );
 					AllOutside = AllOutside && ( distance < 0 );
 					AllInside = AllInside && ( distance >= 0 );
 

@@ -57,22 +57,22 @@ namespace Axiom.Components.RTShaderSystem
 
 			renderState.DestroyProgramSet();
 
-			foreach ( var key in vertexShaderMap.Keys )
+			foreach ( var key in this.vertexShaderMap.Keys )
 			{
 				if ( true ) //TODO
 				{
-					DestroyGpuProgram( vertexShaderMap[ key ] );
-					vertexShaderMap.Remove( key );
+					DestroyGpuProgram( this.vertexShaderMap[ key ] );
+					this.vertexShaderMap.Remove( key );
 					break;
 				}
 			}
 
-			foreach ( var key in fragmentShaderMap.Keys )
+			foreach ( var key in this.fragmentShaderMap.Keys )
 			{
 				if ( true )
 				{
-					DestroyGpuProgram( fragmentShaderMap[ key ] );
-					fragmentShaderMap.Remove( key );
+					DestroyGpuProgram( this.fragmentShaderMap[ key ] );
+					this.fragmentShaderMap.Remove( key );
 					break;
 				}
 			}
@@ -80,8 +80,8 @@ namespace Axiom.Components.RTShaderSystem
 
 		internal void FlushGpuProgramsCache()
 		{
-			FlushGpuProgramsCache( vertexShaderMap );
-			FlushGpuProgramsCache( fragmentShaderMap );
+			FlushGpuProgramsCache( this.vertexShaderMap );
+			FlushGpuProgramsCache( this.fragmentShaderMap );
 		}
 
 		internal void FlushGpuProgramsCache( Dictionary<string, GpuProgram> gpuProgramsMap )
@@ -97,20 +97,20 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			var shaderProgram = new Program( gpuProgramType );
 
-			cpuProgramList.Add( shaderProgram );
+			this.cpuProgramList.Add( shaderProgram );
 
 			return shaderProgram;
 		}
 
 		public void DestroyCpuProgram( Program shaderProgram )
 		{
-			for ( int i = 0; i < cpuProgramList.Count; i++ )
+			for ( int i = 0; i < this.cpuProgramList.Count; i++ )
 			{
-				if ( cpuProgramList[ i ] == shaderProgram )
+				if ( this.cpuProgramList[ i ] == shaderProgram )
 				{
-					cpuProgramList[ i ].Dispose();
-					cpuProgramList[ i ] = null;
-					cpuProgramList.RemoveAt( i );
+					this.cpuProgramList[ i ].Dispose();
+					this.cpuProgramList[ i ] = null;
+					this.cpuProgramList.RemoveAt( i );
 					break;
 				}
 			}
@@ -120,66 +120,66 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			//Add standard shader processors
 //#if #if OGRE_PLATFORM != OGRE_PLATFORM_ANDROID
-			defaultProgramProcessors.Add( new CGProgramProcessor() );
-			defaultProgramProcessors.Add( new GLSLProgramProcessor() );
-			defaultProgramProcessors.Add( new HLSLProgramProcessor() );
+			this.defaultProgramProcessors.Add( new CGProgramProcessor() );
+			this.defaultProgramProcessors.Add( new GLSLProgramProcessor() );
+			this.defaultProgramProcessors.Add( new HLSLProgramProcessor() );
 //#endif
-			defaultProgramProcessors.Add( new GLSLESProgramProcessor() );
+			this.defaultProgramProcessors.Add( new GLSLESProgramProcessor() );
 
-			for ( int i = 0; i < defaultProgramProcessors.Count; i++ )
+			for ( int i = 0; i < this.defaultProgramProcessors.Count; i++ )
 			{
-				AddProgramProcessor( defaultProgramProcessors[ i ] );
+				AddProgramProcessor( this.defaultProgramProcessors[ i ] );
 			}
 		}
 
 		private void DestroyDefaultProgramProcessors()
 		{
-			for ( int i = 0; i < defaultProgramProcessors.Count; i++ )
+			for ( int i = 0; i < this.defaultProgramProcessors.Count; i++ )
 			{
-				RemoveProgramProcessor( defaultProgramProcessors[ i ] );
-				defaultProgramProcessors[ i ] = null;
+				RemoveProgramProcessor( this.defaultProgramProcessors[ i ] );
+				this.defaultProgramProcessors[ i ] = null;
 			}
 
-			defaultProgramProcessors.Clear();
+			this.defaultProgramProcessors.Clear();
 		}
 
 		private void CreateDefaultProgramWriterFactories()
 		{
 			//Add Standard shader writer factories
 			//#if OGRE_PLATFORM != OGRE_PLATFORM_ANDROID
-			programWriterFactories.Add( new ProgramWriterCGFactory() );
-			programWriterFactories.Add( new ProgramWriterGLSLFactory() );
-			programWriterFactories.Add( new ProgramWriterHLSLFactory() );
+			this.programWriterFactories.Add( new ProgramWriterCGFactory() );
+			this.programWriterFactories.Add( new ProgramWriterGLSLFactory() );
+			this.programWriterFactories.Add( new ProgramWriterHLSLFactory() );
 			//#endif
-			programWriterFactories.Add( new ProgramWriterGLSLESFactory() );
+			this.programWriterFactories.Add( new ProgramWriterGLSLESFactory() );
 
-			for ( int i = 0; i < programWriterFactories.Count; i++ )
+			for ( int i = 0; i < this.programWriterFactories.Count; i++ )
 			{
-				ProgramWriterManager.Instance.AddFactory( programWriterFactories[ i ] );
+				ProgramWriterManager.Instance.AddFactory( this.programWriterFactories[ i ] );
 			}
 		}
 
 		private void DestroyDefaultProgramWriterFactories()
 		{
-			for ( int i = 0; i < programWriterFactories.Count; i++ )
+			for ( int i = 0; i < this.programWriterFactories.Count; i++ )
 			{
-				ProgramWriterManager.Instance.RemoveFactory( programWriterFactories[ i ] );
-				programWriterFactories[ i ] = null;
+				ProgramWriterManager.Instance.RemoveFactory( this.programWriterFactories[ i ] );
+				this.programWriterFactories[ i ] = null;
 			}
-			programWriterFactories.Clear();
+			this.programWriterFactories.Clear();
 		}
 
 		private void DestroyProgramWriters()
 		{
-			foreach ( var key in programWritersMap.Keys )
+			foreach ( var key in this.programWritersMap.Keys )
 			{
-				if ( programWritersMap[ key ] != null )
+				if ( this.programWritersMap[ key ] != null )
 				{
-					programWritersMap[ key ].Dispose();
-					programWritersMap[ key ] = null;
+					this.programWritersMap[ key ].Dispose();
+					this.programWritersMap[ key ] = null;
 				}
 			}
-			programWritersMap.Clear();
+			this.programWritersMap.Clear();
 		}
 
 		private bool CreateGpuPrograms( ProgramSet programSet )
@@ -199,23 +199,23 @@ namespace Axiom.Components.RTShaderSystem
 			string language = ShaderGenerator.Instance.TargetLangauge;
 			ProgramWriter programWriter = null;
 
-			if ( programWritersMap.ContainsKey( language ) )
+			if ( this.programWritersMap.ContainsKey( language ) )
 			{
-				programWriter = programWritersMap[ language ];
+				programWriter = this.programWritersMap[ language ];
 			}
 			else
 			{
 				programWriter = ProgramWriterManager.Instance.CreateProgramWriter( language );
-				programWritersMap.Add( language, programWriter );
+				this.programWritersMap.Add( language, programWriter );
 			}
 
 			ProgramProcessor programProcessor = null;
-			if ( programProcessorMap.ContainsKey( language ) == false )
+			if ( this.programProcessorMap.ContainsKey( language ) == false )
 			{
 				throw new AxiomException( "Could not find processor for language " + language );
 			}
 
-			programProcessor = programProcessorMap[ language ];
+			programProcessor = this.programProcessorMap[ language ];
 
 
 			bool success;
@@ -377,11 +377,11 @@ namespace Axiom.Components.RTShaderSystem
 				//Add the created GPU prgram to local cache
 				if ( gpuProgram.Type == GpuProgramType.Vertex )
 				{
-					vertexShaderMap[ programName ] = gpuProgram;
+					this.vertexShaderMap[ programName ] = gpuProgram;
 				}
 				else if ( gpuProgram.Type == GpuProgramType.Fragment )
 				{
-					fragmentShaderMap[ programName ] = gpuProgram;
+					this.fragmentShaderMap[ programName ] = gpuProgram;
 				}
 			}
 			return gpuProgram;
@@ -389,17 +389,17 @@ namespace Axiom.Components.RTShaderSystem
 
 		private void AddProgramProcessor( ProgramProcessor processor )
 		{
-			if ( programProcessorMap.ContainsKey( processor.TargetLanguage ) )
+			if ( this.programProcessorMap.ContainsKey( processor.TargetLanguage ) )
 			{
 				throw new AxiomException( "A processor for language " + processor.TargetLanguage + " already exists" );
 			}
 
-			programProcessorMap.Add( processor.TargetLanguage, processor );
+			this.programProcessorMap.Add( processor.TargetLanguage, processor );
 		}
 
 		private void RemoveProgramProcessor( ProgramProcessor processor )
 		{
-			programProcessorMap.Remove( processor.TargetLanguage );
+			this.programProcessorMap.Remove( processor.TargetLanguage );
 		}
 
 		private void DestroyGpuProgram( GpuProgram gpuProgram )
@@ -500,7 +500,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return vertexShaderMap.Count;
+				return this.vertexShaderMap.Count;
 			}
 		}
 
@@ -508,7 +508,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return fragmentShaderMap.Count;
+				return this.fragmentShaderMap.Count;
 			}
 		}
 

@@ -71,10 +71,10 @@ namespace Axiom.RenderSystems.OpenGL
 
 		~ARBGpuProgram()
 		{
-			if ( _handle.IsAllocated )
+			if ( this._handle.IsAllocated )
 			{
 				//GCHandle's a value type, valid even inside the scope of a a finalizer
-				_handle.Free();
+				this._handle.Free();
 			}
 
 			//Gl.glDeleteProgramsARB(1, ref programId);
@@ -110,12 +110,12 @@ namespace Axiom.RenderSystems.OpenGL
 			//       I decided not to extend this class with IDisposable for several reasons, including class's user contract,
 			//       and the fact that this might be a temporary issue only. So for now only a finalizer will take care for avoiding memory leaks (although minor ones in this case).
 			//       So recheck the MONO issue later, the above comment talks about passing the string directly, btw. the method seems to take byte[] as well (if that would work eventually...).
-			if ( _handle.IsAllocated )
+			if ( this._handle.IsAllocated )
 			{
-				_handle.Free();
+				this._handle.Free();
 			}
-			_handle = GCHandle.Alloc( bytes, GCHandleType.Pinned );
-			IntPtr sourcePtr = _handle.AddrOfPinnedObject();
+			this._handle = GCHandle.Alloc( bytes, GCHandleType.Pinned );
+			IntPtr sourcePtr = this._handle.AddrOfPinnedObject();
 
 			Gl.glProgramStringARB( programType, Gl.GL_PROGRAM_FORMAT_ASCII_ARB, Source.Length, sourcePtr );
 
@@ -140,9 +140,9 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			if ( IsLoaded )
 			{
-				if ( _handle.IsAllocated )
+				if ( this._handle.IsAllocated )
 				{
-					_handle.Free();
+					this._handle.Free();
 				}
 
 				Gl.glDeleteProgramsARB( 1, ref programId );
