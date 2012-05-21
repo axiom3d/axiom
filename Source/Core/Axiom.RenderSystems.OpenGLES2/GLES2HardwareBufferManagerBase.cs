@@ -43,6 +43,7 @@ using Axiom.Graphics;
 
 using GL = OpenTK.Graphics.ES20.GL;
 using GLenum = OpenTK.Graphics.ES20.All;
+using All = OpenTK.Graphics.ES20.All;
 
 #endregion Namespace Declarations
 

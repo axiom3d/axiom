@@ -38,9 +38,11 @@ using System;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
+using PixelFormat = Axiom.Media.PixelFormat;
 
 using Glenum = OpenTK.Graphics.ES20.All;
-using PixelFormat = Axiom.Media.PixelFormat;
+using All = OpenTK.Graphics.ES20.All;
+using GL = OpenTK.Graphics.ES20.GL;
 
 #endregion Namespace Declarations
 
