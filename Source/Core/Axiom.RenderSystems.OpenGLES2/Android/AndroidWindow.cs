@@ -51,8 +51,10 @@ using OpenTK.Platform.Android;
 
 using NativeWindowType = System.IntPtr;
 using NativeDisplayType = System.IntPtr;
+
 using Axiom.Core;
 using Axiom.Collections;
+
 using OpenTK.Platform;
 using OpenTK;
 
@@ -60,117 +62,125 @@ using OpenTK;
 
 namespace Axiom.RenderSystems.OpenGLES2.Android
 {
-    internal class AndroidWindow : RenderWindow
-    {
-        protected AndroidSupport glSupport;
-        protected AndroidContext context;
-        protected bool closed;
-        IWindowInfo windowInfo;
+	internal class AndroidWindow : RenderWindow
+	{
+		protected AndroidSupport glSupport;
+		protected AndroidContext context;
+		protected bool closed;
+		private IWindowInfo windowInfo;
 
-        public AndroidWindow(AndroidSupport glSupport)
-        {
-            this.glSupport = glSupport;
-            this.closed = false;
-            this.context = null;
-        }
-        ~AndroidWindow()
-        {
-            if (context != null)
-                context = null;
-        }
-        protected AndroidContext CreateGLContext(int handle)
-        {
-            return new AndroidContext(glSupport, context.GraphicsContext, windowInfo);
-        }
-        protected void GetLeftAndTopFromNativeWindow(out int left, out int top, uint width, uint height)
-        {
-            left = top = 0;
-        }
-        protected void InitNativeCreatedWindow(NamedParameterList miscParams)
-        {
-            LogManager.Instance.Write("\tInitNativeCreateWindow called");
-           
-            if (miscParams != null)
-            {
-                if(miscParams.ContainsKey("externalWindowInfo"))
-                {
-                    this.windowInfo = (IWindowInfo)miscParams["externalWindowInfo"];
-                }
-                if(miscParams.ContainsKey("externalGLContext"))
-                {
-                    var value = miscParams["externalGLContext"];
-                        if (value is IGraphicsContext)
-                        {
-                            context = new AndroidContext(glSupport, (value as IGraphicsContext), windowInfo);
-                        }
-                        else
-                        {
-                            InvalidCastException ex = new InvalidCastException();
-                            throw new AxiomException("externalGLContext must be of type IGraphicsContext", ex);
-                        }
-                    }
-                }
-            }
-        
-        protected void CreateNativeWindow(int left, int top, uint width, uint height, string title)
-        {
-            LogManager.Instance.Write("\tCreateNativeWindow called");
-        }
-        public override void Reposition(int left, int top)
-        {
-            LogManager.Instance.Write("\tReposition called");
-        }
-        public override void Resize(int width, int height)
-        {
-            LogManager.Instance.Write("\tresize called");
+		public AndroidWindow( AndroidSupport glSupport )
+		{
+			this.glSupport = glSupport;
+			this.closed = false;
+			this.context = null;
+		}
 
-        }
-        public override void CopyContentsToMemory(PixelBox pb, FrameBuffer buffer)
-        {
+		~AndroidWindow()
+		{
+			if ( this.context != null )
+			{
+				this.context = null;
+			}
+		}
 
-        }
-        public override void Create(string name, int width, int height, bool fullScreen, NamedParameterList miscParams)
-        {
-            LogManager.Instance.Write("\tCreate called");
-            InitNativeCreatedWindow(miscParams);
+		protected AndroidContext CreateGLContext( int handle )
+		{
+			return new AndroidContext( this.glSupport, this.context.GraphicsContext, this.windowInfo );
+		}
 
-            this.name = name;
-            this.width = width;
-            this.height = height;
-            this.left = 0;
-            this.top = 0;
-            this.active = true;
+		protected void GetLeftAndTopFromNativeWindow( out int left, out int top, uint width, uint height )
+		{
+			left = top = 0;
+		}
 
-            this.closed = false;
-        }
-        public override void Destroy()
-        {
-            LogManager.Instance.Write("Destroy called");
-        }
-        public override bool IsClosed
-        {
-            get { return closed; }
-        }
-        public override bool RequiresTextureFlipping
-        {
-            get { return false; }
-        }
-        public override object this[string attribute]
-        {
-            get
-            {
-                if (attribute == "WINDOWINFO")
-                {
-                    return windowInfo;
-                }
-                else if (attribute == "GLCONTEXT")
-                {
-                    return context;
-                }
-                return base[attribute];
-            }
-        }
+		protected void InitNativeCreatedWindow( NamedParameterList miscParams )
+		{
+			LogManager.Instance.Write( "\tInitNativeCreateWindow called" );
 
-    }
+			if ( miscParams != null )
+			{
+				if ( miscParams.ContainsKey( "externalWindowInfo" ) )
+				{
+					this.windowInfo = (IWindowInfo) miscParams[ "externalWindowInfo" ];
+				}
+				if ( miscParams.ContainsKey( "externalGLContext" ) )
+				{
+					var value = miscParams[ "externalGLContext" ];
+					if ( value is IGraphicsContext )
+					{
+						this.context = new AndroidContext( this.glSupport, ( value as IGraphicsContext ), this.windowInfo );
+					}
+					else
+					{
+						var ex = new InvalidCastException();
+						throw new AxiomException( "externalGLContext must be of type IGraphicsContext", ex );
+					}
+				}
+			}
+		}
 
+		protected void CreateNativeWindow( int left, int top, uint width, uint height, string title )
+		{
+			LogManager.Instance.Write( "\tCreateNativeWindow called" );
+		}
+
+		public override void Reposition( int left, int top )
+		{
+			LogManager.Instance.Write( "\tReposition called" );
+		}
+
+		public override void Resize( int width, int height )
+		{
+			LogManager.Instance.Write( "\tresize called" );
+		}
+
+		public override void CopyContentsToMemory( PixelBox pb, FrameBuffer buffer ) {}
+
+		public override void Create( string name, int width, int height, bool fullScreen, NamedParameterList miscParams )
+		{
+			LogManager.Instance.Write( "\tCreate called" );
+			this.InitNativeCreatedWindow( miscParams );
+
+			this.name = name;
+			this.width = width;
+			this.height = height;
+			left = 0;
+			top = 0;
+			active = true;
+
+			this.closed = false;
+		}
+
+		public override void Destroy()
+		{
+			LogManager.Instance.Write( "Destroy called" );
+		}
+
+		public override bool IsClosed
+		{
+			get { return this.closed; }
+		}
+
+		public override bool RequiresTextureFlipping
+		{
+			get { return false; }
+		}
+
+		public override object this[ string attribute ]
+		{
+			get
+			{
+				if ( attribute == "WINDOWINFO" )
+				{
+					return this.windowInfo;
+				}
+				else if ( attribute == "GLCONTEXT" )
+				{
+					return this.context;
+				}
+				return base[ attribute ];
+			}
+		}
+	}
 }

@@ -42,7 +42,7 @@ using OpenTK.Graphics.ES20;
 using GLenum = OpenTK.Graphics.ES20.All;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 {
 	internal abstract class GLSLESProgramManagerCommon
@@ -57,7 +57,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 		private static int GLSampler2DShadowExt = 0x8B62;
 		protected GLSLESGpuProgram activeVertexGpuProgram;
 		protected GLSLESGpuProgram activeFragmentGpuProgram;
-		private Dictionary<string, GLenum> typeEnumMap;
+		private readonly Dictionary<string, GLenum> typeEnumMap;
 
 		protected void CompleteDefInfo( GLenum glType, Axiom.Graphics.GpuProgramParameters.GpuConstantDefinition defToUpdate )
 		{
@@ -144,7 +144,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 			this.activeVertexGpuProgram = null;
 			this.activeFragmentGpuProgram = null;
 
-            typeEnumMap = new Dictionary<string, GLenum>();
+			this.typeEnumMap = new Dictionary<string, GLenum>();
 			//Fill in the relationship between type names and enums
 			this.typeEnumMap.Add( "float", GLenum.Float );
 			this.typeEnumMap.Add( "vec2", GLenum.FloatVec2 );
@@ -270,11 +270,11 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 			// NOTE this relies on the source already having been preprocessed
 			// which is done in GLSLESProgram::loadFromSource
 			string line;
-            int currPos = src.IndexOf("uniform");
+			int currPos = src.IndexOf( "uniform" );
 			while ( currPos != -1 )
 			{
 				var def = new GpuProgramParameters.GpuConstantDefinition();
-                string paramName = string.Empty;
+				string paramName = string.Empty;
 
 				//Now check for using the word 'uniform' in a larger string & ignore
 				bool inLargerString = false;
@@ -320,7 +320,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 					//remove spaces before opening square braces, otherwise the following split() can split the line at inapppropriate
 					//places (e.g. "vec3 sometihng [3]" won't work).
 
-                    for (int sqp = line.IndexOf("["); sqp != -1; sqp = line.IndexOf(" ["))
+					for ( int sqp = line.IndexOf( "[" ); sqp != -1; sqp = line.IndexOf( " [" ) )
 					{
 						line.Remove( sqp, 1 );
 					}
@@ -418,7 +418,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 					}
 				}
 				//Find next one
-                currPos = src.IndexOf("uniform");
+				currPos = src.IndexOf( "uniform" );
 			}
 		}
 	}

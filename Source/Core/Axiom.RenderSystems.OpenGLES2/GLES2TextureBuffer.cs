@@ -77,8 +77,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 				this.faceTarget = All.TextureCubeMapPositiveX + face;
 			}
 			//Calculate the width and height of the texture at this mip level
-			this.width = this.level == 0 ? width : (int)(width / Math.Utility.Pow( 2, level ));
-			this.height = this.level == 0 ? height : (int)(height / Math.Utility.Pow( 2, level ));
+			this.width = this.level == 0 ? width : (int) ( width / Math.Utility.Pow( 2, level ) );
+			this.height = this.level == 0 ? height : (int) ( height / Math.Utility.Pow( 2, level ) );
 
 			if ( this.width < 1 )
 			{
@@ -90,28 +90,28 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 
 			//Only 2D is supporte so depth is always 1
-			this.depth = 1;
+			depth = 1;
 
-			this.GlInternalFormat = internalFormat;
+			GlInternalFormat = internalFormat;
 			this.format = GLES2PixelUtil.GetClosestAxiomFormat( internalFormat, format );
 
 			rowPitch = this.width;
 			slicePitch = this.height * this.width;
-			sizeInBytes = PixelUtil.GetMemorySize( this.width, this.height, this.depth, this.format );
+			sizeInBytes = PixelUtil.GetMemorySize( this.width, this.height, depth, this.format );
 			//Setup a pixel box
-			Buffer = new PixelBox( this.width, this.height, this.depth, this.format );
+			Buffer = new PixelBox( this.width, this.height, depth, this.format );
 
-			if ( this.width == 0 || this.height == 0 || this.depth == 0 )
+			if ( this.width == 0 || this.height == 0 || depth == 0 )
 			{
 				//We are invalid, do not allocat a buffer
 				return;
 			}
 
-			if ( ( (TextureUsage)usage & TextureUsage.RenderTarget) == TextureUsage.RenderTarget )
+			if ( ( (TextureUsage) usage & TextureUsage.RenderTarget ) == TextureUsage.RenderTarget )
 			{
 				//Create render target for each slice
 
-				for ( int zoffset = 0; zoffset < this.depth; zoffset++ )
+				for ( int zoffset = 0; zoffset < depth; zoffset++ )
 				{
 					var name = "rtt/ " + GetHashCode() + "/" + baseName;
 					var rtarget = new GLES2SurfaceDesc { buffer = this, zoffset = zoffset };
@@ -162,7 +162,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				All glFormat = GLES2PixelUtil.GetGLOriginFormat( scaled.Format );
 				All dataType = GLES2PixelUtil.GetGLOriginDataType( scaled.Format );
 
-				GL.TexImage2D( this.faceTarget, mip, (int)glFormat, width, height, 0, glFormat, dataType, scaled.Data.Pin() );
+				GL.TexImage2D( this.faceTarget, mip, (int) glFormat, width, height, 0, glFormat, dataType, scaled.Data.Pin() );
 				GLES2Config.GlCheckError( this );
 
 				if ( mip != 0 )
@@ -181,7 +181,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 				int sizeInBytes = PixelUtil.GetMemorySize( width, height, 1, data.Format );
 				scaled = new PixelBox( width, height, 1, data.Format );
-				scaled.Data = BufferBase.Wrap( new byte[sizeInBytes] );
+				scaled.Data = BufferBase.Wrap( new byte[ sizeInBytes ] );
 				Image.Scale( data, scaled, ImageFilter.Linear );
 			}
 
@@ -201,7 +201,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				if ( data.Format != format || !data.IsConsecutive )
 				{
-					var glFormat = GLES2PixelUtil.GetClosestGLInternalFormat( this.format );
+					var glFormat = GLES2PixelUtil.GetClosestGLInternalFormat( format );
 					//Data must be consecutive and at beginning of buffer as PixelStore is not allowed
 					//for compressed formats
 					if ( dest.Left == 0 && dest.Top == 0 )
@@ -213,7 +213,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 					{
 						GL.CompressedTexSubImage2D( this.faceTarget, this.level, dest.Left, dest.Top, dest.Width, dest.Height, glFormat, data.ConsecutiveSize, data.Data.Pin() );
 						GLES2Config.GlCheckError( this );
-					}					
+					}
 				}
 			}
 			else if ( this.softwareMipmap )
@@ -254,14 +254,13 @@ namespace Axiom.RenderSystems.OpenGLES2
 					GLES2Config.GlCheckError( this );
 				}
 				var dataPtr = data.Data.Pin();
-				GL.TexImage2D( this.faceTarget, this.level, (int)GLES2PixelUtil.GetClosestGLInternalFormat( data.Format ), data.Width, data.Height, 0,GLES2PixelUtil.GetGLOriginFormat( data.Format ), GLES2PixelUtil.GetGLOriginDataType( data.Format ), dataPtr );
+				GL.TexImage2D( this.faceTarget, this.level, (int) GLES2PixelUtil.GetClosestGLInternalFormat( data.Format ), data.Width, data.Height, 0, GLES2PixelUtil.GetGLOriginFormat( data.Format ), GLES2PixelUtil.GetGLOriginDataType( data.Format ), dataPtr );
 				//GL.TexSubImage2D( this.faceTarget, this.level, dest.Left, dest.Top, dest.Width, dest.Height, GLES2PixelUtil.GetGLOriginFormat( data.Format ), GLES2PixelUtil.GetGLOriginDataType( data.Format ), dataPtr );
 				data.Data.UnPin();
 				GLES2Config.GlCheckError( this );
 			}
 			GL.PixelStore( All.UnpackAlignment, 4 );
 			GLES2Config.GlCheckError( this );
-
 		}
 
 		protected override void Download( PixelBox data )
@@ -354,7 +353,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			if ( !Buffer.Contains( dstBox ) )
 			{
-				throw new ArgumentOutOfRangeException( "dstBox","Destination box out of range" );
+				throw new ArgumentOutOfRangeException( "dstBox", "Destination box out of range" );
 			}
 
 			//For scoped deletion of conversion buffer
@@ -396,7 +395,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			GL.TexImage2D( target, 0, (int) format, width, height, 0, format, datatype, IntPtr.Zero );
 			GLES2Config.GlCheckError( this );
 
-			var tex = new GLES2TextureBuffer( string.Empty, target, id, width, height, format, (All)src.Format, 0, 0, BufferUsage.StaticWriteOnly, false, false, 0 );
+			var tex = new GLES2TextureBuffer( string.Empty, target, id, width, height, format, (All) src.Format, 0, 0, BufferUsage.StaticWriteOnly, false, false, 0 );
 
 			//Upload data to 0,0,0 in temprary texture
 			var tempTarget = new BasicBox( 0, 0, 0, srcPB.Width, srcPB.Height, srcPB.Depth );

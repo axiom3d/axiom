@@ -56,9 +56,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		private byte[] _scratchBufferPool;
 		private object _scratchMutex;
 
-		public GLES2HardwareBufferManagerBase()
-		{
-		}
+		public GLES2HardwareBufferManagerBase() {}
 
 		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{

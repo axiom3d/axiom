@@ -45,7 +45,7 @@ using GL = OpenTK.Graphics.ES20.GL;
 using GLenum = OpenTK.Graphics.ES20.All;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	internal class GLES2HardwareBufferManager : HardwareBufferManager
@@ -56,8 +56,12 @@ namespace Axiom.RenderSystems.OpenGLES2
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
+			{
 				if ( disposeManagedResources )
+				{
 					_baseInstance.Dispose();
+				}
+			}
 
 			base.dispose( disposeManagedResources );
 		}

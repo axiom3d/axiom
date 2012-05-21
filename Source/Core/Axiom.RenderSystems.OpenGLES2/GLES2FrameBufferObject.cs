@@ -43,7 +43,7 @@ using OpenTK.Graphics.ES20;
 using GLenum = OpenTK.Graphics.ES20.All;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	internal class GLES2FrameBufferObject : IDisposable

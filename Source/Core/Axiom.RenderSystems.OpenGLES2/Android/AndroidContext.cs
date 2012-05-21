@@ -49,6 +49,7 @@ using OpenTK.Graphics;
 using OpenTK.Platform.Android;
 
 using EGLCONTEXT = Javax.Microedition.Khronos.Egl.EGLContext;
+
 using OpenTK;
 using OpenTK.Platform;
 
@@ -56,42 +57,36 @@ using OpenTK.Platform;
 
 namespace Axiom.RenderSystems.OpenGLES2.Android
 {
-    internal class AndroidContext : GLES2Context
-    {
-        private AndroidSupport glSupport;
-        private IGraphicsContext glContext;
-        private IWindowInfo windowInfo;
+	internal class AndroidContext : GLES2Context
+	{
+		private readonly AndroidSupport glSupport;
+		private readonly IGraphicsContext glContext;
+		private readonly IWindowInfo windowInfo;
 
-        public AndroidContext(AndroidSupport glsupport, IGraphicsContext glcontext, IWindowInfo windowInfo)
-        {
-            this.glSupport = glsupport;
-            this.glContext = glcontext;
-            this.windowInfo = windowInfo;
-        }
+		public AndroidContext( AndroidSupport glsupport, IGraphicsContext glcontext, IWindowInfo windowInfo )
+		{
+			this.glSupport = glsupport;
+			this.glContext = glcontext;
+			this.windowInfo = windowInfo;
+		}
 
-        public override void SetCurrent()
-        {
-            glContext.MakeCurrent(windowInfo);
-        }
+		public override void SetCurrent()
+		{
+			this.glContext.MakeCurrent( this.windowInfo );
+		}
 
-        public override void EndCurrent()
-        {
-            
-        }
+		public override void EndCurrent() {}
 
-        public override GLES2Context Clone()
-        {
-            return new AndroidContext(glSupport, glContext, windowInfo);
-        }
+		public override GLES2Context Clone()
+		{
+			return new AndroidContext( this.glSupport, this.glContext, this.windowInfo );
+		}
 
-        public override void Dispose()
-        {
-        }
+		public override void Dispose() {}
 
-        public IGraphicsContext GraphicsContext
-        {
-            get { return glContext; }
-        }
-       
-    }
+		public IGraphicsContext GraphicsContext
+		{
+			get { return this.glContext; }
+		}
+	}
 }

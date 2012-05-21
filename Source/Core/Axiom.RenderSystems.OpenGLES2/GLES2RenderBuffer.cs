@@ -51,7 +51,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		private int renderBufferID;
 
 		public GLES2RenderBuffer( All format, int width, int height, int numSamples )
-			: base( width, height, 1, GLES2PixelUtil.GetClosestAxiomFormat( format, (All)PixelFormat.A8R8G8B8 ), BufferUsage.WriteOnly )
+			: base( width, height, 1, GLES2PixelUtil.GetClosestAxiomFormat( format, (All) PixelFormat.A8R8G8B8 ), BufferUsage.WriteOnly )
 		{
 			GlInternalFormat = format;
 			//Genearte renderbuffer

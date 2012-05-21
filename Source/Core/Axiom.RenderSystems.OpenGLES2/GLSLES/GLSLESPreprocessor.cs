@@ -39,7 +39,7 @@ using System.Linq;
 using System.Text;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 {
 	/// <summary>

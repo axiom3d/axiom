@@ -45,7 +45,7 @@ using GLenum = OpenTK.Graphics.ES20.All;
 using GL = OpenTK.Graphics.ES20.GL;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 {
 	internal class GLSLESProgram : HighLevelGpuProgram
@@ -130,7 +130,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				GLES2Config.GlCheckError( this );
 
 				// TODO : Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
-				if ( false ) 
+				if ( false )
 				{
 					GL.DeleteProgram( this.glProgramHandle );
 					GLES2Config.GlCheckError( this );
@@ -285,7 +285,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 			// Therefore instead, parse the source code manually and extract the uniforms
 			CreateParameterMappingStructures( true );
 			// TODO: Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
-			if ( false ) 
+			if ( false )
 			{
 				GLSLESProgramPipelineManager.Instance.ExtractConstantDefs( source, constantDefs, Name );
 			}
@@ -380,7 +380,7 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 				GLES2Config.GlCheckError( this );
 
 				//TODO : Root.Instance.RenderSystem.Capabilities.HasCapability(Capabilities.SeperateShaderObjects))
-				if ( false ) 
+				if ( false )
 				{
 					this.glProgramHandle = GL.CreateProgram();
 					GLES2Config.GlCheckError( this );

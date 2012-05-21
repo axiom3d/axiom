@@ -45,107 +45,107 @@ using GLenum = OpenTK.Graphics.ES20.All;
 using PixelFormat = Axiom.Media.PixelFormat;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	internal class GLES2FBOManager : GLES2RTTManager
 	{
 		#region NestedTypes
 
-        /// <summary>
-        /// Frame Buffer Object properties for a certain texture format.
-        /// </summary>
-        private class FormatProperties
-        {
-            /// <summary>
-            /// This format can be used as RTT (FBO)
-            /// </summary>
-            public bool Valid;
+		/// <summary>
+		/// Frame Buffer Object properties for a certain texture format.
+		/// </summary>
+		private class FormatProperties
+		{
+			/// <summary>
+			/// This format can be used as RTT (FBO)
+			/// </summary>
+			public bool Valid;
 
-            /// <summary>
-            /// Allowed modes/properties for this pixel format
-            /// </summary>
-            public struct Mode
-            {
-                /// <summary>
-                /// Depth format (0=no depth)
-                /// </summary>
-                public int Depth;
+			/// <summary>
+			/// Allowed modes/properties for this pixel format
+			/// </summary>
+			public struct Mode
+			{
+				/// <summary>
+				/// Depth format (0=no depth)
+				/// </summary>
+				public int Depth;
 
-                /// <summary>
-                /// Stencil format (0=no stencil)
-                /// </summary>
-                public int Stencil;
-            };
+				/// <summary>
+				/// Stencil format (0=no stencil)
+				/// </summary>
+				public int Stencil;
+			};
 
-            public readonly List<Mode> Modes = new List<Mode>();
-        };
+			public readonly List<Mode> Modes = new List<Mode>();
+		};
 
-        /// <summary>
-        /// Stencil and depth renderbuffers of the same format are re-used between surfaces of the
-        /// same size and format. This can save a lot of memory when a large amount of rendertargets
-        /// are used.
-        /// </summary>
-        private class RBFormat
-        {
-            public readonly GLenum Format;
-            public readonly int Width;
-            public readonly int Height;
-            public readonly int Samples;
+		/// <summary>
+		/// Stencil and depth renderbuffers of the same format are re-used between surfaces of the
+		/// same size and format. This can save a lot of memory when a large amount of rendertargets
+		/// are used.
+		/// </summary>
+		private class RBFormat
+		{
+			public readonly GLenum Format;
+			public readonly int Width;
+			public readonly int Height;
+			public readonly int Samples;
 
-            public RBFormat(GLenum format, int width, int height, int samples)
-            {
-                this.Format = format;
-                this.Width = width;
-                this.Height = height;
-                this.Samples = samples;
-            }
+			public RBFormat( GLenum format, int width, int height, int samples )
+			{
+				this.Format = format;
+				this.Width = width;
+				this.Height = height;
+				this.Samples = samples;
+			}
 
-            private bool LessThan(RBFormat other)
-            {
-                if (this.Format < other.Format)
-                {
-                    return true;
-                }
-                else if (this.Format == other.Format)
-                {
-                    if (this.Width < other.Width)
-                    {
-                        return true;
-                    }
-                    else if (this.Width == other.Width)
-                    {
-                        if (this.Height < other.Height)
-                        {
-                            return true;
-                        }
-                        else if (this.Height == other.Height)
-                        {
-                            if (this.Samples < other.Samples)
-                            {
-                                return true;
-                            }
-                        }
-                    }
-                }
+			private bool LessThan( RBFormat other )
+			{
+				if ( this.Format < other.Format )
+				{
+					return true;
+				}
+				else if ( this.Format == other.Format )
+				{
+					if ( this.Width < other.Width )
+					{
+						return true;
+					}
+					else if ( this.Width == other.Width )
+					{
+						if ( this.Height < other.Height )
+						{
+							return true;
+						}
+						else if ( this.Height == other.Height )
+						{
+							if ( this.Samples < other.Samples )
+							{
+								return true;
+							}
+						}
+					}
+				}
 
-                return false;
-            }
+				return false;
+			}
 
-            // Overloaded comparison operators for usage in Dictionary
+			// Overloaded comparison operators for usage in Dictionary
 
-            public static bool operator <(RBFormat lhs, RBFormat rhs)
-            {
-                return lhs.LessThan(rhs);
-            }
+			public static bool operator <( RBFormat lhs, RBFormat rhs )
+			{
+				return lhs.LessThan( rhs );
+			}
 
-            public static bool operator >(RBFormat lhs, RBFormat rhs)
-            {
-                return !(lhs.LessThan(rhs) || lhs == rhs);
-            }
-        }
+			public static bool operator >( RBFormat lhs, RBFormat rhs )
+			{
+				return !( lhs.LessThan( rhs ) || lhs == rhs );
+			}
+		}
 
-        private struct RBRef
+		private struct RBRef
 		{
 			public readonly GLES2RenderBuffer buffer;
 			private int refCount;
@@ -186,10 +186,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		public GLES2FBOManager()
 		{
-            for (int x = 0; x < this.props.GetLength(0); x++)
-            {
-                this.props[x] = new FormatProperties();
-            }
+			for ( int x = 0; x < this.props.GetLength( 0 ); x++ )
+			{
+				this.props[ x ] = new FormatProperties();
+			}
 
 			this.DetectFBOFormats();
 			GL.GenFramebuffers( 1, ref this.tempFBO );
@@ -384,11 +384,11 @@ namespace Axiom.RenderSystems.OpenGLES2
 					//Set some default parameters
 					GL.TexParameter( target, GLenum.TextureMinFilter, (int) GLenum.Nearest );
 					GLES2Config.GlCheckError( this );
-					GL.TexParameter( target, GLenum.TextureMagFilter, (int)GLenum.Nearest );
+					GL.TexParameter( target, GLenum.TextureMagFilter, (int) GLenum.Nearest );
 					GLES2Config.GlCheckError( this );
-					GL.TexParameter( target, GLenum.TextureWrapS, (int)GLenum.ClampToEdge );
+					GL.TexParameter( target, GLenum.TextureWrapS, (int) GLenum.ClampToEdge );
 					GLES2Config.GlCheckError( this );
-					GL.TexParameter( target, GLenum.TextureWrapT, (int)GLenum.ClampToEdge );
+					GL.TexParameter( target, GLenum.TextureWrapT, (int) GLenum.ClampToEdge );
 					GLES2Config.GlCheckError( this );
 
 					GL.TexImage2D( target, 0, (int) fmt, PROBE_SIZE, PROBE_SIZE, 0, fmt, GLES2PixelUtil.GetGLOriginDataType( (PixelFormat) x ), IntPtr.Zero );
@@ -423,8 +423,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 									sb.Append( "D" + depthBits[ depth ] + "S" + stencilBits[ stencil ] + " " );
 									var mode = new FormatProperties.Mode();
 									mode.Depth = depth;
-                                    mode.Stencil = stencil;
-                                    this.props[x].Modes.Add(mode);
+									mode.Stencil = stencil;
+									this.props[ x ].Modes.Add( mode );
 								}
 							}
 						}

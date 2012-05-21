@@ -37,7 +37,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	public class GLES2Plugin : IPlugin
