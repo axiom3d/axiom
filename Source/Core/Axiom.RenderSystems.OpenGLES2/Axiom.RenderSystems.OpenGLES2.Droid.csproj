@@ -65,6 +65,7 @@
     <Compile Include="GLES2GpuProgram.cs" />
     <Compile Include="GLES2GpuProgramManager.cs" />
     <Compile Include="GLES2HardwareBufferManager.cs" />
+    <Compile Include="GLES2HardwareBufferManagerBase.cs" />
     <Compile Include="GLES2HardwareIndexBuffer.cs" />
     <Compile Include="GLES2HardwareOcclusionQuery.cs" />
     <Compile Include="GLES2HardwarePixelBuffer.cs" />
@@ -72,11 +73,13 @@
     <Compile Include="GLES2InternalShaders.cs" />
     <Compile Include="GLES2PixelUtil.cs" />
     <Compile Include="GLES2Plugin.cs" />
+    <Compile Include="GLES2RenderBuffer.cs" />
     <Compile Include="GLES2RenderSystem.cs" />
     <Compile Include="GLES2RenderTexture.cs" />
     <Compile Include="GLES2RTTManager.cs" />
     <Compile Include="GLES2Support.cs" />
     <Compile Include="GLES2Texture.cs" />
+    <Compile Include="GLES2TextureBuffer.cs" />
     <Compile Include="GLES2TextureManager.cs" />
     <Compile Include="GLSLES\GLSLESCgProgramFactory.cs" />
     <Compile Include="GLSLES\GLSLESCgProgram.cs" />
