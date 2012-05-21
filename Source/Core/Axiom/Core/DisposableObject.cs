@@ -51,7 +51,7 @@ namespace Axiom.Core
 	/// </summary>
 	internal class ObjectManager : Singleton<ObjectManager>
 	{
-		private struct ObjectEntry
+		private class ObjectEntry
 		{
 			public WeakReference Instance;
 			public string ConstructionStack;
@@ -85,11 +85,11 @@ namespace Axiom.Core
 		public void Remove( DisposableObject instance )
 		{
 			var objectList = GetOrCreateObjectList( instance.GetType() );
-			var objectEntry = from entry in objectList
-							  where entry.Instance.IsAlive && entry.Instance.Target == instance
-							  select entry;
-			if ( objectEntry.Any() )
-				objectList.Remove( objectEntry.First() );
+			var objectEntry = ( from entry in objectList
+			                    where entry.Instance.IsAlive && entry.Instance.Target == instance
+			                    select entry ).FirstOrDefault();
+			if ( null != objectEntry )
+				objectList.Remove( objectEntry );
 		}
 
 
