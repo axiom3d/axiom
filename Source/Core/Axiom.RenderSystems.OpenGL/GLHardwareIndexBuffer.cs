@@ -63,7 +63,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return _bufferId;
+				return this._bufferId;
 			}
 		}
 
@@ -80,19 +80,19 @@ namespace Axiom.RenderSystems.OpenGL
 			: base( manager, type, numIndices, usage, false, useShadowBuffer )
 		{
 			// generate the buffer
-			Gl.glGenBuffersARB( 1, out _bufferId );
+			Gl.glGenBuffersARB( 1, out this._bufferId );
 
-			if ( _bufferId == 0 )
+			if ( this._bufferId == 0 )
 			{
 				throw new Exception( "OGL: Cannot create GL index buffer" );
 			}
 
-			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, _bufferId );
+			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, this._bufferId );
 
 			// initialize this buffer.  we dont have data yet tho
 			Gl.glBufferDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( sizeInBytes ), IntPtr.Zero,
 			                    GLHelper.ConvertEnum( usage ) );
-			LogManager.Instance.Write( "OGL: Created IndexBuffer[{0}].", _bufferId );
+			LogManager.Instance.Write( "OGL: Created IndexBuffer[{0}].", this._bufferId );
 		}
 
 		/// <summary>
@@ -108,12 +108,12 @@ namespace Axiom.RenderSystems.OpenGL
 
 				try
 				{
-					Gl.glDeleteBuffersARB( 1, ref _bufferId );
-					LogManager.Instance.Write( "OGL: Deleted IndexBuffer[{0}].", _bufferId );
+					Gl.glDeleteBuffersARB( 1, ref this._bufferId );
+					LogManager.Instance.Write( "OGL: Deleted IndexBuffer[{0}].", this._bufferId );
 				}
 				catch ( AccessViolationException ave )
 				{
-					LogManager.Instance.Write( "OGL: Failed to delete IndexBuffer[{0}].", _bufferId );
+					LogManager.Instance.Write( "OGL: Failed to delete IndexBuffer[{0}].", this._bufferId );
 				}
 			}
 
@@ -138,7 +138,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// bind this buffer
-			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, _bufferId );
+			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, this._bufferId );
 
 			if ( locking == BufferLocking.Discard )
 			{
@@ -182,7 +182,7 @@ namespace Axiom.RenderSystems.OpenGL
 		///</summary>
 		protected override void UnlockImpl()
 		{
-			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, _bufferId );
+			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, this._bufferId );
 
 			if ( Gl.glUnmapBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB ) == 0 )
 			{
@@ -200,7 +200,7 @@ namespace Axiom.RenderSystems.OpenGL
 		///<param name="discardWholeBuffer"> </param>
 		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
 		{
-			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, _bufferId );
+			Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, this._bufferId );
 
 			if ( useShadowBuffer )
 			{
@@ -244,7 +244,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			else
 			{
-				Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, _bufferId );
+				Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, this._bufferId );
 				Gl.glGetBufferSubDataARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, new IntPtr( offset ), new IntPtr( length ), dest.Pin() );
 				dest.UnPin();
 			}

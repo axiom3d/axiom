@@ -84,7 +84,7 @@ namespace Axiom.Components.RTShaderSystem
 		public virtual SubRenderState CreateInstance()
 		{
 			var subRenderState = CreateInstanceImpl();
-			subRenderStateList.Add( subRenderState );
+			this.subRenderStateList.Add( subRenderState );
 			return subRenderState;
 		}
 
@@ -115,14 +115,14 @@ namespace Axiom.Components.RTShaderSystem
 
 		public virtual void DestroyInstance( SubRenderState subRenderState )
 		{
-			for ( int i = 0; i < subRenderStateList.Count; i++ )
+			for ( int i = 0; i < this.subRenderStateList.Count; i++ )
 			{
-				SubRenderState it = subRenderStateList[ i ];
+				SubRenderState it = this.subRenderStateList[ i ];
 
 				if ( it == subRenderState )
 				{
 					it.Dispose();
-					subRenderStateList.Remove( it );
+					this.subRenderStateList.Remove( it );
 					break;
 				}
 			}
@@ -130,12 +130,12 @@ namespace Axiom.Components.RTShaderSystem
 
 		public virtual void DestroyAllInstances()
 		{
-			for ( int i = 0; i < subRenderStateList.Count; i++ )
+			for ( int i = 0; i < this.subRenderStateList.Count; i++ )
 			{
-				subRenderStateList[ i ].Dispose();
-				subRenderStateList[ i ] = null;
+				this.subRenderStateList[ i ].Dispose();
+				this.subRenderStateList[ i ] = null;
 			}
-			subRenderStateList.Clear();
+			this.subRenderStateList.Clear();
 		}
 
 		public virtual void WriteInstance( MaterialSerializer ser, SubRenderState subRenderState, Pass srcPass,

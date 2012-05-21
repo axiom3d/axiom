@@ -61,11 +61,11 @@ namespace Axiom.RenderSystems.DirectX9
 		                   D3D9.DisplayMode desktopDisplayMode )
 			: base()
 		{
-			_adapterNumber = adapterNumber;
-			_d3D9DeviceCaps = deviceCaps;
-			_adapterIdentifier = adapterIdentifier;
-			_desktopDisplayMode = desktopDisplayMode;
-			_videoModeList = null;
+			this._adapterNumber = adapterNumber;
+			this._d3D9DeviceCaps = deviceCaps;
+			this._adapterIdentifier = adapterIdentifier;
+			this._desktopDisplayMode = desktopDisplayMode;
+			this._videoModeList = null;
 		}
 
 		/// <summary>
@@ -75,11 +75,11 @@ namespace Axiom.RenderSystems.DirectX9
 		public D3D9Driver( D3D9Driver ob )
 			: base()
 		{
-			_adapterNumber = ob._adapterNumber;
-			_d3D9DeviceCaps = ob._d3D9DeviceCaps;
-			_adapterIdentifier = ob._adapterIdentifier;
-			_desktopDisplayMode = ob._desktopDisplayMode;
-			_videoModeList = null;
+			this._adapterNumber = ob._adapterNumber;
+			this._d3D9DeviceCaps = ob._d3D9DeviceCaps;
+			this._adapterIdentifier = ob._adapterIdentifier;
+			this._desktopDisplayMode = ob._desktopDisplayMode;
+			this._videoModeList = null;
 		}
 
 		#endregion Constructors
@@ -91,7 +91,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			if ( !IsDisposed && disposeManagedResources )
 			{
-				_videoModeList.SafeDispose();
+				this._videoModeList.SafeDispose();
 			}
 
 			base.dispose( disposeManagedResources );
@@ -108,7 +108,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return _adapterIdentifier.Driver;
+				return this._adapterIdentifier.Driver;
 			}
 		}
 
@@ -121,7 +121,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return string.Format( "Monitor-{0}-{1}", _adapterNumber + 1, _adapterIdentifier.Description );
+				return string.Format( "Monitor-{0}-{1}", this._adapterNumber + 1, this._adapterIdentifier.Description );
 			}
 		}
 
@@ -139,7 +139,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return _adapterNumber;
+				return this._adapterNumber;
 			}
 		}
 
@@ -154,7 +154,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return _adapterIdentifier;
+				return this._adapterIdentifier;
 			}
 		}
 
@@ -169,7 +169,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return _desktopDisplayMode;
+				return this._desktopDisplayMode;
 			}
 		}
 
@@ -184,12 +184,12 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				if ( _videoModeList == null )
+				if ( this._videoModeList == null )
 				{
-					_videoModeList = new D3D9VideoModeList( this );
+					this._videoModeList = new D3D9VideoModeList( this );
 				}
 
-				return _videoModeList;
+				return this._videoModeList;
 			}
 		}
 
@@ -207,7 +207,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return _d3D9DeviceCaps;
+				return this._d3D9DeviceCaps;
 			}
 		}
 

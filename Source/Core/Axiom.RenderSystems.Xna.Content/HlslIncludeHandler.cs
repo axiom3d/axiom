@@ -27,7 +27,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 #endregion SVN Version Information
 

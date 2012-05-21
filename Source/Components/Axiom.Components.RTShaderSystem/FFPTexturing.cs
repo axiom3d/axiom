@@ -43,9 +43,9 @@ namespace Axiom.Components.RTShaderSystem
 		public override void UpdateGpuProgramsParams( IRenderable rend, Pass pass, AutoParamDataSource source,
 		                                              Core.Collections.LightList lightList )
 		{
-			for ( int i = 0; i < textureUnitParamsList.Count; i++ )
+			for ( int i = 0; i < this.textureUnitParamsList.Count; i++ )
 			{
-				TextureUnitParams curParams = textureUnitParamsList[ i ];
+				TextureUnitParams curParams = this.textureUnitParamsList[ i ];
 
 				if ( curParams.TextureProjector != null && curParams.TextureViewProjImageMatrix != null )
 				{
@@ -91,7 +91,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			for ( int i = 0; i < validTexUnits; i++ )
 			{
-				TextureUnitParams curParams = textureUnitParamsList[ i ];
+				TextureUnitParams curParams = this.textureUnitParamsList[ i ];
 
 				curParams.TextureUnitState = null;
 				curParams.TextureProjector = null;
@@ -104,7 +104,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		private void SetTextureUnit( int index, TextureUnitState textureUnitState )
 		{
-			if ( index >= textureUnitParamsList.Count )
+			if ( index >= this.textureUnitParamsList.Count )
 			{
 				throw new AxiomException( "FFPTexturing unit index out of bounds !!!" );
 			}
@@ -113,7 +113,7 @@ namespace Axiom.Components.RTShaderSystem
 				throw new AxiomException( "FFP Texture unit does not support vertex texture fetch !!!" );
 			}
 
-			TextureUnitParams curParams = textureUnitParamsList[ index ];
+			TextureUnitParams curParams = this.textureUnitParamsList[ index ];
 
 			curParams.TextureSamplerIndex = index;
 			curParams.TextureUnitState = textureUnitState;
@@ -149,9 +149,9 @@ namespace Axiom.Components.RTShaderSystem
 
 		protected override bool ResolveParameters( ProgramSet programSet )
 		{
-			for ( int i = 0; i < textureUnitParamsList.Count; i++ )
+			for ( int i = 0; i < this.textureUnitParamsList.Count; i++ )
 			{
-				TextureUnitParams curParams = textureUnitParamsList[ i ];
+				TextureUnitParams curParams = this.textureUnitParamsList[ i ];
 
 				if ( !ResolveUniformParams( curParams, programSet ) )
 				{
@@ -250,29 +250,29 @@ namespace Axiom.Components.RTShaderSystem
 				case TexCoordCalcMethod.EnvironmentMapNormal:
 				case TexCoordCalcMethod.EnvironmentMapPlanar:
 					//Resolve vertex normal
-					vsInputNormal = vsMain.ResolveInputParameter( Parameter.SemanticType.Normal, 0,
-					                                              Parameter.ContentType.NormalObjectSpace,
-					                                              GpuProgramParameters.GpuConstantType.Float3 );
-					if ( vsInputNormal == null )
+					this.vsInputNormal = vsMain.ResolveInputParameter( Parameter.SemanticType.Normal, 0,
+					                                                   Parameter.ContentType.NormalObjectSpace,
+					                                                   GpuProgramParameters.GpuConstantType.Float3 );
+					if ( this.vsInputNormal == null )
 					{
 						return false;
 					}
 					break;
 				case TexCoordCalcMethod.EnvironmentMapReflection:
 					//Resolve vertex normal
-					vsInputNormal = vsMain.ResolveInputParameter( Parameter.SemanticType.Normal, 0,
-					                                              Parameter.ContentType.NormalObjectSpace,
-					                                              GpuProgramParameters.GpuConstantType.Float3 );
-					if ( vsInputNormal == null )
+					this.vsInputNormal = vsMain.ResolveInputParameter( Parameter.SemanticType.Normal, 0,
+					                                                   Parameter.ContentType.NormalObjectSpace,
+					                                                   GpuProgramParameters.GpuConstantType.Float3 );
+					if ( this.vsInputNormal == null )
 					{
 						return false;
 					}
 
 					//Resovle vertex position
-					vsInputPos = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
-					                                           Parameter.ContentType.PositionObjectSpace,
-					                                           GpuProgramParameters.GpuConstantType.Float4 );
-					if ( vsInputPos == null )
+					this.vsInputPos = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
+					                                                Parameter.ContentType.PositionObjectSpace,
+					                                                GpuProgramParameters.GpuConstantType.Float4 );
+					if ( this.vsInputPos == null )
 					{
 						return false;
 					}
@@ -280,10 +280,10 @@ namespace Axiom.Components.RTShaderSystem
 
 				case TexCoordCalcMethod.ProjectiveTexture:
 					//Resolve vertex position
-					vsInputPos = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
-					                                           Parameter.ContentType.PositionObjectSpace,
-					                                           GpuProgramParameters.GpuConstantType.Float4 );
-					if ( vsInputPos == null )
+					this.vsInputPos = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
+					                                                Parameter.ContentType.PositionObjectSpace,
+					                                                GpuProgramParameters.GpuConstantType.Float4 );
+					if ( this.vsInputPos == null )
 					{
 						return false;
 					}
@@ -304,34 +304,34 @@ namespace Axiom.Components.RTShaderSystem
 			var inputParams = psMain.InputParameters;
 			var localParams = psMain.LocalParameters;
 
-			psDiffuse = Function.GetParameterByContent( inputParams, Parameter.ContentType.ColorDiffuse,
-			                                            GpuProgramParameters.GpuConstantType.Float4 );
-			if ( psDiffuse == null )
+			this.psDiffuse = Function.GetParameterByContent( inputParams, Parameter.ContentType.ColorDiffuse,
+			                                                 GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.psDiffuse == null )
 			{
-				psDiffuse = Function.GetParameterByContent( localParams, Parameter.ContentType.ColorDiffuse,
-				                                            GpuProgramParameters.GpuConstantType.Float4 );
-				if ( psDiffuse == null )
+				this.psDiffuse = Function.GetParameterByContent( localParams, Parameter.ContentType.ColorDiffuse,
+				                                                 GpuProgramParameters.GpuConstantType.Float4 );
+				if ( this.psDiffuse == null )
 				{
 					return false;
 				}
 			}
 
-			psSpecular = Function.GetParameterByContent( inputParams, Parameter.ContentType.ColorSpecular,
-			                                             GpuProgramParameters.GpuConstantType.Float4 );
-			if ( psSpecular == null )
+			this.psSpecular = Function.GetParameterByContent( inputParams, Parameter.ContentType.ColorSpecular,
+			                                                  GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.psSpecular == null )
 			{
-				psSpecular = Function.GetParameterByContent( localParams, Parameter.ContentType.ColorSpecular,
-				                                             GpuProgramParameters.GpuConstantType.Float4 );
-				if ( psSpecular == null )
+				this.psSpecular = Function.GetParameterByContent( localParams, Parameter.ContentType.ColorSpecular,
+				                                                  GpuProgramParameters.GpuConstantType.Float4 );
+				if ( this.psSpecular == null )
 				{
 					return false;
 				}
 			}
 
-			psOutDiffuse = psMain.ResolveOutputParameter( Parameter.SemanticType.Color, 0,
-			                                              Parameter.ContentType.ColorDiffuse,
-			                                              GpuProgramParameters.GpuConstantType.Float4 );
-			if ( psOutDiffuse == null )
+			this.psOutDiffuse = psMain.ResolveOutputParameter( Parameter.SemanticType.Color, 0,
+			                                                   Parameter.ContentType.ColorDiffuse,
+			                                                   GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.psOutDiffuse == null )
 			{
 				return false;
 			}
@@ -373,46 +373,46 @@ namespace Axiom.Components.RTShaderSystem
 				case TexCoordCalcMethod.EnvironmentMap:
 				case TexCoordCalcMethod.EnvironmentMapNormal:
 				case TexCoordCalcMethod.EnvironmentMapPlanar:
-					worldITMatrix =
+					this.worldITMatrix =
 						vsProgram.ResolveAutoParameterInt(
 							GpuProgramParameters.AutoConstantType.InverseTransposeWorldMatrix, 0 );
-					if ( worldITMatrix == null )
+					if ( this.worldITMatrix == null )
 					{
 						return false;
 					}
 
-					viewMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.ViewMatrix, 0 );
-					if ( viewMatrix == null )
+					this.viewMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.ViewMatrix, 0 );
+					if ( this.viewMatrix == null )
 					{
 						return false;
 					}
 					break;
 				case TexCoordCalcMethod.EnvironmentMapReflection:
-					worldMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.WorldMatrix,
-					                                                 0 );
-					if ( worldMatrix == null )
+					this.worldMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.WorldMatrix,
+					                                                      0 );
+					if ( this.worldMatrix == null )
 					{
 						return false;
 					}
 
-					worldITMatrix =
+					this.worldITMatrix =
 						vsProgram.ResolveAutoParameterInt(
 							GpuProgramParameters.AutoConstantType.InverseTransposeWorldMatrix, 0 );
-					if ( worldITMatrix == null )
+					if ( this.worldITMatrix == null )
 					{
 						return false;
 					}
 
-					viewMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.ViewMatrix, 0 );
-					if ( viewMatrix == null )
+					this.viewMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.ViewMatrix, 0 );
+					if ( this.viewMatrix == null )
 					{
 						return false;
 					}
 					break;
 				case TexCoordCalcMethod.ProjectiveTexture:
-					worldMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.WorldMatrix,
-					                                                 0 );
-					if ( worldMatrix == null )
+					this.worldMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.WorldMatrix,
+					                                                      0 );
+					if ( this.worldMatrix == null )
 					{
 						return false;
 					}
@@ -473,9 +473,9 @@ namespace Axiom.Components.RTShaderSystem
 			Function psMain = psProgram.EntryPointFunction;
 
 			int internalCounter = 0;
-			for ( int i = 0; i < textureUnitParamsList.Count; i++ )
+			for ( int i = 0; i < this.textureUnitParamsList.Count; i++ )
 			{
-				TextureUnitParams curParams = textureUnitParamsList[ i ];
+				TextureUnitParams curParams = this.textureUnitParamsList[ i ];
 
 				if ( !AddVSFunctionInvocations( curParams, vsMain ) )
 				{
@@ -523,9 +523,9 @@ namespace Axiom.Components.RTShaderSystem
 						texCoordCalcFunc = new FunctionInvocation( FFPRenderState.FFPFunGenerateTexcoordEnvSphere,
 						                                           (int)FFPRenderState.FFPVertexShaderStage.VSTexturing,
 						                                           textureUnitParams.TextureSamplerIndex );
-						texCoordCalcFunc.PushOperand( worldITMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( viewMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( vsInputNormal, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.worldITMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.viewMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.vsInputNormal, Operand.OpSemantic.In );
 						texCoordCalcFunc.PushOperand( textureUnitParams.VSOutputTexCoord, Operand.OpSemantic.Out );
 					}
 					else
@@ -534,10 +534,10 @@ namespace Axiom.Components.RTShaderSystem
 						                                           (int)FFPRenderState.FFPVertexShaderStage.VSTexturing,
 						                                           textureUnitParams.TextureSamplerIndex );
 
-						texCoordCalcFunc.PushOperand( worldITMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( viewMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.worldITMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.viewMatrix, Operand.OpSemantic.In );
 						texCoordCalcFunc.PushOperand( textureUnitParams.TextureMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( vsInputNormal, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.vsInputNormal, Operand.OpSemantic.In );
 						texCoordCalcFunc.PushOperand( textureUnitParams.VSOutputTexCoord, Operand.OpSemantic.Out );
 					}
 					break;
@@ -549,11 +549,11 @@ namespace Axiom.Components.RTShaderSystem
 						                                           (int)FFPRenderState.FFPVertexShaderStage.VSTexturing,
 						                                           textureUnitParams.TextureSamplerIndex );
 
-						texCoordCalcFunc.PushOperand( worldMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( worldITMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( viewMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( vsInputNormal, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( vsInputPos, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.worldMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.worldITMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.viewMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.vsInputNormal, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.vsInputPos, Operand.OpSemantic.In );
 						texCoordCalcFunc.PushOperand( textureUnitParams.VSOutputTexCoord, Operand.OpSemantic.Out );
 					}
 					else
@@ -561,12 +561,12 @@ namespace Axiom.Components.RTShaderSystem
 						texCoordCalcFunc = new FunctionInvocation( FFPRenderState.FFPFuncGenerateTexCoordEnvReflect,
 						                                           (int)FFPRenderState.FFPVertexShaderStage.VSTexturing,
 						                                           textureUnitParams.TextureSamplerIndex );
-						texCoordCalcFunc.PushOperand( worldMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( worldITMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( viewMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.worldMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.worldITMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.viewMatrix, Operand.OpSemantic.In );
 						texCoordCalcFunc.PushOperand( textureUnitParams.TextureMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( vsInputNormal, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( vsInputPos, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.vsInputNormal, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.vsInputPos, Operand.OpSemantic.In );
 						texCoordCalcFunc.PushOperand( textureUnitParams.VSOutputTexCoord, Operand.OpSemantic.Out );
 					}
 					break;
@@ -577,9 +577,9 @@ namespace Axiom.Components.RTShaderSystem
 						                                           (int)FFPRenderState.FFPVertexShaderStage.VSTexturing,
 						                                           textureUnitParams.TextureSamplerIndex );
 
-						texCoordCalcFunc.PushOperand( worldITMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( viewMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( vsInputPos, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.worldITMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.viewMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.vsInputPos, Operand.OpSemantic.In );
 						texCoordCalcFunc.PushOperand( textureUnitParams.VSOutputTexCoord, Operand.OpSemantic.Out );
 					}
 					else
@@ -588,10 +588,10 @@ namespace Axiom.Components.RTShaderSystem
 						                                           (int)FFPRenderState.FFPVertexShaderStage.VSTexturing,
 						                                           textureUnitParams.TextureSamplerIndex );
 
-						texCoordCalcFunc.PushOperand( worldITMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( viewMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.worldITMatrix, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.viewMatrix, Operand.OpSemantic.In );
 						texCoordCalcFunc.PushOperand( textureUnitParams.TextureMatrix, Operand.OpSemantic.In );
-						texCoordCalcFunc.PushOperand( vsInputNormal, Operand.OpSemantic.In );
+						texCoordCalcFunc.PushOperand( this.vsInputNormal, Operand.OpSemantic.In );
 						texCoordCalcFunc.PushOperand( textureUnitParams.VSOutputTexCoord, Operand.OpSemantic.Out );
 					}
 					break;
@@ -600,9 +600,9 @@ namespace Axiom.Components.RTShaderSystem
 					                                           (int)FFPRenderState.FFPVertexShaderStage.VSTexturing,
 					                                           textureUnitParams.TextureSamplerIndex );
 
-					texCoordCalcFunc.PushOperand( worldMatrix, Operand.OpSemantic.In );
+					texCoordCalcFunc.PushOperand( this.worldMatrix, Operand.OpSemantic.In );
 					texCoordCalcFunc.PushOperand( textureUnitParams.TextureViewProjImageMatrix, Operand.OpSemantic.In );
-					texCoordCalcFunc.PushOperand( vsInputPos, Operand.OpSemantic.In );
+					texCoordCalcFunc.PushOperand( this.vsInputPos, Operand.OpSemantic.In );
 					texCoordCalcFunc.PushOperand( textureUnitParams.VSOutputTexCoord, Operand.OpSemantic.Out );
 
 					break;
@@ -716,15 +716,14 @@ namespace Axiom.Components.RTShaderSystem
 			switch ( blendSrc )
 			{
 				case LayerBlendSource.Current:
-					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder,
-					                                            internalCounter++ );
+					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder, internalCounter++ );
 					if ( samplerIndex == 0 )
 					{
-						curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In );
 					}
 					else
 					{
-						curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.In );
 					}
 					curFuncInvocation.PushOperand( arg, Operand.OpSemantic.Out );
 					psMain.AddAtomInstance( curFuncInvocation );
@@ -741,7 +740,7 @@ namespace Axiom.Components.RTShaderSystem
 				case LayerBlendSource.Specular:
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder,
 					                                            internalCounter++ );
-					curFuncInvocation.PushOperand( psSpecular, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.psSpecular, Operand.OpSemantic.In );
 					curFuncInvocation.PushOperand( arg, Operand.OpSemantic.Out );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
@@ -749,7 +748,7 @@ namespace Axiom.Components.RTShaderSystem
 				case LayerBlendSource.Diffuse:
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder,
 					                                            internalCounter++ );
-					curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In );
 					curFuncInvocation.PushOperand( arg, Operand.OpSemantic.Out );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
@@ -792,7 +791,7 @@ namespace Axiom.Components.RTShaderSystem
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAdd, groupOrder, internalCounter++ );
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( arg2, Operand.OpSemantic.In, targetChannels );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.AddSigned:
@@ -800,7 +799,7 @@ namespace Axiom.Components.RTShaderSystem
 					                                            internalCounter++ );
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( arg2, Operand.OpSemantic.In, targetChannels );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.AddSmooth:
@@ -808,7 +807,7 @@ namespace Axiom.Components.RTShaderSystem
 					                                            internalCounter++ );
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( arg2, Operand.OpSemantic.In, targetChannels );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.BlendCurrentAlpha:
@@ -819,13 +818,13 @@ namespace Axiom.Components.RTShaderSystem
 
 					if ( samplerIndex == 0 )
 					{
-						curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In, Operand.OpMask.W );
+						curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In, Operand.OpMask.W );
 					}
 					else
 					{
-						curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.In, Operand.OpMask.W );
+						curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.In, Operand.OpMask.W );
 					}
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.BlendDiffuseAlpha:
@@ -833,8 +832,8 @@ namespace Axiom.Components.RTShaderSystem
 					                                            internalCounter++ );
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( arg2, Operand.OpSemantic.In, targetChannels );
-					curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In, Operand.OpMask.W );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In, Operand.OpMask.W );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.BlendDiffuseColor:
@@ -842,8 +841,8 @@ namespace Axiom.Components.RTShaderSystem
 					                                            internalCounter++ );
 					curFuncInvocation.PushOperand( arg2, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
-					curFuncInvocation.PushOperand( psDiffuse, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psDiffuse, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.BlendManual:
@@ -852,7 +851,7 @@ namespace Axiom.Components.RTShaderSystem
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( ParameterFactory.CreateConstParamFloat( blendMode.blendFactor ),
 					                               Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.BlendTextureAlpha:
@@ -861,7 +860,7 @@ namespace Axiom.Components.RTShaderSystem
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( arg2, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( texel, Operand.OpSemantic.In, Operand.OpMask.W );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.DotProduct:
@@ -869,7 +868,7 @@ namespace Axiom.Components.RTShaderSystem
 					                                            internalCounter++ );
 					curFuncInvocation.PushOperand( arg2, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.Modulate:
@@ -877,7 +876,7 @@ namespace Axiom.Components.RTShaderSystem
 					                                            internalCounter++ );
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( arg2, Operand.OpSemantic.In, targetChannels );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.ModulateX2:
@@ -885,7 +884,7 @@ namespace Axiom.Components.RTShaderSystem
 					                                            internalCounter );
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( arg2, Operand.OpSemantic.In, targetChannels );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.ModulateX4:
@@ -893,21 +892,21 @@ namespace Axiom.Components.RTShaderSystem
 					                                            internalCounter );
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( arg2, Operand.OpSemantic.In, targetChannels );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.Source1:
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder,
 					                                            internalCounter++ );
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.Source2:
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder,
 					                                            internalCounter++ );
 					curFuncInvocation.PushOperand( arg2, Operand.OpSemantic.In, targetChannels );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 				case LayerBlendOperationEx.Subtract:
@@ -915,7 +914,7 @@ namespace Axiom.Components.RTShaderSystem
 					                                            internalCounter++ );
 					curFuncInvocation.PushOperand( arg1, Operand.OpSemantic.In, targetChannels );
 					curFuncInvocation.PushOperand( arg2, Operand.OpSemantic.In, targetChannels );
-					curFuncInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
+					curFuncInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out, targetChannels );
 					psMain.AddAtomInstance( curFuncInvocation );
 					break;
 			}
@@ -1008,7 +1007,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return textureUnitParamsList.Count;
+				return this.textureUnitParamsList.Count;
 			}
 		}
 

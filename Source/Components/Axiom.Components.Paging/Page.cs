@@ -75,7 +75,7 @@ namespace Axiom.Components.Paging
 
 			public PageRequest( Page p )
 			{
-				srcPage = p;
+				this.srcPage = p;
 			}
 		};
 
@@ -92,7 +92,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mID;
+				return this.mID;
 			}
 		}
 
@@ -104,7 +104,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mParent;
+				return this.mParent;
 			}
 		}
 
@@ -120,7 +120,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mFrameLastHeld;
+				return this.mFrameLastHeld;
 			}
 		}
 
@@ -129,7 +129,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mParent.Manager;
+				return this.mParent.Manager;
 			}
 		}
 
@@ -141,7 +141,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mContentCollections.Count;
+				return this.mContentCollections.Count;
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mContentCollections;
+				return this.mContentCollections;
 			}
 		}
 
@@ -171,14 +171,14 @@ namespace Axiom.Components.Paging
 				int nextFrame = Root.Instance.NextFrameNumber;
 				int dist;
 
-				if ( nextFrame < mFrameLastHeld )
+				if ( nextFrame < this.mFrameLastHeld )
 				{
 					// we must have wrapped around
-					dist = mFrameLastHeld + ( int.MaxValue - mFrameLastHeld );
+					dist = this.mFrameLastHeld + ( int.MaxValue - this.mFrameLastHeld );
 				}
 				else
 				{
-					dist = nextFrame - mFrameLastHeld;
+					dist = nextFrame - this.mFrameLastHeld;
 				}
 
 				// 5-frame tolerance
@@ -191,7 +191,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mParent.SceneManager;
+				return this.mParent.SceneManager;
 			}
 		}
 
@@ -203,7 +203,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mDeferredProcessInProgress;
+				return this.mDeferredProcessInProgress;
 			}
 		}
 
@@ -214,13 +214,13 @@ namespace Axiom.Components.Paging
 		public Page( PageID pageID, PagedWorldSection parent )
 			: base()
 		{
-			mID = pageID;
-			mParent = parent;
+			this.mID = pageID;
+			this.mParent = parent;
 
 			WorkQueue wq = Root.Instance.WorkQueue;
-			workQueueChannel = wq.GetChannel( "Axiom/Page" );
-			wq.AddRequestHandler( workQueueChannel, this );
-			wq.AddResponseHandler( workQueueChannel, this );
+			this.workQueueChannel = wq.GetChannel( "Axiom/Page" );
+			wq.AddRequestHandler( this.workQueueChannel, this );
+			wq.AddResponseHandler( this.workQueueChannel, this );
 			Touch();
 		}
 
@@ -232,23 +232,23 @@ namespace Axiom.Components.Paging
 				if ( disposeManagedResources )
 				{
 					WorkQueue wq = Root.Instance.WorkQueue;
-					wq.RemoveRequestHandler( workQueueChannel, this );
-					wq.RemoveResponseHandler( workQueueChannel, this );
+					wq.RemoveRequestHandler( this.workQueueChannel, this );
+					wq.RemoveResponseHandler( this.workQueueChannel, this );
 
 					DestroyAllContentCollections();
 
-					if ( mDebugNode != null )
+					if ( this.mDebugNode != null )
 					{
 						// destroy while we have the chance
-						for ( int i = 0; i < mDebugNode.ObjectCount; ++i )
+						for ( int i = 0; i < this.mDebugNode.ObjectCount; ++i )
 						{
-							mParent.SceneManager.DestroyMovableObject( mDebugNode.GetObject( i ) );
+							this.mParent.SceneManager.DestroyMovableObject( this.mDebugNode.GetObject( i ) );
 						}
 
-						mDebugNode.RemoveAndDestroyAllChildren();
-						mParent.SceneManager.DestroySceneNode( mDebugNode );
+						this.mDebugNode.RemoveAndDestroyAllChildren();
+						this.mParent.SceneManager.DestroySceneNode( this.mDebugNode );
 
-						mDebugNode = null;
+						this.mDebugNode = null;
 					}
 				}
 			}
@@ -262,14 +262,14 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void DestroyAllContentCollections()
 		{
-			foreach ( var i in mContentCollections )
+			foreach ( var i in this.mContentCollections )
 			{
 				if ( !i.IsDisposed )
 				{
 					i.SafeDispose();
 				}
 			}
-			mContentCollections.Clear();
+			this.mContentCollections.Clear();
 		}
 
 		/// <summary>
@@ -278,7 +278,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void Touch()
 		{
-			mFrameLastHeld = Root.Instance.NextFrameNumber;
+			this.mFrameLastHeld = Root.Instance.NextFrameNumber;
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -293,9 +293,10 @@ namespace Axiom.Components.Paging
 			// pageID check (we should know the ID we're expecting)
 			int storedID = -1;
 			stream.Read( out storedID );
-			if ( mID.Value != storedID )
+			if ( this.mID.Value != storedID )
 			{
-				LogManager.Instance.Write( "Error: Tried to populate Page ID {0} with data corresponding to page ID {1}", mID.Value,
+				LogManager.Instance.Write( "Error: Tried to populate Page ID {0} with data corresponding to page ID {1}",
+				                           this.mID.Value,
 				                           storedID );
 				stream.UndoReadChunk( CHUNK_ID );
 				return false;
@@ -332,7 +333,7 @@ namespace Axiom.Components.Paging
 				}
 			}
 
-			mModified = false;
+			this.mModified = false;
 			return true;
 		}
 
@@ -343,13 +344,13 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void Load( bool synchronous )
 		{
-			if ( !mDeferredProcessInProgress )
+			if ( !this.mDeferredProcessInProgress )
 			{
 				DestroyAllContentCollections();
 				var req = new PageRequest( this );
-				mDeferredProcessInProgress = true;
+				this.mDeferredProcessInProgress = true;
 
-				Root.Instance.WorkQueue.AddRequest( workQueueChannel, WORKQUEUE_PREPARE_REQUEST, req, 0, synchronous );
+				Root.Instance.WorkQueue.AddRequest( this.workQueueChannel, WORKQUEUE_PREPARE_REQUEST, req, 0, synchronous );
 			}
 		}
 
@@ -366,7 +367,7 @@ namespace Axiom.Components.Paging
 		protected virtual bool PrepareImpl( ref PageData dataToPopulate )
 		{
 			// Procedural preparation
-			if ( mParent.PrepareProcedualePage( this ) )
+			if ( this.mParent.PrepareProcedualePage( this ) )
 			{
 				return true;
 			}
@@ -384,8 +385,8 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		protected virtual void LoadImpl()
 		{
-			mParent.LoadProcedualPage( this );
-			foreach ( var i in mContentCollections )
+			this.mParent.LoadProcedualPage( this );
+			foreach ( var i in this.mContentCollections )
 			{
 				i.Load();
 			}
@@ -421,10 +422,10 @@ namespace Axiom.Components.Paging
 			stream.WriteChunkBegin( CHUNK_ID, CHUNK_VERSION );
 
 			//page id
-			stream.Write( mID.Value );
+			stream.Write( this.mID.Value );
 
 			//content collections
-			foreach ( var coll in mContentCollections )
+			foreach ( var coll in this.mContentCollections )
 			{
 				//declaration
 				stream.WriteChunkBegin( CHUNK_CONTENTCOLLECTION_DECLARATION_ID );
@@ -435,7 +436,7 @@ namespace Axiom.Components.Paging
 			}
 
 			stream.WriteChunkEnd( CHUNK_ID );
-			mModified = false;
+			this.mModified = false;
 		}
 
 		/// <summary>
@@ -447,7 +448,7 @@ namespace Axiom.Components.Paging
 			UpdateDebugDisplay();
 
 			// content collections
-			foreach ( var coll in mContentCollections )
+			foreach ( var coll in this.mContentCollections )
 			{
 				coll.FrameStart( timeSinceLastFrame );
 			}
@@ -460,7 +461,7 @@ namespace Axiom.Components.Paging
 		public virtual void FrameEnd( Real timeElapsed )
 		{
 			// content collections
-			foreach ( var coll in mContentCollections )
+			foreach ( var coll in this.mContentCollections )
 			{
 				coll.FrameEnd( timeElapsed );
 			}
@@ -473,7 +474,7 @@ namespace Axiom.Components.Paging
 		public virtual void NotifyCamera( Camera cam )
 		{
 			// content collections
-			foreach ( var coll in mContentCollections )
+			foreach ( var coll in this.mContentCollections )
 			{
 				coll.NotifyCamera( cam );
 			}
@@ -486,17 +487,17 @@ namespace Axiom.Components.Paging
 			if ( dbglvl > 0 )
 			{
 				// update debug display
-				if ( mDebugNode != null )
+				if ( this.mDebugNode != null )
 				{
-					mDebugNode = mParent.SceneManager.RootSceneNode.CreateChildSceneNode();
+					this.mDebugNode = this.mParent.SceneManager.RootSceneNode.CreateChildSceneNode();
 				}
 
-				mParent.Strategy.UpdateDebugDisplay( this, mDebugNode );
-				mDebugNode.IsVisible = true;
+				this.mParent.Strategy.UpdateDebugDisplay( this, this.mDebugNode );
+				this.mDebugNode.IsVisible = true;
 			}
-			else if ( mDebugNode != null )
+			else if ( this.mDebugNode != null )
 			{
-				mDebugNode.IsVisible = false;
+				this.mDebugNode.IsVisible = false;
 			}
 		}
 
@@ -511,7 +512,7 @@ namespace Axiom.Components.Paging
 		{
 			PageContentCollection coll = Manager.CreateContentCollection( typeName );
 			coll.NotifyAttached( this );
-			mContentCollections.Add( coll );
+			this.mContentCollections.Add( coll );
 			return coll;
 		}
 
@@ -523,9 +524,9 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void DestroyContentCollection( ref PageContentCollection coll )
 		{
-			if ( mContentCollections.Contains( coll ) )
+			if ( this.mContentCollections.Contains( coll ) )
 			{
-				mContentCollections.Remove( coll );
+				this.mContentCollections.Remove( coll );
 			}
 
 			Manager.DestroyContentCollection( ref coll );
@@ -537,26 +538,27 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual PageContentCollection GetContentCollection( int index )
 		{
-			System.Diagnostics.Debug.Assert( index < mContentCollections.Count );
-			return mContentCollections[ index ];
+			System.Diagnostics.Debug.Assert( index < this.mContentCollections.Count );
+			return this.mContentCollections[ index ];
 		}
 
 		[OgreVersion( 1, 7, 2, "operator <<" )]
 		public override string ToString()
 		{
-			return string.Format( "Page( ID: {0}, section: {1}, world: {2})", mID, ParentSection.Name, ParentSection.World.Name );
+			return string.Format( "Page( ID: {0}, section: {1}, world: {2})", this.mID, ParentSection.Name,
+			                      ParentSection.World.Name );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		protected string GenerateFilename()
 		{
 			var str = new StringBuilder();
-			if ( mParent != null )
+			if ( this.mParent != null )
 			{
-				str.AppendFormat( "{0}_{1}", mParent.World.Name, mParent.Name );
+				str.AppendFormat( "{0}_{1}", this.mParent.World.Name, this.mParent.Name );
 			}
 
-			str.AppendFormat( "{0}.page", mID.Value.ToString( "X" ).PadLeft( 8, '0' ) );
+			str.AppendFormat( "{0}.page", this.mID.Value.ToString( "X" ).PadLeft( 8, '0' ) );
 			return str.ToString();
 		}
 
@@ -647,11 +649,11 @@ namespace Axiom.Components.Paging
 			// final loading behaviour
 			if ( res.Succeeded )
 			{
-				Utility.Swap<List<PageContentCollection>>( ref mContentCollections, ref pres.pageData.collectionsToAdd );
+				Utility.Swap<List<PageContentCollection>>( ref this.mContentCollections, ref pres.pageData.collectionsToAdd );
 				LoadImpl();
 			}
 
-			mDeferredProcessInProgress = false;
+			this.mDeferredProcessInProgress = false;
 		}
 
 		#endregion IResponseHandler Members

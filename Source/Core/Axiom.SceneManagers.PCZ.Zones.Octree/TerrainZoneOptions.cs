@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -49,20 +49,20 @@ namespace OctreeZone
 	{
 		public TerrainZoneOptions()
 		{
-			pageSize = 0;
-			tileSize = 0;
-			tilesPerPage = 0;
-			maxGeoMipMapLevel = 0;
-			scale = Vector3.UnitScale;
-			maxPixelError = 4;
-			detailTile = 1;
-			lit = false;
-			coloured = false;
-			lodMorph = false;
-			lodMorphStart = 0.5;
-			useTriStrips = false;
-			primaryCamera = null;
-			terrainMaterial = null;
+			this.pageSize = 0;
+			this.tileSize = 0;
+			this.tilesPerPage = 0;
+			this.maxGeoMipMapLevel = 0;
+			this.scale = Vector3.UnitScale;
+			this.maxPixelError = 4;
+			this.detailTile = 1;
+			this.lit = false;
+			this.coloured = false;
+			this.lodMorph = false;
+			this.lodMorphStart = 0.5;
+			this.useTriStrips = false;
+			this.primaryCamera = null;
+			this.terrainMaterial = null;
 		}
 
 		/// The size of one edge of a terrain page, in vertices

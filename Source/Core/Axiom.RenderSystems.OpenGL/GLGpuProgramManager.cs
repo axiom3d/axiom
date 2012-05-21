@@ -79,7 +79,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// if there is none, this syntax code must not be supported
 			// just return the base GL program since it won't be doing anything anyway
-			if ( factories[ syntaxCode ] == null )
+			if ( this.factories[ syntaxCode ] == null )
 			{
 				return new GLGpuProgram( this, name, handle, group, isManual, loader );
 			}
@@ -94,8 +94,9 @@ namespace Axiom.RenderSystems.OpenGL
 				gpt = GpuProgramType.Fragment;
 			}
 
-			return ( (IOpenGLGpuProgramFactory)factories[ syntaxCode ] ).Create( this, name, handle, group, isManual, loader, gpt,
-			                                                                     syntaxCode );
+			return ( (IOpenGLGpuProgramFactory)this.factories[ syntaxCode ] ).Create( this, name, handle, group, isManual, loader,
+			                                                                          gpt,
+			                                                                          syntaxCode );
 		}
 
 		protected override Resource _create( string name, ulong handle, string group, bool isManual,
@@ -103,13 +104,13 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			// if there is none, this syntax code must not be supported
 			// just return the base GL program since it won't be doing anything anyway
-			if ( factories[ syntaxCode ] == null )
+			if ( this.factories[ syntaxCode ] == null )
 			{
 				return new GLGpuProgram( this, name, handle, group, isManual, loader );
 			}
 
 			// get a reference to the factory for this syntax code
-			var factory = (IOpenGLGpuProgramFactory)factories[ syntaxCode ];
+			var factory = (IOpenGLGpuProgramFactory)this.factories[ syntaxCode ];
 
 			// create the gpu program
 			return factory.Create( this, name, handle, group, isManual, loader, type, syntaxCode );
@@ -132,7 +133,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public void RegisterProgramFactory( string syntaxCode, IOpenGLGpuProgramFactory factory )
 		{
 			// store this factory for the specified syntax code
-			factories[ syntaxCode ] = factory;
+			this.factories[ syntaxCode ] = factory;
 		}
 	}
 }

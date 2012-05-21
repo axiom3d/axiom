@@ -93,14 +93,14 @@ namespace Axiom.CgPrograms
 
 		protected int selectedCgProfile;
 
-		private readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap =
-			new GpuProgramParameters.GpuConstantDefinitionMap();
+		private readonly GpuProgramParameters.GpuConstantDefinitionMap parametersMap = new GpuProgramParameters.GpuConstantDefinitionMap();
 
 		private string programString;
+        private int parametersMapSizeAsBuffer;
 
 		#endregion Fields
 
-		#region Constructors
+		#region Construction & Destruction
 
 		/// <summary>
 		///    Constructor.
@@ -109,39 +109,57 @@ namespace Axiom.CgPrograms
 		/// <param name="type">Type of this program, vertex or fragment program.</param>
 		/// <param name="language">HLSL language of this program.</param>
 		/// <param name="context">CG context id.</param>
-		public CgProgram( ResourceManager parent, string name, ulong handle, string group, bool isManual,
-		                  IManualResourceLoader loader, IntPtr context )
+        [OgreVersion(1, 7, 3525)]
+        public CgProgram(ResourceManager parent, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, IntPtr context)
 			: base( parent, name, handle, group, isManual, loader )
 		{
-			cgContext = context;
-			selectedCgProfile = Cg.CG_PROFILE_UNKNOWN;
+            parametersMapSizeAsBuffer = 0;
+			this.cgContext = context;
+			this.selectedCgProfile = Cg.CG_PROFILE_UNKNOWN;
 		}
 
-		#endregion Constructors
+        [OgreVersion(1, 7, 3525, "~CgProgram")]
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if ( !IsDisposed )
+                if ( disposeManagedResources )
+                {
+                    if ( IsLoaded )
+                    {
+                        Unload();
+                    }
+                    else
+                    {
+                        UnloadHighLevel();
+                    }
+                }
+            base.dispose(disposeManagedResources);
+        }
+        #endregion Construction & Destruction
 
-		#region Methods
+        #region Methods
 
-		#region SelectProfile
+        #region SelectProfile
 
-		/// <summary>
+        /// <summary>
 		/// Internal method which works out which profile to use for this program
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
+		[OgreVersion( 1, 7, 3525 )]
 		protected void SelectProfile()
 		{
-			selectedProfile = "";
-			selectedCgProfile = Cg.CG_PROFILE_UNKNOWN;
+			this.selectedProfile = "";
+			this.selectedCgProfile = Cg.CG_PROFILE_UNKNOWN;
 
-			if ( profiles != null )
+			if ( this.profiles != null )
 			{
-				foreach ( var i in profiles )
+				foreach ( var i in this.profiles )
 				{
 					if ( GpuProgramManager.Instance.IsSyntaxSupported( i ) )
 					{
-						selectedProfile = i;
-						selectedCgProfile = Cg.cgGetProfile( selectedProfile );
+						this.selectedProfile = i;
+						this.selectedCgProfile = Cg.cgGetProfile( this.selectedProfile );
 
-						CgHelper.CheckCgError( "Unable to find Cg profile enum for program " + Name, cgContext );
+						CgHelper.CheckCgError( "Unable to find Cg profile enum for program " + Name, this.cgContext );
 
 						break;
 					}
@@ -153,7 +171,7 @@ namespace Axiom.CgPrograms
 
 		#region BuildArgs
 
-		[OgreVersion( 1, 7, 2790 )]
+		[OgreVersion( 1, 7, 3525 )]
 		protected void BuildArgs()
 		{
 			var args = new List<string>();
@@ -163,7 +181,7 @@ namespace Axiom.CgPrograms
 			}
 
 
-			if ( selectedCgProfile == Cg.CG_PROFILE_VS_1_1 )
+			if ( this.selectedCgProfile == Cg.CG_PROFILE_VS_1_1 )
 			{
 				// Need the 'dcls' argument whenever we use this profile
 				// otherwise compilation of the assembler will fail
@@ -177,14 +195,14 @@ namespace Axiom.CgPrograms
 			}
 
 			args.Add( null );
-			cgArguments = args.ToArray();
+			this.cgArguments = args.ToArray();
 		}
 
 		#endregion
 
 		#region LoadFromSource
 
-		[OgreVersion( 1, 7, 2790 )]
+		[OgreVersion( 1, 7, 3525 )]
 		protected override void LoadFromSource()
 		{
 			SelectProfile();
@@ -203,56 +221,64 @@ namespace Axiom.CgPrograms
 
 		#region CreateLowLevelImpl
 
-		[OgreVersion( 1, 7, 2790 )]
+		[OgreVersion( 1, 7, 3525 )]
 		protected override void CreateLowLevelImpl()
 		{
-			// the hlsl 4 profiles are only supported in OGRE from CG 2.2
+            // ignore any previous error
+            if (selectedCgProfile != Cg.CG_PROFILE_UNKNOWN && !compileError)
+            {
+                // the hlsl 4 profiles are only supported in OGRE from CG 2.2
 
-			if ( false
-				/*Cg.CG_VERSION_NUM >= 2200 && 
-                            (selectedCgProfile ==  Cg.CG_PROFILE_VS_4_0
-                            || selectedCgProfile == Cg.CG_PROFILE_PS_4_0) */ )
-			{
-				// Create a high-level program, give it the same name as us
-				var vp = HighLevelGpuProgramManager.Instance.CreateProgram( _name, _group, "hlsl", type );
-				vp.Source = programString;
+                if (false
+                    // TODO: Need to update the Tao.CG assembly to latest Cg.
+                    /*Cg.CG_VERSION_NUM >= 2200 && 
+                                (selectedCgProfile ==  Cg.CG_PROFILE_VS_4_0
+                                || selectedCgProfile == Cg.CG_PROFILE_PS_4_0) */ )
+                {
+                    // Create a high-level program, give it the same name as us
+                    var vp = HighLevelGpuProgramManager.Instance.CreateProgram(_name, _group, "hlsl", type);
+                    vp.Source = this.programString;
 
-				vp.Properties[ "target" ] = selectedProfile;
-				vp.Properties[ "entry_point" ] = "main";
+                    vp.Properties["target"] = this.selectedProfile;
+                    vp.Properties["entry_point"] = "main";
 
-				vp.Load();
+                    vp.Load();
 
-				assemblerProgram = vp;
-			}
-			else
-			{
-				if ( type == GpuProgramType.Fragment )
-				{
-					//HACK : http://developer.nvidia.com/forums/index.php?showtopic=1063&pid=2378&mode=threaded&start=#entry2378
-					//Still happens in CG 2.2. Remove hack when fixed.
-					programString = programString.Replace( "oDepth.z", "oDepth" );
-				}
-				// Create a low-level program, give it the same name as us
-				assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString( _name, _group, programString, type,
-				                                                                       selectedProfile );
-			}
-			// Shader params need to be forwarded to low level implementation
-			assemblerProgram.IsAdjacencyInfoRequired = IsAdjacencyInfoRequired;
+                    assemblerProgram = vp;
+                }
+                else
+                {
+                    if (type == GpuProgramType.Fragment)
+                    {
+                        //HACK : http://developer.nvidia.com/forums/index.php?showtopic=1063&pid=2378&mode=threaded&start=#entry2378
+                        //Still happens in CG 2.2. Remove hack when fixed.
+                        this.programString = this.programString.Replace("oDepth.z", "oDepth");
+                    }
+                    // Create a low-level program, give it the same name as us
+                    assemblerProgram = GpuProgramManager.Instance.CreateProgramFromString(_name, _group, this.programString, type,
+                                                                                           this.selectedProfile);
+                }
+                // Shader params need to be forwarded to low level implementation
+                assemblerProgram.IsAdjacencyInfoRequired = IsAdjacencyInfoRequired;
+            }
 		}
 
 		#endregion
 
 		#region RecurseParams
 
-		[OgreVersion( 1, 7, 2790 )]
+#if !NET_40
 		protected void RecurseParams( IntPtr parameter )
 		{
 			RecurseParams( parameter, 1 );
 		}
 
-		[OgreVersion( 1, 7, 2790 )]
 		protected void RecurseParams( IntPtr parameter, int contextArraySize )
-		{
+#else
+		[OgreVersion( 1, 7, 3525 )]
+		protected void RecurseParams( IntPtr parameter, int contextArraySize = 1 )
+#endif
+        {
 			// loop through the rest of the params
 			while ( parameter != IntPtr.Zero )
 			{
@@ -262,10 +288,14 @@ namespace Axiom.CgPrograms
 				// Look for uniform parameters only
 				// Don't bother enumerating unused parameters, especially since they will
 				// be optimized out and therefore not in the indexed versions
-				if ( Cg.cgIsParameterReferenced( parameter ) != 0 && Cg.cgGetParameterVariability( parameter ) == Cg.CG_UNIFORM &&
-				     Cg.cgGetParameterDirection( parameter ) != Cg.CG_OUT && paramType != Cg.CG_SAMPLER1D &&
-				     paramType != Cg.CG_SAMPLER2D && paramType != Cg.CG_SAMPLER3D && paramType != Cg.CG_SAMPLERCUBE &&
-				     paramType != Cg.CG_SAMPLERRECT )
+				if (  Cg.cgGetParameterVariability( parameter ) == Cg.CG_UNIFORM &&
+				      paramType != Cg.CG_SAMPLER1D &&
+				      paramType != Cg.CG_SAMPLER2D && 
+                      paramType != Cg.CG_SAMPLER3D && 
+                      paramType != Cg.CG_SAMPLERCUBE &&
+				      paramType != Cg.CG_SAMPLERRECT &&
+                      Cg.cgGetParameterDirection( parameter ) != Cg.CG_OUT && 
+                      Cg.cgIsParameterReferenced( parameter ) != 0 )
 				{
 					int arraySize;
 
@@ -281,7 +311,7 @@ namespace Axiom.CgPrograms
 							break;
 						default:
 							// Normal path (leaf)
-							var paramName = Cg.cgGetParameterName( parameter );
+							var paramName = Cg.cgGetParameterName( parameter ).ToLower();
 							var logicalIndex = Cg.cgGetParameterResourceIndex( parameter );
 
 							// Get the parameter resource, to calculate the physical index
@@ -310,7 +340,7 @@ namespace Axiom.CgPrograms
 							// Trim the '[0]' suffix if it exists, we will add our own indexing later
 							if ( paramName.EndsWith( "[0]" ) )
 							{
-								paramName.Remove( paramName.Length - 3 );
+								paramName = paramName.Remove( paramName.Length - 3 );
 							}
 
 
@@ -344,14 +374,12 @@ namespace Axiom.CgPrograms
 
 							def.LogicalIndex = logicalIndex;
 
-							if ( !parametersMap.ContainsKey( paramName ) )
+							if ( !this.parametersMap.ContainsKey( paramName ) )
 							{
-								parametersMap.Add( paramName, def );
-								/*
-                                mParametersMapSizeAsBuffer += sizeof ( size_t );
-                                mParametersMapSizeAsBuffer += paramName.size();
-                                mParametersMapSizeAsBuffer += sizeof ( GpuConstantDefinition );
-                                 */
+								this.parametersMap.Add( paramName, def );
+                                parametersMapSizeAsBuffer += sizeof(int);
+                                parametersMapSizeAsBuffer += paramName.Length;
+                                //parametersMapSizeAsBuffer += sizeof(GpuProgramParameters.GpuConstantDefinition);
 							}
 
 							// Record logical / physical mapping
@@ -360,25 +388,17 @@ namespace Axiom.CgPrograms
 								lock ( floatLogicalToPhysical.Mutex )
 								{
 									floatLogicalToPhysical.Map.Add( def.LogicalIndex,
-									                                new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex,
-									                                                                             def.ArraySize*def.ElementSize,
-									                                                                             GpuProgramParameters.
-									                                                                             	GpuParamVariability.Global ) );
-
-									floatLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
-								}
+									                                new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, GpuProgramParameters.GpuParamVariability.Global ) );
+									floatLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
+								} 
 							}
 							else
 							{
 								lock ( intLogicalToPhysical.Mutex )
 								{
 									intLogicalToPhysical.Map.Add( def.LogicalIndex,
-									                              new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex,
-									                                                                           def.ArraySize*def.ElementSize,
-									                                                                           GpuProgramParameters.
-									                                                                           	GpuParamVariability.Global ) );
-
-									intLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
+									                              new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize * def.ElementSize, GpuProgramParameters.GpuParamVariability.Global ) );
+									intLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
 								}
 							}
 
@@ -395,9 +415,8 @@ namespace Axiom.CgPrograms
 
 		#region MapTypeAndElementSize
 
-		[OgreVersion( 1, 7, 2790 )]
-		private void MapTypeAndElementSize( int cgType, bool isRegisterCombiner,
-		                                    GpuProgramParameters.GpuConstantDefinition def )
+		[OgreVersion( 1, 7, 3525 )]
+		private void MapTypeAndElementSize( int cgType, bool isRegisterCombiner, GpuProgramParameters.GpuConstantDefinition def )
 		{
 			if ( isRegisterCombiner )
 			{
@@ -489,12 +508,12 @@ namespace Axiom.CgPrograms
 
 		#region CompileMicrocode
 
-		[OgreVersion( 1, 7, 2790 )]
+		[OgreVersion( 1, 7, 3525 )]
 		protected void CompileMicrocode()
 		{
 			// Create Cg Program
 
-			if ( selectedCgProfile == Cg.CG_PROFILE_UNKNOWN )
+			if ( this.selectedCgProfile == Cg.CG_PROFILE_UNKNOWN )
 			{
 				LogManager.Instance.Write( "Attempted to load Cg program '" + _name + "', but no suported profile was found. " );
 				return;
@@ -504,49 +523,49 @@ namespace Axiom.CgPrograms
 			// deal with includes
 			String sourceToUse = ResolveCgIncludes( source, this, fileName );
 
-			var cgProgram = Cg.cgCreateProgram( cgContext, Cg.CG_SOURCE, sourceToUse, selectedCgProfile, entry, cgArguments );
+			var cgProgram = Cg.cgCreateProgram( this.cgContext, Cg.CG_SOURCE, sourceToUse, this.selectedCgProfile, this.entry, this.cgArguments );
 
 			// Test
 			//LogManager::getSingleton().logMessage(cgGetProgramString(mCgProgram, CG_COMPILED_PROGRAM));
 
 			// Check for errors
-			CgHelper.CheckCgError( "Unable to compile Cg program " + _name + ": ", cgContext );
+			CgHelper.CheckCgError( "Unable to compile Cg program " + _name + ": ", this.cgContext );
 
-			var error = Cg.cgGetError();
-			if ( error == Cg.CG_NO_ERROR )
-			{
-				// get program string (result of cg compile)
-				programString = Cg.cgGetProgramString( cgProgram, Cg.CG_COMPILED_PROGRAM );
+            var error = Cg.cgGetError();
+            if (error == Cg.CG_NO_ERROR)
+            {
+                // get program string (result of cg compile)
+                this.programString = Cg.cgGetProgramString(cgProgram, Cg.CG_COMPILED_PROGRAM);
 
-				// get params
-				parametersMap.Clear();
-				RecurseParams( Cg.cgGetFirstParameter( cgProgram, Cg.CG_PROGRAM ) );
-				RecurseParams( Cg.cgGetFirstParameter( cgProgram, Cg.CG_GLOBAL ) );
+                // get params
+                this.parametersMap.Clear();
+                RecurseParams(Cg.cgGetFirstParameter(cgProgram, Cg.CG_PROGRAM));
+                RecurseParams(Cg.cgGetFirstParameter(cgProgram, Cg.CG_GLOBAL));
 
-				// Unload Cg Program - we don't need it anymore
-				Cg.cgDestroyProgram( cgProgram );
-				CgHelper.CheckCgError( "Error while unloading Cg program " + _name + ": ", cgContext );
-				cgProgram = IntPtr.Zero;
+                // Unload Cg Program - we don't need it anymore
+                Cg.cgDestroyProgram(cgProgram);
+                CgHelper.CheckCgError("Error while unloading Cg program " + _name + ": ", this.cgContext);
+                cgProgram = IntPtr.Zero;
 
-				/*
+                /*
                 if ( GpuProgramManager.Instance.SaveMicrocodesToCache )
                 {
                     AddMicrocodeToCache();
                 }*/
-			}
+            }
 		}
 
 		#endregion
 
 		#region BuildConstantDefinitions
 
-		[OgreVersion( 1, 7, 2790 )]
+		[OgreVersion( 1, 7, 3525 )]
 		protected override void BuildConstantDefinitions()
 		{
 			// Derive parameter names from Cg
 			CreateParameterMappingStructures( true );
 
-			if ( string.IsNullOrEmpty( programString ) )
+			if ( string.IsNullOrEmpty( this.programString ) )
 			{
 				return;
 			}
@@ -554,12 +573,12 @@ namespace Axiom.CgPrograms
 			constantDefs.FloatBufferSize = floatLogicalToPhysical.BufferSize;
 			constantDefs.IntBufferSize = intLogicalToPhysical.BufferSize;
 
-			foreach ( var iter in parametersMap )
+			foreach ( var iter in this.parametersMap )
 			{
 				var paramName = iter.Key;
 				var def = iter.Value;
 
-				constantDefs.Map.Add( iter.Key, iter.Value );
+				constantDefs.Map.Add( iter.Key.ToLower(), iter.Value );
 
 				// Record logical / physical mapping
 				if ( def.IsFloat )
@@ -567,11 +586,8 @@ namespace Axiom.CgPrograms
 					lock ( floatLogicalToPhysical.Mutex )
 					{
 						floatLogicalToPhysical.Map.Add( def.LogicalIndex,
-						                                new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex,
-						                                                                             def.ArraySize*def.ElementSize,
-						                                                                             GpuProgramParameters.
-						                                                                             	GpuParamVariability.Global ) );
-						floatLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
+						                                new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize*def.ElementSize, GpuProgramParameters.GpuParamVariability.Global ) );
+						floatLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
 					}
 				}
 				else
@@ -579,11 +595,8 @@ namespace Axiom.CgPrograms
 					lock ( intLogicalToPhysical.Mutex )
 					{
 						intLogicalToPhysical.Map.Add( def.LogicalIndex,
-						                              new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex,
-						                                                                           def.ArraySize*def.ElementSize,
-						                                                                           GpuProgramParameters.
-						                                                                           	GpuParamVariability.Global ) );
-						intLogicalToPhysical.BufferSize += def.ArraySize*def.ElementSize;
+						                              new GpuProgramParameters.GpuLogicalIndexUse( def.PhysicalIndex, def.ArraySize*def.ElementSize, GpuProgramParameters.GpuParamVariability.Global ) );
+						intLogicalToPhysical.BufferSize += def.ArraySize * def.ElementSize;
 					}
 				}
 
@@ -596,7 +609,7 @@ namespace Axiom.CgPrograms
 
 		#region UnloadHighLevelImpl
 
-		[OgreVersion( 1, 7, 2790 )]
+		[OgreVersion( 1, 7, 3525 )]
 		protected override void UnloadHighLevelImpl()
 		{
 		}
@@ -738,7 +751,8 @@ namespace Axiom.CgPrograms
 		/// <summary>
 		///    Returns whether or not this high level gpu program is supported on the current hardware.
 		/// </summary>
-		public override bool IsSupported
+        [OgreVersion(1, 7, 3525)]
+        public override bool IsSupported
 		{
 			get
 			{
@@ -748,6 +762,7 @@ namespace Axiom.CgPrograms
 				}
 
 				// If skeletal animation is being done, we need support for UBYTE4
+                //TODO : borrillis :  Research this, this is not in OGRE, is it still needed? 
 				if ( IsSkeletalAnimationIncluded &&
 				     !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.VertexFormatUByte4 ) )
 				{
@@ -755,11 +770,11 @@ namespace Axiom.CgPrograms
 				}
 
 				// see if any profiles are supported
-				if ( profiles != null )
+				if ( this.profiles != null )
 				{
-					for ( int i = 0; i < profiles.Length; i++ )
+					for ( int i = 0; i < this.profiles.Length; i++ )
 					{
-						if ( GpuProgramManager.Instance.IsSyntaxSupported( profiles[ i ] ) )
+						if ( GpuProgramManager.Instance.IsSyntaxSupported( this.profiles[ i ] ) )
 						{
 							return true;
 						}

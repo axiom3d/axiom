@@ -46,74 +46,76 @@ namespace Axiom.Framework.Exceptions
 
 		private void InitializeComponent()
 		{
-			lblHeader = new System.Windows.Forms.Label();
-			txtMsg = new System.Windows.Forms.TextBox();
-			lblFooter = new System.Windows.Forms.Label();
-			cmdClose = new System.Windows.Forms.Button();
+			this.lblHeader = new System.Windows.Forms.Label();
+			this.txtMsg = new System.Windows.Forms.TextBox();
+			this.lblFooter = new System.Windows.Forms.Label();
+			this.cmdClose = new System.Windows.Forms.Button();
 			SuspendLayout();
 			// 
 			// lblHeader
 			// 
-			lblHeader.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			lblHeader.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
-			                                          System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-			lblHeader.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ),
-			                                                     ( (int)( ( (byte)( 75 ) ) ) ) );
-			lblHeader.Location = new System.Drawing.Point( 12, 9 );
-			lblHeader.Name = "lblHeader";
-			lblHeader.Size = new System.Drawing.Size( 422, 40 );
-			lblHeader.TabIndex = 9;
-			lblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			lblHeader.Text = global::Axiom.Framework.Properties.Resources.Axiom_Error_Header;
+			this.lblHeader.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.lblHeader.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
+			                                               System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.lblHeader.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ),
+			                                                          ( (int)( ( (byte)( 35 ) ) ) ),
+			                                                          ( (int)( ( (byte)( 75 ) ) ) ) );
+			this.lblHeader.Location = new System.Drawing.Point( 12, 9 );
+			this.lblHeader.Name = "lblHeader";
+			this.lblHeader.Size = new System.Drawing.Size( 422, 40 );
+			this.lblHeader.TabIndex = 9;
+			this.lblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.lblHeader.Text = global::Axiom.Framework.Properties.Resources.Axiom_Error_Header;
 			// 
 			// txtMsg
 			// 
-			txtMsg.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			txtMsg.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
-			                                       System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-			txtMsg.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ),
-			                                                  ( (int)( ( (byte)( 75 ) ) ) ) );
-			txtMsg.Location = new System.Drawing.Point( 12, 49 );
-			txtMsg.Name = "txtMsg";
-			txtMsg.Size = new System.Drawing.Size( 422, 161 );
-			txtMsg.TabIndex = 9;
-			txtMsg.Multiline = true;
-			txtMsg.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-			txtMsg.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-			txtMsg.ReadOnly = true;
+			this.txtMsg.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+			this.txtMsg.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
+			                                            System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.txtMsg.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ),
+			                                                       ( (int)( ( (byte)( 75 ) ) ) ) );
+			this.txtMsg.Location = new System.Drawing.Point( 12, 49 );
+			this.txtMsg.Name = "txtMsg";
+			this.txtMsg.Size = new System.Drawing.Size( 422, 161 );
+			this.txtMsg.TabIndex = 9;
+			this.txtMsg.Multiline = true;
+			this.txtMsg.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+			this.txtMsg.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+			this.txtMsg.ReadOnly = true;
 			// 
 			// lblFooter
 			// 
-			lblFooter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			lblFooter.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
-			                                          System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-			lblFooter.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ),
-			                                                     ( (int)( ( (byte)( 75 ) ) ) ) );
-			lblFooter.Location = new System.Drawing.Point( 12, 220 );
-			lblFooter.Name = "lblFooter";
-			lblFooter.Size = new System.Drawing.Size( 422, 86 );
-			lblFooter.TabIndex = 9;
-			lblFooter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			lblFooter.Text = global::Axiom.Framework.Properties.Resources.Axiom_Error_Footer;
+			this.lblFooter.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.lblFooter.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
+			                                               System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.lblFooter.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ),
+			                                                          ( (int)( ( (byte)( 35 ) ) ) ),
+			                                                          ( (int)( ( (byte)( 75 ) ) ) ) );
+			this.lblFooter.Location = new System.Drawing.Point( 12, 220 );
+			this.lblFooter.Name = "lblFooter";
+			this.lblFooter.Size = new System.Drawing.Size( 422, 86 );
+			this.lblFooter.TabIndex = 9;
+			this.lblFooter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.lblFooter.Text = global::Axiom.Framework.Properties.Resources.Axiom_Error_Footer;
 			// 
 			// cmdClose
 			// 
-			cmdClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			cmdClose.DialogResult = System.Windows.Forms.DialogResult.OK;
-			cmdClose.Location = new System.Drawing.Point( 172, 313 );
-			cmdClose.Name = "cmdClose";
-			cmdClose.Size = new System.Drawing.Size( 80, 26 );
-			cmdClose.TabIndex = 11;
-			cmdClose.Text = "&Close";
+			this.cmdClose.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.cmdClose.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.cmdClose.Location = new System.Drawing.Point( 172, 313 );
+			this.cmdClose.Name = "cmdClose";
+			this.cmdClose.Size = new System.Drawing.Size( 80, 26 );
+			this.cmdClose.TabIndex = 11;
+			this.cmdClose.Text = "&Close";
 			// 
 			// WinFormErrorDialog
 			// 
 			ClientSize = new System.Drawing.Size( 446, 351 );
 			ControlBox = false;
-			Controls.Add( cmdClose );
-			Controls.Add( lblHeader );
-			Controls.Add( lblFooter );
-			Controls.Add( txtMsg );
+			Controls.Add( this.cmdClose );
+			Controls.Add( this.lblHeader );
+			Controls.Add( this.lblFooter );
+			Controls.Add( this.txtMsg );
 			Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point,
 			                                ( (byte)( 0 ) ) );
 			FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -159,8 +161,8 @@ namespace Axiom.Framework.Exceptions
 		/// <param name="exception">The exception to display</param>
 		public void Show( Exception exception )
 		{
-			txtMsg.Text = exception.Message + Environment.NewLine + exception.StackTrace;
-			cmdClose.Select();
+			this.txtMsg.Text = exception.Message + Environment.NewLine + exception.StackTrace;
+			this.cmdClose.Select();
 			ShowDialog();
 		}
 

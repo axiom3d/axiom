@@ -1,4 +1,5 @@
 ﻿#region LGPL License
+
 /*
 Axiom Graphics Engine Library
 Copyright (C) 2003-2010 Axiom Project Team
@@ -22,13 +23,16 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
+
 #endregion
 
 #region SVN Version Information
+
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
 //     <id value="$Id$"/>
 // </file>
+
 #endregion SVN Version Information
 
 #region Namespace Declarations
@@ -36,8 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-
 using Axiom.Animating;
 using Axiom.Graphics;
 using Axiom.Math;
@@ -47,26 +49,17 @@ using BoundingBox = Axiom.Math.AxisAlignedBox;
 
 namespace Axiom.Core
 {
-	/// <summary>
-	/// Pre-transforms and batches up meshes for efficient use as instanced geometry
-	///	in a scene
-	/// <remarks>
-	/// Shader instancing allows to save both memory and draw calls. While 
-	///	StaticGeometry stores 500 times the same object in a batch to display 500 
-	///	objects, this shader instancing implementation stores only 80 times the object, 
-	///	and then re-uses the vertex data with different shader parameter.
-	///	Although you save memory, you make more draw call. However, you still 
-	///	make less draw calls than if you were rendering each object independently.
-	///	Plus, you can move the batched objects independently of one another which 
-	///	you cannot do with StaticGeometry.
-	/// </remarks>
-	/// </summary>
+	///<summary>
+	///  Pre-transforms and batches up meshes for efficient use as instanced geometry in a scene
+	///  <remarks>
+	///    Shader instancing allows to save both memory and draw calls. While StaticGeometry stores 500 times the same object in a batch to display 500 objects, this shader instancing implementation stores only 80 times the object, and then re-uses the vertex data with different shader parameter. Although you save memory, you make more draw call. However, you still make less draw calls than if you were rendering each object independently. Plus, you can move the batched objects independently of one another which you cannot do with StaticGeometry.
+	///  </remarks>
+	///</summary>
 	public partial class InstancedGeometry
 	{
-		/// <summary>
-		/// Struct holding geometry optimised per SubMesh / lod level, ready
-		///	for copying to instances. 
-		/// </summary>
+		///<summary>
+		///  Struct holding geometry optimised per SubMesh / lod level, ready for copying to instances.
+		///</summary>
 		public class OptimisedSubMeshGeometry
 		{
 			public OptimisedSubMeshGeometry()
@@ -74,14 +67,17 @@ namespace Axiom.Core
 				vertexData = null;
 				indexData = null;
 			}
+
 			~OptimisedSubMeshGeometry()
 			{
 				vertexData = null;
 				indexData = null;
 			}
+
 			public VertexData vertexData;
 			public IndexData indexData;
 		}
+
 		///
 		public struct SubMeshLodGeometryLink
 		{
@@ -93,59 +89,68 @@ namespace Axiom.Core
 		public struct QueuedSubMesh
 		{
 			public SubMesh submesh;
+
 			/// Link to LOD list of geometry, potentially optimised
 			public List<SubMeshLodGeometryLink> geometryLodList;
+
 			public String materialName;
 			public Vector3 position;
 			public Quaternion orientation;
 			public Vector3 scale;
-			/// Pre-transformed world AABB 
+
+			/// Pre-transformed world AABB
 			public BoundingBox worldBounds;
+
 			public int ID;
 		}
+
 		///Structure recording a queued geometry for low level builds
 		public struct QueuedGeometry
 		{
-			SubMeshLodGeometryLink geometry;
-			Vector3 position;
-			Quaternion orientation;
-			Vector3 scale;
-			int ID;
+			private SubMeshLodGeometryLink geometry;
+			private Vector3 position;
+			private Quaternion orientation;
+			private Vector3 scale;
+			private int ID;
 		}
 
-		/// <summary>
-		///  A GeometryBucket is a the lowest level bucket where geometry with 
-		///	the same vertex & index format is stored. It also acts as the 
-		///	renderable.
-		/// </summary>
+		///<summary>
+		///  A GeometryBucket is a the lowest level bucket where geometry with the same vertex & index format is stored. It also acts as the renderable.
+		///</summary>
 		public class GeometryBucket : SimpleRenderable
 		{
 			/// Geometry which has been queued up pre-build (not for deallocation)
-			List<QueuedGeometry> mQueuedGeometry;
+			private List<QueuedGeometry> mQueuedGeometry;
+
 			/// Pointer to the Batch
-			InstancedGeometry mBatch;
+			private readonly InstancedGeometry mBatch;
+
 			/// Pointer to parent bucket
-			MaterialBucket mParent;
+			private readonly MaterialBucket mParent;
+
 			/// String identifying the vertex / index format
-			String mFormatString;
+			private String mFormatString;
+
 			/// Vertex information, includes current number of vertices
 			/// committed to be a part of this bucket
-			VertexData mVertexData;
+			private VertexData mVertexData;
+
 			/// Index information, includes index type which limits the max
 			/// number of vertices which are allowed in one bucket
-			IndexData mIndexData;
+			private IndexData mIndexData;
+
 			/// Size of indexes
-			IndexType mIndexType;
+			private readonly IndexType mIndexType;
 
 			/// Maximum vertex indexable
-			uint mMaxVertexIndex;
-			///	Index of the Texcoord where the index is stored
-			short mTexCoordIndex;
-			BoundingBox mAABB;
+			private uint mMaxVertexIndex;
+
+			///Index of the Texcoord where the index is stored
+			private short mTexCoordIndex;
 
 			public GeometryBucket( MaterialBucket parent,
-								  String formatString, VertexData vData,
-								  IndexData iData )
+			                       String formatString, VertexData vData,
+			                       IndexData iData )
 				: base()
 			{
 				mParent = parent;
@@ -154,7 +159,9 @@ namespace Axiom.Core
 				mIndexData = null;
 				mBatch = mParent.Parent.Parent.Parent;
 				if ( mBatch.BaseSkeleton != null )
+				{
 					SetCustomParameter( 0, new Vector4( mBatch.BaseSkeleton.BoneCount, 0, 0, 0 ) );
+				}
 
 				mVertexData = vData.Clone( false );
 
@@ -183,23 +190,23 @@ namespace Axiom.Core
 				short texCoordSource = 0;
 				for ( int i = 0; i < renderOperation.vertexData.vertexDeclaration.ElementCount; i++ )
 				{
-
 					if ( renderOperation.vertexData.vertexDeclaration.GetElement( i ).Semantic == VertexElementSemantic.TexCoords )
 					{
 						texCoordOffset++;
 						texCoordSource = renderOperation.vertexData.vertexDeclaration.GetElement( i ).Source;
 						tcOffset = renderOperation.vertexData.vertexDeclaration.GetElement( i ).Offset + VertexElement.GetTypeSize(
-								renderOperation.vertexData.vertexDeclaration.GetElement( i ).Type );
+							renderOperation.vertexData.vertexDeclaration.GetElement( i ).Type );
 					}
 					offset += VertexElement.GetTypeSize( renderOperation.vertexData.vertexDeclaration.GetElement( i ).Type );
 				}
 
-				renderOperation.vertexData.vertexDeclaration.AddElement( texCoordSource, tcOffset, VertexElementType.Float1, VertexElementSemantic.TexCoords, texCoordOffset );
+				renderOperation.vertexData.vertexDeclaration.AddElement( texCoordSource, tcOffset, VertexElementType.Float1,
+				                                                         VertexElementSemantic.TexCoords, texCoordOffset );
 
 				mTexCoordIndex = texCoordOffset;
 			}
 
-			GeometryBucket( MaterialBucket parent, String formatString, GeometryBucket bucket )
+			private GeometryBucket( MaterialBucket parent, String formatString, GeometryBucket bucket )
 				: base()
 			{
 				mParent = parent;
@@ -212,15 +219,14 @@ namespace Axiom.Core
 				renderOperation = bucket.RenderOperation;
 				mVertexData = renderOperation.vertexData;
 				mIndexData = renderOperation.indexData;
-				this.BoundingBox = new BoundingBox( new Vector3( -10000, -10000, -10000 ), new Vector3( 10000, 10000, 10000 ) );
+				BoundingBox = new BoundingBox( new Vector3( -10000, -10000, -10000 ), new Vector3( 10000, 10000, 10000 ) );
 			}
 
-			unsafe void CopyIndexes( void* src, void* dst, int count, int indexOffset )
+			private void CopyIndexes( BufferBase src, BufferBase dst, int count, int indexOffset )
 			{
 				if ( indexOffset == 0 )
 				{
-					Memory.Copy( new IntPtr( src ), new IntPtr( dst ), count );
-
+					Memory.Copy( src, dst, count );
 				}
 				else
 				{
@@ -232,6 +238,7 @@ namespace Axiom.Core
 					}*/
 				}
 			}
+
 			public override Material Material
 			{
 				get
@@ -251,7 +258,8 @@ namespace Axiom.Core
 					base.CastShadows = value;
 				}
 			}
-			public override float GetSquaredViewDepth( Camera camera )
+
+			public override Real GetSquaredViewDepth( Camera camera )
 			{
 				return mParent.Parent.SquaredDistance;
 			}
@@ -264,19 +272,9 @@ namespace Axiom.Core
 				}
 			}
 
-			public new AxisAlignedBox BoundingBox
-			{
-				get
-				{
-					return mAABB;
-				}
-				set
-				{
-					mAABB = value;
-				}
-			}
+			public new AxisAlignedBox BoundingBox { get; set; }
 
-			public override float BoundingRadius
+			public override Real BoundingRadius
 			{
 				get
 				{
@@ -291,49 +289,56 @@ namespace Axiom.Core
 			public enum TransformSpace
 			{
 				/// <summary>
-				/// Transform is relative to the local space
+				///   Transform is relative to the local space
 				/// </summary>
 				Local,
+
 				/// <summary>
-				/// Transform is relative to the space of the parent node
+				///   Transform is relative to the space of the parent node
 				/// </summary>
 				Parent,
+
 				/// <summary>
-				/// Transform is relative to world space
+				///   Transform is relative to world space
 				/// </summary>
 				World
 			}
 
 			public void UpdateAnimation()
 			{
-
 			}
 		}
+
 		/// <summary>
-		/// 
 		/// </summary>
 		public class MaterialBucket
 		{
 			/// Pointer to parent LODBucket
 			protected LODBucket mParent;
+
 			/// Material being used
 			protected String mMaterialName;
+
 			/// Pointer to material being used
 			protected Material mMaterial;
+
 			/// Active technique
 			protected Technique mTechnique;
+
 			protected int mLastIndex;
+
 			/// list of Geometry Buckets in this BatchInstance
 			protected List<GeometryBucket> mGeometryBucketList = new List<GeometryBucket>();
+
 			// index to current Geometry Buckets for a given geometry format
 			protected Dictionary<String, GeometryBucket> mCurrentGeometryMap = new Dictionary<string, GeometryBucket>();
 
 			/// <summary>
-			/// Add children to the render queue
+			///   Add children to the render queue
 			/// </summary>
-			/// <param name="queue"></param>
-			/// <param name="group"></param>
-			/// <param name="camSquaredDistance"></param>
+			/// <param name="queue"> </param>
+			/// <param name="group"> </param>
+			/// <param name="camSquaredDistance"> </param>
 			public void AddRenderables( RenderQueue queue, RenderQueueGroupID group, float camSquaredDistance )
 			{
 				// Determine the current material technique
@@ -345,7 +350,7 @@ namespace Axiom.Core
 			}
 
 			/// <summary>
-			/// Get the material for this bucket
+			///   Get the material for this bucket
 			/// </summary>
 			public Material Material
 			{
@@ -356,7 +361,7 @@ namespace Axiom.Core
 			}
 
 			/// <summary>
-			/// Get the current Technique
+			///   Get the current Technique
 			/// </summary>
 			public Technique CurrentTechnique
 			{
@@ -365,6 +370,7 @@ namespace Axiom.Core
 					return mTechnique;
 				}
 			}
+
 			/// Get a packed string identifying the geometry format
 			//TODO
 			protected String GetGeometryFormatString( SubMeshLodGeometryLink geom )
@@ -381,32 +387,35 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		/// A LODBucket is a collection of smaller buckets with the same LOD. 
-		/// <remarks>
-		/// LOD refers to Mesh LOD here. Material LOD can change separately
-		///	at the next bucket down from this.
-		/// </remarks>
-		/// </summary>
+		///<summary>
+		///  A LODBucket is a collection of smaller buckets with the same LOD.
+		///  <remarks>
+		///    LOD refers to Mesh LOD here. Material LOD can change separately at the next bucket down from this.
+		///  </remarks>
+		///</summary>
 		public class LODBucket
 		{
 			/// Pointer to parent BatchInstance
 			protected BatchInstance mParent;
+
 			/// LOD level (0 == full LOD)
 			protected ushort mLod;
+
 			/// distance at which this LOD starts to apply (squared)
 			protected float mSquaredDistance;
+
 			/// Lookup of Material Buckets in this BatchInstance
 			protected Dictionary<string, MaterialBucket> mMaterialBucketMap = new Dictionary<string, MaterialBucket>();
+
 			/// Geometry queued for a single LOD (deallocated here)
 			protected List<QueuedGeometry> mQueuedGeometryList = new List<QueuedGeometry>();
 
 			/// <summary>
-			/// Add children to the render queue
+			///   Add children to the render queue
 			/// </summary>
-			/// <param name="queue"></param>
-			/// <param name="group"></param>
-			/// <param name="camSquaredDistance"></param>
+			/// <param name="queue"> </param>
+			/// <param name="group"> </param>
+			/// <param name="camSquaredDistance"> </param>
 			public void AddRenderables( RenderQueue queue, RenderQueueGroupID group, float camSquaredDistance )
 			{
 				foreach ( MaterialBucket iter in mMaterialBucketMap.Values )
@@ -414,6 +423,7 @@ namespace Axiom.Core
 					iter.AddRenderables( queue, group, camSquaredDistance );
 				}
 			}
+
 			public BatchInstance Parent
 			{
 				get
@@ -423,7 +433,7 @@ namespace Axiom.Core
 			}
 
 			/// <summary>
-			/// Get the lod index
+			///   Get the lod index
 			/// </summary>
 			public ushort Lod
 			{
@@ -432,8 +442,9 @@ namespace Axiom.Core
 					return mLod;
 				}
 			}
+
 			/// <summary>
-			/// Get the lod squared distance
+			///   Get the lod squared distance
 			/// </summary>
 			public float SquaredDistance
 			{
@@ -448,28 +459,36 @@ namespace Axiom.Core
 		{
 			/// Parent static geometry
 			protected InstancedGeometry mParent;
+
 			/// Scene manager link
 			protected SceneManager mSceneMgr;
+
 			/// Scene node
 			protected SceneNode mNode;
+
 			/// Local list of queued meshes (not used for deallocation)
 			protected List<QueuedSubMesh> mQueuedSubMeshes = new List<QueuedSubMesh>();
+
 			/// Unique identifier for the BatchInstance
 			protected uint mBatchInstanceID;
 
 			protected Dictionary<int, InstancedObject> mInstancesMap = new Dictionary<int, InstancedObject>();
 
-			/// List of LOD buckets			
+			/// List of LOD buckets
 			protected List<LODBucket> mLodBucketList = new List<LODBucket>();
 
 			/// LOD distances (squared) as built up - use the max at each level
 			public List<float> mLodSquaredDistances = new List<float>();
+
 			/// Local AABB relative to BatchInstance centre
 			public BoundingBox mAABB;
+
 			/// Local bounding radius
 			public float mBoundingRadius;
+
 			/// The current lod level, as determined from the last camera
 			public ushort mCurrentLod;
+
 			/// Current camera distance, passed on to do material lod later
 			public float mCamDistanceSquared;
 
@@ -478,7 +497,6 @@ namespace Axiom.Core
 				foreach ( InstancedObject iter in mInstancesMap.Values )
 				{
 					iter.UpdateAnimation();
-
 				}
 
 				mLodBucketList[ mCurrentLod ].AddRenderables( queue, base.renderQueueID, mCamDistanceSquared );
@@ -506,7 +524,7 @@ namespace Axiom.Core
 				beyondFarDistance = false;
 
 				// Distance from the edge of the bounding sphere
-				mCamDistanceSquared = squaredDepth - mBoundingRadius * mBoundingRadius;
+				mCamDistanceSquared = squaredDepth - mBoundingRadius*mBoundingRadius;
 				// Clamp to 0
 				mCamDistanceSquared = Utility.Max( 0.0f, mCamDistanceSquared );
 
@@ -533,7 +551,7 @@ namespace Axiom.Core
 				}
 			}
 
-			public override float BoundingRadius
+			public override Real BoundingRadius
 			{
 				get
 				{
@@ -551,7 +569,7 @@ namespace Axiom.Core
 			}
 
 			/// <summary>
-			/// Get the BatchInstance ID of this BatchInstance
+			///   Get the BatchInstance ID of this BatchInstance
 			/// </summary>
 			public uint ID
 			{
@@ -575,51 +593,57 @@ namespace Axiom.Core
 		protected Vector3 mHalfBatchInstanceDimensions;
 		protected Vector3 mOrigin;
 		protected bool mVisible;
+
 		/// The render queue to use when rendering this object
-		byte mRenderQueueID;
+		private byte mRenderQueueID;
+
 		/// Flags whether the RenderQueue's default should be used.
-		bool mRenderQueueIDSet;
+		private bool mRenderQueueIDSet;
+
 		/// number of objects in the batch
-		int mObjectCount;
+		private int mObjectCount;
 
 
-		BatchInstance mInstancedGeometryInstance;
+		private BatchInstance mInstancedGeometryInstance;
+
 		/// <summary>
-		/// this is just a pointer to the base skeleton that will be used for each animated object in the batches
-		/// This pointer has a value only during the creation of the InstancedGeometry
+		///   this is just a pointer to the base skeleton that will be used for each animated object in the batches This pointer has a value only during the creation of the InstancedGeometry
 		/// </summary>
-		Skeleton mBaseSkeleton;
-		SkeletonInstance mSkeletonInstance;
-		/// <summary>
-		/// This is the main animation state. All "objects" in the batch will use an instance of this animation state
-		/// </summary>
-		AnimationStateSet mAnimationState;
+		private Skeleton mBaseSkeleton;
 
-		List<QueuedSubMesh> mQueuedSubMeshes = new List<QueuedSubMesh>();
+		private SkeletonInstance mSkeletonInstance;
+
+		/// <summary>
+		///   This is the main animation state. All "objects" in the batch will use an instance of this animation state
+		/// </summary>
+		private AnimationStateSet mAnimationState;
+
+		private List<QueuedSubMesh> mQueuedSubMeshes = new List<QueuedSubMesh>();
+
 		/// List of geometry which has been optimised for SubMesh use
 		/// This is the primary storage used for cleaning up later
-		List<OptimisedSubMeshGeometry> mOptimisedSubMeshGeometryList = new List<OptimisedSubMeshGeometry>();
+		private readonly List<OptimisedSubMeshGeometry> mOptimisedSubMeshGeometryList = new List<OptimisedSubMeshGeometry>();
+
+		///<summary>
+		///  Cached links from SubMeshes to (potentially optimised) geometry This is not used for deletion since the lookup may reference original vertex data
+		///</summary>
+		private readonly Dictionary<SubMesh, List<SubMeshLodGeometryLink>> mSubMeshGeometryLookup =
+			new Dictionary<SubMesh, List<SubMeshLodGeometryLink>>();
 
 		/// <summary>
-		/// Cached links from SubMeshes to (potentially optimised) geometry
-		///	This is not used for deletion since the lookup may reference
-		///	original vertex data
+		///   Map of BatchInstances
 		/// </summary>
-		Dictionary<SubMesh, List<SubMeshLodGeometryLink>> mSubMeshGeometryLookup = new Dictionary<SubMesh, List<SubMeshLodGeometryLink>>();
+		private readonly Dictionary<int, BatchInstance> mBatchInstanceMap = new Dictionary<int, BatchInstance>();
 
 		/// <summary>
-		/// Map of BatchInstances
+		///   This vector stores all the renderOperation used in the batch.
 		/// </summary>
-		Dictionary<int, BatchInstance> mBatchInstanceMap = new Dictionary<int, BatchInstance>();
-		/// <summary>
-		/// This vector stores all the renderOperation used in the batch. 
-		/// </summary>
-		List<RenderOperation> mRenderOps;
+		private List<RenderOperation> mRenderOps;
 
-		const int BatchInstance_RANGE = 1024;
-		const int BatchInstance_HALF_RANGE = 512;
-		const int BatchInstance_MAX_INDEX = 511;
-		const int BatchInstance_MIN_INDEX = -512;
+		private const int BatchInstance_RANGE = 1024;
+		private const int BatchInstance_HALF_RANGE = 512;
+		private const int BatchInstance_MAX_INDEX = 511;
+		private const int BatchInstance_MIN_INDEX = -512;
 
 		public InstancedGeometry( SceneManager owner, String name )
 		{
@@ -641,26 +665,16 @@ namespace Axiom.Core
 			mBaseSkeleton = null;
 		}
 
-		/// <summary>
-		/// Adds an Entity to the static geometry.
-		/// <remarks>
-		/// This method takes an existing Entity and adds its details to the 
-		///	list of	elements to include when building. Note that the Entity
-		///	itself is not copied or referenced in this method; an Entity is 
-		///	passed simply so that you can change the materials of attached 
-		///	SubEntity objects if you want. You can add the same Entity 
-		///	instance multiple times with different material settings 
-		///	completely safely, and destroy the Entity before destroying 
-		///	this InstancedGeometry if you like. The Entity passed in is simply 
-		/// 
-		/// Must be called before 'Build'.
-		/// </remarks>
-		/// </summary>
-		/// <param name="ent">The Entity to use as a definition (the Mesh and Materials 
-		///	referenced will be recorded for the build call).</param>
-		/// <param name="position">The world position at which to add this Entity</param>
-		/// <param name="orientation">The world orientation at which to add this Entity</param>
-		/// <param name="scale"></param>
+		///<summary>
+		///  Adds an Entity to the static geometry.
+		///  <remarks>
+		///    This method takes an existing Entity and adds its details to the list of elements to include when building. Note that the Entity itself is not copied or referenced in this method; an Entity is passed simply so that you can change the materials of attached SubEntity objects if you want. You can add the same Entity instance multiple times with different material settings completely safely, and destroy the Entity before destroying this InstancedGeometry if you like. The Entity passed in is simply Must be called before 'Build'.
+		///  </remarks>
+		///</summary>
+		///<param name="ent"> The Entity to use as a definition (the Mesh and Materials referenced will be recorded for the build call). </param>
+		///<param name="position"> The world position at which to add this Entity </param>
+		///<param name="orientation"> The world orientation at which to add this Entity </param>
+		///<param name="scale"> </param>
 		public virtual void AddEntity( Entity ent, Vector3 position, Quaternion orientation, Vector3 scale )
 		{
 			Mesh msh = ent.Mesh;
@@ -668,7 +682,8 @@ namespace Axiom.Core
 			// Validate
 			if ( msh.IsLodManual )
 			{
-				LogManager.Instance.Write( "(InstancedGeometry): Manual LOD is not supported. Using only highest LOD level for mesh " + msh.Name );
+				LogManager.Instance.Write(
+					"(InstancedGeometry): Manual LOD is not supported. Using only highest LOD level for mesh " + msh.Name );
 			}
 
 			//get the skeleton of the entity, if that's not already done
@@ -688,7 +703,7 @@ namespace Axiom.Core
 			for ( int i = 0; i < ent.SubEntityCount; ++i )
 			{
 				SubEntity se = ent.GetSubEntity( i );
-				QueuedSubMesh q = new QueuedSubMesh();
+				var q = new QueuedSubMesh();
 
 				// Get the geometry for this SubMesh
 				q.submesh = se.SubMesh;
@@ -702,6 +717,7 @@ namespace Axiom.Core
 
 			mObjectCount++;
 		}
+
 		public void AddEntity( Entity ent, Vector3 position )
 		{
 			AddEntity( ent, position, Quaternion.Identity, Vector3.UnitScale );
@@ -716,17 +732,14 @@ namespace Axiom.Core
 		{
 			AddEntity( ent, position, Quaternion.Identity, scale );
 		}
-		/// <summary>
-		/// adds all the Entity objects attached to a SceneNode and all it's
-		///	children to the static geometry.
-		/// <remarks>
-		/// This method performs just like addEntity, except it adds all the 
-		///	entities attached to an entire sub-tree to the geometry. 
-		///	The position / orientation / scale parameters are taken from the
-		///	node structure instead of being specified manually. 
-		/// </remarks>
-		/// </summary>
-		/// <param name="node"></param>
+
+		///<summary>
+		///  adds all the Entity objects attached to a SceneNode and all it's children to the static geometry.
+		///  <remarks>
+		///    This method performs just like addEntity, except it adds all the entities attached to an entire sub-tree to the geometry. The position / orientation / scale parameters are taken from the node structure instead of being specified manually.
+		///  </remarks>
+		///</summary>
+		///<param name="node"> </param>
 		public virtual void AddSceneNode( SceneNode node )
 		{
 			// Iterate through all attached object
@@ -735,25 +748,25 @@ namespace Axiom.Core
 				if ( iter.MovableType == "Entity" )
 				{
 					AddEntity( (Entity)iter,
-								node.DerivedPosition,
-								node.DerivedOrientation,
-								node.DerivedScale );
+					           node.DerivedPosition,
+					           node.DerivedOrientation,
+					           node.DerivedScale );
 				}
 			}
 
 			// Iterate through all the child-nodes
 			foreach ( Node iter in node.Children )
 			{
-				SceneNode sceneNode = (SceneNode)iter;
+				var sceneNode = (SceneNode)iter;
 				AddSceneNode( sceneNode );
 			}
 		}
 
 		/// <summary>
-		/// Look up or calculate the geometry data to use for this SubMesh
+		///   Look up or calculate the geometry data to use for this SubMesh
 		/// </summary>
-		/// <param name="sm"></param>
-		/// <returns></returns>
+		/// <param name="sm"> </param>
+		/// <returns> </returns>
 		public List<SubMeshLodGeometryLink> DetermineGeometry( SubMesh sm )
 		{
 			// First, determine if we've already seen this submesh before
@@ -763,7 +776,7 @@ namespace Axiom.Core
 			}
 
 			// Otherwise, we have to create a new one
-			List<SubMeshLodGeometryLink> lodList = new List<SubMeshLodGeometryLink>();
+			var lodList = new List<SubMeshLodGeometryLink>();
 			mSubMeshGeometryLookup[ sm ] = lodList;
 
 			int numLods = sm.Parent.IsLodManual ? 1 : sm.Parent.LodLevelCount;
@@ -794,7 +807,7 @@ namespace Axiom.Core
 					{
 						// We have to split it
 						SplitGeometry( sm.Parent.SharedVertexData,
-							lodIndexData, ref geomLink );
+						               lodIndexData, ref geomLink );
 					}
 				}
 				else
@@ -810,39 +823,40 @@ namespace Axiom.Core
 					{
 						// We have to split it
 						SplitGeometry( sm.vertexData,
-							lodIndexData, ref geomLink );
+						               lodIndexData, ref geomLink );
 					}
 				}
 
-				Debug.Assert( geomLink.vertexData.vertexStart == 0, "Cannot use vertexStart > 0 on indexed geometry due to rendersystem incompatibilities - see the docs!" );
+				Debug.Assert( geomLink.vertexData.vertexStart == 0,
+				              "Cannot use vertexStart > 0 on indexed geometry due to rendersystem incompatibilities - see the docs!" );
 			}
 
 			return lodList;
 		}
 
 		/// <summary>
-		/// Split some shared geometry into dedicated geometry.
+		///   Split some shared geometry into dedicated geometry.
 		/// </summary>
-		/// <param name="vd"></param>
-		/// <param name="id"></param>
-		/// <param name="targetGeomLink"></param>
-		public unsafe void SplitGeometry( VertexData vd, IndexData id, ref SubMeshLodGeometryLink targetGeomLink )
+		/// <param name="vd"> </param>
+		/// <param name="id"> </param>
+		/// <param name="targetGeomLink"> </param>
+		public void SplitGeometry( VertexData vd, IndexData id, ref SubMeshLodGeometryLink targetGeomLink )
 		{
 			// Firstly we need to scan to see how many vertices are being used
 			// and while we're at it, build the remap we can use later
 			bool use32bitIndexes = id.indexBuffer.Type == IndexType.Size32;
 
-			Dictionary<int, int> indexRemap = new Dictionary<int, int>();
+			var indexRemap = new Dictionary<int, int>();
 
 			if ( use32bitIndexes )
 			{
-				var p32 = id.indexBuffer.Lock( id.indexStart, id.indexCount * id.indexBuffer.IndexSize,	BufferLocking.ReadOnly );
+				var p32 = id.indexBuffer.Lock( id.indexStart, id.indexCount*id.indexBuffer.IndexSize, BufferLocking.ReadOnly );
 				BuildIndexRemap( p32, id.indexCount, ref indexRemap );
 				id.indexBuffer.Unlock();
 			}
 			else
 			{
-				var p16 = (ushort*)id.indexBuffer.Lock(	id.indexStart, id.indexCount * id.indexBuffer.IndexSize, BufferLocking.ReadOnly );
+				var p16 = id.indexBuffer.Lock( id.indexStart, id.indexCount*id.indexBuffer.IndexSize, BufferLocking.ReadOnly );
 				BuildIndexRemap( p16, id.indexCount, ref indexRemap );
 				id.indexBuffer.Unlock();
 			}
@@ -884,38 +898,37 @@ namespace Axiom.Core
 				// to the new ones. By nature of the map the remap is in order of
 				// indexes in the old buffer, but note that we're not guaranteed to
 				// address every vertex (which is kinda why we're here)
-				byte* pSrcBase = (byte*)oldBuf.Lock( BufferLocking.ReadOnly );
-				byte* pDstBase = (byte*)newBuf.Lock( BufferLocking.Discard );
+				var pSrcBase = oldBuf.Lock( BufferLocking.ReadOnly );
+				var pDstBase = newBuf.Lock( BufferLocking.Discard );
 				int vertexSize = oldBuf.VertexSize;
 				// Buffers should be the same size
 				Debug.Assert( vertexSize == newBuf.VertexSize );
 
-				foreach ( KeyValuePair<int, int> r in indexRemap )
+				foreach ( var r in indexRemap )
 				{
 					Debug.Assert( r.Key < oldBuf.VertexCount );
 					Debug.Assert( r.Value < newBuf.VertexCount );
 
-					void* pSrc = pSrcBase + r.Key * vertexSize;
-					void* pDst = pDstBase + r.Value * vertexSize;
-					IntPtr pSrcPtr = new IntPtr( pSrc );
-					IntPtr pDstPtr = new IntPtr( pDst );
+					var pSrc = pSrcBase + r.Key*vertexSize;
+					var pDst = pDstBase + r.Value*vertexSize;
+					var pSrcPtr = pSrc;
+					var pDstPtr = pDst;
 					Memory.Copy( pDstPtr, pSrcPtr, vertexSize );
 				}
 				// unlock
 				oldBuf.Unlock();
 				newBuf.Unlock();
-
 			}
 
 			// Now create a new index buffer
-			HardwareIndexBuffer ibuf = HardwareBufferManager.Instance.CreateIndexBuffer(
-					id.indexBuffer.Type, id.indexCount, BufferUsage.Static );
+			HardwareIndexBuffer ibuf = HardwareBufferManager.Instance.CreateIndexBuffer( id.indexBuffer.Type, id.indexCount,
+			                                                                             BufferUsage.Static );
 
 			if ( use32bitIndexes )
 			{
 				uint* pSrc32, pDst32;
 				pSrc32 = (uint*)id.indexBuffer.Lock(
-					id.indexStart, id.indexCount * id.indexBuffer.IndexSize, BufferLocking.ReadOnly );
+					id.indexStart, id.indexCount*id.indexBuffer.IndexSize, BufferLocking.ReadOnly );
 				pDst32 = (uint*)ibuf.Lock( BufferLocking.Discard );
 				RemapIndexes( pSrc32, pDst32, ref indexRemap, id.indexCount );
 				id.indexBuffer.Unlock();
@@ -925,7 +938,7 @@ namespace Axiom.Core
 			{
 				ushort* pSrc16, pDst16;
 				pSrc16 = (ushort*)id.indexBuffer.Lock(
-					id.indexStart, id.indexCount * id.indexBuffer.IndexSize, BufferLocking.ReadOnly );
+					id.indexStart, id.indexCount*id.indexBuffer.IndexSize, BufferLocking.ReadOnly );
 				pDst16 = (ushort*)ibuf.Lock( BufferLocking.Discard );
 				RemapIndexes( pSrc16, pDst16, ref indexRemap, id.indexCount );
 				id.indexBuffer.Unlock();
@@ -938,7 +951,7 @@ namespace Axiom.Core
 			targetGeomLink.indexData.indexBuffer = ibuf;
 
 			// Store optimised geometry for deallocation later
-			OptimisedSubMeshGeometry optGeom = new OptimisedSubMeshGeometry();
+			var optGeom = new OptimisedSubMeshGeometry();
 			optGeom.indexData = targetGeomLink.indexData;
 			optGeom.vertexData = targetGeomLink.vertexData;
 			mOptimisedSubMeshGeometryList.Add( optGeom );
@@ -972,7 +985,7 @@ namespace Axiom.Core
 		{
 			for ( int i = 0; i < numIndexes; ++i )
 			{
-				int searchIdx = (int)*src++;
+				var searchIdx = (int)*src++;
 				// look up original and map to target
 				Debug.Assert( remap.ContainsKey( searchIdx ) );
 
@@ -984,7 +997,7 @@ namespace Axiom.Core
 		{
 			for ( int i = 0; i < numIndexes; ++i )
 			{
-				int searchIdx = (int)*src++;
+				var searchIdx = (int)*src++;
 				// look up original and map to target
 				Debug.Assert( remap.ContainsKey( searchIdx ) );
 
@@ -993,7 +1006,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Get the name of this object
+		///   Get the name of this object
 		/// </summary>
 		public String Name
 		{
@@ -1004,7 +1017,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Return the skeleton that is shared by all instanced objects.
+		///   Return the skeleton that is shared by all instanced objects.
 		/// </summary>
 		public Skeleton BaseSkeleton
 		{
@@ -1015,7 +1028,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Return the animation state that will be cloned each time an InstancedObject is made
+		///   Return the animation state that will be cloned each time an InstancedObject is made
 		/// </summary>
 		public AnimationStateSet BaseAnimationState
 		{
@@ -1026,7 +1039,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Gets the distance at which batches are no longer rendered.
+		///   Gets the distance at which batches are no longer rendered.
 		/// </summary>
 		public virtual float RenderingDistance
 		{
@@ -1037,7 +1050,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Gets the squared distance at which batches are no longer rendered. 
+		///   Gets the squared distance at which batches are no longer rendered.
 		/// </summary>
 		public virtual float SquaredRenderingDistance
 		{
@@ -1048,12 +1061,12 @@ namespace Axiom.Core
 			set
 			{
 				mUpperDistance = value;
-				mSquaredUpperDistance = mUpperDistance * mUpperDistance;
+				mSquaredUpperDistance = mUpperDistance*mUpperDistance;
 			}
 		}
 
 		/// <summary>
-		/// Hides or shows all the batches.
+		///   Hides or shows all the batches.
 		/// </summary>
 		public virtual bool Visible
 		{
@@ -1072,20 +1085,13 @@ namespace Axiom.Core
 			}
 		}
 
-		/// <summary>
-		/// Gets/Sets whether this geometry should cast shadows.
-		/// <remarks>
-		/// No matter what the settings on the original entities,
 		//	the InstancedGeometry class defaults to not casting shadows. 
-		///	This is because, being static, unless you have moving lights
-		///	you'd be better to use precalculated shadows of some sort.
-		///	However, if you need them, you can enable them using this
-		///	method. If the SceneManager is set up to use stencil shadows,
-		///	edge lists will be copied from the underlying meshes on build.
-		///	It is essential that all meshes support stencil shadows in this
-		///	case.
-		/// </remarks>
-		/// </summary>
+		///<summary>
+		///  Gets/Sets whether this geometry should cast shadows.
+		///  <remarks>
+		///    No matter what the settings on the original entities, This is because, being static, unless you have moving lights you'd be better to use precalculated shadows of some sort. However, if you need them, you can enable them using this method. If the SceneManager is set up to use stencil shadows, edge lists will be copied from the underlying meshes on build. It is essential that all meshes support stencil shadows in this case.
+		///  </remarks>
+		///</summary>
 		public virtual bool CastShadows
 		{
 			get
@@ -1104,17 +1110,13 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///  Gets/Sets the size of a single BatchInstance of geometry.
+		///   Gets/Sets the size of a single BatchInstance of geometry.
 		/// </summary>
 		/// <remarks>
-		/// This method allows you to configure the physical world size of 
-		/// each BatchInstance, so you can balance culling against batch size. Entities
-		/// will be fitted within the batch they most closely fit, and the 
-		/// eventual bounds of each batch may well be slightly larger than this
-		/// if they overlap a little. The default is Vector3(1000, 1000, 1000).
+		///   This method allows you to configure the physical world size of each BatchInstance, so you can balance culling against batch size. Entities will be fitted within the batch they most closely fit, and the eventual bounds of each batch may well be slightly larger than this if they overlap a little. The default is Vector3(1000, 1000, 1000).
 		/// </remarks>
 		/// <remarks>
-		/// Must be called before 'build'.
+		///   Must be called before 'build'.
 		/// </remarks>
 		public virtual Vector3 BatchInstanceDimensions
 		{
@@ -1125,23 +1127,18 @@ namespace Axiom.Core
 			set
 			{
 				mBatchInstanceDimensions = value;
-				mHalfBatchInstanceDimensions = value * 0.5;
+				mHalfBatchInstanceDimensions = value*0.5;
 			}
 		}
 
 		/// <summary>
-		///  Gets/Sets the origin of the geometry.
+		///   Gets/Sets the origin of the geometry.
 		/// </summary>
 		/// <remarks>
-		/// This method allows you to configure the world centre of the geometry,
-		/// thus the place which all BatchInstances surround. You probably don't need 
-		/// to mess with this unless you have a seriously large world, since the
-		/// default set up can handle an area 1024 * mBatchInstanceDimensions, and 
-		/// the sparseness of population is no issue when it comes to rendering.
-		/// The default is Vector3(0,0,0).
+		///   This method allows you to configure the world centre of the geometry, thus the place which all BatchInstances surround. You probably don't need to mess with this unless you have a seriously large world, since the default set up can handle an area 1024 * mBatchInstanceDimensions, and the sparseness of population is no issue when it comes to rendering. The default is Vector3(0,0,0).
 		/// </remarks>
 		/// <remarks>
-		/// Must be called before 'build'.
+		///   Must be called before 'build'.
 		/// </remarks>
 		public virtual Vector3 Origin
 		{
@@ -1156,7 +1153,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Return the total number of object that are in all the batches
+		///   Return the total number of object that are in all the batches
 		/// </summary>
 		public int ObjectCount
 		{

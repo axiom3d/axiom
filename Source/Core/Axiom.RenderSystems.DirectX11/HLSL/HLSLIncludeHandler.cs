@@ -62,15 +62,15 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 		public HLSLIncludeHandler( Resource sourceProgram )
 			: base()
 		{
-			program = sourceProgram;
+			this.program = sourceProgram;
 		}
 
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed && disposeManagedResources )
 			{
-				program.SafeDispose();
-				program = null;
+				this.program.SafeDispose();
+				this.program = null;
 			}
 
 			base.dispose( disposeManagedResources );
@@ -78,12 +78,12 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 
 		public void Open( D3D9.IncludeType type, string fileName, out Stream fileStream )
 		{
-			fileStream = ResourceGroupManager.Instance.OpenResource( fileName, program.Group, true, program );
+			fileStream = ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
 		}
 
 		public Stream Open( D3D9.IncludeType type, string fileName, Stream parentStream )
 		{
-			return ResourceGroupManager.Instance.OpenResource( fileName, program.Group, true, program );
+			return ResourceGroupManager.Instance.OpenResource( fileName, this.program.Group, true, this.program );
 		}
 
 		public void Close( Stream fileStream )

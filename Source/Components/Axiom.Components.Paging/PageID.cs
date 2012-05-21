@@ -45,13 +45,13 @@ namespace Axiom.Components.Paging
 		{
 			get
 			{
-				return mValue;
+				return this.mValue;
 			}
 		}
 
 		public PageID( uint pageId )
 		{
-			mValue = pageId;
+			this.mValue = pageId;
 		}
 
 		public static implicit operator PageID( uint val )
@@ -61,7 +61,7 @@ namespace Axiom.Components.Paging
 
 		public override string ToString()
 		{
-			return mValue.ToString();
+			return this.mValue.ToString();
 		}
 	};
 }

@@ -26,7 +26,7 @@
 
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: GLES2DepthBuffer.cs 2805 2011-08-28 18:54:56Z bostich $"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information

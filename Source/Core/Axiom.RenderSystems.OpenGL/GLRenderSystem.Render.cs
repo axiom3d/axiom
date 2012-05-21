@@ -74,8 +74,8 @@ namespace Axiom.RenderSystems.OpenGL
 			// Find the correct type to render
 			int primType;
 			//Use adjacency if there is a geometry program and it requested adjacency info
-			var useAdjacency = ( geometryProgramBound && currentGeometryProgram != null &&
-			                     currentGeometryProgram.IsAdjacencyInfoRequired );
+			var useAdjacency = ( geometryProgramBound && this.currentGeometryProgram != null &&
+			                     this.currentGeometryProgram.IsAdjacencyInfoRequired );
 			switch ( op.operationType )
 			{
 				case OperationType.PointList:
@@ -165,7 +165,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// only valid up to GL_MAX_TEXTURE_UNITS, which is recorded in mFixedFunctionTextureUnits
 			if ( multitexturing )
 			{
-				for ( var i = 0; i < _fixedFunctionTextureUnits; i++ )
+				for ( var i = 0; i < this._fixedFunctionTextureUnits; i++ )
 				{
 					Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + i );
 					Gl.glDisableClientState( Gl.GL_TEXTURE_COORD_ARRAY );
@@ -179,7 +179,7 @@ namespace Axiom.RenderSystems.OpenGL
 			Gl.glDisableClientState( Gl.GL_NORMAL_ARRAY );
 			Gl.glDisableClientState( Gl.GL_COLOR_ARRAY );
 
-			if ( GLEW_EXT_secondary_color )
+			if ( this.GLEW_EXT_secondary_color )
 			{
 				Gl.glDisableClientState( Gl.GL_SECONDARY_COLOR_ARRAY );
 			}
@@ -196,7 +196,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			Gl.glColor4f( 1, 1, 1, 1 );
-			if ( GLEW_EXT_secondary_color )
+			if ( this.GLEW_EXT_secondary_color )
 			{
 				Gl.glSecondaryColor3fEXT( 0.0f, 0.0f, 0.0f );
 			}
@@ -233,13 +233,13 @@ namespace Axiom.RenderSystems.OpenGL
 			var multitexturing = Capabilities.TextureUnitCount > 1;
 
 			var isCustomAttrib = false;
-			if ( currentVertexProgram != null )
+			if ( this.currentVertexProgram != null )
 			{
-				isCustomAttrib = currentVertexProgram.IsAttributeValid( sem, (uint)elem.Index );
+				isCustomAttrib = this.currentVertexProgram.IsAttributeValid( sem, (uint)elem.Index );
 
 				if ( hwGlBuffer.IsInstanceData )
 				{
-					var attrib = currentVertexProgram.AttributeIndex( sem, (uint)elem.Index );
+					var attrib = this.currentVertexProgram.AttributeIndex( sem, (uint)elem.Index );
 					glVertexAttribDivisor( (int)attrib, hwGlBuffer.InstanceDataStepRate );
 					instanceAttribsBound.Add( (int)attrib );
 				}
@@ -251,7 +251,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// builtins may be done this way too
 			if ( isCustomAttrib )
 			{
-				var attrib = currentVertexProgram.AttributeIndex( sem, (uint)elem.Index );
+				var attrib = this.currentVertexProgram.AttributeIndex( sem, (uint)elem.Index );
 				var typeCount = VertexElement.GetTypeCount( elem.Type );
 				var normalised = Gl.GL_FALSE;
 				switch ( elem.Type )
@@ -294,7 +294,7 @@ namespace Axiom.RenderSystems.OpenGL
 						Gl.glEnableClientState( Gl.GL_COLOR_ARRAY );
 						break;
 					case VertexElementSemantic.Specular:
-						if ( GLEW_EXT_secondary_color )
+						if ( this.GLEW_EXT_secondary_color )
 						{
 							Gl.glSecondaryColorPointerEXT( 4, GLHardwareBufferManager.GetGLType( elem.Type ), vertexBuffer.VertexSize,
 							                               pBufferData );
@@ -303,7 +303,7 @@ namespace Axiom.RenderSystems.OpenGL
 						break;
 					case VertexElementSemantic.TexCoords:
 
-						if ( currentVertexProgram != null )
+						if ( this.currentVertexProgram != null )
 						{
 							// Programmable pipeline - direct UV assignment
 							Gl.glClientActiveTextureARB( Gl.GL_TEXTURE0 + elem.Index );
@@ -318,7 +318,7 @@ namespace Axiom.RenderSystems.OpenGL
 							{
 								// Only set this texture unit's texcoord pointer if it
 								// is supposed to be using this element's index
-								if ( texCoordIndex[ i ] != elem.Index || i >= _fixedFunctionTextureUnits )
+								if ( this.texCoordIndex[ i ] != elem.Index || i >= this._fixedFunctionTextureUnits )
 								{
 									continue;
 								}

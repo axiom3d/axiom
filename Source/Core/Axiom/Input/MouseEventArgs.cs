@@ -121,9 +121,9 @@ namespace Axiom.Input
 			this.x = x;
 			this.y = y;
 			this.z = z;
-			relativeX = relX;
-			relativeY = relY;
-			relativeZ = relZ;
+			this.relativeX = relX;
+			this.relativeY = relY;
+			this.relativeZ = relZ;
 		}
 
 		#endregion Constructors
@@ -137,7 +137,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return button;
+				return this.button;
 			}
 		}
 
@@ -148,7 +148,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return x;
+				return this.x;
 			}
 		}
 
@@ -159,7 +159,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return y;
+				return this.y;
 			}
 		}
 
@@ -170,7 +170,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return z;
+				return this.z;
 			}
 		}
 
@@ -181,7 +181,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return relativeX;
+				return this.relativeX;
 			}
 		}
 
@@ -192,7 +192,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return relativeY;
+				return this.relativeY;
 			}
 		}
 
@@ -203,7 +203,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return relativeZ;
+				return this.relativeZ;
 			}
 		}
 

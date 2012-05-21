@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				var pCurDevice = D3D9RenderSystem.ActiveD3D9Device;
 				D3D9.VertexDeclaration it, lpVertDecl;
-				var declFound = _mapDeviceToDeclaration.TryGetValue( pCurDevice, out it );
+				var declFound = this._mapDeviceToDeclaration.TryGetValue( pCurDevice, out it );
 
 				// Case we have to create the declaration for this device.
 				if ( declFound = false || it == null )
@@ -114,18 +114,18 @@ namespace Axiom.RenderSystems.DirectX9
 
 					if ( declFound )
 					{
-						_mapDeviceToDeclaration[ pCurDevice ] = lpVertDecl;
+						this._mapDeviceToDeclaration[ pCurDevice ] = lpVertDecl;
 					}
 					else
 					{
-						_mapDeviceToDeclaration.Add( pCurDevice, lpVertDecl );
+						this._mapDeviceToDeclaration.Add( pCurDevice, lpVertDecl );
 					}
 				}
 
 					// Declaration already exits.
 				else
 				{
-					lpVertDecl = _mapDeviceToDeclaration[ pCurDevice ];
+					lpVertDecl = this._mapDeviceToDeclaration[ pCurDevice ];
 				}
 
 				return lpVertDecl;
@@ -225,12 +225,12 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			foreach ( var it in _mapDeviceToDeclaration.Values )
+			foreach ( var it in this._mapDeviceToDeclaration.Values )
 			{
 				it.SafeDispose();
 			}
 
-			_mapDeviceToDeclaration.Clear();
+			this._mapDeviceToDeclaration.Clear();
 
 			//Leaving critical section
 			this.UnlockDeviceAccess();
@@ -253,10 +253,10 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			if ( _mapDeviceToDeclaration.ContainsKey( d3d9Device ) )
+			if ( this._mapDeviceToDeclaration.ContainsKey( d3d9Device ) )
 			{
-				_mapDeviceToDeclaration[ d3d9Device ].SafeDispose();
-				_mapDeviceToDeclaration.Remove( d3d9Device );
+				this._mapDeviceToDeclaration[ d3d9Device ].SafeDispose();
+				this._mapDeviceToDeclaration.Remove( d3d9Device );
 			}
 
 			//Leaving critical section

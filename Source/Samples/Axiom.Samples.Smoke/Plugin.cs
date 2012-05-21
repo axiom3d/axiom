@@ -37,9 +37,9 @@ namespace Axiom.Samples.Smoke
 
 		public override void Initialize()
 		{
-			sample = new SmokeSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new SmokeSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

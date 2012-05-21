@@ -21,9 +21,9 @@ namespace Axiom.Components.RTShaderSystem
 
 		public GLSLESProgramWriter()
 		{
-			glslVersion = 100;
+			this.glslVersion = 100;
 			InitializeStringMaps();
-			functionCacheMap.Clear();
+			this.functionCacheMap.Clear();
 		}
 
 		internal override string TargetLanguage
@@ -36,40 +36,40 @@ namespace Axiom.Components.RTShaderSystem
 
 		private void InitializeStringMaps()
 		{
-			gpuConstTypeMap = new Dictionary<GpuProgramParameters.GpuConstantType, string>();
+			this.gpuConstTypeMap = new Dictionary<GpuProgramParameters.GpuConstantType, string>();
 			//Basic glsl es types
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Float1, "float" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Float2, "vec2" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Float3, "vec3" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Float4, "vec4" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Sampler1D, "sampler1D" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Sampler2D, "sampler2D" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.SamplerCube, "samplerCube" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Matrix_2X2, "mat2" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Matrix_3X3, "mat3" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Matrix_4X4, "mat4" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Int1, "int" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Int2, "int2" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Int3, "int3" );
-			gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Int4, "int4" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Float1, "float" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Float2, "vec2" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Float3, "vec3" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Float4, "vec4" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Sampler1D, "sampler1D" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Sampler2D, "sampler2D" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.SamplerCube, "samplerCube" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Matrix_2X2, "mat2" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Matrix_3X3, "mat3" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Matrix_4X4, "mat4" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Int1, "int" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Int2, "int2" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Int3, "int3" );
+			this.gpuConstTypeMap.Add( GpuProgramParameters.GpuConstantType.Int4, "int4" );
 
 
-			contentToPerVertexAttributes = new Dictionary<Parameter.ContentType, string>();
+			this.contentToPerVertexAttributes = new Dictionary<Parameter.ContentType, string>();
 			// Custom vertex attributes defined http://www.ogre3d.org/docs/manual/manual_21.html
-			contentToPerVertexAttributes.Add( Parameter.ContentType.PositionObjectSpace, "vertex" );
-			contentToPerVertexAttributes.Add( Parameter.ContentType.NormalObjectSpace, "normal" );
-			contentToPerVertexAttributes.Add( Parameter.ContentType.TangentObjectSpace, "tangent" );
-			contentToPerVertexAttributes.Add( Parameter.ContentType.BinormalObjectSpace, "binormal" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.PositionObjectSpace, "vertex" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.NormalObjectSpace, "normal" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.TangentObjectSpace, "tangent" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.BinormalObjectSpace, "binormal" );
 
-			contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate0, "uv0" );
-			contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate1, "uv1" );
-			contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate3, "uv2" );
-			contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate4, "uv3" );
-			contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate5, "uv4" );
-			contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate6, "uv5" );
-			contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate7, "uv6" );
-			contentToPerVertexAttributes.Add( Parameter.ContentType.ColorDiffuse, "colour" );
-			contentToPerVertexAttributes.Add( Parameter.ContentType.ColorSpecular, "secondary_colour" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate0, "uv0" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate1, "uv1" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate3, "uv2" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate4, "uv3" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate5, "uv4" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate6, "uv5" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.TextureCoordinate7, "uv6" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.ColorDiffuse, "colour" );
+			this.contentToPerVertexAttributes.Add( Parameter.ContentType.ColorSpecular, "secondary_colour" );
 		}
 
 		internal override void WriteSourceCode( System.IO.StreamWriter stream, Program program )
@@ -81,12 +81,12 @@ namespace Axiom.Components.RTShaderSystem
 				throw new Core.AxiomException( "Geometry Programs not supported in GLSL ES writer" );
 			}
 
-			fragInputParams.Clear();
+			this.fragInputParams.Clear();
 			var functionList = program.Functions;
 			var parameterList = program.Parameters;
 
 			// Write the current version (this forces the driver to fulfill the glsl es standard)
-			stream.WriteLine( "#version" + glslVersion.ToString() );
+			stream.WriteLine( "#version" + this.glslVersion.ToString() );
 
 			//Default precision declaration is required in fragment and vertex shaders.
 			stream.WriteLine( "precision highp float" );
@@ -108,7 +108,7 @@ namespace Axiom.Components.RTShaderSystem
 			foreach ( var uniformParams in parameterList )
 			{
 				stream.Write( "uniform\t" );
-				stream.Write( gpuConstTypeMap[ uniformParams.Type ] );
+				stream.Write( this.gpuConstTypeMap[ uniformParams.Type ] );
 				stream.Write( "\t" );
 				stream.Write( uniformParams.Name );
 				if ( uniformParams.IsArray )
@@ -124,7 +124,7 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				WriteFunctionTitle( stream, curFunction );
 
-				inputToGLStatesMap.Clear();
+				this.inputToGLStatesMap.Clear();
 
 				WriteInputParameters( stream, curFunction, gpuType );
 				WriteOutParameters( stream, curFunction, gpuType );
@@ -179,7 +179,7 @@ namespace Axiom.Components.RTShaderSystem
 
 							if ( gpuType == GpuProgramType.Fragment )
 							{
-								if ( fragInputParams.Contains( paramName ) )
+								if ( this.fragInputParams.Contains( paramName ) )
 								{
 									//Declare the copy variable
 									string newVar = "local_" + paramName;
@@ -192,13 +192,13 @@ namespace Axiom.Components.RTShaderSystem
 									tempVar.Insert( 0, "o" );
 
 									//Declare the copy variable and assign the original
-									stream.WriteLine( "\t" + gpuConstTypeMap[ op.Parameter.Type ] + " " + newVar + " = " +
+									stream.WriteLine( "\t" + this.gpuConstTypeMap[ op.Parameter.Type ] + " " + newVar + " = " +
 									                  tempVar + ";\n" );
 
 									//Fromnow on we replace it automatic
-									inputToGLStatesMap.Add( paramName, newVar );
+									this.inputToGLStatesMap.Add( paramName, newVar );
 
-									fragInputParams.Remove( paramName );
+									this.fragInputParams.Remove( paramName );
 								}
 							}
 
@@ -210,27 +210,27 @@ namespace Axiom.Components.RTShaderSystem
 									{
 										string newVar = "local_" + paramName;
 
-										if ( inputToGLStatesMap.ContainsKey( newVar ) == false )
+										if ( this.inputToGLStatesMap.ContainsKey( newVar ) == false )
 										{
 											//Declare the copy variable and assign the original
 
-											stream.WriteLine( "\t" + gpuConstTypeMap[ param.Type ] + " " + newVar +
+											stream.WriteLine( "\t" + this.gpuConstTypeMap[ param.Type ] + " " + newVar +
 											                  " = " + paramName + ";\n" );
 
 											//From now on we replace it automatic
-											inputToGLStatesMap.Add( paramName, newVar );
+											this.inputToGLStatesMap.Add( paramName, newVar );
 										}
 									}
 								}
 							}
 
 							string newParam;
-							if ( inputToGLStatesMap.ContainsKey( paramName ) )
+							if ( this.inputToGLStatesMap.ContainsKey( paramName ) )
 							{
 								int mask = op.Mask; //our swizzle mask
 
 								//Here we insert the renamed param name
-								newParam = inputToGLStatesMap[ paramName ];
+								newParam = this.inputToGLStatesMap[ paramName ];
 
 								if ( mask != (int)Operand.OpMask.All )
 								{
@@ -342,7 +342,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		private void CacheDependencyFunctions( string libName )
 		{
-			if ( cachedFunctionLibraries.ContainsKey( libName ) )
+			if ( this.cachedFunctionLibraries.ContainsKey( libName ) )
 			{
 				return; //lib is already in cach
 			}
@@ -389,7 +389,7 @@ namespace Axiom.Components.RTShaderSystem
 						//Cache #defines
 						if ( tokens[ 0 ] == "#define" )
 						{
-							definesMap.Add( line, libName );
+							this.definesMap.Add( line, libName );
 
 							continue;
 						}
@@ -478,7 +478,7 @@ namespace Axiom.Components.RTShaderSystem
 										}
 									}
 									functionBody.Remove( pos, 1 );
-									functionCacheMap.Add( functionInvoc, functionBody );
+									this.functionCacheMap.Add( functionInvoc, functionBody );
 								}
 								functionBody += "\n";
 								line = reader.ReadLine();
@@ -556,9 +556,9 @@ namespace Axiom.Components.RTShaderSystem
 					}
 
 					//Find the internal type based on the string that we're given
-					foreach ( var key in gpuConstTypeMap.Keys )
+					foreach ( var key in this.gpuConstTypeMap.Keys )
 					{
-						if ( gpuConstTypeMap[ key ] == paramTokens[ 1 ] )
+						if ( this.gpuConstTypeMap[ key ] == paramTokens[ 1 ] )
 						{
 							gpuType = key;
 							break;
@@ -634,11 +634,11 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				string curDependency = program.GetDependency( i );
 
-				foreach ( var key in definesMap.Keys )
+				foreach ( var key in this.definesMap.Keys )
 				{
-					if ( definesMap[ key ] == curDependency )
+					if ( this.definesMap[ key ] == curDependency )
 					{
-						stream.Write( definesMap[ key ] );
+						stream.Write( this.definesMap[ key ] );
 						stream.Write( "\n" );
 					}
 				}
@@ -651,7 +651,7 @@ namespace Axiom.Components.RTShaderSystem
 				string body = string.Empty;
 
 				//find the function in the cache
-				foreach ( var key in functionCacheMap.Keys )
+				foreach ( var key in this.functionCacheMap.Keys )
 				{
 					if ( !( it == key ) )
 					{
@@ -659,7 +659,7 @@ namespace Axiom.Components.RTShaderSystem
 					}
 
 					invoc = key;
-					body = functionCacheMap[ key ];
+					body = this.functionCacheMap[ key ];
 					break;
 				}
 
@@ -713,7 +713,7 @@ namespace Axiom.Components.RTShaderSystem
 							throw new Core.AxiomException( "Cannot convert Operand.OpMask to GpuConstantType" );
 						}
 
-						stream.Write( gpuConstTypeMap[ gpuType ] + " " + paramName );
+						stream.Write( this.gpuConstTypeMap[ gpuType ] + " " + paramName );
 
 						itOperand++;
 
@@ -734,7 +734,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		private void WriteLocalParameter( StreamWriter stream, Parameter parameter )
 		{
-			stream.Write( gpuConstTypeMap[ parameter.Type ] );
+			stream.Write( this.gpuConstTypeMap[ parameter.Type ] );
 			stream.Write( "\t" );
 			stream.Write( parameter.Name );
 			if ( parameter.IsArray )
@@ -756,7 +756,7 @@ namespace Axiom.Components.RTShaderSystem
 				{
 					// push fragment inputs they all could be written (in glsl you can not write
 					// input params in the fragment program)
-					fragInputParams.Add( paramName );
+					this.fragInputParams.Add( paramName );
 
 					// In the vertex and fragment program the variable names must match.
 					// Unfortunately now the input params are prefixed with an 'i' and output params with 'o'.
@@ -765,17 +765,17 @@ namespace Axiom.Components.RTShaderSystem
 					paramName.Insert( 0, "o" );
 
 					stream.Write( "varying\t" );
-					stream.Write( gpuConstTypeMap[ param.Type ] );
+					stream.Write( this.gpuConstTypeMap[ param.Type ] );
 					stream.Write( "\t" );
 					stream.Write( paramName );
 					stream.WriteLine( ";" );
 				}
 				else if ( gpuType == GpuProgramType.Vertex &&
-				          contentToPerVertexAttributes.ContainsKey( paramContent ) )
+				          this.contentToPerVertexAttributes.ContainsKey( paramContent ) )
 				{
 					// Due the fact that glsl does not have register like cg we have to rename the params
 					// according their content.
-					inputToGLStatesMap.Add( paramName, contentToPerVertexAttributes[ paramContent ] );
+					this.inputToGLStatesMap.Add( paramName, this.contentToPerVertexAttributes[ paramContent ] );
 					stream.Write( "attribute\t" );
 
 					//All uv texcoords passed by Axiom are vec4
@@ -792,16 +792,16 @@ namespace Axiom.Components.RTShaderSystem
 					}
 					else
 					{
-						stream.Write( gpuConstTypeMap[ param.Type ] );
+						stream.Write( this.gpuConstTypeMap[ param.Type ] );
 					}
 					stream.Write( "\t" );
-					stream.Write( contentToPerVertexAttributes[ paramContent ] );
+					stream.Write( this.contentToPerVertexAttributes[ paramContent ] );
 					stream.WriteLine( ";" );
 				}
 				else
 				{
 					stream.Write( "uniform \t" );
-					stream.Write( gpuConstTypeMap[ param.Type ] );
+					stream.Write( this.gpuConstTypeMap[ param.Type ] );
 					stream.Write( "\t" );
 					stream.Write( paramName );
 					stream.WriteLine( ";" );
@@ -820,12 +820,12 @@ namespace Axiom.Components.RTShaderSystem
 					//GLSL Vertex program has to write always gl_Position
 					if ( param.Content == Parameter.ContentType.PositionProjectiveSpace )
 					{
-						inputToGLStatesMap.Add( param.Name, "outputPosition" );
+						this.inputToGLStatesMap.Add( param.Name, "outputPosition" );
 					}
 					else
 					{
 						stream.Write( "varying\t" );
-						stream.Write( gpuConstTypeMap[ param.Type ] );
+						stream.Write( this.gpuConstTypeMap[ param.Type ] );
 						stream.Write( "\t" );
 						stream.Write( param.Name );
 						if ( param.IsArray )
@@ -839,7 +839,7 @@ namespace Axiom.Components.RTShaderSystem
 				          param.Semantic == Parameter.SemanticType.Color )
 				{
 					//GLSL ES fragment program has to always write gl_FragColor
-					inputToGLStatesMap.Add( param.Name, "outputColor" );
+					this.inputToGLStatesMap.Add( param.Name, "outputColor" );
 				}
 			}
 		}
@@ -872,14 +872,14 @@ namespace Axiom.Components.RTShaderSystem
 		private void DiscoverFunctionDependencies( FunctionInvocation invoc, List<FunctionInvocation> depVector )
 		{
 			string body = string.Empty;
-			foreach ( var key in functionCacheMap.Keys )
+			foreach ( var key in this.functionCacheMap.Keys )
 			{
 				if ( invoc == key )
 				{
 					continue;
 				}
 
-				body = functionCacheMap[ key ];
+				body = this.functionCacheMap[ key ];
 				break;
 			}
 
@@ -893,7 +893,7 @@ namespace Axiom.Components.RTShaderSystem
 				{
 					string[] moreTokens = it.Split( ' ' );
 
-					foreach ( var key in functionCacheMap.Keys )
+					foreach ( var key in this.functionCacheMap.Keys )
 					{
 						if ( key.FunctionName == moreTokens[ moreTokens.Length - 1 ] )
 						{

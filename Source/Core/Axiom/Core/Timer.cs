@@ -29,7 +29,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region SVN Version Information
 
 // <file>
-//     <id value="$Id: Timer.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information

@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -53,7 +53,7 @@ namespace OctreeZone
 
 		public ConfigFile( string baseSchemaName )
 		{
-			baseSchema = baseSchemaName;
+			this.baseSchema = baseSchemaName;
 		}
 
 #if SILVERLIGHT || WINDOWS_PHONE
@@ -88,7 +88,7 @@ namespace OctreeZone
 
 		public bool Load( Stream stream )
 		{
-			_doc.Load( stream );
+			this._doc.Load( stream );
 			return true;
 		}
 
@@ -96,13 +96,13 @@ namespace OctreeZone
 		{
 			get
 			{
-				return _doc[ baseSchema ][ key ].InnerText;
+				return this._doc[ this.baseSchema ][ key ].InnerText;
 			}
 		}
 
 		public IEnumerable GetEnumerator()
 		{
-			foreach ( XmlElement el in _doc[ baseSchema ] )
+			foreach ( XmlElement el in this._doc[ this.baseSchema ] )
 			{
 				yield return new string[]
 				             {

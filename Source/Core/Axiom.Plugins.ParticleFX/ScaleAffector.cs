@@ -58,18 +58,18 @@ namespace Axiom.ParticleFX
 			: base( psys )
 		{
 			type = "Scaler";
-			scaleAdjust = 0;
+			this.scaleAdjust = 0;
 		}
 
 		public float ScaleAdjust
 		{
 			get
 			{
-				return scaleAdjust;
+				return this.scaleAdjust;
 			}
 			set
 			{
-				scaleAdjust = value;
+				this.scaleAdjust = value;
 			}
 		}
 
@@ -78,7 +78,7 @@ namespace Axiom.ParticleFX
 			float ds;
 
 			// Scale adjustments by time
-			ds = scaleAdjust*timeElapsed;
+			ds = this.scaleAdjust*timeElapsed;
 
 			float newWide, newHigh;
 

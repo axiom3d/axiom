@@ -12,9 +12,9 @@ namespace Axiom.Components.RTShaderSystem
 
 		public TextureAtlasAttib( IndexPositionMode _posMode, int posOffset, bool _autoBorderAdjust )
 		{
-			positionMode = _posMode;
-			positionOffset = posOffset;
-			autoBorderAdjust = _autoBorderAdjust;
+			this.positionMode = _posMode;
+			this.positionOffset = posOffset;
+			this.autoBorderAdjust = _autoBorderAdjust;
 		}
 	}
 
@@ -179,35 +179,35 @@ namespace Axiom.Components.RTShaderSystem
 			}
 			else
 			{
-				atlases.Add( textureName, atlasData );
+				this.atlases.Add( textureName, atlasData );
 			}
 		}
 
 		public void RemoveTextureAtlasTable( string textureName )
 		{
-			atlases.Remove( textureName );
+			this.atlases.Remove( textureName );
 		}
 
 		public void RemoveAllTextureAtlasTables()
 		{
-			atlases.Clear();
+			this.atlases.Clear();
 		}
 
 		public List<TextureAtlasRecord> GetTextureAtlasTable( string textureName )
 		{
-			if ( atlases.ContainsKey( textureName ) )
+			if ( this.atlases.ContainsKey( textureName ) )
 			{
-				return atlases[ textureName ];
+				return this.atlases[ textureName ];
 			}
 			else
 			{
-				return blankAtlasTable;
+				return this.blankAtlasTable;
 			}
 		}
 
 		public void SetDefaultAtlasingAttributes( IndexPositionMode mode, int offset, bool autoAdjustBorders )
 		{
-			defaultAtlasAttrib = new TextureAtlasAttib( mode, offset, autoAdjustBorders );
+			this.defaultAtlasAttrib = new TextureAtlasAttib( mode, offset, autoAdjustBorders );
 		}
 
 		public void SetMaterialAtlasingAttributes( Axiom.Graphics.Material material, IndexPositionMode mode, int offset,
@@ -244,7 +244,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return defaultAtlasAttrib;
+				return this.defaultAtlasAttrib;
 			}
 		}
 	}

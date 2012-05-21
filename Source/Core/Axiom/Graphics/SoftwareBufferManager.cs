@@ -2,7 +2,7 @@
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: SoftwareBufferManager.cs 2222 2010-10-05 11:56:45Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information

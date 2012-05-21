@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -70,29 +70,29 @@ namespace OctreeZone
 			// init octree
 			var b = new AxisAlignedBox( new Vector3( -10000, -10000, -10000 ), new Vector3( 10000, 10000, 10000 ) );
 			int depth = 8;
-			rootOctree = null;
+			this.rootOctree = null;
 			Init( b, depth );
 		}
 
 		public void Init( AxisAlignedBox box, int depth )
 		{
-			if ( null != rootOctree )
+			if ( null != this.rootOctree )
 			{
-				rootOctree = null;
+				this.rootOctree = null;
 			}
 
-			rootOctree = new Octree( this, null );
+			this.rootOctree = new Octree( this, null );
 
-			maxDepth = depth;
+			this.maxDepth = depth;
 			this.box = box;
 
-			rootOctree.Box = box;
+			this.rootOctree.Box = box;
 
 			Vector3 min = box.Minimum;
 
 			Vector3 max = box.Maximum;
 
-			rootOctree.HalfSize = ( max - min )/2;
+			this.rootOctree.HalfSize = ( max - min )/2;
 		}
 
 		public override void AddNode( PCZSceneNode n )
@@ -143,14 +143,14 @@ namespace OctreeZone
 		public void Resize( AxisAlignedBox box )
 		{
 			// delete the octree
-			rootOctree = null;
+			this.rootOctree = null;
 			// create a new octree
-			rootOctree = new Octree( this, null );
+			this.rootOctree = new Octree( this, null );
 			// set the octree bounding box
-			rootOctree.Box = box;
+			this.rootOctree.Box = box;
 			Vector3 min = box.Minimum;
 			Vector3 max = box.Maximum;
-			rootOctree.HalfSize = ( max - min )*0.5f;
+			this.rootOctree.HalfSize = ( max - min )*0.5f;
 
 			OctreeZoneData ozd;
 			foreach ( PCZSceneNode on in mHomeNodeList )
@@ -470,7 +470,8 @@ namespace OctreeZone
 			}
 
 			// Recursively find visible nodes in the zone
-			WalkOctree( camera, ref visibleNodeList, queue, rootOctree, visibleBounds, false, onlyShadowCasters, displayNodes,
+			WalkOctree( camera, ref visibleNodeList, queue, this.rootOctree, visibleBounds, false, onlyShadowCasters,
+			            displayNodes,
 			            showBoundingBoxes );
 
 			// find visible portals in the zone and recurse into them
@@ -516,7 +517,7 @@ namespace OctreeZone
 				v = Visibility.Full;
 			}
 
-			else if ( octant == rootOctree )
+			else if ( octant == this.rootOctree )
 			{
 				v = Visibility.Partial;
 			}
@@ -637,7 +638,7 @@ namespace OctreeZone
 			}
 
 			// use the Octree to more efficiently find nodes intersecting the aab
-			rootOctree._findNodes( t, ref list, exclude, includeVisitors, false );
+			this.rootOctree._findNodes( t, ref list, exclude, includeVisitors, false );
 
 			// if asked to, recurse through portals
 			if ( recurseThruPortals )
@@ -672,7 +673,7 @@ namespace OctreeZone
 			}
 
 			// Skip if octree has been destroyed (shutdown conditions)
-			if ( null == rootOctree )
+			if ( null == this.rootOctree )
 			{
 				return;
 			}
@@ -681,13 +682,13 @@ namespace OctreeZone
 			if ( null == zoneData.Octant )
 			{
 				//if outside the octree, force into the root node.
-				if ( !zoneData._isIn( rootOctree.Box ) )
+				if ( !zoneData._isIn( this.rootOctree.Box ) )
 				{
-					rootOctree.AddNode( node );
+					this.rootOctree.AddNode( node );
 				}
 				else
 				{
-					AddNodeToOctree( node, rootOctree, 0 );
+					AddNodeToOctree( node, this.rootOctree, 0 );
 				}
 				return;
 			}
@@ -695,20 +696,20 @@ namespace OctreeZone
 			if ( !zoneData._isIn( zoneData.Octant.Box ) )
 			{
 				//if outside the octree, force into the root node.
-				if ( !zoneData._isIn( rootOctree.Box ) )
+				if ( !zoneData._isIn( this.rootOctree.Box ) )
 				{
 					// skip if it's already in the root node.
-					if ( ( (OctreeZoneData)node.GetZoneData( this ) ).Octant == rootOctree )
+					if ( ( (OctreeZoneData)node.GetZoneData( this ) ).Octant == this.rootOctree )
 					{
 						return;
 					}
 
 					RemoveNodeFromOctree( node );
-					rootOctree.AddNode( node );
+					this.rootOctree.AddNode( node );
 				}
 				else
 				{
-					AddNodeToOctree( node, rootOctree, 0 );
+					AddNodeToOctree( node, this.rootOctree, 0 );
 				}
 			}
 		}
@@ -719,7 +720,7 @@ namespace OctreeZone
 		public void RemoveNodeFromOctree( PCZSceneNode n )
 		{
 			// Skip if octree has been destroyed (shutdown conditions)
-			if ( null == rootOctree )
+			if ( null == this.rootOctree )
 			{
 				return;
 			}
@@ -738,7 +739,7 @@ namespace OctreeZone
 		private void AddNodeToOctree( PCZSceneNode n, Octree octant, int depth )
 		{
 			// Skip if octree has been destroyed (shutdown conditions)
-			if ( null == rootOctree )
+			if ( null == this.rootOctree )
 			{
 				return;
 			}
@@ -748,7 +749,7 @@ namespace OctreeZone
 
 			//if the octree is twice as big as the scene node,
 			//we will add it to a child.
-			if ( ( depth < maxDepth ) && octant.IsTwiceSize( bx ) )
+			if ( ( depth < this.maxDepth ) && octant.IsTwiceSize( bx ) )
 			{
 				int x = 0, y = 0, z = 0;
 				octant._getChildIndexes( bx, ref x, ref y, ref z );
@@ -829,7 +830,7 @@ namespace OctreeZone
 			}
 
 			// use the Octree to more efficiently find nodes intersecting the sphere
-			rootOctree._findNodes( t, ref list, exclude, includeVisitors, false );
+			this.rootOctree._findNodes( t, ref list, exclude, includeVisitors, false );
 
 			// if asked to, recurse through portals
 			if ( recurseThruPortals )
@@ -866,7 +867,7 @@ namespace OctreeZone
 			}
 
 			// use the Octree to more efficiently find nodes intersecting the plane bounded volume
-			rootOctree._findNodes( t, ref list, exclude, includeVisitors, false );
+			this.rootOctree._findNodes( t, ref list, exclude, includeVisitors, false );
 
 			// if asked to, recurse through portals
 			if ( recurseThruPortals )
@@ -905,7 +906,7 @@ namespace OctreeZone
 			}
 
 			// use the Octree to more efficiently find nodes intersecting the ray
-			rootOctree._findNodes( t, ref list, exclude, includeVisitors, false );
+			this.rootOctree._findNodes( t, ref list, exclude, includeVisitors, false );
 
 			// if asked to, recurse through portals
 			if ( recurseThruPortals )
@@ -939,9 +940,9 @@ namespace OctreeZone
 
 			if ( key == "Depth" )
 			{
-				maxDepth = (int)value;
+				this.maxDepth = (int)value;
 				// copy the box since resize will delete mOctree and reference won't work
-				AxisAlignedBox box = rootOctree.Box;
+				AxisAlignedBox box = this.rootOctree.Box;
 				Resize( box );
 				return true;
 			}
@@ -987,7 +988,7 @@ namespace OctreeZone
 		public override void GetAABB( ref AxisAlignedBox aabb )
 		{
 			// get the Octree bounding box
-			aabb = rootOctree.Box;
+			aabb = this.rootOctree.Box;
 		}
 
 		/** create zone specific data for a node

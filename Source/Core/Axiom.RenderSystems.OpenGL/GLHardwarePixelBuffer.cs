@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
-//     <id value="$Id: GLHardwarePixelBuffer.cs 1309 2008-07-07 13:34:22Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -65,11 +65,11 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return _buffer;
+				return this._buffer;
 			}
 			set
 			{
-				_buffer = value;
+				this._buffer = value;
 			}
 		}
 
@@ -118,8 +118,8 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			// Allocate storage
-			_data = new byte[sizeInBytes];
-			buffer.Data = BufferBase.Wrap( _data );
+			this._data = new byte[sizeInBytes];
+			buffer.Data = BufferBase.Wrap( this._data );
 			// TODO: use PBO if we're HBU_DYNAMIC
 		}
 
@@ -127,11 +127,11 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			if ( ( usage & BufferUsage.Static ) == BufferUsage.Static )
 			{
-				if ( _bufferPinndedHandle.IsAllocated )
+				if ( this._bufferPinndedHandle.IsAllocated )
 				{
 					buffer.Data = null;
-					_bufferPinndedHandle.Free();
-					_data = null;
+					this._bufferPinndedHandle.Free();
+					this._data = null;
 				}
 			}
 		}
@@ -156,15 +156,15 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( options != BufferLocking.Discard && ( usage & BufferUsage.WriteOnly ) == 0 )
 			{
 				// Download the old contents of the texture
-				download( _buffer );
+				download( this._buffer );
 			}
-			_currentLockOptions = options;
-			return _buffer.GetSubVolume( lockBox );
+			this._currentLockOptions = options;
+			return this._buffer.GetSubVolume( lockBox );
 		}
 
 		protected override void UnlockImpl()
 		{
-			if ( _currentLockOptions != BufferLocking.ReadOnly )
+			if ( this._currentLockOptions != BufferLocking.ReadOnly )
 			{
 				// From buffer to card, only upload if was locked for writing
 				upload( CurrentLock );
@@ -177,7 +177,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			PixelBox scaled;
 
-			if ( !_buffer.Contains( dstBox ) )
+			if ( !this._buffer.Contains( dstBox ) )
 			{
 				throw new ArgumentException( "Destination box out of range." );
 			}
@@ -188,7 +188,7 @@ namespace Axiom.RenderSystems.OpenGL
 				// floating point textures and cannot cope with 3D images.
 				// This also does pixel format conversion if needed
 				allocateBuffer();
-				scaled = _buffer.GetSubVolume( dstBox );
+				scaled = this._buffer.GetSubVolume( dstBox );
 
 				Image.Scale( src, scaled, ImageFilter.Bilinear );
 			}
@@ -197,7 +197,7 @@ namespace Axiom.RenderSystems.OpenGL
 				// Extents match, but format is not accepted as valid source format for GL
 				// do conversion in temporary buffer
 				allocateBuffer();
-				scaled = _buffer.GetSubVolume( dstBox );
+				scaled = this._buffer.GetSubVolume( dstBox );
 				PixelConverter.BulkPixelConversion( src, scaled );
 			}
 			else
@@ -219,7 +219,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void BlitToMemory( BasicBox srcBox, PixelBox dst )
 		{
-			if ( !_buffer.Contains( srcBox ) )
+			if ( !this._buffer.Contains( srcBox ) )
 			{
 				throw new ArgumentException( "Source box out of range." );
 			}
@@ -236,7 +236,7 @@ namespace Axiom.RenderSystems.OpenGL
 				// Use buffer for intermediate copy
 				allocateBuffer();
 				// Download entire buffer
-				download( _buffer );
+				download( this._buffer );
 				if ( srcBox.Width != dst.Width || srcBox.Height != dst.Height || srcBox.Depth != dst.Depth )
 				{
 					//TODO Implement Image.Scale
@@ -247,7 +247,7 @@ namespace Axiom.RenderSystems.OpenGL
 				else
 				{
 					// Just copy the bit that we need
-					PixelConverter.BulkPixelConversion( _buffer.GetSubVolume( srcBox ), dst );
+					PixelConverter.BulkPixelConversion( this._buffer.GetSubVolume( srcBox ), dst );
 				}
 				freeBuffer();
 			}
@@ -264,9 +264,9 @@ namespace Axiom.RenderSystems.OpenGL
 
 				// There are no unmanaged resources to release, but
 				// if we add them, they need to be released here.
-				if ( _bufferPinndedHandle.IsAllocated )
+				if ( this._bufferPinndedHandle.IsAllocated )
 				{
-					_bufferPinndedHandle.Free();
+					this._bufferPinndedHandle.Free();
 				}
 				buffer.Data = null;
 				buffer = null;

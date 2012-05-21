@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
-//     <id value="$Id: GLFBORenderTexture.cs 1537 2009-03-30 19:25:01Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -62,14 +62,14 @@ namespace Axiom.RenderSystems.OpenGL
 		public GLFBORenderTexture( GLFBORTTManager manager, string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
 			: base( name, target, writeGamma, fsaa )
 		{
-			_fbo = new GLFrameBufferObject( manager );
+			this._fbo = new GLFrameBufferObject( manager );
 
 			// Bind target to surface 0 and initialise
-			_fbo.BindSurface( 0, target );
+			this._fbo.BindSurface( 0, target );
 
 			// Get attributes
-			width = _fbo.Width;
-			height = _fbo.Height;
+			width = this._fbo.Width;
+			height = this._fbo.Height;
 		}
 
 		#endregion Construction and Destruction
@@ -83,7 +83,7 @@ namespace Axiom.RenderSystems.OpenGL
 				switch ( attribute.ToLower() )
 				{
 					case "fbo":
-						return _fbo;
+						return this._fbo;
 					default:
 						return null;
 				}
@@ -97,7 +97,7 @@ namespace Axiom.RenderSystems.OpenGL
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					_fbo.Dispose();
+					this._fbo.Dispose();
 				}
 
 				// There are no unmanaged resources to release, but

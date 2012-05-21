@@ -62,8 +62,8 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			this.manager = manager;
 
-			pbFormat = PixelUtil.GetComponentType( target.Buffer.Format );
-			manager.RequestPBuffer( pbFormat, Width, Height );
+			this.pbFormat = PixelUtil.GetComponentType( target.Buffer.Format );
+			manager.RequestPBuffer( this.pbFormat, Width, Height );
 		}
 
 		#endregion Construction and Destruction
@@ -76,7 +76,7 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( disposeManagedResources )
 				{
-					manager.ReleasePBuffer( pbFormat );
+					this.manager.ReleasePBuffer( this.pbFormat );
 				}
 			}
 			base.dispose( disposeManagedResources );
@@ -100,7 +100,7 @@ namespace Axiom.RenderSystems.OpenGL
 						break;
 					case "GLCONTEXT":
 						// Get PBuffer for our internal format
-						return manager.GetContextFor( pbFormat, Width, Height );
+						return this.manager.GetContextFor( this.pbFormat, Width, Height );
 						break;
 					default:
 						return base[ attribute ];

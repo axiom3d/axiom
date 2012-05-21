@@ -154,7 +154,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return _engineConfig;
+				return this._engineConfig;
 			}
 		}
 

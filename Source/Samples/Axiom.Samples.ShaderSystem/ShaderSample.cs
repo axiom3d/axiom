@@ -89,7 +89,7 @@ namespace Axiom.Samples.ShaderSystem
 
 		public ShaderSample()
 		{
-			layeredBlendingEntity = null;
+			this.layeredBlendingEntity = null;
 			Metadata[ "Title" ] = "Shader System";
 			Metadata[ "Description" ] = "Demonstrate the capabilities of the RT Shader System component." +
 			                            "1. Fixed Function Pipeline emulation." +
@@ -107,14 +107,14 @@ namespace Axiom.Samples.ShaderSystem
 			                     "Press the export button in order to export current target model material. " +
 			                     "The model above the target will import this material next time the sample reloads. " +
 			                     "Right click on object to see the shaders it currently uses. ";
-			pointLightNode = null;
-			reflectionMapFactory = null;
-			instancedViewportsEnable = false;
-			instancedViewportsSubRenderState = null;
-			instancedViewportsFactory = null;
-			bbsFlare = null;
-			addedLotsOfModels = false;
-			numberOfModelsAdded = 0;
+			this.pointLightNode = null;
+			this.reflectionMapFactory = null;
+			this.instancedViewportsEnable = false;
+			this.instancedViewportsSubRenderState = null;
+			this.instancedViewportsFactory = null;
+			this.bbsFlare = null;
+			this.addedLotsOfModels = false;
+			this.numberOfModelsAdded = 0;
 		}
 
 		public override void Shutdown()
@@ -125,7 +125,7 @@ namespace Axiom.Samples.ShaderSystem
 
 		private void ItemSelected( SelectMenu menu )
 		{
-			if ( menu == lightingModelMenu )
+			if ( menu == this.lightingModelMenu )
 			{
 				int curModelIndex = menu.SelectionIndex;
 
@@ -135,7 +135,7 @@ namespace Axiom.Samples.ShaderSystem
 					CurrentLightingModel = (ShaderSystemLightingModel)curModelIndex;
 				}
 			}
-			else if ( menu == fogModeMenu )
+			else if ( menu == this.fogModeMenu )
 			{
 				int curModeIndex = menu.SelectionIndex;
 
@@ -144,13 +144,13 @@ namespace Axiom.Samples.ShaderSystem
 					SceneManager.SetFog( (FogMode)curModeIndex, new ColorEx( 1, 1, 1, 0 ), 0.0015f, 350.0f, 1500.0f );
 				}
 			}
-			else if ( menu == shadowMenu )
+			else if ( menu == this.shadowMenu )
 			{
 				int curShadowTypeIndex = menu.SelectionIndex;
 
 				ApplyShadowType( curShadowTypeIndex );
 			}
-			else if ( menu == languageMenu )
+			else if ( menu == this.languageMenu )
 			{
 				ShaderGenerator.Instance.TargetLangauge = menu.SelectedItem;
 			}
@@ -166,7 +166,7 @@ namespace Axiom.Samples.ShaderSystem
 			}
 			else if ( cbName == ReflectionMapBox )
 			{
-				reflectionMapEnable = box.IsChecked;
+				this.reflectionMapEnable = box.IsChecked;
 			}
 			else if ( cbName == DirectionalLightName )
 			{
@@ -205,7 +205,7 @@ namespace Axiom.Samples.ShaderSystem
 			{
 				string materialName = SceneManager.GetEntity( MainEntityName ).GetSubEntity( 0 ).MaterialName;
 
-				ExportRTShaderSystemMaterail( exportMaterialPath + "ShaderSystemExport.material", materialName );
+				ExportRTShaderSystemMaterail( this.exportMaterialPath + "ShaderSystemExport.material", materialName );
 			}
 				//Case the shader cache should be flushed
 			else if ( b.Name == FlushButtonName )
@@ -214,7 +214,7 @@ namespace Axiom.Samples.ShaderSystem
 			}
 
 				//Case the blend layer type modified.
-			else if ( b.Name == LayerblendButtonName && layerBlendSubRS != null )
+			else if ( b.Name == LayerblendButtonName && this.layerBlendSubRS != null )
 			{
 				ChangeTextureLayerBlendMode();
 			}
@@ -226,9 +226,9 @@ namespace Axiom.Samples.ShaderSystem
 			{
 				Real reflectionPower = slider.Value;
 
-				if ( reflectionMapSubRS != null )
+				if ( this.reflectionMapSubRS != null )
 				{
-					var reflectMapSubRS = reflectionMapSubRS as ReflectionMap;
+					var reflectMapSubRS = this.reflectionMapSubRS as ReflectionMap;
 
 					// Since RTSS export caps based on the template sub render states we have to update the template reflection sub render state.
 					reflectMapSubRS.ReflectionPower = reflectionPower;
@@ -239,7 +239,7 @@ namespace Axiom.Samples.ShaderSystem
 					// based on the template sub render states assembled for each pass.
 					// From that set of instances a CPU program is generated and afterward a GPU program finally generated.
 
-					foreach ( var it in reflectionMapSubRS.TemplateSubRenderStateList )
+					foreach ( var it in this.reflectionMapSubRS.TemplateSubRenderStateList )
 					{
 						var reflectionMapInstance = it as ReflectionMap;
 						reflectionMapInstance.ReflectionPower = reflectionPower;
@@ -249,10 +249,10 @@ namespace Axiom.Samples.ShaderSystem
 
 			if ( slider.Name == ModifierValueSlider )
 			{
-				if ( layeredBlendingEntity != null )
+				if ( this.layeredBlendingEntity != null )
 				{
-					Real val = modifierValueSlider.Value;
-					layeredBlendingEntity.GetSubEntity( 0 ).SetCustomParameter( 2, new Vector4( val, val, val, 0 ) );
+					Real val = this.modifierValueSlider.Value;
+					this.layeredBlendingEntity.GetSubEntity( 0 ).SetCustomParameter( 2, new Vector4( val, val, val, 0 ) );
 				}
 			}
 		}
@@ -293,13 +293,13 @@ namespace Axiom.Samples.ShaderSystem
 			light.Position = Camera.DerivedPosition + Camera.DerivedUp*20.0f;
 			light.Direction = Camera.DerivedDirection;
 
-			if ( pointLightNode != null )
+			if ( this.pointLightNode != null )
 			{
 				Real totalTime = 0.0;
 
 				totalTime += evt.TimeSinceLastFrame;
-				pointLightNode.Yaw( (float)( new Degree( new Real( evt.TimeSinceLastFrame*15 ) ) ) );
-				pointLightNode.Position = new Vector3( 0, Axiom.Math.Utility.Sin( totalTime )*30.0, 0 );
+				this.pointLightNode.Yaw( (float)( new Degree( new Real( evt.TimeSinceLastFrame*15 ) ) ) );
+				this.pointLightNode.Position = new Vector3( 0, Axiom.Math.Utility.Sin( totalTime )*30.0, 0 );
 			}
 
 			UpdateTargetObjInfo();
@@ -308,11 +308,11 @@ namespace Axiom.Samples.ShaderSystem
 
 		public void UpdateAddLotsOfModels( bool addThem )
 		{
-			if ( addedLotsOfModels != addThem )
+			if ( this.addedLotsOfModels != addThem )
 			{
-				addedLotsOfModels = addThem;
+				this.addedLotsOfModels = addThem;
 
-				if ( numberOfModelsAdded == 0 )
+				if ( this.numberOfModelsAdded == 0 )
 				{
 					AddModelToScene( "Barrel.mesh" );
 					AddModelToScene( "facial.mesh" );
@@ -324,29 +324,29 @@ namespace Axiom.Samples.ShaderSystem
 					AddModelToScene( "tudorhouse.mesh" );
 					AddModelToScene( "WoodPallet.mesh" );
 				}
-				for ( int i = 0; i < lotsOfModelsNodes.Count; i++ )
+				for ( int i = 0; i < this.lotsOfModelsNodes.Count; i++ )
 				{
-					lotsOfModelsNodes[ i ].IsVisible = addedLotsOfModels;
+					this.lotsOfModelsNodes[ i ].IsVisible = this.addedLotsOfModels;
 				}
 			}
 		}
 
 		public void UpdateTargetObjInfo()
 		{
-			if ( targetObj == null )
+			if ( this.targetObj == null )
 			{
 				return;
 			}
 
 			string targetObjMaterialName = string.Empty;
 
-			if ( targetObj.MovableType == "Entity" )
+			if ( this.targetObj.MovableType == "Entity" )
 			{
-				var targetEnt = targetObj as Entity;
+				var targetEnt = this.targetObj as Entity;
 				targetObjMaterialName = targetEnt.GetSubEntity( 0 ).MaterialName;
 			}
 
-			targetObjMatName.Caption = targetObjMaterialName;
+			this.targetObjMatName.Caption = targetObjMaterialName;
 			if ( Viewport.MaterialScheme == ShaderGenerator.DefaultSchemeName )
 			{
 				var matMainEnt = (Material)MaterialManager.Instance.GetByName( targetObjMaterialName );
@@ -368,15 +368,15 @@ namespace Axiom.Samples.ShaderSystem
 
 					if ( shaderGeneratedTech != null )
 					{
-						targetObjVS.Caption = "VS: " + shaderGeneratedTech.GetPass( 0 ).VertexProgramName;
-						targetObjFS.Caption = "FS: " + shaderGeneratedTech.GetPass( 0 ).FragmentProgramName;
+						this.targetObjVS.Caption = "VS: " + shaderGeneratedTech.GetPass( 0 ).VertexProgramName;
+						this.targetObjFS.Caption = "FS: " + shaderGeneratedTech.GetPass( 0 ).FragmentProgramName;
 					}
 				}
 			}
 			else
 			{
-				targetObjVS.Caption = "VS: N/A";
-				targetObjFS.Caption = "FS: N/A";
+				this.targetObjVS.Caption = "VS: N/A";
+				this.targetObjFS.Caption = "FS: N/A";
 			}
 		}
 
@@ -395,16 +395,16 @@ namespace Axiom.Samples.ShaderSystem
 			light.Specular = new ColorEx( 0.5f, 0.5f, 0.5f );
 
 			//Create pivot node
-			directionalLightNode = SceneManager.RootSceneNode.CreateChildSceneNode();
+			this.directionalLightNode = SceneManager.RootSceneNode.CreateChildSceneNode();
 
 			//Create billboard set
-			bbsFlare = SceneManager.CreateBillboardSet();
-			bbsFlare.MaterialName = "Examples/Flare3";
-			bbsFlare.CreateBillboard( -dir*500 ).Color = light.Diffuse;
-			bbsFlare.CastShadows = false;
+			this.bbsFlare = SceneManager.CreateBillboardSet();
+			this.bbsFlare.MaterialName = "Examples/Flare3";
+			this.bbsFlare.CreateBillboard( -dir*500 ).Color = light.Diffuse;
+			this.bbsFlare.CastShadows = false;
 
-			directionalLightNode.AttachObject( bbsFlare );
-			directionalLightNode.AttachObject( light );
+			this.directionalLightNode.AttachObject( this.bbsFlare );
+			this.directionalLightNode.AttachObject( light );
 		}
 
 		private void CreatePointLight()
@@ -424,7 +424,7 @@ namespace Axiom.Samples.ShaderSystem
 			light.Specular = new ColorEx( 0.5f, 0.5f, 0.5f );
 			light.SetAttenuation( 200, 1, 0.0005f, 0.0f );
 			//Create pivot point
-			pointLightNode = SceneManager.RootSceneNode.CreateChildSceneNode();
+			this.pointLightNode = SceneManager.RootSceneNode.CreateChildSceneNode();
 
 			BillboardSet bbs;
 
@@ -433,8 +433,8 @@ namespace Axiom.Samples.ShaderSystem
 			bbs.CreateBillboard( new Vector3( 200, 100, 0 ) ).Color = light.Diffuse;
 			bbs.CastShadows = false;
 
-			pointLightNode.AttachObject( bbs );
-			pointLightNode.CreateChildSceneNode( new Vector3( 200, 100, 0 ) ).AttachObject( light );
+			this.pointLightNode.AttachObject( bbs );
+			this.pointLightNode.CreateChildSceneNode( new Vector3( 200, 100, 0 ) ).AttachObject( light );
 		}
 
 		private void CreateSpotLight()
@@ -455,25 +455,25 @@ namespace Axiom.Samples.ShaderSystem
 
 		private void UpdateInstancedViewports( bool enabled )
 		{
-			if ( instancedViewportsEnable != enabled )
+			if ( this.instancedViewportsEnable != enabled )
 			{
-				instancedViewportsEnable = enabled;
+				this.instancedViewportsEnable = enabled;
 
-				if ( instancedViewportsEnable )
+				if ( this.instancedViewportsEnable )
 				{
 					Camera.CullFrustum = new InfiniteFrustum();
 
 					// having problems with bb...
-					directionalLightNode.DetachObject( bbsFlare );
+					this.directionalLightNode.DetachObject( this.bbsFlare );
 				}
 				else
 				{
 					Camera.CullFrustum = null;
-					directionalLightNode.AttachObject( bbsFlare );
+					this.directionalLightNode.AttachObject( this.bbsFlare );
 				}
 
 
-				if ( instancedViewportsEnable )
+				if ( this.instancedViewportsEnable )
 				{
 					CreateInstancedViewports();
 				}
@@ -490,16 +490,16 @@ namespace Axiom.Samples.ShaderSystem
 			{
 				if ( visible )
 				{
-					if ( pointLightNode.IsInSceneGraph == false )
+					if ( this.pointLightNode.IsInSceneGraph == false )
 					{
-						SceneManager.RootSceneNode.AddChild( pointLightNode );
+						SceneManager.RootSceneNode.AddChild( this.pointLightNode );
 					}
 				}
 				else
 				{
-					if ( pointLightNode.IsInSceneGraph == true )
+					if ( this.pointLightNode.IsInSceneGraph == true )
 					{
-						SceneManager.RootSceneNode.RemoveChild( pointLightNode );
+						SceneManager.RootSceneNode.RemoveChild( this.pointLightNode );
 					}
 				}
 				SceneManager.GetLight( lightName ).IsVisible = visible;
@@ -509,7 +509,7 @@ namespace Axiom.Samples.ShaderSystem
 				//Toggle its visibility ad billboard set visiblity
 			else if ( lightName == DirectionalLightName )
 			{
-				foreach ( var it in directionalLightNode.Objects )
+				foreach ( var it in this.directionalLightNode.Objects )
 				{
 					it.IsVisible = visible;
 				}
@@ -553,7 +553,7 @@ namespace Axiom.Samples.ShaderSystem
 
 		private void UpdateSystemShaders()
 		{
-			foreach ( var it in targetEntities )
+			foreach ( var it in this.targetEntities )
 			{
 				GenerateShaders( it );
 			}
@@ -579,17 +579,17 @@ namespace Axiom.Samples.ShaderSystem
 
 		private void AddModelToScene( string modelName )
 		{
-			numberOfModelsAdded++;
+			this.numberOfModelsAdded++;
 			for ( int i = 0; i < 8; i++ )
 			{
 				float scaleFactor = 30;
 				Entity entity;
 				SceneNode childNode;
-				entity = SceneManager.CreateEntity( "createdEnts" + numberOfModelsAdded.ToString(), modelName );
-				lotsOfModelsEntitites.Add( entity );
+				entity = SceneManager.CreateEntity( "createdEnts" + this.numberOfModelsAdded.ToString(), modelName );
+				this.lotsOfModelsEntitites.Add( entity );
 				childNode = SceneManager.RootSceneNode.CreateChildSceneNode();
-				lotsOfModelsNodes.Add( childNode );
-				childNode.Position = new Vector3( numberOfModelsAdded*scaleFactor, 15, i*scaleFactor );
+				this.lotsOfModelsNodes.Add( childNode );
+				childNode.Position = new Vector3( this.numberOfModelsAdded*scaleFactor, 15, i*scaleFactor );
 				childNode.AttachObject( entity );
 				var modelMesh = (Mesh)MeshManager.Instance.GetByName( modelName );
 				Vector3 modelSize = modelMesh.BoundingBox.Size;
@@ -617,7 +617,7 @@ namespace Axiom.Samples.ShaderSystem
 					var curMaterial = (Material)MaterialManager.Instance.GetByName( curMaterialName );
 					Pass curPass = curMaterial.GetTechnique( 0 ).GetPass( 0 );
 
-					if ( specularEnable )
+					if ( this.specularEnable )
 					{
 						curPass.Specular = ColorEx.White;
 						curPass.Shininess = 32;
@@ -635,17 +635,17 @@ namespace Axiom.Samples.ShaderSystem
 					//Remove all sub render states
 					renderState.Reset();
 
-					if ( curLightingModel == ShaderSystemLightingModel.PerVertexLighting )
+					if ( this.curLightingModel == ShaderSystemLightingModel.PerVertexLighting )
 					{
 						SubRenderState perPerVertexLightModel = ShaderGenerator.Instance.CreateSubRenderState( FFPLighting.FFPType );
 						renderState.AddTemplateSubRenderState( perPerVertexLightModel );
 					}
-					else if ( curLightingModel == ShaderSystemLightingModel.PerVertexLighting )
+					else if ( this.curLightingModel == ShaderSystemLightingModel.PerVertexLighting )
 					{
 						SubRenderState perPixelLightModel = ShaderGenerator.Instance.CreateSubRenderState( PerPixelLighting.SGXType );
 						renderState.AddTemplateSubRenderState( perPixelLightModel );
 					}
-					else if ( curLightingModel == ShaderSystemLightingModel.NormalMapLightingTangentSpace )
+					else if ( this.curLightingModel == ShaderSystemLightingModel.NormalMapLightingTangentSpace )
 					{
 						//Apply normal map only on main entity.
 						if ( entity.Name == MainEntityName )
@@ -664,7 +664,7 @@ namespace Axiom.Samples.ShaderSystem
 							renderState.AddTemplateSubRenderState( perPixelLightModel );
 						}
 					}
-					else if ( curLightingModel == ShaderSystemLightingModel.NormalMapLightingObjectSpace )
+					else if ( this.curLightingModel == ShaderSystemLightingModel.NormalMapLightingObjectSpace )
 					{
 						//Apply normal map only on main entity
 						if ( entity.Name == MainEntityName )
@@ -686,24 +686,24 @@ namespace Axiom.Samples.ShaderSystem
 						}
 					}
 
-					if ( reflectionMapEnable )
+					if ( this.reflectionMapEnable )
 					{
 						SubRenderState subRenderState = ShaderGenerator.Instance.CreateSubRenderState( ReflectionMap.SGXType );
 						var reflectMapSubRs = subRenderState as ReflectionMap;
 
 						reflectMapSubRs.ReflectionMapType = TextureType.CubeMap;
-						reflectMapSubRs.ReflectionPower = reflectionPowerSlider.Value;
+						reflectMapSubRs.ReflectionPower = this.reflectionPowerSlider.Value;
 
 						//Setup the textures needed by the reflection effect
 						reflectMapSubRs.MaskMapTextureName = "Panels_refmask.png";
 						reflectMapSubRs.ReflectionMapTextureName = "cubescene.jpg";
 
 						renderState.AddTemplateSubRenderState( subRenderState );
-						reflectionMapSubRS = subRenderState;
+						this.reflectionMapSubRS = subRenderState;
 					}
 					else
 					{
-						reflectionMapSubRS = null;
+						this.reflectionMapSubRS = null;
 					}
 					//Invalidate this material in order to regen its shaders
 					ShaderGenerator.Instance.InvalidateMaterial( ShaderGenerator.DefaultSchemeName, curMaterialName );
@@ -725,15 +725,15 @@ namespace Axiom.Samples.ShaderSystem
 		protected override void SetupContent()
 		{
 			//Setup default effects values.
-			curLightingModel = ShaderSystemLightingModel.PerVertexLighting;
-			perPixelFogEnable = false;
-			specularEnable = false;
-			reflectionMapEnable = false;
-			reflectionMapSubRS = null;
-			layerBlendSubRS = null;
+			this.curLightingModel = ShaderSystemLightingModel.PerVertexLighting;
+			this.perPixelFogEnable = false;
+			this.specularEnable = false;
+			this.reflectionMapEnable = false;
+			this.reflectionMapSubRS = null;
+			this.layerBlendSubRS = null;
 
-			rayQuery = SceneManager.CreateRayQuery( new Ray() );
-			targetObj = null;
+			this.rayQuery = SceneManager.CreateRayQuery( new Ray() );
+			this.targetObj = null;
 
 			//Set ambient
 			SceneManager.AmbientLight = new ColorEx( 0.2f, 0.2f, 0.2f );
@@ -750,9 +750,9 @@ namespace Axiom.Samples.ShaderSystem
 			SceneManager.RootSceneNode.CreateChildSceneNode( Vector3.Zero ).AttachObject( planeEnt );
 
 			//Load sample meshes an generate tangent vectors.
-			for ( int i = 0; i < meshArray.Length; i++ )
+			for ( int i = 0; i < this.meshArray.Length; i++ )
 			{
-				string curMeshName = meshArray[ i ];
+				string curMeshName = this.meshArray[ i ];
 
 				Mesh mesh = MeshManager.Instance.Load( curMeshName, ResourceGroupManager.DefaultResourceGroupName,
 				                                       BufferUsage.DynamicWriteOnly, BufferUsage.StaticWriteOnly );
@@ -771,10 +771,10 @@ namespace Axiom.Samples.ShaderSystem
 
 			//Create the main entity and mark it as the current target object
 			entity = SceneManager.CreateEntity( MainEntityName, MainEntityMesh );
-			targetEntities.Add( entity );
+			this.targetEntities.Add( entity );
 			childNode = SceneManager.RootSceneNode.CreateChildSceneNode();
 			childNode.AttachObject( entity );
-			targetObj = entity;
+			this.targetObj = entity;
 			childNode.ShowBoundingBox = true;
 
 			//Create reflection entity that will show the exported material.
@@ -789,12 +789,12 @@ namespace Axiom.Samples.ShaderSystem
 			childNode.AttachObject( entity );
 
 			//Create texture layer blending demonstration entity
-			layeredBlendingEntity = SceneManager.CreateEntity( "LayeredBlendingMaterialEntity", MainEntityMesh );
-			layeredBlendingEntity.MaterialName = "RTSS/LayeredBlending";
-			layeredBlendingEntity.GetSubEntity( 0 ).SetCustomParameter( 2, Vector4.Zero );
+			this.layeredBlendingEntity = SceneManager.CreateEntity( "LayeredBlendingMaterialEntity", MainEntityMesh );
+			this.layeredBlendingEntity.MaterialName = "RTSS/LayeredBlending";
+			this.layeredBlendingEntity.GetSubEntity( 0 ).SetCustomParameter( 2, Vector4.Zero );
 			childNode = SceneManager.RootSceneNode.CreateChildSceneNode();
 			childNode.Position = new Vector3( 300, 200, -200 );
-			childNode.AttachObject( layeredBlendingEntity );
+			childNode.AttachObject( this.layeredBlendingEntity );
 
 			//Grab the render state of the material
 			RenderState renderState = ShaderGenerator.Instance.GetRenderState( ShaderGenerator.DefaultSchemeName,
@@ -810,7 +810,7 @@ namespace Axiom.Samples.ShaderSystem
 
 					if ( curSubRenderState.Type == LayeredBlending.FFPType )
 					{
-						layerBlendSubRS = curSubRenderState as LayeredBlending;
+						this.layerBlendSubRS = curSubRenderState as LayeredBlending;
 						break;
 					}
 				}
@@ -871,47 +871,49 @@ namespace Axiom.Samples.ShaderSystem
 		private void SetupUI()
 		{
 			//Create language selection
-			languageMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopLeft, "LangMode", "Language", 220, 120, 10 );
+			this.languageMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopLeft, "LangMode", "Language", 220, 120, 10 );
 
 			//Use GLSL ES in case of OpenGL ES 2 render system
 			if ( Root.RenderSystem.Name.Contains( "OpenGL ES 2" ) )
 			{
-				languageMenu.AddItem( "glsles" );
+				this.languageMenu.AddItem( "glsles" );
 				ShaderGenerator.Instance.TargetLangauge = "glsles";
 			}
 			else if ( Root.RenderSystem.Name.Contains( "OpenGL" ) )
 			{
-				languageMenu.AddItem( "glsl" );
+				this.languageMenu.AddItem( "glsl" );
 				ShaderGenerator.Instance.TargetLangauge = "glsl";
 			}
 			else if ( Root.RenderSystem.Name.Contains( "Direct3D9" ) )
 			{
-				languageMenu.AddItem( "hlsl" );
+				this.languageMenu.AddItem( "hlsl" );
 				ShaderGenerator.Instance.TargetLangauge = "hlsl";
 			}
-			languageMenu.AddItem( "cg" );
+			this.languageMenu.AddItem( "cg" );
 
 			//Create check boxes to toggle lights.
-			dirLightCheckBox = TrayManager.CreateCheckBox( TrayLocation.TopLeft, DirectionalLightName, "Directional Light", 220 );
-			pointLightCheckBox = TrayManager.CreateCheckBox( TrayLocation.TopLeft, PointLightName, "Point Light", 220 );
-			spotLightCheckBox = TrayManager.CreateCheckBox( TrayLocation.TopLeft, SpotLightName, "Spot Light", 220 );
-			instancedViewportsCheckBox = TrayManager.CreateCheckBox( TrayLocation.TopLeft, InstancedViewportsName,
-			                                                         "Instanced Viewports", 220 );
-			addLotsOfModels = TrayManager.CreateCheckBox( TrayLocation.TopLeft, InstancedViewportsName, "Add Lots of Models", 220 );
+			this.dirLightCheckBox = TrayManager.CreateCheckBox( TrayLocation.TopLeft, DirectionalLightName, "Directional Light",
+			                                                    220 );
+			this.pointLightCheckBox = TrayManager.CreateCheckBox( TrayLocation.TopLeft, PointLightName, "Point Light", 220 );
+			this.spotLightCheckBox = TrayManager.CreateCheckBox( TrayLocation.TopLeft, SpotLightName, "Spot Light", 220 );
+			this.instancedViewportsCheckBox = TrayManager.CreateCheckBox( TrayLocation.TopLeft, InstancedViewportsName,
+			                                                              "Instanced Viewports", 220 );
+			this.addLotsOfModels = TrayManager.CreateCheckBox( TrayLocation.TopLeft, InstancedViewportsName, "Add Lots of Models",
+			                                                   220 );
 
-			dirLightCheckBox.IsChecked = true;
-			dirLightCheckBox.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
-			pointLightCheckBox.IsChecked = true;
-			pointLightCheckBox.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
-			spotLightCheckBox.IsChecked = false;
-			spotLightCheckBox.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
-			instancedViewportsCheckBox.IsChecked = false;
-			instancedViewportsCheckBox.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
-			addLotsOfModels.IsChecked = false;
-			addLotsOfModels.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
+			this.dirLightCheckBox.IsChecked = true;
+			this.dirLightCheckBox.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
+			this.pointLightCheckBox.IsChecked = true;
+			this.pointLightCheckBox.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
+			this.spotLightCheckBox.IsChecked = false;
+			this.spotLightCheckBox.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
+			this.instancedViewportsCheckBox.IsChecked = false;
+			this.instancedViewportsCheckBox.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
+			this.addLotsOfModels.IsChecked = false;
+			this.addLotsOfModels.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
 			CheckBox cb;
 			cb = TrayManager.CreateCheckBox( TrayLocation.TopLeft, PerPixelFogBox, "Per Pixel Fog", 220 );
-			cb.IsChecked = perPixelFogEnable;
+			cb.IsChecked = this.perPixelFogEnable;
 			cb.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
 			cb = TrayManager.CreateCheckBox( TrayLocation.TopLeft, AtlasAutoBorderMode, "Atlas auto border", 220 );
 			cb.IsChecked = true;
@@ -919,15 +921,15 @@ namespace Axiom.Samples.ShaderSystem
 
 
 			//Create fog widgets.
-			fogModeMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopLeft, "FogMode", "Fog Mode", 220, 120, 10 );
-			fogModeMenu.AddItem( "None" );
-			fogModeMenu.AddItem( "Exp" );
-			fogModeMenu.AddItem( "Exp2" );
-			fogModeMenu.AddItem( "Linear" );
+			this.fogModeMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopLeft, "FogMode", "Fog Mode", 220, 120, 10 );
+			this.fogModeMenu.AddItem( "None" );
+			this.fogModeMenu.AddItem( "Exp" );
+			this.fogModeMenu.AddItem( "Exp2" );
+			this.fogModeMenu.AddItem( "Linear" );
 
 			//Create shadow menu
-			shadowMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopLeft, "ShadowType", "Shadow", 220, 120, 10 );
-			shadowMenu.AddItem( "None" );
+			this.shadowMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopLeft, "ShadowType", "Shadow", 220, 120, 10 );
+			this.shadowMenu.AddItem( "None" );
 
 			//shadowMenu.AddItem("PSSM 3");
 
@@ -935,14 +937,14 @@ namespace Axiom.Samples.ShaderSystem
 			var b = TrayManager.CreateButton( TrayLocation.TopLeft, FlushButtonName, "Flush Shader Cache", 220 );
 
 			//Create target model widgets
-			targetObjMatName = TrayManager.CreateLabel( TrayLocation.TopLeft, "TargetObjMatName", string.Empty, 220 );
-			targetObjVS = TrayManager.CreateLabel( TrayLocation.TopLeft, "TargetObjVS", string.Empty, 220 );
-			targetObjFS = TrayManager.CreateLabel( TrayLocation.TopLeft, "TargetObjFS", string.Empty, 220 );
+			this.targetObjMatName = TrayManager.CreateLabel( TrayLocation.TopLeft, "TargetObjMatName", string.Empty, 220 );
+			this.targetObjVS = TrayManager.CreateLabel( TrayLocation.TopLeft, "TargetObjVS", string.Empty, 220 );
+			this.targetObjFS = TrayManager.CreateLabel( TrayLocation.TopLeft, "TargetObjFS", string.Empty, 220 );
 
 			//Create main entity widgets.
 			TrayManager.CreateLabel( TrayLocation.Bottom, "MainEntityLable", "Main Entity Settings", 240 );
 			var scb = TrayManager.CreateCheckBox( TrayLocation.Bottom, SpecularBox, "Specular", 240 );
-			scb.IsChecked = specularEnable;
+			scb.IsChecked = this.specularEnable;
 			scb.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
 
 			//Allow reflection map only on PS3 and above since with all lights on + specular + bump we
@@ -955,28 +957,30 @@ namespace Axiom.Samples.ShaderSystem
 				rcb.IsChecked = true;
 				rcb.CheckChanged += new CheckChangedHandler( CheckBoxToggled );
 
-				reflectionPowerSlider = TrayManager.CreateThickSlider( TrayLocation.Bottom, ReflectionMapPowerSlider,
-				                                                       "Reflection Power", 240, 80, 0, 1, 100 );
-				reflectionPowerSlider.SetValue( 0.5f, false );
-				reflectionPowerSlider.SliderMoved += new SliderMovedHandler( SliderMoved );
+				this.reflectionPowerSlider = TrayManager.CreateThickSlider( TrayLocation.Bottom, ReflectionMapPowerSlider,
+				                                                            "Reflection Power", 240, 80, 0, 1, 100 );
+				this.reflectionPowerSlider.SetValue( 0.5f, false );
+				this.reflectionPowerSlider.SliderMoved += new SliderMovedHandler( SliderMoved );
 			}
 
-			lightingModelMenu = TrayManager.CreateLongSelectMenu( TrayLocation.Bottom, "targetModelLighting", string.Empty, 240,
-			                                                      230, 10 );
-			lightingModelMenu.AddItem( "Per Vertex" );
-			lightingModelMenu.AddItem( "Per Pixel" );
-			lightingModelMenu.AddItem( "Normal Map - Tangent Space" );
-			lightingModelMenu.AddItem( "Normal Map - Object Space" );
+			this.lightingModelMenu = TrayManager.CreateLongSelectMenu( TrayLocation.Bottom, "targetModelLighting", string.Empty,
+			                                                           240,
+			                                                           230, 10 );
+			this.lightingModelMenu.AddItem( "Per Vertex" );
+			this.lightingModelMenu.AddItem( "Per Pixel" );
+			this.lightingModelMenu.AddItem( "Normal Map - Tangent Space" );
+			this.lightingModelMenu.AddItem( "Normal Map - Object Space" );
 
 			TrayManager.CreateButton( TrayLocation.Bottom, ExportButtonName, "Export Material", 240 );
-			layerBlendLabel = TrayManager.CreateLabel( TrayLocation.Right, "Blend Type", "Blend Type", 240 );
+			this.layerBlendLabel = TrayManager.CreateLabel( TrayLocation.Right, "Blend Type", "Blend Type", 240 );
 			TrayManager.CreateButton( TrayLocation.Right, LayerblendButtonName, "Change Blend Type", 220 );
-			modifierValueSlider = TrayManager.CreateThickSlider( TrayLocation.Right, ModifierValueSlider, "Modifier", 240, 80, 0,
-			                                                     1, 100 );
-			modifierValueSlider.SetValue( 0.0f, false );
-			modifierValueSlider.SliderMoved += new SliderMovedHandler( SliderMoved );
+			this.modifierValueSlider = TrayManager.CreateThickSlider( TrayLocation.Right, ModifierValueSlider, "Modifier", 240,
+			                                                          80, 0,
+			                                                          1, 100 );
+			this.modifierValueSlider.SetValue( 0.0f, false );
+			this.modifierValueSlider.SliderMoved += new SliderMovedHandler( SliderMoved );
 
-			UpdateLayerBlendingCaption( layerBlendSubRS.GetBlendMode( 1 ) );
+			UpdateLayerBlendingCaption( this.layerBlendSubRS.GetBlendMode( 1 ) );
 
 			TrayManager.ShowCursor();
 		}
@@ -984,14 +988,14 @@ namespace Axiom.Samples.ShaderSystem
 		protected override void CleanupContent()
 		{
 			//Unload sample meshes and generate tangent vectors.
-			for ( int i = 0; i < meshArray.Length; i++ )
+			for ( int i = 0; i < this.meshArray.Length; i++ )
 			{
-				string curMeshName = meshArray[ i ];
+				string curMeshName = this.meshArray[ i ];
 				MeshManager.Instance.Unload( curMeshName );
 			}
 
 			MeshManager.Instance.Remove( MainEntityMesh );
-			targetEntities.Clear();
+			this.targetEntities.Clear();
 
 			MeshManager.Instance.Remove( "Myplane" );
 		}
@@ -999,8 +1003,8 @@ namespace Axiom.Samples.ShaderSystem
 		protected override void LoadResources()
 		{
 			//Create and add the custom refledcdtion map shader extension factory to the shader generator.
-			reflectionMapFactory = new ReflectionMapFactory();
-			ShaderGenerator.Instance.AddSubRenderStateFactory( reflectionMapFactory );
+			this.reflectionMapFactory = new ReflectionMapFactory();
+			ShaderGenerator.Instance.AddSubRenderStateFactory( this.reflectionMapFactory );
 
 			CreatePrivateResourceGroup();
 		}
@@ -1010,10 +1014,10 @@ namespace Axiom.Samples.ShaderSystem
 			//Create the resource group of the RT Shader System Sample.
 			ResourceGroupManager rgm = ResourceGroupManager.Instance;
 
-			exportMaterialPath = "C:/";
+			this.exportMaterialPath = "C:/";
 
 			rgm.CreateResourceGroup( SampleMaterialGroup );
-			rgm.AddResourceLocation( exportMaterialPath, "FileSystem", SampleMaterialGroup );
+			rgm.AddResourceLocation( this.exportMaterialPath, "FileSystem", SampleMaterialGroup );
 			rgm.InitializeResourceGroup( SampleMaterialGroup );
 			rgm.LoadResourceGroup( SampleMaterialGroup, true, false );
 		}
@@ -1024,27 +1028,27 @@ namespace Axiom.Samples.ShaderSystem
 			ShaderGenerator.Instance.RemoveAllShaderBasedTechniques( "Panels" );
 			ShaderGenerator.Instance.RemoveAllShaderBasedTechniques( "Panels_RTSS_Export" );
 
-			if ( reflectionMapFactory != null )
+			if ( this.reflectionMapFactory != null )
 			{
-				ShaderGenerator.Instance.RemoveSubRenderStateFactory( reflectionMapFactory );
-				reflectionMapFactory = null;
+				ShaderGenerator.Instance.RemoveSubRenderStateFactory( this.reflectionMapFactory );
+				this.reflectionMapFactory = null;
 			}
 		}
 
 		private void CreateInstancedViewports()
 		{
-			if ( instancedViewportsFactory == null )
+			if ( this.instancedViewportsFactory == null )
 			{
-				instancedViewportsFactory = null; // = new ShaderExInStancedViewportsFactory();
-				ShaderGenerator.Instance.AddSubRenderStateFactory( instancedViewportsFactory );
+				this.instancedViewportsFactory = null; // = new ShaderExInStancedViewportsFactory();
+				ShaderGenerator.Instance.AddSubRenderStateFactory( this.instancedViewportsFactory );
 			}
 
 			var monitorCount = new Vector2( 2.0f, 2.0f );
-			instancedViewportsSubRenderState = ShaderGenerator.Instance.CreateSubRenderState( InstancedViewports.SGXType );
-			var shaderExInstancedViewports = instancedViewportsSubRenderState as InstancedViewports;
+			this.instancedViewportsSubRenderState = ShaderGenerator.Instance.CreateSubRenderState( InstancedViewports.SGXType );
+			var shaderExInstancedViewports = this.instancedViewportsSubRenderState as InstancedViewports;
 			shaderExInstancedViewports.MonitorsCount = monitorCount;
 			RenderState renderState = ShaderGenerator.Instance.GetRenderState( ShaderGenerator.DefaultSchemeName );
-			renderState.AddTemplateSubRenderState( instancedViewportsSubRenderState );
+			renderState.AddTemplateSubRenderState( this.instancedViewportsSubRenderState );
 
 
 			VertexDeclaration vertexDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
@@ -1075,11 +1079,11 @@ namespace Axiom.Samples.ShaderSystem
 
 		private void DestroyInstancedViewports()
 		{
-			if ( instancedViewportsSubRenderState != null )
+			if ( this.instancedViewportsSubRenderState != null )
 			{
 				RenderState renderState = ShaderGenerator.Instance.GetRenderState( ShaderGenerator.DefaultSchemeName );
-				renderState.RemoveTemplateSubRenderState( instancedViewportsSubRenderState );
-				instancedViewportsSubRenderState = null;
+				renderState.RemoveTemplateSubRenderState( this.instancedViewportsSubRenderState );
+				this.instancedViewportsSubRenderState = null;
 			}
 
 			if ( Root.RenderSystem.GlobalInstanceVertexBufferVertexDeclaration != null )
@@ -1100,11 +1104,11 @@ namespace Axiom.Samples.ShaderSystem
 
 		private void DestroyInstancedViewportsFactory()
 		{
-			if ( instancedViewportsFactory != null )
+			if ( this.instancedViewportsFactory != null )
 			{
-				instancedViewportsFactory.DestroyAllInstances();
-				ShaderGenerator.Instance.RemoveSubRenderStateFactory( instancedViewportsFactory );
-				instancedViewportsFactory = null;
+				this.instancedViewportsFactory.DestroyAllInstances();
+				ShaderGenerator.Instance.RemoveSubRenderStateFactory( this.instancedViewportsFactory );
+				this.instancedViewportsFactory = null;
 			}
 		}
 
@@ -1121,19 +1125,19 @@ namespace Axiom.Samples.ShaderSystem
 			int height = evt.State.Height;
 
 			Ray mouseRay = Camera.GetCameraToViewportRay( xPos/(float)width, yPos/(float)height );
-			rayQuery.Ray = mouseRay;
+			this.rayQuery.Ray = mouseRay;
 
-			var result = rayQuery.Execute();
+			var result = this.rayQuery.Execute();
 
 			foreach ( var curEntry in result )
 			{
-				if ( targetObj != null )
+				if ( this.targetObj != null )
 				{
-					targetObj.ParentSceneNode.ShowBoundingBox = false;
+					this.targetObj.ParentSceneNode.ShowBoundingBox = false;
 				}
 
-				targetObj = curEntry.SceneObject;
-				targetObj.ParentSceneNode.ShowBoundingBox = true;
+				this.targetObj = curEntry.SceneObject;
+				this.targetObj.ParentSceneNode.ShowBoundingBox = true;
 			}
 		}
 
@@ -1164,13 +1168,13 @@ namespace Axiom.Samples.ShaderSystem
 					}
 				}
 
-				TrayManager.MoveWidgetToTray( dirLightCheckBox, TrayLocation.TopLeft, 1 );
-				TrayManager.MoveWidgetToTray( pointLightCheckBox, TrayLocation.TopLeft, 2 );
-				TrayManager.MoveWidgetToTray( spotLightCheckBox, TrayLocation.TopLeft, 3 );
+				TrayManager.MoveWidgetToTray( this.dirLightCheckBox, TrayLocation.TopLeft, 1 );
+				TrayManager.MoveWidgetToTray( this.pointLightCheckBox, TrayLocation.TopLeft, 2 );
+				TrayManager.MoveWidgetToTray( this.spotLightCheckBox, TrayLocation.TopLeft, 3 );
 
-				dirLightCheckBox.Show();
-				pointLightCheckBox.Show();
-				spotLightCheckBox.Show();
+				this.dirLightCheckBox.Show();
+				this.pointLightCheckBox.Show();
+				this.spotLightCheckBox.Show();
 			}
 			else if ( menuIndex == 1 )
 			{
@@ -1182,16 +1186,16 @@ namespace Axiom.Samples.ShaderSystem
 				SceneManager.ShadowTextureSelfShadow = true;
 
 				//Leave only directional light
-				dirLightCheckBox.IsChecked = true;
-				pointLightCheckBox.IsChecked = false;
-				spotLightCheckBox.IsChecked = false;
+				this.dirLightCheckBox.IsChecked = true;
+				this.pointLightCheckBox.IsChecked = false;
+				this.spotLightCheckBox.IsChecked = false;
 
-				TrayManager.RemoveWidgetFromTray( dirLightCheckBox );
-				TrayManager.RemoveWidgetFromTray( pointLightCheckBox );
-				TrayManager.RemoveWidgetFromTray( spotLightCheckBox );
-				dirLightCheckBox.Hide();
-				pointLightCheckBox.Hide();
-				spotLightCheckBox.Hide();
+				TrayManager.RemoveWidgetFromTray( this.dirLightCheckBox );
+				TrayManager.RemoveWidgetFromTray( this.pointLightCheckBox );
+				TrayManager.RemoveWidgetFromTray( this.spotLightCheckBox );
+				this.dirLightCheckBox.Hide();
+				this.pointLightCheckBox.Hide();
+				this.spotLightCheckBox.Hide();
 
 				//Set up caster material - this is just a standard depth/shadow map caster
 				SceneManager.ShadowTextureCasterMaterial = "PSSM/shadow_caster";
@@ -1216,7 +1220,7 @@ namespace Axiom.Samples.ShaderSystem
 
 		private void ChangeTextureLayerBlendMode()
 		{
-			LayeredBlending.BlendMode curBlendMode = layerBlendSubRS.GetBlendMode( 1 );
+			LayeredBlending.BlendMode curBlendMode = this.layerBlendSubRS.GetBlendMode( 1 );
 			LayeredBlending.BlendMode nextBlendMode;
 
 			//Update the next blend layer mode.
@@ -1229,7 +1233,7 @@ namespace Axiom.Samples.ShaderSystem
 				nextBlendMode = (LayeredBlending.BlendMode)( curBlendMode + 1 );
 			}
 
-			layerBlendSubRS.SetBlendMode( 1, nextBlendMode );
+			this.layerBlendSubRS.SetBlendMode( 1, nextBlendMode );
 			ShaderGenerator.Instance.InvalidateMaterial( ShaderGenerator.DefaultSchemeName, "RTSS/LayeredBlending" );
 
 			//Update the caption.
@@ -1238,7 +1242,7 @@ namespace Axiom.Samples.ShaderSystem
 
 		private void UpdateLayerBlendingCaption( LayeredBlending.BlendMode nextBlendMode )
 		{
-			layerBlendLabel.Caption = nextBlendMode.ToString();
+			this.layerBlendLabel.Caption = nextBlendMode.ToString();
 		}
 
 		private ManualObject CreateTextureAtlasObject()
@@ -1363,15 +1367,15 @@ namespace Axiom.Samples.ShaderSystem
 		{
 			get
 			{
-				return curLightingModel;
+				return this.curLightingModel;
 			}
 			set
 			{
-				if ( curLightingModel != value )
+				if ( this.curLightingModel != value )
 				{
-					curLightingModel = value;
+					this.curLightingModel = value;
 
-					foreach ( var it in targetEntities )
+					foreach ( var it in this.targetEntities )
 					{
 						GenerateShaders( it );
 					}
@@ -1383,11 +1387,11 @@ namespace Axiom.Samples.ShaderSystem
 		{
 			get
 			{
-				return specularEnable;
+				return this.specularEnable;
 			}
 			set
 			{
-				specularEnable = value;
+				this.specularEnable = value;
 				UpdateSystemShaders();
 			}
 		}
@@ -1396,11 +1400,11 @@ namespace Axiom.Samples.ShaderSystem
 		{
 			get
 			{
-				return reflectionMapEnable;
+				return this.reflectionMapEnable;
 			}
 			set
 			{
-				reflectionMapEnable = value;
+				this.reflectionMapEnable = value;
 			}
 		}
 
@@ -1408,13 +1412,13 @@ namespace Axiom.Samples.ShaderSystem
 		{
 			get
 			{
-				return perPixelFogEnable;
+				return this.perPixelFogEnable;
 			}
 			set
 			{
-				if ( perPixelFogEnable != value )
+				if ( this.perPixelFogEnable != value )
 				{
-					perPixelFogEnable = value;
+					this.perPixelFogEnable = value;
 
 					//Grab the scheme render state.
 					RenderState schemeRenderState = ShaderGenerator.Instance.GetRenderState( ShaderGenerator.DefaultSchemeName );
@@ -1442,7 +1446,7 @@ namespace Axiom.Samples.ShaderSystem
 					}
 
 					//Select the desired fog calculation mode.
-					if ( perPixelFogEnable )
+					if ( this.perPixelFogEnable )
 					{
 						fogSubRenderState.CalculationMode = FFPFog.CalcMode.PerPixel;
 					}
@@ -1461,11 +1465,11 @@ namespace Axiom.Samples.ShaderSystem
 		{
 			get
 			{
-				return instancedViewportsEnable;
+				return this.instancedViewportsEnable;
 			}
 			set
 			{
-				instancedViewportsEnable = value;
+				this.instancedViewportsEnable = value;
 			}
 		}
 
@@ -1498,32 +1502,32 @@ namespace Axiom.Samples.ShaderSystem
 			var p = new Plane();
 			p.Normal = Vector3.NegativeUnitX;
 			p.D = 9999999999999999999.0f;
-			frustumPlanes.Add( FrustumPlane.Left, p );
+			this.frustumPlanes.Add( FrustumPlane.Left, p );
 
 			p = new Plane();
 			p.Normal = Vector3.UnitX;
 			p.D = 9999999999999999999.0f;
-			frustumPlanes.Add( FrustumPlane.Right, p );
+			this.frustumPlanes.Add( FrustumPlane.Right, p );
 
 			p = new Plane();
 			p.Normal = Vector3.NegativeUnitY;
 			p.D = 9999999999999999999.0f;
-			frustumPlanes.Add( FrustumPlane.Top, p );
+			this.frustumPlanes.Add( FrustumPlane.Top, p );
 
 			p = new Plane();
 			p.Normal = Vector3.UnitY;
 			p.D = 9999999999999999999.0f;
-			frustumPlanes.Add( FrustumPlane.Bottom, p );
+			this.frustumPlanes.Add( FrustumPlane.Bottom, p );
 
 			p = new Plane();
 			p.Normal = Vector3.NegativeUnitZ;
 			p.D = 9999999999999999999.0f;
-			frustumPlanes.Add( FrustumPlane.Near, p );
+			this.frustumPlanes.Add( FrustumPlane.Near, p );
 
 			p = new Plane();
 			p.Normal = Vector3.UnitZ;
 			p.D = 9999999999999999999.0f;
-			frustumPlanes.Add( FrustumPlane.Far, p );
+			this.frustumPlanes.Add( FrustumPlane.Far, p );
 		}
 
 		/// <summary>
@@ -1578,7 +1582,7 @@ namespace Axiom.Samples.ShaderSystem
 
 		public Plane GetFrustumPlane( FrustumPlane plane )
 		{
-			return frustumPlanes[ plane ];
+			return this.frustumPlanes[ plane ];
 		}
 	}
 }

@@ -73,7 +73,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		internal GLSLProgramFactory()
 		{
 			// instantiate the singleton
-			glslLinkProgramMgr = new GLSLLinkProgramManager();
+			this.glslLinkProgramMgr = new GLSLLinkProgramManager();
 		}
 
 		#endregion Constructor
@@ -114,7 +114,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		{
 			if ( disposeManagedResources )
 			{
-				glslLinkProgramMgr.Dispose();
+				this.glslLinkProgramMgr.Dispose();
 			}
 			base.dispose( disposeManagedResources );
 		}

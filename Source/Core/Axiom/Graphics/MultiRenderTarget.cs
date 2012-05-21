@@ -26,7 +26,7 @@
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: MultiRenderTarget.cs 1658 2009-06-10 19:31:32Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information

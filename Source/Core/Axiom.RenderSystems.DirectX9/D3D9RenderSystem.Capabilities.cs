@@ -58,7 +58,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			rsc.SetCategoryRelevant( CapabilitiesCategory.D3D9, true );
 			rsc.DriverVersion = driverVersion;
-			rsc.DeviceName = _activeD3DDriver.DriverDescription;
+			rsc.DeviceName = this._activeD3DDriver.DriverDescription;
 			rsc.RendersystemName = Name;
 
 			// Supports fixed-function
@@ -95,7 +95,7 @@ namespace Axiom.RenderSystems.DirectX9
 			//rsc.SetCapability( Graphics.Capabilities.VertexBufferInstanceData );
 			//rsc.SetCapability( Graphics.Capabilities.CanGetCompiledShaderBuffer );
 
-			foreach ( var device in _deviceManager )
+			foreach ( var device in this._deviceManager )
 			{
 				var d3D9Device = device.D3DDevice;
 
@@ -126,7 +126,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// Update RS caps using the minimum value found in adapter list.
-			foreach ( var pCurDriver in _driverList )
+			foreach ( var pCurDriver in this._driverList )
 			{
 				var rkCurCaps = pCurDriver.D3D9DeviceCaps;
 
@@ -272,7 +272,7 @@ namespace Axiom.RenderSystems.DirectX9
 			_convertPixelShaderCaps( rsc );
 
 			// Adapter details
-			var adapterId = _activeD3DDriver.AdapterIdentifier;
+			var adapterId = this._activeD3DDriver.AdapterIdentifier;
 
 			// determine vendor
 			// Full list of vendors here: http://www.pcidatabase.com/vendors.php?sort=id
@@ -348,8 +348,8 @@ namespace Axiom.RenderSystems.DirectX9
 			for ( var i = 0; i < 6; ++i )
 			{
 				if (
-					!_pD3D.CheckDeviceFormat( _activeD3DDriver.AdapterNumber, D3D9.DeviceType.Hardware, bbSurfDesc.Format, 0,
-					                          D3D9.ResourceType.Texture, floatFormats[ i ] ) )
+					!this._pD3D.CheckDeviceFormat( this._activeD3DDriver.AdapterNumber, D3D9.DeviceType.Hardware, bbSurfDesc.Format, 0,
+					                               D3D9.ResourceType.Texture, floatFormats[ i ] ) )
 				{
 					continue;
 				}
@@ -383,8 +383,8 @@ namespace Axiom.RenderSystems.DirectX9
 				switch ( rsc.Vendor )
 				{
 					case GPUVendor.Nvidia:
-						if ( _pD3D.CheckDeviceFormat( 0, D3D9.DeviceType.Hardware, D3D9.Format.X8R8G8B8, 0, D3D9.ResourceType.Surface,
-						                              (D3D9.Format)( 'A' | ( 'T' ) << 8 | ( 'O' ) << 16 | ( 'C' ) << 24 ) ) )
+						if ( this._pD3D.CheckDeviceFormat( 0, D3D9.DeviceType.Hardware, D3D9.Format.X8R8G8B8, 0, D3D9.ResourceType.Surface,
+						                                   (D3D9.Format)( 'A' | ( 'T' ) << 8 | ( 'O' ) << 16 | ( 'C' ) << 24 ) ) )
 						{
 							rsc.SetCapability( Graphics.Capabilities.AlphaToCoverage );
 						}
@@ -429,8 +429,8 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				var fmt = D3D9Helper.ConvertEnum( D3D9Helper.GetClosestSupported( pf ) );
 				if (
-					!_pD3D.CheckDeviceFormat( _activeD3DDriver.AdapterNumber, D3D9.DeviceType.Hardware, bbSurfDesc.Format,
-					                          D3D9.Usage.QueryVertexTexture, D3D9.ResourceType.Texture, fmt ) )
+					!this._pD3D.CheckDeviceFormat( this._activeD3DDriver.AdapterNumber, D3D9.DeviceType.Hardware, bbSurfDesc.Format,
+					                               D3D9.Usage.QueryVertexTexture, D3D9.ResourceType.Texture, fmt ) )
 				{
 					continue;
 				}
@@ -451,7 +451,7 @@ namespace Axiom.RenderSystems.DirectX9
 			var minPsCaps = new D3D9.Capabilities();
 
 			// Find the device with the lowest vertex shader caps.
-			foreach ( var pCurDriver in _driverList )
+			foreach ( var pCurDriver in this._driverList )
 			{
 				var currCaps = pCurDriver.D3D9DeviceCaps;
 				var currMajor = currCaps.PixelShaderVersion.Major;
@@ -588,7 +588,7 @@ namespace Axiom.RenderSystems.DirectX9
 			var minVsCaps = new D3D9.Capabilities();
 
 			// Find the device with the lowest vertex shader caps.
-			foreach ( var pCurDriver in _driverList )
+			foreach ( var pCurDriver in this._driverList )
 			{
 				var rkCurCaps = pCurDriver.D3D9DeviceCaps;
 				var currMajor = rkCurCaps.VertexShaderVersion.Major;
@@ -693,31 +693,31 @@ namespace Axiom.RenderSystems.DirectX9
 			WindowEventMonitor.Instance.MessagePump = Win32MessageHandling.MessagePump;
 
 			// Init using current settings
-			_activeD3DDriver = _driverList[ ConfigOptions[ "Rendering Device" ].Value ];
-			if ( _activeD3DDriver == null )
+			this._activeD3DDriver = this._driverList[ ConfigOptions[ "Rendering Device" ].Value ];
+			if ( this._activeD3DDriver == null )
 			{
 				throw new ArgumentException( "Problems finding requested Direct3D driver!" );
 			}
 
-			driverVersion.Major = _activeD3DDriver.AdapterIdentifier.DriverVersion.Major;
-			driverVersion.Minor = _activeD3DDriver.AdapterIdentifier.DriverVersion.Minor;
-			driverVersion.Release = _activeD3DDriver.AdapterIdentifier.DriverVersion.MajorRevision;
-			driverVersion.Build = _activeD3DDriver.AdapterIdentifier.DriverVersion.MinorRevision;
+			driverVersion.Major = this._activeD3DDriver.AdapterIdentifier.DriverVersion.Major;
+			driverVersion.Minor = this._activeD3DDriver.AdapterIdentifier.DriverVersion.Minor;
+			driverVersion.Release = this._activeD3DDriver.AdapterIdentifier.DriverVersion.MajorRevision;
+			driverVersion.Build = this._activeD3DDriver.AdapterIdentifier.DriverVersion.MinorRevision;
 
 			// Create the device manager.
-			_deviceManager = new D3D9DeviceManager();
+			this._deviceManager = new D3D9DeviceManager();
 
 			// Create the texture manager for use by others        
 			textureManager = new D3D9TextureManager();
 
 			// Also create hardware buffer manager
-			_hardwareBufferManager = new D3D9HardwareBufferManager();
+			this._hardwareBufferManager = new D3D9HardwareBufferManager();
 
 			// Create the GPU program manager    
-			_gpuProgramManager = new D3D9GpuProgramManager();
+			this._gpuProgramManager = new D3D9GpuProgramManager();
 
 			// Create & register HLSL factory
-			_hlslProgramFactory = new D3D9HLSLProgramFactory();
+			this._hlslProgramFactory = new D3D9HLSLProgramFactory();
 
 			RenderWindow autoWindow = null;
 
@@ -732,7 +732,7 @@ namespace Axiom.RenderSystems.DirectX9
 				var height = int.Parse( vm.Substring( vm.IndexOf( "x" ) + 1, vm.IndexOf( "@" ) - ( vm.IndexOf( "x" ) + 1 ) ) );
 				var bpp = int.Parse( vm.Substring( vm.IndexOf( "@" ) + 1, vm.IndexOf( "-" ) - ( vm.IndexOf( "@" ) + 1 ) ) );
 
-				foreach ( var currVideoMode in _activeD3DDriver.VideoModeList )
+				foreach ( var currVideoMode in this._activeD3DDriver.VideoModeList )
 				{
 					var temp = currVideoMode.Description;
 					var colorDepth =
@@ -765,13 +765,13 @@ namespace Axiom.RenderSystems.DirectX9
 				var miscParams = new NamedParameterList();
 				miscParams.Add( "title", windowTitle ); // Axiom only?
 				miscParams.Add( "colorDepth", bpp );
-				miscParams.Add( "FSAA", _fsaaSamples );
-				miscParams.Add( "FSAAHint", _fsaaHint );
+				miscParams.Add( "FSAA", this._fsaaSamples );
+				miscParams.Add( "FSAAHint", this._fsaaHint );
 				miscParams.Add( "vsync", vSync );
 				miscParams.Add( "vsyncInterval", vSyncInterval );
-				miscParams.Add( "useNVPerfHUD", _useNVPerfHUD );
+				miscParams.Add( "useNVPerfHUD", this._useNVPerfHUD );
 				miscParams.Add( "gamma", hwGamma );
-				miscParams.Add( "monitorIndex", _activeD3DDriver.AdapterNumber );
+				miscParams.Add( "monitorIndex", this._activeD3DDriver.AdapterNumber );
 
 				// create the render window
 				autoWindow = CreateRenderWindow( windowTitle, width, height, fullScreen, miscParams );
@@ -808,7 +808,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( caps.IsShaderProfileSupported( "hlsl" ) )
 			{
-				HighLevelGpuProgramManager.Instance.AddFactory( _hlslProgramFactory );
+				HighLevelGpuProgramManager.Instance.AddFactory( this._hlslProgramFactory );
 			}
 
 			var defaultLog = LogManager.Instance.DefaultLog;

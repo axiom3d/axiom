@@ -74,9 +74,9 @@ namespace Axiom.Samples.MousePicking
 		/// <returns>bool</returns>
 		public override bool MousePressed( SharpInputSystem.MouseEventArgs evt, SharpInputSystem.MouseButtonID id )
 		{
-			if ( initialized )
+			if ( this.initialized )
 			{
-				_MouseSelector.MousePressed( evt, id );
+				this._MouseSelector.MousePressed( evt, id );
 			}
 			return base.MousePressed( evt, id );
 		}
@@ -88,11 +88,12 @@ namespace Axiom.Samples.MousePicking
 		/// <returns>bool</returns>
 		public override bool MouseMoved( SharpInputSystem.MouseEventArgs evt )
 		{
-			if ( initialized )
+			if ( this.initialized )
 			{
-				_MouseSelector.MouseMoved( evt );
-				MouseLocationLabel.Caption = "(x:y) " + ( evt.State.X.Absolute/(float)Camera.Viewport.ActualWidth ).ToString() + ":" +
-				                             ( evt.State.Y.Absolute/(float)Camera.Viewport.ActualHeight ).ToString();
+				this._MouseSelector.MouseMoved( evt );
+				this.MouseLocationLabel.Caption = "(x:y) " + ( evt.State.X.Absolute/(float)Camera.Viewport.ActualWidth ).ToString() +
+				                                  ":" +
+				                                  ( evt.State.Y.Absolute/(float)Camera.Viewport.ActualHeight ).ToString();
 			}
 			return base.MouseMoved( evt );
 		}
@@ -105,9 +106,9 @@ namespace Axiom.Samples.MousePicking
 		/// <returns>bool</returns>
 		public override bool MouseReleased( SharpInputSystem.MouseEventArgs evt, SharpInputSystem.MouseButtonID id )
 		{
-			if ( initialized )
+			if ( this.initialized )
 			{
-				_MouseSelector.MouseReleased( evt, id );
+				this._MouseSelector.MouseReleased( evt, id );
 			}
 			return base.MouseReleased( evt, id );
 		}
@@ -120,11 +121,11 @@ namespace Axiom.Samples.MousePicking
 		/// <returns>bool</returns>
 		public override bool KeyPressed( SharpInputSystem.KeyEventArgs evt )
 		{
-			if ( initialized )
+			if ( this.initialized )
 			{
 				if ( evt.Key == SharpInputSystem.KeyCode.Key_LCONTROL || evt.Key == SharpInputSystem.KeyCode.Key_RCONTROL )
 				{
-					_MouseSelector.KeepPreviousSelection = true;
+					this._MouseSelector.KeepPreviousSelection = true;
 				}
 			}
 			return base.KeyPressed( evt );
@@ -138,9 +139,9 @@ namespace Axiom.Samples.MousePicking
 		/// <returns>bool</returns>
 		public override bool KeyReleased( SharpInputSystem.KeyEventArgs evt )
 		{
-			if ( initialized )
+			if ( this.initialized )
 			{
-				_MouseSelector.KeepPreviousSelection = false;
+				this._MouseSelector.KeepPreviousSelection = false;
 			}
 			return base.KeyReleased( evt );
 		}
@@ -208,11 +209,11 @@ namespace Axiom.Samples.MousePicking
 			// turn on some fog
 			SceneManager.SetFog( FogMode.Exp, ColorEx.White, 0.0002f );
 
-			_MouseSelector = new MouseSelector( "MouseSelector", Camera, Window );
-			_MouseSelector.SelectionMode = MouseSelector.SelectionModeType.None;
+			this._MouseSelector = new MouseSelector( "MouseSelector", Camera, Window );
+			this._MouseSelector.SelectionMode = MouseSelector.SelectionModeType.None;
 
 			SetupGUI();
-			initialized = true;
+			this.initialized = true;
 			base.SetupContent();
 		}
 
@@ -221,15 +222,16 @@ namespace Axiom.Samples.MousePicking
 		/// </summary>
 		protected void SetupGUI()
 		{
-			selectionModeMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopRight, "SelectionModeMenu", "Selection Mode",
-			                                                      300, 150, 3 );
-			selectionModeMenu.AddItem( "None" );
-			selectionModeMenu.AddItem( "Mouse Select" );
-			selectionModeMenu.AddItem( "Selection Box" );
-			selectionModeMenu.SelectItem( 0 );
-			selectionModeMenu.SelectedIndexChanged += selectionModeMenu_SelectedIndexChanged;
+			this.selectionModeMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopRight, "SelectionModeMenu",
+			                                                           "Selection Mode",
+			                                                           300, 150, 3 );
+			this.selectionModeMenu.AddItem( "None" );
+			this.selectionModeMenu.AddItem( "Mouse Select" );
+			this.selectionModeMenu.AddItem( "Selection Box" );
+			this.selectionModeMenu.SelectItem( 0 );
+			this.selectionModeMenu.SelectedIndexChanged += selectionModeMenu_SelectedIndexChanged;
 
-			MouseLocationLabel = TrayManager.CreateLabel( TrayLocation.TopLeft, "Mouse Location", "", 350 );
+			this.MouseLocationLabel = TrayManager.CreateLabel( TrayLocation.TopLeft, "Mouse Location", "", 350 );
 
 			TrayManager.ShowCursor();
 		}
@@ -243,7 +245,7 @@ namespace Axiom.Samples.MousePicking
 		{
 			if ( sender != null )
 			{
-				_MouseSelector.SelectionMode = (MouseSelector.SelectionModeType)sender.SelectionIndex;
+				this._MouseSelector.SelectionMode = (MouseSelector.SelectionModeType)sender.SelectionIndex;
 			}
 		}
 	}

@@ -57,7 +57,7 @@ namespace Axiom.Samples.CameraTrack
 		/// <returns></returns>
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			animState.AddTime( evt.TimeSinceLastFrame );
+			this.animState.AddTime( evt.TimeSinceLastFrame );
 			return base.FrameRenderingQueued( evt );
 		}
 
@@ -98,8 +98,8 @@ namespace Axiom.Samples.CameraTrack
 			track.CreateNodeKeyFrame( 10 ).Translate = new Vector3( 200, 0, 0 );
 
 			// create a new animation state to track this
-			animState = SceneManager.CreateAnimationState( "CameraTrack" );
-			animState.IsEnabled = true;
+			this.animState = SceneManager.CreateAnimationState( "CameraTrack" );
+			this.animState.IsEnabled = true;
 			base.SetupContent();
 		}
 	}

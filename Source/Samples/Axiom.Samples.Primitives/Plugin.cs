@@ -47,9 +47,9 @@ namespace Axiom.Samples.Primitives
 
 		public override void Initialize()
 		{
-			sample = new PrimitivesSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new PrimitivesSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	};
 }

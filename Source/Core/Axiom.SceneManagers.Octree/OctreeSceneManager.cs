@@ -132,7 +132,7 @@ namespace Axiom.SceneManagers.Octree
 
 		public Intersection Intersect( AxisAlignedBox box1, AxisAlignedBox box2 )
 		{
-			intersect++;
+			this.intersect++;
 			Vector3[] outside = box1.Corners;
 			Vector3[] inside = box2.Corners;
 
@@ -155,7 +155,7 @@ namespace Axiom.SceneManagers.Octree
 
 		public Intersection Intersect( Sphere sphere, AxisAlignedBox box )
 		{
-			intersect++;
+			this.intersect++;
 			float Radius = sphere.Radius;
 			Vector3 Center = sphere.Center;
 			Vector3[] Corners = box.Corners;
@@ -209,22 +209,22 @@ namespace Axiom.SceneManagers.Octree
 			rootSceneNode.SetAsRootNode();
 			defaultRootNode = rootSceneNode;
 
-			maxDepth = depth;
+			this.maxDepth = depth;
 
-			octree = new Octree( null );
+			this.octree = new Octree( null );
 
-			octree.Box = box;
+			this.octree.Box = box;
 
 			Vector3 Min = box.Minimum;
 			Vector3 Max = box.Maximum;
 
-			octree.HalfSize = ( Max - Min )/2;
+			this.octree.HalfSize = ( Max - Min )/2;
 
-			numObjects = 0;
+			this.numObjects = 0;
 
 			var scalar = new Vector3( 1.5f, 1.5f, 1.5f );
 
-			scaleFactor.Scale = scalar;
+			this.scaleFactor.Scale = scalar;
 		}
 
 		public override SceneNode CreateSceneNode()
@@ -256,10 +256,10 @@ namespace Axiom.SceneManagers.Octree
 		public override void FindVisibleObjects( Camera cam, bool onlyShadowCasters )
 		{
 			GetRenderQueue().Clear();
-			boxList.Clear();
-			visible.Clear();
+			this.boxList.Clear();
+			this.visible.Clear();
 
-			if ( cullCamera )
+			if ( this.cullCamera )
 			{
 				Camera c = cameraList[ "CullCamera" ];
 
@@ -269,25 +269,25 @@ namespace Axiom.SceneManagers.Octree
 				}
 			}
 
-			numObjects = 0;
+			this.numObjects = 0;
 
 			//walk the octree, adding all visible Octreenodes nodes to the render queue.
-			WalkOctree( (OctreeCamera)cam, GetRenderQueue(), octree, false );
+			WalkOctree( (OctreeCamera)cam, GetRenderQueue(), this.octree, false );
 
 			// Show the octree boxes & cull camera if required
-			if ( ShowBoundingBoxes || cullCamera )
+			if ( ShowBoundingBoxes || this.cullCamera )
 			{
 				if ( ShowBoundingBoxes )
 				{
-					for ( int i = 0; i < boxList.Count; i++ )
+					for ( int i = 0; i < this.boxList.Count; i++ )
 					{
-						var box = (WireBoundingBox)boxList[ i ];
+						var box = (WireBoundingBox)this.boxList[ i ];
 
 						GetRenderQueue().AddRenderable( box );
 					}
 				}
 
-				if ( cullCamera )
+				if ( this.cullCamera )
 				{
 					var c = (OctreeCamera)GetCamera( "CullCamera" );
 
@@ -308,9 +308,9 @@ namespace Axiom.SceneManagers.Octree
 		{
 			int i;
 
-			for ( i = 0; i < visible.Count; i++ )
+			for ( i = 0; i < this.visible.Count; i++ )
 			{
-				var node = (OctreeNode)visible[ i ];
+				var node = (OctreeNode)this.visible[ i ];
 				//TODO: looks like something is missing here
 			}
 		}
@@ -399,8 +399,8 @@ namespace Axiom.SceneManagers.Octree
 
 			public WalkQueueObject( Octree octant, bool foundVisible )
 			{
-				FoundVisible = foundVisible;
-				Octant = octant;
+				this.FoundVisible = foundVisible;
+				this.Octant = octant;
 			}
 		}
 
@@ -433,7 +433,7 @@ namespace Axiom.SceneManagers.Octree
 				{
 					v = Visibility.Full;
 				}
-				else if ( temp.Octant == octree )
+				else if ( temp.Octant == this.octree )
 				{
 					v = Visibility.Partial;
 				}
@@ -449,7 +449,7 @@ namespace Axiom.SceneManagers.Octree
 				{
 					if ( ShowBoundingBoxes )
 					{
-						boxList.Add( temp.Octant.WireBoundingBox );
+						this.boxList.Add( temp.Octant.WireBoundingBox );
 					}
 
 					bool vis = true;
@@ -466,10 +466,10 @@ namespace Axiom.SceneManagers.Octree
 
 						if ( vis )
 						{
-							numObjects++;
+							this.numObjects++;
 							node.AddToRenderQueue( camera, queue );
 
-							visible.Add( node );
+							this.visible.Add( node );
 
 							if ( DisplayNodes )
 							{
@@ -559,13 +559,13 @@ namespace Axiom.SceneManagers.Octree
 			if ( node.Octant == null )
 			{
 				//if outside the octree, force into the root node.
-				if ( !node.IsInBox( octree.Box ) )
+				if ( !node.IsInBox( this.octree.Box ) )
 				{
-					octree.AddNode( node );
+					this.octree.AddNode( node );
 				}
 				else
 				{
-					AddOctreeNode( node, octree );
+					AddOctreeNode( node, this.octree );
 				}
 				return;
 			}
@@ -575,13 +575,13 @@ namespace Axiom.SceneManagers.Octree
 				RemoveOctreeNode( node );
 
 				//if outside the octree, force into the root node.
-				if ( !node.IsInBox( octree.Box ) )
+				if ( !node.IsInBox( this.octree.Box ) )
 				{
-					octree.AddNode( node );
+					this.octree.AddNode( node );
 				}
 				else
 				{
-					AddOctreeNode( node, octree );
+					AddOctreeNode( node, this.octree );
 				}
 			}
 		}
@@ -627,7 +627,7 @@ namespace Axiom.SceneManagers.Octree
 
 			//if the octree is twice as big as the scene node,
 			//we will add it to a child.
-			if ( ( depth < maxDepth ) && octant.IsTwiceSize( box ) )
+			if ( ( depth < this.maxDepth ) && octant.IsTwiceSize( box ) )
 			{
 				int x, y, z;
 
@@ -700,10 +700,10 @@ namespace Axiom.SceneManagers.Octree
 		{
 			var nodes = new NodeCollection();
 
-			FindNodes( octree.Box, base.sceneNodeList, null, true, octree );
+			FindNodes( this.octree.Box, base.sceneNodeList, null, true, this.octree );
 
-			octree = new Octree( null );
-			octree.Box = box;
+			this.octree = new Octree( null );
+			this.octree.Box = box;
 
 			foreach ( OctreeNode node in nodes.Values )
 			{
@@ -718,7 +718,7 @@ namespace Axiom.SceneManagers.Octree
 			var localList = new List<OctreeNode>();
 			if ( octant == null )
 			{
-				octant = octree;
+				octant = this.octree;
 			}
 
 			if ( !full )
@@ -811,8 +811,8 @@ namespace Axiom.SceneManagers.Octree
 					ret = true;
 					break;
 				case "Depth":
-					maxDepth = (int)val;
-					Resize( octree.Box );
+					this.maxDepth = (int)val;
+					Resize( this.octree.Box );
 					ret = true;
 					break;
 				case "ShowOctree":
@@ -820,7 +820,7 @@ namespace Axiom.SceneManagers.Octree
 					ret = true;
 					break;
 				case "CullCamera":
-					cullCamera = (bool)val;
+					this.cullCamera = (bool)val;
 					ret = true;
 					break;
 			}

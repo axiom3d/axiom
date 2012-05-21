@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -62,8 +62,8 @@ namespace Axiom.SceneManagers.PortalConnected
 		public PCZSceneNode( SceneManager creator )
 			: base( creator )
 		{
-			homeZone = null;
-			anchored = false;
+			this.homeZone = null;
+			this.anchored = false;
 			AllowToVisit = true;
 			LastVisibleFrame = 0;
 			LastVisibleFromCamera = null;
@@ -73,8 +73,8 @@ namespace Axiom.SceneManagers.PortalConnected
 		public PCZSceneNode( SceneManager creator, string name )
 			: base( creator, name )
 		{
-			homeZone = null;
-			anchored = false;
+			this.homeZone = null;
+			this.anchored = false;
 			AllowToVisit = true;
 			LastVisibleFrame = 0;
 			LastVisibleFromCamera = null;
@@ -84,13 +84,13 @@ namespace Axiom.SceneManagers.PortalConnected
 		~PCZSceneNode()
 		{
 			// clear visiting zones list
-			visitingZones.Clear();
+			this.visitingZones.Clear();
 
 			// delete zone data
-			zoneData.Clear();
+			this.zoneData.Clear();
 
 			//clear object list
-			objectsByName.Clear();
+			this.objectsByName.Clear();
 		}
 
 		#region Propertys
@@ -99,7 +99,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return prevPosition;
+				return this.prevPosition;
 			}
 		}
 
@@ -107,11 +107,11 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return anchored;
+				return this.anchored;
 			}
 			set
 			{
-				anchored = value;
+				this.anchored = value;
 			}
 		}
 
@@ -131,8 +131,8 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			base.Update( updateChildren, parentHasChanged );
 
-			prevPosition = newPosition;
-			newPosition = DerivedPosition;
+			this.prevPosition = this.newPosition;
+			this.newPosition = DerivedPosition;
 			// do this way since _update is called through SceneManager::_updateSceneGraph which comes before PCZSceneManager::_updatePCZSceneNodes
 		}
 
@@ -140,10 +140,10 @@ namespace Axiom.SceneManagers.PortalConnected
 		public override SceneNode CreateChildSceneNode( Vector3 translate, Quaternion rotate )
 		{
 			var childSceneNode = (PCZSceneNode)( CreateChild( translate, rotate ) );
-			if ( anchored )
+			if ( this.anchored )
 			{
-				childSceneNode.AnchorToHomeZone( homeZone );
-				homeZone.AddNode( childSceneNode );
+				childSceneNode.AnchorToHomeZone( this.homeZone );
+				this.homeZone.AddNode( childSceneNode );
 			}
 			return childSceneNode;
 		}
@@ -152,10 +152,10 @@ namespace Axiom.SceneManagers.PortalConnected
 		public override SceneNode CreateChildSceneNode( string name, Vector3 translate, Quaternion rotate )
 		{
 			var childSceneNode = (PCZSceneNode)( CreateChild( name, translate, rotate ) );
-			if ( anchored )
+			if ( this.anchored )
 			{
-				childSceneNode.AnchorToHomeZone( homeZone );
-				homeZone.AddNode( childSceneNode );
+				childSceneNode.AnchorToHomeZone( this.homeZone );
+				this.homeZone.AddNode( childSceneNode );
 			}
 			return childSceneNode;
 		}
@@ -165,35 +165,35 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return homeZone;
+				return this.homeZone;
 			}
 			set
 			{
 				// if the new home zone is different than the current, remove
 				// the node from the current home zone's list of home nodes first
-				if ( value != homeZone && homeZone != null )
+				if ( value != this.homeZone && this.homeZone != null )
 				{
-					homeZone.RemoveNode( this );
+					this.homeZone.RemoveNode( this );
 				}
 
-				homeZone = value;
+				this.homeZone = value;
 			}
 		}
 
 		public void AnchorToHomeZone( PCZone zone )
 		{
-			homeZone = zone;
-			anchored = true;
+			this.homeZone = zone;
+			this.anchored = true;
 		}
 
 		public void AddZoneToVisitingZonesMap( PCZone zone )
 		{
-			visitingZones[ zone.Name ] = zone;
+			this.visitingZones[ zone.Name ] = zone;
 		}
 
 		public void ClearVisitingZonesMap()
 		{
-			visitingZones.Clear();
+			this.visitingZones.Clear();
 		}
 
 		/* The following function does the following:
@@ -203,20 +203,20 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public void ClearNodeFromVisitedZones()
 		{
-			if ( visitingZones.Count > 0 )
+			if ( this.visitingZones.Count > 0 )
 			{
 				// first go through the list of zones this node is visiting
 				// and remove references to this node
 				//PCZone zone;
 				//ZoneMap::iterator it = mVisitingZones.begin();
 
-				foreach ( PCZone zone in visitingZones.Values )
+				foreach ( PCZone zone in this.visitingZones.Values )
 				{
 					zone.RemoveNode( this );
 				}
 
 				// second, clear the visiting zones list
-				visitingZones.Clear();
+				this.visitingZones.Clear();
 			}
 		}
 
@@ -225,14 +225,14 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public void RemoveReferencesToZone( PCZone zone )
 		{
-			if ( homeZone == zone )
+			if ( this.homeZone == zone )
 			{
-				homeZone = null;
+				this.homeZone = null;
 			}
 
-			if ( visitingZones.ContainsKey( zone.Name ) )
+			if ( this.visitingZones.ContainsKey( zone.Name ) )
 			{
-				visitingZones.Remove( zone.Name );
+				this.visitingZones.Remove( zone.Name );
 			}
 
 			// search the map of visiting zones and remove
@@ -250,7 +250,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public bool IsVisitingZone( PCZone zone )
 		{
-			if ( visitingZones.ContainsKey( zone.Name ) )
+			if ( this.visitingZones.ContainsKey( zone.Name ) )
 			{
 				return true;
 			}
@@ -271,7 +271,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		public void AddToRenderQueue( Camera cam, RenderQueue queue, bool onlyShadowCasters,
 		                              VisibleObjectsBoundsInfo visibleBounds )
 		{
-			foreach ( var pair in objectsByName )
+			foreach ( var pair in this.objectsByName )
 			{
 				pair.Value.NotifyCurrentCamera( cam );
 
@@ -292,7 +292,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public void SavePrevPosition()
 		{
-			prevPosition = DerivedPosition;
+			this.prevPosition = DerivedPosition;
 		}
 
 		public void SetZoneData( PCZone zone, ZoneData zoneData )
@@ -313,7 +313,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		// NOTE: This routine assumes that the zone data is present!
 		public ZoneData GetZoneData( PCZone zone )
 		{
-			return zoneData[ zone.Name ];
+			return this.zoneData[ zone.Name ];
 		}
 
 		// update zone-specific data for any zone that the node is touching
@@ -323,7 +323,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			PCZone zone;
 
 			// make sure home zone data is updated
-			zone = homeZone;
+			zone = this.homeZone;
 			if ( zone.RequiresZoneSpecificNodeData )
 			{
 				zoneData = GetZoneData( zone );
@@ -331,7 +331,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			}
 
 			// update zone data for any zones visited
-			foreach ( var pair in visitingZones )
+			foreach ( var pair in this.visitingZones )
 			{
 				zone = pair.Value;
 

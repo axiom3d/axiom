@@ -144,9 +144,9 @@ namespace Axiom.Samples.Ocean
 			SelectMenu selectMenu = TrayManager.CreateLongSelectMenu( TrayLocation.TopLeft, "MaterialSelectMenu", "Material", 300,
 			                                                          200, 5 );
 
-			for ( int i = 0; i < materialControlsContainer.Count; i++ )
+			for ( int i = 0; i < this.materialControlsContainer.Count; i++ )
 			{
-				selectMenu.AddItem( materialControlsContainer[ i ].DisplayName );
+				selectMenu.AddItem( this.materialControlsContainer[ i ].DisplayName );
 			}
 			selectMenu.SelectedIndexChanged += selectMenu_SelectedIndexChanged;
 			CheckBox box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "SpinLightButton", "Spin Light", 175 );
@@ -156,8 +156,9 @@ namespace Axiom.Samples.Ocean
 			btn.CursorPressed += new CursorPressedHandler( btn_CursorPressed );
 			for ( int i = 0; i < ControlsPerPage; i++ )
 			{
-				shaderControls[ i ] = TrayManager.CreateThickSlider( TrayLocation.TopRight, "ShaderControlSlider" + i, "Control",
-				                                                     256, 80, 0, 1, 100 );
+				this.shaderControls[ i ] = TrayManager.CreateThickSlider( TrayLocation.TopRight, "ShaderControlSlider" + i,
+				                                                          "Control",
+				                                                          256, 80, 0, 1, 100 );
 			}
 
 			selectMenu.SelectItem( 0 );
@@ -166,7 +167,7 @@ namespace Axiom.Samples.Ocean
 
 		private void box_CheckChanged( CheckBox sender )
 		{
-			spinLight = sender.IsChecked;
+			this.spinLight = sender.IsChecked;
 		}
 
 		private void btn_CursorPressed( object sender, Vector2 cursorPosition )
@@ -182,17 +183,17 @@ namespace Axiom.Samples.Ocean
 		{
 			if ( sender != null )
 			{
-				currentMaterial = sender.SelectionIndex;
-				activeMaterial =
-					(Material)MaterialManager.Instance.GetByName( materialControlsContainer[ currentMaterial ].MaterialName );
-				activeMaterial.Load();
-				int numShaders = materialControlsContainer[ currentMaterial ].ShaderControlsCount;
-				numPages = ( numShaders/ControlsPerPage ) + ( numShaders%ControlsPerPage == 0 ? 0 : 1 );
+				this.currentMaterial = sender.SelectionIndex;
+				this.activeMaterial =
+					(Material)MaterialManager.Instance.GetByName( this.materialControlsContainer[ this.currentMaterial ].MaterialName );
+				this.activeMaterial.Load();
+				int numShaders = this.materialControlsContainer[ this.currentMaterial ].ShaderControlsCount;
+				this.numPages = ( numShaders/ControlsPerPage ) + ( numShaders%ControlsPerPage == 0 ? 0 : 1 );
 				ChangePage( 0 );
 
-				if ( oceanSurfaceEnt != null )
+				if ( this.oceanSurfaceEnt != null )
 				{
-					oceanSurfaceEnt.MaterialName = materialControlsContainer[ currentMaterial ].MaterialName;
+					this.oceanSurfaceEnt.MaterialName = this.materialControlsContainer[ this.currentMaterial ].MaterialName;
 				}
 			}
 		}
@@ -203,55 +204,56 @@ namespace Axiom.Samples.Ocean
 		/// <param name="pageNum"></param>
 		protected void ChangePage( int pageNum )
 		{
-			if ( materialControlsContainer.Count == 0 )
+			if ( this.materialControlsContainer.Count == 0 )
 			{
 				return;
 			}
 
-			currentPage = ( pageNum == -1 ) ? ( currentPage + 1 )%numPages : pageNum;
+			this.currentPage = ( pageNum == -1 ) ? ( this.currentPage + 1 )%this.numPages : pageNum;
 
-			string pageText = string.Format( "Parameters {0} / {1}", currentPage + 1, numPages );
+			string pageText = string.Format( "Parameters {0} / {1}", this.currentPage + 1, this.numPages );
 			( (Button)TrayManager.GetWidget( "PageButtonControl" ) ).Caption = pageText;
 
-			if ( activeMaterial != null && activeMaterial.SupportedTechniques.Count > 0 )
+			if ( this.activeMaterial != null && this.activeMaterial.SupportedTechniques.Count > 0 )
 			{
-				Technique currentTechnique = activeMaterial.SupportedTechniques[ 0 ];
+				Technique currentTechnique = this.activeMaterial.SupportedTechniques[ 0 ];
 				if ( currentTechnique != null )
 				{
-					activePass = currentTechnique.GetPass( 0 );
-					if ( activePass != null )
+					this.activePass = currentTechnique.GetPass( 0 );
+					if ( this.activePass != null )
 					{
-						if ( activePass.HasFragmentProgram )
+						if ( this.activePass.HasFragmentProgram )
 						{
-							activeFragmentProgram = activePass.FragmentProgram;
-							activeFragmentParameters = activePass.FragmentProgramParameters;
+							this.activeFragmentProgram = this.activePass.FragmentProgram;
+							this.activeFragmentParameters = this.activePass.FragmentProgramParameters;
 						}
-						if ( activePass.HasVertexProgram )
+						if ( this.activePass.HasVertexProgram )
 						{
-							activeVertexProgram = activePass.VertexProgram;
-							activeVertexParameters = activePass.VertexProgramParameters;
+							this.activeVertexProgram = this.activePass.VertexProgram;
+							this.activeVertexParameters = this.activePass.VertexProgramParameters;
 						}
 
-						int activeControlCount = materialControlsContainer[ currentMaterial ].ShaderControlsCount;
+						int activeControlCount = this.materialControlsContainer[ this.currentMaterial ].ShaderControlsCount;
 
-						int startControlIndex = currentPage*ControlsPerPage;
+						int startControlIndex = this.currentPage*ControlsPerPage;
 						int numControls = activeControlCount - startControlIndex;
 						if ( numControls <= 0 )
 						{
-							currentPage = 0;
+							this.currentPage = 0;
 							startControlIndex = 0;
 							numControls = activeControlCount;
 						}
 
 						for ( int i = 0; i < ControlsPerPage; i++ )
 						{
-							Slider shaderControlSlider = shaderControls[ i ];
+							Slider shaderControlSlider = this.shaderControls[ i ];
 							if ( i < numControls )
 							{
 								shaderControlSlider.Show();
 
 								int controlIndex = startControlIndex + i;
-								ShaderControl activeShaderDef = materialControlsContainer[ currentMaterial ].GetShaderControl( controlIndex );
+								ShaderControl activeShaderDef =
+									this.materialControlsContainer[ this.currentMaterial ].GetShaderControl( controlIndex );
 								shaderControlSlider.SetRange( activeShaderDef.MinVal, activeShaderDef.MaxVal, 50, false );
 								shaderControlSlider.Caption = activeShaderDef.Name;
 								shaderControlSlider.SliderMoved += new SliderMovedHandler( shaderControlSlider_SliderMoved );
@@ -262,8 +264,8 @@ namespace Axiom.Samples.Ocean
 									case ShaderType.GpuFragment:
 									{
 										GpuProgramParameters activeParameters = ( activeShaderDef.Type == ShaderType.GpuVertex )
-										                                        	? activeVertexParameters
-										                                        	: activeFragmentParameters;
+										                                        	? this.activeVertexParameters
+										                                        	: this.activeFragmentParameters;
 
 										if ( activeParameters != null )
 										{
@@ -278,7 +280,7 @@ namespace Axiom.Samples.Ocean
 									case ShaderType.MatSpecular:
 									{
 										// get the specular values from the material pass
-										ColorEx oldSpec = activePass.Specular;
+										ColorEx oldSpec = this.activePass.Specular;
 										int x = activeShaderDef.ElementIndex;
 										uniformVal = x == 0 ? oldSpec.r : x == 1 ? oldSpec.g : x == 2 ? oldSpec.b : x == 3 ? oldSpec.a : 0;
 									}
@@ -286,7 +288,7 @@ namespace Axiom.Samples.Ocean
 									case ShaderType.MatDiffuse:
 									{
 										// get the specular values from the material pass
-										ColorEx oldSpec = activePass.Diffuse;
+										ColorEx oldSpec = this.activePass.Diffuse;
 										int x = activeShaderDef.ElementIndex;
 										uniformVal = x == 0 ? oldSpec.r : x == 1 ? oldSpec.g : x == 2 ? oldSpec.b : x == 3 ? oldSpec.a : 0;
 									}
@@ -294,7 +296,7 @@ namespace Axiom.Samples.Ocean
 									case ShaderType.MatAmbient:
 									{
 										// get the specular values from the material pass
-										ColorEx oldSpec = activePass.Ambient;
+										ColorEx oldSpec = this.activePass.Ambient;
 										int x = activeShaderDef.ElementIndex;
 										uniformVal = x == 0 ? oldSpec.r : x == 1 ? oldSpec.g : x == 2 ? oldSpec.b : x == 3 ? oldSpec.a : 0;
 									}
@@ -302,7 +304,7 @@ namespace Axiom.Samples.Ocean
 									case ShaderType.MatShininess:
 									{
 										// get the specular values from the material pass
-										uniformVal = activePass.Shininess;
+										uniformVal = this.activePass.Shininess;
 									}
 										break;
 								}
@@ -319,7 +321,7 @@ namespace Axiom.Samples.Ocean
 			int sliderIndex = -1;
 			for ( int i = 0; i < ControlsPerPage; i++ )
 			{
-				if ( shaderControls[ i ] == slider )
+				if ( this.shaderControls[ i ] == slider )
 				{
 					sliderIndex = i;
 					break;
@@ -327,12 +329,12 @@ namespace Axiom.Samples.Ocean
 			}
 
 			Utilities.Contract.Requires( sliderIndex != -1 );
-			int index = currentPage*ControlsPerPage + sliderIndex;
-			ShaderControl activeShaderDef = materialControlsContainer[ currentMaterial ].GetShaderControl( index );
+			int index = this.currentPage*ControlsPerPage + sliderIndex;
+			ShaderControl activeShaderDef = this.materialControlsContainer[ this.currentMaterial ].GetShaderControl( index );
 
 			float val = slider.Value;
 
-			if ( activePass != null )
+			if ( this.activePass != null )
 			{
 				switch ( activeShaderDef.Type )
 				{
@@ -340,8 +342,8 @@ namespace Axiom.Samples.Ocean
 					case ShaderType.GpuFragment:
 					{
 						GpuProgramParameters activeParameters = ( activeShaderDef.Type == ShaderType.GpuVertex )
-						                                        	? activeVertexParameters
-						                                        	: activeFragmentParameters;
+						                                        	? this.activeVertexParameters
+						                                        	: this.activeFragmentParameters;
 
 						if ( activeParameters != null )
 						{
@@ -352,7 +354,7 @@ namespace Axiom.Samples.Ocean
 					case ShaderType.MatSpecular:
 					{
 						//// get the specular values from the material pass
-						ColorEx oldSpec = activePass.Specular;
+						ColorEx oldSpec = this.activePass.Specular;
 						switch ( activeShaderDef.ElementIndex )
 						{
 							case 0:
@@ -368,13 +370,13 @@ namespace Axiom.Samples.Ocean
 								oldSpec.a = val;
 								break;
 						}
-						activePass.Specular = oldSpec;
+						this.activePass.Specular = oldSpec;
 					}
 						break;
 					case ShaderType.MatDiffuse:
 					{
 						//// get the specular values from the material pass
-						ColorEx oldSpec = activePass.Diffuse;
+						ColorEx oldSpec = this.activePass.Diffuse;
 						switch ( activeShaderDef.ElementIndex )
 						{
 							case 0:
@@ -390,13 +392,13 @@ namespace Axiom.Samples.Ocean
 								oldSpec.a = val;
 								break;
 						}
-						activePass.Diffuse = oldSpec;
+						this.activePass.Diffuse = oldSpec;
 					}
 						break;
 					case ShaderType.MatAmbient:
 					{
 						//// get the specular values from the material pass
-						ColorEx oldSpec = activePass.Ambient;
+						ColorEx oldSpec = this.activePass.Ambient;
 						switch ( activeShaderDef.ElementIndex )
 						{
 							case 0:
@@ -412,13 +414,13 @@ namespace Axiom.Samples.Ocean
 								oldSpec.a = val;
 								break;
 						}
-						activePass.Ambient = oldSpec;
+						this.activePass.Ambient = oldSpec;
 					}
 						break;
 					case ShaderType.MatShininess:
 					{
 						//// get the specular values from the material pass
-						activePass.Shininess = val;
+						this.activePass.Shininess = val;
 					}
 						break;
 				}
@@ -434,29 +436,29 @@ namespace Axiom.Samples.Ocean
 			SceneManager.AmbientLight = new ColorEx( 0.3f, 0.3f, 0.3f );
 			SceneManager.SetSkyBox( true, "SkyBox", 1000 );
 
-			mainNode = SceneManager.RootSceneNode.CreateChildSceneNode();
+			this.mainNode = SceneManager.RootSceneNode.CreateChildSceneNode();
 
 
 			for ( int i = 0; i < NumLights; ++i )
 			{
-				lightPivots[ i ] = SceneManager.RootSceneNode.CreateChildSceneNode();
-				lightPivots[ i ].Rotate( lightRotationAxes[ i ], lightRotationAngles[ i ] );
+				this.lightPivots[ i ] = SceneManager.RootSceneNode.CreateChildSceneNode();
+				this.lightPivots[ i ].Rotate( this.lightRotationAxes[ i ], this.lightRotationAngles[ i ] );
 				// Create a light, use default parameters
-				lights[ i ] = SceneManager.CreateLight( "Light" + i );
-				lights[ i ].Position = lightPositions[ i ];
-				lights[ i ].Diffuse = diffuseLightColors[ i ];
-				lights[ i ].Specular = specularLightColors[ i ];
-				lights[ i ].IsVisible = lightState[ i ];
+				this.lights[ i ] = SceneManager.CreateLight( "Light" + i );
+				this.lights[ i ].Position = this.lightPositions[ i ];
+				this.lights[ i ].Diffuse = this.diffuseLightColors[ i ];
+				this.lights[ i ].Specular = this.specularLightColors[ i ];
+				this.lights[ i ].IsVisible = this.lightState[ i ];
 				//lights[i]->setAttenuation(400, 0.1 , 1 , 0);
 				// Attach light
-				lightPivots[ i ].AttachObject( lights[ i ] );
+				this.lightPivots[ i ].AttachObject( this.lights[ i ] );
 				// Create billboard for light
-				lightFlareSets[ i ] = SceneManager.CreateBillboardSet( "Flare" + i );
-				lightFlareSets[ i ].MaterialName = "LightFlare";
-				lightPivots[ i ].AttachObject( lightFlareSets[ i ] );
-				lightFlares[ i ] = lightFlareSets[ i ].CreateBillboard( lightPositions[ i ] );
-				lightFlares[ i ].Color = diffuseLightColors[ i ];
-				lightFlareSets[ i ].IsVisible = lightState[ i ];
+				this.lightFlareSets[ i ] = SceneManager.CreateBillboardSet( "Flare" + i );
+				this.lightFlareSets[ i ].MaterialName = "LightFlare";
+				this.lightPivots[ i ].AttachObject( this.lightFlareSets[ i ] );
+				this.lightFlares[ i ] = this.lightFlareSets[ i ].CreateBillboard( this.lightPositions[ i ] );
+				this.lightFlares[ i ].Color = this.diffuseLightColors[ i ];
+				this.lightFlareSets[ i ].IsVisible = this.lightState[ i ];
 			}
 
 			// move the camera a bit right and make it look at the knot
@@ -469,9 +471,9 @@ namespace Axiom.Samples.Ocean
 			MeshManager.Instance.CreatePlane( "OceanSurface", ResourceGroupManager.DefaultResourceGroupName, oceanSurface, 1000,
 			                                  1000, 50, 50, true, 1, 1, 1, Vector3.UnitZ );
 
-			oceanSurfaceEnt = SceneManager.CreateEntity( "OceanSurface", "OceanSurface" );
-			SceneManager.RootSceneNode.CreateChildSceneNode().AttachObject( oceanSurfaceEnt );
-			oceanSurfaceEnt.MaterialName = materialControlsContainer[ 0 ].MaterialName;
+			this.oceanSurfaceEnt = SceneManager.CreateEntity( "OceanSurface", "OceanSurface" );
+			SceneManager.RootSceneNode.CreateChildSceneNode().AttachObject( this.oceanSurfaceEnt );
+			this.oceanSurfaceEnt.MaterialName = this.materialControlsContainer[ 0 ].MaterialName;
 		}
 
 		/// <summary>
@@ -479,7 +481,7 @@ namespace Axiom.Samples.Ocean
 		/// </summary>
 		protected override void SetupContent()
 		{
-			LoadAllMaterialControlFiles( out materialControlsContainer );
+			LoadAllMaterialControlFiles( out this.materialControlsContainer );
 			SetupScene();
 			SetupGUI();
 
@@ -507,10 +509,10 @@ namespace Axiom.Samples.Ocean
 		/// <returns></returns>
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
-			rotateSpeed = evt.TimeSinceLastFrame*20;
-			if ( spinLight )
+			this.rotateSpeed = evt.TimeSinceLastFrame*20;
+			if ( this.spinLight )
 			{
-				lightPivots[ 0 ].Rotate( lightRotationAxes[ 0 ], rotateSpeed*2 );
+				this.lightPivots[ 0 ].Rotate( this.lightRotationAxes[ 0 ], this.rotateSpeed*2 );
 			}
 			return base.FrameRenderingQueued( evt );
 		}

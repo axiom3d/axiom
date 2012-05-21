@@ -67,30 +67,31 @@ namespace Axiom.Samples.DynamicTexture
 		{
 			// shoot a ray from the cursor to the plane
 			var ray = TrayManager.GetCursorRay( Camera );
-			mCursorQuery.Ray = ray;
-			var result = mCursorQuery.Execute();
+			this.mCursorQuery.Ray = ray;
+			var result = this.mCursorQuery.Execute();
 
 			if ( result.Count != 0 )
 			{
 				// using the point of intersection, find the corresponding texel on our texture
 				var pt = ray.GetPoint( result[ result.Count - 1 ].Distance );
-				mBrushPos = ( ( new Vector2( pt.x, -pt.y ) )*( 1.0f/mPlaneSize ) + ( new Vector2( 0.5, 0.5 ) ) )*TEXTURE_SIZE;
+				this.mBrushPos = ( ( new Vector2( pt.x, -pt.y ) )*( 1.0f/this.mPlaneSize ) + ( new Vector2( 0.5, 0.5 ) ) )*
+				                 TEXTURE_SIZE;
 			}
 
 			byte freezeAmount = 0;
-			mTimeSinceLastFreeze += evt.TimeSinceLastFrame;
+			this.mTimeSinceLastFreeze += evt.TimeSinceLastFrame;
 
 			// find out how much to freeze the plane based on time passed
-			while ( mTimeSinceLastFreeze >= 0.1 )
+			while ( this.mTimeSinceLastFreeze >= 0.1 )
 			{
-				mTimeSinceLastFreeze -= 0.1;
+				this.mTimeSinceLastFreeze -= 0.1;
 				freezeAmount += 0x04;
 			}
 
 			_updateTexture( freezeAmount ); // rebuild texture contents
 
-			mPenguinAnimState.AddTime( evt.TimeSinceLastFrame ); // increment penguin idle animation time
-			mPenguinNode.Yaw( (Real)( new Radian( (Real)evt.TimeSinceLastFrame ) ) ); // spin the penguin around
+			this.mPenguinAnimState.AddTime( evt.TimeSinceLastFrame ); // increment penguin idle animation time
+			this.mPenguinNode.Yaw( (Real)( new Radian( (Real)evt.TimeSinceLastFrame ) ) ); // spin the penguin around
 
 			return base.FrameRenderingQueued( evt ); // don't forget the parent class updates!
 		}
@@ -101,7 +102,7 @@ namespace Axiom.Samples.DynamicTexture
 			{
 				return true;
 			}
-			mWiping = true; // wipe frost if user left clicks in the scene
+			this.mWiping = true; // wipe frost if user left clicks in the scene
 			return true;
 		}
 
@@ -111,7 +112,7 @@ namespace Axiom.Samples.DynamicTexture
 			{
 				return true;
 			}
-			mWiping = false; // stop wiping frost if user releases LMB
+			this.mWiping = false; // stop wiping frost if user releases LMB
 			return true;
 		}
 
@@ -134,21 +135,21 @@ namespace Axiom.Samples.DynamicTexture
 			                                                TextureType.TwoD, TEXTURE_SIZE, TEXTURE_SIZE, 0, PixelFormat.L8,
 			                                                TextureUsage.DynamicWriteOnly );
 
-			mTexBuf = tex.GetBuffer(); // save off the texture buffer
+			this.mTexBuf = tex.GetBuffer(); // save off the texture buffer
 
 			// initialise the texture to have full luminance
-			mTexBuf.Lock( BufferLocking.Discard );
-			Memory.Set( mTexBuf.CurrentLock.Data, 0xff, mTexBuf.Size );
-			mTexBuf.Unlock();
+			this.mTexBuf.Lock( BufferLocking.Discard );
+			Memory.Set( this.mTexBuf.CurrentLock.Data, 0xff, this.mTexBuf.Size );
+			this.mTexBuf.Unlock();
 
 			// create a penguin and attach him to our penguin node
 			var penguin = SceneManager.CreateEntity( "Penguin", "penguin.mesh" );
-			mPenguinNode = SceneManager.RootSceneNode.CreateChildSceneNode();
-			mPenguinNode.AttachObject( penguin );
+			this.mPenguinNode = SceneManager.RootSceneNode.CreateChildSceneNode();
+			this.mPenguinNode.AttachObject( penguin );
 
 			// get and enable the penguin idle animation
-			mPenguinAnimState = penguin.GetAnimationState( "amuse" );
-			mPenguinAnimState.IsEnabled = true;
+			this.mPenguinAnimState = penguin.GetAnimationState( "amuse" );
+			this.mPenguinAnimState.IsEnabled = true;
 
 			// create a snowstorm over the scene, and fast forward it a little
 			var ps = ParticleSystemManager.Instance.CreateSystem( "Snow", "Examples/Snow" );
@@ -162,18 +163,18 @@ namespace Axiom.Samples.DynamicTexture
 			node.Position = new Vector3( 0, 0, 50 );
 			node.AttachObject( ent );
 
-			mPlaneSize = ent.BoundingBox.Size.x; // remember the size of the plane
+			this.mPlaneSize = ent.BoundingBox.Size.x; // remember the size of the plane
 
-			mCursorQuery = SceneManager.CreateRayQuery( new Ray() ); // create a ray scene query for the cursor
+			this.mCursorQuery = SceneManager.CreateRayQuery( new Ray() ); // create a ray scene query for the cursor
 
-			mTimeSinceLastFreeze = 0;
-			mWiping = false;
+			this.mTimeSinceLastFreeze = 0;
+			this.mWiping = false;
 		}
 
 		private void _updateTexture( byte freezeAmount )
 		{
-			mTexBuf.Lock( BufferLocking.Discard );
-			var dataPtr = mTexBuf.CurrentLock.Data;
+			this.mTexBuf.Lock( BufferLocking.Discard );
+			var dataPtr = this.mTexBuf.CurrentLock.Data;
 
 			// get access to raw texel data
 			int temperature;
@@ -204,10 +205,10 @@ namespace Axiom.Samples.DynamicTexture
 								}
 							}
 
-							if ( mWiping )
+							if ( this.mWiping )
 							{
 								// wipe frost from under the cursor
-								sqrDistToBrush = Math.Utility.Sqr( x - mBrushPos.x ) + Math.Utility.Sqr( y - mBrushPos.y );
+								sqrDistToBrush = Math.Utility.Sqr( x - this.mBrushPos.x ) + Math.Utility.Sqr( y - this.mBrushPos.y );
 								if ( sqrDistToBrush <= SQR_BRUSH_RADIUS )
 								{
 									data[ dataIdx ] = (byte)Math.Utility.Min( sqrDistToBrush/SQR_BRUSH_RADIUS*0xff, data[ dataIdx ] );
@@ -219,7 +220,7 @@ namespace Axiom.Samples.DynamicTexture
 					}
 				}
 			}
-			mTexBuf.Unlock();
+			this.mTexBuf.Unlock();
 		}
 
 		protected override void CleanupContent()

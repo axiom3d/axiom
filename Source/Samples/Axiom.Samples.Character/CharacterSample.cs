@@ -54,7 +54,7 @@ namespace Axiom.Samples.CharacterSample
 		public override bool FrameRenderingQueued( FrameEventArgs evt )
 		{
 			// let character update animations and camera
-			chara.AddTime( evt.TimeSinceLastFrame );
+			this.chara.AddTime( evt.TimeSinceLastFrame );
 			return base.FrameRenderingQueued( evt );
 		}
 
@@ -73,7 +73,7 @@ namespace Axiom.Samples.CharacterSample
 			// relay input events to character controller
 			if ( !TrayManager.IsDialogVisible )
 			{
-				chara.InjectKeyDown( evt );
+				this.chara.InjectKeyDown( evt );
 			}
 
 			return base.KeyPressed( evt );
@@ -88,7 +88,7 @@ namespace Axiom.Samples.CharacterSample
 		{
 			if ( !TrayManager.IsDialogVisible )
 			{
-				chara.InjectKeyUp( evt );
+				this.chara.InjectKeyUp( evt );
 			}
 
 			return base.KeyReleased( evt );
@@ -104,7 +104,7 @@ namespace Axiom.Samples.CharacterSample
 			// relay input events to character controller
 			if ( !TrayManager.IsDialogVisible )
 			{
-				chara.InjectMouseMove( evt );
+				this.chara.InjectMouseMove( evt );
 			}
 
 			return base.MouseMoved( evt );
@@ -121,7 +121,7 @@ namespace Axiom.Samples.CharacterSample
 			// relay input events to character controller
 			if ( !TrayManager.IsDialogVisible )
 			{
-				chara.InjectMouseDown( evt, id );
+				this.chara.InjectMouseDown( evt, id );
 			}
 
 			return base.MousePressed( evt, id );
@@ -165,7 +165,7 @@ namespace Axiom.Samples.CharacterSample
 
 
 			// create our character controller
-			chara = new SinbadCharacterController( Camera );
+			this.chara = new SinbadCharacterController( Camera );
 
 			TrayManager.ToggleAdvancedFrameStats();
 
@@ -177,9 +177,9 @@ namespace Axiom.Samples.CharacterSample
 
 		protected override void CleanupContent()
 		{
-			if ( chara != null )
+			if ( this.chara != null )
 			{
-				chara = null;
+				this.chara = null;
 			}
 
 			MeshManager.Instance.Remove( "floor" );

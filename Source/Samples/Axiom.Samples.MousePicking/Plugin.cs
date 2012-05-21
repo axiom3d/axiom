@@ -37,9 +37,9 @@ namespace Axiom.Samples.MousePicking
 
 		public override void Initialize()
 		{
-			sample = new MousePickingSample();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new MousePickingSample();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

@@ -105,7 +105,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			: base( parent.Creator, parent.Name, parent.Handle, parent.Group, false, null )
 		{
 			// store off the reference to the parent program
-			glslProgram = parent;
+			this.glslProgram = parent;
 
 			type = parent.Type;
 			syntaxCode = "glsl";
@@ -124,7 +124,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			}
 
 			// transfer skeletal animation status from parent
-			isSkeletalAnimationIncluded = glslProgram.IsSkeletalAnimationIncluded;
+			isSkeletalAnimationIncluded = this.glslProgram.IsSkeletalAnimationIncluded;
 
 			// there is nothing to load
 			LoadFromFile = false;
@@ -161,7 +161,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		{
 			get
 			{
-				return glslProgram;
+				return this.glslProgram;
 			}
 		}
 

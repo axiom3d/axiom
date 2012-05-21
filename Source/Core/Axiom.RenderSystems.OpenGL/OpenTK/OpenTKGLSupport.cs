@@ -87,8 +87,8 @@ namespace Axiom.RenderSystems.OpenGL
 		private void GetFSAALevels()
 		{
 			//TODO: add only supported fsaa levels
-			_fsaaLevels.Add( 2 );
-			_fsaaLevels.Add( 4 );
+			this._fsaaLevels.Add( 2 );
+			this._fsaaLevels.Add( 4 );
 			//_fsaaLevels.Add(8);
 		}
 
@@ -146,7 +146,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// FSAA
 			GetFSAALevels();
-			foreach ( int level in _fsaaLevels )
+			foreach ( int level in this._fsaaLevels )
 			{
 				optFSAA.PossibleValues.Add( level, level.ToString() );
 			}

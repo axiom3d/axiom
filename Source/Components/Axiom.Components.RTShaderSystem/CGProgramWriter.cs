@@ -76,35 +76,35 @@ namespace Axiom.Components.RTShaderSystem
 
 		private void InitializeStringMaps()
 		{
-			gpuConstTypeMap = new Dictionary<Graphics.GpuProgramParameters.GpuConstantType, string>();
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Float1, "float" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Float2, "float2" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Float3, "float3" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Float4, "float4" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Sampler1D, "sampler1D" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Sampler2D, "sampler2D" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Sampler3D, "sampler3D" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.SamplerCube, "samplerCUBE" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_2X2, "float2x2" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_2X3, "float2x3" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_2X4, "float2x4" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_3X2, "float3x2" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_3X3, "float3x3" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_3X4, "float3x4" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_4X2, "float4x2" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_4X3, "float4x3" );
-			gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_4X4, "float4x4" );
+			this.gpuConstTypeMap = new Dictionary<Graphics.GpuProgramParameters.GpuConstantType, string>();
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Float1, "float" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Float2, "float2" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Float3, "float3" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Float4, "float4" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Sampler1D, "sampler1D" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Sampler2D, "sampler2D" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Sampler3D, "sampler3D" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.SamplerCube, "samplerCUBE" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_2X2, "float2x2" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_2X3, "float2x3" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_2X4, "float2x4" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_3X2, "float3x2" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_3X3, "float3x3" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_3X4, "float3x4" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_4X2, "float4x2" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_4X3, "float4x3" );
+			this.gpuConstTypeMap.Add( Graphics.GpuProgramParameters.GpuConstantType.Matrix_4X4, "float4x4" );
 
-			paramSemanticMap = new Dictionary<Parameter.SemanticType, string>();
-			paramSemanticMap.Add( Parameter.SemanticType.Position, "POSITION" );
-			paramSemanticMap.Add( Parameter.SemanticType.BlendWeights, "BLENDWEIGHT" );
-			paramSemanticMap.Add( Parameter.SemanticType.BlendIndicies, "BLENDINDICES" );
-			paramSemanticMap.Add( Parameter.SemanticType.Normal, "NORMAL" );
-			paramSemanticMap.Add( Parameter.SemanticType.Color, "COLOR" );
-			paramSemanticMap.Add( Parameter.SemanticType.TextureCoordinates, "TEXCOORD" );
-			paramSemanticMap.Add( Parameter.SemanticType.Binormal, "BINORMAL" );
-			paramSemanticMap.Add( Parameter.SemanticType.Tangent, "TANGENT" );
-			paramSemanticMap.Add( Parameter.SemanticType.Unknown, string.Empty );
+			this.paramSemanticMap = new Dictionary<Parameter.SemanticType, string>();
+			this.paramSemanticMap.Add( Parameter.SemanticType.Position, "POSITION" );
+			this.paramSemanticMap.Add( Parameter.SemanticType.BlendWeights, "BLENDWEIGHT" );
+			this.paramSemanticMap.Add( Parameter.SemanticType.BlendIndicies, "BLENDINDICES" );
+			this.paramSemanticMap.Add( Parameter.SemanticType.Normal, "NORMAL" );
+			this.paramSemanticMap.Add( Parameter.SemanticType.Color, "COLOR" );
+			this.paramSemanticMap.Add( Parameter.SemanticType.TextureCoordinates, "TEXCOORD" );
+			this.paramSemanticMap.Add( Parameter.SemanticType.Binormal, "BINORMAL" );
+			this.paramSemanticMap.Add( Parameter.SemanticType.Tangent, "TANGENT" );
+			this.paramSemanticMap.Add( Parameter.SemanticType.Unknown, string.Empty );
 		}
 
 		private void WriteProgramDependencies( StreamWriter stream, Program program )
@@ -123,7 +123,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		private void WriteUniformParameter( StreamWriter stream, UniformParameter parameter )
 		{
-			stream.Write( gpuConstTypeMap[ parameter.Type ] );
+			stream.Write( this.gpuConstTypeMap[ parameter.Type ] );
 			stream.Write( "\t" );
 			stream.Write( parameter.Name );
 			if ( parameter.IsArray )
@@ -139,7 +139,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		private void WriteFunctionParameter( StreamWriter stream, Parameter parameter )
 		{
-			stream.Write( gpuConstTypeMap[ parameter.Type ] );
+			stream.Write( this.gpuConstTypeMap[ parameter.Type ] );
 			stream.Write( "\t" );
 			stream.Write( parameter.Name );
 
@@ -151,7 +151,7 @@ namespace Axiom.Components.RTShaderSystem
 			if ( parameter.Semantic != Parameter.SemanticType.Unknown )
 			{
 				stream.Write( " : " );
-				stream.Write( paramSemanticMap[ parameter.Semantic ] );
+				stream.Write( this.paramSemanticMap[ parameter.Semantic ] );
 
 				if ( parameter.Semantic != Parameter.SemanticType.Position &&
 				     parameter.Semantic != Parameter.SemanticType.Normal &&
@@ -168,7 +168,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		private void WriteLocalParameter( StreamWriter stream, Parameter parameter )
 		{
-			stream.Write( gpuConstTypeMap[ parameter.Type ] );
+			stream.Write( this.gpuConstTypeMap[ parameter.Type ] );
 			stream.Write( "\t" );
 			stream.Write( parameter.Name );
 			if ( parameter.IsArray )

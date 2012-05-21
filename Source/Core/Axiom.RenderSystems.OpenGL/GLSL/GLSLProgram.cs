@@ -337,7 +337,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					{
 						childShader.LoadHighLevel();
 						// add to the constainer
-						attachedGLSLPrograms.Add( childShader );
+						this.attachedGLSLPrograms.Add( childShader );
 						AttachedShaderNames += name + " ";
 					}
 				}
@@ -351,7 +351,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		public void AttachToProgramObject( int programObject )
 		{
 			// atach child objects
-			foreach ( var childShader in attachedGLSLPrograms.Cast<GLSLProgram>() )
+			foreach ( var childShader in this.attachedGLSLPrograms.Cast<GLSLProgram>() )
 			{
 				// bug in ATI GLSL linker : modules without main function must be recompiled each time 
 				// they are linked to a different program object
@@ -374,7 +374,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			Gl.glDetachObjectARB( programObject, GLHandle );
 			GLSLHelper.CheckForGLSLError( "Error detaching " + Name + " shader object from GLSL Program Object", programObject );
 			// attach child objects
-			foreach ( var childShader in attachedGLSLPrograms.Cast<GLSLProgram>() )
+			foreach ( var childShader in this.attachedGLSLPrograms.Cast<GLSLProgram>() )
 			{
 				childShader.DetachFromProgramObject( programObject );
 			}
@@ -421,7 +421,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		[OgreVersion( 1, 7, 2790, "TODO: Completely missing preprocessor step" )]
 		protected internal bool Compile( bool checkErrors )
 		{
-			if ( isCompiled )
+			if ( this.isCompiled )
 			{
 				return true;
 			}
@@ -476,21 +476,22 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			// check for compile errors
 			Gl.glGetObjectParameterivARB( GLHandle, Gl.GL_OBJECT_COMPILE_STATUS_ARB, out compiled );
 
-			isCompiled = ( compiled != 0 );
+			this.isCompiled = ( compiled != 0 );
 
 			// force exception if not compiled
 			if ( checkErrors )
 			{
-				GLSLHelper.CheckForGLSLError( "GLSL : Cannot compile GLSL high-level shader: " + Name + ".", GLHandle, !isCompiled,
-				                              !isCompiled );
+				GLSLHelper.CheckForGLSLError( "GLSL : Cannot compile GLSL high-level shader: " + Name + ".", GLHandle,
+				                              !this.isCompiled,
+				                              !this.isCompiled );
 
-				if ( isCompiled )
+				if ( this.isCompiled )
 				{
 					GLSLHelper.LogObjectInfo( "GLSL : " + Name + " : compiled.", GLHandle );
 				}
 			}
 
-			return isCompiled;
+			return this.isCompiled;
 		}
 
 		#endregion
@@ -545,7 +546,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			GLSLLinkProgramManager.Instance.ExtractConstantDefs( Source, constantDefs, Name );
 
 			// Also parse any attached sources
-			foreach ( var childShader in attachedGLSLPrograms )
+			foreach ( var childShader in this.attachedGLSLPrograms )
 			{
 				GLSLLinkProgramManager.Instance.ExtractConstantDefs( childShader.Source, constantDefs, childShader.Name );
 			}

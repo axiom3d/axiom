@@ -143,7 +143,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return programId;
+				return this.programId;
 			}
 		}
 
@@ -154,7 +154,7 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return programType;
+				return this.programType;
 			}
 		}
 

@@ -68,23 +68,23 @@ namespace Axiom.RenderSystems.DirectX9
 			[OgreVersion( 1, 7, 2790 )]
 			get
 			{
-				if ( _activeDevice == null )
+				if ( this._activeDevice == null )
 				{
 					throw new AxiomException( "Current active device is NULL !!!" );
 				}
 
-				return _activeDevice;
+				return this._activeDevice;
 			}
 
 			[OgreVersion( 1, 7, 2790 )]
 			set
 			{
-				if ( _activeDevice == value )
+				if ( this._activeDevice == value )
 				{
 					return;
 				}
 
-				_activeDevice = value;
+				this._activeDevice = value;
 
 				var renderSystem = (D3D9RenderSystem)( Root.Instance.RenderSystem );
 				var driverList = renderSystem.Direct3DDrivers;
@@ -92,7 +92,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// Update the active driver member.
 				foreach ( var currDriver in driverList )
 				{
-					if ( currDriver.AdapterNumber != _activeDevice.AdapterNumber )
+					if ( currDriver.AdapterNumber != this._activeDevice.AdapterNumber )
 					{
 						continue;
 					}
@@ -117,13 +117,13 @@ namespace Axiom.RenderSystems.DirectX9
 			[OgreVersion( 1, 7, 2790 )]
 			get
 			{
-				return _activeRenderWindowDevice;
+				return this._activeRenderWindowDevice;
 			}
 
 			[OgreVersion( 1, 7, 2790 )]
 			set
 			{
-				_activeRenderWindowDevice = value;
+				this._activeRenderWindowDevice = value;
 				if ( value != null )
 				{
 					ActiveDevice = value;
@@ -140,7 +140,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return _renderDevices.Count;
+				return this._renderDevices.Count;
 			}
 		}
 
@@ -153,7 +153,7 @@ namespace Axiom.RenderSystems.DirectX9
 			[OgreVersion( 1, 7, 2, "D3D9DeviceManager::getDevice(UINT index)" )]
 			get
 			{
-				return _renderDevices[ index ];
+				return this._renderDevices[ index ];
 			}
 		}
 
@@ -170,13 +170,13 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				if ( disposeManagedResources )
 				{
-					while ( _renderDevices.Count != 0 )
+					while ( this._renderDevices.Count != 0 )
 					{
-						_renderDevices[ 0 ].Destroy();
+						this._renderDevices[ 0 ].Destroy();
 					}
 
-					_activeDevice = null;
-					_activeRenderWindowDevice = null;
+					this._activeDevice = null;
+					this._activeRenderWindowDevice = null;
 				}
 			}
 
@@ -213,7 +213,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			renderDevice.Acquire();
-			if ( _activeDevice == null )
+			if ( this._activeDevice == null )
 			{
 				ActiveDevice = renderDevice;
 			}
@@ -414,7 +414,7 @@ namespace Axiom.RenderSystems.DirectX9
 							// recreated using other handles otherwise create device will fail. 
 							if ( validateAllDevices )
 							{
-								foreach ( var dev in _renderDevices )
+								foreach ( var dev in this._renderDevices )
 								{
 									dev.ValidateFocusWindow();
 								}
@@ -442,7 +442,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Try to find a matching device from current device list.
 			if ( renderDevice == null )
 			{
-				foreach ( var currDevice in _renderDevices )
+				foreach ( var currDevice in this._renderDevices )
 				{
 					if ( currDevice.AdapterNumber != nAdapterOrdinal || currDevice.DeviceType != devType )
 					{
@@ -459,7 +459,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// should be preferred on creation)
 			if ( renderDevice == null )
 			{
-				foreach ( var currDevice in _renderDevices )
+				foreach ( var currDevice in this._renderDevices )
 				{
 					if ( currDevice.AdapterNumber != nAdapterOrdinal || currDevice.DeviceType != D3D9.DeviceType.Reference )
 					{
@@ -476,8 +476,8 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				renderDevice = new D3D9Device( this, nAdapterOrdinal, direct3D9.GetAdapterMonitor( nAdapterOrdinal ), devType,
 				                               extraFlags );
-				_renderDevices.Add( renderDevice );
-				if ( _activeDevice == null )
+				this._renderDevices.Add( renderDevice );
+				if ( this._activeDevice == null )
 				{
 					ActiveDevice = renderDevice;
 				}
@@ -521,14 +521,14 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		public void DestroyInactiveRenderDevices()
 		{
-			foreach ( var itDevice in _renderDevices )
+			foreach ( var itDevice in this._renderDevices )
 			{
 				if ( itDevice.RenderWindowCount != 0 || itDevice.LastPresentFrame + 1 >= Root.Instance.NextFrameNumber )
 				{
 					continue;
 				}
 
-				if ( itDevice == _activeRenderWindowDevice )
+				if ( itDevice == this._activeRenderWindowDevice )
 				{
 					ActiveRenderTargetDevice = null;
 				}
@@ -549,21 +549,21 @@ namespace Axiom.RenderSystems.DirectX9
 				return;
 			}
 
-			if ( device == _activeDevice )
+			if ( device == this._activeDevice )
 			{
-				_activeDevice = null;
+				this._activeDevice = null;
 			}
 
-			if ( _renderDevices.Contains( device ) )
+			if ( this._renderDevices.Contains( device ) )
 			{
-				var itDevice = _renderDevices.IndexOf( device );
+				var itDevice = this._renderDevices.IndexOf( device );
 				device.SafeDispose();
-				_renderDevices.RemoveAt( itDevice );
+				this._renderDevices.RemoveAt( itDevice );
 			}
 
-			if ( _activeDevice == null )
+			if ( this._activeDevice == null )
 			{
-				_activeDevice = _renderDevices.FirstOrDefault();
+				this._activeDevice = this._renderDevices.FirstOrDefault();
 			}
 		}
 
@@ -574,7 +574,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		public D3D9Device GetDeviceFromD3D9Device( D3D9.Device d3D9Device )
 		{
-			return _renderDevices.FirstOrDefault( x => x.D3DDevice == d3D9Device );
+			return this._renderDevices.FirstOrDefault( x => x.D3DDevice == d3D9Device );
 		}
 
 		#endregion GetDeviceFromD3D9Device
@@ -583,7 +583,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		public IEnumerator<D3D9Device> GetEnumerator()
 		{
-			return _renderDevices.GetEnumerator();
+			return this._renderDevices.GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()

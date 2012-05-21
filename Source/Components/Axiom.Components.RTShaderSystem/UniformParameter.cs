@@ -28,12 +28,12 @@ namespace Axiom.Components.RTShaderSystem
 		                         int index, ContentType content, int variability, int size )
 			: base( type, name, semantic, index, content, size )
 		{
-			isAutoConstantInt = false;
-			isAutoConstantReal = false;
-			autoConstantIntData = 0;
+			this.isAutoConstantInt = false;
+			this.isAutoConstantReal = false;
+			this.autoConstantIntData = 0;
 			this.variability = variability;
-			_params = null;
-			physicalIndex = -1;
+			this._params = null;
+			this.physicalIndex = -1;
 		}
 
 		public UniformParameter( GpuProgramParameters.AutoConstantType autoConstantType, Real autoConstantData, int size )
@@ -53,13 +53,13 @@ namespace Axiom.Components.RTShaderSystem
 			_semantic = SemanticType.Unknown;
 			_index = -1;
 			_content = Parameter.ContentType.Unknown;
-			isAutoConstantReal = true;
-			isAutoConstantInt = false;
+			this.isAutoConstantReal = true;
+			this.isAutoConstantInt = false;
 			this.autoConstantType = autoConstantType;
-			autoConstantRealData = autoConstantData;
-			variability = (int)GpuProgramParameters.GpuParamVariability.Global;
-			_params = null;
-			physicalIndex = -1;
+			this.autoConstantRealData = autoConstantData;
+			this.variability = (int)GpuProgramParameters.GpuParamVariability.Global;
+			this._params = null;
+			this.physicalIndex = -1;
 			_size = size;
 		}
 
@@ -81,13 +81,13 @@ namespace Axiom.Components.RTShaderSystem
 			_semantic = SemanticType.Unknown;
 			_index = -1;
 			_content = Parameter.ContentType.Unknown;
-			isAutoConstantReal = true;
-			isAutoConstantInt = false;
+			this.isAutoConstantReal = true;
+			this.isAutoConstantInt = false;
 			this.autoConstantType = autoConstantType;
-			autoConstantRealData = autoConstantData;
-			variability = (int)GpuProgramParameters.GpuParamVariability.Global;
-			_params = null;
-			physicalIndex = -1;
+			this.autoConstantRealData = autoConstantData;
+			this.variability = (int)GpuProgramParameters.GpuParamVariability.Global;
+			this._params = null;
+			this.physicalIndex = -1;
 			_size = size;
 		}
 
@@ -107,13 +107,13 @@ namespace Axiom.Components.RTShaderSystem
 			_semantic = SemanticType.Unknown;
 			_index = -1;
 			_content = Parameter.ContentType.Unknown;
-			isAutoConstantInt = true;
-			isAutoConstantReal = false;
+			this.isAutoConstantInt = true;
+			this.isAutoConstantReal = false;
 			this.autoConstantType = autoConstantType;
-			autoConstantIntData = autoConstantData;
-			variability = (int)GpuProgramParameters.GpuParamVariability.Global;
-			_params = null;
-			physicalIndex = -1;
+			this.autoConstantIntData = autoConstantData;
+			this.variability = (int)GpuProgramParameters.GpuParamVariability.Global;
+			this._params = null;
+			this.physicalIndex = -1;
 			_size = size;
 		}
 
@@ -134,13 +134,13 @@ namespace Axiom.Components.RTShaderSystem
 			_semantic = SemanticType.Unknown;
 			_index = -1;
 			_content = Parameter.ContentType.Unknown;
-			isAutoConstantInt = true;
-			isAutoConstantReal = false;
-			autoConstantType = autoType;
-			autoConstantIntData = autoConstantData;
-			variability = (int)GpuProgramParameters.GpuParamVariability.Global;
-			_params = null;
-			physicalIndex = -1;
+			this.isAutoConstantInt = true;
+			this.isAutoConstantReal = false;
+			this.autoConstantType = autoType;
+			this.autoConstantIntData = autoConstantData;
+			this.variability = (int)GpuProgramParameters.GpuParamVariability.Global;
+			this._params = null;
+			this.physicalIndex = -1;
 			_size = size;
 		}
 
@@ -157,7 +157,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return autoConstantIntData;
+				return this.autoConstantIntData;
 			}
 		}
 
@@ -165,7 +165,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return autoConstantRealData;
+				return this.autoConstantRealData;
 			}
 		}
 
@@ -215,7 +215,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return isAutoConstantInt || isAutoConstantReal;
+				return this.isAutoConstantInt || this.isAutoConstantReal;
 			}
 		}
 
@@ -223,7 +223,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return isAutoConstantInt;
+				return this.isAutoConstantInt;
 			}
 		}
 
@@ -231,7 +231,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return isAutoConstantReal;
+				return this.isAutoConstantReal;
 			}
 		}
 
@@ -239,7 +239,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return autoConstantType;
+				return this.autoConstantType;
 			}
 		}
 
@@ -247,7 +247,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return variability;
+				return this.variability;
 			}
 		}
 
@@ -264,90 +264,90 @@ namespace Axiom.Components.RTShaderSystem
 
 				if ( def != null )
 				{
-					_params = gpuParams;
-					physicalIndex = def.PhysicalIndex;
+					this._params = gpuParams;
+					this.physicalIndex = def.PhysicalIndex;
 				}
 			}
 		}
 
 		public void SetGpuParameter( int val )
 		{
-			if ( _params != null )
+			if ( this._params != null )
 			{
-				_params.WriteRawConstant( physicalIndex, val );
+				this._params.WriteRawConstant( this.physicalIndex, val );
 			}
 		}
 
 		public void SetGpuParameter( Real val )
 		{
-			if ( _params != null )
+			if ( this._params != null )
 			{
-				_params.WriteRawConstant( physicalIndex, val );
+				this._params.WriteRawConstant( this.physicalIndex, val );
 			}
 		}
 
 		public void SetGpuParameter( Axiom.Core.ColorEx val )
 		{
-			if ( _params != null )
+			if ( this._params != null )
 			{
 				//TODO: check if correct 3 argument "count"
-				_params.WriteRawConstant( physicalIndex, val, 4 );
+				this._params.WriteRawConstant( this.physicalIndex, val, 4 );
 			}
 		}
 
 		public void SetGpuParameter( Vector2 val )
 		{
-			if ( _params != null )
+			if ( this._params != null )
 			{
-				_params.WriteRawConstant( physicalIndex, new Vector4( val.x, val.y, 0, 0 ), 2 );
+				this._params.WriteRawConstant( this.physicalIndex, new Vector4( val.x, val.y, 0, 0 ), 2 );
 			}
 		}
 
 		public void SetGpuParameter( Vector3 val )
 		{
-			if ( _params != null )
+			if ( this._params != null )
 			{
-				_params.WriteRawConstant( physicalIndex, val );
+				this._params.WriteRawConstant( this.physicalIndex, val );
 			}
 		}
 
 		public void SetGpuParameter( Vector4 val )
 		{
-			if ( _params != null )
+			if ( this._params != null )
 			{
-				_params.WriteRawConstant( physicalIndex, val );
+				this._params.WriteRawConstant( this.physicalIndex, val );
 			}
 		}
 
 		public void SetGpuParameter( Matrix4 val )
 		{
-			if ( _params != null )
+			if ( this._params != null )
 			{
-				_params.WriteRawConstant( physicalIndex, val, 16 );
+				this._params.WriteRawConstant( this.physicalIndex, val, 16 );
 			}
 		}
 
 		public void SetGpuParameter( float val, int count, int multiple )
 		{
-			if ( _params != null )
+			if ( this._params != null )
 			{
-				_params.WriteRawConstant( physicalIndex, new Vector4( val, 0, 0, 0 ), count*multiple );
+				this._params.WriteRawConstant( this.physicalIndex, new Vector4( val, 0, 0, 0 ), count*multiple );
 			}
 		}
 
 		public void SetGpuParameter( double val, int count, int multiple )
 		{
-			if ( _params != null )
+			if ( this._params != null )
 			{
-				_params.WriteRawConstant( physicalIndex, val );
+				this._params.WriteRawConstant( this.physicalIndex, val );
 			}
 		}
 
 		public void SetGpuParameter( int val, int count, int multiple )
 		{
-			if ( _params != null )
+			if ( this._params != null )
 			{
-				_params.WriteRawConstant( physicalIndex, val );
+				this._params.WriteRawConstant( this.physicalIndex, val );
 			}
 		}
 
@@ -355,7 +355,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		internal void SetGpuParameter( Matrix3 matWorldInvRotation )
 		{
-			if ( _params != null )
+			if ( this._params != null )
 			{
 				//TODO
 			}

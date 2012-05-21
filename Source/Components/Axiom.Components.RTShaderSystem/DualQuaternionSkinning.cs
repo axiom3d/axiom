@@ -59,9 +59,9 @@
 			                                               Graphics.GpuProgramParameters.GpuConstantType.Float3 );
 
 			//local param
-			paramLocalBlendPosition = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1,
-			                                                        "BlendedPosition",
-			                                                        Graphics.GpuProgramParameters.GpuConstantType.Float3 );
+			this.paramLocalBlendPosition = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1,
+			                                                             "BlendedPosition",
+			                                                             Graphics.GpuProgramParameters.GpuConstantType.Float3 );
 			paramLocalPositionWorld = vsMain.ResolveLocalParameter( Parameter.SemanticType.Position, 0,
 			                                                        Parameter.ContentType.PositionWorldSpace,
 			                                                        Graphics.GpuProgramParameters.GpuConstantType.Float4 );
@@ -119,34 +119,34 @@
 				paramInViewProjMatrix =
 					vsProgram.ResolveAutoParameterInt( Graphics.GpuProgramParameters.AutoConstantType.ViewProjMatrix, 0 );
 
-				paramTempWorldMatrix = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "worldMatrix",
-				                                                     Graphics.GpuProgramParameters.GpuConstantType.
-				                                                     	Matrix_2X4 );
-				paramBlendDQ = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "blendDQ",
-				                                             Graphics.GpuProgramParameters.GpuConstantType.Matrix_2X4 );
-				paramInitialDQ = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "initialDQ",
-				                                               Graphics.GpuProgramParameters.GpuConstantType.Matrix_2X4 );
-				paramIndex1 = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "index1",
-				                                            Graphics.GpuProgramParameters.GpuConstantType.Float1 );
-				paramIndex2 = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "index2",
-				                                            Graphics.GpuProgramParameters.GpuConstantType.Float1 );
+				this.paramTempWorldMatrix = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "worldMatrix",
+				                                                          Graphics.GpuProgramParameters.GpuConstantType.
+				                                                          	Matrix_2X4 );
+				this.paramBlendDQ = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "blendDQ",
+				                                                  Graphics.GpuProgramParameters.GpuConstantType.Matrix_2X4 );
+				this.paramInitialDQ = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "initialDQ",
+				                                                    Graphics.GpuProgramParameters.GpuConstantType.Matrix_2X4 );
+				this.paramIndex1 = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "index1",
+				                                                 Graphics.GpuProgramParameters.GpuConstantType.Float1 );
+				this.paramIndex2 = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "index2",
+				                                                 Graphics.GpuProgramParameters.GpuConstantType.Float1 );
 
 				if ( scalingShearingSupport )
 				{
 					//TODO
 					//paramInScaleShearMatrices = vsProgram.ResolveAutoParameterInt(Graphics.GpuProgramParameters.AutoConstantType.WorldScaleShearMatrixArray3x4, 0, boneCount);
-					paramBlendS = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "blendS",
-					                                            Graphics.GpuProgramParameters.GpuConstantType.Matrix_3X4 );
-					paramTempFloat3x3 = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "TempVal3x3",
-					                                                  Graphics.GpuProgramParameters.GpuConstantType.
-					                                                  	Matrix_3X3 );
-					paramTempFloat3x4 = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "TempVal3x4",
-					                                                  Graphics.GpuProgramParameters.GpuConstantType.
-					                                                  	Matrix_3X4 );
+					this.paramBlendS = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "blendS",
+					                                                 Graphics.GpuProgramParameters.GpuConstantType.Matrix_3X4 );
+					this.paramTempFloat3x3 = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "TempVal3x3",
+					                                                       Graphics.GpuProgramParameters.GpuConstantType.
+					                                                       	Matrix_3X3 );
+					this.paramTempFloat3x4 = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "TempVal3x4",
+					                                                       Graphics.GpuProgramParameters.GpuConstantType.
+					                                                       	Matrix_3X4 );
 				}
-				paramTempFloat2x4 = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "TempVal2x4",
-				                                                  Graphics.GpuProgramParameters.GpuConstantType.
-				                                                  	Matrix_2X4 );
+				this.paramTempFloat2x4 = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "TempVal2x4",
+				                                                       Graphics.GpuProgramParameters.GpuConstantType.
+				                                                       	Matrix_2X4 );
 				paramTempFloat4 = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "TempVal4",
 				                                                Graphics.GpuProgramParameters.GpuConstantType.Float4 );
 				paramTempFloat3 = vsMain.ResolveLocalParameter( Parameter.SemanticType.Unknown, -1, "TempVal3",
@@ -159,14 +159,14 @@
 					  paramInWorldMatrices != null &&
 					  paramInViewProjMatrix != null &&
 					  paramInInvWorldMatrix != null &&
-					  paramBlendDQ != null &&
-					  paramInitialDQ != null &&
-					  paramIndex1 != null &&
-					  paramIndex2 != null &&
+					  this.paramBlendDQ != null &&
+					  this.paramInitialDQ != null &&
+					  this.paramIndex1 != null &&
+					  this.paramIndex2 != null &&
 					  ( !scalingShearingSupport || ( scalingShearingSupport &&
-					                                 paramInScaleShearMatrices != null && paramBlendS != null &&
-					                                 paramTempFloat3x3 != null && paramTempFloat3x4 != null ) ) &&
-					  paramTempFloat2x4 != null &&
+					                                 this.paramInScaleShearMatrices != null && this.paramBlendS != null &&
+					                                 this.paramTempFloat3x3 != null && this.paramTempFloat3x4 != null ) ) &&
+					  this.paramTempFloat2x4 != null &&
 					  paramTempFloat4 != null &&
 					  paramTempFloat3 != null );
 			}
@@ -225,13 +225,13 @@
 						curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign,
 						                                            (int)FFPRenderState.FFPVertexShaderStage.VSTransform,
 						                                            funcCounter++ );
-						curFuncInvocation.PushOperand( paramInScaleShearMatrices, Operand.OpSemantic.In );
+						curFuncInvocation.PushOperand( this.paramInScaleShearMatrices, Operand.OpSemantic.In );
 						curFuncInvocation.PushOperand( paramInIndices, Operand.OpSemantic.In, (int)IndexToMask( i ), 1 );
-						curFuncInvocation.PushOperand( paramTempFloat3x4, Operand.OpSemantic.Out );
+						curFuncInvocation.PushOperand( this.paramTempFloat3x4, Operand.OpSemantic.Out );
 						vsMain.AddAtomInstance( curFuncInvocation );
 
 						//Calculate the resultant scaling and shearing matrix based on the weigts given
-						AddIndexedPositionWeight( vsMain, i, paramTempFloat3x4, paramTempFloat3x4, paramBlendS,
+						AddIndexedPositionWeight( vsMain, i, this.paramTempFloat3x4, this.paramTempFloat3x4, this.paramBlendS,
 						                          ref funcCounter );
 					}
 
@@ -239,10 +239,10 @@
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncTransform,
 					                                            (int)FFPRenderState.FFPVertexShaderStage.VSTransform,
 					                                            funcCounter++ );
-					curFuncInvocation.PushOperand( paramBlendS, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.paramBlendS, Operand.OpSemantic.In );
 					curFuncInvocation.PushOperand( paramInPosition, Operand.OpSemantic.In,
 					                               (int)( Operand.OpMask.X | Operand.OpMask.Y | Operand.OpMask.Z ) );
-					curFuncInvocation.PushOperand( paramLocalBlendPosition, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.paramLocalBlendPosition, Operand.OpSemantic.Out );
 					vsMain.AddAtomInstance( curFuncInvocation );
 				}
 				else
@@ -253,7 +253,7 @@
 					                                            funcCounter++ );
 					curFuncInvocation.PushOperand( paramInPosition, Operand.OpSemantic.In,
 					                               (int)( Operand.OpMask.X | Operand.OpMask.Y | Operand.OpMask.Z ) );
-					curFuncInvocation.PushOperand( paramLocalBlendPosition, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.paramLocalBlendPosition, Operand.OpSemantic.Out );
 					vsMain.AddAtomInstance( curFuncInvocation );
 				}
 
@@ -264,7 +264,7 @@
 					                                            (int)FFPRenderState.FFPVertexShaderStage.VSTransform,
 					                                            funcCounter++ );
 					curFuncInvocation.PushOperand( paramInIndices, Operand.OpSemantic.In, (int)IndexToMask( i ) );
-					curFuncInvocation.PushOperand( paramIndex1, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.paramIndex1, Operand.OpSemantic.Out );
 					vsMain.AddAtomInstance( curFuncInvocation );
 
 					//multiply the index by 2
@@ -272,8 +272,8 @@
 					                                            (int)FFPRenderState.FFPVertexShaderStage.VSTransform,
 					                                            funcCounter++ );
 					curFuncInvocation.PushOperand( ParameterFactory.CreateConstParamFloat( 2.0f ), Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( paramIndex1, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( paramIndex1, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.paramIndex1, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.paramIndex1, Operand.OpSemantic.Out );
 					vsMain.AddAtomInstance( curFuncInvocation );
 
 					//Add 1 to the index and assign as the second row's index
@@ -281,8 +281,8 @@
 					                                            (int)FFPRenderState.FFPVertexShaderStage.VSTransform,
 					                                            funcCounter++ );
 					curFuncInvocation.PushOperand( ParameterFactory.CreateConstParamFloat( 1.0f ), Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( paramIndex1, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( paramIndex2, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.paramIndex1, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.paramIndex2, Operand.OpSemantic.Out );
 					vsMain.AddAtomInstance( curFuncInvocation );
 
 					//Build the dual quaternion matrix
@@ -290,34 +290,34 @@
 						DualQuaternionSkinning.SGXFuncBuildDualQuaternionMatrix,
 						(int)FFPRenderState.FFPVertexShaderStage.VSTransform, funcCounter++ );
 					curFuncInvocation.PushOperand( paramInWorldMatrices, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( paramIndex1, Operand.OpSemantic.In, (int)Operand.OpMask.All, 1 );
+					curFuncInvocation.PushOperand( this.paramIndex1, Operand.OpSemantic.In, (int)Operand.OpMask.All, 1 );
 					curFuncInvocation.PushOperand( paramInWorldMatrices, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( paramIndex2, Operand.OpSemantic.In, (int)Operand.OpMask.All, 1 );
-					curFuncInvocation.PushOperand( paramTempFloat2x4, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.paramIndex2, Operand.OpSemantic.In, (int)Operand.OpMask.All, 1 );
+					curFuncInvocation.PushOperand( this.paramTempFloat2x4, Operand.OpSemantic.Out );
 					vsMain.AddAtomInstance( curFuncInvocation );
 
 					if ( correctAntipodalityHandling )
 					{
-						AdjustForCorrectAntipodality( vsMain, i, ref funcCounter, paramTempFloat2x4 );
+						AdjustForCorrectAntipodality( vsMain, i, ref funcCounter, this.paramTempFloat2x4 );
 					}
 
 					//Calculate the resultant dual quaternion based based on the weights given
-					AddIndexedPositionWeight( vsMain, i, paramTempFloat2x4, paramTempFloat2x4, paramBlendDQ,
+					AddIndexedPositionWeight( vsMain, i, this.paramTempFloat2x4, this.paramTempFloat2x4, this.paramBlendDQ,
 					                          ref funcCounter );
 				}
 				//Normalize the dual quaternion
 				curFuncInvocation = new FunctionInvocation( DualQuaternionSkinning.SGXFuncNormalizeDualQuaternion,
 				                                            (int)FFPRenderState.FFPVertexShaderStage.VSTransform,
 				                                            funcCounter++ );
-				curFuncInvocation.PushOperand( paramBlendDQ, Operand.OpSemantic.InOut );
+				curFuncInvocation.PushOperand( this.paramBlendDQ, Operand.OpSemantic.InOut );
 				vsMain.AddAtomInstance( curFuncInvocation );
 
 				//Calculate the blend position
 				curFuncInvocation = new FunctionInvocation( DualQuaternionSkinning.SGXFuncCalculateBlendPosition,
 				                                            (int)FFPRenderState.FFPVertexShaderStage.VSTransform,
 				                                            funcCounter++ );
-				curFuncInvocation.PushOperand( paramLocalBlendPosition, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( paramBlendDQ, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.paramLocalBlendPosition, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.paramBlendDQ, Operand.OpSemantic.In );
 				curFuncInvocation.PushOperand( paramTempFloat4, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 
@@ -365,15 +365,15 @@
 					curFuncInvocation = new FunctionInvocation( DualQuaternionSkinning.SGXFuncAdjointTransposeMatrix,
 					                                            (int)FFPRenderState.FFPVertexShaderStage.VSTransform,
 					                                            funcCounter++ );
-					curFuncInvocation.PushOperand( paramBlendS, Operand.OpSemantic.In );
-					curFuncInvocation.PushOperand( paramTempFloat3x3, Operand.OpSemantic.Out );
+					curFuncInvocation.PushOperand( this.paramBlendS, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.paramTempFloat3x3, Operand.OpSemantic.Out );
 					vsMain.AddAtomInstance( curFuncInvocation );
 
 					//Transform the normal by the adjoint transpose of the blended scaling and shearing matrix
 					curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncTransform,
 					                                            (int)FFPRenderState.FFPVertexShaderStage.VSTransform,
 					                                            funcCounter++ );
-					curFuncInvocation.PushOperand( paramTempFloat3x3, Operand.OpSemantic.In );
+					curFuncInvocation.PushOperand( this.paramTempFloat3x3, Operand.OpSemantic.In );
 					curFuncInvocation.PushOperand( normalRelatedParam, Operand.OpSemantic.In );
 					curFuncInvocation.PushOperand( normalRelatedParam, Operand.OpSemantic.Out );
 					vsMain.AddAtomInstance( curFuncInvocation );
@@ -391,7 +391,7 @@
 				                                            (int)FFPRenderState.FFPVertexShaderStage.VSTransform,
 				                                            funcCounter++ );
 				curFuncInvocation.PushOperand( normalRelatedParam, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( paramBlendDQ, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.paramBlendDQ, Operand.OpSemantic.In );
 				curFuncInvocation.PushOperand( normalWorldRelatedParam, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 
@@ -428,8 +428,8 @@
 				                                            (int)FFPRenderState.FFPVertexShaderStage.VSTransform,
 				                                            funcCounter++ );
 				//This is the base dual quaternion dq0, which the antipodality calculations are based on
-				curFuncInvocation.PushOperand( paramInitialDQ, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( paramTempFloat2x4, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.paramInitialDQ, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.paramTempFloat2x4, Operand.OpSemantic.In );
 				curFuncInvocation.PushOperand( tempWorldMatrix, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 			}
@@ -439,8 +439,8 @@
 				curFuncInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign,
 				                                            (int)FFPRenderState.FFPVertexShaderStage.VSTransform,
 				                                            funcCounter++ );
-				curFuncInvocation.PushOperand( paramTempFloat2x4, Operand.OpSemantic.In );
-				curFuncInvocation.PushOperand( paramInitialDQ, Operand.OpSemantic.Out );
+				curFuncInvocation.PushOperand( this.paramTempFloat2x4, Operand.OpSemantic.In );
+				curFuncInvocation.PushOperand( this.paramInitialDQ, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( curFuncInvocation );
 			}
 		}

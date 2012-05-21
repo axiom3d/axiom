@@ -69,35 +69,35 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return colorImageName;
+				return this.colorImageName;
 			}
 			set
 			{
-				colorImageName = value;
+				this.colorImageName = value;
 			}
 		}
 
 		/// <see cref="ParticleAffector.InitParticle"/>
 		public override void InitParticle( ref Particle particle )
 		{
-			if ( !colorImageLoaded )
+			if ( !this.colorImageLoaded )
 			{
 				loadImage();
 			}
 
-			particle.Color = colorImage.GetColorAt( 0, 0, 0 );
+			particle.Color = this.colorImage.GetColorAt( 0, 0, 0 );
 		}
 
 		/// <see cref="ParticleAffector.AffectParticles"/>
 		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
-			if ( !colorImageLoaded )
+			if ( !this.colorImageLoaded )
 			{
 				loadImage();
 			}
 
-			int width = colorImage.Width - 1;
-			float height = colorImage.Height - 1;
+			int width = this.colorImage.Width - 1;
+			float height = this.colorImage.Height - 1;
 
 			// loop through the particles
 			for ( int i = 0; i < system.Particles.Count; i++ )
@@ -125,11 +125,11 @@ namespace Axiom.ParticleFX
 
 				if ( index <= 0 )
 				{
-					p.Color = colorImage.GetColorAt( 0, 0, 0 );
+					p.Color = this.colorImage.GetColorAt( 0, 0, 0 );
 				}
 				else if ( index >= width )
 				{
-					p.Color = colorImage.GetColorAt( width, 0, 0 );
+					p.Color = this.colorImage.GetColorAt( width, 0, 0 );
 				}
 				else
 				{
@@ -138,7 +138,7 @@ namespace Axiom.ParticleFX
 					float toColor = fract;
 					float fromColor = ( 1 - toColor );
 
-					ColorEx from = colorImage.GetColorAt( index, 0, 0 ), to = colorImage.GetColorAt( index + 1, 0, 0 );
+					ColorEx from = this.colorImage.GetColorAt( index, 0, 0 ), to = this.colorImage.GetColorAt( index + 1, 0, 0 );
 
 					p.Color.r = ( from.r*fromColor ) + ( to.r*toColor );
 					p.Color.g = ( from.g*fromColor ) + ( to.g*toColor );
@@ -151,16 +151,16 @@ namespace Axiom.ParticleFX
 		[OgreVersion( 1, 7, 2 )]
 		private void loadImage()
 		{
-			colorImage = Image.FromFile( colorImageName, parent.ResourceGroupName );
+			this.colorImage = Image.FromFile( this.colorImageName, parent.ResourceGroupName );
 
-			var format = colorImage.Format;
+			var format = this.colorImage.Format;
 
 			if ( !PixelUtil.IsAccessible( format ) )
 			{
 				throw new AxiomException( "Error: Image is not accessible (rgba) image." );
 			}
 
-			colorImageLoaded = true;
+			this.colorImageLoaded = true;
 		}
 
 		#region Command definition classes

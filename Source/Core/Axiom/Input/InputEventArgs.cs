@@ -84,11 +84,11 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return handled;
+				return this.handled;
 			}
 			set
 			{
-				handled = value;
+				this.handled = value;
 			}
 		}
 
@@ -99,7 +99,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return ( modifiers & ModifierKeys.Alt ) != 0;
+				return ( this.modifiers & ModifierKeys.Alt ) != 0;
 			}
 		}
 
@@ -110,7 +110,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return ( modifiers & ModifierKeys.Shift ) != 0;
+				return ( this.modifiers & ModifierKeys.Shift ) != 0;
 			}
 		}
 
@@ -121,7 +121,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return ( modifiers & ModifierKeys.Control ) != 0;
+				return ( this.modifiers & ModifierKeys.Control ) != 0;
 			}
 		}
 
@@ -135,7 +135,7 @@ namespace Axiom.Input
 		{
 			get
 			{
-				return modifiers;
+				return this.modifiers;
 			}
 		}
 

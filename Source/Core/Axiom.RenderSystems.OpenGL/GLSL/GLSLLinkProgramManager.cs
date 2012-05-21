@@ -80,88 +80,88 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				instance = this;
 			}
 
-			typeEnumMap = new Dictionary<string, int>
-			              {
-			              	{
-			              		"float", Gl.GL_FLOAT
-			              		},
-			              	{
-			              		"vec2", Gl.GL_FLOAT_VEC2
-			              		},
-			              	{
-			              		"vec3", Gl.GL_FLOAT_VEC3
-			              		},
-			              	{
-			              		"vec4", Gl.GL_FLOAT_VEC4
-			              		},
-			              	{
-			              		"sampler1D", Gl.GL_SAMPLER_1D
-			              		},
-			              	{
-			              		"sampler2D", Gl.GL_SAMPLER_2D
-			              		},
-			              	{
-			              		"sampler3D", Gl.GL_SAMPLER_3D
-			              		},
-			              	{
-			              		"samplerCube", Gl.GL_SAMPLER_CUBE
-			              		},
-			              	{
-			              		"sampler1DShadow", Gl.GL_SAMPLER_1D_SHADOW
-			              		},
-			              	{
-			              		"sampler2DShadow", Gl.GL_SAMPLER_2D_SHADOW
-			              		},
-			              	{
-			              		"int", Gl.GL_INT
-			              		},
-			              	{
-			              		"ivec2", Gl.GL_INT_VEC2
-			              		},
-			              	{
-			              		"ivec3", Gl.GL_INT_VEC3
-			              		},
-			              	{
-			              		"ivec4", Gl.GL_INT_VEC4
-			              		},
-			              	{
-			              		"mat2", Gl.GL_FLOAT_MAT2
-			              		},
-			              	{
-			              		"mat3", Gl.GL_FLOAT_MAT3
-			              		},
-			              	{
-			              		"mat4", Gl.GL_FLOAT_MAT4
-			              		},
-			              	// GL 2.1
-			              	{
-			              		"mat2x2", Gl.GL_FLOAT_MAT2
-			              		},
-			              	{
-			              		"mat3x3", Gl.GL_FLOAT_MAT3
-			              		},
-			              	{
-			              		"mat4x4", Gl.GL_FLOAT_MAT4
-			              		},
-			              	{
-			              		"mat2x3", Gl.GL_FLOAT_MAT2x3
-			              		},
-			              	{
-			              		"mat3x2", Gl.GL_FLOAT_MAT3x2
-			              		},
-			              	{
-			              		"mat3x4", Gl.GL_FLOAT_MAT3x4
-			              		},
-			              	{
-			              		"mat4x3", Gl.GL_FLOAT_MAT4x3
-			              		},
-			              	{
-			              		"mat2x4", Gl.GL_FLOAT_MAT2x4
-			              		},
-			              	{
-			              		"mat4x2", Gl.GL_FLOAT_MAT4x2
-			              		},
-			              };
+			this.typeEnumMap = new Dictionary<string, int>
+			                   {
+			                   	{
+			                   		"float", Gl.GL_FLOAT
+			                   		},
+			                   	{
+			                   		"vec2", Gl.GL_FLOAT_VEC2
+			                   		},
+			                   	{
+			                   		"vec3", Gl.GL_FLOAT_VEC3
+			                   		},
+			                   	{
+			                   		"vec4", Gl.GL_FLOAT_VEC4
+			                   		},
+			                   	{
+			                   		"sampler1D", Gl.GL_SAMPLER_1D
+			                   		},
+			                   	{
+			                   		"sampler2D", Gl.GL_SAMPLER_2D
+			                   		},
+			                   	{
+			                   		"sampler3D", Gl.GL_SAMPLER_3D
+			                   		},
+			                   	{
+			                   		"samplerCube", Gl.GL_SAMPLER_CUBE
+			                   		},
+			                   	{
+			                   		"sampler1DShadow", Gl.GL_SAMPLER_1D_SHADOW
+			                   		},
+			                   	{
+			                   		"sampler2DShadow", Gl.GL_SAMPLER_2D_SHADOW
+			                   		},
+			                   	{
+			                   		"int", Gl.GL_INT
+			                   		},
+			                   	{
+			                   		"ivec2", Gl.GL_INT_VEC2
+			                   		},
+			                   	{
+			                   		"ivec3", Gl.GL_INT_VEC3
+			                   		},
+			                   	{
+			                   		"ivec4", Gl.GL_INT_VEC4
+			                   		},
+			                   	{
+			                   		"mat2", Gl.GL_FLOAT_MAT2
+			                   		},
+			                   	{
+			                   		"mat3", Gl.GL_FLOAT_MAT3
+			                   		},
+			                   	{
+			                   		"mat4", Gl.GL_FLOAT_MAT4
+			                   		},
+			                   	// GL 2.1
+			                   	{
+			                   		"mat2x2", Gl.GL_FLOAT_MAT2
+			                   		},
+			                   	{
+			                   		"mat3x3", Gl.GL_FLOAT_MAT3
+			                   		},
+			                   	{
+			                   		"mat4x4", Gl.GL_FLOAT_MAT4
+			                   		},
+			                   	{
+			                   		"mat2x3", Gl.GL_FLOAT_MAT2x3
+			                   		},
+			                   	{
+			                   		"mat3x2", Gl.GL_FLOAT_MAT3x2
+			                   		},
+			                   	{
+			                   		"mat3x4", Gl.GL_FLOAT_MAT3x4
+			                   		},
+			                   	{
+			                   		"mat4x3", Gl.GL_FLOAT_MAT4x3
+			                   		},
+			                   	{
+			                   		"mat2x4", Gl.GL_FLOAT_MAT2x4
+			                   		},
+			                   	{
+			                   		"mat4x2", Gl.GL_FLOAT_MAT4x2
+			                   		},
+			                   };
 		}
 
 		/// <summary>
@@ -219,53 +219,54 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			get
 			{
 				// if there is an active link program then return it
-				if ( activeLinkProgram != null )
+				if ( this.activeLinkProgram != null )
 				{
-					return activeLinkProgram;
+					return this.activeLinkProgram;
 				}
 
 				// no active link program so find one or make a new one
 				// is there an active key?
 				long activeKey = 0;
 
-				if ( activeVertexProgram != null )
+				if ( this.activeVertexProgram != null )
 				{
-					activeKey = activeVertexProgram.ProgramID << 32;
+					activeKey = this.activeVertexProgram.ProgramID << 32;
 				}
-				if ( activeGeometryProgram != null )
+				if ( this.activeGeometryProgram != null )
 				{
-					activeKey += activeGeometryProgram.ProgramID << 16;
+					activeKey += this.activeGeometryProgram.ProgramID << 16;
 				}
-				if ( activeFragmentProgram != null )
+				if ( this.activeFragmentProgram != null )
 				{
-					activeKey += activeFragmentProgram.ProgramID;
+					activeKey += this.activeFragmentProgram.ProgramID;
 				}
 
 				// only return a link program object if a vertex or fragment program exist
 				if ( activeKey > 0 )
 				{
 					// find the key in the hash map
-					var programFound = linkPrograms[ activeKey ];
+					var programFound = this.linkPrograms[ activeKey ];
 					// program object not found for key so need to create it
 					if ( programFound == null )
 					{
-						activeLinkProgram = new GLSLLinkProgram( activeVertexProgram, activeGeometryProgram, activeFragmentProgram );
-						linkPrograms[ activeKey ] = activeLinkProgram;
+						this.activeLinkProgram = new GLSLLinkProgram( this.activeVertexProgram, this.activeGeometryProgram,
+						                                              this.activeFragmentProgram );
+						this.linkPrograms[ activeKey ] = this.activeLinkProgram;
 					}
 					else
 					{
 						// found a link program in map container so make it active
-						activeLinkProgram = (GLSLLinkProgram)programFound;
+						this.activeLinkProgram = (GLSLLinkProgram)programFound;
 					}
 				}
 
 				// make the program object active
-				if ( activeLinkProgram != null )
+				if ( this.activeLinkProgram != null )
 				{
-					activeLinkProgram.Activate();
+					this.activeLinkProgram.Activate();
 				}
 
-				return activeLinkProgram;
+				return this.activeLinkProgram;
 			}
 		}
 
@@ -287,12 +288,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="fragmentProgram"></param>
 		public void SetActiveFragmentShader( GLSLGpuProgram fragmentProgram )
 		{
-			if ( fragmentProgram != activeFragmentProgram )
+			if ( fragmentProgram != this.activeFragmentProgram )
 			{
-				activeFragmentProgram = fragmentProgram;
+				this.activeFragmentProgram = fragmentProgram;
 
 				// active link program is no longer valid
-				activeLinkProgram = null;
+				this.activeLinkProgram = null;
 
 				// change back to fixed pipeline
 				Gl.glUseProgramObjectARB( 0 );
@@ -309,12 +310,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="vertexProgram"></param>
 		public void SetActiveGeometryShader( GLSLGpuProgram geometryProgram )
 		{
-			if ( geometryProgram != activeGeometryProgram )
+			if ( geometryProgram != this.activeGeometryProgram )
 			{
-				activeGeometryProgram = geometryProgram;
+				this.activeGeometryProgram = geometryProgram;
 
 				// active link program is no longer valid
-				activeLinkProgram = null;
+				this.activeLinkProgram = null;
 
 				// change back to fixed pipeline
 				Gl.glUseProgramObjectARB( 0 );
@@ -331,12 +332,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// <param name="vertexProgram"></param>
 		public void SetActiveVertexShader( GLSLGpuProgram vertexProgram )
 		{
-			if ( vertexProgram != activeVertexProgram )
+			if ( vertexProgram != this.activeVertexProgram )
 			{
-				activeVertexProgram = vertexProgram;
+				this.activeVertexProgram = vertexProgram;
 
 				// active link program is no longer valid
-				activeLinkProgram = null;
+				this.activeLinkProgram = null;
 
 				// change back to fixed pipeline
 				Gl.glUseProgramObjectARB( 0 );
@@ -626,7 +627,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					{
 						var i = _i;
 						int typei;
-						if ( typeEnumMap.TryGetValue( i, out typei ) )
+						if ( this.typeEnumMap.TryGetValue( i, out typei ) )
 						{
 							CompleteDefInfo( typei, def );
 						}
@@ -710,12 +711,12 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		public void Dispose()
 		{
-			foreach ( GLSLLinkProgram program in linkPrograms.Values )
+			foreach ( GLSLLinkProgram program in this.linkPrograms.Values )
 			{
 				program.Dispose();
 			}
 
-			linkPrograms.Clear();
+			this.linkPrograms.Clear();
 		}
 
 		#endregion IDisposable Members

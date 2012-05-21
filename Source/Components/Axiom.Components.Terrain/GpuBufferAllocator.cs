@@ -107,15 +107,15 @@ namespace Axiom.Components.Terrain
 			//destPos = this.GetVertexBuffer( ref FreePosBufList, forTerrain.PositionBufVertexSize, numVertices );
 			//destDelta = this.GetVertexBuffer( ref FreeDeltaBufList, forTerrain.DeltaBufVertexSize, numVertices );
 
-			destPos = GetVertexBuffer( ref FreePosBufList, forTerrain.PositionVertexDecl, numVertices );
-			destDelta = GetVertexBuffer( ref FreeDeltaBufList, forTerrain.DeltaVertexDecl, numVertices );
+			destPos = GetVertexBuffer( ref this.FreePosBufList, forTerrain.PositionVertexDecl, numVertices );
+			destDelta = GetVertexBuffer( ref this.FreeDeltaBufList, forTerrain.DeltaVertexDecl, numVertices );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public override void FreeVertexBuffers( HardwareVertexBuffer posbuf, HardwareVertexBuffer deltabuf )
 		{
-			FreePosBufList.Add( posbuf );
-			FreeDeltaBufList.Add( deltabuf );
+			this.FreePosBufList.Add( posbuf );
+			this.FreeDeltaBufList.Add( deltabuf );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -125,7 +125,7 @@ namespace Axiom.Components.Terrain
 		{
 			int hsh = HashIndexBuffer( batchSize, vdatasize, vertexIncrement, xoffset, yoffset, numSkirtRowsCols, skirtRowColSkip );
 
-			if ( !SharedIBufMap.ContainsKey( hsh ) )
+			if ( !this.SharedIBufMap.ContainsKey( hsh ) )
 			{
 				// create new
 				int indexCount = Terrain.GetNumIndexesForBatchSize( batchSize );
@@ -136,21 +136,21 @@ namespace Axiom.Components.Terrain
 				                             skirtRowColSkip );
 				ret.Unlock();
 
-				SharedIBufMap.Add( hsh, ret );
+				this.SharedIBufMap.Add( hsh, ret );
 				return ret;
 			}
 			else
 			{
-				return SharedIBufMap[ hsh ];
+				return this.SharedIBufMap[ hsh ];
 			}
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		public override void FreeAllBuffers()
 		{
-			FreePosBufList.Clear();
-			FreeDeltaBufList.Clear();
-			SharedIBufMap.Clear();
+			this.FreePosBufList.Clear();
+			this.FreeDeltaBufList.Clear();
+			this.SharedIBufMap.Clear();
 		}
 
 		/// <summary>

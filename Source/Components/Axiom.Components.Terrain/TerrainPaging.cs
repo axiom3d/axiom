@@ -105,8 +105,8 @@ namespace Axiom.Components.Terrain
 		[OgreVersion( 1, 7, 2 )]
 		public TerrainPaging( PageManager pageMgr )
 		{
-			manager = pageMgr;
-			manager.AddWorldSectionFactory( sectionFactory );
+			this.manager = pageMgr;
+			this.manager.AddWorldSectionFactory( this.sectionFactory );
 		}
 
 		[OgreVersion( 1, 7, 2, "~TerrainPaging" )]
@@ -116,7 +116,7 @@ namespace Axiom.Components.Terrain
 			{
 				if ( disposeManagedResources )
 				{
-					manager.RemoveWorldSectionFactory( sectionFactory );
+					this.manager.RemoveWorldSectionFactory( this.sectionFactory );
 				}
 			}
 			base.dispose( disposeManagedResources );
@@ -179,7 +179,7 @@ namespace Axiom.Components.Terrain
 #endif
 		{
 			var ret =
-				(TerrainPagedWorldSection)world.CreateSection( terrainGroup.SceneManager, sectionFactory.Name, sectionName );
+				(TerrainPagedWorldSection)world.CreateSection( terrainGroup.SceneManager, this.sectionFactory.Name, sectionName );
 
 			ret.Initialize( terrainGroup );
 			ret.LoadRadius = loadRadius;

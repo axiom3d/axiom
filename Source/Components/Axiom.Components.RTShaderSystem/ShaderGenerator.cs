@@ -62,37 +62,37 @@ namespace Axiom.Components.RTShaderSystem
 			ShaderGenerator.DefaultSchemeName = "ShaderGeneratorDefaultScheme";
 			ShaderGenerator.SGPass.UserKey = "SGPass";
 			ShaderGenerator.SGTechnique.UserKey = "SGTechnique";
-			programWriteManager = null;
-			programManager = null;
-			ffpRenderStateBuilder = null;
-			activeSceneMgr = null;
-			scriptTranslatorManager = null;
-			activeViewportValid = false;
-			lightCount[ 0 ] = 0;
-			lightCount[ 1 ] = 0;
-			lightCount[ 2 ] = 0;
+			this.programWriteManager = null;
+			this.programManager = null;
+			this.ffpRenderStateBuilder = null;
+			this.activeSceneMgr = null;
+			this.scriptTranslatorManager = null;
+			this.activeViewportValid = false;
+			this.lightCount[ 0 ] = 0;
+			this.lightCount[ 1 ] = 0;
+			this.lightCount[ 2 ] = 0;
 			VertexShaderOutputsCompactPolicy = OutputsCompactPolicy.Low;
 			CreateShaderOverProgrammablePass = false;
-			isFinalizing = false;
-			shaderLanguage = string.Empty;
+			this.isFinalizing = false;
+			this.shaderLanguage = string.Empty;
 
 			HighLevelGpuProgramManager hmgr = HighLevelGpuProgramManager.Instance;
 
 			if ( hmgr.IsLanguageSupported( "cg" ) )
 			{
-				shaderLanguage = "cg";
+				this.shaderLanguage = "cg";
 			}
 			else if ( hmgr.IsLanguageSupported( "glsl" ) )
 			{
-				shaderLanguage = "glsl";
+				this.shaderLanguage = "glsl";
 			}
 			else if ( hmgr.IsLanguageSupported( "glsles" ) )
 			{
-				shaderLanguage = "glsles";
+				this.shaderLanguage = "glsles";
 			}
 			else if ( hmgr.IsLanguageSupported( "hlsl" ) )
 			{
-				shaderLanguage = "hlsl";
+				this.shaderLanguage = "hlsl";
 			}
 			else
 			{
@@ -101,7 +101,7 @@ namespace Axiom.Components.RTShaderSystem
 				/*
          * throw new Axiom.Core.AxiomException("ShaderGeneration creation enrror: None of the profiles is supported");
          */
-				shaderLanguage = "cg";
+				this.shaderLanguage = "cg";
 			}
 
 			VertexShaderProfiles = ( "gpu_vp gp4vp vp40 vp30 arbvp1 vs_4_0 vs_3_0 vs_2_x vs_2_a vs_2_0 vs_1_1" );
@@ -149,18 +149,18 @@ namespace Axiom.Components.RTShaderSystem
 		public void AddSceneManager( SceneManager sceneMgr )
 		{
 			//make sure this doesn't already exist in the map
-			if ( sceneManagerMap.ContainsKey( sceneMgr.Name ) )
+			if ( this.sceneManagerMap.ContainsKey( sceneMgr.Name ) )
 			{
 				return;
 			}
 
 			//TODO hook events
 
-			sceneManagerMap.Add( sceneMgr.Name, sceneMgr );
+			this.sceneManagerMap.Add( sceneMgr.Name, sceneMgr );
 
-			if ( activeSceneMgr == null )
+			if ( this.activeSceneMgr == null )
 			{
-				activeSceneMgr = sceneMgr;
+				this.activeSceneMgr = sceneMgr;
 			}
 		}
 
@@ -171,19 +171,19 @@ namespace Axiom.Components.RTShaderSystem
 		public void RemoveSceneManager( SceneManager sceneMgr )
 		{
 			//make sure this scene manager exists in the map
-			if ( sceneManagerMap.ContainsKey( sceneMgr.Name ) == false )
+			if ( this.sceneManagerMap.ContainsKey( sceneMgr.Name ) == false )
 			{
 				return;
 			}
 
 			//TODO unhook events
 
-			sceneManagerMap.Remove( sceneMgr.Name );
+			this.sceneManagerMap.Remove( sceneMgr.Name );
 
 			//Update the active scene mangager.
-			if ( activeSceneMgr == sceneMgr )
+			if ( this.activeSceneMgr == sceneMgr )
 			{
-				activeSceneMgr = null;
+				this.activeSceneMgr = null;
 			}
 		}
 
@@ -193,17 +193,17 @@ namespace Axiom.Components.RTShaderSystem
 		public void FlushShaderCache()
 		{
 			//release all programs
-			foreach ( var key in techniqueEntriesMap.Keys )
+			foreach ( var key in this.techniqueEntriesMap.Keys )
 			{
-				techniqueEntriesMap[ key ].ReleasePrograms();
+				this.techniqueEntriesMap[ key ].ReleasePrograms();
 			}
 
 			ProgramManager.Instance.FlushGpuProgramsCache();
 
 			//invalidate all schemes
-			foreach ( var key in schemeEntriesMap.Keys )
+			foreach ( var key in this.schemeEntriesMap.Keys )
 			{
-				schemeEntriesMap[ key ].Invalidate();
+				this.schemeEntriesMap[ key ].Invalidate();
 			}
 		}
 
@@ -225,7 +225,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <returns> </returns>
 		public bool HasRenderState( string schemeName )
 		{
-			return schemeEntriesMap.ContainsKey( schemeName );
+			return this.schemeEntriesMap.ContainsKey( schemeName );
 		}
 
 		/// <summary>
@@ -235,12 +235,12 @@ namespace Axiom.Components.RTShaderSystem
 		/// <returns> The destination scheme name </returns>
 		public RenderState GetRenderState( string schemeName )
 		{
-			if ( schemeEntriesMap.ContainsKey( schemeName ) == false )
+			if ( this.schemeEntriesMap.ContainsKey( schemeName ) == false )
 			{
 				throw new Axiom.Core.AxiomException( "A scheme named " + schemeName + "doesn't exist" );
 			}
 
-			return schemeEntriesMap[ schemeName ].RenderState;
+			return this.schemeEntriesMap[ schemeName ].RenderState;
 		}
 
 		public RenderState GetRenderState( string schemeName, string materialName, ushort passIndex )
@@ -258,11 +258,11 @@ namespace Axiom.Components.RTShaderSystem
 		/// <returns> </returns>
 		public RenderState GetRenderState( string schemeName, string materialName, string groupName, ushort passIndex )
 		{
-			if ( schemeEntriesMap.ContainsKey( schemeName ) == false )
+			if ( this.schemeEntriesMap.ContainsKey( schemeName ) == false )
 			{
 				throw new Axiom.Core.AxiomException( "A scheme named " + schemeName + " doesn't exist." );
 			}
-			var schemeEntry = schemeEntriesMap[ schemeName ];
+			var schemeEntry = this.schemeEntriesMap[ schemeName ];
 
 			return schemeEntry.GetRenderState( materialName, groupName, passIndex );
 		}
@@ -273,12 +273,12 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="factory"> The factory to add </param>
 		public void AddSubRenderStateFactory( SubRenderStateFactory factory )
 		{
-			if ( subRenderStateFactories.Keys.Contains( factory.Type ) )
+			if ( this.subRenderStateFactories.Keys.Contains( factory.Type ) )
 			{
 				throw new Axiom.Core.AxiomException( "A factory of type " + factory.Type + " already exists." );
 			}
 
-			subRenderStateFactories.Add( factory.Type, factory );
+			this.subRenderStateFactories.Add( factory.Type, factory );
 		}
 
 		/// <summary>
@@ -289,11 +289,11 @@ namespace Axiom.Components.RTShaderSystem
 		public SubRenderStateFactory GetSubRenderStateFactory( int index )
 		{
 			int i = 0;
-			foreach ( var key in subRenderStateFactories.Keys )
+			foreach ( var key in this.subRenderStateFactories.Keys )
 			{
 				if ( i == index )
 				{
-					return subRenderStateFactories[ key ];
+					return this.subRenderStateFactories[ key ];
 					break;
 				}
 				i++;
@@ -309,7 +309,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <returns> </returns>
 		public SubRenderStateFactory GetSubRenderStateFactory( string type )
 		{
-			return subRenderStateFactories[ type ];
+			return this.subRenderStateFactories[ type ];
 		}
 
 		/// <summary>
@@ -318,7 +318,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="factory"> The factory to remove </param>
 		public void RemoveSubRenderStateFactory( SubRenderStateFactory factory )
 		{
-			subRenderStateFactories.Remove( factory.Type );
+			this.subRenderStateFactories.Remove( factory.Type );
 		}
 
 		/// <summary>
@@ -328,9 +328,9 @@ namespace Axiom.Components.RTShaderSystem
 		/// <returns> </returns>
 		public SubRenderState CreateSubRenderState( string type )
 		{
-			foreach ( var key in subRenderStateFactories.Keys )
+			foreach ( var key in this.subRenderStateFactories.Keys )
 			{
-				return subRenderStateFactories[ key ].CreateInstance();
+				return this.subRenderStateFactories[ key ].CreateInstance();
 			}
 
 			throw new Axiom.Core.AxiomException( "A factory of type " + type + " doesn't exist" );
@@ -342,7 +342,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="subRenderState"> The instance to destroy </param>
 		public void DestroySubRenderState( SubRenderState subRenderState )
 		{
-			var factoryThatCreatedSRS = subRenderStateFactories[ subRenderState.Type ];
+			var factoryThatCreatedSRS = this.subRenderStateFactories[ subRenderState.Type ];
 			factoryThatCreatedSRS.DestroyInstance( subRenderState );
 		}
 
@@ -369,7 +369,7 @@ namespace Axiom.Components.RTShaderSystem
 				return false;
 			}
 
-			foreach ( var matEntryIt in materialEntriesMap )
+			foreach ( var matEntryIt in this.materialEntriesMap )
 			{
 				var techniqueEntries = matEntryIt.Item2.TechniqueList;
 
@@ -420,7 +420,7 @@ namespace Axiom.Components.RTShaderSystem
 				return false;
 			}
 
-			foreach ( var itMatEntry in materialEntriesMap )
+			foreach ( var itMatEntry in this.materialEntriesMap )
 			{
 				var techniqueEntries = itMatEntry.Item2.TechniqueList;
 
@@ -454,12 +454,12 @@ namespace Axiom.Components.RTShaderSystem
 			SGMaterial matEntry = null;
 
 
-			foreach ( var itMatEntry in materialEntriesMap )
+			foreach ( var itMatEntry in this.materialEntriesMap )
 			{
-				if ( itMatEntry == materialEntriesMap[ materialEntriesMap.Count - 1 ] )
+				if ( itMatEntry == this.materialEntriesMap[ this.materialEntriesMap.Count - 1 ] )
 				{
 					matEntry = new SGMaterial( materialName, trueGroupName );
-					materialEntriesMap.Add(
+					this.materialEntriesMap.Add(
 						new Tuple<MatGroupPair, SGMaterial>( new MatGroupPair( materialName, trueGroupName ), matEntry ) );
 				}
 				else
@@ -474,7 +474,7 @@ namespace Axiom.Components.RTShaderSystem
 			matEntry.TechniqueList.Add( sgTechEntry );
 
 			//Add to all technique map
-			techniqueEntriesMap.Add( sgTechEntry, sgTechEntry );
+			this.techniqueEntriesMap.Add( sgTechEntry, sgTechEntry );
 
 			//add to scheme
 			SGScheme schemeEntry = CreateOrRetrieveScheme( dstTechniqueSchemeName ).Item1;
@@ -529,18 +529,18 @@ namespace Axiom.Components.RTShaderSystem
 			SGScheme schemeEntry = null;
 
 			//make sure scheme exists
-			if ( schemeEntriesMap.ContainsKey( dstTechniqueSchemeName ) == false )
+			if ( this.schemeEntriesMap.ContainsKey( dstTechniqueSchemeName ) == false )
 			{
 				return false;
 			}
 			else
 			{
-				schemeEntry = schemeEntriesMap[ dstTechniqueSchemeName ];
+				schemeEntry = this.schemeEntriesMap[ dstTechniqueSchemeName ];
 			}
 
 			SGTechnique dstTechnique = null;
 
-			foreach ( var itMatEntry in materialEntriesMap )
+			foreach ( var itMatEntry in this.materialEntriesMap )
 			{
 				var techniqueEntries = itMatEntry.Item2.TechniqueList;
 
@@ -564,8 +564,8 @@ namespace Axiom.Components.RTShaderSystem
 			}
 
 			schemeEntry.RemoveTechniqueEntry( dstTechnique );
-			var itTechMap = techniqueEntriesMap[ dstTechnique ];
-			techniqueEntriesMap.Remove( itTechMap );
+			var itTechMap = this.techniqueEntriesMap[ dstTechnique ];
+			this.techniqueEntriesMap.Remove( itTechMap );
 			dstTechnique.Dispose();
 			dstTechnique = null;
 
@@ -587,10 +587,10 @@ namespace Axiom.Components.RTShaderSystem
 		/// <returns> True on success </returns>
 		public bool RemoveAllShaderBasedTechniques( string materialName, string groupName )
 		{
-			foreach ( var itMatEntry in materialEntriesMap )
+			foreach ( var itMatEntry in this.materialEntriesMap )
 			{
 				//Case material not found
-				if ( materialEntriesMap.Contains( itMatEntry ) == false )
+				if ( this.materialEntriesMap.Contains( itMatEntry ) == false )
 				{
 					return false;
 				}
@@ -606,7 +606,7 @@ namespace Axiom.Components.RTShaderSystem
 						                            itTechEntry.DestinationTechniqueSchemeName );
 					}
 				}
-				materialEntriesMap.Remove( itMatEntry );
+				this.materialEntriesMap.Remove( itMatEntry );
 			}
 
 			return true;
@@ -622,9 +622,9 @@ namespace Axiom.Components.RTShaderSystem
 		/// </summary>
 		public void RemoveAllShaderBasedTechniques()
 		{
-			for ( int i = 0; i < materialEntriesMap.Count; i++ )
+			for ( int i = 0; i < this.materialEntriesMap.Count; i++ )
 			{
-				var itMatEntry = materialEntriesMap[ i ];
+				var itMatEntry = this.materialEntriesMap[ i ];
 
 				RemoveAllShaderBasedTechniques( itMatEntry.Item1.Item1, itMatEntry.Item1.Item2 );
 			}
@@ -637,7 +637,7 @@ namespace Axiom.Components.RTShaderSystem
 		public void CreateScheme( string schemeName )
 		{
 			var schemeEntry = new SGScheme( schemeName );
-			schemeEntriesMap.Add( schemeName, schemeEntry );
+			this.schemeEntriesMap.Add( schemeName, schemeEntry );
 		}
 
 		/// <summary>
@@ -646,9 +646,9 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="schemeName"> The scheme to invalidate </param>
 		public void InvalidateScheme( string schemeName )
 		{
-			if ( schemeEntriesMap.ContainsKey( schemeName ) )
+			if ( this.schemeEntriesMap.ContainsKey( schemeName ) )
 			{
-				schemeEntriesMap[ schemeName ].Invalidate();
+				this.schemeEntriesMap[ schemeName ].Invalidate();
 			}
 		}
 
@@ -659,12 +659,12 @@ namespace Axiom.Components.RTShaderSystem
 		/// <returns> </returns>
 		public bool ValidateScheme( string schemeName )
 		{
-			if ( schemeEntriesMap.ContainsKey( schemeName ) == false )
+			if ( this.schemeEntriesMap.ContainsKey( schemeName ) == false )
 			{
 				return false;
 			}
 
-			schemeEntriesMap[ schemeName ].Validate();
+			this.schemeEntriesMap[ schemeName ].Validate();
 			return true;
 		}
 
@@ -680,7 +680,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		public void InvalidateMaterial( string schemeName, string materialName, string groupName )
 		{
-			schemeEntriesMap[ schemeName ].Invalidate( materialName, groupName );
+			this.schemeEntriesMap[ schemeName ].Invalidate( materialName, groupName );
 		}
 
 		/// <summary>
@@ -696,11 +696,11 @@ namespace Axiom.Components.RTShaderSystem
 
 		public bool ValidateMaterial( string schemeName, string materialName, string groupName )
 		{
-			if ( schemeEntriesMap.ContainsKey( schemeName ) == false )
+			if ( this.schemeEntriesMap.ContainsKey( schemeName ) == false )
 			{
 				return false;
 			}
-			return schemeEntriesMap[ schemeName ].Validate( materialName, groupName );
+			return this.schemeEntriesMap[ schemeName ].Validate( materialName, groupName );
 		}
 
 		//todo materialSerializerListener
@@ -770,7 +770,7 @@ namespace Axiom.Components.RTShaderSystem
 
 			//Clone the render states from source to destination
 			//Check if RTSS techniques exist in the source material
-			foreach ( var itSrcMatEntry in materialEntriesMap )
+			foreach ( var itSrcMatEntry in this.materialEntriesMap )
 			{
 				var techniqueEntries = itSrcMatEntry.Item2.TechniqueList;
 
@@ -819,11 +819,11 @@ namespace Axiom.Components.RTShaderSystem
 		/// <returns> </returns>
 		protected bool _initialize()
 		{
-			programWriteManager = new ProgramWriterManager();
-			programManager = new ProgramManager();
+			this.programWriteManager = new ProgramWriterManager();
+			this.programManager = new ProgramManager();
 
-			ffpRenderStateBuilder = new FFPRenderStateBuilder();
-			if ( ffpRenderStateBuilder.Initialize() == false )
+			this.ffpRenderStateBuilder = new FFPRenderStateBuilder();
+			if ( this.ffpRenderStateBuilder.Initialize() == false )
 			{
 				return false;
 			}
@@ -831,11 +831,11 @@ namespace Axiom.Components.RTShaderSystem
 			//Create extensions factories
 			createSubRenderStateExFactories();
 
-			scriptTranslatorManager = new SgScriptTranslatorManager( this );
-			ScriptCompilerManager.Instance.TranslatorManagers.Add( scriptTranslatorManager );
+			this.scriptTranslatorManager = new SgScriptTranslatorManager( this );
+			ScriptCompilerManager.Instance.TranslatorManagers.Add( this.scriptTranslatorManager );
 
 
-			addCustomScriptTranslator( "rtshader_system", coreScriptTranslator );
+			addCustomScriptTranslator( "rtshader_system", this.coreScriptTranslator );
 
 			//create the default scheme
 			CreateScheme( ShaderGenerator.DefaultSchemeName );
@@ -848,47 +848,47 @@ namespace Axiom.Components.RTShaderSystem
 		/// </summary>
 		protected void _finalize()
 		{
-			isFinalizing = true;
+			this.isFinalizing = true;
 			//Delete technique entries
-			techniqueEntriesMap.Clear();
+			this.techniqueEntriesMap.Clear();
 
 			//Delete material entries
-			materialEntriesMap.Clear();
+			this.materialEntriesMap.Clear();
 
 			//Delete scheme entries
-			schemeEntriesMap.Clear();
+			this.schemeEntriesMap.Clear();
 
 			//destroy extensions factories
 			destroySubRenderStateExFactories();
 
 			//Delete FFP Emulator
-			if ( ffpRenderStateBuilder != null )
+			if ( this.ffpRenderStateBuilder != null )
 			{
-				ffpRenderStateBuilder.Finalize();
-				ffpRenderStateBuilder = null;
+				this.ffpRenderStateBuilder.Finalize();
+				this.ffpRenderStateBuilder = null;
 			}
 
 			//Delete Program manager
-			programManager = null;
+			this.programManager = null;
 
 			//Delete Program writer manager.
-			programWriteManager = null;
+			this.programWriteManager = null;
 
 			removeCustomScriptTranslator( "rtshader_system" );
 
 			//Delete script translator manager
-			if ( scriptTranslatorManager != null )
+			if ( this.scriptTranslatorManager != null )
 			{
-				ScriptCompilerManager.Instance.TranslatorManagers.Remove( scriptTranslatorManager );
-				scriptTranslatorManager = null;
+				ScriptCompilerManager.Instance.TranslatorManagers.Remove( this.scriptTranslatorManager );
+				this.scriptTranslatorManager = null;
 			}
 
 
-			foreach ( var key in sceneManagerMap.Keys )
+			foreach ( var key in this.sceneManagerMap.Keys )
 			{
-				RemoveSceneManager( sceneManagerMap[ key ] );
+				RemoveSceneManager( this.sceneManagerMap[ key ] );
 			}
-			sceneManagerMap.Clear();
+			this.sceneManagerMap.Clear();
 		}
 
 		/// <summary>
@@ -902,7 +902,7 @@ namespace Axiom.Components.RTShaderSystem
 		protected void notifyRenderSingleObject( IRenderable rend, Pass pass, AutoParamDataSource source,
 		                                         LightList lightList, bool suppressRenderStateChanges )
 		{
-			if ( activeViewportValid )
+			if ( this.activeViewportValid )
 			{
 				//TODO userObjectBindings?
 			}
@@ -918,8 +918,8 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			string curMaterialScheme = v.MaterialScheme;
 
-			activeSceneMgr = source;
-			activeViewportValid = ValidateScheme( curMaterialScheme );
+			this.activeSceneMgr = source;
+			this.activeViewportValid = ValidateScheme( curMaterialScheme );
 		}
 
 		/// <summary>
@@ -931,27 +931,27 @@ namespace Axiom.Components.RTShaderSystem
 
 			curFactory = new PerPixelLightingFactory();
 			AddSubRenderStateFactory( curFactory );
-			subRenderStateExFactories.Add( curFactory.Type, curFactory );
+			this.subRenderStateExFactories.Add( curFactory.Type, curFactory );
 
 			curFactory = new NormalMapLightingFactory();
 			AddSubRenderStateFactory( curFactory );
-			subRenderStateExFactories.Add( curFactory.Type, curFactory );
+			this.subRenderStateExFactories.Add( curFactory.Type, curFactory );
 
 			curFactory = new IntegratedPSSM3Factory();
 			AddSubRenderStateFactory( curFactory );
-			subRenderStateExFactories.Add( curFactory.Type, curFactory );
+			this.subRenderStateExFactories.Add( curFactory.Type, curFactory );
 
 			curFactory = new LayerBlendingFactory();
 			AddSubRenderStateFactory( curFactory );
-			subRenderStateExFactories.Add( curFactory.Type, curFactory );
+			this.subRenderStateExFactories.Add( curFactory.Type, curFactory );
 
 			curFactory = new HardwareSkinningFactory();
 			AddSubRenderStateFactory( curFactory );
-			subRenderStateExFactories.Add( curFactory.Type, curFactory );
+			this.subRenderStateExFactories.Add( curFactory.Type, curFactory );
 
 			curFactory = new TextureAtlasSamplerFactory();
 			AddSubRenderStateFactory( curFactory );
-			subRenderStateExFactories.Add( curFactory.Type, curFactory );
+			this.subRenderStateExFactories.Add( curFactory.Type, curFactory );
 		}
 
 		/// <summary>
@@ -959,11 +959,11 @@ namespace Axiom.Components.RTShaderSystem
 		/// </summary>
 		protected void destroySubRenderStateExFactories()
 		{
-			foreach ( var key in subRenderStateExFactories.Keys )
+			foreach ( var key in this.subRenderStateExFactories.Keys )
 			{
-				RemoveSubRenderStateFactory( subRenderStateExFactories[ key ] );
+				RemoveSubRenderStateFactory( this.subRenderStateExFactories[ key ] );
 			}
-			subRenderStateExFactories.Clear();
+			this.subRenderStateExFactories.Clear();
 		}
 
 		/// <summary>
@@ -978,9 +978,9 @@ namespace Axiom.Components.RTShaderSystem
 		                                            TextureUnitState texState, SGScriptTranslator translator )
 		{
 			SubRenderState subRenderState = null;
-			foreach ( var key in subRenderStateFactories.Keys )
+			foreach ( var key in this.subRenderStateFactories.Keys )
 			{
-				subRenderState = subRenderStateFactories[ key ].CreateInstance( compiler, prop, texState, translator );
+				subRenderState = this.subRenderStateFactories[ key ].CreateInstance( compiler, prop, texState, translator );
 				if ( subRenderState != null )
 				{
 					break;
@@ -1001,9 +1001,9 @@ namespace Axiom.Components.RTShaderSystem
 		                                            SGScriptTranslator translator )
 		{
 			SubRenderState subRenderState = null;
-			foreach ( var key in subRenderStateFactories.Keys )
+			foreach ( var key in this.subRenderStateFactories.Keys )
 			{
-				subRenderState = subRenderStateFactories[ key ].CreateInstance( compiler, prop, pass, translator );
+				subRenderState = this.subRenderStateFactories[ key ].CreateInstance( compiler, prop, pass, translator );
 				if ( subRenderState != null )
 				{
 					break;
@@ -1020,12 +1020,12 @@ namespace Axiom.Components.RTShaderSystem
 		/// <returns> true on success </returns>
 		internal bool addCustomScriptTranslator( string key, SGScriptTranslator translator )
 		{
-			if ( scriptTranslatorMap.ContainsKey( key ) )
+			if ( this.scriptTranslatorMap.ContainsKey( key ) )
 			{
 				return false;
 			}
 
-			scriptTranslatorMap.Add( key, translator );
+			this.scriptTranslatorMap.Add( key, translator );
 			return true;
 		}
 
@@ -1036,12 +1036,12 @@ namespace Axiom.Components.RTShaderSystem
 		/// <returns> True on success </returns>
 		protected bool removeCustomScriptTranslator( string key )
 		{
-			if ( scriptTranslatorMap.ContainsKey( key ) == false )
+			if ( this.scriptTranslatorMap.ContainsKey( key ) == false )
 			{
 				return false;
 			}
 
-			scriptTranslatorMap.Remove( key );
+			this.scriptTranslatorMap.Remove( key );
 
 			return true;
 		}
@@ -1053,7 +1053,7 @@ namespace Axiom.Components.RTShaderSystem
 			if ( node is ObjectAbstractNode )
 			{
 				var obj = node as ObjectAbstractNode;
-				translator = scriptTranslatorMap[ obj.Cls ];
+				translator = this.scriptTranslatorMap[ obj.Cls ];
 			}
 
 			return translator;
@@ -1063,7 +1063,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return scriptTranslatorMap.Count;
+				return this.scriptTranslatorMap.Count;
 			}
 		}
 
@@ -1096,15 +1096,15 @@ namespace Axiom.Components.RTShaderSystem
 			SGScheme schemeEntry = null;
 
 			//create
-			if ( schemeEntriesMap.ContainsKey( schemeName ) == false )
+			if ( this.schemeEntriesMap.ContainsKey( schemeName ) == false )
 			{
 				schemeEntry = new SGScheme( schemeName );
-				schemeEntriesMap.Add( schemeName, schemeEntry );
+				this.schemeEntriesMap.Add( schemeName, schemeEntry );
 				wasCreated = true;
 			}
 			else //retrieve
 			{
-				schemeEntry = schemeEntriesMap[ schemeName ];
+				schemeEntry = this.schemeEntriesMap[ schemeName ];
 			}
 
 			return new Tuple<SGScheme, bool>( schemeEntry, wasCreated );
@@ -1113,14 +1113,14 @@ namespace Axiom.Components.RTShaderSystem
 		internal string GetRTShaderScheme( int index )
 		{
 			//make sure index isn't out of bounds
-			if ( index < 0 || index >= schemeEntriesMap.Count )
+			if ( index < 0 || index >= this.schemeEntriesMap.Count )
 			{
 				throw new AxiomException( "Index out of bounds", new IndexOutOfRangeException() );
 			}
 
 			int i = 0;
 
-			foreach ( var key in schemeEntriesMap.Keys )
+			foreach ( var key in this.schemeEntriesMap.Keys )
 			{
 				if ( i == index )
 				{
@@ -1143,7 +1143,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return programManager.VertexShaderCount;
+				return this.programManager.VertexShaderCount;
 			}
 		}
 
@@ -1154,7 +1154,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return programManager.FragmentShaderCount;
+				return this.programManager.FragmentShaderCount;
 			}
 		}
 
@@ -1165,7 +1165,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return subRenderStateFactories.Count;
+				return this.subRenderStateFactories.Count;
 			}
 		}
 
@@ -1183,7 +1183,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return schemeEntriesMap.Count;
+				return this.schemeEntriesMap.Count;
 			}
 		}
 
@@ -1194,12 +1194,12 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return shaderCachePath;
+				return this.shaderCachePath;
 			}
 			set
 			{
 				string stdCachePath = value;
-				if ( shaderCachePath != stdCachePath )
+				if ( this.shaderCachePath != stdCachePath )
 				{
 					string path = stdCachePath;
 					path = path.Replace( "\\", "/" );
@@ -1209,21 +1209,21 @@ namespace Axiom.Components.RTShaderSystem
 					}
 					stdCachePath = path;
 				}
-				if ( shaderCachePath != stdCachePath )
+				if ( this.shaderCachePath != stdCachePath )
 				{
 					//Remove previous cache path.
-					if ( shaderCachePath != string.Empty )
+					if ( this.shaderCachePath != string.Empty )
 					{
-						ResourceGroupManager.Instance.RemoveResourceLocation( shaderCachePath, GeneratedShadersGroupName );
+						ResourceGroupManager.Instance.RemoveResourceLocation( this.shaderCachePath, this.GeneratedShadersGroupName );
 					}
 
-					shaderCachePath = stdCachePath;
+					this.shaderCachePath = stdCachePath;
 
 					//Case this is a valid file path -? add as resource location in order to make sure that 
 					//generated shaders could be loaded by the file system archieve
-					if ( shaderCachePath != string.Empty )
+					if ( this.shaderCachePath != string.Empty )
 					{
-						string outTestFileName = shaderCachePath + "ShaderGenerator.tst";
+						string outTestFileName = this.shaderCachePath + "ShaderGenerator.tst";
 						System.IO.StreamWriter outfile = null;
 						try
 						{
@@ -1237,8 +1237,8 @@ namespace Axiom.Components.RTShaderSystem
 						outfile.Close();
 						outfile.Dispose();
 
-						ResourceGroupManager.Instance.AddResourceLocation( shaderCachePath, "FileSystem",
-						                                                   GeneratedShadersGroupName );
+						ResourceGroupManager.Instance.AddResourceLocation( this.shaderCachePath, "FileSystem",
+						                                                   this.GeneratedShadersGroupName );
 					}
 				}
 			}
@@ -1251,7 +1251,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return vertexShaderProfilesList;
+				return this.vertexShaderProfilesList;
 			}
 		}
 
@@ -1262,12 +1262,12 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return vertexShaderProfiles;
+				return this.vertexShaderProfiles;
 			}
 			set
 			{
-				vertexShaderProfiles = value;
-				vertexShaderProfilesList = vertexShaderProfiles.Split( ' ' );
+				this.vertexShaderProfiles = value;
+				this.vertexShaderProfilesList = this.vertexShaderProfiles.Split( ' ' );
 			}
 		}
 
@@ -1278,12 +1278,12 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return fragmentShaderProfiles;
+				return this.fragmentShaderProfiles;
 			}
 			set
 			{
-				fragmentShaderProfiles = value;
-				fragmentShaderProfilesList = fragmentShaderProfiles.Split( ' ' );
+				this.fragmentShaderProfiles = value;
+				this.fragmentShaderProfilesList = this.fragmentShaderProfiles.Split( ' ' );
 			}
 		}
 
@@ -1294,7 +1294,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return fragmentShaderProfilesList;
+				return this.fragmentShaderProfilesList;
 			}
 		}
 
@@ -1308,19 +1308,19 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return shaderLanguage;
+				return this.shaderLanguage;
 			}
 			set
 			{
 				if ( ProgramWriterManager.Instance.IsLanguageSupported( value ) == false )
 				{
-					throw new AxiomException( "The language " + shaderLanguage + " is not supported!" );
+					throw new AxiomException( "The language " + this.shaderLanguage + " is not supported!" );
 				}
 
 				//Case target language changed -> flush the shaders cache
-				if ( shaderLanguage != value )
+				if ( this.shaderLanguage != value )
 				{
-					shaderLanguage = value;
+					this.shaderLanguage = value;
 					FlushShaderCache();
 				}
 			}
@@ -1333,7 +1333,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return activeSceneMgr;
+				return this.activeSceneMgr;
 			}
 		}
 
@@ -1360,11 +1360,11 @@ namespace Axiom.Components.RTShaderSystem
 
 			public SGPass( SGTechnique parent, Pass srcPass, Pass dstPass )
 			{
-				_parent = parent;
-				_srcPass = srcPass;
-				_dstPass = dstPass;
-				customRenderState = null;
-				targetRenderState = null;
+				this._parent = parent;
+				this._srcPass = srcPass;
+				this._dstPass = dstPass;
+				this.customRenderState = null;
+				this.targetRenderState = null;
 				//TODO UserObjectBindings?
 			}
 
@@ -1373,9 +1373,9 @@ namespace Axiom.Components.RTShaderSystem
 			/// </summary>
 			public void BuildRenderTargetRenderState()
 			{
-				string schemeName = _parent.DestinationTechniqueSchemeName;
+				string schemeName = this._parent.DestinationTechniqueSchemeName;
 				RenderState renderStateGlobal = ShaderGenerator.instance.GetRenderState( schemeName );
-				targetRenderState = new TargetRenderState();
+				this.targetRenderState = new TargetRenderState();
 
 				//Set light properties
 				var lightCount = new int[3]
@@ -1384,9 +1384,9 @@ namespace Axiom.Components.RTShaderSystem
 				                 };
 
 				//Use light count definitions of the custom render state if exists.
-				if ( customRenderState != null && customRenderState.LightCountAutoUpdate == false )
+				if ( this.customRenderState != null && this.customRenderState.LightCountAutoUpdate == false )
 				{
-					customRenderState.GetLightCount( out lightCount );
+					this.customRenderState.GetLightCount( out lightCount );
 				}
 					//Use light count definitions of the global render state if exists
 				else if ( renderStateGlobal != null )
@@ -1394,21 +1394,21 @@ namespace Axiom.Components.RTShaderSystem
 					renderStateGlobal.GetLightCount( out lightCount );
 				}
 
-				targetRenderState.SetLightCount( lightCount );
+				this.targetRenderState.SetLightCount( lightCount );
 
 				//Build the FFP state.
-				FFPRenderStateBuilder.Instance.BuildRenderState( this, targetRenderState );
+				FFPRenderStateBuilder.Instance.BuildRenderState( this, this.targetRenderState );
 
 				//Link the target render state with the custom render state of this pass if exists.
-				if ( customRenderState != null )
+				if ( this.customRenderState != null )
 				{
-					targetRenderState.Link( customRenderState, _srcPass, _dstPass );
+					this.targetRenderState.Link( this.customRenderState, this._srcPass, this._dstPass );
 				}
 
 				//Link the target render staet with the scheme render state of the shader generator.
 				if ( renderStateGlobal != null )
 				{
-					targetRenderState.Link( renderStateGlobal, _srcPass, _dstPass );
+					this.targetRenderState.Link( renderStateGlobal, this._srcPass, this._dstPass );
 				}
 			}
 
@@ -1417,7 +1417,7 @@ namespace Axiom.Components.RTShaderSystem
 			/// </summary>
 			public void AquirePrograms()
 			{
-				ProgramManager.Instance.AcquirePrograms( _dstPass, targetRenderState );
+				ProgramManager.Instance.AcquirePrograms( this._dstPass, this.targetRenderState );
 			}
 
 			/// <summary>
@@ -1425,7 +1425,7 @@ namespace Axiom.Components.RTShaderSystem
 			/// </summary>
 			public void ReleasePrograms()
 			{
-				ProgramManager.Instance.ReleasePrograms( _dstPass, targetRenderState );
+				ProgramManager.Instance.ReleasePrograms( this._dstPass, this.targetRenderState );
 			}
 
 			/// <summary>
@@ -1438,9 +1438,9 @@ namespace Axiom.Components.RTShaderSystem
 			public void NotifyRenderSingleObject( IRenderable rend, AutoParamDataSource source, LightList lightList,
 			                                      bool suppressRenderStateChanges )
 			{
-				if ( targetRenderState != null && suppressRenderStateChanges == false )
+				if ( this.targetRenderState != null && suppressRenderStateChanges == false )
 				{
-					targetRenderState.UpdateGpuProgramsParams( rend, _dstPass, source, lightList );
+					this.targetRenderState.UpdateGpuProgramsParams( rend, this._dstPass, source, lightList );
 				}
 			}
 
@@ -1451,7 +1451,7 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				get
 				{
-					return _srcPass;
+					return this._srcPass;
 				}
 			}
 
@@ -1462,7 +1462,7 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				get
 				{
-					return _dstPass;
+					return this._dstPass;
 				}
 			}
 
@@ -1476,14 +1476,14 @@ namespace Axiom.Components.RTShaderSystem
 				SubRenderState customSubState = null;
 
 				//try to override with custom render state of this pass.
-				customRenderState = GetCustomFFPSubState( subStateOrder, customRenderState );
+				this.customRenderState = GetCustomFFPSubState( subStateOrder, this.customRenderState );
 
 				//Case no custom sub state of this pass found, try to override with global scheme state
-				if ( customRenderState == null )
+				if ( this.customRenderState == null )
 				{
-					string schemeName = _parent.DestinationTechniqueSchemeName;
+					string schemeName = this._parent.DestinationTechniqueSchemeName;
 					RenderState renderStateGlobal = ShaderGenerator.instance.GetRenderState( schemeName );
-					customRenderState = GetCustomFFPSubState( subStateOrder, renderStateGlobal );
+					this.customRenderState = GetCustomFFPSubState( subStateOrder, renderStateGlobal );
 				}
 
 				return customSubState;
@@ -1514,21 +1514,21 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				get
 				{
-					return customRenderState;
+					return this.customRenderState;
 				}
 				set
 				{
-					customRenderState = value;
+					this.customRenderState = value;
 				}
 			}
 
 
 			public void Dispose()
 			{
-				if ( targetRenderState != null )
+				if ( this.targetRenderState != null )
 				{
-					targetRenderState.Dispose();
-					targetRenderState = null;
+					this.targetRenderState.Dispose();
+					this.targetRenderState = null;
 				}
 			}
 		}
@@ -1545,10 +1545,10 @@ namespace Axiom.Components.RTShaderSystem
 
 			public SGTechnique( SGMaterial parent, Technique srcTechnique, string dstTechniqueSchemeName )
 			{
-				_parent = parent;
-				_srcTechnique = srcTechnique;
-				_dstTechniqueSchemeName = dstTechniqueSchemeName;
-				dstTechnique = null;
+				this._parent = parent;
+				this._srcTechnique = srcTechnique;
+				this._dstTechniqueSchemeName = dstTechniqueSchemeName;
+				this.dstTechnique = null;
 				BuildDestinationTechnique = true;
 			}
 
@@ -1559,7 +1559,7 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				get
 				{
-					return _parent;
+					return this._parent;
 				}
 			}
 
@@ -1570,7 +1570,7 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				get
 				{
-					return _srcTechnique;
+					return this._srcTechnique;
 				}
 			}
 
@@ -1581,7 +1581,7 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				get
 				{
-					return dstTechnique;
+					return this.dstTechnique;
 				}
 			}
 
@@ -1592,7 +1592,7 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				get
 				{
-					return _dstTechniqueSchemeName;
+					return this._dstTechniqueSchemeName;
 				}
 			}
 
@@ -1610,16 +1610,16 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				RenderState renderState = null;
 
-				if ( passIndex > customRenderStates.Count )
+				if ( passIndex > this.customRenderStates.Count )
 				{
-					customRenderStates.Add( null );
+					this.customRenderStates.Add( null );
 				}
 
-				renderState = customRenderStates[ passIndex ];
+				renderState = this.customRenderStates[ passIndex ];
 				if ( renderState == null )
 				{
 					renderState = new RenderState();
-					customRenderStates[ passIndex ] = renderState;
+					this.customRenderStates[ passIndex ] = renderState;
 				}
 				return renderState;
 			}
@@ -1630,12 +1630,12 @@ namespace Axiom.Components.RTShaderSystem
 			public void BuildTargetRenderState()
 			{
 				//Remove existing destination technique and passes in order to build it again from scratch
-				if ( dstTechnique != null )
+				if ( this.dstTechnique != null )
 				{
-					Material mat = _srcTechnique.Parent;
+					Material mat = this._srcTechnique.Parent;
 					for ( int i = 0; i < mat.TechniqueCount; i++ )
 					{
-						if ( mat.GetTechnique( i ) == dstTechnique )
+						if ( mat.GetTechnique( i ) == this.dstTechnique )
 						{
 							mat.RemoveTechnique( mat.GetTechnique( i ) );
 							break;
@@ -1646,16 +1646,16 @@ namespace Axiom.Components.RTShaderSystem
 				}
 
 				//Create the destination technique and passes 
-				dstTechnique = _srcTechnique.Parent.CreateTechnique();
+				this.dstTechnique = this._srcTechnique.Parent.CreateTechnique();
 				//TODO: Object Bindings?
-				dstTechnique = _srcTechnique;
-				dstTechnique.SchemeName = _dstTechniqueSchemeName;
+				this.dstTechnique = this._srcTechnique;
+				this.dstTechnique.SchemeName = this._dstTechniqueSchemeName;
 				CreateSGPasses();
 
 				//Build render state for each pass.
-				for ( int i = 0; i < passEntries.Count; i++ )
+				for ( int i = 0; i < this.passEntries.Count; i++ )
 				{
-					passEntries[ i ].BuildRenderTargetRenderState();
+					this.passEntries[ i ].BuildRenderTargetRenderState();
 				}
 			}
 
@@ -1664,9 +1664,9 @@ namespace Axiom.Components.RTShaderSystem
 			/// </summary>
 			public void AcquirePrograms()
 			{
-				for ( int i = 0; i < passEntries.Count; i++ )
+				for ( int i = 0; i < this.passEntries.Count; i++ )
 				{
-					passEntries[ i ].AquirePrograms();
+					this.passEntries[ i ].AquirePrograms();
 				}
 			}
 
@@ -1676,26 +1676,26 @@ namespace Axiom.Components.RTShaderSystem
 			public void ReleasePrograms()
 			{
 				//Remove destination technique.
-				if ( dstTechnique != null )
+				if ( this.dstTechnique != null )
 				{
-					Material mat = _srcTechnique.Parent;
+					Material mat = this._srcTechnique.Parent;
 
 					for ( int i = 0; i < mat.TechniqueCount; i++ )
 					{
-						if ( mat.GetTechnique( i ) == dstTechnique )
+						if ( mat.GetTechnique( i ) == this.dstTechnique )
 						{
 							mat.RemoveTechnique( mat.GetTechnique( i ) );
 							break;
 						}
 					}
 
-					dstTechnique = null;
+					this.dstTechnique = null;
 				}
 
 				//Release CPU/GPU programs that associated wit this technique passes.
-				for ( int i = 0; i < passEntries.Count; i++ )
+				for ( int i = 0; i < this.passEntries.Count; i++ )
 				{
-					passEntries[ i ].ReleasePrograms();
+					this.passEntries[ i ].ReleasePrograms();
 				}
 
 				DestroySGPasses();
@@ -1708,7 +1708,7 @@ namespace Axiom.Components.RTShaderSystem
 			/// <returns> </returns>
 			public bool HasRenderState( short passIndex )
 			{
-				return ( passIndex < customRenderStates.Count ) && ( customRenderStates[ passIndex ] != null );
+				return ( passIndex < this.customRenderStates.Count ) && ( this.customRenderStates[ passIndex ] != null );
 			}
 
 			/// <summary>
@@ -1717,18 +1717,18 @@ namespace Axiom.Components.RTShaderSystem
 			protected void CreateSGPasses()
 			{
 				//Create pass entry for each pass
-				for ( int i = 0; i < _srcTechnique.PassCount; i++ )
+				for ( int i = 0; i < this._srcTechnique.PassCount; i++ )
 				{
-					Pass srcPass = _srcTechnique.GetPass( i );
-					Pass dstPass = dstTechnique.GetPass( i );
+					Pass srcPass = this._srcTechnique.GetPass( i );
+					Pass dstPass = this.dstTechnique.GetPass( i );
 
 					var passEntry = new SGPass( this, srcPass, dstPass );
 
-					if ( i < customRenderStates.Count )
+					if ( i < this.customRenderStates.Count )
 					{
-						passEntry.CustomRenderState = customRenderStates[ i ];
+						passEntry.CustomRenderState = this.customRenderStates[ i ];
 					}
-					passEntries.Add( passEntry );
+					this.passEntries.Add( passEntry );
 				}
 			}
 
@@ -1737,18 +1737,18 @@ namespace Axiom.Components.RTShaderSystem
 			/// </summary>
 			protected void DestroySGPasses()
 			{
-				for ( int i = 0; i < passEntries.Count; i++ )
+				for ( int i = 0; i < this.passEntries.Count; i++ )
 				{
-					passEntries[ i ].Dispose();
+					this.passEntries[ i ].Dispose();
 				}
-				passEntries.Clear();
+				this.passEntries.Clear();
 			}
 
 
 			public void Dispose()
 			{
-				string materialName = _parent.MaterialName;
-				string groupName = _parent.GroupName;
+				string materialName = this._parent.MaterialName;
+				string groupName = this._parent.GroupName;
 
 				if ( MaterialManager.Instance.ResourceExists( materialName ) )
 				{
@@ -1757,10 +1757,10 @@ namespace Axiom.Components.RTShaderSystem
 					//Remove the destination technique from parent material
 					for ( int i = 0; i < mat.TechniqueCount; i++ )
 					{
-						if ( dstTechnique == mat.GetTechnique( i ) )
+						if ( this.dstTechnique == mat.GetTechnique( i ) )
 						{
 							//Unload the generated technique in order to free reference resources.
-							dstTechnique.Unload();
+							this.dstTechnique.Unload();
 
 							//Remove the generated technique in order to restore the material to its original state
 							mat.RemoveTechnique( mat.GetTechnique( i ) );
@@ -1776,23 +1776,23 @@ namespace Axiom.Components.RTShaderSystem
 					}
 
 					//Release CPU/GPU programs that associated with this technique passes
-					for ( int i = 0; i < passEntries.Count; i++ )
+					for ( int i = 0; i < this.passEntries.Count; i++ )
 					{
-						passEntries[ i ].ReleasePrograms();
+						this.passEntries[ i ].ReleasePrograms();
 					}
 
 					DestroySGPasses();
 
 					//Delete the custom render states of each pass if exist
-					for ( int i = 0; i < customRenderStates.Count; i++ )
+					for ( int i = 0; i < this.customRenderStates.Count; i++ )
 					{
-						if ( customRenderStates[ i ] != null )
+						if ( this.customRenderStates[ i ] != null )
 						{
-							customRenderStates[ i ].Dispose();
-							customRenderStates[ i ] = null;
+							this.customRenderStates[ i ].Dispose();
+							this.customRenderStates[ i ] = null;
 						}
 					}
-					customRenderStates.Clear();
+					this.customRenderStates.Clear();
 				}
 			}
 		}
@@ -1805,8 +1805,8 @@ namespace Axiom.Components.RTShaderSystem
 
 			public SGMaterial( string materialName, string groupName )
 			{
-				name = materialName;
-				@group = groupName;
+				this.name = materialName;
+				this.@group = groupName;
 			}
 
 			/// <summary>
@@ -1816,7 +1816,7 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				get
 				{
-					return name;
+					return this.name;
 				}
 			}
 
@@ -1827,7 +1827,7 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				get
 				{
-					return group;
+					return this.@group;
 				}
 			}
 
@@ -1838,7 +1838,7 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				get
 				{
-					return techniqueEntries;
+					return this.techniqueEntries;
 				}
 			}
 		}
@@ -1853,10 +1853,10 @@ namespace Axiom.Components.RTShaderSystem
 
 			public SGScheme( string schemeName )
 			{
-				outOfDate = true;
-				renderState = null;
-				name = schemeName;
-				fogMode = FogMode.None;
+				this.outOfDate = true;
+				this.renderState = null;
+				this.name = schemeName;
+				this.fogMode = FogMode.None;
 			}
 
 			/// <summary>
@@ -1866,7 +1866,7 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				get
 				{
-					return ( techniqueEntries.Count == 0 );
+					return ( this.techniqueEntries.Count == 0 );
 				}
 			}
 
@@ -1876,12 +1876,12 @@ namespace Axiom.Components.RTShaderSystem
 			public void Invalidate()
 			{
 				//turn on the build destintion technique flag of all techniques
-				for ( int i = 0; i < techniqueEntries.Count; i++ )
+				for ( int i = 0; i < this.techniqueEntries.Count; i++ )
 				{
-					SGTechnique curTechEntry = techniqueEntries[ i ];
+					SGTechnique curTechEntry = this.techniqueEntries[ i ];
 					curTechEntry.BuildDestinationTechnique = true;
 				}
-				outOfDate = true;
+				this.outOfDate = true;
 			}
 
 			/// <summary>
@@ -1893,15 +1893,15 @@ namespace Axiom.Components.RTShaderSystem
 				SynchronizeWithFogSettings();
 
 				//The target scheme is up to date.
-				if ( !outOfDate )
+				if ( !this.outOfDate )
 				{
 					return;
 				}
 
 				//build render state for each technique
-				for ( int i = 0; i < techniqueEntries.Count; i++ )
+				for ( int i = 0; i < this.techniqueEntries.Count; i++ )
 				{
-					SGTechnique curTechEntry = techniqueEntries[ i ];
+					SGTechnique curTechEntry = this.techniqueEntries[ i ];
 
 					if ( curTechEntry.BuildDestinationTechnique )
 					{
@@ -1910,9 +1910,9 @@ namespace Axiom.Components.RTShaderSystem
 				}
 
 				//Acquire GPU programs for each technique
-				for ( int i = 0; i < techniqueEntries.Count; i++ )
+				for ( int i = 0; i < this.techniqueEntries.Count; i++ )
 				{
-					SGTechnique curTechEntry = techniqueEntries[ i ];
+					SGTechnique curTechEntry = this.techniqueEntries[ i ];
 
 					if ( curTechEntry.BuildDestinationTechnique )
 					{
@@ -1921,14 +1921,14 @@ namespace Axiom.Components.RTShaderSystem
 				}
 
 				//turn off the build destination technique flag
-				for ( int i = 0; i < techniqueEntries.Count; i++ )
+				for ( int i = 0; i < this.techniqueEntries.Count; i++ )
 				{
-					SGTechnique curTechEntry = techniqueEntries[ i ];
+					SGTechnique curTechEntry = this.techniqueEntries[ i ];
 					curTechEntry.BuildDestinationTechnique = false;
 				}
 
 				//mark this scheme as up to date
-				outOfDate = false;
+				this.outOfDate = false;
 			}
 
 			/// <summary>
@@ -1951,9 +1951,9 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				//Find the desired technique
 				bool doAutoDetect = ( groupName == ResourceGroupManager.AutoDetectResourceGroupName );
-				for ( int i = 0; i < techniqueEntries.Count; i++ )
+				for ( int i = 0; i < this.techniqueEntries.Count; i++ )
 				{
-					SGTechnique curTechEntry = techniqueEntries[ i ];
+					SGTechnique curTechEntry = this.techniqueEntries[ i ];
 					SGMaterial curMaterial = curTechEntry.Parent;
 					if ( ( curMaterial.MaterialName == materialName ) &&
 					     ( ( doAutoDetect ) || ( curMaterial.GroupName == groupName ) ) )
@@ -1964,7 +1964,7 @@ namespace Axiom.Components.RTShaderSystem
 					}
 				}
 
-				outOfDate = true;
+				this.outOfDate = true;
 			}
 
 			/// <summary>
@@ -1989,9 +1989,9 @@ namespace Axiom.Components.RTShaderSystem
 				SynchronizeWithLightSettings();
 
 				bool doAutoDetect = groupName == ResourceGroupManager.AutoDetectResourceGroupName;
-				for ( int i = 0; i < techniqueEntries.Count; i++ )
+				for ( int i = 0; i < this.techniqueEntries.Count; i++ )
 				{
-					SGTechnique curTechEntry = techniqueEntries[ i ];
+					SGTechnique curTechEntry = this.techniqueEntries[ i ];
 					SGMaterial curMat = curTechEntry.Parent;
 					if ( ( curMat.MaterialName == materialName ) &&
 					     ( ( doAutoDetect == true ) || ( curMat.GroupName == groupName ) ) &
@@ -2015,9 +2015,9 @@ namespace Axiom.Components.RTShaderSystem
 			private void SynchronizeWithFogSettings()
 			{
 				SceneManager sceneManager = ShaderGenerator.instance.ActiveSceneManager;
-				if ( sceneManager != null && sceneManager.FogMode != fogMode )
+				if ( sceneManager != null && sceneManager.FogMode != this.fogMode )
 				{
-					fogMode = sceneManager.FogMode;
+					this.fogMode = sceneManager.FogMode;
 					Invalidate();
 				}
 			}
@@ -2046,7 +2046,7 @@ namespace Axiom.Components.RTShaderSystem
 						sceneLightCount[ (int)lightList[ i ].Type ]++;
 					}
 
-					renderState.GetLightCount( out currLightCount );
+					this.renderState.GetLightCount( out currLightCount );
 
 					//Case light state has been changed -> invalidate this scheme.
 					if ( currLightCount[ 0 ] != sceneLightCount[ 0 ] ||
@@ -2065,10 +2065,10 @@ namespace Axiom.Components.RTShaderSystem
 			/// <param name="techEntry"> </param>
 			public void AddTechniqueEntry( SGTechnique techEntry )
 			{
-				techniqueEntries.Add( techEntry );
+				this.techniqueEntries.Add( techEntry );
 
 				//mark as out of date
-				outOfDate = true;
+				this.outOfDate = true;
 			}
 
 			/// <summary>
@@ -2078,13 +2078,13 @@ namespace Axiom.Components.RTShaderSystem
 			public void RemoveTechniqueEntry( SGTechnique techEntry )
 			{
 				//build render state for each technique
-				for ( int i = 0; i < techniqueEntries.Count; i++ )
+				for ( int i = 0; i < this.techniqueEntries.Count; i++ )
 				{
-					SGTechnique curTechEntry = techniqueEntries[ i ];
+					SGTechnique curTechEntry = this.techniqueEntries[ i ];
 
 					if ( curTechEntry == techEntry )
 					{
-						techniqueEntries.Remove( curTechEntry );
+						this.techniqueEntries.Remove( curTechEntry );
 						break;
 					}
 				}
@@ -2093,9 +2093,9 @@ namespace Axiom.Components.RTShaderSystem
 			public RenderState GetRenderState( string materialName, string groupName, ushort passIndex )
 			{
 				bool doAutoDetect = ( groupName == ResourceGroupManager.AutoDetectResourceGroupName );
-				for ( int i = 0; i < techniqueEntries.Count; i++ )
+				for ( int i = 0; i < this.techniqueEntries.Count; i++ )
 				{
-					SGTechnique curTechEntry = techniqueEntries[ i ];
+					SGTechnique curTechEntry = this.techniqueEntries[ i ];
 					Material curMat = curTechEntry.SourceTechnique.Parent;
 					if ( ( curMat.Name == materialName ) &&
 					     ( ( doAutoDetect == true ) || ( curMat.Group == groupName ) ) )
@@ -2110,25 +2110,25 @@ namespace Axiom.Components.RTShaderSystem
 			{
 				get
 				{
-					if ( renderState == null )
+					if ( this.renderState == null )
 					{
-						renderState = new RenderState();
+						this.renderState = new RenderState();
 					}
-					return renderState;
+					return this.renderState;
 				}
 
 				set
 				{
-					renderState = value;
+					this.renderState = value;
 				}
 			}
 
 			public void Dispose()
 			{
-				if ( renderState != null )
+				if ( this.renderState != null )
 				{
-					renderState.Dispose();
-					renderState = null;
+					this.renderState.Dispose();
+					this.renderState = null;
 				}
 			}
 		}
@@ -2139,20 +2139,20 @@ namespace Axiom.Components.RTShaderSystem
 
 			public SgScriptTranslatorManager( ShaderGenerator owner )
 			{
-				_owner = owner;
+				this._owner = owner;
 			}
 
 			public virtual int NumTranslators
 			{
 				get
 				{
-					return _owner.NumTranslators;
+					return this._owner.NumTranslators;
 				}
 			}
 
 			public virtual SGScriptTranslator GetTranslator( AbstractNode node )
 			{
-				return _owner.GetTranslator( node );
+				return this._owner.GetTranslator( node );
 			}
 		}
 

@@ -77,158 +77,160 @@ namespace Axiom.Framework.Configuration
 		private void InitializeComponent()
 		{
 			var resources = new System.ComponentModel.ComponentResourceManager( typeof ( WinFormConfigurationDialog ) );
-			picLogo = new System.Windows.Forms.PictureBox();
-			grpVideoOptions = new System.Windows.Forms.GroupBox();
-			lblOption = new System.Windows.Forms.Label();
-			cboOptionValues = new System.Windows.Forms.ComboBox();
-			lstOptions = new System.Windows.Forms.ListBox();
-			lblRenderer = new System.Windows.Forms.Label();
-			cboRenderSystems = new System.Windows.Forms.ComboBox();
-			cmdCancel = new System.Windows.Forms.Button();
-			cmdOk = new System.Windows.Forms.Button();
-			pnlBackground = new System.Windows.Forms.Panel();
-			( (System.ComponentModel.ISupportInitialize)( picLogo ) ).BeginInit();
-			grpVideoOptions.SuspendLayout();
+			this.picLogo = new System.Windows.Forms.PictureBox();
+			this.grpVideoOptions = new System.Windows.Forms.GroupBox();
+			this.lblOption = new System.Windows.Forms.Label();
+			this.cboOptionValues = new System.Windows.Forms.ComboBox();
+			this.lstOptions = new System.Windows.Forms.ListBox();
+			this.lblRenderer = new System.Windows.Forms.Label();
+			this.cboRenderSystems = new System.Windows.Forms.ComboBox();
+			this.cmdCancel = new System.Windows.Forms.Button();
+			this.cmdOk = new System.Windows.Forms.Button();
+			this.pnlBackground = new System.Windows.Forms.Panel();
+			( (System.ComponentModel.ISupportInitialize)( this.picLogo ) ).BeginInit();
+			this.grpVideoOptions.SuspendLayout();
 			SuspendLayout();
 			// 
 			// picLogo
 			// 
-			picLogo.BackColor = System.Drawing.Color.White;
-			picLogo.Image = global::Axiom.Framework.Properties.Resources.AxiomLogo;
-			picLogo.Location = new System.Drawing.Point( 12, 3 );
-			picLogo.Name = "picLogo";
-			picLogo.Size = new System.Drawing.Size( 420, 174 );
-			picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			picLogo.TabIndex = 3;
-			picLogo.TabStop = false;
+			this.picLogo.BackColor = System.Drawing.Color.White;
+			this.picLogo.Image = global::Axiom.Framework.Properties.Resources.AxiomLogo;
+			this.picLogo.Location = new System.Drawing.Point( 12, 3 );
+			this.picLogo.Name = "picLogo";
+			this.picLogo.Size = new System.Drawing.Size( 420, 174 );
+			this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.picLogo.TabIndex = 3;
+			this.picLogo.TabStop = false;
 			// 
 			// grpVideoOptions
 			// 
-			grpVideoOptions.Controls.Add( lblOption );
-			grpVideoOptions.Controls.Add( cboOptionValues );
-			grpVideoOptions.Controls.Add( lstOptions );
-			grpVideoOptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			grpVideoOptions.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
-			                                                System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-			grpVideoOptions.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ),
-			                                                           ( (int)( ( (byte)( 35 ) ) ) ),
-			                                                           ( (int)( ( (byte)( 75 ) ) ) ) );
-			grpVideoOptions.Location = new System.Drawing.Point( 12, 215 );
-			grpVideoOptions.Name = "grpVideoOptions";
-			grpVideoOptions.Size = new System.Drawing.Size( 420, 187 );
-			grpVideoOptions.TabIndex = 6;
-			grpVideoOptions.TabStop = false;
-			grpVideoOptions.Text = "Rendering System Options";
+			this.grpVideoOptions.Controls.Add( this.lblOption );
+			this.grpVideoOptions.Controls.Add( this.cboOptionValues );
+			this.grpVideoOptions.Controls.Add( this.lstOptions );
+			this.grpVideoOptions.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.grpVideoOptions.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
+			                                                     System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.grpVideoOptions.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ),
+			                                                                ( (int)( ( (byte)( 35 ) ) ) ),
+			                                                                ( (int)( ( (byte)( 75 ) ) ) ) );
+			this.grpVideoOptions.Location = new System.Drawing.Point( 12, 215 );
+			this.grpVideoOptions.Name = "grpVideoOptions";
+			this.grpVideoOptions.Size = new System.Drawing.Size( 420, 187 );
+			this.grpVideoOptions.TabIndex = 6;
+			this.grpVideoOptions.TabStop = false;
+			this.grpVideoOptions.Text = "Rendering System Options";
 			// 
 			// lblOption
 			// 
-			lblOption.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			lblOption.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
-			                                          System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-			lblOption.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ),
-			                                                     ( (int)( ( (byte)( 75 ) ) ) ) );
-			lblOption.Location = new System.Drawing.Point( 32, 153 );
-			lblOption.Name = "lblOption";
-			lblOption.Size = new System.Drawing.Size( 200, 22 );
-			lblOption.TabIndex = 9;
-			lblOption.Text = "Option Name:";
-			lblOption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			lblOption.Visible = false;
+			this.lblOption.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.lblOption.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
+			                                               System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.lblOption.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ),
+			                                                          ( (int)( ( (byte)( 35 ) ) ) ),
+			                                                          ( (int)( ( (byte)( 75 ) ) ) ) );
+			this.lblOption.Location = new System.Drawing.Point( 32, 153 );
+			this.lblOption.Name = "lblOption";
+			this.lblOption.Size = new System.Drawing.Size( 200, 22 );
+			this.lblOption.TabIndex = 9;
+			this.lblOption.Text = "Option Name:";
+			this.lblOption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.lblOption.Visible = false;
 			// 
 			// cboOptionValues
 			// 
-			cboOptionValues.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			cboOptionValues.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
-			                                                System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-			cboOptionValues.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ),
-			                                                           ( (int)( ( (byte)( 35 ) ) ) ),
-			                                                           ( (int)( ( (byte)( 75 ) ) ) ) );
-			cboOptionValues.Location = new System.Drawing.Point( 238, 158 );
-			cboOptionValues.Name = "cboOptionValues";
-			cboOptionValues.Size = new System.Drawing.Size( 176, 22 );
-			cboOptionValues.TabIndex = 8;
-			cboOptionValues.Visible = false;
-			cboOptionValues.SelectedIndexChanged += new System.EventHandler( cboOptionValues_SelectedIndexChanged );
+			this.cboOptionValues.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboOptionValues.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
+			                                                     System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.cboOptionValues.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ),
+			                                                                ( (int)( ( (byte)( 35 ) ) ) ),
+			                                                                ( (int)( ( (byte)( 75 ) ) ) ) );
+			this.cboOptionValues.Location = new System.Drawing.Point( 238, 158 );
+			this.cboOptionValues.Name = "cboOptionValues";
+			this.cboOptionValues.Size = new System.Drawing.Size( 176, 22 );
+			this.cboOptionValues.TabIndex = 8;
+			this.cboOptionValues.Visible = false;
+			this.cboOptionValues.SelectedIndexChanged += new System.EventHandler( cboOptionValues_SelectedIndexChanged );
 			// 
 			// lstOptions
 			// 
-			lstOptions.ItemHeight = 14;
-			lstOptions.Location = new System.Drawing.Point( 7, 22 );
-			lstOptions.Name = "lstOptions";
-			lstOptions.Size = new System.Drawing.Size( 407, 130 );
-			lstOptions.TabIndex = 0;
-			lstOptions.SelectedIndexChanged += new System.EventHandler( lstOptions_SelectedIndexChanged );
+			this.lstOptions.ItemHeight = 14;
+			this.lstOptions.Location = new System.Drawing.Point( 7, 22 );
+			this.lstOptions.Name = "lstOptions";
+			this.lstOptions.Size = new System.Drawing.Size( 407, 130 );
+			this.lstOptions.TabIndex = 0;
+			this.lstOptions.SelectedIndexChanged += new System.EventHandler( lstOptions_SelectedIndexChanged );
 			// 
 			// lblRenderer
 			// 
-			lblRenderer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-			lblRenderer.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
-			                                            System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-			lblRenderer.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ), ( (int)( ( (byte)( 35 ) ) ) ),
-			                                                       ( (int)( ( (byte)( 75 ) ) ) ) );
-			lblRenderer.Location = new System.Drawing.Point( 10, 185 );
-			lblRenderer.Name = "lblRenderer";
-			lblRenderer.Size = new System.Drawing.Size( 128, 24 );
-			lblRenderer.TabIndex = 9;
-			lblRenderer.Text = "Rendering Subsystem:";
-			lblRenderer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.lblRenderer.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+			this.lblRenderer.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
+			                                                 System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.lblRenderer.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ),
+			                                                            ( (int)( ( (byte)( 35 ) ) ) ),
+			                                                            ( (int)( ( (byte)( 75 ) ) ) ) );
+			this.lblRenderer.Location = new System.Drawing.Point( 10, 185 );
+			this.lblRenderer.Name = "lblRenderer";
+			this.lblRenderer.Size = new System.Drawing.Size( 128, 24 );
+			this.lblRenderer.TabIndex = 9;
+			this.lblRenderer.Text = "Rendering Subsystem:";
+			this.lblRenderer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// cboRenderSystems
 			// 
-			cboRenderSystems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			cboRenderSystems.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
-			                                                 System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
-			cboRenderSystems.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ),
-			                                                            ( (int)( ( (byte)( 35 ) ) ) ),
-			                                                            ( (int)( ( (byte)( 75 ) ) ) ) );
-			cboRenderSystems.Location = new System.Drawing.Point( 145, 185 );
-			cboRenderSystems.Name = "cboRenderSystems";
-			cboRenderSystems.Size = new System.Drawing.Size( 285, 22 );
-			cboRenderSystems.TabIndex = 8;
-			cboRenderSystems.SelectedIndexChanged += new System.EventHandler( RenderSystems_SelectedIndexChanged );
+			this.cboRenderSystems.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboRenderSystems.Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular,
+			                                                      System.Drawing.GraphicsUnit.Point, ( (byte)( 0 ) ) );
+			this.cboRenderSystems.ForeColor = System.Drawing.Color.FromArgb( ( (int)( ( (byte)( 25 ) ) ) ),
+			                                                                 ( (int)( ( (byte)( 35 ) ) ) ),
+			                                                                 ( (int)( ( (byte)( 75 ) ) ) ) );
+			this.cboRenderSystems.Location = new System.Drawing.Point( 145, 185 );
+			this.cboRenderSystems.Name = "cboRenderSystems";
+			this.cboRenderSystems.Size = new System.Drawing.Size( 285, 22 );
+			this.cboRenderSystems.TabIndex = 8;
+			this.cboRenderSystems.SelectedIndexChanged += new System.EventHandler( RenderSystems_SelectedIndexChanged );
 			// 
 			// cmdCancel
 			// 
-			cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			cmdCancel.Location = new System.Drawing.Point( 355, 408 );
-			cmdCancel.Name = "cmdCancel";
-			cmdCancel.Size = new System.Drawing.Size( 75, 23 );
-			cmdCancel.TabIndex = 10;
-			cmdCancel.Text = "Cancel";
-			cmdCancel.Click += new System.EventHandler( cmdCancel_Click );
+			this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.cmdCancel.Location = new System.Drawing.Point( 355, 408 );
+			this.cmdCancel.Name = "cmdCancel";
+			this.cmdCancel.Size = new System.Drawing.Size( 75, 23 );
+			this.cmdCancel.TabIndex = 10;
+			this.cmdCancel.Text = "Cancel";
+			this.cmdCancel.Click += new System.EventHandler( cmdCancel_Click );
 			// 
 			// cmdOk
 			// 
-			cmdOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-			cmdOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-			cmdOk.Location = new System.Drawing.Point( 261, 408 );
-			cmdOk.Name = "cmdOk";
-			cmdOk.Size = new System.Drawing.Size( 75, 23 );
-			cmdOk.TabIndex = 11;
-			cmdOk.Text = "Ok";
-			cmdOk.Click += new System.EventHandler( cmdOk_Click );
+			this.cmdOk.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+			this.cmdOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.cmdOk.Location = new System.Drawing.Point( 261, 408 );
+			this.cmdOk.Name = "cmdOk";
+			this.cmdOk.Size = new System.Drawing.Size( 75, 23 );
+			this.cmdOk.TabIndex = 11;
+			this.cmdOk.Text = "Ok";
+			this.cmdOk.Click += new System.EventHandler( cmdOk_Click );
 			// 
 			// pnlBackground
 			// 
-			pnlBackground.BackColor = System.Drawing.Color.White;
-			pnlBackground.Location = new System.Drawing.Point( -2, 3 );
-			pnlBackground.Name = "pnlBackground";
-			pnlBackground.Size = new System.Drawing.Size( 446, 174 );
-			pnlBackground.TabIndex = 12;
+			this.pnlBackground.BackColor = System.Drawing.Color.White;
+			this.pnlBackground.Location = new System.Drawing.Point( -2, 3 );
+			this.pnlBackground.Name = "pnlBackground";
+			this.pnlBackground.Size = new System.Drawing.Size( 446, 174 );
+			this.pnlBackground.TabIndex = 12;
 			// 
 			// WinFormConfigurationDialog
 			// 
 			//SWF.Application.AddMessageFilter( this );
 			ClientSize = new System.Drawing.Size( 442, 436 );
 			ControlBox = false;
-			Controls.Add( cmdOk );
-			Controls.Add( cmdCancel );
-			Controls.Add( lblRenderer );
-			Controls.Add( grpVideoOptions );
-			Controls.Add( cboRenderSystems );
-			Controls.Add( picLogo );
-			Controls.Add( pnlBackground );
+			Controls.Add( this.cmdOk );
+			Controls.Add( this.cmdCancel );
+			Controls.Add( this.lblRenderer );
+			Controls.Add( this.grpVideoOptions );
+			Controls.Add( this.cboRenderSystems );
+			Controls.Add( this.picLogo );
+			Controls.Add( this.pnlBackground );
 			Font = new System.Drawing.Font( "Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point,
 			                                ( (byte)( 0 ) ) );
 			FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -238,8 +240,8 @@ namespace Axiom.Framework.Configuration
 			StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			Text = "Axiom Rendering Engine Setup";
 			Load += new System.EventHandler( WinFormConfigurationDialog_Load );
-			( (System.ComponentModel.ISupportInitialize)( picLogo ) ).EndInit();
-			grpVideoOptions.ResumeLayout( false );
+			( (System.ComponentModel.ISupportInitialize)( this.picLogo ) ).EndInit();
+			this.grpVideoOptions.ResumeLayout( false );
 			ResumeLayout( false );
 		}
 
@@ -247,7 +249,7 @@ namespace Axiom.Framework.Configuration
 
 		protected void cmdOk_Click( object sender, EventArgs e )
 		{
-			if ( cboRenderSystems.SelectedItem == null )
+			if ( this.cboRenderSystems.SelectedItem == null )
 			{
 				SWF.MessageBox.Show( "Please select a rendering system.", "Axiom", SWF.MessageBoxButtons.OK,
 				                     SWF.MessageBoxIcon.Exclamation );
@@ -255,7 +257,7 @@ namespace Axiom.Framework.Configuration
 				return;
 			}
 
-			var system = (Axiom.Graphics.RenderSystem)cboRenderSystems.SelectedItem;
+			var system = (Axiom.Graphics.RenderSystem)this.cboRenderSystems.SelectedItem;
 
 			string errorMsg = system.ValidateConfigOptions();
 			if ( !String.IsNullOrEmpty( errorMsg ) )
@@ -280,77 +282,77 @@ namespace Axiom.Framework.Configuration
 		{
 			foreach ( Axiom.Graphics.RenderSystem renderSystem in Engine.RenderSystems )
 			{
-				cboRenderSystems.Items.Add( renderSystem );
+				this.cboRenderSystems.Items.Add( renderSystem );
 			}
 
 			// Set the default if it's already configured
 			if ( Engine.RenderSystem != null )
 			{
-				if ( cboRenderSystems.Items.Contains( Engine.RenderSystem ) )
+				if ( this.cboRenderSystems.Items.Contains( Engine.RenderSystem ) )
 				{
-					cboRenderSystems.SelectedItem = Engine.RenderSystem;
+					this.cboRenderSystems.SelectedItem = Engine.RenderSystem;
 				}
 			}
 
 			// Register [Enter] and [Esc] keys for Default buttons
 			//SWF.Application.AddMessageFilter( this );
-			cmdOk.NotifyDefault( true );
+			this.cmdOk.NotifyDefault( true );
 		}
 
 		private void RenderSystems_SelectedIndexChanged( object sender, EventArgs e )
 		{
-			lstOptions.Items.Clear();
-			cboOptionValues.Items.Clear();
-			var system = (Axiom.Graphics.RenderSystem)cboRenderSystems.SelectedItem;
+			this.lstOptions.Items.Clear();
+			this.cboOptionValues.Items.Clear();
+			var system = (Axiom.Graphics.RenderSystem)this.cboRenderSystems.SelectedItem;
 			ConfigOption optVideoMode;
 
 			// Load Render Subsystem Options
 			foreach ( ConfigOption option in system.ConfigOptions.Values )
 			{
-				lstOptions.Items.Add( option );
+				this.lstOptions.Items.Add( option );
 			}
 		}
 
 		private void lstOptions_SelectedIndexChanged( object sender, EventArgs e )
 		{
-			cboOptionValues.SelectedIndexChanged -= new System.EventHandler( cboOptionValues_SelectedIndexChanged );
+			this.cboOptionValues.SelectedIndexChanged -= new System.EventHandler( cboOptionValues_SelectedIndexChanged );
 
-			var system = (Axiom.Graphics.RenderSystem)cboRenderSystems.SelectedItem;
-			var opt = (ConfigOption)lstOptions.SelectedItem;
+			var system = (Axiom.Graphics.RenderSystem)this.cboRenderSystems.SelectedItem;
+			var opt = (ConfigOption)this.lstOptions.SelectedItem;
 
-			cboOptionValues.Items.Clear();
+			this.cboOptionValues.Items.Clear();
 			foreach ( string value in opt.PossibleValues.Values )
 			{
-				cboOptionValues.Items.Add( value );
+				this.cboOptionValues.Items.Add( value );
 			}
 
-			if ( cboOptionValues.Items.Count == 0 )
+			if ( this.cboOptionValues.Items.Count == 0 )
 			{
-				cboOptionValues.Items.Add( opt.Value );
+				this.cboOptionValues.Items.Add( opt.Value );
 			}
-			cboOptionValues.SelectedIndex = cboOptionValues.Items.IndexOf( opt.Value );
+			this.cboOptionValues.SelectedIndex = this.cboOptionValues.Items.IndexOf( opt.Value );
 
-			lblOption.Text = opt.Name;
-			lblOption.Visible = true;
-			cboOptionValues.Visible = true;
-			cboOptionValues.Enabled = ( !opt.Immutable );
+			this.lblOption.Text = opt.Name;
+			this.lblOption.Visible = true;
+			this.cboOptionValues.Visible = true;
+			this.cboOptionValues.Enabled = ( !opt.Immutable );
 
-			cboOptionValues.SelectedIndexChanged += new System.EventHandler( cboOptionValues_SelectedIndexChanged );
+			this.cboOptionValues.SelectedIndexChanged += new System.EventHandler( cboOptionValues_SelectedIndexChanged );
 		}
 
 		private void cboOptionValues_SelectedIndexChanged( object sender, EventArgs e )
 		{
-			var opt = (ConfigOption)lstOptions.SelectedItem;
-			var value = (string)cboOptionValues.SelectedItem;
+			var opt = (ConfigOption)this.lstOptions.SelectedItem;
+			var value = (string)this.cboOptionValues.SelectedItem;
 
 			opt.Value = value;
 
-			lstOptions.SelectedIndexChanged -= new System.EventHandler( lstOptions_SelectedIndexChanged );
-			for ( int index = 0; index < lstOptions.Items.Count; index++ )
+			this.lstOptions.SelectedIndexChanged -= new System.EventHandler( lstOptions_SelectedIndexChanged );
+			for ( int index = 0; index < this.lstOptions.Items.Count; index++ )
 			{
-				lstOptions.Items[ index ] = lstOptions.Items[ index ];
+				this.lstOptions.Items[ index ] = this.lstOptions.Items[ index ];
 			}
-			lstOptions.SelectedIndexChanged += new System.EventHandler( lstOptions_SelectedIndexChanged );
+			this.lstOptions.SelectedIndexChanged += new System.EventHandler( lstOptions_SelectedIndexChanged );
 		}
 
 		#endregion Event Handlers
@@ -361,13 +363,13 @@ namespace Axiom.Framework.Configuration
 		{
 			get
 			{
-				return cboRenderSystems.SelectedItem as Axiom.Graphics.RenderSystem;
+				return this.cboRenderSystems.SelectedItem as Axiom.Graphics.RenderSystem;
 			}
 		}
 
 		public DialogResult Show()
 		{
-			cmdOk.Select();
+			this.cmdOk.Select();
 			return ShowDialog() == SWF.DialogResult.OK ? Configuration.DialogResult.Ok : Configuration.DialogResult.Cancel;
 		}
 

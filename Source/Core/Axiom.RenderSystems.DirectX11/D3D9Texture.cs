@@ -91,20 +91,20 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					if ( disposeManagedResources )
 					{
-						NormalTexture.SafeDispose();
-						NormalTexture = null;
+						this.NormalTexture.SafeDispose();
+						this.NormalTexture = null;
 
-						CubeTexture.SafeDispose();
-						CubeTexture = null;
+						this.CubeTexture.SafeDispose();
+						this.CubeTexture = null;
 
-						VolumeTexture.SafeDispose();
-						VolumeTexture = null;
+						this.VolumeTexture.SafeDispose();
+						this.VolumeTexture = null;
 
-						BaseTexture.SafeDispose();
-						BaseTexture = null;
+						this.BaseTexture.SafeDispose();
+						this.BaseTexture = null;
 
-						FSAASurface.SafeDispose();
-						FSAASurface = null;
+						this.FSAASurface.SafeDispose();
+						this.FSAASurface = null;
 					}
 				}
 
@@ -264,13 +264,13 @@ namespace Axiom.RenderSystems.DirectX9
 					}
 
 					// Free memory allocated per device.
-					foreach ( var it in _mapDeviceToTextureResources.Values )
+					foreach ( var it in this._mapDeviceToTextureResources.Values )
 					{
 						it.SafeDispose();
 					}
 
-					_mapDeviceToTextureResources.Clear();
-					_surfaceList.Clear();
+					this._mapDeviceToTextureResources.Clear();
+					this._surfaceList.Clear();
 
 					D3D9RenderSystem.ResourceManager.NotifyResourceDestroyed( this );
 
@@ -308,7 +308,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// target rectangle (whole surface)
 			var dstRC = new System.Drawing.Rectangle( 0, 0, other.Width, other.Height );
 
-			foreach ( var it in _mapDeviceToTextureResources )
+			foreach ( var it in this._mapDeviceToTextureResources )
 			{
 				var srcTextureResources = it.Value;
 				var dstTextureResources = other._getTextureResources( it.Key );
@@ -395,7 +395,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// NB: Need to initialise pool to some value other than D3DPOOL_DEFAULT,
 				// otherwise, if the texture loading failed, it might re-create as empty
 				// texture when device lost/restore. The actual pool will be determined later.
-				_d3dPool = D3D9.Pool.Managed;
+				this._d3dPool = D3D9.Pool.Managed;
 			}
 
 			//Entering critical section
@@ -423,20 +423,20 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// Make sure streams prepared.
-			if ( _loadedStreams == null )
+			if ( this._loadedStreams == null )
 			{
 				prepare();
 			}
 
 			// Set reading positions of loaded streams to the beginning.
-			foreach ( var i in _loadedStreams )
+			foreach ( var i in this._loadedStreams )
 			{
 				i.Position = 0;
 			}
 
 			// only copy is on the stack so well-behaved if exception thrown
-			var LoadedStreams = new MemoryStream[_loadedStreams.Length];
-			Array.Copy( _loadedStreams, LoadedStreams, _loadedStreams.Length );
+			var LoadedStreams = new MemoryStream[this._loadedStreams.Length];
+			Array.Copy( this._loadedStreams, LoadedStreams, this._loadedStreams.Length );
 
 			// load based on tex.type
 			switch ( TextureType )
@@ -479,15 +479,15 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				case Graphics.TextureType.OneD:
 				case Graphics.TextureType.TwoD:
-					_loadedStreams = _prepareNormalTexture();
+					this._loadedStreams = _prepareNormalTexture();
 					break;
 
 				case Graphics.TextureType.ThreeD:
-					_loadedStreams = _prepareVolumeTexture();
+					this._loadedStreams = _prepareVolumeTexture();
 					break;
 
 				case Graphics.TextureType.CubeMap:
-					_loadedStreams = _prepareCubeTexture();
+					this._loadedStreams = _prepareCubeTexture();
 					break;
 
 				default:
@@ -610,14 +610,14 @@ namespace Axiom.RenderSystems.DirectX9
 			// It's here to avoid a nullreference exception during loading,
 			// until i'll be sure that this issue is not related to missing updates
 			// in resources handling.
-			if ( _loadedStreams != null )
+			if ( this._loadedStreams != null )
 			{
-				foreach ( var i in _loadedStreams )
+				foreach ( var i in this._loadedStreams )
 				{
 					i.SafeDispose();
 				}
 
-				_loadedStreams = null;
+				this._loadedStreams = null;
 			}
 
 			//Leaving critical section
@@ -630,7 +630,7 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			foreach ( var it in _mapDeviceToTextureResources )
+			foreach ( var it in this._mapDeviceToTextureResources )
 			{
 				_freeTextureResources( it.Key, it.Value );
 			}
@@ -645,9 +645,9 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		private TextureResources _getTextureResources( D3D9.Device d3d9Device )
 		{
-			if ( _mapDeviceToTextureResources.ContainsKey( d3d9Device ) )
+			if ( this._mapDeviceToTextureResources.ContainsKey( d3d9Device ) )
 			{
-				return _mapDeviceToTextureResources[ d3d9Device ];
+				return this._mapDeviceToTextureResources[ d3d9Device ];
 			}
 
 			return null;
@@ -659,10 +659,10 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		private TextureResources _allocateTextureResources( D3D9.Device d3d9Device )
 		{
-			Debug.Assert( !_mapDeviceToTextureResources.ContainsKey( d3d9Device ) );
+			Debug.Assert( !this._mapDeviceToTextureResources.ContainsKey( d3d9Device ) );
 
 			var textureResources = new TextureResources();
-			_mapDeviceToTextureResources.Add( d3d9Device, textureResources );
+			this._mapDeviceToTextureResources.Add( d3d9Device, textureResources );
 			return textureResources;
 		}
 
@@ -712,7 +712,7 @@ namespace Axiom.RenderSystems.DirectX9
 			this.LockDeviceAccess();
 
 			// Release surfaces from each mip level.
-			foreach ( var it in _surfaceList )
+			foreach ( var it in this._surfaceList )
 			{
 				it.ReleaseSurfaces( d3d9Device );
 			}
@@ -745,7 +745,7 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( GetSourceFileType() == "dds" )
 			{
 				// find & load resource data
-				Debug.Assert( _loadedStreams.Length == 1 );
+				Debug.Assert( this._loadedStreams.Length == 1 );
 
 				var d3dUsage = D3D9.Usage.None;
 				var numMips = requestedMipmapCount == (int)TextureMipmap.Unlimited ? -1 : requestedMipmapCount + 1;
@@ -791,7 +791,7 @@ namespace Axiom.RenderSystems.DirectX9
 				textureResources.BaseTexture = textureResources.CubeTexture.QueryInterface<D3D9.BaseTexture>();
 
 				var texDesc = textureResources.CubeTexture.GetLevelDescription( 0 );
-				_d3dPool = texDesc.Pool;
+				this._d3dPool = texDesc.Pool;
 				// set src and dest attributes to the same, we can't know
 				_setSrcAttributes( texDesc.Width, texDesc.Height, 1, D3D9Helper.ConvertEnum( texDesc.Format ) );
 				_setFinalAttributes( d3d9Device, textureResources, texDesc.Width, texDesc.Height, 1,
@@ -799,8 +799,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 				if ( hwGamma )
 				{
-					_hwGammaReadSupported = _canUseHardwareGammaCorrection( d3d9Device, texDesc.Usage, D3D9.ResourceType.CubeTexture,
-					                                                        texDesc.Format, false );
+					this._hwGammaReadSupported = _canUseHardwareGammaCorrection( d3d9Device, texDesc.Usage,
+					                                                             D3D9.ResourceType.CubeTexture,
+					                                                             texDesc.Format, false );
 				}
 
 				internalResourcesCreated = true;
@@ -887,7 +888,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				// set src and dest attributes to the same, we can't know
 				var texDesc = textureResources.VolumeTexture.GetLevelDescription( 0 );
-				_d3dPool = texDesc.Pool;
+				this._d3dPool = texDesc.Pool;
 				// set src and dest attributes to the same, we can't know
 				_setSrcAttributes( texDesc.Width, texDesc.Height, texDesc.Depth, D3D9Helper.ConvertEnum( texDesc.Format ) );
 				_setFinalAttributes( d3d9Device, textureResources, texDesc.Width, texDesc.Height, texDesc.Depth,
@@ -895,8 +896,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 				if ( hwGamma )
 				{
-					_hwGammaReadSupported = _canUseHardwareGammaCorrection( d3d9Device, texDesc.Usage, D3D9.ResourceType.VolumeTexture,
-					                                                        texDesc.Format, false );
+					this._hwGammaReadSupported = _canUseHardwareGammaCorrection( d3d9Device, texDesc.Usage,
+					                                                             D3D9.ResourceType.VolumeTexture,
+					                                                             texDesc.Format, false );
 				}
 
 				internalResourcesCreated = true;
@@ -1010,7 +1012,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				// set src and dest attributes to the same, we can't know
 				var texDesc = textureResources.NormalTexture.GetLevelDescription( 0 );
-				_d3dPool = texDesc.Pool;
+				this._d3dPool = texDesc.Pool;
 				// set src and dest attributes to the same, we can't know
 				_setSrcAttributes( texDesc.Width, texDesc.Height, 1, D3D9Helper.ConvertEnum( texDesc.Format ) );
 				_setFinalAttributes( d3d9Device, textureResources, texDesc.Width, texDesc.Height, 1,
@@ -1018,8 +1020,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 				if ( hwGamma )
 				{
-					_hwGammaReadSupported = _canUseHardwareGammaCorrection( d3d9Device, texDesc.Usage, D3D9.ResourceType.Texture,
-					                                                        texDesc.Format, false );
+					this._hwGammaReadSupported = _canUseHardwareGammaCorrection( d3d9Device, texDesc.Usage, D3D9.ResourceType.Texture,
+					                                                             texDesc.Format, false );
 				}
 
 				internalResourcesCreated = true;
@@ -1061,7 +1063,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		protected override int calculateSize()
 		{
-			return base.calculateSize()*_mapDeviceToTextureResources.Count;
+			return base.calculateSize()*this._mapDeviceToTextureResources.Count;
 		}
 
 		/// <see cref="Axiom.Core.Texture.CreateInternalResources"/>
@@ -1076,11 +1078,11 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			if ( UseDefaultPool() )
 			{
-				_d3dPool = D3D9.Pool.Default;
+				this._d3dPool = D3D9.Pool.Default;
 			}
 			else
 			{
-				_d3dPool = D3D9.Pool.Managed;
+				this._d3dPool = D3D9.Pool.Managed;
 			}
 		}
 
@@ -1155,7 +1157,7 @@ namespace Axiom.RenderSystems.DirectX9
 			var d3dPF = _chooseD3DFormat( d3d9Device );
 
 			// let's D3DX check the corrected pixel format
-			var texRequires = D3D9.Texture.CheckRequirements( d3d9Device, 0, 0, 0, 0, d3dPF, _d3dPool );
+			var texRequires = D3D9.Texture.CheckRequirements( d3d9Device, 0, 0, 0, 0, d3dPF, this._d3dPool );
 			d3dPF = texRequires.Format;
 
 			// Use D3DX to help us create the texture, this way it can adjust any relevant sizes
@@ -1168,23 +1170,24 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( _canUseDynamicTextures( d3d9Device, d3dUsage, D3D9.ResourceType.Texture, d3dPF ) )
 				{
 					d3dUsage |= D3D9.Usage.Dynamic;
-					_dynamicTextures = true;
+					this._dynamicTextures = true;
 				}
 				else
 				{
-					_dynamicTextures = false;
+					this._dynamicTextures = false;
 				}
 			}
 
 			// Check sRGB support
 			if ( hwGamma )
 			{
-				_hwGammaReadSupported = _canUseHardwareGammaCorrection( d3d9Device, d3dUsage, D3D9.ResourceType.Texture, d3dPF,
-				                                                        false );
+				this._hwGammaReadSupported = _canUseHardwareGammaCorrection( d3d9Device, d3dUsage, D3D9.ResourceType.Texture, d3dPF,
+				                                                             false );
 				if ( ( usage & TextureUsage.RenderTarget ) != 0 )
 				{
-					_hwGammaWriteSupported = _canUseHardwareGammaCorrection( d3d9Device, d3dUsage, D3D9.ResourceType.Texture, d3dPF,
-					                                                         true );
+					this._hwGammaWriteSupported = _canUseHardwareGammaCorrection( d3d9Device, d3dUsage, D3D9.ResourceType.Texture,
+					                                                              d3dPF,
+					                                                              true );
 				}
 			}
 
@@ -1192,12 +1195,12 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( ( usage & TextureUsage.RenderTarget ) != 0 )
 			{
 				var rsys = (D3D9RenderSystem)Root.Instance.RenderSystem;
-				rsys.DetermineFSAASettings( d3d9Device, fsaa, fsaaHint, d3dPF, false, out _fsaaType, out _fsaaQuality );
+				rsys.DetermineFSAASettings( d3d9Device, fsaa, fsaaHint, d3dPF, false, out this._fsaaType, out this._fsaaQuality );
 			}
 			else
 			{
-				_fsaaType = D3D9.MultisampleType.None;
-				_fsaaQuality = 0;
+				this._fsaaType = D3D9.MultisampleType.None;
+				this._fsaaQuality = 0;
 			}
 
 			var device = D3D9RenderSystem.DeviceManager.GetDeviceFromD3D9Device( d3d9Device );
@@ -1243,7 +1246,7 @@ namespace Axiom.RenderSystems.DirectX9
 			try
 			{
 				textureResources.NormalTexture = new D3D9.Texture( d3d9Device, SrcWidth, SrcHeight, numMips, d3dUsage, d3dPF,
-				                                                   _d3dPool );
+				                                                   this._d3dPool );
 			}
 			catch ( Exception ex )
 			{
@@ -1257,11 +1260,11 @@ namespace Axiom.RenderSystems.DirectX9
 			// they may differ from the source image !!!
 			var desc = textureResources.NormalTexture.GetLevelDescription( 0 );
 
-			if ( _fsaaType != 0 )
+			if ( this._fsaaType != 0 )
 			{
 				// create AA surface
 				textureResources.FSAASurface = D3D9.Surface.CreateRenderTarget( d3d9Device, desc.Width, desc.Height, d3dPF,
-				                                                                _fsaaType, _fsaaQuality, false );
+				                                                                this._fsaaType, this._fsaaQuality, false );
 			}
 
 			_setFinalAttributes( d3d9Device, textureResources, desc.Width, desc.Height, 1, D3D9Helper.ConvertEnum( desc.Format ) );
@@ -1286,7 +1289,7 @@ namespace Axiom.RenderSystems.DirectX9
 			var d3dPF = _chooseD3DFormat( d3d9Device );
 
 			// let's D3DX check the corrected pixel format
-			var texRequires = D3D9.CubeTexture.CheckRequirements( d3d9Device, 0, 0, 0, d3dPF, _d3dPool );
+			var texRequires = D3D9.CubeTexture.CheckRequirements( d3d9Device, 0, 0, 0, d3dPF, this._d3dPool );
 			d3dPF = texRequires.Format;
 
 			// Use D3DX to help us create the texture, this way it can adjust any relevant sizes
@@ -1299,23 +1302,25 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( _canUseDynamicTextures( d3d9Device, d3dUsage, D3D9.ResourceType.CubeTexture, d3dPF ) )
 				{
 					d3dUsage |= D3D9.Usage.Dynamic;
-					_dynamicTextures = true;
+					this._dynamicTextures = true;
 				}
 				else
 				{
-					_dynamicTextures = false;
+					this._dynamicTextures = false;
 				}
 			}
 
 			// Check sRGB support
 			if ( hwGamma )
 			{
-				_hwGammaReadSupported = _canUseHardwareGammaCorrection( d3d9Device, d3dUsage, D3D9.ResourceType.CubeTexture, d3dPF,
-				                                                        false );
+				this._hwGammaReadSupported = _canUseHardwareGammaCorrection( d3d9Device, d3dUsage, D3D9.ResourceType.CubeTexture,
+				                                                             d3dPF,
+				                                                             false );
 				if ( ( usage & TextureUsage.RenderTarget ) != 0 )
 				{
-					_hwGammaWriteSupported = _canUseHardwareGammaCorrection( d3d9Device, d3dUsage, D3D9.ResourceType.CubeTexture, d3dPF,
-					                                                         true );
+					this._hwGammaWriteSupported = _canUseHardwareGammaCorrection( d3d9Device, d3dUsage, D3D9.ResourceType.CubeTexture,
+					                                                              d3dPF,
+					                                                              true );
 				}
 			}
 
@@ -1323,12 +1328,12 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( ( usage & TextureUsage.RenderTarget ) != 0 )
 			{
 				var rsys = (D3D9RenderSystem)Root.Instance.RenderSystem;
-				rsys.DetermineFSAASettings( d3d9Device, fsaa, fsaaHint, d3dPF, false, out _fsaaType, out _fsaaQuality );
+				rsys.DetermineFSAASettings( d3d9Device, fsaa, fsaaHint, d3dPF, false, out this._fsaaType, out this._fsaaQuality );
 			}
 			else
 			{
-				_fsaaType = D3D9.MultisampleType.None;
-				_fsaaQuality = 0;
+				this._fsaaType = D3D9.MultisampleType.None;
+				this._fsaaQuality = 0;
 			}
 
 			var device = D3D9RenderSystem.DeviceManager.GetDeviceFromD3D9Device( d3d9Device );
@@ -1371,7 +1376,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// create the cube texture
-			textureResources.CubeTexture = new D3D9.CubeTexture( d3d9Device, SrcWidth, numMips, d3dUsage, d3dPF, _d3dPool );
+			textureResources.CubeTexture = new D3D9.CubeTexture( d3d9Device, SrcWidth, numMips, d3dUsage, d3dPF, this._d3dPool );
 
 			// set the base texture we'll use in the render system
 			textureResources.BaseTexture = textureResources.CubeTexture.QueryInterface<D3D9.BaseTexture>();
@@ -1380,11 +1385,11 @@ namespace Axiom.RenderSystems.DirectX9
 			// they may differ from the source image !!!
 			var desc = textureResources.CubeTexture.GetLevelDescription( 0 );
 
-			if ( _fsaaType != 0 )
+			if ( this._fsaaType != 0 )
 			{
 				// create AA surface
 				textureResources.FSAASurface = D3D9.Surface.CreateRenderTarget( d3d9Device, desc.Width, desc.Height, d3dPF,
-				                                                                _fsaaType, _fsaaQuality, false );
+				                                                                this._fsaaType, this._fsaaQuality, false );
 			}
 
 			_setFinalAttributes( d3d9Device, textureResources, desc.Width, desc.Height, 1, D3D9Helper.ConvertEnum( desc.Format ) );
@@ -1414,7 +1419,7 @@ namespace Axiom.RenderSystems.DirectX9
 			var d3dPF = _chooseD3DFormat( d3d9Device );
 
 			// let's D3DX check the corrected pixel format
-			var texRequires = D3D9.VolumeTexture.CheckRequirements( d3d9Device, 0, 0, 0, 0, 0, d3dPF, _d3dPool );
+			var texRequires = D3D9.VolumeTexture.CheckRequirements( d3d9Device, 0, 0, 0, 0, 0, d3dPF, this._d3dPool );
 			d3dPF = texRequires.Format;
 
 			// Use D3DX to help us create the texture, this way it can adjust any relevant sizes
@@ -1427,23 +1432,24 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( _canUseDynamicTextures( d3d9Device, d3dUsage, D3D9.ResourceType.VolumeTexture, d3dPF ) )
 				{
 					d3dUsage |= D3D9.Usage.Dynamic;
-					_dynamicTextures = true;
+					this._dynamicTextures = true;
 				}
 				else
 				{
-					_dynamicTextures = false;
+					this._dynamicTextures = false;
 				}
 			}
 
 			// Check sRGB support
 			if ( hwGamma )
 			{
-				_hwGammaReadSupported = _canUseHardwareGammaCorrection( d3d9Device, d3dUsage, D3D9.ResourceType.VolumeTexture, d3dPF,
-				                                                        false );
+				this._hwGammaReadSupported = _canUseHardwareGammaCorrection( d3d9Device, d3dUsage, D3D9.ResourceType.VolumeTexture,
+				                                                             d3dPF,
+				                                                             false );
 				if ( ( usage & TextureUsage.RenderTarget ) != 0 )
 				{
-					_hwGammaWriteSupported = _canUseHardwareGammaCorrection( d3d9Device, d3dUsage, D3D9.ResourceType.VolumeTexture,
-					                                                         d3dPF, true );
+					this._hwGammaWriteSupported = _canUseHardwareGammaCorrection( d3d9Device, d3dUsage, D3D9.ResourceType.VolumeTexture,
+					                                                              d3dPF, true );
 				}
 			}
 
@@ -1487,7 +1493,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// create the texture
 			textureResources.VolumeTexture = new D3D9.VolumeTexture( d3d9Device, Width, Height, Depth, numMips, d3dUsage, d3dPF,
-			                                                         _d3dPool );
+			                                                         this._d3dPool );
 
 			// set the base texture we'll use in the render system
 			textureResources.BaseTexture = textureResources.VolumeTexture.QueryInterface<D3D9.BaseTexture>();
@@ -1740,7 +1746,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// Need to know static / dynamic
 			BufferUsage bufusage;
-			if ( ( ( Usage & TextureUsage.Dynamic ) != 0 ) && _dynamicTextures )
+			if ( ( ( Usage & TextureUsage.Dynamic ) != 0 ) && this._dynamicTextures )
 			{
 				bufusage = BufferUsage.Dynamic;
 			}
@@ -1755,7 +1761,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			var surfaceCount = FaceCount*( mipmapCount + 1 );
-			var updateOldList = _surfaceList.Count == surfaceCount;
+			var updateOldList = this._surfaceList.Count == surfaceCount;
 			if ( !updateOldList )
 			{
 				// Create new list of surfaces
@@ -1765,7 +1771,7 @@ namespace Axiom.RenderSystems.DirectX9
 					for ( var mip = 0; mip <= MipmapCount; ++mip )
 					{
 						var buffer = new D3D9HardwarePixelBuffer( bufusage, this );
-						_surfaceList.Add( buffer );
+						this._surfaceList.Add( buffer );
 					}
 				}
 			}
@@ -1786,7 +1792,7 @@ namespace Axiom.RenderSystems.DirectX9
 							currPixelBuffer.SetMipmapping( true, mipmapsHardwareGenerated );
 						}
 
-						currPixelBuffer.Bind( d3d9Device, surface, textureResources.FSAASurface, _hwGammaWriteSupported, fsaa, _name,
+						currPixelBuffer.Bind( d3d9Device, surface, textureResources.FSAASurface, this._hwGammaWriteSupported, fsaa, _name,
 						                      textureResources.BaseTexture );
 
 						// decrement reference count, the GetSurfaceLevel call increments this
@@ -1812,7 +1818,7 @@ namespace Axiom.RenderSystems.DirectX9
 								currPixelBuffer.SetMipmapping( true, mipmapsHardwareGenerated );
 							}
 
-							currPixelBuffer.Bind( d3d9Device, surface, textureResources.FSAASurface, _hwGammaWriteSupported, fsaa, _name,
+							currPixelBuffer.Bind( d3d9Device, surface, textureResources.FSAASurface, this._hwGammaWriteSupported, fsaa, _name,
 							                      textureResources.BaseTexture );
 
 							// decrement reference count, the GetSurfaceLevel call increments this
@@ -1854,18 +1860,18 @@ namespace Axiom.RenderSystems.DirectX9
 		[AxiomHelper( 0, 9 )]
 		private void _clearSurfaceList()
 		{
-			foreach ( var buf in _surfaceList )
+			foreach ( var buf in this._surfaceList )
 			{
 				buf.SafeDispose();
 			}
 
-			_surfaceList.Clear();
+			this._surfaceList.Clear();
 		}
 
 		[AxiomHelper( 0, 9 )]
 		private D3D9HardwarePixelBuffer _getSurfaceAtLevel( int face, int mip )
 		{
-			return _surfaceList[ ( face*( MipmapCount + 1 ) ) + mip ];
+			return this._surfaceList[ ( face*( MipmapCount + 1 ) ) + mip ];
 		}
 
 		/// <see cref="Axiom.Core.Texture.GetBuffer"/>
@@ -1896,8 +1902,8 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			Debug.Assert( textureResources != null );
-			Debug.Assert( idx < _surfaceList.Count );
-			return _surfaceList[ idx ];
+			Debug.Assert( idx < this._surfaceList.Count );
+			return this._surfaceList[ idx ];
 		}
 
 		/// <summary>
@@ -1910,7 +1916,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Use managed unless we're a render target or user has asked for
 			// a dynamic texture, and device supports D3DUSAGE_DYNAMIC (because default pool
 			// resources without the dynamic flag are not lockable)
-			return ( Usage & TextureUsage.RenderTarget ) != 0 || ( Usage & TextureUsage.Dynamic ) != 0 && _dynamicTextures;
+			return ( Usage & TextureUsage.RenderTarget ) != 0 || ( Usage & TextureUsage.Dynamic ) != 0 && this._dynamicTextures;
 		}
 
 		#endregion Methods
@@ -1951,7 +1957,7 @@ namespace Axiom.RenderSystems.DirectX9
 				LogManager.Instance.Write( "D3D9 device: 0x[{0}] destroy. Releasing D3D9 texture: {1}", d3d9Device.ToString(), _name );
 
 				// Destroy surfaces from each mip level.
-				foreach ( var i in _surfaceList )
+				foreach ( var i in this._surfaceList )
 				{
 					i.DestroyBufferResources( d3d9Device );
 				}
@@ -1962,7 +1968,7 @@ namespace Axiom.RenderSystems.DirectX9
 				_freeTextureResources( d3d9Device, textureResources );
 
 				textureResources.SafeDispose();
-				_mapDeviceToTextureResources.Remove( d3d9Device );
+				this._mapDeviceToTextureResources.Remove( d3d9Device );
 
 				LogManager.Instance.Write( "Released D3D9 texture: {0}", _name );
 			}
@@ -1980,7 +1986,7 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			if ( _d3dPool == D3D9.Pool.Default )
+			if ( this._d3dPool == D3D9.Pool.Default )
 			{
 				var textureResources = _getTextureResources( d3d9Device );
 
@@ -2010,7 +2016,7 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			if ( _d3dPool == D3D9.Pool.Default )
+			if ( this._d3dPool == D3D9.Pool.Default )
 			{
 				CreateTextureResources( d3d9Device );
 			}

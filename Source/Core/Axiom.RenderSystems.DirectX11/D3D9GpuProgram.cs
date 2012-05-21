@@ -85,11 +85,11 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return externalMicrocode;
+				return this.externalMicrocode;
 			}
 			set
 			{
-				externalMicrocode = value;
+				this.externalMicrocode = value;
 			}
 		}
 
@@ -113,7 +113,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				if ( disposeManagedResources )
 				{
-					externalMicrocode.SafeDispose();
+					this.externalMicrocode.SafeDispose();
 					D3D9RenderSystem.ResourceManager.NotifyResourceDestroyed( this );
 				}
 
@@ -160,9 +160,9 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		protected void LoadImpl( D3D9.Device d3D9Device )
 		{
-			if ( externalMicrocode != null )
+			if ( this.externalMicrocode != null )
 			{
-				LoadFromMicrocode( d3D9Device, externalMicrocode );
+				LoadFromMicrocode( d3D9Device, this.externalMicrocode );
 			}
 			else
 			{
@@ -186,7 +186,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		protected override void unload()
 		{
-			externalMicrocode.SafeDispose();
+			this.externalMicrocode.SafeDispose();
 		}
 
 		#endregion unload
@@ -364,11 +364,11 @@ namespace Axiom.RenderSystems.DirectX9
 				D3D9.VertexShader it;
 
 				// Find the shader of this device.
-				if ( !_mapDeviceToVertexShader.TryGetValue( d3D9Device, out it ) )
+				if ( !this._mapDeviceToVertexShader.TryGetValue( d3D9Device, out it ) )
 				{
 					// Shader was not found -> load it.
 					LoadImpl( d3D9Device );
-					it = _mapDeviceToVertexShader[ d3D9Device ];
+					it = this._mapDeviceToVertexShader[ d3D9Device ];
 				}
 
 				return it;
@@ -408,7 +408,7 @@ namespace Axiom.RenderSystems.DirectX9
 		protected override void LoadFromMicrocode( D3D9.Device d3D9Device, D3D9.ShaderBytecode microcode )
 		{
 			D3D9.VertexShader vertexShader;
-			var shaderWasFound = _mapDeviceToVertexShader.TryGetValue( d3D9Device, out vertexShader );
+			var shaderWasFound = this._mapDeviceToVertexShader.TryGetValue( d3D9Device, out vertexShader );
 			if ( shaderWasFound )
 			{
 				vertexShader.SafeDispose();
@@ -427,11 +427,11 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( shaderWasFound )
 			{
-				_mapDeviceToVertexShader[ d3D9Device ] = vertexShader;
+				this._mapDeviceToVertexShader[ d3D9Device ] = vertexShader;
 			}
 			else
 			{
-				_mapDeviceToVertexShader.Add( d3D9Device, vertexShader );
+				this._mapDeviceToVertexShader.Add( d3D9Device, vertexShader );
 			}
 		}
 
@@ -445,12 +445,12 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			foreach ( var it in _mapDeviceToVertexShader )
+			foreach ( var it in this._mapDeviceToVertexShader )
 			{
 				it.SafeDispose();
 			}
 
-			_mapDeviceToVertexShader.Clear();
+			this._mapDeviceToVertexShader.Clear();
 			base.unload();
 
 			//Leaving critical section
@@ -472,10 +472,10 @@ namespace Axiom.RenderSystems.DirectX9
 			D3D9.VertexShader it;
 
 			// Case shader found -> release it and erase from map.
-			if ( _mapDeviceToVertexShader.TryGetValue( d3d9Device, out it ) )
+			if ( this._mapDeviceToVertexShader.TryGetValue( d3d9Device, out it ) )
 			{
 				it.SafeDispose();
-				_mapDeviceToVertexShader.Remove( d3d9Device );
+				this._mapDeviceToVertexShader.Remove( d3d9Device );
 			}
 
 			//Leaving critical section
@@ -514,11 +514,11 @@ namespace Axiom.RenderSystems.DirectX9
 				D3D9.PixelShader it;
 
 				// Find the shader of this device.
-				if ( !_mapDeviceToPixelShader.TryGetValue( d3D9Device, out it ) )
+				if ( !this._mapDeviceToPixelShader.TryGetValue( d3D9Device, out it ) )
 				{
 					// Shader was not found -> load it.
 					LoadImpl( d3D9Device );
-					it = _mapDeviceToPixelShader[ d3D9Device ];
+					it = this._mapDeviceToPixelShader[ d3D9Device ];
 				}
 
 				return it;
@@ -558,7 +558,7 @@ namespace Axiom.RenderSystems.DirectX9
 		protected override void LoadFromMicrocode( D3D9.Device d3D9Device, D3D9.ShaderBytecode microcode )
 		{
 			D3D9.PixelShader pixelShader;
-			var shaderWasFound = _mapDeviceToPixelShader.TryGetValue( d3D9Device, out pixelShader );
+			var shaderWasFound = this._mapDeviceToPixelShader.TryGetValue( d3D9Device, out pixelShader );
 			if ( shaderWasFound )
 			{
 				pixelShader.SafeDispose();
@@ -577,11 +577,11 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( shaderWasFound )
 			{
-				_mapDeviceToPixelShader[ d3D9Device ] = pixelShader;
+				this._mapDeviceToPixelShader[ d3D9Device ] = pixelShader;
 			}
 			else
 			{
-				_mapDeviceToPixelShader.Add( d3D9Device, pixelShader );
+				this._mapDeviceToPixelShader.Add( d3D9Device, pixelShader );
 			}
 		}
 
@@ -595,12 +595,12 @@ namespace Axiom.RenderSystems.DirectX9
 			//Entering critical section
 			this.LockDeviceAccess();
 
-			foreach ( var it in _mapDeviceToPixelShader )
+			foreach ( var it in this._mapDeviceToPixelShader )
 			{
 				it.SafeDispose();
 			}
 
-			_mapDeviceToPixelShader.Clear();
+			this._mapDeviceToPixelShader.Clear();
 			base.unload();
 
 			//Leaving critical section
@@ -622,10 +622,10 @@ namespace Axiom.RenderSystems.DirectX9
 			D3D9.PixelShader it;
 
 			// Case shader found -> release it and erase from map.
-			if ( _mapDeviceToPixelShader.TryGetValue( d3d9Device, out it ) )
+			if ( this._mapDeviceToPixelShader.TryGetValue( d3d9Device, out it ) )
 			{
 				it.SafeDispose();
-				_mapDeviceToPixelShader.Remove( d3d9Device );
+				this._mapDeviceToPixelShader.Remove( d3d9Device );
 			}
 
 			//Leaving critical section

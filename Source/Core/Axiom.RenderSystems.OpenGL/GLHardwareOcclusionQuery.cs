@@ -72,17 +72,18 @@ namespace Axiom.RenderSystems.OpenGL
 
 		internal GLHardwareOcclusionQuery( BaseGLSupport glSupport )
 		{
-			_glSupport = glSupport;
-			isSupportedARB = _glSupport.CheckMinVersion( GL_Version_1_5 ) || _glSupport.CheckExtension( GL_ARB_occlusion_query );
-			isSupportedNV = _glSupport.CheckExtension( GL_NV_occlusion_query );
+			this._glSupport = glSupport;
+			this.isSupportedARB = this._glSupport.CheckMinVersion( GL_Version_1_5 ) ||
+			                      this._glSupport.CheckExtension( GL_ARB_occlusion_query );
+			this.isSupportedNV = this._glSupport.CheckExtension( GL_NV_occlusion_query );
 
-			if ( isSupportedNV )
+			if ( this.isSupportedNV )
 			{
-				Gl.glGenOcclusionQueriesNV( 1, out queryId );
+				Gl.glGenOcclusionQueriesNV( 1, out this.queryId );
 			}
-			else if ( isSupportedARB )
+			else if ( this.isSupportedARB )
 			{
-				Gl.glGenQueriesARB( 1, out queryId );
+				Gl.glGenQueriesARB( 1, out this.queryId );
 			}
 		}
 
@@ -90,23 +91,23 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void Begin()
 		{
-			if ( isSupportedNV )
+			if ( this.isSupportedNV )
 			{
-				Gl.glBeginOcclusionQueryNV( queryId );
+				Gl.glBeginOcclusionQueryNV( this.queryId );
 			}
-			else if ( isSupportedARB )
+			else if ( this.isSupportedARB )
 			{
-				Gl.glBeginQueryARB( Gl.GL_SAMPLES_PASSED_ARB, queryId );
+				Gl.glBeginQueryARB( Gl.GL_SAMPLES_PASSED_ARB, this.queryId );
 			}
 		}
 
 		public override void End()
 		{
-			if ( isSupportedNV )
+			if ( this.isSupportedNV )
 			{
 				Gl.glEndOcclusionQueryNV();
 			}
-			else if ( isSupportedARB )
+			else if ( this.isSupportedARB )
 			{
 				Gl.glEndQueryARB( Gl.GL_SAMPLES_PASSED_ARB );
 			}
@@ -119,14 +120,14 @@ namespace Axiom.RenderSystems.OpenGL
 			// default to returning a high count.  will be set otherwise if the query runs
 			NumOfFragments = 100000;
 
-			if ( isSupportedNV )
+			if ( this.isSupportedNV )
 			{
-				Gl.glGetOcclusionQueryivNV( queryId, Gl.GL_PIXEL_COUNT_NV, out NumOfFragments );
+				Gl.glGetOcclusionQueryivNV( this.queryId, Gl.GL_PIXEL_COUNT_NV, out NumOfFragments );
 				return true;
 			}
-			else if ( isSupportedARB )
+			else if ( this.isSupportedARB )
 			{
-				Gl.glGetQueryObjectivARB( queryId, Gl.GL_QUERY_RESULT_ARB, out NumOfFragments );
+				Gl.glGetQueryObjectivARB( this.queryId, Gl.GL_QUERY_RESULT_ARB, out NumOfFragments );
 				return true;
 			}
 
@@ -137,13 +138,13 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			int available = 0;
 
-			if ( isSupportedNV )
+			if ( this.isSupportedNV )
 			{
-				Gl.glGetOcclusionQueryivNV( queryId, Gl.GL_PIXEL_COUNT_AVAILABLE_NV, out available );
+				Gl.glGetOcclusionQueryivNV( this.queryId, Gl.GL_PIXEL_COUNT_AVAILABLE_NV, out available );
 			}
-			else if ( isSupportedARB )
+			else if ( this.isSupportedARB )
 			{
-				Gl.glGetQueryivARB( queryId, Gl.GL_QUERY_RESULT_AVAILABLE_ARB, out available );
+				Gl.glGetQueryivARB( this.queryId, Gl.GL_QUERY_RESULT_AVAILABLE_ARB, out available );
 			}
 
 			return available == 0;
@@ -151,13 +152,13 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( isSupportedNV )
+			if ( this.isSupportedNV )
 			{
-				Gl.glDeleteOcclusionQueriesNV( 1, ref queryId );
+				Gl.glDeleteOcclusionQueriesNV( 1, ref this.queryId );
 			}
-			else if ( isSupportedARB )
+			else if ( this.isSupportedARB )
 			{
-				Gl.glDeleteQueriesARB( 1, ref queryId );
+				Gl.glDeleteQueriesARB( 1, ref this.queryId );
 			}
 			base.dispose( disposeManagedResources );
 		}

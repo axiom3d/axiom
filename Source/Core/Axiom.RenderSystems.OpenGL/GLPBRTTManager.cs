@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 // <file>
 //     <copyright see="prj:///doc/copyright.txt"/>
 //     <license see="prj:///doc/license.txt"/>
-//     <id value="$Id: GLPBRTTManager.cs 1281 2008-05-10 17:28:57Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -79,10 +79,10 @@ namespace Axiom.RenderSystems.OpenGL
 		internal GLPBRTTManager( BaseGLSupport glSupport, RenderTarget target )
 			: base( glSupport )
 		{
-			_glSupport = glSupport;
-			_mainWindow = target;
+			this._glSupport = glSupport;
+			this._mainWindow = target;
 
-			_mainGLContext = (GLContext)target.GetCustomAttribute( "GLCONTEXT" );
+			this._mainGLContext = (GLContext)target.GetCustomAttribute( "GLCONTEXT" );
 		}
 
 		#endregion Construction and Destruction
@@ -127,7 +127,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					for ( int i = 0; i < (int)PixelComponentType.Count; i++ )
 					{
-						pBuffers[ i ].PixelBuffer = null;
+						this.pBuffers[ i ].PixelBuffer = null;
 					}
 				}
 			}
@@ -147,23 +147,23 @@ namespace Axiom.RenderSystems.OpenGL
 		public void RequestPBuffer( PixelComponentType pcType, int width, int height )
 		{
 			// Check Size
-			GLPBuffer pBuffer = pBuffers[ (int)pcType ].PixelBuffer;
+			GLPBuffer pBuffer = this.pBuffers[ (int)pcType ].PixelBuffer;
 			if ( pBuffer != null )
 			{
 				if ( pBuffer.Width < width || pBuffer.Height < height )
 				{
 					// if the current buffer is too small destroy it and recreate it
 					pBuffer = null;
-					pBuffers[ (int)pcType ].PixelBuffer = null;
+					this.pBuffers[ (int)pcType ].PixelBuffer = null;
 				}
 			}
 
 			if ( pBuffer == null )
 			{
 				// create pixelbuffer via rendersystem
-				pBuffers[ (int)pcType ].PixelBuffer = _glSupport.CreatePBuffer( pcType, width, height );
+				this.pBuffers[ (int)pcType ].PixelBuffer = this._glSupport.CreatePBuffer( pcType, width, height );
 			}
-			pBuffers[ (int)pcType ].InUseCount++;
+			this.pBuffers[ (int)pcType ].InUseCount++;
 		}
 
 		/// <summary>
@@ -172,10 +172,10 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="pcType"></param>
 		public void ReleasePBuffer( PixelComponentType pcType )
 		{
-			--pBuffers[ (int)pcType ].InUseCount;
-			if ( pBuffers[ (int)pcType ].InUseCount == 0 )
+			--this.pBuffers[ (int)pcType ].InUseCount;
+			if ( this.pBuffers[ (int)pcType ].InUseCount == 0 )
 			{
-				pBuffers[ (int)pcType ].PixelBuffer = null;
+				this.pBuffers[ (int)pcType ].PixelBuffer = null;
 			}
 		}
 
@@ -192,13 +192,13 @@ namespace Axiom.RenderSystems.OpenGL
 			// and pcType is PixelComponentType.Byte. This must be checked every time because the window might have been resized
 			if ( pcType == PixelComponentType.Byte )
 			{
-				if ( width <= _mainWindow.Width && height <= _mainWindow.Height )
+				if ( width <= this._mainWindow.Width && height <= this._mainWindow.Height )
 				{
-					return _mainGLContext;
+					return this._mainGLContext;
 				}
 			}
-			Debug.Assert( pBuffers[ (int)pcType ].PixelBuffer != null );
-			return pBuffers[ (int)pcType ].PixelBuffer.Context;
+			Debug.Assert( this.pBuffers[ (int)pcType ].PixelBuffer != null );
+			return this.pBuffers[ (int)pcType ].PixelBuffer.Context;
 		}
 
 		#endregion Methods

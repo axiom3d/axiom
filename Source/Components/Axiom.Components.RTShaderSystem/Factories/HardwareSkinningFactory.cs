@@ -122,17 +122,17 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			if ( skinningType == SkinningType.DualQuaternion )
 			{
-				customShadowCasterMaerialsDualQuaternion[ 0 ] = caster1Weight;
-				customShadowCasterMaerialsDualQuaternion[ 1 ] = caster2Weight;
-				customShadowCasterMaerialsDualQuaternion[ 2 ] = caster3Weight;
-				customShadowCasterMaerialsDualQuaternion[ 3 ] = caster4Weight;
+				this.customShadowCasterMaerialsDualQuaternion[ 0 ] = caster1Weight;
+				this.customShadowCasterMaerialsDualQuaternion[ 1 ] = caster2Weight;
+				this.customShadowCasterMaerialsDualQuaternion[ 2 ] = caster3Weight;
+				this.customShadowCasterMaerialsDualQuaternion[ 3 ] = caster4Weight;
 			}
 			else
 			{
-				customShadowCasterMaterialsLinear[ 0 ] = caster1Weight;
-				customShadowCasterMaterialsLinear[ 1 ] = caster2Weight;
-				customShadowCasterMaterialsLinear[ 2 ] = caster3Weight;
-				customShadowCasterMaterialsLinear[ 3 ] = caster4Weight;
+				this.customShadowCasterMaterialsLinear[ 0 ] = caster1Weight;
+				this.customShadowCasterMaterialsLinear[ 1 ] = caster2Weight;
+				this.customShadowCasterMaterialsLinear[ 2 ] = caster3Weight;
+				this.customShadowCasterMaterialsLinear[ 3 ] = caster4Weight;
 			}
 		}
 
@@ -142,17 +142,17 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			if ( skinningType == SkinningType.DualQuaternion )
 			{
-				customShadowReceiverMaterialsDualQuaternion[ 0 ] = receiver1Weight;
-				customShadowReceiverMaterialsDualQuaternion[ 1 ] = receiver2Weight;
-				customShadowReceiverMaterialsDualQuaternion[ 2 ] = receiver3Weight;
-				customShadowReceiverMaterialsDualQuaternion[ 3 ] = receiver4Weight;
+				this.customShadowReceiverMaterialsDualQuaternion[ 0 ] = receiver1Weight;
+				this.customShadowReceiverMaterialsDualQuaternion[ 1 ] = receiver2Weight;
+				this.customShadowReceiverMaterialsDualQuaternion[ 2 ] = receiver3Weight;
+				this.customShadowReceiverMaterialsDualQuaternion[ 3 ] = receiver4Weight;
 			}
 			else
 			{
-				customShadowReceiverMaterialsLinear[ 0 ] = receiver1Weight;
-				customShadowReceiverMaterialsLinear[ 1 ] = receiver2Weight;
-				customShadowReceiverMaterialsLinear[ 2 ] = receiver3Weight;
-				customShadowReceiverMaterialsLinear[ 3 ] = receiver4Weight;
+				this.customShadowReceiverMaterialsLinear[ 0 ] = receiver1Weight;
+				this.customShadowReceiverMaterialsLinear[ 1 ] = receiver2Weight;
+				this.customShadowReceiverMaterialsLinear[ 2 ] = receiver3Weight;
+				this.customShadowReceiverMaterialsLinear[ 3 ] = receiver4Weight;
 			}
 		}
 
@@ -170,11 +170,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			if ( skinningType == SkinningType.DualQuaternion )
 			{
-				return customShadowCasterMaerialsDualQuaternion[ index ];
+				return this.customShadowCasterMaerialsDualQuaternion[ index ];
 			}
 			else
 			{
-				return customShadowCasterMaterialsLinear[ index ];
+				return this.customShadowCasterMaterialsLinear[ index ];
 			}
 		}
 
@@ -182,11 +182,11 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			if ( skinningType == SkinningType.DualQuaternion )
 			{
-				return customShadowReceiverMaterialsDualQuaternion[ index ];
+				return this.customShadowReceiverMaterialsDualQuaternion[ index ];
 			}
 			else
 			{
-				return customShadowReceiverMaterialsLinear[ index ];
+				return this.customShadowReceiverMaterialsLinear[ index ];
 			}
 		}
 

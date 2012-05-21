@@ -61,8 +61,8 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9VideoMode()
 		{
-			modeNum = ++modeCount;
-			displayMode = new D3D.DisplayMode();
+			this.modeNum = ++modeCount;
+			this.displayMode = new D3D.DisplayMode();
 		}
 
 		/// <summary>
@@ -71,8 +71,8 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9VideoMode( D3D9VideoMode videoMode )
 		{
-			modeNum = ++modeCount;
-			displayMode = videoMode.displayMode;
+			this.modeNum = ++modeCount;
+			this.displayMode = videoMode.displayMode;
 		}
 
 		/// <summary>
@@ -80,8 +80,8 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		public D3D9VideoMode( D3D.DisplayMode videoMode )
 		{
-			modeNum = ++modeCount;
-			displayMode = videoMode;
+			this.modeNum = ++modeCount;
+			this.displayMode = videoMode;
 		}
 
 		#endregion Constructors
@@ -105,7 +105,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2, "getDescription" )]
 		public override string ToString()
 		{
-			return string.Format( "{0} x {1} @ {2}-bit color", displayMode.Width, displayMode.Height, ColorDepth );
+			return string.Format( "{0} x {1} @ {2}-bit color", this.displayMode.Width, this.displayMode.Height, ColorDepth );
 		}
 
 		#region Properties
@@ -118,7 +118,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return displayMode.Width;
+				return this.displayMode.Width;
 			}
 		}
 
@@ -130,7 +130,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return displayMode.Height;
+				return this.displayMode.Height;
 			}
 		}
 
@@ -142,7 +142,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return displayMode.Format;
+				return this.displayMode.Format;
 			}
 		}
 
@@ -155,13 +155,13 @@ namespace Axiom.RenderSystems.DirectX9
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return displayMode.RefreshRate;
+				return this.displayMode.RefreshRate;
 			}
 
 			[OgreVersion( 1, 7, 2, "increaseRefreshRate" )]
 			set
 			{
-				displayMode.RefreshRate = value;
+				this.displayMode.RefreshRate = value;
 			}
 		}
 
@@ -175,8 +175,8 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				var colorDepth = 16;
 
-				if ( displayMode.Format == D3D.Format.X8R8G8B8 || displayMode.Format == D3D.Format.A8R8G8B8 ||
-				     displayMode.Format == D3D.Format.R8G8B8 )
+				if ( this.displayMode.Format == D3D.Format.X8R8G8B8 || this.displayMode.Format == D3D.Format.A8R8G8B8 ||
+				     this.displayMode.Format == D3D.Format.R8G8B8 )
 				{
 					colorDepth = 32;
 				}
@@ -193,7 +193,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return displayMode;
+				return this.displayMode;
 			}
 		}
 

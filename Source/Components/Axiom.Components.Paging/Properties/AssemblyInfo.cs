@@ -26,7 +26,7 @@
 
 // <file>
 //     <license see="http://axiomengine.sf.net/wiki/index.php/license.txt"/>
-//     <id value="$Id: AssemblyInfo.cs 1756 2009-09-10 10:15:10Z borrillis $"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information

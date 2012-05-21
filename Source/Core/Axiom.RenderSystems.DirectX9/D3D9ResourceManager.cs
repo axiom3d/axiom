@@ -76,7 +76,7 @@ namespace Axiom.RenderSystems.DirectX9
 		#endregion Constructor
 
 		protected override Resource _create( string name, ulong handle, string group, bool isManual,
-		                                     IManualResourceLoader loader, NameValuePairList createParams )
+											 IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			throw new NotImplementedException( "Base class needs update to 1.7.2790" );
 		}
@@ -86,14 +86,14 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		public void LockDeviceAccess()
 		{
-			Contract.Requires( _deviceAccessLockCount >= 0 );
-			_deviceAccessLockCount++;
-			if ( _deviceAccessLockCount == 1 )
+			Contract.Requires( this._deviceAccessLockCount >= 0 );
+			this._deviceAccessLockCount++;
+			if ( this._deviceAccessLockCount == 1 )
 			{
 #if AXIOM_THREAD_SUPPORT
-                System.Threading.Monitor.Enter( _resourcesMutex );
+				System.Threading.Monitor.Enter( _resourcesMutex );
 #endif
-				foreach ( var it in Resources )
+				foreach ( var it in this.Resources )
 				{
 					it.LockDeviceAccess();
 				}
@@ -109,19 +109,19 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		public void UnlockDeviceAccess()
 		{
-			Contract.Requires( _deviceAccessLockCount > 0 );
-			_deviceAccessLockCount--;
-			if ( _deviceAccessLockCount == 0 )
+			Contract.Requires( this._deviceAccessLockCount > 0 );
+			this._deviceAccessLockCount--;
+			if ( this._deviceAccessLockCount == 0 )
 			{
 				// outermost recursive lock release, propagte unlock
-				foreach ( var it in Resources )
+				foreach ( var it in this.Resources )
 				{
 					it.UnlockDeviceAccess();
 				}
 
 				D3D9HardwarePixelBuffer.UnlockDeviceAccess();
 #if AXIOM_THREAD_SUPPORT
-                System.Threading.Monitor.Exit( _resourcesMutex );
+				System.Threading.Monitor.Exit( _resourcesMutex );
 #endif
 			}
 		}
@@ -135,7 +135,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			lock ( _resourcesMutex )
 			{
-				foreach ( var it in Resources )
+				foreach ( var it in this.Resources )
 				{
 					it.NotifyOnDeviceCreate( d3D9Device );
 				}
@@ -151,7 +151,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			lock ( _resourcesMutex )
 			{
-				foreach ( var it in Resources )
+				foreach ( var it in this.Resources )
 				{
 					it.NotifyOnDeviceDestroy( d3D9Device );
 				}
@@ -167,7 +167,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			lock ( _resourcesMutex )
 			{
-				foreach ( var it in Resources )
+				foreach ( var it in this.Resources )
 				{
 					it.NotifyOnDeviceLost( d3D9Device );
 				}
@@ -183,7 +183,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			lock ( _resourcesMutex )
 			{
-				foreach ( var it in Resources )
+				foreach ( var it in this.Resources )
 				{
 					it.NotifyOnDeviceReset( d3D9Device );
 				}
@@ -199,7 +199,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			lock ( _resourcesMutex )
 			{
-				Resources.Add( pResource );
+				this.Resources.Add( pResource );
 			}
 		}
 
@@ -212,9 +212,9 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			lock ( _resourcesMutex )
 			{
-				if ( Resources.Contains( pResource ) )
+				if ( this.Resources.Contains( pResource ) )
 				{
-					Resources.Remove( pResource );
+					this.Resources.Remove( pResource );
 				}
 			}
 		}

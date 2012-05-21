@@ -61,7 +61,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mName;
+				return this.mName;
 			}
 		}
 
@@ -70,7 +70,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mManager;
+				return this.mManager;
 			}
 		}
 
@@ -78,8 +78,8 @@ namespace Axiom.Components.Paging
 		public PageStrategy( string name, PageManager manager )
 			: base()
 		{
-			mName = name;
-			mManager = manager;
+			this.mName = name;
+			this.mManager = manager;
 		}
 
 		/// <summary>

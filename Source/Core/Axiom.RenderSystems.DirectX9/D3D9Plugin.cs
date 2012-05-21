@@ -66,16 +66,16 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			// Render system creation has been moved here ( like Ogre does in Install method )
 			// since the Plugin.ctor is called twice during startup.
-			_renderSystem = new D3D9RenderSystem();
+			this._renderSystem = new D3D9RenderSystem();
 
 			// add an instance of this plugin to the list of available RenderSystems
-			Root.Instance.RenderSystems.Add( "DirectX9", _renderSystem );
+			Root.Instance.RenderSystems.Add( "DirectX9", this._renderSystem );
 		}
 
 		public void Shutdown()
 		{
-			_renderSystem.SafeDispose();
-			_renderSystem = null;
+			this._renderSystem.SafeDispose();
+			this._renderSystem = null;
 		}
 
 		#endregion Implementation of IPlugin

@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -55,8 +55,8 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public ZoneData( PCZSceneNode node, PCZone zone )
 		{
-			mAssociatedZone = zone;
-			mAssociatedNode = node;
+			this.mAssociatedZone = zone;
+			this.mAssociatedNode = node;
 		}
 
 		public virtual void update()
@@ -102,12 +102,12 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		public PCZone( PCZSceneManager creator, string name )
 		{
-			mLastVisibleFrame = 0;
+			this.mLastVisibleFrame = 0;
 			LastVisibleFromCamera = null;
-			mName = name;
-			mZoneTypeName = "ZoneType_Undefined";
-			mEnclosureNode = null;
-			mPCZSM = creator;
+			this.mName = name;
+			this.mZoneTypeName = "ZoneType_Undefined";
+			this.mEnclosureNode = null;
+			this.mPCZSM = creator;
 			HasSky = false;
 		}
 
@@ -116,7 +116,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			// clear list of nodes contained within the zone
 			ClearNodeLists( NODE_LIST_TYPE.HOME_NODE_LIST | NODE_LIST_TYPE.VISITOR_NODE_LIST );
 			// clear portal list (actual deletion of portals takes place in the PCZSM)
-			mPortals.Clear();
+			this.mPortals.Clear();
 		}
 
 		#region Virtuals
@@ -212,11 +212,11 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return mLastVisibleFrame;
+				return this.mLastVisibleFrame;
 			}
 			set
 			{
-				mLastVisibleFrame = value;
+				this.mLastVisibleFrame = value;
 			}
 		}
 
@@ -226,11 +226,11 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return mPortalsUpdated;
+				return this.mPortalsUpdated;
 			}
 			set
 			{
-				mPortalsUpdated = value;
+				this.mPortalsUpdated = value;
 			}
 		}
 
@@ -238,7 +238,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return mName;
+				return this.mName;
 			}
 		}
 
@@ -246,11 +246,11 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return mUserData;
+				return this.mUserData;
 			}
 			set
 			{
-				mUserData = value;
+				this.mUserData = value;
 			}
 		}
 
@@ -260,11 +260,11 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return mHasSky;
+				return this.mHasSky;
 			}
 			set
 			{
-				mHasSky = value;
+				this.mHasSky = value;
 			}
 		}
 
@@ -272,11 +272,11 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return mEnclosureNode;
+				return this.mEnclosureNode;
 			}
 			set
 			{
-				mEnclosureNode = value;
+				this.mEnclosureNode = value;
 			}
 		}
 
@@ -288,11 +288,11 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			if ( ( type & NODE_LIST_TYPE.HOME_NODE_LIST ) == NODE_LIST_TYPE.HOME_NODE_LIST )
 			{
-				mHomeNodeList.Clear();
+				this.mHomeNodeList.Clear();
 			}
 			if ( ( type & NODE_LIST_TYPE.VISITOR_NODE_LIST ) == NODE_LIST_TYPE.VISITOR_NODE_LIST )
 			{
-				mVisitorNodeList.Clear();
+				this.mVisitorNodeList.Clear();
 			}
 		}
 
@@ -300,7 +300,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			// look through all the portals in zone2 for a match
 
-			foreach ( Portal portal2 in mPortals )
+			foreach ( Portal portal2 in this.mPortals )
 			{
 				//portal2 = pi2;
 				//portal2->updateDerivedValues();
@@ -324,16 +324,16 @@ namespace Axiom.SceneManagers.PortalConnected
 		public virtual void GetAABB( ref AxisAlignedBox aabb )
 		{
 			// if there is no node, just return a null box
-			if ( null == mEnclosureNode )
+			if ( null == this.mEnclosureNode )
 			{
 				aabb = AxisAlignedBox.Null;
 			}
 			else
 			{
-				aabb = mEnclosureNode.WorldAABB;
+				aabb = this.mEnclosureNode.WorldAABB;
 				// since this is the "local" AABB, subtract out any translations
-				aabb.Minimum = aabb.Minimum - mEnclosureNode.DerivedPosition;
-				aabb.Maximum = aabb.Maximum - mEnclosureNode.DerivedPosition;
+				aabb.Minimum = aabb.Minimum - this.mEnclosureNode.DerivedPosition;
+				aabb.Maximum = aabb.Maximum - this.mEnclosureNode.DerivedPosition;
 			}
 		}
 
@@ -341,7 +341,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return mCurrentHomeZone;
+				return this.mCurrentHomeZone;
 			}
 		}
 	}

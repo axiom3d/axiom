@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -64,8 +64,8 @@ namespace Axiom.SceneManagers.PortalConnected
 		public PCZAxisAlignedBoxSceneQuery( SceneManager creator )
 			: base( creator )
 		{
-			startZone = null;
-			excludeNode = null;
+			this.startZone = null;
+			this.excludeNode = null;
 		}
 
 		/// <summary>
@@ -78,7 +78,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			var list = new List<PCZSceneNode>();
 			//find the nodes that intersect the AAB
-			( (PCZSceneManager)creator ).FindNodesIn( box, ref list, startZone, (PCZSceneNode)excludeNode );
+			( (PCZSceneManager)creator ).FindNodesIn( box, ref list, this.startZone, (PCZSceneNode)this.excludeNode );
 
 			//grab all moveables from the node that intersect...
 
@@ -86,7 +86,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			{
 				foreach ( MovableObject m in node.Objects )
 				{
-					if ( ( m.QueryFlags & queryMask ) != 0 && ( m.TypeFlags & queryTypeMask ) != 0 && m.IsAttached &&
+					if ( ( m.QueryFlags & queryMask ) != 0 && ( m.TypeFlags & this.queryTypeMask ) != 0 && m.IsAttached &&
 					     box.Intersects( m.GetWorldBoundingBox() ) )
 					{
 						listener.OnQueryResult( m );
@@ -107,8 +107,8 @@ namespace Axiom.SceneManagers.PortalConnected
 				}
 			}
 			// reset startzone and exclude node
-			startZone = null;
-			excludeNode = null;
+			this.startZone = null;
+			this.excludeNode = null;
 		}
 	}
 
@@ -142,7 +142,7 @@ namespace Axiom.SceneManagers.PortalConnected
 						{
 							// MovableObject m =
 							if ( m != e && !set.ContainsKey( m ) && !set.ContainsKey( e ) && ( m.QueryFlags & queryMask ) != 0 &&
-							     ( m.TypeFlags & queryTypeMask ) != 0 && m.IsAttached &&
+							     ( m.TypeFlags & this.queryTypeMask ) != 0 && m.IsAttached &&
 							     e.GetWorldBoundingBox().Intersects( m.GetWorldBoundingBox() ) )
 							{
 								listener.OnQueryResult( e, m );
@@ -182,7 +182,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			var list = new List<PCZSceneNode>();
 			//find the nodes that intersect the AAB
-			( (PCZSceneManager)creator ).FindNodesIn( sphere, ref list, startZone, (PCZSceneNode)excludeNode );
+			( (PCZSceneManager)creator ).FindNodesIn( sphere, ref list, this.startZone, (PCZSceneNode)this.excludeNode );
 
 			//grab all moveables from the node that intersect...
 
@@ -190,7 +190,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			{
 				foreach ( MovableObject m in node.Objects )
 				{
-					if ( ( m.QueryFlags & queryMask ) != 0 && ( m.TypeFlags & queryTypeMask ) != 0 && m.IsAttached &&
+					if ( ( m.QueryFlags & queryMask ) != 0 && ( m.TypeFlags & this.queryTypeMask ) != 0 && m.IsAttached &&
 					     sphere.Intersects( m.GetWorldBoundingBox() ) )
 					{
 						listener.OnQueryResult( m );
@@ -211,8 +211,8 @@ namespace Axiom.SceneManagers.PortalConnected
 				}
 			}
 			// reset startzone and exclude node
-			startZone = null;
-			excludeNode = null;
+			this.startZone = null;
+			this.excludeNode = null;
 		}
 	}
 
@@ -231,7 +231,7 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			var list = new List<PCZSceneNode>();
 			//find the nodes that intersect the AAB
-			( (PCZSceneManager)creator ).FindNodesIn( ray, ref list, startZone, (PCZSceneNode)excludeNode );
+			( (PCZSceneManager)creator ).FindNodesIn( ray, ref list, this.startZone, (PCZSceneNode)this.excludeNode );
 
 			//grab all moveables from the node that intersect...
 
@@ -239,7 +239,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			{
 				foreach ( MovableObject m in node.Objects )
 				{
-					if ( ( m.QueryFlags & queryMask ) != 0 && ( m.TypeFlags & queryTypeMask ) != 0 && m.IsAttached )
+					if ( ( m.QueryFlags & queryMask ) != 0 && ( m.TypeFlags & this.queryTypeMask ) != 0 && m.IsAttached )
 					{
 						IntersectResult result = ray.Intersects( m.GetWorldBoundingBox() );
 						if ( result.Hit )
@@ -267,19 +267,19 @@ namespace Axiom.SceneManagers.PortalConnected
 				}
 			}
 			// reset startzone and exclude node
-			startZone = null;
-			excludeNode = null;
+			this.startZone = null;
+			this.excludeNode = null;
 		}
 
 		public PCZone StartZone
 		{
 			get
 			{
-				return startZone;
+				return this.startZone;
 			}
 			set
 			{
-				startZone = value;
+				this.startZone = value;
 			}
 		}
 
@@ -287,12 +287,12 @@ namespace Axiom.SceneManagers.PortalConnected
 		{
 			get
 			{
-				return excludeNode;
+				return this.excludeNode;
 			}
 
 			set
 			{
-				excludeNode = value;
+				this.excludeNode = value;
 			}
 		}
 	}
@@ -316,7 +316,7 @@ namespace Axiom.SceneManagers.PortalConnected
 			foreach ( PlaneBoundedVolume volume in volumes )
 			{
 				//find the nodes that intersect the AAB
-				( (PCZSceneManager)creator ).FindNodesIn( volume, ref list, startZone, (PCZSceneNode)excludeNode );
+				( (PCZSceneManager)creator ).FindNodesIn( volume, ref list, this.startZone, (PCZSceneNode)this.excludeNode );
 
 				//grab all moveables from the node that intersect...
 				foreach ( PCZSceneNode node in list )
@@ -331,7 +331,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 					foreach ( MovableObject m in node.Objects )
 					{
-						if ( ( m.QueryFlags & queryMask ) != 0 && ( m.TypeFlags & queryTypeMask ) != 0 && m.IsAttached &&
+						if ( ( m.QueryFlags & queryMask ) != 0 && ( m.TypeFlags & this.queryTypeMask ) != 0 && m.IsAttached &&
 						     volume.Intersects( m.GetWorldBoundingBox() ) )
 						{
 							listener.OnQueryResult( m );
@@ -353,8 +353,8 @@ namespace Axiom.SceneManagers.PortalConnected
 				}
 			}
 			// reset startzone and exclude node
-			startZone = null;
-			excludeNode = null;
+			this.startZone = null;
+			this.excludeNode = null;
 		}
 	}
 }

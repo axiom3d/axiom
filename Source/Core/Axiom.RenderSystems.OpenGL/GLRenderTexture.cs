@@ -65,8 +65,8 @@ namespace Axiom.RenderSystems.OpenGL
 			: base( target.Buffer, target.ZOffset )
 		{
 			this.name = name;
-			HwGamma = writeGamma;
-			Fsaa = fsaa;
+			this.HwGamma = writeGamma;
+			this.Fsaa = fsaa;
 		}
 
 		#endregion Construction and Destruction

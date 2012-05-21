@@ -29,10 +29,10 @@
 
 		public Operand( Parameter parameter, OpSemantic opSemantic, int opMask, int indirectionalLevel )
 		{
-			_parameter = parameter;
-			semantic = opSemantic;
-			mask = opMask;
-			_indirectionalLevel = indirectionalLevel;
+			this._parameter = parameter;
+			this.semantic = opSemantic;
+			this.mask = opMask;
+			this._indirectionalLevel = indirectionalLevel;
 		}
 
 		public Operand( Operand operand )
@@ -44,7 +44,7 @@
 		{
 			get
 			{
-				return _parameter;
+				return this._parameter;
 			}
 		}
 
@@ -52,9 +52,9 @@
 		{
 			get
 			{
-				return ( ( mask & (int)OpMask.All ) == 0 &&
-				         ( ( mask & (int)OpMask.X ) == 1 || ( mask & (int)OpMask.Y ) == 1 ||
-				           ( mask & (int)OpMask.Z ) == 1 || ( mask & (int)OpMask.W ) == 1 ) );
+				return ( ( this.mask & (int)OpMask.All ) == 0 &&
+				         ( ( this.mask & (int)OpMask.X ) == 1 || ( this.mask & (int)OpMask.Y ) == 1 ||
+				           ( this.mask & (int)OpMask.Z ) == 1 || ( this.mask & (int)OpMask.W ) == 1 ) );
 			}
 		}
 
@@ -62,7 +62,7 @@
 		{
 			get
 			{
-				return mask;
+				return this.mask;
 			}
 		}
 
@@ -70,7 +70,7 @@
 		{
 			get
 			{
-				return semantic;
+				return this.semantic;
 			}
 		}
 
@@ -84,14 +84,14 @@
 
 		public override string ToString()
 		{
-			string retVal = _parameter.ToString();
-			if ( ( mask & (int)OpMask.All ) == 1 ||
-			     ( ( mask & (int)OpMask.X ) == 1 && ( mask & (int)OpMask.Z ) == 1 && ( mask & (int)OpMask.W ) == 1 ) )
+			string retVal = this._parameter.ToString();
+			if ( ( this.mask & (int)OpMask.All ) == 1 ||
+			     ( ( this.mask & (int)OpMask.X ) == 1 && ( this.mask & (int)OpMask.Z ) == 1 && ( this.mask & (int)OpMask.W ) == 1 ) )
 			{
 				return retVal;
 			}
 
-			retVal += "." + GetMaskAsString( mask );
+			retVal += "." + GetMaskAsString( this.mask );
 			return retVal;
 		}
 

@@ -33,7 +33,6 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mono.Android" />
     <Reference Include="mscorlib" />
     <Reference Include="OpenTK" />
     <Reference Include="System" />
@@ -91,13 +90,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Axiom\Axiom.Droid.csproj">
-      <Project>{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}</Project>
-      <Name>Axiom.Droid</Name>
-    </ProjectReference>
+    <Compile Include="EGL\Win32\GLES2RenderSystem.Win32EGL.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EGL\Win32\GLES2RenderSystem.Win32EGL.cs" />
+    <ProjectReference Include="..\Axiom\Axiom.csproj">
+      <Project>{baa6ae8a-b259-4883-9805-ce538660a59a}</Project>
+      <Name>Axiom</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

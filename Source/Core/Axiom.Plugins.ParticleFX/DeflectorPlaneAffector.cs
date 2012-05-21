@@ -62,11 +62,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return _planePoint;
+				return this._planePoint;
 			}
 			set
 			{
-				_planePoint = value;
+				this._planePoint = value;
 			}
 		}
 
@@ -77,11 +77,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return _planeNormal;
+				return this._planeNormal;
 			}
 			set
 			{
-				_planeNormal = value;
+				this._planeNormal = value;
 			}
 		}
 
@@ -92,11 +92,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return _bounce;
+				return this._bounce;
 			}
 			set
 			{
-				_bounce = value;
+				this._bounce = value;
 			}
 		}
 
@@ -109,32 +109,33 @@ namespace Axiom.ParticleFX
 			type = "DeflectorPlane";
 
 			// defaults
-			_planePoint = Vector3.Zero;
-			_planeNormal = Vector3.UnitY;
-			_bounce = 1.0f;
+			this._planePoint = Vector3.Zero;
+			this._planeNormal = Vector3.UnitY;
+			this._bounce = 1.0f;
 		}
 
 		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
 		{
 			// precalculate distance of plane from origin
-			float planeDistance = -_planeNormal.Dot( _planePoint )/Utility.Sqrt( _planeNormal.Dot( _planeNormal ) );
+			float planeDistance = -this._planeNormal.Dot( this._planePoint )/
+			                      Utility.Sqrt( this._planeNormal.Dot( this._planeNormal ) );
 			Vector3 directionPart;
 
 			foreach ( Particle pi in system.Particles )
 			{
 				Vector3 direction = pi.Direction*timeElapsed;
-				if ( _planeNormal.Dot( pi.Position + direction ) + planeDistance <= 0.0f )
+				if ( this._planeNormal.Dot( pi.Position + direction ) + planeDistance <= 0.0f )
 				{
-					float a = _planeNormal.Dot( pi.Position ) + planeDistance;
+					float a = this._planeNormal.Dot( pi.Position ) + planeDistance;
 					if ( a > 0.0 )
 					{
 						// for intersection point
-						directionPart = direction*( -a/direction.Dot( _planeNormal ) );
+						directionPart = direction*( -a/direction.Dot( this._planeNormal ) );
 						// set new position
-						pi.Position = ( pi.Position + ( directionPart ) ) + ( ( ( directionPart ) - direction )*_bounce );
+						pi.Position = ( pi.Position + ( directionPart ) ) + ( ( ( directionPart ) - direction )*this._bounce );
 
 						// reflect direction vector
-						pi.Direction = ( pi.Direction - ( 2.0f*pi.Direction.Dot( _planeNormal )*_planeNormal ) )*_bounce;
+						pi.Direction = ( pi.Direction - ( 2.0f*pi.Direction.Dot( this._planeNormal )*this._planeNormal ) )*this._bounce;
 					}
 				}
 			}

@@ -68,9 +68,9 @@ namespace Axiom.CgPrograms
 		internal CgProgramFactory()
 		{
 			// create the Cg context
-			cgContext = Cg.cgCreateContext();
+			this.cgContext = Cg.cgCreateContext();
 
-			CgHelper.CheckCgError( "Error creating Cg context.", cgContext );
+			CgHelper.CheckCgError( "Error creating Cg context.", this.cgContext );
 		}
 
 		#endregion Constructors
@@ -94,7 +94,7 @@ namespace Axiom.CgPrograms
 		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ulong handle, string group,
 		                                                    bool isManual, IManualResourceLoader loader )
 		{
-			return new CgProgram( parent, name, handle, group, isManual, loader, cgContext );
+			return new CgProgram( parent, name, handle, group, isManual, loader, this.cgContext );
 		}
 
 		#endregion HighLevelGpuProgramFactory Members
@@ -109,7 +109,7 @@ namespace Axiom.CgPrograms
 			// destroy the Cg context
 			if ( disposeManagedResources )
 			{
-				Cg.cgDestroyContext( cgContext );
+				Cg.cgDestroyContext( this.cgContext );
 			}
 			base.dispose( disposeManagedResources );
 		}

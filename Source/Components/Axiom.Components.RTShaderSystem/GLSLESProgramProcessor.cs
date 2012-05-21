@@ -74,11 +74,11 @@ namespace Axiom.Components.RTShaderSystem
 
 		public override void Dispose()
 		{
-			for ( int i = 0; i < libraryPrograms.Count; i++ )
+			for ( int i = 0; i < this.libraryPrograms.Count; i++ )
 			{
-				HighLevelGpuProgramManager.Instance.Remove( libraryPrograms[ i ] );
+				HighLevelGpuProgramManager.Instance.Remove( this.libraryPrograms[ i ] );
 			}
-			libraryPrograms.Clear();
+			this.libraryPrograms.Clear();
 		}
 	}
 }

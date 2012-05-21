@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -59,9 +59,9 @@ namespace OctreeZone
 
 		public TerrainZonePageConstructedEventArgs( int pagex, int pagez, Real[] heightData )
 		{
-			PageX = pagex;
-			PageZ = pagez;
-			HeightData = heightData;
+			this.PageX = pagex;
+			this.PageZ = pagez;
+			this.HeightData = heightData;
 		}
 	}
 
@@ -88,10 +88,10 @@ namespace OctreeZone
 		public virtual void Initialize( TerrainZone tz, int tileSize, int pageSize, bool asyncLoading,
 		                                TerrainZonePageSourceOptionList optionList )
 		{
-			mTerrainZone = tz;
-			mTileSize = tileSize;
-			mPageSize = pageSize;
-			mAsyncLoading = asyncLoading;
+			this.mTerrainZone = tz;
+			this.mTileSize = tileSize;
+			this.mPageSize = pageSize;
+			this.mAsyncLoading = asyncLoading;
 		}
 
 
@@ -100,50 +100,50 @@ namespace OctreeZone
 			string name;
 
 			// Create a TerrainZone Page
-			var page = new TerrainZonePage( (ushort)( ( mPageSize - 1 )/( mTileSize - 1 ) ) );
+			var page = new TerrainZonePage( (ushort)( ( this.mPageSize - 1 )/( this.mTileSize - 1 ) ) );
 			// Create a node for all tiles to be attached to
 			// Note we sequentially name since page can be attached at different points
 			// so page x/z is not appropriate
-			int pageIndex = mTerrainZone.PageCount;
-			name = mTerrainZone.Name + "_page[";
+			int pageIndex = this.mTerrainZone.PageCount;
+			name = this.mTerrainZone.Name + "_page[";
 			name += pageIndex + "]_Node";
-			if ( mTerrainZone.mPCZSM.HasSceneNode( name ) )
+			if ( this.mTerrainZone.mPCZSM.HasSceneNode( name ) )
 			{
-				page.PageSceneNode = mTerrainZone.mPCZSM.GetSceneNode( name );
+				page.PageSceneNode = this.mTerrainZone.mPCZSM.GetSceneNode( name );
 				// set the home zone of the scene node to the terrainzone
-				( (PCZSceneNode)( page.PageSceneNode ) ).AnchorToHomeZone( mTerrainZone );
+				( (PCZSceneNode)( page.PageSceneNode ) ).AnchorToHomeZone( this.mTerrainZone );
 				// EXPERIMENTAL - prevent terrain zone pages from visiting other zones
 				( (PCZSceneNode)( page.PageSceneNode ) ).AllowToVisit = false;
 			}
 			else
 			{
-				page.PageSceneNode = mTerrainZone.TerrainRootNode.CreateChildSceneNode( name );
+				page.PageSceneNode = this.mTerrainZone.TerrainRootNode.CreateChildSceneNode( name );
 				// set the home zone of the scene node to the terrainzone
-				( (PCZSceneNode)( page.PageSceneNode ) ).AnchorToHomeZone( mTerrainZone );
+				( (PCZSceneNode)( page.PageSceneNode ) ).AnchorToHomeZone( this.mTerrainZone );
 				// EXPERIMENTAL - prevent terrain zone pages from visiting other zones
 				( (PCZSceneNode)( page.PageSceneNode ) ).AllowToVisit = false;
 			}
 
 			int q = 0;
-			for ( int j = 0; j < mPageSize - 1; j += ( mTileSize - 1 ) )
+			for ( int j = 0; j < this.mPageSize - 1; j += ( this.mTileSize - 1 ) )
 			{
 				int p = 0;
 
-				for ( int i = 0; i < mPageSize - 1; i += ( mTileSize - 1 ) )
+				for ( int i = 0; i < this.mPageSize - 1; i += ( this.mTileSize - 1 ) )
 				{
 					// Create scene node for the tile and the TerrainZoneRenderable
-					name = mTerrainZone.Name + "_tile[" + pageIndex + "][" + p + "," + q + "]_Node";
+					name = this.mTerrainZone.Name + "_tile[" + pageIndex + "][" + p + "," + q + "]_Node";
 
 					SceneNode c;
-					if ( mTerrainZone.mPCZSM.HasSceneNode( name ) )
+					if ( this.mTerrainZone.mPCZSM.HasSceneNode( name ) )
 					{
-						c = mTerrainZone.mPCZSM.GetSceneNode( name );
+						c = this.mTerrainZone.mPCZSM.GetSceneNode( name );
 						if ( c.Parent != page.PageSceneNode )
 						{
 							page.PageSceneNode.AddChild( c );
 						}
 						// set the home zone of the scene node to the terrainzone
-						( (PCZSceneNode)c ).AnchorToHomeZone( mTerrainZone );
+						( (PCZSceneNode)c ).AnchorToHomeZone( this.mTerrainZone );
 						// EXPERIMENTAL - prevent terrain zone pages from visiting other zones
 						( (PCZSceneNode)c ).AllowToVisit = false;
 					}
@@ -151,14 +151,14 @@ namespace OctreeZone
 					{
 						c = page.PageSceneNode.CreateChildSceneNode( name );
 						// set the home zone of the scene node to the terrainzone
-						( (PCZSceneNode)c ).AnchorToHomeZone( mTerrainZone );
+						( (PCZSceneNode)c ).AnchorToHomeZone( this.mTerrainZone );
 						// EXPERIMENTAL - prevent terrain zone pages from visiting other zones
 						( (PCZSceneNode)c ).AllowToVisit = false;
 					}
 
-					var tile = new TerrainZoneRenderable( name, mTerrainZone );
+					var tile = new TerrainZoneRenderable( name, this.mTerrainZone );
 					// set queue
-					tile.RenderQueueGroup = mTerrainZone.mPCZSM.WorldGeometryRenderQueueId;
+					tile.RenderQueueGroup = this.mTerrainZone.mPCZSM.WorldGeometryRenderQueueId;
 					// Initialise the tile
 					tile.Material = pMaterial;
 					tile.Initialize( i, j, heightData );
@@ -177,14 +177,14 @@ namespace OctreeZone
 			// calculate neighbours for page
 			page.LinkNeighbours();
 
-			if ( mTerrainZone.Options.lit )
+			if ( this.mTerrainZone.Options.lit )
 			{
 				q = 0;
-				for ( int j = 0; j < mPageSize - 1; j += ( mTileSize - 1 ) )
+				for ( int j = 0; j < this.mPageSize - 1; j += ( this.mTileSize - 1 ) )
 				{
 					int p = 0;
 
-					for ( int i = 0; i < mPageSize - 1; i += ( mTileSize - 1 ) )
+					for ( int i = 0; i < this.mPageSize - 1; i += ( this.mTileSize - 1 ) )
 					{
 						page.tiles[ p ][ q ].CalculateNormals();
 						p++;

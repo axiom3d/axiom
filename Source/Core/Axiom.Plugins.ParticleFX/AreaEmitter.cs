@@ -87,11 +87,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return size;
+				return this.size;
 			}
 			set
 			{
-				size = value;
+				this.size = value;
 				GenerateAreaAxes();
 			}
 		}
@@ -100,11 +100,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return size.x;
+				return this.size.x;
 			}
 			set
 			{
-				size.x = value;
+				this.size.x = value;
 				GenerateAreaAxes();
 			}
 		}
@@ -113,11 +113,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return size.y;
+				return this.size.y;
 			}
 			set
 			{
-				size.y = value;
+				this.size.y = value;
 				GenerateAreaAxes();
 			}
 		}
@@ -126,11 +126,11 @@ namespace Axiom.ParticleFX
 		{
 			get
 			{
-				return size.z;
+				return this.size.z;
 			}
 			set
 			{
-				size.z = value;
+				this.size.z = value;
 				GenerateAreaAxes();
 			}
 		}
@@ -143,9 +143,9 @@ namespace Axiom.ParticleFX
 		{
 			Vector3 left = up.Cross( direction );
 
-			xRange = left*( size.x*0.5f );
-			yRange = up*( size.y*0.5f );
-			zRange = direction*( size.z*0.5f );
+			this.xRange = left*( this.size.x*0.5f );
+			this.yRange = up*( this.size.y*0.5f );
+			this.zRange = direction*( this.size.z*0.5f );
 		}
 
 		protected void InitDefaults( string type )

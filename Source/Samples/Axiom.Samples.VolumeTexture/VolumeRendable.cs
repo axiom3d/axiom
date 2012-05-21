@@ -21,7 +21,7 @@ namespace Axiom.Samples.VolumeTexture
 		{
 			get
 			{
-				return radius;
+				return this.radius;
 			}
 		}
 
@@ -38,7 +38,7 @@ namespace Axiom.Samples.VolumeTexture
 			this.size = size;
 			this.texture = texture;
 
-			radius = Utility.Sqrt( size*size + size*size + size*size )/2.0f;
+			this.radius = Utility.Sqrt( size*size + size*size + size*size )/2.0f;
 			box = new AxisAlignedBox( new Vector3( -size, -size, -size ), new Vector3( size, size, size ) );
 
 			CastShadows = false;
@@ -56,7 +56,7 @@ namespace Axiom.Samples.VolumeTexture
 			{
 				if ( TextureManager.Instance != null )
 				{
-					TextureManager.Instance.Remove( texture );
+					TextureManager.Instance.Remove( this.texture );
 				}
 			}
 			base.dispose( disposeManagedResources );
@@ -85,7 +85,7 @@ namespace Axiom.Samples.VolumeTexture
 
 			Quaternion oriQuat = Quaternion.FromAxes( xVec, yVec, zVec );
 
-			fakeOrientation = oriQuat.ToRotationMatrix();
+			this.fakeOrientation = oriQuat.ToRotationMatrix();
 
 			Quaternion q = ParentNode.DerivedOrientation.UnitInverse*oriQuat;
 			Matrix3 tempMat = q.ToRotationMatrix();
@@ -94,7 +94,7 @@ namespace Axiom.Samples.VolumeTexture
 			rotMat = tempMat;
 			rotMat.Translation = new Vector3( 0.5f, 0.5f, 0.5f );
 
-			unit.TextureMatrix = rotMat;
+			this.unit.TextureMatrix = rotMat;
 		}
 
 
@@ -114,7 +114,7 @@ namespace Axiom.Samples.VolumeTexture
 			scale3x3.m11 = scale.y;
 			scale3x3.m22 = scale.z;
 
-			destMatrix = fakeOrientation*scale3x3;
+			destMatrix = this.fakeOrientation*scale3x3;
 			destMatrix.Translation = position;
 			matrices[ 0 ] = destMatrix;
 		}
@@ -142,7 +142,7 @@ namespace Axiom.Samples.VolumeTexture
 		protected void Initialize()
 		{
 			// Create geometry
-			int nvertices = slices*4; // n+1 planes
+			int nvertices = this.slices*4; // n+1 planes
 			int elemsize = 3*3;
 			int dsize = elemsize*nvertices;
 			int x;
@@ -164,18 +164,18 @@ namespace Axiom.Samples.VolumeTexture
 			             	         }
 			             };
 
-			for ( x = 0; x < slices; x++ )
+			for ( x = 0; x < this.slices; x++ )
 			{
 				for ( int y = 0; y < 4; y++ )
 				{
 					float xcoord = coords[ y, 0 ] - 0.5f;
 					float ycoord = coords[ y, 1 ] - 0.5f;
-					float zcoord = -( (float)x/(float)( slices - 1 ) - 0.5f );
+					float zcoord = -( (float)x/(float)( this.slices - 1 ) - 0.5f );
 					// 1.0f .. a/(a+1)
 					// coordinate
-					vertices[ x*4*elemsize + y*elemsize + 0 ] = xcoord*( size/2.0f );
-					vertices[ x*4*elemsize + y*elemsize + 1 ] = ycoord*( size/2.0f );
-					vertices[ x*4*elemsize + y*elemsize + 2 ] = zcoord*( size/2.0f );
+					vertices[ x*4*elemsize + y*elemsize + 0 ] = xcoord*( this.size/2.0f );
+					vertices[ x*4*elemsize + y*elemsize + 1 ] = ycoord*( this.size/2.0f );
+					vertices[ x*4*elemsize + y*elemsize + 2 ] = zcoord*( this.size/2.0f );
 					// normal
 					vertices[ x*4*elemsize + y*elemsize + 3 ] = 0.0f;
 					vertices[ x*4*elemsize + y*elemsize + 4 ] = 0.0f;
@@ -187,8 +187,8 @@ namespace Axiom.Samples.VolumeTexture
 				}
 			}
 
-			var faces = new short[slices*6];
-			for ( x = 0; x < slices; x++ )
+			var faces = new short[this.slices*6];
+			for ( x = 0; x < this.slices; x++ )
 			{
 				faces[ x*6 + 0 ] = (short)( x*4 + 0 );
 				faces[ x*6 + 1 ] = (short)( x*4 + 1 );
@@ -214,11 +214,11 @@ namespace Axiom.Samples.VolumeTexture
 
 			bind.SetBinding( 0, vertexBuffer );
 
-			HardwareIndexBuffer indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, slices*6,
+			HardwareIndexBuffer indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size16, this.slices*6,
 			                                                                                    BufferUsage.StaticWriteOnly );
 
 			indexData.indexBuffer = indexBuffer;
-			indexData.indexCount = slices*6;
+			indexData.indexCount = this.slices*6;
 			indexData.indexStart = 0;
 
 			indexBuffer.WriteData( 0, indexBuffer.Size, faces, true );
@@ -238,7 +238,7 @@ namespace Axiom.Samples.VolumeTexture
 				ResourceGroupManager.Instance.CreateResourceGroup( "VolumeRendable" );
 			}
 
-			var material = (Material)MaterialManager.Instance.Create( texture, "VolumeRendable" );
+			var material = (Material)MaterialManager.Instance.Create( this.texture, "VolumeRendable" );
 			// Remove pre-created technique from defaults
 			material.RemoveAllTechniques();
 
@@ -253,10 +253,10 @@ namespace Axiom.Samples.VolumeTexture
 			pass.CullingMode = CullingMode.None;
 			pass.LightingEnabled = false;
 			textureUnit.SetTextureAddressingMode( TextureAddressing.Clamp );
-			textureUnit.SetTextureName( texture, TextureType.ThreeD );
+			textureUnit.SetTextureName( this.texture, TextureType.ThreeD );
 			textureUnit.SetTextureFiltering( TextureFiltering.Trilinear );
 
-			unit = textureUnit;
+			this.unit = textureUnit;
 			base.material = material;
 		}
 	}

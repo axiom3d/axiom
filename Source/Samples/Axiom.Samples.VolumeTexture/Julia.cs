@@ -56,22 +56,22 @@ namespace Axiom.Samples.VolumeTexture
 			this.globalImag = globalImag;
 			this.globalTheta = globalTheta;
 
-			oc = new Quat();
-			oc.R = globalReal;
-			oc.I = globalImag;
-			oc.J = oc.K = 0.0f;
+			this.oc = new Quat();
+			this.oc.R = globalReal;
+			this.oc.I = globalImag;
+			this.oc.J = this.oc.K = 0.0f;
 
-			eio = new Quat();
-			eio.R = Utility.Cos( globalTheta );
-			eio.I = Utility.Sin( globalTheta );
-			eio.J = eio.K = 0;
+			this.eio = new Quat();
+			this.eio.R = Utility.Cos( globalTheta );
+			this.eio.I = Utility.Sin( globalTheta );
+			this.eio.J = this.eio.K = 0;
 
-			emio = new Quat();
-			emio.R = Utility.Cos( -globalTheta );
-			emio.I = Utility.Sin( -globalTheta );
-			emio.J = emio.K = 0;
+			this.emio = new Quat();
+			this.emio.R = Utility.Cos( -globalTheta );
+			this.emio.I = Utility.Sin( -globalTheta );
+			this.emio.J = this.emio.K = 0;
 
-			QMult( ref c, eio, oc );
+			QMult( ref this.c, this.eio, this.oc );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -90,8 +90,8 @@ namespace Axiom.Samples.VolumeTexture
 			for ( i = 30; i > 0; i-- )
 			{
 				QSqr( ref tmp, q );
-				QMult( ref q, emio, tmp );
-				QAdd( ref q, c );
+				QMult( ref q, this.emio, tmp );
+				QAdd( ref q, this.c );
 
 				if ( q.R*q.R + q.I*q.I + q.J*q.J + q.K*q.K > 8.0 )
 				{

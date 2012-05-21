@@ -35,9 +35,9 @@ namespace Axiom.Samples.DynamicTexture
 
 		public override void Initialize()
 		{
-			sample = new DynamicTexture();
-			Name = sample.Metadata[ "Title" ] + " Sample";
-			AddSample( sample );
+			this.sample = new DynamicTexture();
+			Name = this.sample.Metadata[ "Title" ] + " Sample";
+			AddSample( this.sample );
 		}
 	}
 }

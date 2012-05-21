@@ -29,7 +29,7 @@ namespace Axiom.Components.RTShaderSystem
 		public Function( string name, string desc, FunctionType functionType )
 		{
 			this.name = name;
-			description = desc;
+			this.description = desc;
 			this.functionType = functionType;
 		}
 
@@ -41,7 +41,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return name;
+				return this.name;
 			}
 		}
 
@@ -49,7 +49,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return description;
+				return this.description;
 			}
 		}
 
@@ -57,7 +57,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return outputParameters;
+				return this.outputParameters;
 			}
 		}
 
@@ -65,7 +65,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return inputParameters;
+				return this.inputParameters;
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return atomInstances;
+				return this.atomInstances;
 			}
 		}
 
@@ -81,7 +81,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			get
 			{
-				return functionType;
+				return this.functionType;
 			}
 		}
 
@@ -95,7 +95,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="param"> Parameter to delete </param>
 		internal void DeleteOutputParameter( Parameter param )
 		{
-			DeleteParameter( outputParameters, param );
+			DeleteParameter( this.outputParameters, param );
 		}
 
 		/// <summary>
@@ -104,7 +104,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="param"> Parameter to delete </param>
 		internal void DeleteInputParameter( Parameter param )
 		{
-			DeleteParameter( inputParameters, param );
+			DeleteParameter( this.inputParameters, param );
 		}
 
 		private void DeleteParameter( List<Parameter> paramList, Parameter parameter )
@@ -122,12 +122,12 @@ namespace Axiom.Components.RTShaderSystem
 
 		internal void DeleteAllInputParameters()
 		{
-			inputParameters.Clear();
+			this.inputParameters.Clear();
 		}
 
 		internal void DeleteAllOutputParamters()
 		{
-			outputParameters.Clear();
+			this.outputParameters.Clear();
 		}
 
 		/// <summary>
@@ -137,13 +137,13 @@ namespace Axiom.Components.RTShaderSystem
 		internal void AddOutputParameter( Parameter parameter )
 		{
 			//check that parameter with the same semantic and index in input parameter list
-			if ( GetParameterBySemantic( outputParameters, parameter.Semantic, parameter.Index ) != null )
+			if ( GetParameterBySemantic( this.outputParameters, parameter.Semantic, parameter.Index ) != null )
 			{
 				throw new AxiomException( "Parameter <" + parameter.Name +
 				                          "> has equal semantic parameter in function <" + Name + ">" );
 			}
 
-			AddParameter( inputParameters, parameter );
+			AddParameter( this.inputParameters, parameter );
 		}
 
 		/// <summary>
@@ -153,13 +153,13 @@ namespace Axiom.Components.RTShaderSystem
 		internal void AddInputParameter( Parameter parameter )
 		{
 			//check that parameter with the same semantic and index in input parameter list
-			if ( GetParameterBySemantic( inputParameters, parameter.Semantic, parameter.Index ) != null )
+			if ( GetParameterBySemantic( this.inputParameters, parameter.Semantic, parameter.Index ) != null )
 			{
 				throw new AxiomException( "Parameter <" + parameter.Name +
 				                          "> has equal semantic parameter in function <" + Name + ">" );
 			}
 
-			AddParameter( inputParameters, parameter );
+			AddParameter( this.inputParameters, parameter );
 		}
 
 		/// <summary>
@@ -175,7 +175,7 @@ namespace Axiom.Components.RTShaderSystem
 		{
 			Parameter param = null;
 
-			param = GetParameterByName( localParameters, name );
+			param = GetParameterByName( this.localParameters, name );
 			if ( param != null )
 			{
 				if ( param.Type == type && param.Semantic == semantic && param.Index == index )
@@ -190,7 +190,7 @@ namespace Axiom.Components.RTShaderSystem
 			}
 
 			param = new Parameter( type, name, semantic, index, Parameter.ContentType.Unknown, 0 );
-			AddParameter( localParameters, param );
+			AddParameter( this.localParameters, param );
 
 			return param;
 		}
@@ -198,14 +198,14 @@ namespace Axiom.Components.RTShaderSystem
 		private void AddParameter( List<Parameter> paramList, Parameter param )
 		{
 			//check that parameter with the same name doesn't exist in input parameters list.
-			if ( GetParameterByName( inputParameters, param.Name ) != null )
+			if ( GetParameterByName( this.inputParameters, param.Name ) != null )
 			{
 				throw new AxiomException( "Parameter <" + param.Name + "> already declared in function <" + Name + ">" );
 			}
 
 
 			//check that parameter with the same name doesn't exist in output paramters list
-			if ( GetParameterByName( outputParameters, param.Name ) != null )
+			if ( GetParameterByName( this.outputParameters, param.Name ) != null )
 			{
 				throw new AxiomException( "Parameter <" + param.Name + "> already declared in function <" + Name + ">" );
 			}
@@ -225,14 +225,14 @@ namespace Axiom.Components.RTShaderSystem
 		                                          Parameter.ContentType content,
 		                                          Graphics.GpuProgramParameters.GpuConstantType type )
 		{
-			Parameter param = Function.GetParameterByContent( localParameters, content, type );
+			Parameter param = Function.GetParameterByContent( this.localParameters, content, type );
 			if ( param != null )
 			{
 				return param;
 			}
 
-			param = new Parameter( type, "lLocalParam_" + localParameters.Count.ToString(), semantic, index, content, 0 );
-			AddParameter( localParameters, param );
+			param = new Parameter( type, "lLocalParam_" + this.localParameters.Count.ToString(), semantic, index, content, 0 );
+			AddParameter( this.localParameters, param );
 
 			return param;
 		}
@@ -255,7 +255,7 @@ namespace Axiom.Components.RTShaderSystem
 			Parameter param = null;
 
 			//Check if desried parameter already defined
-			param = Function.GetParameterByContent( inputParameters, content, type );
+			param = Function.GetParameterByContent( this.inputParameters, content, type );
 			if ( param != null )
 			{
 				return param;
@@ -267,9 +267,9 @@ namespace Axiom.Components.RTShaderSystem
 				index = 0;
 
 				//find the next available index of the target semantic
-				for ( int it = 0; it < inputParameters.Count; it++ )
+				for ( int it = 0; it < this.inputParameters.Count; it++ )
 				{
-					if ( inputParameters[ it ].Semantic == semantic )
+					if ( this.inputParameters[ it ].Semantic == semantic )
 					{
 						index++;
 					}
@@ -278,7 +278,7 @@ namespace Axiom.Components.RTShaderSystem
 			else
 			{
 				//check if desried parameter already defined
-				param = Function.GetParameterBySemantic( inputParameters, semantic, index );
+				param = Function.GetParameterBySemantic( this.inputParameters, semantic, index );
 				if ( param != null & param.Content == content )
 				{
 					if ( param.Type == type )
@@ -350,7 +350,7 @@ namespace Axiom.Components.RTShaderSystem
 			Parameter param = null;
 
 			//Check if desired parameter already defined
-			param = Function.GetParameterByContent( outputParameters, content, type );
+			param = Function.GetParameterByContent( this.outputParameters, content, type );
 			if ( param != null )
 			{
 				return param;
@@ -362,9 +362,9 @@ namespace Axiom.Components.RTShaderSystem
 				index = 0;
 
 				//find the next availabe index of the target semantic
-				for ( int it = 0; it < outputParameters.Count; it++ )
+				for ( int it = 0; it < this.outputParameters.Count; it++ )
 				{
-					if ( outputParameters[ it ].Semantic == semantic )
+					if ( this.outputParameters[ it ].Semantic == semantic )
 					{
 						index++;
 					}
@@ -373,7 +373,7 @@ namespace Axiom.Components.RTShaderSystem
 			else
 			{
 				//check if desired parameter already defined
-				param = GetParameterBySemantic( outputParameters, semantic, index );
+				param = GetParameterBySemantic( this.outputParameters, semantic, index );
 				if ( param != null && param.Content == content )
 				{
 					if ( param.Type == type )
@@ -437,7 +437,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="atomInstance"> The atom instance to add </param>
 		public void AddAtomInstance( FunctionAtom atomInstance )
 		{
-			atomInstances.Add( atomInstance );
+			this.atomInstances.Add( atomInstance );
 		}
 
 		/// <summary>
@@ -447,13 +447,13 @@ namespace Axiom.Components.RTShaderSystem
 		/// <returns> True if atomInstance found and deleted </returns>
 		internal bool DeleteAtomInstance( FunctionAtom atomInstance )
 		{
-			for ( int i = 0; i < atomInstances.Count; i++ )
+			for ( int i = 0; i < this.atomInstances.Count; i++ )
 			{
-				if ( atomInstances[ i ] == atomInstance )
+				if ( this.atomInstances[ i ] == atomInstance )
 				{
-					atomInstances[ i ].Dispose();
-					atomInstances[ i ] = null;
-					atomInstances.RemoveAt( i );
+					this.atomInstances[ i ].Dispose();
+					this.atomInstances[ i ] = null;
+					this.atomInstances.RemoveAt( i );
 					return true;
 				}
 			}
@@ -466,9 +466,9 @@ namespace Axiom.Components.RTShaderSystem
 		/// </summary>
 		internal void SortAtomInstances()
 		{
-			if ( atomInstances.Count > 1 )
+			if ( this.atomInstances.Count > 1 )
 			{
-				atomInstances.Sort( _comparer );
+				this.atomInstances.Sort( this._comparer );
 			}
 		}
 
@@ -539,30 +539,30 @@ namespace Axiom.Components.RTShaderSystem
 
 		public void Dispose()
 		{
-			for ( int i = 0; i < atomInstances.Count; i++ )
+			for ( int i = 0; i < this.atomInstances.Count; i++ )
 			{
-				atomInstances[ i ].Dispose();
-				atomInstances[ i ] = null;
+				this.atomInstances[ i ].Dispose();
+				this.atomInstances[ i ] = null;
 			}
-			atomInstances.Clear();
+			this.atomInstances.Clear();
 
-			for ( int i = 0; i < inputParameters.Count; i++ )
+			for ( int i = 0; i < this.inputParameters.Count; i++ )
 			{
-				inputParameters[ i ] = null;
+				this.inputParameters[ i ] = null;
 			}
-			inputParameters.Clear();
+			this.inputParameters.Clear();
 
-			for ( int i = 0; i < outputParameters.Count; i++ )
+			for ( int i = 0; i < this.outputParameters.Count; i++ )
 			{
-				outputParameters[ i ] = null;
+				this.outputParameters[ i ] = null;
 			}
-			outputParameters.Clear();
+			this.outputParameters.Clear();
 
-			for ( int i = 0; i < localParameters.Count; i++ )
+			for ( int i = 0; i < this.localParameters.Count; i++ )
 			{
-				localParameters[ i ] = null;
+				this.localParameters[ i ] = null;
 			}
-			localParameters.Clear();
+			this.localParameters.Clear();
 		}
 	}
 

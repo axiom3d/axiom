@@ -108,7 +108,7 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return level;
+				return this.level;
 			}
 		}
 
@@ -116,11 +116,11 @@ namespace Axiom.SceneManagers.Bsp
 		{
 			get
 			{
-				return showNodeAABs;
+				return this.showNodeAABs;
 			}
 			set
 			{
-				showNodeAABs = value;
+				this.showNodeAABs = value;
 			}
 		}
 
@@ -140,14 +140,14 @@ namespace Axiom.SceneManagers.Bsp
 			: base( name )
 		{
 			// Set features for debugging render
-			showNodeAABs = false;
+			this.showNodeAABs = false;
 
 			// No sky by default
 			isSkyPlaneEnabled = false;
 			isSkyBoxEnabled = false;
 			isSkyDomeEnabled = false;
 
-			level = null;
+			this.level = null;
 
 			new BspResourceManager();
 		}
@@ -174,7 +174,8 @@ namespace Axiom.SceneManagers.Bsp
 			}
 
 			// Load using resource manager
-			level = (BspLevel)BspResourceManager.Instance.Load( filename, ResourceGroupManager.Instance.WorldResourceGroupName );
+			this.level =
+				(BspLevel)BspResourceManager.Instance.Load( filename, ResourceGroupManager.Instance.WorldResourceGroupName );
 
 			//if (this.level.IsSkyEnabled)
 			//{
@@ -189,26 +190,28 @@ namespace Axiom.SceneManagers.Bsp
 			//}
 
 			// Init static render operation
-			renderOp.vertexData = level.VertexData;
+			this.renderOp.vertexData = this.level.VertexData;
 			// index data is per-frame
-			renderOp.indexData = new IndexData();
-			renderOp.indexData.indexStart = 0;
-			renderOp.indexData.indexCount = 0;
+			this.renderOp.indexData = new IndexData();
+			this.renderOp.indexData.indexStart = 0;
+			this.renderOp.indexData.indexCount = 0;
 			// Create enough index space to render whole level
-			renderOp.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size32, // always 32-bit
-			                                                                                   level.NumIndexes,
-			                                                                                   BufferUsage.
-			                                                                                   	DynamicWriteOnlyDiscardable,
-			                                                                                   false );
+			this.renderOp.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size32,
+			                                                                                        // always 32-bit
+			                                                                                        this.level.NumIndexes,
+			                                                                                        BufferUsage.
+			                                                                                        	DynamicWriteOnlyDiscardable,
+			                                                                                        false );
 
-			renderOp.operationType = OperationType.TriangleList;
-			renderOp.useIndices = true;
+			this.renderOp.operationType = OperationType.TriangleList;
+			this.renderOp.useIndices = true;
 		}
 
 		public override void SetWorldGeometry( Stream stream, string typeName )
 		{
 			// Load using resource manager
-			level = (BspLevel)BspResourceManager.Instance.Load( stream, ResourceGroupManager.Instance.WorldResourceGroupName );
+			this.level =
+				(BspLevel)BspResourceManager.Instance.Load( stream, ResourceGroupManager.Instance.WorldResourceGroupName );
 
 			//if (this.level.IsSkyEnabled)
 			//{
@@ -223,20 +226,21 @@ namespace Axiom.SceneManagers.Bsp
 			//}
 
 			// Init static render operation
-			renderOp.vertexData = level.VertexData;
+			this.renderOp.vertexData = this.level.VertexData;
 			// index data is per-frame
-			renderOp.indexData = new IndexData();
-			renderOp.indexData.indexStart = 0;
-			renderOp.indexData.indexCount = 0;
+			this.renderOp.indexData = new IndexData();
+			this.renderOp.indexData.indexStart = 0;
+			this.renderOp.indexData.indexCount = 0;
 			// Create enough index space to render whole level
-			renderOp.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size32, // always 32-bit
-			                                                                                   level.NumIndexes,
-			                                                                                   BufferUsage.
-			                                                                                   	DynamicWriteOnlyDiscardable,
-			                                                                                   false );
+			this.renderOp.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size32,
+			                                                                                        // always 32-bit
+			                                                                                        this.level.NumIndexes,
+			                                                                                        BufferUsage.
+			                                                                                        	DynamicWriteOnlyDiscardable,
+			                                                                                        false );
 
-			renderOp.operationType = OperationType.TriangleList;
-			renderOp.useIndices = true;
+			this.renderOp.operationType = OperationType.TriangleList;
+			this.renderOp.useIndices = true;
 		}
 
 		/// <summary>
@@ -244,7 +248,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		public override void LoadWorldGeometry( string filename )
 		{
-			bspGeometry = new BspGeometry();
+			this.bspGeometry = new BspGeometry();
 
 			if ( Path.GetExtension( filename ).ToLower() == ".xml" )
 			{
@@ -320,7 +324,7 @@ namespace Axiom.SceneManagers.Bsp
 
 		public void LoadWorldGeometry()
 		{
-			bspGeometry = new BspGeometry();
+			this.bspGeometry = new BspGeometry();
 
 			if ( !optionList.ContainsKey( "Map" ) )
 			{
@@ -367,9 +371,9 @@ namespace Axiom.SceneManagers.Bsp
 
 			InitTextureLighting();
 
-			if ( spotlightFrustum == null )
+			if ( this.spotlightFrustum == null )
 			{
-				spotlightFrustum = new SpotlightFrustum();
+				this.spotlightFrustum = new SpotlightFrustum();
 			}
 
 			var paramList = new NameValuePairList();
@@ -380,24 +384,25 @@ namespace Axiom.SceneManagers.Bsp
 			}
 
 			// Load using resource manager
-			level =
+			this.level =
 				(BspLevel)
 				BspResourceManager.Instance.Load( (string)optionList[ "Map" ], ResourceGroupManager.Instance.WorldResourceGroupName,
 				                                  false, null, paramList );
 
 			// Init static render operation
-			renderOp.vertexData = level.VertexData;
+			this.renderOp.vertexData = this.level.VertexData;
 
 			// index data is per-frame
-			renderOp.indexData = new IndexData();
-			renderOp.indexData.indexStart = 0;
-			renderOp.indexData.indexCount = 0;
+			this.renderOp.indexData = new IndexData();
+			this.renderOp.indexData.indexStart = 0;
+			this.renderOp.indexData.indexCount = 0;
 
 			// Create enough index space to render whole level
-			renderOp.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size32, level.NumIndexes,
-			                                                                                   BufferUsage.Dynamic, false );
-			renderOp.operationType = OperationType.TriangleList;
-			renderOp.useIndices = true;
+			this.renderOp.indexData.indexBuffer = HardwareBufferManager.Instance.CreateIndexBuffer( IndexType.Size32,
+			                                                                                        this.level.NumIndexes,
+			                                                                                        BufferUsage.Dynamic, false );
+			this.renderOp.operationType = OperationType.TriangleList;
+			this.renderOp.useIndices = true;
 		}
 
 		/// <summary>
@@ -405,7 +410,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		public override ViewPoint GetSuggestedViewpoint( bool random )
 		{
-			if ( ( level == null ) || ( level.PlayerStarts.Length == 0 ) )
+			if ( ( this.level == null ) || ( this.level.PlayerStarts.Length == 0 ) )
 			{
 				return base.GetSuggestedViewpoint( random );
 			}
@@ -413,11 +418,11 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				if ( random )
 				{
-					return level.PlayerStarts[ (int)( Utility.UnitRandom()*level.PlayerStarts.Length ) ];
+					return this.level.PlayerStarts[ (int)( Utility.UnitRandom()*this.level.PlayerStarts.Length ) ];
 				}
 				else
 				{
-					return level.PlayerStarts[ 0 ];
+					return this.level.PlayerStarts[ 0 ];
 				}
 			}
 		}
@@ -435,7 +440,7 @@ namespace Axiom.SceneManagers.Bsp
 			}
 
 			// Clear unique list of movables for this frame
-			objectsForRendering.Clear();
+			this.objectsForRendering.Clear();
 
 			// Walk the tree, tag static geometry, return camera's node (for info only)
 			// Movables are now added to the render queue in processVisibleLeaf
@@ -451,7 +456,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			for ( int i = 0; i < casters.Count; i++ )
 			{
-				if ( !objectsForRendering.ContainsKey( ( (MovableObject)casters[ i ] ).Name ) )
+				if ( !this.objectsForRendering.ContainsKey( ( (MovableObject)casters[ i ] ).Name ) )
 				{
 					// this shadow caster is not visible, remove it
 					casters.RemoveAt( i );
@@ -489,7 +494,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		internal void NotifyObjectMoved( MovableObject obj, Vector3 pos )
 		{
-			level.NotifyObjectMoved( obj, pos );
+			this.level.NotifyObjectMoved( obj, pos );
 		}
 
 		/// <summary>
@@ -497,7 +502,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		internal void NotifyObjectDetached( MovableObject obj )
 		{
-			level.NotifyObjectDetached( obj );
+			this.level.NotifyObjectDetached( obj );
 		}
 
 		// TODO: Scene queries.
@@ -604,15 +609,15 @@ namespace Axiom.SceneManagers.Bsp
 
 			Texture texLight = TextureLight.CreateTexture();
 
-			textureLightMaterial = (Material)MaterialManager.Instance.GetByName( "Axiom/BspTextureLightMaterial" );
-			if ( textureLightMaterial == null )
+			this.textureLightMaterial = (Material)MaterialManager.Instance.GetByName( "Axiom/BspTextureLightMaterial" );
+			if ( this.textureLightMaterial == null )
 			{
-				textureLightMaterial =
+				this.textureLightMaterial =
 					(Material)
 					MaterialManager.Instance.Create( "Axiom/BspTextureLightMaterial", ResourceGroupManager.DefaultResourceGroupName );
-				textureLightPass = textureLightMaterial.GetTechnique( 0 ).GetPass( 0 );
+				this.textureLightPass = this.textureLightMaterial.GetTechnique( 0 ).GetPass( 0 );
 				// the texture light
-				TextureUnitState tex = textureLightPass.CreateTextureUnitState( texLight.Name );
+				TextureUnitState tex = this.textureLightPass.CreateTextureUnitState( texLight.Name );
 				tex.SetColorOperation( LayerBlendOperation.Modulate );
 				tex.ColorBlendMode.source2 = LayerBlendSource.Diffuse;
 				tex.SetAlphaOperation( LayerBlendOperationEx.Modulate );
@@ -622,19 +627,19 @@ namespace Axiom.SceneManagers.Bsp
 
 				// The geometry texture without lightmap. Use the light texture on this
 				// pass, the appropriate texture will be rendered at RenderTextureLighting
-				tex = textureLightPass.CreateTextureUnitState( texLight.Name );
+				tex = this.textureLightPass.CreateTextureUnitState( texLight.Name );
 				tex.SetColorOperation( LayerBlendOperation.Modulate );
 				tex.SetAlphaOperation( LayerBlendOperationEx.Modulate );
 				tex.SetTextureAddressingMode( TextureAddressing.Wrap );
 
-				textureLightPass.SetSceneBlending( SceneBlendType.TransparentAlpha );
+				this.textureLightPass.SetSceneBlending( SceneBlendType.TransparentAlpha );
 
-				textureLightMaterial.CullingMode = CullingMode.None;
-				textureLightMaterial.Lighting = false;
+				this.textureLightMaterial.CullingMode = CullingMode.None;
+				this.textureLightMaterial.Lighting = false;
 			}
 			else
 			{
-				textureLightPass = textureLightMaterial.GetTechnique( 0 ).GetPass( 0 );
+				this.textureLightPass = this.textureLightMaterial.GetTechnique( 0 ).GetPass( 0 );
 			}
 		}
 
@@ -644,34 +649,34 @@ namespace Axiom.SceneManagers.Bsp
 		/// </summary>
 		protected BspNode WalkTree( Camera camera, bool onlyShadowCasters )
 		{
-			if ( level == null )
+			if ( this.level == null )
 			{
 				return null;
 			}
 
 			// Locate the leaf node where the camera is located
-			BspNode cameraNode = level.FindLeaf( camera.DerivedPosition );
+			BspNode cameraNode = this.level.FindLeaf( camera.DerivedPosition );
 
-			matFaceGroupMap.Clear();
-			faceGroupChecked.Clear();
+			this.matFaceGroupMap.Clear();
+			this.faceGroupChecked.Clear();
 
 			// Scan through all the other leaf nodes looking for visibles
-			int i = level.NumNodes - level.LeafStart;
-			int p = level.LeafStart;
+			int i = this.level.NumNodes - this.level.LeafStart;
+			int p = this.level.LeafStart;
 			BspNode node;
 
 			while ( i-- > 0 )
 			{
-				node = level.Nodes[ p ];
+				node = this.level.Nodes[ p ];
 
-				if ( level.IsLeafVisible( cameraNode, node ) )
+				if ( this.level.IsLeafVisible( cameraNode, node ) )
 				{
 					// Visible according to PVS, check bounding box against frustum
 					//if ( camera.IsObjectVisible( node.BoundingBox ) )
 					{
 						ProcessVisibleLeaf( node, camera, onlyShadowCasters );
 
-						if ( showNodeAABs )
+						if ( this.showNodeAABs )
 						{
 							AddBoundingBox( node.BoundingBox, true );
 						}
@@ -699,17 +704,17 @@ namespace Axiom.SceneManagers.Bsp
 
 				while ( numGroups-- > 0 )
 				{
-					int realIndex = level.LeafFaceGroups[ idx++ ];
+					int realIndex = this.level.LeafFaceGroups[ idx++ ];
 
 					// Is it already checked ?
-					if ( faceGroupChecked.ContainsKey( realIndex ) && faceGroupChecked[ realIndex ] == true )
+					if ( this.faceGroupChecked.ContainsKey( realIndex ) && this.faceGroupChecked[ realIndex ] == true )
 					{
 						continue;
 					}
 
-					faceGroupChecked[ realIndex ] = true;
+					this.faceGroupChecked[ realIndex ] = true;
 
-					BspStaticFaceGroup faceGroup = level.FaceGroups[ realIndex ];
+					BspStaticFaceGroup faceGroup = this.level.FaceGroups[ realIndex ];
 
 					// Get Material reference by handle
 					Material mat = GetMaterial( faceGroup.materialHandle );
@@ -729,14 +734,14 @@ namespace Axiom.SceneManagers.Bsp
 					}
 
 					// Try to insert, will find existing if already there
-					matFaceGroupMap.Add( mat, faceGroup );
+					this.matFaceGroupMap.Add( mat, faceGroup );
 				}
 			}
 
 			// Add movables to render queue, provided it hasn't been seen already.
 			foreach ( MovableObject obj in leaf.Objects.Values )
 			{
-				if ( !objectsForRendering.ContainsKey( obj.Name ) )
+				if ( !this.objectsForRendering.ContainsKey( obj.Name ) )
 				{
 					if ( obj.IsVisible && ( !onlyShadowCasters || obj.CastShadows ) &&
 					     camera.IsObjectVisible( obj.GetWorldBoundingBox() ) )
@@ -749,7 +754,7 @@ namespace Axiom.SceneManagers.Bsp
 						{
 							node.AddBoundingBoxToQueue( renderQueue );
 						}
-						objectsForRendering.Add( obj );
+						this.objectsForRendering.Add( obj );
 					}
 				}
 			}
@@ -795,9 +800,9 @@ namespace Axiom.SceneManagers.Bsp
 				// Offset the indexes here
 				// we have to do this now rather than up-front because the
 				// indexes are sometimes reused to address different vertex chunks
-				var idxSize = level.Indexes.IndexSize;
-				var idxSrc = level.Indexes.Lock( idxStart*idxSize, numIdx*idxSize, BufferLocking.ReadOnly );
-				if ( level.Indexes.Type == IndexType.Size16 )
+				var idxSize = this.level.Indexes.IndexSize;
+				var idxSrc = this.level.Indexes.Lock( idxStart*idxSize, numIdx*idxSize, BufferLocking.ReadOnly );
+				if ( this.level.Indexes.Type == IndexType.Size16 )
 				{
 					var src = idxSrc.ToUShortPointer();
 					var pIndexes = indexes.ToUShortPointer();
@@ -815,7 +820,7 @@ namespace Axiom.SceneManagers.Bsp
 						pIndexes[ i ] = (uint)( src[ i ] + vertexStart );
 					}
 				}
-				level.Indexes.Unlock();
+				this.level.Indexes.Unlock();
 			}
 
 			// return number of elements
@@ -860,8 +865,8 @@ namespace Axiom.SceneManagers.Bsp
 					return 0;
 				}
 
-				var idxSize = level.Indexes.IndexSize;
-				var idxSrc = level.Indexes.Lock( idxStart*idxSize, numIdx*idxSize, BufferLocking.ReadOnly );
+				var idxSize = this.level.Indexes.IndexSize;
+				var idxSrc = this.level.Indexes.Lock( idxStart*idxSize, numIdx*idxSize, BufferLocking.ReadOnly );
 #if SILVERLIGHT
 				var src = idxSrc.ToUShortPointer();
 #else
@@ -914,7 +919,7 @@ namespace Axiom.SceneManagers.Bsp
 					// Offset the indexes here
 					// we have to do this now rather than up-front because the
 					// indexes are sometimes reused to address different vertex chunks
-					if ( level.Indexes.Type == IndexType.Size16 )
+					if ( this.level.Indexes.Type == IndexType.Size16 )
 					{
 						var pIndexes = pIndexesBuf.ToUShortPointer();
 						for ( int i = 0; i < numIdx; i++ )
@@ -930,14 +935,14 @@ namespace Axiom.SceneManagers.Bsp
 							pIndexes[ i ] = (uint)( src[ i ] + vertexStart );
 						}
 					}
-					level.Indexes.Unlock();
+					this.level.Indexes.Unlock();
 
 					// return number of elements
 					return numIdx;
 				}
 				else
 				{
-					level.Indexes.Unlock();
+					this.level.Indexes.Unlock();
 
 					return 0;
 				}
@@ -971,7 +976,7 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				return;
 			}
-			if ( level == null )
+			if ( this.level == null )
 			{
 				LogManager.Instance.Write( "BSPSceneManager [Warning]: Skip RenderStaticGeometry, no level was set!" );
 				return;
@@ -985,10 +990,11 @@ namespace Axiom.SceneManagers.Bsp
 
 			ColorEx bspAmbient = ColorEx.White;
 
-			if ( level.BspOptions.ambientEnabled )
+			if ( this.level.BspOptions.ambientEnabled )
 			{
-				bspAmbient = new ColorEx( ambientColor.r*level.BspOptions.ambientRatio, ambientColor.g*level.BspOptions.ambientRatio,
-				                          ambientColor.b*level.BspOptions.ambientRatio );
+				bspAmbient = new ColorEx( ambientColor.r*this.level.BspOptions.ambientRatio,
+				                          ambientColor.g*this.level.BspOptions.ambientRatio,
+				                          ambientColor.b*this.level.BspOptions.ambientRatio );
 			}
 
 			var ambientBlend = new LayerBlendModeEx();
@@ -999,7 +1005,7 @@ namespace Axiom.SceneManagers.Bsp
 			ambientBlend.colorArg2 = bspAmbient;
 
 			// For each material in turn, cache rendering data & render
-			IEnumerator mapEnu = matFaceGroupMap.Keys.GetEnumerator();
+			IEnumerator mapEnu = this.matFaceGroupMap.Keys.GetEnumerator();
 
 			bool passIsSet = false;
 
@@ -1007,36 +1013,38 @@ namespace Axiom.SceneManagers.Bsp
 			{
 				// Get Material
 				var thisMaterial = (Material)mapEnu.Current;
-				List<BspStaticFaceGroup> faceGrp = matFaceGroupMap[ thisMaterial ];
+				List<BspStaticFaceGroup> faceGrp = this.matFaceGroupMap[ thisMaterial ];
 
 				// if one face group is a quake shader then the material is a quake shader
 				bool isQuakeShader = faceGrp[ 0 ].isQuakeShader;
 
 				// Empty existing cache
-				renderOp.indexData.indexCount = 0;
+				this.renderOp.indexData.indexCount = 0;
 
 				// lock index buffer ready to receive data
 #if !AXIOM_SAFE_ONLY
 				unsafe
 #endif
 				{
-					var pIdx = renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
-					var sizeOfElement = renderOp.indexData.indexBuffer.Type == IndexType.Size32 ? sizeof ( uint ) : sizeof ( ushort );
+					var pIdx = this.renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
+					var sizeOfElement = this.renderOp.indexData.indexBuffer.Type == IndexType.Size32
+					                    	? sizeof ( uint )
+					                    	: sizeof ( ushort );
 
 					for ( int i = 0; i < faceGrp.Count; i++ )
 					{
 						// Cache each
 						int numElems = CacheGeometry( pIdx, faceGrp[ i ] );
-						renderOp.indexData.indexCount += numElems;
+						this.renderOp.indexData.indexCount += numElems;
 						pIdx += numElems*sizeOfElement;
 					}
 
 					// Unlock the buffer
-					renderOp.indexData.indexBuffer.Unlock();
+					this.renderOp.indexData.indexBuffer.Unlock();
 				}
 
 				// Skip if no faces to process (we're not doing flare types yet)
-				if ( renderOp.indexData.indexCount == 0 )
+				if ( this.renderOp.indexData.indexCount == 0 )
 				{
 					continue;
 				}
@@ -1046,7 +1054,7 @@ namespace Axiom.SceneManagers.Bsp
 					for ( int i = 0; i < thisMaterial.GetTechnique( 0 ).PassCount; i++ )
 					{
 						SetPass( thisMaterial.GetTechnique( 0 ).GetPass( i ) );
-						targetRenderSystem.Render( renderOp );
+						targetRenderSystem.Render( this.renderOp );
 					}
 					passIsSet = false;
 				}
@@ -1058,12 +1066,12 @@ namespace Axiom.SceneManagers.Bsp
 						SetPass( thisMaterial.GetTechnique( 0 ).GetPass( i ) );
 
 						// for ambient lighting
-						if ( i == 0 && level.BspOptions.ambientEnabled )
+						if ( i == 0 && this.level.BspOptions.ambientEnabled )
 						{
 							targetRenderSystem.SetTextureBlendMode( 0, ambientBlend );
 						}
 
-						targetRenderSystem.Render( renderOp );
+						targetRenderSystem.Render( this.renderOp );
 					}
 
 					// if it's only 1 pass then there's no need to set it again
@@ -1086,7 +1094,7 @@ namespace Axiom.SceneManagers.Bsp
 						targetRenderSystem.SetTexture( 1, true, lightmapTex.TextureName );
 					}
 
-					targetRenderSystem.Render( renderOp );
+					targetRenderSystem.Render( this.renderOp );
 				}
 			}
 
@@ -1113,7 +1121,7 @@ namespace Axiom.SceneManagers.Bsp
 
 			if ( texLight.Type == LightType.Spotlight )
 			{
-				spotlightFrustum.Spotlight = texLight;
+				this.spotlightFrustum.Spotlight = texLight;
 			}
 
 			// no world transform required
@@ -1123,8 +1131,8 @@ namespace Axiom.SceneManagers.Bsp
 			targetRenderSystem.ViewMatrix = cameraInProgress.ViewMatrix;
 			targetRenderSystem.ProjectionMatrix = cameraInProgress.ProjectionMatrix;
 
-			TextureUnitState lightTex = textureLightPass.GetTextureUnitState( 0 );
-			TextureUnitState normalTex = textureLightPass.GetTextureUnitState( 1 );
+			TextureUnitState lightTex = this.textureLightPass.GetTextureUnitState( 0 );
+			TextureUnitState normalTex = this.textureLightPass.GetTextureUnitState( 1 );
 
 			switch ( texLight.Intensity )
 			{
@@ -1143,8 +1151,8 @@ namespace Axiom.SceneManagers.Bsp
 
 			if ( texLight.Type == LightType.Spotlight )
 			{
-				spotlightFrustum.Spotlight = texLight;
-				lightTex.SetProjectiveTexturing( true, spotlightFrustum );
+				this.spotlightFrustum.Spotlight = texLight;
+				lightTex.SetProjectiveTexturing( true, this.spotlightFrustum );
 			}
 			else
 			{
@@ -1164,7 +1172,7 @@ namespace Axiom.SceneManagers.Bsp
 				normalTex.AlphaBlendMode.source2 = LayerBlendSource.Current;
 			}
 
-			SetPass( textureLightPass );
+			SetPass( this.textureLightPass );
 
 			if ( texLight.Type == LightType.Directional )
 			{
@@ -1173,13 +1181,13 @@ namespace Axiom.SceneManagers.Bsp
 			}
 
 			// For each material in turn, cache rendering data & render
-			IEnumerator mapEnu = matFaceGroupMap.Keys.GetEnumerator();
+			IEnumerator mapEnu = this.matFaceGroupMap.Keys.GetEnumerator();
 
 			while ( mapEnu.MoveNext() )
 			{
 				// Get Material
 				var thisMaterial = (Material)mapEnu.Current;
-				List<BspStaticFaceGroup> faceGrp = matFaceGroupMap[ thisMaterial ];
+				List<BspStaticFaceGroup> faceGrp = this.matFaceGroupMap[ thisMaterial ];
 
 				// if one face group is a quake shader then the material is a quake shader
 				if ( faceGrp[ 0 ].isQuakeShader )
@@ -1190,10 +1198,10 @@ namespace Axiom.SceneManagers.Bsp
 				ManualCullingMode cullMode = thisMaterial.GetTechnique( 0 ).GetPass( 0 ).ManualCullingMode;
 
 				// Empty existing cache
-				renderOp.indexData.indexCount = 0;
+				this.renderOp.indexData.indexCount = 0;
 
-				HardwareVertexBuffer bspVertexBuffer = level.VertexData.vertexBufferBinding.GetBuffer( 0 );
-				HardwareVertexBuffer lightTexCoordBuffer = level.VertexData.vertexBufferBinding.GetBuffer( 1 );
+				HardwareVertexBuffer bspVertexBuffer = this.level.VertexData.vertexBufferBinding.GetBuffer( 0 );
+				HardwareVertexBuffer lightTexCoordBuffer = this.level.VertexData.vertexBufferBinding.GetBuffer( 1 );
 
 				// lock index buffer ready to receive data
 #if !AXIOM_SAFE_ONLY
@@ -1202,7 +1210,7 @@ namespace Axiom.SceneManagers.Bsp
 				{
 					var pVertices = bspVertexBuffer.Lock( BufferLocking.ReadOnly );
 					var pTexLightMap = lightTexCoordBuffer.Lock( BufferLocking.Discard );
-					var pIdx = renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
+					var pIdx = this.renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
 
 					for ( int i = 0; i < faceGrp.Count; i++ )
 					{
@@ -1210,19 +1218,19 @@ namespace Axiom.SceneManagers.Bsp
 						{
 							// Cache each
 							int numElems = CacheLightGeometry( texLight, pIdx, pTexLightMap, pVertices, faceGrp[ i ] );
-							renderOp.indexData.indexCount += numElems;
+							this.renderOp.indexData.indexCount += numElems;
 							pIdx += numElems;
 						}
 					}
 
 					// Unlock the buffers
-					renderOp.indexData.indexBuffer.Unlock();
+					this.renderOp.indexData.indexBuffer.Unlock();
 					lightTexCoordBuffer.Unlock();
 					bspVertexBuffer.Unlock();
 				}
 
 				// Skip if no faces to process
-				if ( renderOp.indexData.indexCount == 0 )
+				if ( this.renderOp.indexData.indexCount == 0 )
 				{
 					continue;
 				}
@@ -1237,7 +1245,7 @@ namespace Axiom.SceneManagers.Bsp
 				targetRenderSystem.SetTexture( 1, true, geometryTex.TextureName );
 				// OpenGL requires the addressing mode to be set before every render operation
 				targetRenderSystem.SetTextureAddressingMode( 0, new UVWAddressing( TextureAddressing.Clamp ) );
-				targetRenderSystem.Render( renderOp );
+				targetRenderSystem.Render( this.renderOp );
 			}
 		}
 
@@ -1285,24 +1293,26 @@ namespace Axiom.SceneManagers.Bsp
 			colorBlend.colorArg2 = prevColorArg;
 
 			// Empty existing cache
-			renderOp.indexData.indexCount = 0;
+			this.renderOp.indexData.indexCount = 0;
 
 			// lock index buffer ready to receive data
 #if !AXIOM_SAFE_ONLY
 			unsafe
 #endif
 			{
-				var pIdx = renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
-				var sizeOfElement = renderOp.indexData.indexBuffer.Type == IndexType.Size32 ? sizeof ( uint ) : sizeof ( ushort );
+				var pIdx = this.renderOp.indexData.indexBuffer.Lock( BufferLocking.Discard );
+				var sizeOfElement = this.renderOp.indexData.indexBuffer.Type == IndexType.Size32
+				                    	? sizeof ( uint )
+				                    	: sizeof ( ushort );
 
 				// For each material in turn, cache rendering data
-				IEnumerator mapEnu = matFaceGroupMap.Keys.GetEnumerator();
+				IEnumerator mapEnu = this.matFaceGroupMap.Keys.GetEnumerator();
 
 				while ( mapEnu.MoveNext() )
 				{
 					// Get Material
 					var thisMaterial = (Material)mapEnu.Current;
-					BspStaticFaceGroup[] faceGrp = matFaceGroupMap[ thisMaterial ].ToArray();
+					BspStaticFaceGroup[] faceGrp = this.matFaceGroupMap[ thisMaterial ].ToArray();
 
 					// if one face group is a quake shader then the material is a quake shader
 					if ( faceGrp[ 0 ].isQuakeShader )
@@ -1322,7 +1332,7 @@ namespace Axiom.SceneManagers.Bsp
 
 							// Cache each
 							int numElems = CacheGeometry( pIdx, faceGrp[ i ] );
-							renderOp.indexData.indexCount += numElems;
+							this.renderOp.indexData.indexCount += numElems;
 							pIdx += numElems*sizeOfElement;
 						}
 					}
@@ -1330,15 +1340,15 @@ namespace Axiom.SceneManagers.Bsp
 			}
 
 			// Unlock the buffer
-			renderOp.indexData.indexBuffer.Unlock();
+			this.renderOp.indexData.indexBuffer.Unlock();
 
 			// Skip if no faces to process
-			if ( renderOp.indexData.indexCount == 0 )
+			if ( this.renderOp.indexData.indexCount == 0 )
 			{
 				return;
 			}
 
-			targetRenderSystem.Render( renderOp );
+			targetRenderSystem.Render( this.renderOp );
 		}
 
 		/// <summary>
@@ -1439,14 +1449,14 @@ namespace Axiom.SceneManagers.Bsp
 			int leafPoint = lvl.LeafStart;
 			int numLeaves = lvl.NumLeaves;
 
-			objIntersections.Clear();
-			brushIntersections.Clear();
+			this.objIntersections.Clear();
+			this.brushIntersections.Clear();
 
 			while ( --numLeaves >= 0 )
 			{
 				BspNode leaf = lvl.Nodes[ leafPoint ];
 
-				objectsDone.Clear();
+				this.objectsDone.Clear();
 
 				foreach ( MovableObject aObj in leaf.Objects.Values )
 				{
@@ -1460,15 +1470,15 @@ namespace Axiom.SceneManagers.Bsp
 					AxisAlignedBox aBox = aObj.GetWorldBoundingBox();
 
 					// check object against the others in this node
-					foreach ( MovableObject bObj in objectsDone )
+					foreach ( MovableObject bObj in this.objectsDone )
 					{
 						if ( aBox.Intersects( bObj.GetWorldBoundingBox() ) )
 						{
 							// check if this pair is already reported
-							IList interObjList = objIntersections.FindBucket( aObj );
+							IList interObjList = this.objIntersections.FindBucket( aObj );
 							if ( interObjList == null || interObjList.Contains( bObj ) == false )
 							{
-								objIntersections.Add( aObj, bObj );
+								this.objIntersections.Add( aObj, bObj );
 								listener.OnQueryResult( aObj, bObj );
 							}
 						}
@@ -1487,14 +1497,14 @@ namespace Axiom.SceneManagers.Bsp
 								}
 
 								// test brush against object
-								boundedVolume.planes = brush.Planes;
-								if ( boundedVolume.Intersects( aBox ) )
+								this.boundedVolume.planes = brush.Planes;
+								if ( this.boundedVolume.Intersects( aBox ) )
 								{
 									// check if this pair is already reported
-									IList interBrushList = brushIntersections.FindBucket( aObj );
+									IList interBrushList = this.brushIntersections.FindBucket( aObj );
 									if ( interBrushList == null || interBrushList.Contains( brush ) == false )
 									{
-										brushIntersections.Add( aObj, brush );
+										this.brushIntersections.Add( aObj, brush );
 										// report this brush as it's WorldFragment
 										listener.OnQueryResult( aObj, brush.Fragment );
 									}
@@ -1502,7 +1512,7 @@ namespace Axiom.SceneManagers.Bsp
 							}
 						}
 					}
-					objectsDone.Add( aObj );
+					this.objectsDone.Add( aObj );
 				}
 
 				++leafPoint;
@@ -1539,7 +1549,7 @@ namespace Axiom.SceneManagers.Bsp
 		public override void Execute( IRaySceneQueryListener listener )
 		{
 			this.listener = listener;
-			StopRayTracing = false;
+			this.StopRayTracing = false;
 			ProcessNode( ( (BspSceneManager)creator ).Level.RootNode, ray, float.PositiveInfinity, 0 );
 		}
 
@@ -1550,7 +1560,7 @@ namespace Axiom.SceneManagers.Bsp
 		protected virtual void ProcessNode( BspNode node, Ray tracingRay, float maxDistance, float traceDistance )
 		{
 			// check if ray already encountered a solid brush
-			if ( StopRayTracing )
+			if ( this.StopRayTracing )
 			{
 				return;
 			}
@@ -1609,7 +1619,7 @@ namespace Axiom.SceneManagers.Bsp
 				// the node, fire the event handler
 				if ( result.Hit && result.Distance <= maxDistance )
 				{
-					listener.OnQueryResult( obj, result.Distance + traceDistance );
+					this.listener.OnQueryResult( obj, result.Distance + traceDistance );
 				}
 			}
 
@@ -1648,16 +1658,16 @@ namespace Axiom.SceneManagers.Bsp
 
 					if ( intersectBrush != null )
 					{
-						listener.OnQueryResult( intersectBrush.Fragment, intersectBrushDist + traceDistance );
-						StopRayTracing = true;
+						this.listener.OnQueryResult( intersectBrush.Fragment, intersectBrushDist + traceDistance );
+						this.StopRayTracing = true;
 					}
 				}
 			}
 
 			if ( intersectBrush != null )
 			{
-				listener.OnQueryResult( intersectBrush.Fragment, intersectBrushDist + traceDistance );
-				StopRayTracing = true;
+				this.listener.OnQueryResult( intersectBrush.Fragment, intersectBrushDist + traceDistance );
+				this.StopRayTracing = true;
 			}
 		}
 
@@ -1691,7 +1701,7 @@ namespace Axiom.SceneManagers.Bsp
 		public override void Execute( ISceneQueryListener listener )
 		{
 			this.listener = listener;
-			foundIntersections.Clear();
+			this.foundIntersections.Clear();
 			ProcessNode( ( (BspSceneManager)creator ).Level.RootNode );
 		}
 
@@ -1741,10 +1751,10 @@ namespace Axiom.SceneManagers.Bsp
 				//Test object as bounding box
 				if ( sphere.Intersects( obj.GetWorldBoundingBox() ) )
 				{
-					if ( !foundIntersections.Contains( obj ) )
+					if ( !this.foundIntersections.Contains( obj ) )
 					{
-						listener.OnQueryResult( obj );
-						foundIntersections.Add( obj );
+						this.listener.OnQueryResult( obj );
+						this.foundIntersections.Add( obj );
 					}
 				}
 			}
@@ -1763,7 +1773,7 @@ namespace Axiom.SceneManagers.Bsp
 				boundedVolume.planes = brush.Planes;
 				if ( boundedVolume.Intersects( sphere ) )
 				{
-					listener.OnQueryResult( brush.Fragment );
+					this.listener.OnQueryResult( brush.Fragment );
 				}
 			}
 		}

@@ -78,8 +78,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 			public CustomAttribute( string _name, uint _attrib )
 			{
-				name = _name;
-				attrib = _attrib;
+				this.name = _name;
+				this.attrib = _attrib;
 			}
 		}
 
@@ -143,58 +143,58 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		protected AttributeSet validAttributes = new AttributeSet();
 
 		private readonly CustomAttribute[] sCustomAttributes = new CustomAttribute[]
-		                                                       {
-		                                                       	new CustomAttribute( "vertex",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.Position, 0 ) ),
-		                                                       	new CustomAttribute( "blendWeights",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.BlendWeights, 0 ) )
-		                                                       	,
-		                                                       	new CustomAttribute( "normal",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.Normal, 0 ) ),
-		                                                       	new CustomAttribute( "colour",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.Diffuse, 0 ) ),
-		                                                       	new CustomAttribute( "secondary_colour",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.Specular, 0 ) ),
-		                                                       	new CustomAttribute( "blendIndices",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.BlendIndices, 0 ) )
-		                                                       	,
-		                                                       	new CustomAttribute( "uv0",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.TexCoords, 0 ) ),
-		                                                       	new CustomAttribute( "uv1",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.TexCoords, 1 ) ),
-		                                                       	new CustomAttribute( "uv2",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.TexCoords, 2 ) ),
-		                                                       	new CustomAttribute( "uv3",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.TexCoords, 3 ) ),
-		                                                       	new CustomAttribute( "uv4",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.TexCoords, 4 ) ),
-		                                                       	new CustomAttribute( "uv5",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.TexCoords, 5 ) ),
-		                                                       	new CustomAttribute( "uv6",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.TexCoords, 6 ) ),
-		                                                       	new CustomAttribute( "uv7",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.TexCoords, 7 ) ),
-		                                                       	new CustomAttribute( "tangent",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.Tangent, 0 ) ),
-		                                                       	new CustomAttribute( "binormal",
-		                                                       	                     GLGpuProgram.FixedAttributeIndex(
-		                                                       	                     	VertexElementSemantic.Binormal, 0 ) ),
-		                                                       };
+															   {
+																new CustomAttribute( "vertex",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.Position, 0 ) ),
+																new CustomAttribute( "blendWeights",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.BlendWeights, 0 ) )
+																,
+																new CustomAttribute( "normal",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.Normal, 0 ) ),
+																new CustomAttribute( "colour",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.Diffuse, 0 ) ),
+																new CustomAttribute( "secondary_colour",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.Specular, 0 ) ),
+																new CustomAttribute( "blendIndices",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.BlendIndices, 0 ) )
+																,
+																new CustomAttribute( "uv0",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.TexCoords, 0 ) ),
+																new CustomAttribute( "uv1",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.TexCoords, 1 ) ),
+																new CustomAttribute( "uv2",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.TexCoords, 2 ) ),
+																new CustomAttribute( "uv3",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.TexCoords, 3 ) ),
+																new CustomAttribute( "uv4",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.TexCoords, 4 ) ),
+																new CustomAttribute( "uv5",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.TexCoords, 5 ) ),
+																new CustomAttribute( "uv6",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.TexCoords, 6 ) ),
+																new CustomAttribute( "uv7",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.TexCoords, 7 ) ),
+																new CustomAttribute( "tangent",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.Tangent, 0 ) ),
+																new CustomAttribute( "binormal",
+																					 GLGpuProgram.FixedAttributeIndex(
+																						VertexElementSemantic.Binormal, 0 ) ),
+															   };
 
 		#endregion Fields
 
@@ -233,7 +233,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					return Tao.OpenGl.Gl.GL_TRIANGLE_STRIP;
 				default:
 					throw new AxiomException( "Geometry shader output operation type can only be point list," +
-					                          "line strip or triangle strip" + "GLSLLinkProgram::activate" );
+											  "line strip or triangle strip" + "GLSLLinkProgram::activate" );
 			}
 		}
 
@@ -247,9 +247,9 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			this.vertexProgram = vertexProgram;
 			this.geometryProgram = geometryProgram;
 			this.fragmentProgram = fragmentProgram;
-			uniformRefsBuilt = false;
-			linked = false;
-			triedToLinkAndFailed = false;
+			this.uniformRefsBuilt = false;
+			this.linked = false;
+			this.triedToLinkAndFailed = false;
 		}
 
 		#endregion Constructor
@@ -265,7 +265,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		{
 			get
 			{
-				return glHandle;
+				return this.glHandle;
 			}
 		}
 
@@ -274,20 +274,20 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 			get
 			{
 				String name = "";
-				if ( vertexProgram != null )
+				if ( this.vertexProgram != null )
 				{
 					name += "Vertex Program:";
-					name += vertexProgram.Name;
+					name += this.vertexProgram.Name;
 				}
-				if ( fragmentProgram != null )
+				if ( this.fragmentProgram != null )
 				{
 					name += " Fragment Program:";
-					name += fragmentProgram.Name;
+					name += this.fragmentProgram.Name;
 				}
-				if ( geometryProgram != null )
+				if ( this.geometryProgram != null )
 				{
 					name += " Geometry Program:";
-					name += geometryProgram.Name;
+					name += this.geometryProgram.Name;
 				}
 				return name;
 			}
@@ -305,10 +305,10 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		public void Activate()
 		{
-			if ( !linked && !triedToLinkAndFailed )
+			if ( !this.linked && !this.triedToLinkAndFailed )
 			{
 				Gl.glGetError(); //Clean up the error. Otherwise will flood log.
-				glHandle = Gl.glCreateProgramObjectARB();
+				this.glHandle = Gl.glCreateProgramObjectARB();
 				GLSLHelper.CheckForGLSLError( "Error Creating GLSL Program Object", 0 );
 
 				// TODO: support microcode caching
@@ -327,13 +327,13 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				ExtractAttributes();
 			}
 
-			if ( linked )
+			if ( this.linked )
 			{
-				GLSLHelper.CheckForGLSLError( "Error prior to using GLSL Program Object : ", glHandle, false, false );
+				GLSLHelper.CheckForGLSLError( "Error prior to using GLSL Program Object : ", this.glHandle, false, false );
 
-				Gl.glUseProgramObjectARB( glHandle );
+				Gl.glUseProgramObjectARB( this.glHandle );
 
-				GLSLHelper.CheckForGLSLError( "Error using GLSL Program Object : ", glHandle, false, false );
+				GLSLHelper.CheckForGLSLError( "Error using GLSL Program Object : ", this.glHandle, false, false );
 			}
 		}
 
@@ -344,13 +344,13 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 		private void ExtractAttributes()
 		{
-			foreach ( var a in sCustomAttributes )
+			foreach ( var a in this.sCustomAttributes )
 			{
-				var attrib = Gl.glGetAttribLocationARB( glHandle, a.name );
+				var attrib = Gl.glGetAttribLocationARB( this.glHandle, a.name );
 
 				if ( attrib != -1 )
 				{
-					validAttributes.Add( a.attrib );
+					this.validAttributes.Add( a.attrib );
 				}
 			}
 		}
@@ -362,7 +362,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 		public bool IsAttributeValid( VertexElementSemantic semantic, uint index )
 		{
-			return validAttributes.Contains( GetAttributeIndex( semantic, index ) );
+			return this.validAttributes.Contains( GetAttributeIndex( semantic, index ) );
 		}
 
 		/// <summary>
@@ -370,27 +370,28 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		private void BuildUniformReferences()
 		{
-			if ( !uniformRefsBuilt )
+			if ( !this.uniformRefsBuilt )
 			{
 				var vertParams = GpuProgramParameters.GpuConstantDefinitionMap.Empty;
 				var fragParams = GpuProgramParameters.GpuConstantDefinitionMap.Empty;
 				var geomParams = GpuProgramParameters.GpuConstantDefinitionMap.Empty;
-				if ( vertexProgram != null )
+				if ( this.vertexProgram != null )
 				{
-					vertParams = vertexProgram.GLSLProgram.ConstantDefinitions.Map;
+					vertParams = this.vertexProgram.GLSLProgram.ConstantDefinitions.Map;
 				}
-				if ( geometryProgram != null )
+				if ( this.geometryProgram != null )
 				{
-					geomParams = geometryProgram.GLSLProgram.ConstantDefinitions.Map;
+					geomParams = this.geometryProgram.GLSLProgram.ConstantDefinitions.Map;
 				}
-				if ( fragmentProgram != null )
+				if ( this.fragmentProgram != null )
 				{
-					fragParams = fragmentProgram.GLSLProgram.ConstantDefinitions.Map;
+					fragParams = this.fragmentProgram.GLSLProgram.ConstantDefinitions.Map;
 				}
 
-				GLSLLinkProgramManager.Instance.ExtractUniforms( glHandle, vertParams, geomParams, fragParams, uniformReferences );
+				GLSLLinkProgramManager.Instance.ExtractUniforms( this.glHandle, vertParams, geomParams, fragParams,
+																 this.uniformReferences );
 
-				uniformRefsBuilt = true;
+				this.uniformRefsBuilt = true;
 			}
 		}
 
@@ -400,9 +401,9 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		/// <param name="parameters">GPU Parameters to use to update the uniforms params.</param>
 		public void UpdateUniforms( GpuProgramParameters parameters, GpuProgramParameters.GpuParamVariability mask,
-		                            GpuProgramType fromProgType )
+									GpuProgramType fromProgType )
 		{
-			foreach ( var currentUniform in uniformReferences )
+			foreach ( var currentUniform in this.uniformReferences )
 			{
 				// Only pull values from buffer it's supposed to be in (vertex or fragment)
 				// This method will be called twice, once for vertex program params, 
@@ -545,16 +546,16 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 		private void CompileAndLink()
 		{
-			if ( vertexProgram != null )
+			if ( this.vertexProgram != null )
 			{
 				// compile and attach Vertex Program
-				if ( !vertexProgram.GLSLProgram.Compile( true ) )
+				if ( !this.vertexProgram.GLSLProgram.Compile( true ) )
 				{
 					// todo error
 					return;
 				}
-				vertexProgram.GLSLProgram.AttachToProgramObject( glHandle );
-				IsSkeletalAnimationIncluded = vertexProgram.IsSkeletalAnimationIncluded;
+				this.vertexProgram.GLSLProgram.AttachToProgramObject( this.glHandle );
+				IsSkeletalAnimationIncluded = this.vertexProgram.IsSkeletalAnimationIncluded;
 
 				// Some drivers (e.g. OS X on nvidia) incorrectly determine the attribute binding automatically
 
@@ -565,8 +566,8 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 				// Because we can't ask GL whether an attribute is used in the shader
 				// until it is linked (chicken and egg!) we have to parse the source
 
-				var vpSource = vertexProgram.GLSLProgram.Source;
-				foreach ( var a in sCustomAttributes )
+				var vpSource = this.vertexProgram.GLSLProgram.Source;
+				foreach ( var a in this.sCustomAttributes )
 				{
 					// we're looking for either: 
 					//   attribute vec<n> <semantic_name>
@@ -590,32 +591,32 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 
 							if ( ( vec[ 0 ] == "in" || vec[ 0 ] == "attribute" ) && vec[ 2 ] == a.name )
 							{
-								Gl.glBindAttribLocationARB( glHandle, (int)a.attrib, a.name );
+								Gl.glBindAttribLocationARB( this.glHandle, (int)a.attrib, a.name );
 							}
 						}
 					}
 				}
 			}
 
-			if ( geometryProgram != null )
+			if ( this.geometryProgram != null )
 			{
 				// compile and attach Geometry Program
-				if ( !geometryProgram.GLSLProgram.Compile( true ) )
+				if ( !this.geometryProgram.GLSLProgram.Compile( true ) )
 				{
 					// todo error
 					return;
 				}
 
-				geometryProgram.GLSLProgram.AttachToProgramObject( glHandle );
+				this.geometryProgram.GLSLProgram.AttachToProgramObject( this.glHandle );
 
 				//Don't set adjacency flag. We handle it internally and expose "false"
 
-				OperationType inputOperationType = geometryProgram.GLSLProgram.InputOperationType;
-				Gl.glProgramParameteriEXT( glHandle, Gl.GL_GEOMETRY_INPUT_TYPE_EXT,
-				                           GetGLGeometryInputPrimitiveType( inputOperationType,
-				                                                            geometryProgram.IsAdjacencyInfoRequired ) );
+				OperationType inputOperationType = this.geometryProgram.GLSLProgram.InputOperationType;
+				Gl.glProgramParameteriEXT( this.glHandle, Gl.GL_GEOMETRY_INPUT_TYPE_EXT,
+										   GetGLGeometryInputPrimitiveType( inputOperationType,
+																			this.geometryProgram.IsAdjacencyInfoRequired ) );
 
-				OperationType outputOperationType = geometryProgram.GLSLProgram.OutputOperationType;
+				OperationType outputOperationType = this.geometryProgram.GLSLProgram.OutputOperationType;
 				switch ( outputOperationType )
 				{
 					case OperationType.PointList:
@@ -626,68 +627,69 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 					case OperationType.TriangleFan:
 						break;
 				}
-				Gl.glProgramParameteriEXT( glHandle, Gl.GL_GEOMETRY_OUTPUT_TYPE_EXT,
-				                           GetGLGeometryOutputPrimitiveType( outputOperationType ) );
+				Gl.glProgramParameteriEXT( this.glHandle, Gl.GL_GEOMETRY_OUTPUT_TYPE_EXT,
+										   GetGLGeometryOutputPrimitiveType( outputOperationType ) );
 
-				Gl.glProgramParameteriEXT( glHandle, Gl.GL_GEOMETRY_VERTICES_OUT_EXT, geometryProgram.GLSLProgram.MaxOutputVertices );
+				Gl.glProgramParameteriEXT( this.glHandle, Gl.GL_GEOMETRY_VERTICES_OUT_EXT,
+										   this.geometryProgram.GLSLProgram.MaxOutputVertices );
 			}
 
-			if ( fragmentProgram != null )
+			if ( this.fragmentProgram != null )
 			{
-				if ( !fragmentProgram.GLSLProgram.Compile( true ) )
+				if ( !this.fragmentProgram.GLSLProgram.Compile( true ) )
 				{
 					// todo error
 					return;
 				}
-				fragmentProgram.GLSLProgram.AttachToProgramObject( glHandle );
+				this.fragmentProgram.GLSLProgram.AttachToProgramObject( this.glHandle );
 			}
 
 			// now the link
 
-			Gl.glLinkProgramARB( glHandle );
+			Gl.glLinkProgramARB( this.glHandle );
 			int linkStatus;
-			Gl.glGetObjectParameterivARB( glHandle, Gl.GL_OBJECT_LINK_STATUS_ARB, out linkStatus );
-			linked = linkStatus != 0;
-			triedToLinkAndFailed = !linked;
+			Gl.glGetObjectParameterivARB( this.glHandle, Gl.GL_OBJECT_LINK_STATUS_ARB, out linkStatus );
+			this.linked = linkStatus != 0;
+			this.triedToLinkAndFailed = !this.linked;
 
-			GLSLHelper.CheckForGLSLError( "Error linking GLSL Program Object", glHandle, !linked, !linked );
+			GLSLHelper.CheckForGLSLError( "Error linking GLSL Program Object", this.glHandle, !this.linked, !this.linked );
 
-			if ( linked )
+			if ( this.linked )
 			{
-				GLSLHelper.LogObjectInfo( CombinedName + " GLSL link result : ", glHandle );
+				GLSLHelper.LogObjectInfo( CombinedName + " GLSL link result : ", this.glHandle );
 
 				// TODO: cache the microcode.
 				// OpenTK is not up to date yet for this.
 				// We need deeper engine updates for this as well
 
 				/*
-                if (GpuProgramManager.Instance.SaveMicrocodesToCache)
-                {
-                    // add to the microcode to the cache
-                    var name = CombinedName;
+				if (GpuProgramManager.Instance.SaveMicrocodesToCache)
+				{
+					// add to the microcode to the cache
+					var name = CombinedName;
 
-                    // get buffer size
-                    int binaryLength;
-                    Gl.glGetProgramiv( glHandle, Gl.GL_PROGRAM_BINARY_LENGTH, out binaryLength );
+					// get buffer size
+					int binaryLength;
+					Gl.glGetProgramiv( glHandle, Gl.GL_PROGRAM_BINARY_LENGTH, out binaryLength );
 
-                    // turns out we need this param when loading
-                    // it will be the first bytes of the array in the microcode
-                    int binaryFormat;
+					// turns out we need this param when loading
+					// it will be the first bytes of the array in the microcode
+					int binaryFormat;
 
-                    // create microcode
-                    GpuProgramManager.Microcode newMicrocode =
-                        GpuProgramManager.Instance.CreateMicrocode( binaryLength + sizeof ( GLenum ) );
+					// create microcode
+					GpuProgramManager.Microcode newMicrocode =
+						GpuProgramManager.Instance.CreateMicrocode( binaryLength + sizeof ( GLenum ) );
 
-                    // get binary
-                    uint8* programBuffer = newMicrocode->getPtr() + sizeof ( GLenum );
-                    glGetProgramBinary( mGLHandle, binaryLength, NULL, &binaryFormat, programBuffer );
+					// get binary
+					uint8* programBuffer = newMicrocode->getPtr() + sizeof ( GLenum );
+					glGetProgramBinary( mGLHandle, binaryLength, NULL, &binaryFormat, programBuffer );
 
-                    // save binary format
-                    memcpy( newMicrocode->getPtr(), &binaryFormat, sizeof ( GLenum ) );
+					// save binary format
+					memcpy( newMicrocode->getPtr(), &binaryFormat, sizeof ( GLenum ) );
 
-                    // add to the microcode to the cache
-                    GpuProgramManager::getSingleton().addMicrocodeToCache( name, newMicrocode );
-                }*/
+					// add to the microcode to the cache
+					GpuProgramManager::getSingleton().addMicrocodeToCache( name, newMicrocode );
+				}*/
 			}
 		}
 
@@ -700,7 +702,7 @@ namespace Axiom.RenderSystems.OpenGL.GLSL
 		/// </summary>
 		public void Dispose()
 		{
-			Gl.glDeleteObjectARB( glHandle );
+			Gl.glDeleteObjectARB( this.glHandle );
 		}
 
 		#endregion

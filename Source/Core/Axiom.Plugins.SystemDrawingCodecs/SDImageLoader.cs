@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:$"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -57,11 +57,11 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		{
 			get
 			{
-				return extension;
+				return this.extension;
 			}
 			set
 			{
-				extension = value;
+				this.extension = value;
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 		{
 			get
 			{
-				return extension;
+				return this.extension;
 			}
 		}
 

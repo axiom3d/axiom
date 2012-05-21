@@ -1011,17 +1011,17 @@ namespace Axiom.Components.RTShaderSystem
 				int float3Count, int float3Mask,
 				int float4Count, int float4Mask )
 			{
-				srcParameterTypeCount = new int[4];
-				srcParameterMask = new int[4];
+				this.srcParameterTypeCount = new int[4];
+				this.srcParameterMask = new int[4];
 
-				srcParameterTypeCount[ 0 ] = float1Count;
-				srcParameterTypeCount[ 1 ] = float2Count;
-				srcParameterTypeCount[ 2 ] = float3Count;
-				srcParameterTypeCount[ 3 ] = float4Count;
-				srcParameterMask[ 0 ] = float1Mask;
-				srcParameterMask[ 1 ] = float2Mask;
-				srcParameterMask[ 2 ] = float3Mask;
-				srcParameterMask[ 3 ] = float4Mask;
+				this.srcParameterTypeCount[ 0 ] = float1Count;
+				this.srcParameterTypeCount[ 1 ] = float2Count;
+				this.srcParameterTypeCount[ 2 ] = float3Count;
+				this.srcParameterTypeCount[ 3 ] = float4Count;
+				this.srcParameterMask[ 0 ] = float1Mask;
+				this.srcParameterMask[ 1 ] = float2Mask;
+				this.srcParameterMask[ 2 ] = float3Mask;
+				this.srcParameterMask[ 3 ] = float4Mask;
 			}
 		}
 

@@ -65,9 +65,9 @@ namespace Axiom.Components.RTShaderSystem
 
 			public TextureBlend( BlendMode blendMode, SourceModifier sourceModifier, int customNum )
 			{
-				BlendMode = blendMode;
-				SourceModifier = sourceModifier;
-				CustomNum = customNum;
+				this.BlendMode = blendMode;
+				this.SourceModifier = sourceModifier;
+				this.CustomNum = customNum;
 			}
 		}
 
@@ -309,14 +309,14 @@ namespace Axiom.Components.RTShaderSystem
 
 		public void SetBlendMode( int index, BlendMode mode )
 		{
-			textureBlends[ index ].BlendMode = mode;
+			this.textureBlends[ index ].BlendMode = mode;
 		}
 
 		public BlendMode GetBlendMode( int index )
 		{
-			if ( index < textureBlends.Count )
+			if ( index < this.textureBlends.Count )
 			{
-				return textureBlends[ index ].BlendMode;
+				return this.textureBlends[ index ].BlendMode;
 			}
 
 			return BlendMode.Invalid;
@@ -324,23 +324,23 @@ namespace Axiom.Components.RTShaderSystem
 
 		public void SetSourceModifier( int index, SourceModifier modType, int customNum )
 		{
-			if ( index >= textureBlends.Count )
+			if ( index >= this.textureBlends.Count )
 			{
-				textureBlends.Add( new TextureBlend() );
+				this.textureBlends.Add( new TextureBlend() );
 			}
 
-			textureBlends[ index ].SourceModifier = modType;
-			textureBlends[ index ].CustomNum = customNum;
+			this.textureBlends[ index ].SourceModifier = modType;
+			this.textureBlends[ index ].CustomNum = customNum;
 		}
 
 		public bool GetSourceModifier( int index, out SourceModifier sourceMod, out int customNum )
 		{
 			sourceMod = SourceModifier.Invalid;
 			customNum = 0;
-			if ( index < textureBlends.Count )
+			if ( index < this.textureBlends.Count )
 			{
-				sourceMod = textureBlends[ index ].SourceModifier;
-				customNum = textureBlends[ index ].CustomNum;
+				sourceMod = this.textureBlends[ index ].SourceModifier;
+				customNum = this.textureBlends[ index ].CustomNum;
 			}
 
 			return ( sourceMod != SourceModifier.Invalid );
@@ -356,9 +356,9 @@ namespace Axiom.Components.RTShaderSystem
 				//resolve source modification parameters
 				Program psProgram = programSet.CpuFragmentProgram;
 
-				for ( int i = textureBlends.Count - 1; i >= 0; i-- )
+				for ( int i = this.textureBlends.Count - 1; i >= 0; i-- )
 				{
-					TextureBlend texBlend = textureBlends[ i ];
+					TextureBlend texBlend = this.textureBlends[ i ];
 					if ( ( texBlend.SourceModifier != SourceModifier.Invalid ) &&
 					     ( texBlend.SourceModifier != SourceModifier.None ) )
 					{
@@ -460,7 +460,7 @@ namespace Axiom.Components.RTShaderSystem
 				//add the function of the blend mode
 				if ( funcName != string.Empty )
 				{
-					Parameter controlParam = textureBlends[ samplerIndex ].ModControlParam;
+					Parameter controlParam = this.textureBlends[ samplerIndex ].ModControlParam;
 
 					var curFuncInvocation = new FunctionInvocation( funcName, groupOrder, internalCounter++ );
 					curFuncInvocation.PushOperand( modifiedParam, Operand.OpSemantic.In, targetChanells );

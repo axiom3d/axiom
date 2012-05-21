@@ -68,7 +68,7 @@ namespace Axiom.RenderSystems.DirectX9
 				throw new AxiomException( "pDriver parameter is NULL" );
 			}
 
-			_mpDriver = pDriver;
+			this._mpDriver = pDriver;
 			Enumerate();
 		}
 
@@ -80,7 +80,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2 )]
 		public void Dispose()
 		{
-			_mpDriver = null;
+			this._mpDriver = null;
 			Clear();
 
 			GC.SuppressFinalize( this );
@@ -99,7 +99,7 @@ namespace Axiom.RenderSystems.DirectX9
 		private void _enumerateByFormat( D3D9.Format format )
 		{
 			var pD3D = D3D9RenderSystem.Direct3D9;
-			var adapter = _mpDriver.AdapterNumber;
+			var adapter = this._mpDriver.AdapterNumber;
 
 			for ( var iMode = 0; iMode < pD3D.GetAdapterModeCount( adapter, format ); iMode++ )
 			{

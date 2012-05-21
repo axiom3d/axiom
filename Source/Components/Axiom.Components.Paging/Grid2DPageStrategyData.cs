@@ -164,15 +164,15 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mMode;
+				return this.mMode;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				mMode = value;
+				this.mMode = value;
 				//reset origin
-				Origin = mWorldOrigin;
+				Origin = this.mWorldOrigin;
 			}
 		}
 
@@ -184,14 +184,14 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mWorldOrigin;
+				return this.mWorldOrigin;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				mWorldOrigin = value;
-				ConvertWorldToGridSpace( mWorldOrigin, ref mOrigin );
+				this.mWorldOrigin = value;
+				ConvertWorldToGridSpace( this.mWorldOrigin, ref this.mOrigin );
 				UpdateDerivedMetrics();
 			}
 		}
@@ -204,13 +204,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mCellSize;
+				return this.mCellSize;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				mCellSize = value;
+				this.mCellSize = value;
 				UpdateDerivedMetrics();
 			}
 		}
@@ -220,13 +220,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mMinCellX;
+				return this.mMinCellX;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				mMinCellX = value;
+				this.mMinCellX = value;
 			}
 		}
 
@@ -235,13 +235,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mMinCellY;
+				return this.mMinCellY;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				mMinCellY = value;
+				this.mMinCellY = value;
 			}
 		}
 
@@ -250,13 +250,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mMaxCellX;
+				return this.mMaxCellX;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				mMaxCellX = value;
+				this.mMaxCellX = value;
 			}
 		}
 
@@ -265,13 +265,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mMaxCellY;
+				return this.mMaxCellY;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				mMaxCellY = value;
+				this.mMaxCellY = value;
 			}
 		}
 
@@ -283,13 +283,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mLoadRadius;
+				return this.mLoadRadius;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				mLoadRadius = value;
+				this.mLoadRadius = value;
 				UpdateDerivedMetrics();
 			}
 		}
@@ -302,13 +302,13 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mHoldRadius;
+				return this.mHoldRadius;
 			}
 
 			[OgreVersion( 1, 7, 2 )]
 			set
 			{
-				mHoldRadius = value;
+				this.mHoldRadius = value;
 				UpdateDerivedMetrics();
 			}
 		}
@@ -321,7 +321,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mLoadRadiusInCells;
+				return this.mLoadRadiusInCells;
 			}
 		}
 
@@ -333,7 +333,7 @@ namespace Axiom.Components.Paging
 			[OgreVersion( 1, 7, 2 )]
 			get
 			{
-				return mHoldRadiusInCells;
+				return this.mHoldRadiusInCells;
 			}
 		}
 
@@ -351,10 +351,10 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void SetCellRange( int minX, int minY, int maxX, int maxY )
 		{
-			mMinCellX = minX;
-			mMinCellY = minY;
-			mMaxCellX = maxX;
-			mMaxCellY = maxY;
+			this.mMinCellX = minX;
+			this.mMinCellY = minY;
+			this.mMaxCellX = maxX;
+			this.mMaxCellY = maxY;
 		}
 
 		/// <summary>
@@ -363,7 +363,7 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void ConvertWorldToGridSpace( Vector3 world, ref Vector2 grid )
 		{
-			switch ( mMode )
+			switch ( this.mMode )
 			{
 				case Grid2Mode.G2D_X_Z:
 					grid.x = world.x;
@@ -393,7 +393,7 @@ namespace Axiom.Components.Paging
 		public virtual void ConvertGridToWorldSpace( Vector2 grid, ref Vector3 world )
 		{
 			// Note that we don't set the 3rd coordinate, let the caller determine that
-			switch ( mMode )
+			switch ( this.mMode )
 			{
 				case Grid2Mode.G2D_X_Z:
 					world.x = grid.x;
@@ -419,8 +419,8 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		protected void UpdateDerivedMetrics()
 		{
-			mLoadRadiusInCells = mLoadRadius/mCellSize;
-			mHoldRadiusInCells = mHoldRadius/mCellSize;
+			this.mLoadRadiusInCells = this.mLoadRadius/this.mCellSize;
+			this.mHoldRadiusInCells = this.mHoldRadius/this.mCellSize;
 		}
 
 		/// <summary>
@@ -429,13 +429,13 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public void DetermineGridLocation( Vector2 gridPos, out int x, out int y )
 		{
-			Vector2 relPos = gridPos - mOrigin;
-			Real offset = mCellSize*0.5f;
+			Vector2 relPos = gridPos - this.mOrigin;
+			Real offset = this.mCellSize*0.5f;
 			relPos.x += offset;
 			relPos.y += offset;
 
-			x = (int)System.Math.Floor( relPos.x/mCellSize );
-			y = (int)System.Math.Floor( relPos.y/mCellSize );
+			x = (int)System.Math.Floor( relPos.x/this.mCellSize );
+			y = (int)System.Math.Floor( relPos.y/this.mCellSize );
 		}
 
 		/// <summary>
@@ -444,9 +444,9 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void GetBottomLeftGridSpace( int x, int y, ref Vector2 bl )
 		{
-			Real offset = mCellSize*0.5f;
-			bl.x = mOrigin.x - offset + x*mCellSize;
-			bl.y = mOrigin.y - offset + y*mCellSize;
+			Real offset = this.mCellSize*0.5f;
+			bl.x = this.mOrigin.x - offset + x*this.mCellSize;
+			bl.y = this.mOrigin.y - offset + y*this.mCellSize;
 		}
 
 		/// <summary>
@@ -455,8 +455,8 @@ namespace Axiom.Components.Paging
 		[OgreVersion( 1, 7, 2 )]
 		public virtual void GetMidPointGridSpace( int x, int y, ref Vector2 mid )
 		{
-			mid.x = mOrigin.x + x*mCellSize;
-			mid.y = mOrigin.y + y*mCellSize;
+			mid.x = this.mOrigin.x + x*this.mCellSize;
+			mid.y = this.mOrigin.y + y*this.mCellSize;
 		}
 
 		/// <summary>
@@ -469,9 +469,9 @@ namespace Axiom.Components.Paging
 		public virtual void GetCornersGridSpace( int x, int y, ref Vector2[] fourPoints )
 		{
 			GetBottomLeftGridSpace( x, y, ref fourPoints[ 0 ] );
-			fourPoints[ 1 ] = fourPoints[ 0 ] + new Vector2( mCellSize, 0 );
-			fourPoints[ 2 ] = fourPoints[ 0 ] + new Vector2( mCellSize, mCellSize );
-			fourPoints[ 3 ] = fourPoints[ 0 ] + new Vector2( 0, mCellSize );
+			fourPoints[ 1 ] = fourPoints[ 0 ] + new Vector2( this.mCellSize, 0 );
+			fourPoints[ 2 ] = fourPoints[ 0 ] + new Vector2( this.mCellSize, this.mCellSize );
+			fourPoints[ 3 ] = fourPoints[ 0 ] + new Vector2( 0, this.mCellSize );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
@@ -516,19 +516,19 @@ namespace Axiom.Components.Paging
 
 			byte readMode = 0;
 			stream.Read( out readMode );
-			mMode = (Grid2Mode)readMode;
+			this.mMode = (Grid2Mode)readMode;
 
 			Vector3 orgin;
 			stream.Read( out orgin );
 			Origin = orgin;
 
-			stream.Read( out mCellSize );
-			stream.Read( out mLoadRadius );
-			stream.Read( out mHoldRadius );
-			stream.Read( out mMinCellX );
-			stream.Read( out mMaxCellX );
-			stream.Read( out mMinCellY );
-			stream.Read( out mMaxCellY );
+			stream.Read( out this.mCellSize );
+			stream.Read( out this.mLoadRadius );
+			stream.Read( out this.mHoldRadius );
+			stream.Read( out this.mMinCellX );
+			stream.Read( out this.mMaxCellX );
+			stream.Read( out this.mMinCellY );
+			stream.Read( out this.mMaxCellY );
 
 			stream.ReadChunkEnd( CHUNK_ID );
 
@@ -542,15 +542,15 @@ namespace Axiom.Components.Paging
 		public void Save( StreamSerializer stream )
 		{
 			stream.WriteChunkBegin( CHUNK_ID, CHUNK_VERSION );
-			stream.Write( (byte)mMode );
-			stream.Write( mWorldOrigin );
-			stream.Write( mCellSize );
-			stream.Write( mLoadRadius );
-			stream.Write( mHoldRadius );
-			stream.Write( mMinCellX );
-			stream.Write( mMaxCellX );
-			stream.Write( mMinCellY );
-			stream.Write( mMaxCellY );
+			stream.Write( (byte)this.mMode );
+			stream.Write( this.mWorldOrigin );
+			stream.Write( this.mCellSize );
+			stream.Write( this.mLoadRadius );
+			stream.Write( this.mHoldRadius );
+			stream.Write( this.mMinCellX );
+			stream.Write( this.mMaxCellX );
+			stream.Write( this.mMinCellY );
+			stream.Write( this.mMaxCellY );
 
 			stream.WriteChunkEnd( CHUNK_ID );
 		}

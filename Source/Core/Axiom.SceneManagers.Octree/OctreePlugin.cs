@@ -50,17 +50,17 @@ namespace Axiom.SceneManagers.Octree
 	{
 		public void Initialize()
 		{
-			_octreeSMFactory = new OctreeSceneManagerFactory();
-			_terrainSMFactory = new TerrainSceneManagerFactory();
+			this._octreeSMFactory = new OctreeSceneManagerFactory();
+			this._terrainSMFactory = new TerrainSceneManagerFactory();
 
-			Root.Instance.AddSceneManagerFactory( _octreeSMFactory );
-			Root.Instance.AddSceneManagerFactory( _terrainSMFactory );
+			Root.Instance.AddSceneManagerFactory( this._octreeSMFactory );
+			Root.Instance.AddSceneManagerFactory( this._terrainSMFactory );
 		}
 
 		public void Shutdown()
 		{
-			Root.Instance.RemoveSceneManagerFactory( _octreeSMFactory );
-			Root.Instance.RemoveSceneManagerFactory( _terrainSMFactory );
+			Root.Instance.RemoveSceneManagerFactory( this._octreeSMFactory );
+			Root.Instance.RemoveSceneManagerFactory( this._terrainSMFactory );
 		}
 
 		private OctreeSceneManagerFactory _octreeSMFactory;

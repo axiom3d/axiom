@@ -39,11 +39,11 @@ namespace Axiom.Samples.ShaderSystem
 
 		public ReflectionMap()
 		{
-			maskMapSamplerIndex = 0;
-			reflectionMapSamplerIndex = 0;
-			reflectionMapType = TextureType.TwoD;
-			reflectionPowerChanged = true;
-			reflectionPowerValue = 0.05f;
+			this.maskMapSamplerIndex = 0;
+			this.reflectionMapSamplerIndex = 0;
+			this.reflectionMapType = TextureType.TwoD;
+			this.reflectionPowerChanged = true;
+			this.reflectionPowerValue = 0.05f;
 		}
 
 		public override bool PreAddToRenderState( TargetRenderState targetRenderState, Pass srcPass, Pass dstPass )
@@ -52,21 +52,21 @@ namespace Axiom.Samples.ShaderSystem
 
 			//Create the mask texture unit.
 			textureUnit = dstPass.CreateTextureUnitState();
-			textureUnit.SetTextureName( maskMapTextureName );
-			maskMapSamplerIndex = dstPass.TextureUnitStatesCount - 1;
+			textureUnit.SetTextureName( this.maskMapTextureName );
+			this.maskMapSamplerIndex = dstPass.TextureUnitStatesCount - 1;
 
 			//Create the reflection texture unit.
 			textureUnit = dstPass.CreateTextureUnitState();
 
-			if ( reflectionMapType == TextureType.TwoD )
+			if ( this.reflectionMapType == TextureType.TwoD )
 			{
-				textureUnit.SetTextureName( reflectionMapTextureName );
+				textureUnit.SetTextureName( this.reflectionMapTextureName );
 			}
 			else
 			{
-				textureUnit.SetCubicTextureName( reflectionMapTextureName, true );
+				textureUnit.SetCubicTextureName( this.reflectionMapTextureName, true );
 			}
-			reflectionMapSamplerIndex = dstPass.TextureUnitStatesCount - 1;
+			this.reflectionMapSamplerIndex = dstPass.TextureUnitStatesCount - 1;
 
 			return true;
 		}
@@ -75,12 +75,12 @@ namespace Axiom.Samples.ShaderSystem
 			UpdateGpuProgramsParams( IRenderable rend, Pass pass, AutoParamDataSource source,
 			                         Core.Collections.LightList lightList )
 		{
-			if ( reflectionPowerChanged )
+			if ( this.reflectionPowerChanged )
 			{
 				GpuProgramParameters fsParams = pass.FragmentProgramParameters;
 
-				reflectionPower.SetGpuParameter( reflectionPowerValue );
-				reflectionPowerChanged = false;
+				this.reflectionPower.SetGpuParameter( this.reflectionPowerValue );
+				this.reflectionPowerChanged = false;
 			}
 		}
 
@@ -94,117 +94,122 @@ namespace Axiom.Samples.ShaderSystem
 			// Resolve vs input mask texture coordinates.
 			// NOTE: We use the first texture coordinate hard coded here
 			// You may want to parametrize this as well - just remember to add it to hash and copy methods. 
-			vsInMaskTexcoord = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 0,
-			                                                 Parameter.ContentType.TextureCoordinate0,
-			                                                 GpuProgramParameters.GpuConstantType.Float2 );
-			if ( vsInMaskTexcoord == null )
+			this.vsInMaskTexcoord = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 0,
+			                                                      Parameter.ContentType.TextureCoordinate0,
+			                                                      GpuProgramParameters.GpuConstantType.Float2 );
+			if ( this.vsInMaskTexcoord == null )
 			{
 				return false;
 			}
 
 			//Resolve vs output mask texture coordinates
-			vsInMaskTexcoord = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 0,
-			                                                 Parameter.ContentType.TextureCoordinate0,
-			                                                 GpuProgramParameters.GpuConstantType.Float2 );
-			if ( vsInMaskTexcoord == null )
+			this.vsInMaskTexcoord = vsMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, 0,
+			                                                      Parameter.ContentType.TextureCoordinate0,
+			                                                      GpuProgramParameters.GpuConstantType.Float2 );
+			if ( this.vsInMaskTexcoord == null )
 			{
 				return false;
 			}
 
 			//Resolve vs output mask texture coordinates.
-			vsOutMaskTexcoord = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
-			                                                   vsInMaskTexcoord.Content,
-			                                                   GpuProgramParameters.GpuConstantType.Float2 );
-			if ( vsInMaskTexcoord == null )
+			this.vsOutMaskTexcoord = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
+			                                                        this.vsInMaskTexcoord.Content,
+			                                                        GpuProgramParameters.GpuConstantType.Float2 );
+			if ( this.vsInMaskTexcoord == null )
 			{
 				return false;
 			}
 
 			//Resolve ps input mask texture coordinates.
-			psInMaskTexcoord = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates, vsOutMaskTexcoord.Index,
-			                                                 vsOutMaskTexcoord.Content,
-			                                                 GpuProgramParameters.GpuConstantType.Float2 );
+			this.psInMaskTexcoord = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
+			                                                      this.vsOutMaskTexcoord.Index,
+			                                                      this.vsOutMaskTexcoord.Content,
+			                                                      GpuProgramParameters.GpuConstantType.Float2 );
 
 			//Resolve vs output reflection texture coordinates
-			vsOutReflectionTexcoord = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
-			                                                         Parameter.ContentType.Unknown,
-			                                                         ( reflectionMapType == TextureType.TwoD )
-			                                                         	? GpuProgramParameters.GpuConstantType.Float2
-			                                                         	: GpuProgramParameters.GpuConstantType.Float3 );
-			if ( vsOutReflectionTexcoord == null )
+			this.vsOutReflectionTexcoord = vsMain.ResolveOutputParameter( Parameter.SemanticType.TextureCoordinates, -1,
+			                                                              Parameter.ContentType.Unknown,
+			                                                              ( this.reflectionMapType == TextureType.TwoD )
+			                                                              	? GpuProgramParameters.GpuConstantType.Float2
+			                                                              	: GpuProgramParameters.GpuConstantType.Float3 );
+			if ( this.vsOutReflectionTexcoord == null )
 			{
 				return false;
 			}
 
 			//Resolve ps input reflection texture coordinates.
-			psInReflectionTexcoord = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
-			                                                       vsOutReflectionTexcoord.Index, vsOutReflectionTexcoord.Content,
-			                                                       vsOutReflectionTexcoord.Type );
+			this.psInReflectionTexcoord = psMain.ResolveInputParameter( Parameter.SemanticType.TextureCoordinates,
+			                                                            this.vsOutReflectionTexcoord.Index,
+			                                                            this.vsOutReflectionTexcoord.Content,
+			                                                            this.vsOutReflectionTexcoord.Type );
 
 			//Resolve world matrix.
-			worldMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.WorldMatrix, 0 );
-			if ( worldMatrix == null )
+			this.worldMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.WorldMatrix, 0 );
+			if ( this.worldMatrix == null )
 			{
 				return false;
 			}
 
-			worldITMatrix = vsProgram.ResolveAutoParameterInt(
+			this.worldITMatrix = vsProgram.ResolveAutoParameterInt(
 				GpuProgramParameters.AutoConstantType.InverseTransposeWorldMatrix, 0 );
-			if ( worldITMatrix == null )
+			if ( this.worldITMatrix == null )
 			{
 				return false;
 			}
 
-			viewMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.ViewMatrix, 0 );
-			if ( viewMatrix == null )
+			this.viewMatrix = vsProgram.ResolveAutoParameterInt( GpuProgramParameters.AutoConstantType.ViewMatrix, 0 );
+			if ( this.viewMatrix == null )
 			{
 				return false;
 			}
 
-			vsInputPos = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
-			                                           Parameter.ContentType.PositionObjectSpace,
-			                                           GpuProgramParameters.GpuConstantType.Float4 );
-			if ( vsInputPos == null )
+			this.vsInputPos = vsMain.ResolveInputParameter( Parameter.SemanticType.Position, 0,
+			                                                Parameter.ContentType.PositionObjectSpace,
+			                                                GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.vsInputPos == null )
 			{
 				return false;
 			}
 
-			vsInputNormal = vsMain.ResolveInputParameter( Parameter.SemanticType.Normal, 0,
-			                                              Parameter.ContentType.NormalObjectSpace,
-			                                              GpuProgramParameters.GpuConstantType.Float3 );
-			if ( vsInputNormal == null )
+			this.vsInputNormal = vsMain.ResolveInputParameter( Parameter.SemanticType.Normal, 0,
+			                                                   Parameter.ContentType.NormalObjectSpace,
+			                                                   GpuProgramParameters.GpuConstantType.Float3 );
+			if ( this.vsInputNormal == null )
 			{
 				return false;
 			}
 
-			maskMapSampler = psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Sampler2D, maskMapSamplerIndex,
-			                                             GpuProgramParameters.GpuParamVariability.Global, "mask_sampler" );
-			if ( maskMapSampler == null )
+			this.maskMapSampler = psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Sampler2D,
+			                                                  this.maskMapSamplerIndex,
+			                                                  GpuProgramParameters.GpuParamVariability.Global, "mask_sampler" );
+			if ( this.maskMapSampler == null )
 			{
 				return false;
 			}
 
-			reflectionMapSampler =
+			this.reflectionMapSampler =
 				psProgram.ResolveParameter(
-					( reflectionMapType == TextureType.TwoD )
+					( this.reflectionMapType == TextureType.TwoD )
 						? GpuProgramParameters.GpuConstantType.Sampler2D
 						: GpuProgramParameters.GpuConstantType.SamplerCube,
-					reflectionMapSamplerIndex, GpuProgramParameters.GpuParamVariability.Global, "reflection_texture" );
-			if ( reflectionMapSampler == null )
+					this.reflectionMapSamplerIndex, GpuProgramParameters.GpuParamVariability.Global, "reflection_texture" );
+			if ( this.reflectionMapSampler == null )
 			{
 				return false;
 			}
 
-			reflectionPower = psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float1, -1,
-			                                              GpuProgramParameters.GpuParamVariability.Global, "reflection_power" );
-			if ( reflectionPower == null )
+			this.reflectionPower = psProgram.ResolveParameter( GpuProgramParameters.GpuConstantType.Float1, -1,
+			                                                   GpuProgramParameters.GpuParamVariability.Global,
+			                                                   "reflection_power" );
+			if ( this.reflectionPower == null )
 			{
 				return false;
 			}
 
-			psOutDiffuse = psMain.ResolveOutputParameter( Parameter.SemanticType.Color, 0, Parameter.ContentType.ColorDiffuse,
-			                                              GpuProgramParameters.GpuConstantType.Float4 );
-			if ( psOutDiffuse == null )
+			this.psOutDiffuse = psMain.ResolveOutputParameter( Parameter.SemanticType.Color, 0,
+			                                                   Parameter.ContentType.ColorDiffuse,
+			                                                   GpuProgramParameters.GpuConstantType.Float4 );
+			if ( this.psOutDiffuse == null )
 			{
 				return false;
 			}
@@ -255,31 +260,31 @@ namespace Axiom.Samples.ShaderSystem
 
 			//Output mask texgture coordinates
 			funcInvocation = new FunctionInvocation( FFPRenderState.FFPFuncAssign, groupOrder, internalCounter++ );
-			funcInvocation.PushOperand( vsInMaskTexcoord, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( vsOutMaskTexcoord, Operand.OpSemantic.Out );
+			funcInvocation.PushOperand( this.vsInMaskTexcoord, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.vsOutMaskTexcoord, Operand.OpSemantic.Out );
 			vsMain.AddAtomInstance( funcInvocation );
 
 			//Output reflection texture coordinates.
-			if ( reflectionMapType == TextureType.TwoD )
+			if ( this.reflectionMapType == TextureType.TwoD )
 			{
 				funcInvocation = new FunctionInvocation( FFPRenderState.FFPFunGenerateTexcoordEnvSphere, groupOrder,
 				                                         internalCounter++ );
-				funcInvocation.PushOperand( worldITMatrix, Operand.OpSemantic.In );
-				funcInvocation.PushOperand( viewMatrix, Operand.OpSemantic.In );
-				funcInvocation.PushOperand( vsInputNormal, Operand.OpSemantic.In );
-				funcInvocation.PushOperand( vsOutReflectionTexcoord, Operand.OpSemantic.Out );
+				funcInvocation.PushOperand( this.worldITMatrix, Operand.OpSemantic.In );
+				funcInvocation.PushOperand( this.viewMatrix, Operand.OpSemantic.In );
+				funcInvocation.PushOperand( this.vsInputNormal, Operand.OpSemantic.In );
+				funcInvocation.PushOperand( this.vsOutReflectionTexcoord, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( funcInvocation );
 			}
 			else
 			{
 				funcInvocation = new FunctionInvocation( FFPRenderState.FFPFuncGenerateTexCoordEnvReflect, groupOrder,
 				                                         internalCounter++ );
-				funcInvocation.PushOperand( worldMatrix, Operand.OpSemantic.In );
-				funcInvocation.PushOperand( worldITMatrix, Operand.OpSemantic.In );
-				funcInvocation.PushOperand( viewMatrix, Operand.OpSemantic.In );
-				funcInvocation.PushOperand( vsInputNormal, Operand.OpSemantic.In );
-				funcInvocation.PushOperand( vsInputPos, Operand.OpSemantic.In );
-				funcInvocation.PushOperand( vsOutReflectionTexcoord, Operand.OpSemantic.Out );
+				funcInvocation.PushOperand( this.worldMatrix, Operand.OpSemantic.In );
+				funcInvocation.PushOperand( this.worldITMatrix, Operand.OpSemantic.In );
+				funcInvocation.PushOperand( this.viewMatrix, Operand.OpSemantic.In );
+				funcInvocation.PushOperand( this.vsInputNormal, Operand.OpSemantic.In );
+				funcInvocation.PushOperand( this.vsInputPos, Operand.OpSemantic.In );
+				funcInvocation.PushOperand( this.vsOutReflectionTexcoord, Operand.OpSemantic.Out );
 				vsMain.AddAtomInstance( funcInvocation );
 			}
 
@@ -291,14 +296,14 @@ namespace Axiom.Samples.ShaderSystem
 			FunctionInvocation funcInvocation = null;
 			int internalCounter = 0;
 			funcInvocation = new FunctionInvocation( SGXFuncApplyReflectionMap, groupOrder, internalCounter++ );
-			funcInvocation.PushOperand( maskMapSampler, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( psInMaskTexcoord, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( reflectionMapSampler, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( psInReflectionTexcoord, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.In,
+			funcInvocation.PushOperand( this.maskMapSampler, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.psInMaskTexcoord, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.reflectionMapSampler, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.psInReflectionTexcoord, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.In,
 			                            (int)( Operand.OpMask.X | Operand.OpMask.Y | Operand.OpMask.Z ) );
-			funcInvocation.PushOperand( reflectionPower, Operand.OpSemantic.In );
-			funcInvocation.PushOperand( psOutDiffuse, Operand.OpSemantic.Out,
+			funcInvocation.PushOperand( this.reflectionPower, Operand.OpSemantic.In );
+			funcInvocation.PushOperand( this.psOutDiffuse, Operand.OpSemantic.Out,
 			                            (int)( Operand.OpMask.X | Operand.OpMask.Y | Operand.OpMask.Z ) );
 
 			psMain.AddAtomInstance( funcInvocation );
@@ -310,11 +315,11 @@ namespace Axiom.Samples.ShaderSystem
 		{
 			get
 			{
-				return reflectionMapType;
+				return this.reflectionMapType;
 			}
 			set
 			{
-				reflectionMapType = value;
+				this.reflectionMapType = value;
 			}
 		}
 
@@ -322,12 +327,12 @@ namespace Axiom.Samples.ShaderSystem
 		{
 			get
 			{
-				return reflectionPowerValue;
+				return this.reflectionPowerValue;
 			}
 			set
 			{
-				reflectionPowerValue = value;
-				reflectionPowerChanged = true;
+				this.reflectionPowerValue = value;
+				this.reflectionPowerChanged = true;
 			}
 		}
 
@@ -335,11 +340,11 @@ namespace Axiom.Samples.ShaderSystem
 		{
 			get
 			{
-				return reflectionMapTextureName;
+				return this.reflectionMapTextureName;
 			}
 			set
 			{
-				reflectionMapTextureName = value;
+				this.reflectionMapTextureName = value;
 			}
 		}
 
@@ -347,11 +352,11 @@ namespace Axiom.Samples.ShaderSystem
 		{
 			get
 			{
-				return maskMapTextureName;
+				return this.maskMapTextureName;
 			}
 			set
 			{
-				maskMapTextureName = value;
+				this.maskMapTextureName = value;
 			}
 		}
 

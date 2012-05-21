@@ -92,26 +92,26 @@ namespace Axiom.Samples.Instancing
 
 		private void burnCPU()
 		{
-			double mStartTime = mTimer.Microseconds/1000000.0f; //convert into seconds
+			double mStartTime = this.mTimer.Microseconds/1000000.0f; //convert into seconds
 			double mCurTime = mStartTime;
-			double mStopTime = mLastTime + mBurnAmount;
+			double mStopTime = this.mLastTime + this.mBurnAmount;
 			double mCPUUsage;
 
 			while ( mCurTime < mStopTime )
 			{
-				mCurTime = mTimer.Microseconds/1000000.0f; //convert into seconds
+				mCurTime = this.mTimer.Microseconds/1000000.0f; //convert into seconds
 			}
 
-			if ( mCurTime - mLastTime > 0.00001f )
+			if ( mCurTime - this.mLastTime > 0.00001f )
 			{
-				mCPUUsage = ( mCurTime - mStartTime )/( mCurTime - mLastTime )*100.0f;
+				mCPUUsage = ( mCurTime - mStartTime )/( mCurTime - this.mLastTime )*100.0f;
 			}
 			else
 			{
 				mCPUUsage = float.MaxValue;
 			}
 
-			mLastTime = mTimer.Microseconds/1000000.0f; //convert into seconds
+			this.mLastTime = this.mTimer.Microseconds/1000000.0f; //convert into seconds
 		}
 
 		/// <summary>
@@ -151,33 +151,34 @@ namespace Axiom.Samples.Instancing
 				LogManager.Instance.Write( "supported syntax : ", syntax );
 			}
 
-			mNumMeshes = 160;
-			mNumRendered = 0;
-			mSelectedMesh = 0;
-			mBurnAmount = 0;
-			mCurrentGeomOpt = CurrentGeomOpt.ENTITY_OPT;
+			this.mNumMeshes = 160;
+			this.mNumRendered = 0;
+			this.mSelectedMesh = 0;
+			this.mBurnAmount = 0;
+			this.mCurrentGeomOpt = CurrentGeomOpt.ENTITY_OPT;
 			CreateCurrentGeomOpt();
 
-			mTimer = new Timer();
-			mLastTime = mTimer.Microseconds/1000000.0f;
+			this.mTimer = new Timer();
+			this.mLastTime = this.mTimer.Microseconds/1000000.0f;
 		}
 
 		private void CreateCurrentGeomOpt()
 		{
-			objectCount = mNumMeshes;
-			mNumRendered = 1;
+			this.objectCount = this.mNumMeshes;
+			this.mNumRendered = 1;
 
-			while ( objectCount > maxObjectsPerBatch )
+			while ( this.objectCount > maxObjectsPerBatch )
 			{
-				mNumRendered++;
-				objectCount -= maxObjectsPerBatch;
+				this.mNumRendered++;
+				this.objectCount -= maxObjectsPerBatch;
 			}
 
-			System.Diagnostics.Debug.Assert( mSelectedMesh < numTypeMeshes );
-			var m = (Mesh)MeshManager.Instance.GetByName( meshes[ mSelectedMesh ] + ".mesh" );
+			System.Diagnostics.Debug.Assert( this.mSelectedMesh < numTypeMeshes );
+			var m = (Mesh)MeshManager.Instance.GetByName( meshes[ this.mSelectedMesh ] + ".mesh" );
 			if ( m == null )
 			{
-				m = MeshManager.Instance.Load( meshes[ mSelectedMesh ] + ".mesh", ResourceGroupManager.AutoDetectResourceGroupName );
+				m = MeshManager.Instance.Load( meshes[ this.mSelectedMesh ] + ".mesh",
+				                               ResourceGroupManager.AutoDetectResourceGroupName );
 			}
 			Real radius = m.BoundingSphereRadius;
 
@@ -186,20 +187,20 @@ namespace Axiom.Samples.Instancing
 			//mesh vertices num, 
 			//32 bit or not, 
 			//etC..
-			posMatrices = new List<List<Vector3>>( mNumRendered );
+			this.posMatrices = new List<List<Vector3>>( this.mNumRendered );
 
 
-			var posMatCurr = new List<List<Vector3>>( mNumRendered );
-			for ( int index = 0; index < mNumRendered; index++ )
+			var posMatCurr = new List<List<Vector3>>( this.mNumRendered );
+			for ( int index = 0; index < this.mNumRendered; index++ )
 			{
-				posMatrices.Add( new List<Vector3>( mNumMeshes ) );
-				posMatCurr.Add( posMatrices[ index ] );
+				this.posMatrices.Add( new List<Vector3>( this.mNumMeshes ) );
+				posMatCurr.Add( this.posMatrices[ index ] );
 			}
 
 			int i = 0, j = 0;
-			for ( int p = 0; p < mNumMeshes; p++ )
+			for ( int p = 0; p < this.mNumMeshes; p++ )
 			{
-				for ( int k = 0; k < mNumRendered; k++ )
+				for ( int k = 0; k < this.mNumRendered; k++ )
 				{
 					posMatCurr[ k ].Add( new Vector3( radius*i, k*radius, radius*j ) );
 				}
@@ -212,7 +213,7 @@ namespace Axiom.Samples.Instancing
 			posMatCurr.Clear();
 
 
-			switch ( mCurrentGeomOpt )
+			switch ( this.mCurrentGeomOpt )
 			{
 				case CurrentGeomOpt.INSTANCE_OPT:
 					CreateInstanceGeom();
@@ -228,7 +229,7 @@ namespace Axiom.Samples.Instancing
 
 		private void DestroyCurrentGeomOpt()
 		{
-			switch ( mCurrentGeomOpt )
+			switch ( this.mCurrentGeomOpt )
 			{
 				case CurrentGeomOpt.INSTANCE_OPT:
 					DestroyInstanceGeom();
@@ -276,17 +277,17 @@ namespace Axiom.Samples.Instancing
 				throw new AxiomException( "Your video card doesn't support batching" );
 			}
 
-			Entity ent = SceneManager.CreateEntity( meshes[ mSelectedMesh ], meshes[ mSelectedMesh ] + ".mesh" );
+			Entity ent = SceneManager.CreateEntity( meshes[ this.mSelectedMesh ], meshes[ this.mSelectedMesh ] + ".mesh" );
 
 
-			renderInstance = new List<InstancedGeometry>( mNumRendered );
+			this.renderInstance = new List<InstancedGeometry>( this.mNumRendered );
 
 			//Load a mesh to read data from.	
-			var batch = new InstancedGeometry( SceneManager, meshes[ mSelectedMesh ] + "s" );
+			var batch = new InstancedGeometry( SceneManager, meshes[ this.mSelectedMesh ] + "s" );
 			batch.CastShadows = true;
 
 			batch.BatchInstanceDimensions = new Vector3( 1000000f, 1000000f, 1000000f );
-			int batchSize = ( mNumMeshes > maxObjectsPerBatch ) ? maxObjectsPerBatch : mNumMeshes;
+			int batchSize = ( this.mNumMeshes > maxObjectsPerBatch ) ? maxObjectsPerBatch : this.mNumMeshes;
 			SetupInstancedMaterialToEntity( ent );
 			for ( int i = 0; i < batchSize; i++ )
 			{
@@ -297,7 +298,7 @@ namespace Axiom.Samples.Instancing
 			batch.Build();
 
 
-			for ( int k = 0; k < mNumRendered - 1; k++ )
+			for ( int k = 0; k < this.mNumRendered - 1; k++ )
 			{
 				batch.AddBatchInstance();
 			}
@@ -308,13 +309,13 @@ namespace Axiom.Samples.Instancing
 				int j = 0;
 				foreach ( var instancedObject in batchInstance.Objects )
 				{
-					instancedObject.Position = posMatrices[ k ][ j ];
+					instancedObject.Position = this.posMatrices[ k ][ j ];
 					++j;
 				}
 				k++;
 			}
 			batch.IsVisible = true;
-			renderInstance[ 0 ] = batch;
+			this.renderInstance[ 0 ] = batch;
 
 			SceneManager.RemoveEntity( ent );
 		}
@@ -376,10 +377,10 @@ namespace Axiom.Samples.Instancing
 		{
 			int k = 0;
 			int y = 0;
-			renderEntity = new List<Entity>( mNumMeshes );
-			nodes = new List<SceneNode>( mNumMeshes );
+			this.renderEntity = new List<Entity>( this.mNumMeshes );
+			this.nodes = new List<SceneNode>( this.mNumMeshes );
 
-			for ( int i = 0; i < mNumMeshes; i++ )
+			for ( int i = 0; i < this.mNumMeshes; i++ )
 			{
 				if ( y == maxObjectsPerBatch )
 				{
@@ -388,12 +389,13 @@ namespace Axiom.Samples.Instancing
 				}
 
 				var node = SceneManager.RootSceneNode.CreateChildSceneNode( "node" + i.ToString() );
-				var entity = SceneManager.CreateEntity( meshes[ mSelectedMesh ] + i.ToString(), meshes[ mSelectedMesh ] + ".mesh" );
+				var entity = SceneManager.CreateEntity( meshes[ this.mSelectedMesh ] + i.ToString(),
+				                                        meshes[ this.mSelectedMesh ] + ".mesh" );
 				node.AttachObject( entity );
-				node.Position = posMatrices[ k ][ y ];
+				node.Position = this.posMatrices[ k ][ y ];
 
-				nodes.Add( node );
-				renderEntity.Add( entity );
+				this.nodes.Add( node );
+				this.renderEntity.Add( entity );
 
 				y++;
 			}
@@ -406,7 +408,7 @@ namespace Axiom.Samples.Instancing
 		protected override void CleanupContent()
 		{
 			DestroyCurrentGeomOpt();
-			mTimer = null;
+			this.mTimer = null;
 
 			base.CleanupContent();
 		}
