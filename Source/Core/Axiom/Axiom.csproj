@@ -79,7 +79,6 @@
     <Compile Include="Core\LodStrategy.cs" />
     <Compile Include="Core\LodStrategyManager.cs" />
     <Compile Include="Core\ManualObject.cs" />
-    <Compile Include="Core\MemoryBuffer.cs" />
     <Compile Include="Core\NameGenerator~1.cs" />
     <Compile Include="Core\Enums.cs" />
     <Compile Include="Core\Pair.cs" />
