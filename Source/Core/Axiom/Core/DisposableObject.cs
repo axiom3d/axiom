@@ -35,6 +35,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 #endregion Namespace Declarations
 
@@ -68,17 +69,32 @@ namespace Axiom.Core
 		[AxiomHelper( 0, 9 )]
 		public void Add( DisposableObject instance, string stackTrace )
 		{
-			var objectList = _getOrCreateObjectList( instance.GetType() );
+			var objectList = GetOrCreateObjectList( instance.GetType() );
 
 			objectList.Add( new ObjectEntry
-			                {
-			                	Instance = new WeakReference( instance ),
-			                	ConstructionStack = stackTrace
-			                } );
+							{
+								Instance = new WeakReference( instance ),
+								ConstructionStack = stackTrace
+							} );
 		}
 
+		/// <summary>
+		///  Remove an object from monitoring
+		/// </summary>
+		/// <param name="instance"></param>
+		public void Remove( DisposableObject instance )
+		{
+			var objectList = GetOrCreateObjectList( instance.GetType() );
+			var objectEntry = from entry in objectList
+							  where entry.Instance.IsAlive && entry.Instance.Target == instance
+							  select entry;
+			if ( objectEntry.Any() )
+				objectList.Remove( objectEntry.First() );
+		}
+
+
 		[AxiomHelper( 0, 9 )]
-		private List<ObjectEntry> _getOrCreateObjectList( Type type )
+		private List<ObjectEntry> GetOrCreateObjectList( Type type )
 		{
 			List<ObjectEntry> objectList;
 			if ( !this._objects.TryGetValue( type, out objectList ) )
@@ -100,7 +116,7 @@ namespace Axiom.Core
 					var perTypeCount = new Dictionary<string, int>();
 
 #if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE || ANDROID) && AXIOM_ENABLE_LOG_STACKTRACE
-                    var msg = new StringBuilder();
+					var msg = new StringBuilder();
 #endif
 					// Dispose managed resources.
 					foreach ( var item in this._objects )
@@ -123,9 +139,9 @@ namespace Axiom.Core
 								objectCount++;
 
 #if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE || ANDROID) && AXIOM_ENABLE_LOG_STACKTRACE
-                                msg.AppendLine( string.Format( "An instance of {0} was not disposed properly, creation stacktrace:", typeName ) );
-                                msg.AppendLine( objectEntry.ConstructionStack );
-                                msg.AppendLine();
+								msg.AppendLine( string.Format( "An instance of {0} was not disposed properly, creation stacktrace:", typeName ) );
+								msg.AppendLine( objectEntry.ConstructionStack );
+								msg.AppendLine();
 #endif
 							}
 						}
@@ -145,8 +161,8 @@ namespace Axiom.Core
 						}
 
 #if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE || ANDROID) && AXIOM_ENABLE_LOG_STACKTRACE
-                        report.Write( "Creation Stacktraces:" );
-                        report.Write( msg.ToString() );
+						report.Write( "Creation Stacktraces:" );
+						report.Write( msg.ToString() );
 #else
 						report.Write( string.Empty ); // new line
 						report.Write( "Cannot get stacktrace informations about undisposed objects." );
@@ -181,7 +197,7 @@ namespace Axiom.Core
 			var stackTrace = string.Empty;
 #if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE || ANDROID) && AXIOM_ENABLE_LOG_STACKTRACE
 			stackTrace = Environment.StackTrace;
-    #endif
+	#endif
 			ObjectManager.Instance.Add( this, stackTrace );
 #endif
 		}
@@ -235,6 +251,9 @@ namespace Axiom.Core
 				if ( disposeManagedResources )
 				{
 					// Dispose managed resources.
+#if DEBUG
+					ObjectManager.Instance.Remove( this );
+#endif
 				}
 
 				// There are no unmanaged resources to release, but
