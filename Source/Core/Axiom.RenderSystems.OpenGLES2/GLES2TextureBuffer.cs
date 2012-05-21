@@ -34,12 +34,15 @@
 #region Namespace Declarations
 
 using System;
+using System.Collections.Generic;
+
+using Glenum = OpenTK.Graphics.ES20.All;
+using All = OpenTK.Graphics.ES20.All;
+using GL = OpenTK.Graphics.ES20.GL;
 
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
-
-using Glenum = OpenTK.Graphics.ES20.All;
 using PixelFormat = Axiom.Media.PixelFormat;
 
 #endregion Namespace Declarations
@@ -48,8 +51,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 {
 	internal class GLES2TextureBuffer : GLES2HardwarePixelBuffer
 	{
-		private readonly All target;
-		private readonly All faceTarget;
+		private readonly Glenum target;
+		private readonly Glenum faceTarget;
 		private readonly int textureID;
 		private int face;
 		private readonly int level;
