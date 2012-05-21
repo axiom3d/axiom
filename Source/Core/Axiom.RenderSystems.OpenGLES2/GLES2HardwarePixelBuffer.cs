@@ -43,7 +43,7 @@ using Glenum = OpenTK.Graphics.ES20.All;
 using PixelFormat = Axiom.Media.PixelFormat;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	public class GLES2HardwarePixelBuffer : HardwarePixelBuffer
@@ -61,13 +61,15 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if (!IsDisposed)
+			if ( !IsDisposed )
+			{
 				if ( disposeManagedResources )
 				{
 					//Force free buffer
 					this.Buffer.SafeDispose();
 					this.Buffer.Data = null;
 				}
+			}
 			base.dispose( disposeManagedResources );
 		}
 
@@ -113,7 +115,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		protected override Media.PixelBox LockImpl( Media.BasicBox lockBox, BufferLocking options )
 		{
 			this.AllocateBuffer();
-			if ( options != BufferLocking.Discard && ( usage & BufferUsage.WriteOnly ) == 0  )
+			if ( options != BufferLocking.Discard && ( usage & BufferUsage.WriteOnly ) == 0 )
 			{
 				//Downoad the old contents of the texture
 				this.Download( this.Buffer );
@@ -183,10 +185,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			if ( !this.Buffer.Contains( srcBox ) )
 			{
-				throw new ArgumentOutOfRangeException( "srcBox","source box out of range." );
+				throw new ArgumentOutOfRangeException( "srcBox", "source box out of range." );
 			}
 
-			if ( srcBox.Left == 0 && srcBox.Right == width && srcBox.Top == 0 && srcBox.Bottom == height && srcBox.Front == 0  && srcBox.Back == depth && dst.Width == width && dst.Height == height && dst.Depth == depth && GLES2PixelUtil.GetGLOriginFormat( dst.Format ) != 0 )
+			if ( srcBox.Left == 0 && srcBox.Right == width && srcBox.Top == 0 && srcBox.Bottom == height && srcBox.Front == 0 && srcBox.Back == depth && dst.Width == width && dst.Height == height && dst.Depth == depth && GLES2PixelUtil.GetGLOriginFormat( dst.Format ) != 0 )
 			{
 				//The direct case: the user wants the entire texture in a format supported by GL
 				//so we don't need an intermediate buffer
@@ -206,7 +208,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				else
 				{
 					//Just copy the bit that we need
-					PixelConverter.BulkPixelConversion( Buffer.GetSubVolume( srcBox) , dst );
+					PixelConverter.BulkPixelConversion( this.Buffer.GetSubVolume( srcBox ), dst );
 				}
 
 				this.FreeBuffer();

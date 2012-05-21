@@ -36,10 +36,11 @@
 using Axiom.Media;
 
 using GLenum = OpenTK.Graphics.ES20.All;
+
 using System;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	/// <summary>

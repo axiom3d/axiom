@@ -36,7 +36,7 @@
 using System.Collections.Generic;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	internal static class GLES2InternalShaders

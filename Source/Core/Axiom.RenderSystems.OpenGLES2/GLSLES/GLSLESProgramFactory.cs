@@ -35,13 +35,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq; 
+using System.Linq;
 using System.Text;
 
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 {
 	internal class GLSLESProgramFactory : HighLevelGpuProgramFactory

@@ -71,6 +71,5 @@ namespace Axiom.RenderSystems.OpenGLES2
 		//{
 		//    throw new AxiomException("Cannot create RenderToVertexBuffer in GLES2DefaultHardwareBufferManagerBase);
 		//}
-
 	}
 }

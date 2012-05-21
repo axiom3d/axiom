@@ -48,20 +48,20 @@ using GL = OpenTK.Graphics.ES20.GL;
 using Axiom.Core;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	public abstract class GLES2Support : IDisposable
 	{
 		private string _version, _vendor;
 
-        protected ConfigOptionMap Options;
+		protected ConfigOptionMap Options;
 		protected string ExtensionList;
 
 		public GLES2Support()
-        {
-            Options = new ConfigOptionMap();
-        }
+		{
+			this.Options = new ConfigOptionMap();
+		}
 
 		public virtual void AddConfig() {}
 
@@ -96,10 +96,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			//Set version string
 			var pcVer = GL.GetString( OpenTK.Graphics.ES20.All.Version );
-            if (pcVer == null || pcVer.Length == 0)
-            {
-                pcVer = "UNKOWN";
-            }
+			if ( pcVer == null || pcVer.Length == 0 )
+			{
+				pcVer = "UNKOWN";
+			}
 			string tmpStr = pcVer;
 			LogManager.Instance.Write( "GL_VERSION = " + tmpStr );
 			int spacePos = -1;
@@ -115,18 +115,20 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				this._version = tmpStr.Substring( 0, spacePos );
 			}
-            else if (tmpStr.Contains(' '))
-            {
-                this._version = tmpStr.Remove(' ');
-            }
-            else
-            {
-                this._version = tmpStr;
-            }
+			else if ( tmpStr.Contains( ' ' ) )
+			{
+				this._version = tmpStr.Remove( ' ' );
+			}
+			else
+			{
+				this._version = tmpStr;
+			}
 			//Get vendor
 			tmpStr = GL.GetString( OpenTK.Graphics.ES20.All.Vendor );
-            if (tmpStr == null || tmpStr == string.Empty)
-                tmpStr = "UNKOWN";
+			if ( tmpStr == null || tmpStr == string.Empty )
+			{
+				tmpStr = "UNKOWN";
+			}
 
 			LogManager.Instance.Write( "GL_VENDOR = " + tmpStr );
 			spacePos = -1;
@@ -142,26 +144,30 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				this._vendor = tmpStr.Substring( 0, spacePos );
 			}
-            else if (tmpStr.Contains(' '))
-            {
-                this._vendor = tmpStr.Remove(' ');
-            }
-            else
-            {
-                this._vendor = tmpStr;
-            }
+			else if ( tmpStr.Contains( ' ' ) )
+			{
+				this._vendor = tmpStr.Remove( ' ' );
+			}
+			else
+			{
+				this._vendor = tmpStr;
+			}
 			//Get renderer
 			tmpStr = GL.GetString( OpenTK.Graphics.ES20.All.Vendor );
-            if (tmpStr == null || tmpStr == string.Empty)
-                tmpStr = "UNKOWN";
+			if ( tmpStr == null || tmpStr == string.Empty )
+			{
+				tmpStr = "UNKOWN";
+			}
 
 			LogManager.Instance.Write( "GL_RENDERER = " + tmpStr );
 
 			//Set extension list
 
 			var pcExt = GL.GetString( OpenTK.Graphics.ES20.All.Extensions );
-            if (pcExt == null)
-                pcExt = string.Empty;
+			if ( pcExt == null )
+			{
+				pcExt = string.Empty;
+			}
 
 			LogManager.Instance.Write( "GL_EXTENSIONS = " + pcExt );
 			this.ExtensionList = pcExt;

@@ -130,7 +130,6 @@ namespace Axiom.RenderSystems.OpenGLES2
 			Contract.Requires( ( offset + length ) <= sizeInBytes );
 			// ignore discard, memory is not guaranteed to be zeroised
 			Memory.Copy( src, this._dataPtr + offset, length );
-
 		}
 
 		/// <summary>

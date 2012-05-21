@@ -73,8 +73,12 @@ namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
-				if ( disposeManagedResources)
+			{
+				if ( disposeManagedResources )
+				{
 					this.unload();
+				}
+			}
 
 			base.dispose( disposeManagedResources );
 		}

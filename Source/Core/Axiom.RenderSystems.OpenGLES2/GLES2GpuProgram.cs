@@ -45,7 +45,7 @@ using GLenum = OpenTK.Graphics.ES20.All;
 using Axiom.Core;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	/// <summary>

@@ -36,7 +36,7 @@
 using Axiom.Graphics;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	/// <summary>

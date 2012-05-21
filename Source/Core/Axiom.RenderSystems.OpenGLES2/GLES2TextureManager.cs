@@ -42,7 +42,7 @@ using GLenum = OpenTK.Graphics.ES20.All;
 using PixelFormat = Axiom.Media.PixelFormat;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	internal class GLES2TextureManager : TextureManager

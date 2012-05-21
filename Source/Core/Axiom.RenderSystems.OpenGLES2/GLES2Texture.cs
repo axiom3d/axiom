@@ -47,14 +47,14 @@ using GL = OpenTK.Graphics.ES20.GL;
 using Axiom.Media;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	internal class GLES2Texture : Texture
 	{
 		private int textureID;
 		private GLES2Support glSupport;
-		private List<HardwarePixelBuffer> surfaceList;
+		private readonly List<HardwarePixelBuffer> surfaceList;
 		private List<Image> loadedImages; //Used to hold images between calls to prepare and load.
 
 		public GLES2Texture( ResourceManager creator, string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, GLES2Support support )
@@ -175,7 +175,6 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				GL.GenerateMipmap( this.GLES2TextureTarget );
 				GLES2Config.GlCheckError( this );
-
 			}
 			//Allocate internal buffer so that glTexSubImageXD can be used
 			//INternal format
@@ -257,7 +256,6 @@ namespace Axiom.RenderSystems.OpenGLES2
 							{
 								GL.TexImage2D( GLenum.TextureCubeMapPositiveX + face, mip, (int) glformat, width, height, 0, glformat, dataType, new IntPtr() );
 								GLES2Config.GlCheckError( this );
-
 							}
 							break;
 						case TextureType.ThreeD:

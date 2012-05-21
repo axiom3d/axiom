@@ -41,7 +41,7 @@ using System.Text;
 using GLenum = OpenTK.Graphics.ES20.All;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2.GLSLES
 {
 	internal class GLSLESLinkProgramManager : GLSLESProgramManagerCommon

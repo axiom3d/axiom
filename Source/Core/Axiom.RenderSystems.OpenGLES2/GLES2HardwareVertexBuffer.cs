@@ -43,7 +43,7 @@ using OpenTK.Graphics.ES20;
 using GLenum = OpenTK.Graphics.ES20.All;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	internal class GLES2HardwareVertexBuffer : HardwareVertexBuffer
@@ -63,7 +63,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				throw new AxiomException( "Only supported with shadowBuffer" );
 			}
 
-			int[] buffers = new int[1];
+			var buffers = new int[ 1 ];
 			GL.GenBuffers( 1, buffers );
 			GLES2Config.GlCheckError( this );
 			this._bufferID = buffers[ 0 ];
@@ -130,7 +130,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				if ( locking == BufferLocking.Discard )
 				{
 					//Discard the buffer
-					GL.BufferData( GLenum.ArrayBuffer, new IntPtr( sizeInBytes) , IntPtr.Zero, GLES2HardwareBufferManager.GetGLUsage( usage ) );
+					GL.BufferData( GLenum.ArrayBuffer, new IntPtr( sizeInBytes ), IntPtr.Zero, GLES2HardwareBufferManager.GetGLUsage( usage ) );
 					GLES2Config.GlCheckError( this );
 				}
 				if ( ( usage & BufferUsage.WriteOnly ) == BufferUsage.WriteOnly )
@@ -147,7 +147,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				}
 
 				//return offsetted
-				retPtr = BufferBase.Wrap(pbuffer) + offset;
+				retPtr = BufferBase.Wrap( pbuffer ) + offset;
 				this._lockedToScratch = false;
 			}
 			isLocked = true;
@@ -161,7 +161,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				if ( this._scratchUploadOnUnlock )
 				{
 					//have to write the ata back to vertex buffer
-					WriteData( this._scratchOffset, this._scratchSize, this._scratchPtr, this._scratchOffset == 0 && this._scratchSize == sizeInBytes );
+					this.WriteData( this._scratchOffset, this._scratchSize, this._scratchPtr, this._scratchOffset == 0 && this._scratchSize == sizeInBytes );
 				}
 
 				( HardwareBufferManager.Instance as GLES2HardwareBufferManager ).DeallocateScratch( this._scratchPtr );
@@ -206,7 +206,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			if ( offset == 0 && length == sizeInBytes )
 			{
-				GL.BufferData( GLenum.ArrayBuffer, new IntPtr(sizeInBytes), src.Pin(), GLES2HardwareBufferManager.GetGLUsage( usage ) );
+				GL.BufferData( GLenum.ArrayBuffer, new IntPtr( sizeInBytes ), src.Pin(), GLES2HardwareBufferManager.GetGLUsage( usage ) );
 				GLES2Config.GlCheckError( this );
 			}
 			else
@@ -216,7 +216,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 					GL.BufferData( GLenum.ArrayBuffer, new IntPtr( sizeInBytes ), IntPtr.Zero, GLES2HardwareBufferManager.GetGLUsage( usage ) );
 					GLES2Config.GlCheckError( this );
 				}
-				GL.BufferSubData( GLenum.ArrayBuffer, new IntPtr( offset), new IntPtr( length ), src.Pin() );
+				GL.BufferSubData( GLenum.ArrayBuffer, new IntPtr( offset ), new IntPtr( length ), src.Pin() );
 				GLES2Config.GlCheckError( this );
 			}
 		}

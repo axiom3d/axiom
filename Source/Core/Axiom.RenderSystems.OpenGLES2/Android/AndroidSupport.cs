@@ -58,84 +58,78 @@ using EGLCONTEXT = Javax.Microedition.Khronos.Egl.EGLContext;
 
 namespace Axiom.RenderSystems.OpenGLES2.Android
 {
-    internal class AndroidSupport : GLES2Support
-    {
-        public AndroidSupport()
-        { }
+	internal class AndroidSupport : GLES2Support
+	{
+		public AndroidSupport() {}
 
-        public void SwitchMode(uint width, uint height, short frequency)
-        { }
-        public override RenderWindow CreateWindow(bool autoCreateWindow, GLES2RenderSystem renderSystem, string windowTitle)
-        {
-            LogManager.Instance.Write("/tGLSupport CreateWindow called");
+		public void SwitchMode( uint width, uint height, short frequency ) {}
 
-            RenderWindow window = null;
-            if (autoCreateWindow)
-            {
-                NamedParameterList miscParams = new NamedParameterList();
-                bool fullscreen = true;
-                int w = 800, h = 600;
+		public override RenderWindow CreateWindow( bool autoCreateWindow, GLES2RenderSystem renderSystem, string windowTitle )
+		{
+			LogManager.Instance.Write( "/tGLSupport CreateWindow called" );
 
-                if (Options.ContainsKey("Display Frequency"))
-                {
-                    miscParams.Add("displayFrequency", Options["Display Frequency"]);
-                }
-                window = renderSystem.CreateRenderWindow(windowTitle, w, h, fullscreen, miscParams);
+			RenderWindow window = null;
+			if ( autoCreateWindow )
+			{
+				var miscParams = new NamedParameterList();
+				bool fullscreen = true;
+				int w = 800, h = 600;
 
-            }
+				if ( Options.ContainsKey( "Display Frequency" ) )
+				{
+					miscParams.Add( "displayFrequency", Options[ "Display Frequency" ] );
+				}
+				window = renderSystem.CreateRenderWindow( windowTitle, w, h, fullscreen, miscParams );
+			}
 
-            return window;
-        }
-        public override RenderWindow NewWindow(string name, int width, int height, bool fullScreen, NamedParameterList miscParams)
-        {
-            LogManager.Instance.Write("TGLSupport NewWindow called");
-            
-            AndroidWindow window = new AndroidWindow(this);
-            
-            window.Create(name, width, height, fullScreen, miscParams);
+			return window;
+		}
 
-            return window;
-        }
-        public override void Start()
-        {
-            LogManager.Instance.Write("/tGLSupport start called");
-        }
-        public override void Stop()
-        {
-            LogManager.Instance.Write("/tGLSupport stop called");
-        }
-        public override void AddConfig()
-        {
-            LogManager.Instance.Write("/tGLSupport AddConfig called");
+		public override RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams )
+		{
+			LogManager.Instance.Write( "TGLSupport NewWindow called" );
 
-            //currently no config options supported
-            RefreshConfig();
-        }
-        public void RefreshConfig()
-        {
-        }
-        public override string ValidateConfig()
-        {
-            return string.Empty;
-        }
-        public override Graphics.Collections.ConfigOptionMap ConfigOptions
-        {
-            get
-            {
-                return base.ConfigOptions;
-            }
-            set
-            {
-                base.ConfigOptions = value;
-            }
-        }
-        public string DisplayName
-        {
-            get
-            {
-                return "Android GLES2 Support";
-            }
+			var window = new AndroidWindow( this );
 
-        }
-    }
+			window.Create( name, width, height, fullScreen, miscParams );
+
+			return window;
+		}
+
+		public override void Start()
+		{
+			LogManager.Instance.Write( "/tGLSupport start called" );
+		}
+
+		public override void Stop()
+		{
+			LogManager.Instance.Write( "/tGLSupport stop called" );
+		}
+
+		public override void AddConfig()
+		{
+			LogManager.Instance.Write( "/tGLSupport AddConfig called" );
+
+			//currently no config options supported
+			this.RefreshConfig();
+		}
+
+		public void RefreshConfig() {}
+
+		public override string ValidateConfig()
+		{
+			return string.Empty;
+		}
+
+		public override Graphics.Collections.ConfigOptionMap ConfigOptions
+		{
+			get { return base.ConfigOptions; }
+			set { base.ConfigOptions = value; }
+		}
+
+		public string DisplayName
+		{
+			get { return "Android GLES2 Support"; }
+		}
+	}
 }

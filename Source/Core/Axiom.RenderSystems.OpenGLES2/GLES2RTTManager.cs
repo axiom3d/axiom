@@ -39,7 +39,7 @@ using Axiom.Media;
 using GLenum = OpenTK.Graphics.ES20.All;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	internal class GLES2RTTManager

@@ -42,7 +42,6 @@ using Axiom.Graphics.Collections;
 using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Configuration;
-
 using Axiom.Core;
 
 using GL = OpenTK.Graphics.ES20.GL;
@@ -52,7 +51,7 @@ using GLenum = OpenTK.Graphics.ES20.All;
 using Axiom.RenderSystems.OpenGLES2.GLSLES;
 
 #endregion Namespace Declarations
-			
+
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	public partial class GLES2RenderSystem : RenderSystem
@@ -84,7 +83,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		private HardwareBufferManager hardwareBufferManager;
 		private GLES2RTTManager rttManager;
 		private OpenTK.Graphics.ES20.TextureUnit activeTextureUnit;
-		private Dictionary<GLenum, int> activeBufferMap = new Dictionary<GLenum,int>();
+		private readonly Dictionary<GLenum, int> activeBufferMap = new Dictionary<GLenum, int>();
 		private bool glInitialized;
 		private GLenum polygonMode;
 		private readonly List<int> renderAttribsBound;
@@ -111,7 +110,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			enableFixedPipeline = false;
 #endif
 
-			CreateGlSupport();
+			this.CreateGlSupport();
 
 			this.worldMatrix = Matrix4.Identity;
 			this.viewMatrix = Matrix4.Identity;
@@ -627,7 +626,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			float floatConstantCount = 0;
 			GL.GetFloat( All.MaxVertexUniformVectors, ref floatConstantCount );
 			GLES2Config.GlCheckError( this );
-			rsc.VertexProgramConstantFloatCount = (int)floatConstantCount;
+			rsc.VertexProgramConstantFloatCount = (int) floatConstantCount;
 			rsc.VertexProgramConstantBoolCount = (int) floatConstantCount;
 			rsc.VertexProgramConstantIntCount = (int) floatConstantCount;
 
@@ -635,7 +634,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			floatConstantCount = 0;
 			GL.GetFloat( All.MaxFragmentUniformVectors, ref floatConstantCount );
 			GLES2Config.GlCheckError( this );
-			rsc.FragmentProgramConstantFloatCount = (int)floatConstantCount;
+			rsc.FragmentProgramConstantFloatCount = (int) floatConstantCount;
 			rsc.FragmentProgramConstantBoolCount = (int) floatConstantCount;
 			rsc.FragmentProgramConstantIntCount = (int) floatConstantCount;
 
@@ -789,16 +788,16 @@ namespace Axiom.RenderSystems.OpenGLES2
 				var tokens = this.glSupport.GLVersion.Split( '.' );
 				if ( tokens.Length > 0 )
 				{
-					if (tokens[0] != "UNKOWN" && tokens[0] != "OpenGL")
+					if ( tokens[ 0 ] != "UNKOWN" && tokens[ 0 ] != "OpenGL" )
 					{
-						driverVersion.Major = int.Parse(tokens[0]);
-						if (tokens.Length > 1)
+						driverVersion.Major = int.Parse( tokens[ 0 ] );
+						if ( tokens.Length > 1 )
 						{
-							driverVersion.Minor = int.Parse(tokens[1]);
+							driverVersion.Minor = int.Parse( tokens[ 1 ] );
 						}
-						if (tokens.Length > 2)
+						if ( tokens.Length > 2 )
 						{
-							driverVersion.Release = int.Parse(tokens[2]);
+							driverVersion.Release = int.Parse( tokens[ 2 ] );
 						}
 					}
 					else
