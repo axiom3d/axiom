@@ -219,9 +219,12 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				//Old style context (window/pbuffer) or copying render texture
 
-				//todo check platform for screen buffer.
 				//Ogre says 1 is screenbuffer on iOS as opposed to 0 on Android
+#if MONOTOUCH
 				GL.BindFramebuffer( GLenum.Framebuffer, 1 );
+#else
+				GL.BindFramebuffer( GLenum.Framebuffer, 0 );
+#endif
 				GLES2Config.GlCheckError( this );
 			}
 		}

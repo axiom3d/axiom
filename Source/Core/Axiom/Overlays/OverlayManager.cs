@@ -335,8 +335,7 @@ namespace Axiom.Overlays
 		/// <param name="isTemplate"></param>
 		/// <param name="parent"></param>
 		/// <returns></returns>
-		private bool ParseChildren( TextReader script, string line, Overlay overlay, bool isTemplate,
-		                            OverlayElementContainer parent )
+		private bool ParseChildren( TextReader script, string line, Overlay overlay, bool isTemplate, OverlayElementContainer parent )
 		{
 			var ret = false;
 			var skipParam = 0;
@@ -346,9 +345,7 @@ namespace Axiom.Overlays
 			// split on lines with a ) will have an extra blank array element, so lets get rid of it
 			if ( parms[ parms.Length - 1 ].Length == 0 )
 			{
-				var tmp = new string[parms.Length - 1];
-				Array.Copy( parms, 0, tmp, 0, parms.Length - 1 );
-				parms = tmp;
+				Array.Resize( ref parms, parms.Length - 1 );
 			}
 
 			if ( isTemplate )
@@ -372,16 +369,13 @@ namespace Axiom.Overlays
 				{
 					if ( parms.Length != 5 + skipParam )
 					{
-						LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting ':' templateName", line,
-						                           parent.GetType().Name, parent.Name );
+						LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting ':' templateName", line, parent.GetType().Name, parent.Name );
 						ParseHelper.SkipToNextCloseBrace( script );
 						return ret;
 					}
 					if ( parms[ 3 + skipParam ] != ":" )
 					{
-						LogManager.Instance.Write(
-							"Bad element/container line: {0} in {1} - {2}, expecting ':' for element inheritance.", line,
-							parent.GetType().Name, parent.Name );
+						LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting ':' for element inheritance.", line, parent.GetType().Name, parent.Name );
 						ParseHelper.SkipToNextCloseBrace( script );
 						return ret;
 					}
@@ -391,17 +385,16 @@ namespace Axiom.Overlays
 				}
 				else if ( parms.Length != 3 + skipParam )
 				{
-					LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting 'element type(name)'.", line,
-					                           parent.GetType().Name, parent.Name );
+					LogManager.Instance.Write( "Bad element/container line: {0} in {1} - {2}, expecting 'element type(name)'.", line, parent.GetType().Name, parent.Name );
 					ParseHelper.SkipToNextCloseBrace( script );
 					return ret;
 				}
 
 				ParseHelper.SkipToNextOpenBrace( script );
 				var isContainer = ( parms[ 0 + skipParam ] == "container" );
-				ParseNewElement( script, parms[ 1 + skipParam ], parms[ 2 + skipParam ], isContainer, overlay, isTemplate,
-				                 templateName, parent );
+				ParseNewElement( script, parms[ 1 + skipParam ], parms[ 2 + skipParam ], isContainer, overlay, isTemplate, templateName, parent );
 			}
+				
 
 			return ret;
 		}
@@ -569,7 +562,7 @@ namespace Axiom.Overlays
 				skipLine = false;
 
 				// ignore comments and blank lines
-				if ( line.Length > 0 && ( !line.StartsWith( "//" ) && !line.StartsWith( "# " ) ) )
+				if ( line.Length > 0 && !( line.StartsWith( "//" ) || line.StartsWith( "# " ) ) )
 				{
 					// does another overlay have to be included
 					if ( line.StartsWith( "#include" ) )
@@ -578,9 +571,7 @@ namespace Axiom.Overlays
 						// split on lines with a ) will have an extra blank array element, so lets get rid of it
 						if ( parms[ parms.Length - 1 ].Length == 0 )
 						{
-							var tmp = new string[parms.Length - 1];
-							Array.Copy( parms, 0, tmp, 0, parms.Length - 1 );
-							parms = tmp;
+							Array.Resize( ref parms, parms.Length - 1 );
 						}
 						var includeFile = parms[ 2 ];
 
@@ -626,9 +617,7 @@ namespace Axiom.Overlays
 						// split on lines with a ) will have an extra blank array element, so lets get rid of it
 						if ( parms[ parms.Length - 1 ].Length == 0 )
 						{
-							var tmp = new string[parms.Length - 1];
-							Array.Copy( parms, 0, tmp, 0, parms.Length - 1 );
-							parms = tmp;
+							Array.Resize( ref parms, parms.Length - 1 );
 						}
 
 						if ( line == "}" )

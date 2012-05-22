@@ -76,12 +76,16 @@ namespace Axiom.RenderSystems.OpenGLES2.Android
 			this.context = null;
 		}
 
-		~AndroidWindow()
+		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( this.context != null )
+			if ( !IsDisposed )
 			{
-				this.context = null;
+				if ( disposeManagedResources )
+				{
+					this.context.SafeDispose();
+				}
 			}
+			base.dispose( disposeManagedResources );
 		}
 
 		protected AndroidContext CreateGLContext( int handle )
@@ -179,7 +183,7 @@ namespace Axiom.RenderSystems.OpenGLES2.Android
 				{
 					return this.context;
 				}
-				return base[ attribute ];
+				return null;
 			}
 		}
 	}

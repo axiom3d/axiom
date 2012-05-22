@@ -141,7 +141,6 @@
     <Compile Include="Core\LogManager.cs" />
     <Compile Include="Core\ManualObject.cs" />
     <Compile Include="Core\Memory.cs" />
-    <Compile Include="Core\MemoryBuffer.cs" />
     <Compile Include="Core\Mesh.cs" />
     <Compile Include="Core\MeshManager.cs" />
     <Compile Include="Core\Meters.cs" />

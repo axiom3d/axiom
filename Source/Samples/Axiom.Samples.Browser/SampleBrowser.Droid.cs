@@ -19,17 +19,17 @@ namespace Axiom.Samples.Browser
 {
 	public class SampleBrowser : Axiom.Samples.SampleBrowser
 	{
-        private IGraphicsContext GLGraphicsContext;
-        private IWindowInfo GlWindowInfo;
-        private Context androidContext;
+		private IGraphicsContext GLGraphicsContext;
+		private IWindowInfo GlWindowInfo;
+		private Context androidContext;
 
-        public SampleBrowser(Context context, IGraphicsContext graphicsContext, IWindowInfo windowInfo)
-        {
-            // TODO: Complete member initialization
-            this.androidContext = context;
-            this.GLGraphicsContext = graphicsContext;
-            this.GlWindowInfo = windowInfo;
-        }
+		public SampleBrowser(Context context, IGraphicsContext graphicsContext, IWindowInfo windowInfo)
+		{
+			// TODO: Complete member initialization
+			this.androidContext = context;
+			this.GLGraphicsContext = graphicsContext;
+			this.GlWindowInfo = windowInfo;
+		}
 		
 		protected override bool OneTimeConfig()
 		{
@@ -68,11 +68,12 @@ namespace Axiom.Samples.Browser
 
 //            this.WindowResized( RenderWindow );    // do an initial adjustment of mouse area
 		}
-        protected override void LocateResources()
-        {
-            ResourceGroupManager.Instance.AddResourceLocation( "Archives/SdkTrays.zip", "AndroidZipAsset", "Essential" );
-            base.LocateResources();
-        }
+		protected override void LocateResources()
+		{
+			ResourceGroupManager.Instance.AddResourceLocation( "Archives/SdkTrays.zip", "AndroidZipAsset", "Essential" );
+			ResourceGroupManager.Instance.CreateResourceGroup( "Popular" );
+			base.LocateResources();
+		}
 
 #if WINDOWS_PHONE
 		protected override void CreateWindow()
