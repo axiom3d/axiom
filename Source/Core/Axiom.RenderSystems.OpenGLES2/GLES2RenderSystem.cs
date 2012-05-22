@@ -388,21 +388,19 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		public float GetCurrentAnisotropy( int unit )
 		{
-			float curAniso = 0;
-			GL.GetTexParameter( this.textureTypes[ unit ], GLenum.TextureMaxAnisotropyExt, ref curAniso );
+			float[] curAniso = new float[] { 0 };
+			GL.GetTexParameter( this.textureTypes[ unit ], GLenum.TextureMaxAnisotropyExt, curAniso );
 			GLES2Config.GlCheckError( this );
 
-			return ( curAniso != 0 ) ? curAniso : 1;
+			return ( curAniso[0] != 0.0f ) ? curAniso[0] : 1.0f;
 		}
 
 		public void SetSceneBlendingOperation( SceneBlendOperation op )
 		{
-			throw new NotImplementedException();
 		}
 
 		public void SetSeparateSceneBlendingOperation( SceneBlendOperation op, SceneBlendOperation alphaOp )
 		{
-			throw new NotImplementedException();
 		}
 
 		//todo: replace object with actual type
@@ -945,12 +943,11 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		public override void SetSurfaceParams( Core.ColorEx ambient, Core.ColorEx diffuse, Core.ColorEx specular, Core.ColorEx emissive, Real shininess, Core.TrackVertexColor tracking )
 		{
-			throw new NotImplementedException();
 		}
 
 		public override void SetPointParameters( Real size, bool attenuationEnabled, Real constant, Real linear, Real quadratic, Real minSize, Real maxSize )
 		{
-			throw new NotImplementedException();
+
 		}
 
 		public override void SetTexture( int unit, bool enabled, Core.Texture texture )
@@ -2026,21 +2023,21 @@ namespace Axiom.RenderSystems.OpenGLES2
 		public override Core.ColorEx AmbientLight
 		{
 			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			set {  }
 		}
 
 		//Ogre: not supported
 		public override ShadeOptions ShadingType
 		{
 			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			set { }
 		}
 
 		//Ogre: not supported
 		public override bool LightingEnabled
 		{
 			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			set {  }
 		}
 
 		public override VertexElementType ColorVertexElementType
@@ -2052,7 +2049,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		public override bool NormalizeNormals
 		{
 			get { throw new NotImplementedException(); }
-			set { throw new NotImplementedException(); }
+			set {  }
 		}
 
 		//DoubleA: supposed to be a RenderSystem override
@@ -2097,7 +2094,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		public override bool PointSpritesEnabled
 		{
-			set { throw new NotImplementedException(); }
+			set { }
 		}
 
 		public override Core.Viewport Viewport
@@ -2290,12 +2287,12 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		public override VertexDeclaration VertexDeclaration
 		{
-			set { throw new NotImplementedException(); }
+			set { }
 		}
 
 		public override VertexBufferBinding VertexBufferBinding
 		{
-			set { throw new NotImplementedException(); }
+			set { }
 		}
 
 		public override Real HorizontalTexelOffset
@@ -2362,7 +2359,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		private void SetDepthBufferFor( Graphics.RenderTarget value )
 		{
-			throw new NotImplementedException();
+			
 		}
 
 		public override int DisplayMonitorCount
