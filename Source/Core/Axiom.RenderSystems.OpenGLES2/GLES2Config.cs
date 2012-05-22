@@ -51,5 +51,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 				throw new Exception( string.Format( "[GLES2] Error {0} from {1}", e, caller.ToString() ) );
 			}
 		}
+
+		internal static void GlClearError()
+		{
+			OpenGL.GetError();
+		}
 	}
 }

@@ -373,35 +373,24 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 				//Create and attach framebuffer
 				GL.GenFramebuffers( 1, ref fb );
-				GLES2Config.GlCheckError( this );
 				GL.BindFramebuffer( GLenum.Framebuffer, fb );
-				GLES2Config.GlCheckError( this );
 				if ( fmt != GLenum.None )
 				{
 					//Create and attach texture
 					GL.GenTextures( 1, ref tid );
-					GLES2Config.GlCheckError( this );
 					GL.BindTexture( target, tid );
-					GLES2Config.GlCheckError( this );
 
 					//Set some default parameters
 					GL.TexParameter( target, GLenum.TextureMinFilter, (int) GLenum.Nearest );
-					GLES2Config.GlCheckError( this );
 					GL.TexParameter( target, GLenum.TextureMagFilter, (int) GLenum.Nearest );
-					GLES2Config.GlCheckError( this );
 					GL.TexParameter( target, GLenum.TextureWrapS, (int) GLenum.ClampToEdge );
-					GLES2Config.GlCheckError( this );
 					GL.TexParameter( target, GLenum.TextureWrapT, (int) GLenum.ClampToEdge );
-					GLES2Config.GlCheckError( this );
 
 					GL.TexImage2D( target, 0, (int) fmt, PROBE_SIZE, PROBE_SIZE, 0, fmt, GLES2PixelUtil.GetGLOriginDataType( (PixelFormat) x ), IntPtr.Zero );
-					GLES2Config.GlCheckError( this );
 					GL.FramebufferTexture2D( GLenum.Framebuffer, GLenum.ColorAttachment0, target, tid, 0 );
-					GLES2Config.GlCheckError( this );
 				}
 				//Check status
 				GLenum status = GL.CheckFramebufferStatus( GLenum.Framebuffer );
-				GLES2Config.GlCheckError( this );
 				// Ignore status in case of fmt==GL_NONE, because no implementation will accept
 				// a buffer without *any* attachment. Buffers with only stencil and depth attachment
 				// might still be supported, so we must continue probing.
@@ -449,16 +438,16 @@ namespace Axiom.RenderSystems.OpenGLES2
 				}
 				//Delte texture and framebuffer
 				GL.BindFramebuffer( GLenum.Framebuffer, 0 );
-				GLES2Config.GlCheckError( this );
 				GL.DeleteFramebuffers( 1, ref fb );
-				GLES2Config.GlCheckError( this );
 
 				if ( fmt != GLenum.None )
 				{
 					GL.DeleteTextures( 1, ref tid );
-					GLES2Config.GlCheckError( this );
 				}
 			}
+
+			// Clear any errors
+			GLES2Config.GlClearError();
 
 			string fmtstring = string.Empty;
 			for ( int x = 0; x < (int) PixelFormat.Count; x++ )
@@ -480,67 +469,50 @@ namespace Axiom.RenderSystems.OpenGLES2
 		private bool TryFormat( GLenum depthFormat, GLenum stencilFormat )
 		{
 			int depthRB = 0, stencilRB = 0;
-			GLenum status;
-
+			GLenum status = GLenum.None;
 			if ( depthFormat != GLenum.None )
 			{
 				//Generate depth renderbuffer
 				GL.GenRenderbuffers( 1, ref depthRB );
-				GLES2Config.GlCheckError( this );
 
 				//Bind it to FBO
 				GL.BindRenderbuffer( GLenum.Renderbuffer, depthRB );
-				GLES2Config.GlCheckError( this );
 
 				//Allocate storage for depth buffer
 				GL.RenderbufferStorage( GLenum.Renderbuffer, depthFormat, PROBE_SIZE, PROBE_SIZE );
-				GLES2Config.GlCheckError( this );
 
 				//Attach depth
 				GL.FramebufferRenderbuffer( GLenum.Framebuffer, GLenum.DepthAttachment, GLenum.Renderbuffer, depthRB );
-				GLES2Config.GlCheckError( this );
 			}
 			if ( stencilFormat != GLenum.None )
 			{
 				//Generate stencil renderbuffer
 				GL.GenRenderbuffers( 1, ref stencilRB );
-				GLES2Config.GlCheckError( this );
 
 				//Bind it to FBO
 				GL.BindRenderbuffer( GLenum.Renderbuffer, stencilRB );
-				GLES2Config.GlCheckError( this );
 
 				//Allocate storage for stencil buffer
 				GL.RenderbufferStorage( GLenum.Renderbuffer, stencilFormat, PROBE_SIZE, PROBE_SIZE );
-				GLES2Config.GlCheckError( this );
 
 				//Attach stencil
 				GL.FramebufferRenderbuffer( GLenum.Framebuffer, GLenum.StencilAttachment, GLenum.Renderbuffer, stencilRB );
-				GLES2Config.GlCheckError( this );
 			}
-
 			status = GL.CheckFramebufferStatus( GLenum.Framebuffer );
-			GLES2Config.GlCheckError( this );
 
 			//If status is negative, clean up
 			//Detach and destroy
 			GL.FramebufferRenderbuffer( GLenum.Framebuffer, GLenum.DepthAttachment, GLenum.Renderbuffer, 0 );
-			GLES2Config.GlCheckError( this );
 
 			GL.FramebufferRenderbuffer( GLenum.Framebuffer, GLenum.StencilAttachment, GLenum.Renderbuffer, 0 );
-			GLES2Config.GlCheckError( this );
-
 			if ( depthRB > 0 )
 			{
 				GL.DeleteRenderbuffers( 1, ref depthRB );
-				GLES2Config.GlCheckError( this );
 			}
 			if ( stencilRB > 0 )
 			{
 				GL.DeleteRenderbuffers( 1, ref stencilRB );
-				GLES2Config.GlCheckError( this );
 			}
-
 			return status == GLenum.FramebufferComplete;
 		}
 
@@ -552,37 +524,29 @@ namespace Axiom.RenderSystems.OpenGLES2
 		private bool TryPackedFormat( GLenum packedFormat )
 		{
 			int packedRB = 0;
+			GLenum status = GLenum.None;
 
 			//Generate renderbuffer
 			GL.GenRenderbuffers( 1, ref packedRB );
-			GLES2Config.GlCheckError( this );
 
 			//Bind it to FBO
 			GL.BindRenderbuffer( GLenum.Renderbuffer, packedRB );
-			GLES2Config.GlCheckError( this );
 
 			//Allocate storage for buffer
 			GL.RenderbufferStorage( GLenum.Renderbuffer, packedFormat, PROBE_SIZE, PROBE_SIZE );
-			GLES2Config.GlCheckError( this );
 
 			//Attach depth
 			GL.FramebufferRenderbuffer( GLenum.Framebuffer, GLenum.DepthAttachment, GLenum.Renderbuffer, packedRB );
-			GLES2Config.GlCheckError( this );
 
 			//Attach stencil
 			GL.FramebufferRenderbuffer( GLenum.Framebuffer, GLenum.StencilAttachment, GLenum.Renderbuffer, packedRB );
-			GLES2Config.GlCheckError( this );
 
-			GLenum status = GL.CheckFramebufferStatus( GLenum.Framebuffer );
-			GLES2Config.GlCheckError( this );
+			status = GL.CheckFramebufferStatus( GLenum.Framebuffer );
 
 			//Detach and destroy
 			GL.FramebufferRenderbuffer( GLenum.Framebuffer, GLenum.DepthAttachment, GLenum.Renderbuffer, 0 );
-			GLES2Config.GlCheckError( this );
 			GL.FramebufferRenderbuffer( GLenum.Framebuffer, GLenum.StencilAttachment, GLenum.Renderbuffer, 0 );
-			GLES2Config.GlCheckError( this );
 			GL.DeleteRenderbuffers( 1, ref packedRB );
-			GLES2Config.GlCheckError( this );
 
 			return status == GLenum.FramebufferComplete;
 		}
