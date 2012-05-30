@@ -2248,7 +2248,7 @@ namespace Axiom.Core
 			{
 				return new Math.Tuple<bool, string>( false, null );
 			}
-			return new Math.Tuple<bool, string>( false, grp.Name );
+			return new Math.Tuple<bool, string>( true, grp.Name );
 		}
 
 		/// <summary>
