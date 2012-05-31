@@ -114,43 +114,26 @@ namespace Axiom.SceneManagers.Octree
 			{
 				return Visibility.None;
 			}
+			var center = bound.Center;
+			var halfSize = bound.HalfSize;
 
-			UpdateView();
-
-			Vector3[] boxCorners = bound.Corners;
-
-			// For each plane, see if all points are on the negative side
-			// If so, object is not visible.
-			// If one or more are, it's partial.
-			// If all aren't, full
-
-			bool AllInside = true;
+			var allInside = true;
 
 			for ( int plane = 0; plane < 6; plane++ )
 			{
-				bool AllOutside = false;
+				// Skip far plane if infinite view frustum
+				if (plane == (int)FrustumPlane.Far && Far == 0)
+					continue;
 
-				float distance = 0;
-
-				for ( int corner = 0; corner < 8; corner++ )
-				{
-					distance = _planes[ plane ].GetDistance( boxCorners[ this.corners[ corner ] ] );
-					AllOutside = AllOutside && ( distance < 0 );
-					AllInside = AllInside && ( distance >= 0 );
-
-					if ( !AllOutside && !AllInside )
-					{
-						break;
-					}
-				}
-
-				if ( AllOutside )
-				{
-					return Visibility.None;
-				}
+				// This updates frustum planes and deals with cull frustum
+				PlaneSide side = this.FrustumPlanes[ plane ].GetSide( center, halfSize );
+				if(side == PlaneSide.Negative) return Visibility.None;
+				// We can't return now as the box could be later on the negative side of a plane.
+				if(side == PlaneSide.Both) 
+						allInside = false;
 			}
 
-			if ( AllInside )
+			if ( allInside )
 			{
 				return Visibility.Full;
 			}
