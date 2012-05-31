@@ -76,9 +76,9 @@ namespace Axiom.Plugins.SystemDrawingCodecs
 			if ( _codecList == null )
 			{
 				_codecList = new RegisteredCodec();
-				_codecList.Add( new SDImageLoader( "BMP" ) );
-				_codecList.Add( new SDImageLoader( "JPG" ) );
-				_codecList.Add( new SDImageLoader( "PNG" ) );
+				_codecList.Add( new SDImageLoader( "bmp" ) );
+				_codecList.Add( new SDImageLoader( "jpg" ) );
+				_codecList.Add( new SDImageLoader( "png" ) );
 
 				foreach ( var i in _codecList )
 				{
