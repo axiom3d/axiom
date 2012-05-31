@@ -691,7 +691,7 @@ namespace Axiom.Scripting.Compiler
 				OnImportFile( this, name );
 			}
 
-			if ( nodes != null && ResourceGroupManager.Instance != null )
+			if ( ResourceGroupManager.Instance != null )
 			{
 				using ( var stream = ResourceGroupManager.Instance.OpenResource( name, this._resourceGroup ) )
 				{
