@@ -208,7 +208,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				if ( unit < Capabilities.TextureUnitCount )
 				{
-					GL.ActiveTexture( this.intToGLtextureUnit( unit ) );
+					GL.ActiveTexture( (GLenum) (((int)GLenum.Texture) + unit ) );
+					GLES2Config.GlCheckError( this );
 					this.activeTextureUnit = (OpenTK.Graphics.ES20.TextureUnit) unit;
 					return true;
 				}
@@ -226,12 +227,6 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				return true;
 			}
-		}
-
-		private GLenum intToGLtextureUnit( int num )
-		{
-			string texUnit = "Texture" + num.ToString();
-			return (GLenum) Enum.Parse( typeof ( GLenum ), texUnit );
 		}
 
 		public void UnregisterContext( GLES2Context context )
@@ -388,11 +383,14 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		public float GetCurrentAnisotropy( int unit )
 		{
-			float[] curAniso = new float[] { 0 };
-			GL.GetTexParameter( this.textureTypes[ unit ], GLenum.TextureMaxAnisotropyExt, curAniso );
+			GLES2Config.GlClearError();
+			float curAniso = 0;
+			LogManager.Instance.Write( "[GLES2] Getting TextureAnistropy from unit {0}.", unit  );
+			GL.GetTexParameter( GLenum.Texture2D /*this.textureTypes[ unit ]*/, GLenum.TextureMaxAnisotropyExt, ref curAniso );
+			LogManager.Instance.Write( "[GLES2] Got TextureAnistropy {1} from unit {0}.", unit, curAniso );
 			GLES2Config.GlCheckError( this );
 
-			return ( curAniso[0] != 0.0f ) ? curAniso[0] : 1.0f;
+			return ( curAniso != 0.0f ) ? curAniso : 1.0f;
 		}
 
 		public void SetSceneBlendingOperation( SceneBlendOperation op )

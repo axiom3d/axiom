@@ -170,12 +170,14 @@ namespace Axiom.RenderSystems.OpenGLES2
 			//If we can do automip generation and the user desires this, do so
 			mipmapsHardwareGenerated = Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.HardwareMipMaps ) && !PixelUtil.IsCompressed( format );
 
-			//Ogre FIXME: For some reason this is crashing on iOS 6
+			//Ogre FIXME: For some reason this is crashing on iOS 5
+#if !MONOTOUCH && ANDROID
 			if ( ( usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap && requestedMipmapCount > 0 && mipmapsHardwareGenerated && ( textureType != Graphics.TextureType.CubeMap ) )
 			{
 				GL.GenerateMipmap( this.GLES2TextureTarget );
 				GLES2Config.GlCheckError( this );
 			}
+#endif
 			//Allocate internal buffer so that glTexSubImageXD can be used
 			//INternal format
 			GLenum glformat = GLES2PixelUtil.GetClosestGLInternalFormat( format, hwGamma );

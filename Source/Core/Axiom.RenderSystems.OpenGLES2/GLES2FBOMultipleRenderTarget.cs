@@ -71,9 +71,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		public override bool AttachDepthBuffer( DepthBuffer ndepthBuffer )
 		{
-			bool result = false;
+			bool result = base.AttachDepthBuffer( depthBuffer );
 
-			if ( ( result = base.AttachDepthBuffer( depthBuffer ) ) )
+			if ( result )
 			{
 				this.fbo.AttachDepthBuffer( depthBuffer );
 			}
