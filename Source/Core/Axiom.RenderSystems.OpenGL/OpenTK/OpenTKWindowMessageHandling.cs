@@ -77,12 +77,11 @@ namespace Axiom.RenderSystems.OpenGL
 					if ( firstTime )
 					{
 						( (INativeWindow)window ).Closing +=
-							delegate( object sender, CancelEventArgs e ) { WindowEventMonitor.Instance.WindowClosed( renderWindow ); };
+							( sender, args ) => WindowEventMonitor.Instance.WindowClosed( renderWindow );
 					}
 				}
 			}
 			firstTime = false;
-			// TODO: implement MessagePump 
 		}
 
 		#endregion Methods
