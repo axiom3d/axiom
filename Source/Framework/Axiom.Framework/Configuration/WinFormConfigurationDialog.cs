@@ -367,7 +367,7 @@ namespace Axiom.Framework.Configuration
 			}
 		}
 
-		public DialogResult Show()
+		public new virtual DialogResult Show()
 		{
 			this.cmdOk.Select();
 			return ShowDialog() == SWF.DialogResult.OK ? Configuration.DialogResult.Ok : Configuration.DialogResult.Cancel;

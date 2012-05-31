@@ -1140,7 +1140,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Implement this method to enable stencil shadows.
 		/// </summary>
-		public EdgeData GetEdgeList()
+		public override EdgeData GetEdgeList()
 		{
 			// Build on demand
 			if ( this.edgeList == null && this.anyIndexed )

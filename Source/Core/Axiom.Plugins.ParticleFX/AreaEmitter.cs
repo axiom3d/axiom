@@ -141,17 +141,17 @@ namespace Axiom.ParticleFX
 
 		protected void GenerateAreaAxes()
 		{
-			Vector3 left = up.Cross( direction );
+			Vector3 left = up.Cross( Direction );
 
 			this.xRange = left*( this.size.x*0.5f );
 			this.yRange = up*( this.size.y*0.5f );
-			this.zRange = direction*( this.size.z*0.5f );
+			this.zRange = Direction*( this.size.z*0.5f );
 		}
 
 		protected void InitDefaults( string type )
 		{
 			// TODO: Revisit this
-			direction = Vector3.UnitZ;
+			Direction = Vector3.UnitZ;
 			up = Vector3.UnitZ;
 			Size = new Vector3( 50, 50, 0 );
 			this.type = type;

@@ -306,7 +306,7 @@ namespace Axiom.SceneManagers.Octree
 		///    Creates a query to return objects found along the ray.
 		/// </summary>
 		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
-		public virtual RaySceneQuery CreateRayQuery()
+		public override RaySceneQuery CreateRayQuery()
 		{
 			return CreateRayQuery( new Ray(), 0xffffffff );
 		}
@@ -316,7 +316,7 @@ namespace Axiom.SceneManagers.Octree
 		/// </summary>
 		/// <param name="ray">Ray to use for the intersection query.</param>
 		/// <returns>A specialized implementation of RaySceneQuery for this scene manager.</returns>
-		public virtual RaySceneQuery CreateRayQuery( Ray ray )
+		public override RaySceneQuery CreateRayQuery( Ray ray )
 		{
 			return CreateRayQuery( ray, 0xffffffff );
 		}

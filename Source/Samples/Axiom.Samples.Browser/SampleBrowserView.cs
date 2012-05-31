@@ -44,9 +44,11 @@ namespace Axiom.Samples.Browser
 			try
 			{
 				Log.Verbose("GLCube", "Loading with default settings");
-
+				GraphicsMode = new AndroidGraphicsMode( new ColorFormat(8,8,8,8), 24, 8, 0, 2, false );
+				
 				// if you don't call this, the context won't be created
 				base.CreateFrameBuffer();
+
 				return;
 			}
 			catch (Exception ex)

@@ -1536,17 +1536,17 @@ namespace Axiom.Samples.ShaderSystem
 		/// <param name="bound"></param>
 		/// <param name="culledBy">Default is Near</param>
 		/// <returns></returns>
-		public virtual bool IsVisible( AxisAlignedBox bound, FrustumPlane culledBy )
+		public new virtual bool IsVisible( AxisAlignedBox bound, FrustumPlane culledBy )
 		{
 			return true;
 		}
 
-		public virtual bool IsVisible( Sphere bound, FrustumPlane culledBy )
+		public new virtual bool IsVisible( Sphere bound, FrustumPlane culledBy )
 		{
 			return true;
 		}
 
-		public virtual bool IsVisible( Vector3 vert, FrustumPlane culledBy )
+		public new virtual bool IsVisible( Vector3 vert, FrustumPlane culledBy )
 		{
 			return true;
 		}

@@ -85,7 +85,7 @@ namespace Axiom.ParticleFX
 
 			// scale the found point to the cylinder's size and move it
 			// relatively to the center of the emitter point
-			particle.Position = position + xOff*xRange + yOff*yRange*zOff*zRange;
+			particle.Position = Position + xOff*xRange + yOff*yRange*zOff*zRange;
 
 			// Generate complex data by reference
 			GenerateEmissionColor( ref particle.Color );

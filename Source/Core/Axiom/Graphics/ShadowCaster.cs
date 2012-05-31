@@ -76,7 +76,7 @@ namespace Axiom.Graphics
 		///		Gets details of the edges which might be used to determine a silhouette.
 		/// </summary>
 		/// <remarks>Defaults to LOD index 0.</remarks>
-		public EdgeData GetEdgeList()
+		public virtual EdgeData GetEdgeList()
 		{
 			return GetEdgeList( 0 );
 		}

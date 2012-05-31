@@ -77,11 +77,6 @@ namespace Axiom.ParticleSystems
 	{
 		#region Fields
 
-		/// <summary>
-		///    Position relative to the center of the ParticleSystem.
-		/// </summary>
-		protected Vector3 position;
-
 		///<summary>
 		///    Rate in particles per second at which this emitter wishes to emit particles.
 		/// </summary>
@@ -102,11 +97,6 @@ namespace Axiom.ParticleSystems
 		///    Name of the type of emitter, MUST be initialized by subclasses.
 		/// </summary>
 		protected string type;
-
-		/// <summary>
-		///    Base direction of the emitter, may not be used by some emitters.
-		/// </summary>
-		protected Vector3 direction;
 
 		/// <summary>
 		///    Notional up vector, just used to speed up generation of variant directions.
@@ -250,7 +240,7 @@ namespace Axiom.ParticleSystems
 			this.minSpeed = float.NaN;
 			this.fixedTTL = 5;
 			this.minTTL = float.NaN;
-			this.position = Vector3.Zero;
+			this.Position = Vector3.Zero;
 			this.colorFixed = ColorEx.White;
 			this.isEnabled = true;
 			this.durationFixed = 0;
@@ -266,21 +256,6 @@ namespace Axiom.ParticleSystems
 		#region Properties
 
 		/// <summary>
-		///		Gets/Sets the position of this emitter relative to the center of the particle system.
-		/// </summary>
-		public virtual Vector3 Position
-		{
-			get
-			{
-				return this.position;
-			}
-			set
-			{
-				this.position = value;
-			}
-		}
-
-		/// <summary>
 		///		Gets/Sets the direction of the emitter.
 		/// </summary>
 		/// <remarks>
@@ -289,19 +264,19 @@ namespace Axiom.ParticleSystems
 		///		vector for every particle, many will introduce a random scatter around this vector using
 		///		the angle property.
 		/// </remarks>
-		public virtual Vector3 Direction
+		public new virtual Vector3 Direction
 		{
 			get
 			{
-				return this.direction;
+				return base.Direction;
 			}
 			set
 			{
-				this.direction = value;
-				this.direction.Normalize();
+				base.Direction = value;
+				base.Direction.Normalize();
 
 				// generate an up vector
-				this.up = this.direction.Perpendicular();
+				this.up = base.Direction.Perpendicular();
 				this.up.Normalize();
 			}
 		}
@@ -749,12 +724,12 @@ namespace Axiom.ParticleSystems
 				float tempAngle = Utility.UnitRandom()*this.angle;
 
 				// randomize direction
-				dest = this.direction.RandomDeviant( tempAngle, this.up );
+				dest = this.Direction.RandomDeviant( tempAngle, this.up );
 			}
 			else
 			{
 				// constant angle
-				dest = this.direction;
+				dest = this.Direction;
 			}
 		}
 

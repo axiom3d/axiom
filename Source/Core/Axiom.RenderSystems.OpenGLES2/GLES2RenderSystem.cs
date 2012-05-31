@@ -2050,8 +2050,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			set {  }
 		}
 
-		//DoubleA: supposed to be a RenderSystem override
-		public bool AreFixedFunctionLightsInViewSpace
+		public override bool AreFixedFunctionLightsInViewSpace
 		{
 			get { return true; }
 		}

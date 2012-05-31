@@ -181,7 +181,7 @@ namespace Axiom.Graphics
 		/// This is the case because it holds the context for vertex,
 		/// index buffers and textures.
 		/// </summary>
-		public virtual bool IsPrimary
+		public new virtual bool IsPrimary
 		{
 			get
 			{

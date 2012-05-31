@@ -53,7 +53,6 @@ namespace Axiom.SceneManagers.PortalConnected
 	{
 		private PCZone startZone;
 		private SceneNode excludeNode;
-		private ulong queryTypeMask;
 
 		/// <summary>
 		///     Creates a custom PCZ AAB query
@@ -114,7 +113,6 @@ namespace Axiom.SceneManagers.PortalConnected
 
 	public class PCZIntersectionSceneQuery : DefaultIntersectionSceneQuery
 	{
-		private ulong queryTypeMask;
 
 		public PCZIntersectionSceneQuery( SceneManager creator )
 			: base( creator )
@@ -169,7 +167,6 @@ namespace Axiom.SceneManagers.PortalConnected
 
 	public class PCZSphereSceneQuery : DefaultSphereRegionSceneQuery
 	{
-		private ulong queryTypeMask;
 		private PCZone startZone;
 		private SceneNode excludeNode;
 
@@ -218,7 +215,6 @@ namespace Axiom.SceneManagers.PortalConnected
 
 	public class PCZRaySceneQuery : DefaultRaySceneQuery
 	{
-		private ulong queryTypeMask;
 		private PCZone startZone;
 		private SceneNode excludeNode;
 
@@ -299,7 +295,6 @@ namespace Axiom.SceneManagers.PortalConnected
 
 	public class PCZPlaneBoundedVolumeListSceneQuery : DefaultPlaneBoundedVolumeListSceneQuery
 	{
-		private ulong queryTypeMask;
 		private PCZone startZone;
 		private SceneNode excludeNode;
 
