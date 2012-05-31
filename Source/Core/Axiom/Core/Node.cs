@@ -840,18 +840,18 @@ namespace Axiom.Core
 		/// <summary>
 		/// Rotate the node around the Y-axis.
 		/// </summary>
-		public virtual void Yaw( float degrees, TransformSpace relativeTo )
+		public virtual void Yaw( float radians, TransformSpace relativeTo )
 		{
-			Rotate( Vector3.UnitY, degrees, relativeTo );
+			Rotate( Vector3.UnitY, radians, relativeTo );
 		}
 
 		/// <summary>
 		/// Rotate the node around the Y-axis.
 		/// </summary>
 		/// <param name="degrees"></param>
-		public virtual void Yaw( float degrees )
+		public virtual void Yaw( float radians )
 		{
-			Rotate( Vector3.UnitY, degrees, TransformSpace.Local );
+			Rotate( Vector3.UnitY, radians, TransformSpace.Local );
 		}
 
 		/// <summary>

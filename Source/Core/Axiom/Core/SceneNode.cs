@@ -870,25 +870,30 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///		Overridden to apply fixed yaw axis behavior.
+		///	Rotate the node around the Y-axis.
 		/// </summary>
 		/// <param name="degrees"></param>
-		public override void Yaw( float degrees )
+		public override void Yaw( float angle, TransformSpace relativeTo )
 		{
-			Vector3 yAxis;
-
 			if ( this.isYawFixed )
 			{
 				// Rotate around fixed yaw axis
-				yAxis = this.yawFixedAxis;
+				Rotate( this.yawFixedAxis, angle, relativeTo );
 			}
 			else
 			{
 				// Rotate around local Y axis
-				yAxis = orientation*Vector3.UnitY;
+				Rotate( Vector3.UnitY,  angle, relativeTo );
 			}
+		}
 
-			Rotate( yAxis, degrees );
+		/// <summary>
+		///	Rotate the node around the Y-axis.
+		/// </summary>
+		/// <param name="degrees"></param>
+		public override void Yaw( float angle )
+		{
+			Yaw( angle, TransformSpace.Local );
 		}
 
 
