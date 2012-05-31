@@ -39,24 +39,25 @@ using System;
 
 namespace Axiom.Core
 {
-	public static class ObjectExtentions
+	public static class ObjectExtensions
 	{
 		/// <summary>
-		/// Helper method to safe dispose an object.
+		/// Extension method to safely dispose any object.
 		/// </summary>
 		/// <param name="disposable">The object being disposed</param>
+		/// <remarks>Does nothing if the object is null or does not implement IDisposable.</remarks>
 		[AxiomHelper( 0, 9 )]
 		public static void SafeDispose( this object disposable )
 		{
 			// first sanity check on disposable
-			if ( disposable == null || !( disposable is IDisposable ) )
+			if ( null == disposable || !( disposable is IDisposable ) )
 			{
 				return;
 			}
 
-			var canCallDispose = disposable is DisposableObject ? !( (DisposableObject)disposable ).IsDisposed : true;
-
-			if ( canCallDispose )
+			// Only call Dispose if the DisposableObject has not been Disposed 
+			// or the object simply implements IDisposable
+			if ( !( disposable is DisposableObject ) || !( (DisposableObject)disposable ).IsDisposed )
 			{
 				( (IDisposable)disposable ).Dispose();
 			}
