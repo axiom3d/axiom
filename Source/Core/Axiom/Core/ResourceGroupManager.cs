@@ -2540,7 +2540,7 @@ namespace Axiom.Core
 						var resList = grp.LoadResourceOrders[ res.Creator.LoadingOrder ];
 						foreach ( var r in resList )
 						{
-							if ( IntPtr.ReferenceEquals( r, res ) )
+							if ( ReferenceEquals( r, res ) )
 							{
 								// this is the one
 								resList.Remove( r );

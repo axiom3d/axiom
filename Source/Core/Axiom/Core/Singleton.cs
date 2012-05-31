@@ -63,7 +63,7 @@ namespace Axiom.Core
 	{
 		public Singleton()
 		{
-			if ( SingletonFactory.instance != null && !IntPtr.ReferenceEquals( this, SingletonFactory.instance ) )
+			if ( SingletonFactory.instance != null && !ReferenceEquals( this, SingletonFactory.instance ) )
 			{
 				throw new Exception(
 					String.Format( "Cannot create instances of the {0} class. Use the static Instance property instead.",
