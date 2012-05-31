@@ -294,7 +294,7 @@ namespace Axiom.Graphics
 					foreach ( var buf in this.customIndexBufferList )
 					{
 						buf.SafeDispose();
-						DefaultHardwareBufferManager.Instance.NotifyIndexBufferDestroyed( buf );
+						HardwareBufferManager.Instance.NotifyIndexBufferDestroyed( buf );
 					}
 				}
 			}

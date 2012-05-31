@@ -458,7 +458,7 @@ namespace Axiom.Animating
 				// Apply to both hardware and software, if requested
 				if ( software )
 				{
-					Debug.Assert( !EqualityComparer<VertexData>.ReferenceEquals( origVertexData, swVertexData ) );
+					Debug.Assert( !ReferenceEquals( origVertexData, swVertexData ) );
 					if ( firstAnim && track.AnimationType == VertexAnimationType.Pose )
 					{
 						// First time through for a piece of pose animated vertex data
@@ -467,8 +467,8 @@ namespace Axiom.Animating
 						var destelem = swVertexData.vertexDeclaration.FindElementBySemantic( VertexElementSemantic.Position );
 						var origBuffer = origVertexData.vertexBufferBinding.GetBuffer( origelem.Source );
 						var destBuffer = swVertexData.vertexBufferBinding.GetBuffer( destelem.Source );
-						// 						Debug.Assert(!EqualityComparer<HardwareVertexBuffer>.ReferenceEquals(origBuffer, destBuffer));
-						if ( !EqualityComparer<HardwareVertexBuffer>.ReferenceEquals( origBuffer, destBuffer ) )
+						//Debug.Assert(!EqualityComparer<HardwareVertexBuffer>.ReferenceEquals(origBuffer, destBuffer));
+						if ( !ReferenceEquals( origBuffer, destBuffer ) )
 						{
 							destBuffer.CopyTo( origBuffer, 0, 0, destBuffer.Size, true );
 						}

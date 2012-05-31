@@ -106,7 +106,7 @@ namespace Axiom.Components.RTShaderSystem
 						SubRenderState subRenderState;
 
 						//Handle light count property.
-						if ( prop.Name == "light_count" )
+						if ( prop != null && prop.Name == "light_count" )
 						{
 							if ( prop.Values.Count != 3 )
 							{
@@ -115,7 +115,7 @@ namespace Axiom.Components.RTShaderSystem
 							else
 							{
 								var lightCount = new int[3];
-								if ( !SGScriptTranslator.getInts( prop.Values, 0, out lightCount, 3 ) )
+								if ( !getInts( prop.Values, 0, out lightCount, 3 ) )
 								{
 									//compiler.addError(...);
 								}

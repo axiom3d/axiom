@@ -797,8 +797,7 @@ namespace Axiom.Samples.ShaderSystem
 			childNode.AttachObject( this.layeredBlendingEntity );
 
 			//Grab the render state of the material
-			RenderState renderState = ShaderGenerator.Instance.GetRenderState( ShaderGenerator.DefaultSchemeName,
-			                                                                   "RTSS/LayeredBlending", 0 );
+			RenderState renderState = ShaderGenerator.Instance.GetRenderState( ShaderGenerator.DefaultSchemeName, "RTSS/LayeredBlending", 0 );
 
 			if ( renderState != null )
 			{
@@ -808,7 +807,7 @@ namespace Axiom.Samples.ShaderSystem
 				{
 					SubRenderState curSubRenderState = subRenderStateList[ i ];
 
-					if ( curSubRenderState.Type == LayeredBlending.FFPType )
+					if ( curSubRenderState.Type == FFPTexturing.FFPType )
 					{
 						this.layerBlendSubRS = curSubRenderState as LayeredBlending;
 						break;
