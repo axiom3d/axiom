@@ -859,12 +859,12 @@ namespace Axiom.ParticleSystems
 		/// </param>
 		protected virtual void GenerateEmissionColor( ref ColorEx color )
 		{
-			if ( this.colorRangeStart != null )
+			if ( this.colorRangeStart != this.ColorRangeEnd )
 			{
-				color.r = this.colorRangeStart.r + Utility.UnitRandom()*( this.colorRangeEnd.r - this.colorRangeStart.r );
-				color.g = this.colorRangeStart.g + Utility.UnitRandom()*( this.colorRangeEnd.g - this.colorRangeStart.g );
-				color.b = this.colorRangeStart.b + Utility.UnitRandom()*( this.colorRangeEnd.b - this.colorRangeStart.b );
-				color.a = this.colorRangeStart.a + Utility.UnitRandom()*( this.colorRangeEnd.a - this.colorRangeStart.a );
+				color.r = this.colorRangeStart.r + Utility.UnitRandom() * ( this.colorRangeEnd.r - this.colorRangeStart.r );
+				color.g = this.colorRangeStart.g + Utility.UnitRandom() * ( this.colorRangeEnd.g - this.colorRangeStart.g );
+				color.b = this.colorRangeStart.b + Utility.UnitRandom() * ( this.colorRangeEnd.b - this.colorRangeStart.b );
+				color.a = this.colorRangeStart.a + Utility.UnitRandom() * ( this.colorRangeEnd.a - this.colorRangeStart.a );
 			}
 			else
 			{
