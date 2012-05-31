@@ -69,7 +69,7 @@ namespace Axiom.RenderSystems.DirectX9
 				var declFound = this._mapDeviceToDeclaration.TryGetValue( pCurDevice, out it );
 
 				// Case we have to create the declaration for this device.
-				if ( declFound = false || it == null )
+				if ( declFound == false || it == null )
 				{
 					var d3dElements = new D3D9.VertexElement[elements.Count + 1];
 

@@ -502,8 +502,13 @@ namespace Axiom.Samples
 			var pl = new SIS.ParameterList();
 			pl.Add( new SIS.Parameter( "WINDOW", RenderWindow[ "WINDOW" ] ) );
 #if !(XBOX || XBOX360 )
-			pl.Add( new SIS.Parameter( "w32_mouse", "CLF_BACKGROUND" ) );
-			pl.Add( new SIS.Parameter( "w32_mouse", "CLF_NONEXCLUSIVE" ) );
+			if ( !RenderWindow.GetType().Name.Contains( "OpenTK" ) )
+			{
+				pl.Add( new SIS.Parameter( "w32_mouse", "CLF_BACKGROUND" ) );
+				pl.Add( new SIS.Parameter( "w32_mouse", "CLF_NONEXCLUSIVE" ) );
+			}
+			else
+				pl.Add( new SIS.Parameter( "w32_no_coop", string.Empty )  );
 #endif
 #if !( WINDOWS_PHONE )
 			this.InputManager = SIS.InputManager.CreateInputSystem( pl );
@@ -524,7 +529,7 @@ namespace Axiom.Samples
 		protected virtual void CreateInputDevices()
 		{
 #if !(XBOX || XBOX360 )
-			this.Keyboard = this.InputManager.CreateInputObject<SIS.Keyboard>( true, "" );
+			this.Keyboard = this.InputManager.CreateInputObject<SIS.Keyboard>( true, String.Empty );
 			this.Mouse = this.InputManager.CreateInputObject<SIS.Mouse>( true, String.Empty );
 
 			this.Keyboard.EventListener = this;

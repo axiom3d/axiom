@@ -547,7 +547,8 @@ namespace Axiom.RenderSystems.OpenGL.ATI
 						if ( tokenID == this.valueID )
 						{
 							float constantvalue;
-							if ( passed = IsFloatValue( out constantvalue, out tokenlength ) )
+							passed = IsFloatValue( out constantvalue, out tokenlength );
+							if ( passed )
 							{
 								this.constants.Add( constantvalue );
 							}
