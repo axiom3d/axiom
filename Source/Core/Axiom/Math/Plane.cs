@@ -319,18 +319,6 @@ namespace Axiom.Math
 		/// <returns>true if equal, false if not equal.</returns>
 		public static bool operator ==( Plane left, Plane right )
 		{
-			object l = left;
-			object r = right;
-			if ( l == null || r == null )
-			{
-				if ( l == null && r == null )
-				{
-					return true;
-				}
-
-				return false;
-			}
-
 			return ( left.D == right.D ) && ( left.Normal == right.Normal );
 		}
 
@@ -342,18 +330,6 @@ namespace Axiom.Math
 		/// <returns>true if not equal, false if equal.</returns>
 		public static bool operator !=( Plane left, Plane right )
 		{
-			object l = left;
-			object r = right;
-			if ( l == null || r == null )
-			{
-				if ( l == null && r == null )
-				{
-					return false;
-				}
-
-				return true;
-			}
-
 			return ( left.D != right.D ) || ( left.Normal != right.Normal );
 		}
 
