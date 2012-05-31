@@ -189,15 +189,15 @@ namespace Axiom.Graphics
 		[OgreVersion( 1, 7, 2790 )] protected GpuProgramParameters activeFragmentGpuProgramParameters;
 
 		[OgreVersion( 1, 7, 2790 )] protected DepthBufferMap depthBufferPool = new DepthBufferMap
-		                                                                       {
-		                                                                       	{
-		                                                                       		PoolId.Default, new DepthBufferVec()
-		                                                                       		},
-		                                                                       	// { PoolId.ManualUsage, new DepthBufferVec() },
-		                                                                       	{
-		                                                                       		PoolId.NoDepth, new DepthBufferVec()
-		                                                                       		}
-		                                                                       };
+																			   {
+																				{
+																					PoolId.Default, new DepthBufferVec()
+																					},
+																				// { PoolId.ManualUsage, new DepthBufferVec() },
+																				{
+																					PoolId.NoDepth, new DepthBufferVec()
+																					}
+																			   };
 
 		[OgreVersion( 1, 7, 2790 )] protected bool texProjRelative;
 
@@ -348,7 +348,7 @@ namespace Axiom.Graphics
 		/// Are fixed-function lights provided in view space? Affects optimisation.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
-		public bool AreFixedFunctionLightsInViewSpace
+		public virtual bool AreFixedFunctionLightsInViewSpace
 		{
 			get
 			{
@@ -753,12 +753,12 @@ namespace Axiom.Graphics
 		{
 			var key = new Axiom.Math.Tuple<string, Action<NameValuePairList>>( name, handler );
 			Action<string, NameValuePairList> wrapper = ( n, args ) =>
-			                                            {
-			                                            	if ( n == name )
-			                                            	{
-			                                            		handler( args );
-			                                            	}
-			                                            };
+														{
+															if ( n == name )
+															{
+																handler( args );
+															}
+														};
 			Listener += wrapper;
 			this._namedEvents.Add( key, wrapper );
 		}
@@ -1598,7 +1598,7 @@ namespace Axiom.Graphics
 
 			// Texture layer filtering
 			SetTextureUnitFiltering( texUnit, tl.GetTextureFiltering( FilterType.Min ), tl.GetTextureFiltering( FilterType.Mag ),
-			                         tl.GetTextureFiltering( FilterType.Mip ) );
+									 tl.GetTextureFiltering( FilterType.Mip ) );
 
 			// Texture layer anistropy
 			SetTextureLayerAnisotropy( texUnit, tl.TextureAnisotropy );
@@ -1907,7 +1907,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms,
-		                                               GpuProgramParameters.GpuParamVariability mask );
+													   GpuProgramParameters.GpuParamVariability mask );
 
 		#endregion
 
@@ -1994,7 +1994,7 @@ namespace Axiom.Graphics
 		/// </param>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen,
-		                                                 NamedParameterList miscParams );
+														 NamedParameterList miscParams );
 
 		#endregion CreateRenderWindow
 
@@ -2012,7 +2012,7 @@ namespace Axiom.Graphics
 		/// <returns>true on success.</returns>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual bool CreateRenderWindows( RenderWindowDescriptionList renderWindowDescriptions,
-		                                         RenderWindowList createdWindows )
+												 RenderWindowList createdWindows )
 		{
 			var fullscreenWindowsCount = 0;
 
@@ -2191,10 +2191,10 @@ namespace Axiom.Graphics
 		/// <param name="forGpuPrograms"></param>
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
-        public abstract void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms = false );
+		public abstract void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuPrograms = false );
 #else
 		public abstract void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest,
-		                                      bool forGpuPrograms );
+											  bool forGpuPrograms );
 #endif
 
 #if !NET_40
@@ -2283,10 +2283,10 @@ namespace Axiom.Graphics
 		/// <param name="forGpuProgram"></param>
 		[OgreVersion( 1, 7, 2790 )]
 #if NET_40
-        public abstract void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram = false );
+		public abstract void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest, bool forGpuProgram = false );
 #else
 		public abstract void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest,
-		                                           bool forGpuProgram );
+												   bool forGpuProgram );
 #endif
 
 #if !NET_40
@@ -2307,17 +2307,17 @@ namespace Axiom.Graphics
 		/// </remarks>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane,
-		                                           out Matrix4 dest,
+												   out Matrix4 dest,
 #if NET_40
-            bool forGpuProgram = false );
+			bool forGpuProgram = false );
 #else
-		                                           bool forGpuProgram );
+												   bool forGpuProgram );
 #endif
 
 #if !NET_40
 		/// <see cref="Axiom.Graphics.RenderSystem.MakeProjectionMatrix(Real, Real, Real, Real, Real, Real, out Matrix4, bool)"/>
 		public void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane,
-		                                  out Matrix4 dest )
+										  out Matrix4 dest )
 		{
 			MakeProjectionMatrix( left, right, bottom, top, nearPlane, farPlane, out dest, false );
 		}
@@ -2575,10 +2575,10 @@ namespace Axiom.Graphics
 		/// <param name="destFactorAlpha">The destination factor in the above calculation for the alpha channel, i.e. multiplied by the pixel alpha components.</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
-		                                      SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
+											  SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha )
 		{
 			SetSeparateSceneBlending( sourceFactor, destFactor, sourceFactorAlpha, destFactorAlpha, SceneBlendOperation.Add,
-			                          SceneBlendOperation.Add );
+									  SceneBlendOperation.Add );
 		}
 
 		/// <summary>
@@ -2596,8 +2596,8 @@ namespace Axiom.Graphics
 		/// <param name="alphaOp">The blend operation mode for combining pixel alpha values</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
-		                                               SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha,
-		                                               SceneBlendOperation op, SceneBlendOperation alphaOp );
+													   SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha,
+													   SceneBlendOperation op, SceneBlendOperation alphaOp );
 
 		#endregion
 
@@ -2673,7 +2673,7 @@ namespace Axiom.Graphics
 		public void SetStencilBufferParams()
 		{
 			SetStencilBufferParams( CompareFunction.AlwaysPass, 0, -1, StencilOperation.Keep, StencilOperation.Keep,
-			                        StencilOperation.Keep, false );
+									StencilOperation.Keep, false );
 		}
 
 		/// <summary>
@@ -2713,7 +2713,7 @@ namespace Axiom.Graphics
 		public void SetStencilBufferParams( CompareFunction function, int refValue )
 		{
 			SetStencilBufferParams( function, refValue, -1, StencilOperation.Keep, StencilOperation.Keep, StencilOperation.Keep,
-			                        false );
+									false );
 		}
 
 		/// <summary>
@@ -2756,7 +2756,7 @@ namespace Axiom.Graphics
 		/// <param name="passOp">The action to take when both the stencil and depth check pass.</param>
 		[OgreVersion( 1, 7, 2790 )]
 		public void SetStencilBufferParams( CompareFunction function, int refValue, int mask, StencilOperation stencilFailOp,
-		                                    StencilOperation depthFailOp, StencilOperation passOp )
+											StencilOperation depthFailOp, StencilOperation passOp )
 		{
 			SetStencilBufferParams( function, refValue, mask, stencilFailOp, depthFailOp, passOp, false );
 		}
@@ -2806,8 +2806,8 @@ namespace Axiom.Graphics
 		/// </param>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract void SetStencilBufferParams( CompareFunction function, int refValue, int mask,
-		                                             StencilOperation stencilFailOp, StencilOperation depthFailOp,
-		                                             StencilOperation passOp, bool twoSidedOperation );
+													 StencilOperation stencilFailOp, StencilOperation depthFailOp,
+													 StencilOperation passOp, bool twoSidedOperation );
 
 		#endregion
 
@@ -2904,7 +2904,7 @@ namespace Axiom.Graphics
 		/// </param>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive,
-		                                       Real shininess, TrackVertexColor tracking );
+											   Real shininess, TrackVertexColor tracking );
 
 		#endregion
 
@@ -2920,7 +2920,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		public abstract void SetPointParameters( Real size, bool attenuationEnabled, Real constant, Real linear,
-		                                         Real quadratic, Real minSize, Real maxSize );
+												 Real quadratic, Real minSize, Real maxSize );
 
 		#endregion
 
@@ -2985,8 +2985,8 @@ namespace Axiom.Graphics
 		public virtual void SetVertexTexture( int unit, Texture texture )
 		{
 			throw new NotSupportedException( "This rendersystem does not support separate vertex texture samplers, " +
-			                                 "you should use the regular texture samplers which are shared between " +
-			                                 "the vertex and fragment units." );
+											 "you should use the regular texture samplers which are shared between " +
+											 "the vertex and fragment units." );
 		}
 
 		#endregion
@@ -3122,7 +3122,7 @@ namespace Axiom.Graphics
 		/// </param>
 		[OgreVersion( 1, 7, 2790 )]
 		public virtual void SetTextureUnitFiltering( int unit, FilterOptions minFilter, FilterOptions magFilter,
-		                                             FilterOptions mipFilter )
+													 FilterOptions mipFilter )
 		{
 			SetTextureUnitFiltering( unit, FilterType.Min, minFilter );
 			SetTextureUnitFiltering( unit, FilterType.Mag, magFilter );

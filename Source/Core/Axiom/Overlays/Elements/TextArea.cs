@@ -802,7 +802,7 @@ namespace Axiom.Overlays.Elements
 		}
 
 		[ScriptableProperty( "alignment", "The horizontal alignment, 'left', 'right' or 'center'.", typeof ( TextArea ) )]
-		public class HorizontalAlignmentAttributeCommand : IPropertyCommand
+		public class TextAlignmentAttributeCommand : IPropertyCommand
 		{
 			#region Implementation of IPropertyCommand<object,string>
 

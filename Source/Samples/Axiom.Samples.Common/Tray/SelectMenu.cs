@@ -113,7 +113,7 @@ namespace Axiom.Samples
 		/// <summary>
 		/// 
 		/// </summary>
-		protected bool IsCursorOver;
+		protected new bool IsCursorOver;
 
 		/// <summary>
 		/// 

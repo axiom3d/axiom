@@ -125,7 +125,6 @@ namespace Axiom.SceneManagers.PortalConnected
 
 		protected List<LightInfo> mTestLightInfos = new List<LightInfo>();
 		protected List<LightInfo> mCachedLightInfos = new List<LightInfo>();
-		private bool shadowTextureConfigDirty;
 
 		public PCZSceneManager( string name )
 			: base( name )

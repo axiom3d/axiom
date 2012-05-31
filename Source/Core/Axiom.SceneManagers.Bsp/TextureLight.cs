@@ -94,19 +94,6 @@ namespace Axiom.SceneManagers.Bsp
 			}
 		}
 
-		// used in BspSceneManager.PopulateLightList method
-		internal float TempSquaredDist
-		{
-			get
-			{
-				return base.tempSquaredDist;
-			}
-			set
-			{
-				base.tempSquaredDist = value;
-			}
-		}
-
 		/// <summary>
 		///		Default constructor.
 		/// </summary>

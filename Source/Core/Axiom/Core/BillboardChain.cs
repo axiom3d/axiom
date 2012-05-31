@@ -831,7 +831,7 @@ namespace Axiom.Core
 			}
 		}
 
-		public bool CastShadows
+		public override bool CastShadows
 		{
 			get
 			{

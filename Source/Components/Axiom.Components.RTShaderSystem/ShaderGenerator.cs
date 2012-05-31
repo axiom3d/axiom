@@ -99,8 +99,8 @@ namespace Axiom.Components.RTShaderSystem
 				// ASSAF: This is disabled for now - to stop an exception on the iOS
 				// when running with the OpenGL ES 1.x that doesn't support shaders...
 				/*
-         * throw new Axiom.Core.AxiomException("ShaderGeneration creation enrror: None of the profiles is supported");
-         */
+		 * throw new Axiom.Core.AxiomException("ShaderGeneration creation enrror: None of the profiles is supported");
+		 */
 				this.shaderLanguage = "cg";
 			}
 
@@ -347,10 +347,10 @@ namespace Axiom.Components.RTShaderSystem
 		}
 
 		public bool HasShaderBasedTechnique( string materialName, string srcTechniqueSchemeName,
-		                                     string dstTechniqueSchemeName )
+											 string dstTechniqueSchemeName )
 		{
 			return HasShaderBasedTechnique( materialName, ResourceGroupManager.AutoDetectResourceGroupName,
-			                                srcTechniqueSchemeName, dstTechniqueSchemeName );
+											srcTechniqueSchemeName, dstTechniqueSchemeName );
 		}
 
 		/// <summary>
@@ -362,7 +362,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="dstTechniqueSchemeName"> The destination shader based technique scheme name. </param>
 		/// <returns> True if exist. False if not. </returns>
 		public bool HasShaderBasedTechnique( string materialName, string groupName, string srcTechnqiueSchemeName,
-		                                     string dstTechniqueSchemeName )
+											 string dstTechniqueSchemeName )
 		{
 			if ( MaterialManager.Instance.ResourceExists( materialName ) == false )
 			{
@@ -378,7 +378,7 @@ namespace Axiom.Components.RTShaderSystem
 					var techEntry = techniqueEntries[ i ];
 					//check requested mapping already exists
 					if ( techEntry.SourceTechnique.SchemeName == srcTechnqiueSchemeName &&
-					     techEntry.DestinationTechniqueSchemeName == dstTechniqueSchemeName )
+						 techEntry.DestinationTechniqueSchemeName == dstTechniqueSchemeName )
 					{
 						return true;
 					}
@@ -388,10 +388,10 @@ namespace Axiom.Components.RTShaderSystem
 		}
 
 		public bool CreateShaderBasedTechnique( string materialName, string srcTechniqueSchemeName,
-		                                        string dstTechniqueSchemeName, bool overProgrammable )
+												string dstTechniqueSchemeName, bool overProgrammable )
 		{
 			return HasShaderBasedTechnique( materialName, ResourceGroupManager.AutoDetectResourceGroupName,
-			                                srcTechniqueSchemeName, dstTechniqueSchemeName );
+											srcTechniqueSchemeName, dstTechniqueSchemeName );
 		}
 
 		/// <summary>
@@ -404,7 +404,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="overProgrammable"> </param>
 		/// <returns> True on success. Failure may occur if the source technique is not FFP pure, or different source technique is mapped to the requested destination scheme. </returns>
 		public bool CreateShaderBasedTechnique( string materialName, string groupName, string srcTechniqueSchemeName,
-		                                        string dstTechniqueSchemeName, bool overProgrammable )
+												string dstTechniqueSchemeName, bool overProgrammable )
 		{
 			var srcMat = (Material)MaterialManager.Instance.GetByName( materialName );
 			if ( srcMat == null )
@@ -427,7 +427,7 @@ namespace Axiom.Components.RTShaderSystem
 				foreach ( var techEntry in techniqueEntries )
 				{
 					if ( techEntry.SourceTechnique.SchemeName == srcTechniqueSchemeName &&
-					     techEntry.DestinationTechniqueSchemeName == dstTechniqueSchemeName )
+						 techEntry.DestinationTechniqueSchemeName == dstTechniqueSchemeName )
 					{
 						return true;
 					}
@@ -524,7 +524,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="dstTechniqueSchemeName"> The destination shader based technique scheme name. </param>
 		/// <returns> True on success. Failure may occur if given source technique was not previously registered successfully using the CreateShaderBasedTechnique method.>> </returns>
 		public bool RemoveShaderBasedTechnique( string materialName, string groupName, string srcTechniqueSchemeName,
-		                                        string dstTechniqueSchemeName )
+												string dstTechniqueSchemeName )
 		{
 			SGScheme schemeEntry = null;
 
@@ -549,7 +549,7 @@ namespace Axiom.Components.RTShaderSystem
 				foreach ( var itTechEntry in techniqueEntries )
 				{
 					if ( itTechEntry.SourceTechnique.SchemeName == srcTechniqueSchemeName &&
-					     itTechEntry.DestinationTechniqueSchemeName == dstTechniqueSchemeName )
+						 itTechEntry.DestinationTechniqueSchemeName == dstTechniqueSchemeName )
 					{
 						dstTechnique = itTechEntry;
 						techniqueEntries.Remove( itTechEntry );
@@ -573,10 +573,10 @@ namespace Axiom.Components.RTShaderSystem
 		}
 
 		public bool RemoveShaderBasedTechnique( string materialName, string srcTechniqueSchemeName,
-		                                        string dstTechniqueSchemeName )
+												string dstTechniqueSchemeName )
 		{
 			return RemoveShaderBasedTechnique( materialName, ResourceGroupManager.AutoDetectResourceGroupName,
-			                                   srcTechniqueSchemeName, dstTechniqueSchemeName );
+											   srcTechniqueSchemeName, dstTechniqueSchemeName );
 		}
 
 		/// <summary>
@@ -602,8 +602,8 @@ namespace Axiom.Components.RTShaderSystem
 					foreach ( var itTechEntry in matTechniqueEntries )
 					{
 						RemoveShaderBasedTechnique( materialName, itMatEntry.Item1.Item2,
-						                            itTechEntry.SourceTechnique.SchemeName,
-						                            itTechEntry.DestinationTechniqueSchemeName );
+													itTechEntry.SourceTechnique.SchemeName,
+													itTechEntry.DestinationTechniqueSchemeName );
 					}
 				}
 				this.materialEntriesMap.Remove( itMatEntry );
@@ -714,7 +714,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="dstGroupName"> The destination group name </param>
 		/// <returns> True if successful </returns>
 		public bool CloneShaderBasedTechniques( string srcMaterialName, string srcGroupName, string dstMaterialName,
-		                                        string dstGroupName )
+												string dstGroupName )
 		{
 			var srcMat = (Material)MaterialManager.Instance.GetByName( srcMaterialName );
 			var dstMat = (Material)MaterialManager.Instance.GetByName( dstMaterialName );
@@ -731,7 +731,7 @@ namespace Axiom.Components.RTShaderSystem
 
 			//case the requested material belongs to different group and it is not autodetect
 			if ( ( trueSrcGroupName != srcGroupName && srcGroupName != ResourceGroupManager.AutoDetectResourceGroupName ) ||
-			     trueSrcGroupName != dstGroupName && dstGroupName != ResourceGroupManager.AutoDetectResourceGroupName )
+				 trueSrcGroupName != dstGroupName && dstGroupName != ResourceGroupManager.AutoDetectResourceGroupName )
 			{
 				return false;
 			}
@@ -781,7 +781,7 @@ namespace Axiom.Components.RTShaderSystem
 
 					//for every technique in the source material create a shader based technique in the destination material
 					if ( CreateShaderBasedTechnique( dstMaterialName, trueDstGroupName, srcFromTechniqueScheme,
-					                                 srcToTechniqueScheme, false ) )
+													 srcToTechniqueScheme, false ) )
 					{
 						int passCount = itTechEntry.SourceTechnique.PassCount;
 						for ( short pi = 0; pi < passCount; pi++ )
@@ -790,7 +790,7 @@ namespace Axiom.Components.RTShaderSystem
 							{
 								RenderState srcRenderState = itTechEntry.GetRenderState( pi );
 								RenderState dstRenderState = GetRenderState( srcToTechniqueScheme, dstMaterialName,
-								                                             trueDstGroupName, (ushort)pi );
+																			 trueDstGroupName, (ushort)pi );
 
 								List<SubRenderState> srcSubRenderState = srcRenderState.TemplateSubRenderStateList;
 
@@ -900,7 +900,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="lightList"> </param>
 		/// <param name="suppressRenderStateChanges"> </param>
 		protected void notifyRenderSingleObject( IRenderable rend, Pass pass, AutoParamDataSource source,
-		                                         LightList lightList, bool suppressRenderStateChanges )
+												 LightList lightList, bool suppressRenderStateChanges )
 		{
 			if ( this.activeViewportValid )
 			{
@@ -975,7 +975,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="translator"> The translator for the specific SubRenderState </param>
 		/// <returns> </returns>
 		public SubRenderState createSubRenderState( ScriptCompiler compiler, PropertyAbstractNode prop,
-		                                            TextureUnitState texState, SGScriptTranslator translator )
+													TextureUnitState texState, SGScriptTranslator translator )
 		{
 			SubRenderState subRenderState = null;
 			foreach ( var key in this.subRenderStateFactories.Keys )
@@ -998,7 +998,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="translator"> The translator for the specific SubRenderState </param>
 		/// <returns> </returns>
 		public SubRenderState createSubRenderState( ScriptCompiler compiler, PropertyAbstractNode prop, Pass pass,
-		                                            SGScriptTranslator translator )
+													SGScriptTranslator translator )
 		{
 			SubRenderState subRenderState = null;
 			foreach ( var key in this.subRenderStateFactories.Keys )
@@ -1085,7 +1085,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="passEntry"> The SGPass instance </param>
 		/// <param name="srcTextureUnit"> The TextureUnitState being serialized </param>
 		internal void serializeTextureUnitStateAttributes( MaterialSerializer ser, SGPass passEntry,
-		                                                   TextureUnitState srcTextureUnit )
+														   TextureUnitState srcTextureUnit )
 		{
 			//TODO
 		}
@@ -1238,7 +1238,7 @@ namespace Axiom.Components.RTShaderSystem
 						outfile.Dispose();
 
 						ResourceGroupManager.Instance.AddResourceLocation( this.shaderCachePath, "FileSystem",
-						                                                   this.GeneratedShadersGroupName );
+																		   this.GeneratedShadersGroupName );
 					}
 				}
 			}
@@ -1379,9 +1379,9 @@ namespace Axiom.Components.RTShaderSystem
 
 				//Set light properties
 				var lightCount = new int[3]
-				                 {
-				                 	0, 0, 0
-				                 };
+								 {
+									0, 0, 0
+								 };
 
 				//Use light count definitions of the custom render state if exists.
 				if ( this.customRenderState != null && this.customRenderState.LightCountAutoUpdate == false )
@@ -1436,7 +1436,7 @@ namespace Axiom.Components.RTShaderSystem
 			/// <param name="lightList"> </param>
 			/// <param name="suppressRenderStateChanges"> </param>
 			public void NotifyRenderSingleObject( IRenderable rend, AutoParamDataSource source, LightList lightList,
-			                                      bool suppressRenderStateChanges )
+												  bool suppressRenderStateChanges )
 			{
 				if ( this.targetRenderState != null && suppressRenderStateChanges == false )
 				{
@@ -1956,7 +1956,7 @@ namespace Axiom.Components.RTShaderSystem
 					SGTechnique curTechEntry = this.techniqueEntries[ i ];
 					SGMaterial curMaterial = curTechEntry.Parent;
 					if ( ( curMaterial.MaterialName == materialName ) &&
-					     ( ( doAutoDetect ) || ( curMaterial.GroupName == groupName ) ) )
+						 ( ( doAutoDetect ) || ( curMaterial.GroupName == groupName ) ) )
 					{
 						//turn on the build destination technique flag
 						curTechEntry.BuildDestinationTechnique = true;
@@ -1994,8 +1994,8 @@ namespace Axiom.Components.RTShaderSystem
 					SGTechnique curTechEntry = this.techniqueEntries[ i ];
 					SGMaterial curMat = curTechEntry.Parent;
 					if ( ( curMat.MaterialName == materialName ) &&
-					     ( ( doAutoDetect == true ) || ( curMat.GroupName == groupName ) ) &
-					     ( curTechEntry.BuildDestinationTechnique ) )
+						 ( ( doAutoDetect == true ) || ( curMat.GroupName == groupName ) ) &
+						 ( curTechEntry.BuildDestinationTechnique ) )
 					{
 						//build render state for each technique
 						curTechEntry.BuildTargetRenderState();
@@ -2033,13 +2033,13 @@ namespace Axiom.Components.RTShaderSystem
 					LightList lightList = null; //sceneManager._getLightsAffectingFrustum();
 
 					var sceneLightCount = new int[3]
-					                      {
-					                      	0, 0, 0
-					                      };
+										  {
+											0, 0, 0
+										  };
 					var currLightCount = new int[3]
-					                     {
-					                     	0, 0, 0
-					                     };
+										 {
+											0, 0, 0
+										 };
 
 					for ( int i = 0; i < lightList.Count; i++ )
 					{
@@ -2050,8 +2050,8 @@ namespace Axiom.Components.RTShaderSystem
 
 					//Case light state has been changed -> invalidate this scheme.
 					if ( currLightCount[ 0 ] != sceneLightCount[ 0 ] ||
-					     currLightCount[ 1 ] != sceneLightCount[ 1 ] ||
-					     currLightCount[ 2 ] != sceneLightCount[ 2 ] )
+						 currLightCount[ 1 ] != sceneLightCount[ 1 ] ||
+						 currLightCount[ 2 ] != sceneLightCount[ 2 ] )
 					{
 						curRenderState.SetLightCount( currLightCount );
 						Invalidate();
@@ -2098,7 +2098,7 @@ namespace Axiom.Components.RTShaderSystem
 					SGTechnique curTechEntry = this.techniqueEntries[ i ];
 					Material curMat = curTechEntry.SourceTechnique.Parent;
 					if ( ( curMat.Name == materialName ) &&
-					     ( ( doAutoDetect == true ) || ( curMat.Group == groupName ) ) )
+						 ( ( doAutoDetect == true ) || ( curMat.Group == groupName ) ) )
 					{
 						return curTechEntry.GetRenderState( (short)passIndex );
 					}
@@ -2150,7 +2150,7 @@ namespace Axiom.Components.RTShaderSystem
 				}
 			}
 
-			public virtual SGScriptTranslator GetTranslator( AbstractNode node )
+			public new virtual SGScriptTranslator GetTranslator( AbstractNode node )
 			{
 				return this._owner.GetTranslator( node );
 			}

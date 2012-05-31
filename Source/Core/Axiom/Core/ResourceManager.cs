@@ -432,8 +432,7 @@ namespace Axiom.Core
 		/// <param name="backgroundThread">Optional boolean which lets the load routine know if it
 		/// is being run on the background resource loading thread</param>
 		[OgreVersion( 1, 7, 2 )]
-		public virtual Resource Load( string name, string group, bool isManual, IManualResourceLoader loader,
-		                              NameValuePairList loadParams, bool backgroundThread )
+		public virtual Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, bool backgroundThread )
 		{
 			var r = CreateOrRetrieve( name, group, isManual, loader, loadParams ).First;
 			// ensure loaded
@@ -456,8 +455,7 @@ namespace Axiom.Core
 			return Load( name, group, isManual, loader, null, false );
 		}
 
-		public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader,
-		                      NameValuePairList loadParams )
+		public Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams )
 		{
 			return Load( name, group, isManual, loader, loadParams, false );
 		}

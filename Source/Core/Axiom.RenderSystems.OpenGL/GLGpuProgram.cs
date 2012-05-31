@@ -224,6 +224,7 @@ namespace Axiom.RenderSystems.OpenGL
 					return 15;
 				default:
 					Debug.Assert( false, "Missing attribute!" );
+					// Unreachable code, but keeps compiler happy
 					return 0;
 			}
 		}

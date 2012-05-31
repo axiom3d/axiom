@@ -105,17 +105,17 @@ namespace Axiom.Collections
 
 		#region Instance Methods
 
-		public virtual void Add( string key, T item )
+		public new virtual void Add( string key, T item )
 		{
 			( this as IDictionary<string, T> ).Add( key, item );
 		}
 
-		public virtual void Remove( string key )
+		public new virtual void Remove( string key )
 		{
 			( this as IDictionary<string, T> ).Remove( key );
 		}
 
-		public virtual bool TryGetValue( string key, out T val )
+		public new virtual bool TryGetValue( string key, out T val )
 		{
 			val = default( T );
 			if ( ContainsKey( key ) )

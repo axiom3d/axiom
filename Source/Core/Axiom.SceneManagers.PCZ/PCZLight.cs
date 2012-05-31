@@ -217,7 +217,7 @@ namespace Axiom.SceneManagers.PortalConnected
 
 	public class PCZLightFactory : LightFactory
 	{
-		public const string TypeName = "PCZLight";
+		public new const string TypeName = "PCZLight";
 
 		public PCZLightFactory()
 		{

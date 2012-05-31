@@ -121,7 +121,7 @@ namespace Axiom.ParticleFX
 			// scale the found point to the ring's size and move it
 			// relatively to the center of the emitter point
 
-			particle.Position = position + x*xRange + y*yRange + z*zRange;
+			particle.Position = Position + x*xRange + y*yRange + z*zRange;
 
 			// Generate complex data by reference
 			GenerateEmissionColor( ref particle.Color );

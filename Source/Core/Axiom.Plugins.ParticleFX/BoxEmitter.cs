@@ -66,7 +66,7 @@ namespace Axiom.ParticleFX
 			yOff = Utility.SymmetricRandom()*yRange;
 			zOff = Utility.SymmetricRandom()*zRange;
 
-			particle.Position = position + xOff + yOff + zOff;
+			particle.Position = Position + xOff + yOff + zOff;
 
 			// Generate complex data by reference
 			GenerateEmissionColor( ref particle.Color );

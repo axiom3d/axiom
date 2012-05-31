@@ -296,8 +296,8 @@ namespace Axiom.Core
 		/// <param name="fsaaHint"></param>
 		/// <returns></returns>
 		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth,
-		                             int numMipMaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader,
-		                             bool hwGammaCorrection, int fsaa, string fsaaHint )
+									 int numMipMaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader,
+									 bool hwGammaCorrection, int fsaa, string fsaaHint )
 		{
 			var ret = (Texture)Create( name, group, true, loader, null );
 			ret.TextureType = type;
@@ -351,7 +351,7 @@ namespace Axiom.Core
 		/// </param>
 		/// <returns></returns>
 		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps,
-		                             PixelFormat format, TextureUsage usage, IManualResourceLoader loader )
+									 PixelFormat format, TextureUsage usage, IManualResourceLoader loader )
 		{
 			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, usage, loader, false, 0, String.Empty );
 		}
@@ -384,69 +384,67 @@ namespace Axiom.Core
 		/// </param>
 		/// <returns></returns>
 		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps,
-		                             PixelFormat format, TextureUsage usage )
+									 PixelFormat format, TextureUsage usage )
 		{
 			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, usage, null, false, 0, String.Empty );
 		}
 
 		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps,
-		                             PixelFormat format )
+									 PixelFormat format )
 		{
 			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, TextureUsage.Default, null, false, 0,
-			                     String.Empty );
+								 String.Empty );
 		}
 
 		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps,
-		                             PixelFormat format, TextureUsage usage, IManualResourceLoader loader,
-		                             bool hwGammaCorrection )
+									 PixelFormat format, TextureUsage usage, IManualResourceLoader loader,
+									 bool hwGammaCorrection )
 		{
 			return CreateManual( name, group, type, width, height, numMipmaps, format, usage, loader, hwGammaCorrection, 0,
-			                     string.Empty );
+								 string.Empty );
 		}
 
 		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps,
-		                             PixelFormat format, TextureUsage usage, IManualResourceLoader loader,
-		                             bool hwGammaCorrection, int fsaa )
+									 PixelFormat format, TextureUsage usage, IManualResourceLoader loader,
+									 bool hwGammaCorrection, int fsaa )
 		{
 			return CreateManual( name, group, type, width, height, numMipmaps, format, usage, loader, hwGammaCorrection, fsaa,
-			                     string.Empty );
+								 string.Empty );
 		}
 
 		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int numMipmaps,
-		                             PixelFormat format, TextureUsage usage, IManualResourceLoader loader,
-		                             bool hwGammaCorrection, int fsaa, string fsaaHint )
+									 PixelFormat format, TextureUsage usage, IManualResourceLoader loader,
+									 bool hwGammaCorrection, int fsaa, string fsaaHint )
 		{
 			return CreateManual( name, group, type, width, height, 1, numMipmaps, format, usage, loader, hwGammaCorrection, fsaa,
-			                     string.Empty );
+								 string.Empty );
 		}
 
 		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth,
-		                             int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader )
+									 int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader )
 		{
 			return CreateManual( name, group, type, width, height, depth, numMipmaps, format, usage, loader, false, 0,
-			                     string.Empty );
+								 string.Empty );
 		}
 
 		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth,
-		                             int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader,
-		                             bool hwGammaCorrection )
+									 int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader,
+									 bool hwGammaCorrection )
 		{
-			return CreateManual( name, group, type, width, height, depth, numMipmaps, format, usage, loader, hwGammaCorrection, 0,
-			                     string.Empty );
+			return CreateManual( name, group, type, width, height, depth, numMipmaps, format, usage, loader, hwGammaCorrection, 0, string.Empty );
 		}
 
 		public Texture CreateManual( string name, string group, TextureType type, int width, int height, int depth,
-		                             int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader,
-		                             bool hwGammaCorrection, int fsaa )
+									 int numMipmaps, PixelFormat format, TextureUsage usage, IManualResourceLoader loader,
+									 bool hwGammaCorrection, int fsaa )
 		{
-			return CreateManual( name, group, type, width, height, depth, numMipmaps, format, usage, loader, hwGammaCorrection,
-			                     fsaa, string.Empty );
+			return CreateManual( name, group, type, width, height, depth, numMipmaps, format, usage, loader, hwGammaCorrection, fsaa, string.Empty );
 		}
 
 		/// <summary>
 		///    Loads a texture with the specified name.
 		/// </summary>
-		public Texture Load( string name, string group )
+		public new Texture Load( string name, string group )
 		{
 			return Load( name, group, TextureType.TwoD );
 		}
@@ -474,8 +472,7 @@ namespace Axiom.Core
 
 		/// <summary>
 		/// </summary>
-		public Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha,
-		                     PixelFormat desiredFormat )
+		public virtual Texture Load( string name, string group, TextureType type, int numMipMaps, float gamma, bool isAlpha, PixelFormat desiredFormat )
 		{
 			// does this texture exist already?
 			var result = CreateOrRetrieve( name, group );
@@ -527,7 +524,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <returns></returns>
 		public Texture LoadImage( string name, string group, Image image, TextureType texType, int numMipMaps, float gamma,
-		                          bool isAlpha, PixelFormat desiredFormat )
+								  bool isAlpha, PixelFormat desiredFormat )
 		{
 			// create a new texture
 			var texture = (Texture)Create( name, group, true, null, null );
@@ -635,10 +632,10 @@ namespace Axiom.Core
 		/// <returns>true if the texture filtering is supported.</returns>
 		[OgreVersion( 1, 7, 2 )]
 #if NET_40
-        public abstract bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly = false );
+		public abstract bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly = false );
 #else
 		public abstract bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage,
-		                                                   bool preciseFormatOnly );
+														   bool preciseFormatOnly );
 #endif
 
 #if !NET_40
