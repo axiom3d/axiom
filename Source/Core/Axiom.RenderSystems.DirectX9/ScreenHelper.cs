@@ -51,11 +51,7 @@ namespace Axiom.RenderSystems.DirectX9.Helpers
 		[AxiomHelper( 0, 9 )]
 		public static Screen FromHandle( IntPtr handle )
 		{
-			var s = Screen.AllScreens.Where( x => x.GetHashCode() == (int)handle ).FirstOrDefault();
-			if ( s == null )
-			{
-				s = Screen.FromHandle( handle );
-			}
+			var s = Screen.AllScreens.FirstOrDefault( x => x.GetHashCode() == (int)handle ) ?? Screen.FromHandle( handle );
 
 			return s;
 		}
