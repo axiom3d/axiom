@@ -7,37 +7,37 @@
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
 
   <Target Name="Build" DependsOnTargets="Checkout;Update;Patch">
-     <MSBuild Projects="DotNetZip.sln" Targets="Build" Properties="Configuration=Release;"/>
+     <MSBuild Projects=".\OpenTK.SourceForge\OpenTK.sln" Targets="Build" Properties="Configuration=Release;"/>
   </Target>
 
   <Target Name="Update">
-    <SvnUpdate LocalPath="$(MSBuildProjectDirectory)\DotNetZip.Codeplex">      
+    <SvnUpdate LocalPath="$(MSBuildProjectDirectory)\OpenTK.SourceForge">      
       <Output TaskParameter="Revision" PropertyName="Revision" />
     </SvnUpdate>
     <Message Text="Revision: $(Revision)"/>
   </Target>
 
   <Target Name="Checkout">
-    <RemoveDir Directories="$(MSBuildProjectDirectory)\DotNetZip.Codeplex" />
-    <SvnCheckout RepositoryPath="https://dotnetzip.svn.codeplex.com/svn" LocalPath="$(MSBuildProjectDirectory)\DotNetZip.Codeplex">      
+    <RemoveDir Directories="$(MSBuildProjectDirectory)\OpenTK.SourceForge" />
+    <SvnCheckout RepositoryPath="https://opentk.svn.sourceforge.net/svnroot/opentk/trunk" LocalPath="$(MSBuildProjectDirectory)\OpenTK.SourceForge">      
       <Output TaskParameter="Revision" PropertyName="Revision" />
     </SvnCheckout>
     <Message Text="Revision: $(Revision)"/>
   </Target>
 
   <Target Name="Patch" >
-    <Exec Command="..\..\Tools\Patch\bin\patch.exe --input=..\DotNetZip.Codeplex.patch -d .\DotNetZip.Codeplex\ -p0" />
+    <Exec Command="..\..\Tools\Patch\bin\patch.exe --input=..\..\..\OpenTK.SourceForge.patch -d .\OpenTK.SourceForge\Source\OpenTK\ -p0" />
   </Target>
 
   <Target Name="Clean" >
-    <MSBuild Projects="DotNetZip.sln" Targets="Clean"  Properties="Configuration=Release;"/>
-    <RemoveDir Directories="$(MSBuildProjectDirectory)\DotNetZip.Codeplex" />
+    <!-- MSBuild Projects=".\OpenTK.SourceForge\OpenTK.sln" Targets="Clean"  Properties="Configuration=Release;"/ -->
+    <RemoveDir Directories="$(MSBuildProjectDirectory)\OpenTK.SourceForge" />
   </Target>
 
   <Target Name="Publish" DependsOnTargets="Build" >
     <ItemGroup>
-      <SourceFiles Include="Custom\bin\*\**" />
+      <SourceFiles Include="OpenTK.SourceForge\Binaries\OpenTK\Release\OpenTK*" />
     </ItemGroup>
-    <Copy SourceFiles="@(SourceFiles)" DestinationFiles="@(SourceFiles->'$(MSBuildProjectDirectory)\..\..\Lib\DotNetZip\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(SourceFiles)" DestinationFiles="@(SourceFiles->'$(MSBuildProjectDirectory)\..\..\Lib\OpenTK\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>
