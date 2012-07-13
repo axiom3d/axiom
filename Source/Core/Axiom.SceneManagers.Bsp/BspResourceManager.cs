@@ -167,12 +167,11 @@ namespace Axiom.SceneManagers.Bsp
 		/// <param name="loader"></param>
 		/// <param name="loadParams"></param>
 		/// <returns></returns>
-		public override Resource Load( string name, string group, bool isManual, IManualResourceLoader loader,
-		                               NameValuePairList loadParams, bool backgroundThread )
+		public override Resource Load( string name, string group, bool isManual, IManualResourceLoader loader, NameValuePairList loadParams, bool backgroundThread )
 		{
 			RemoveAll(); // Only one level at a time.
 
-			return base.Load( name, group, isManual, loader, loadParams );
+			return base.Load( name, group, isManual, loader, loadParams, backgroundThread );
 		}
 
 		#endregion Load
@@ -180,8 +179,7 @@ namespace Axiom.SceneManagers.Bsp
 		/// <summary>
 		///		Creates a BspLevel resource - mainly used internally.
 		/// </summary>
-		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual,
-		                                     IManualResourceLoader loader, NameValuePairList createParams )
+		protected override Resource _create( string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, NameValuePairList createParams )
 		{
 			return new BspLevel( this, name, handle, group, isManual, loader, createParams );
 		}
