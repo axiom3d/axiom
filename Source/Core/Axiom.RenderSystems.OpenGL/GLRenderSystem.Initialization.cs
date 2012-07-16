@@ -44,7 +44,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullscreen,
-		                                                 NamedParameterList miscParams )
+														 NamedParameterList miscParams )
 		{
 			if ( renderTargets.ContainsKey( name ) )
 			{
@@ -54,7 +54,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// Log a message
 			var msg = new StringBuilder();
 			msg.AppendFormat( "GLRenderSystem.CreateRenderWindow \"{0}\", {1}x{2} {3} ", name, width, height,
-			                  isFullscreen ? "fullscreen" : "windowed" );
+							  isFullscreen ? "fullscreen" : "windowed" );
 			if ( miscParams != null )
 			{
 				msg.Append( "miscParams: " );
@@ -76,13 +76,13 @@ namespace Axiom.RenderSystems.OpenGL
 				InitializeContext( window );
 
 				var _glSupportVersion = this._glSupport.Version.Split( new[]
-				                                                       {
-				                                                       	' '
-				                                                       } )[ 0 ];
+																	   {
+																		' '
+																	   } )[ 0 ];
 				var tokens = _glSupportVersion.Split( new[]
-				                                      {
-				                                      	'.'
-				                                      } );
+													  {
+														'.'
+													  } );
 
 				if ( tokens.Length != 0 )
 				{
@@ -128,7 +128,7 @@ namespace Axiom.RenderSystems.OpenGL
 				var windowContext = (GLContext)window[ "GLCONTEXT" ];
 
 				var depthBuffer = new GLDepthBuffer( PoolId.Default, this, windowContext, null, null, window.Width, window.Height,
-				                                     window.FSAA, 0, true );
+													 window.FSAA, 0, true );
 
 				depthBufferPool[ depthBuffer.PoolId ].Add( depthBuffer );
 
@@ -168,26 +168,26 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			/* Axiom: assume that OpenTK/Tao does this already
-             * otherwise we will need to use delegates for these gl calls ..
-             * 
-            if (caps.HasCapability(Graphics.Capabilities.GL15NoVbo))
-            {
-                // Assign ARB functions same to GL 1.5 version since
-                // interface identical
+			 * otherwise we will need to use delegates for these gl calls ..
+			 * 
+			if (caps.HasCapability(Graphics.Capabilities.GL15NoVbo))
+			{
+				// Assign ARB functions same to GL 1.5 version since
+				// interface identical
 
-                Gl.glBindBufferARB = Gl.glBindBuffer;
-                Gl.glBufferDataARB = Gl.glBufferData;
-                Gl.glBufferSubDataARB = Gl.glBufferSubData;
-                Gl.glDeleteBuffersARB = Gl.glDeleteBuffers;
-                Gl.glGenBuffersARB = Gl.glGenBuffers;
-                Gl.glGetBufferParameterivARB = Gl.glGetBufferParameteriv;
-                Gl.glGetBufferPointervARB = Gl.glGetBufferPointerv;
-                Gl.glGetBufferSubDataARB = Gl.glGetBufferSubData;
-                Gl.glIsBufferARB = Gl.glIsBuffer;
-                Gl.glMapBufferARB = Gl.glMapBuffer;
-                Gl.glUnmapBufferARB = Gl.glUnmapBuffer;
-            }
-             */
+				Gl.glBindBufferARB = Gl.glBindBuffer;
+				Gl.glBufferDataARB = Gl.glBufferData;
+				Gl.glBufferSubDataARB = Gl.glBufferSubData;
+				Gl.glDeleteBuffersARB = Gl.glDeleteBuffers;
+				Gl.glGenBuffersARB = Gl.glGenBuffers;
+				Gl.glGetBufferParameterivARB = Gl.glGetBufferParameteriv;
+				Gl.glGetBufferPointervARB = Gl.glGetBufferPointerv;
+				Gl.glGetBufferSubDataARB = Gl.glGetBufferSubData;
+				Gl.glIsBufferARB = Gl.glIsBuffer;
+				Gl.glMapBufferARB = Gl.glMapBuffer;
+				Gl.glUnmapBufferARB = Gl.glUnmapBuffer;
+			}
+			 */
 
 			if ( caps.HasCapability( Graphics.Capabilities.VertexBuffer ) )
 			{
@@ -300,25 +300,25 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 
 			/* Axiom: assume that OpenTK/Tao does this already
-             * otherwise we will need to use delegates for these gl calls ..
-             * 
-            if ( caps.HasCapability( Graphics.Capabilities.HardwareOcculusion ) )
-            {
-                if ( caps.HasCapability( Graphics.Capabilities.GL15NoHardwareOcclusion ) )
-                {
-                    // Assign ARB functions same to GL 1.5 version since
-                    // interface identical
-                    Gl.glBeginQueryARB = Gl.glBeginQuery;
-                    Gl.glDeleteQueriesARB = Gl.glDeleteQueries;
-                    Gl.glEndQueryARB = Gl.glEndQuery;
-                    Gl.glGenQueriesARB = Gl.glGenQueries;
-                    Gl.glGetQueryObjectivARB = Gl.glGetQueryObjectiv;
-                    Gl.glGetQueryObjectuivARB = Gl.glGetQueryObjectuiv;
-                    Gl.glGetQueryivARB = Gl.glGetQueryiv;
-                    Gl.glIsQueryARB = Gl.glIsQuery;
-                }
-            }
-             */
+			 * otherwise we will need to use delegates for these gl calls ..
+			 * 
+			if ( caps.HasCapability( Graphics.Capabilities.HardwareOcculusion ) )
+			{
+				if ( caps.HasCapability( Graphics.Capabilities.GL15NoHardwareOcclusion ) )
+				{
+					// Assign ARB functions same to GL 1.5 version since
+					// interface identical
+					Gl.glBeginQueryARB = Gl.glBeginQuery;
+					Gl.glDeleteQueriesARB = Gl.glDeleteQueries;
+					Gl.glEndQueryARB = Gl.glEndQuery;
+					Gl.glGenQueriesARB = Gl.glGenQueries;
+					Gl.glGetQueryObjectivARB = Gl.glGetQueryObjectiv;
+					Gl.glGetQueryObjectuivARB = Gl.glGetQueryObjectuiv;
+					Gl.glGetQueryivARB = Gl.glGetQueryiv;
+					Gl.glIsQueryARB = Gl.glIsQuery;
+				}
+			}
+			 */
 
 			// Do this after extension function pointers are initialised as the extension
 			// is used to probe further capabilities.

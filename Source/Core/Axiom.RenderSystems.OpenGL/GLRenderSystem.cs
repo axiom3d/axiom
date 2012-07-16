@@ -166,7 +166,8 @@ namespace Axiom.RenderSystems.OpenGL
 		private readonly float[] _tempProgramFloats = new float[4];
 		private readonly double[] _tempPlane = new double[4];
 
-		[OgreVersion( 1, 7, 2790, "Incorrectly typed as int in Ogre" )] protected int[] ColorWrite = new int[4];
+		[OgreVersion( 1, 7, 2790, "Incorrectly typed as int in Ogre" )] 
+		protected int[] ColorWrite = new int[4];
 
 		protected GLGpuProgramManager gpuProgramMgr;
 		protected GLGpuProgram currentVertexProgram;
@@ -292,7 +293,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, Real depth, ushort stencil )
 		{
 			var colorMask = this.ColorWrite[ 0 ] == 0 || this.ColorWrite[ 1 ] == 0 || this.ColorWrite[ 2 ] == 0 ||
-			                this.ColorWrite[ 3 ] == 0;
+							this.ColorWrite[ 3 ] == 0;
 			var flags = 0;
 
 			if ( ( buffers & FrameBufferType.Color ) > 0 )
@@ -334,17 +335,17 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// Sets the scissor box as same as viewport
 			var viewport = new[]
-			               {
-			               	0, 0, 0, 0
-			               };
+						   {
+							0, 0, 0, 0
+						   };
 			var scissor = new[]
-			              {
-			              	0, 0, 0, 0
-			              };
+						  {
+							0, 0, 0, 0
+						  };
 			Gl.glGetIntegerv( Gl.GL_VIEWPORT, viewport );
 			Gl.glGetIntegerv( Gl.GL_SCISSOR_BOX, scissor );
 			bool scissorBoxDifference = viewport[ 0 ] != scissor[ 0 ] || viewport[ 1 ] != scissor[ 1 ] ||
-			                            viewport[ 2 ] != scissor[ 2 ] || viewport[ 3 ] != scissor[ 3 ];
+										viewport[ 2 ] != scissor[ 2 ] || viewport[ 3 ] != scissor[ 3 ];
 			if ( scissorBoxDifference )
 			{
 				Gl.glScissor( viewport[ 0 ], viewport[ 1 ], viewport[ 2 ], viewport[ 3 ] );
@@ -654,7 +655,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void MakeOrthoMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest,
-		                                      bool forGpuPrograms )
+											  bool forGpuPrograms )
 		{
 			float thetaY = Utility.DegreesToRadians( fov/2.0f );
 			float tanThetaY = Utility.Tan( thetaY );
@@ -686,7 +687,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void MakeProjectionMatrix( Radian fov, Real aspectRatio, Real near, Real far, out Matrix4 dest,
-		                                           bool forGpuProgram )
+												   bool forGpuProgram )
 		{
 			float thetaY = Utility.DegreesToRadians( fov*(Real)0.5f );
 			float tanThetaY = Utility.Tan( thetaY );
@@ -728,7 +729,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void MakeProjectionMatrix( Real left, Real right, Real bottom, Real top, Real nearPlane, Real farPlane,
-		                                           out Matrix4 dest, bool forGpuProgram )
+												   out Matrix4 dest, bool forGpuProgram )
 		{
 			var width = right - left;
 			var height = top - bottom;
@@ -973,8 +974,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetStencilBufferParams( CompareFunction func, int refValue, int mask,
-		                                             StencilOperation stencilFailOp, StencilOperation depthFailOp,
-		                                             StencilOperation passOp, bool twoSidedOperation )
+													 StencilOperation stencilFailOp, StencilOperation depthFailOp,
+													 StencilOperation passOp, bool twoSidedOperation )
 		{
 			if ( twoSidedOperation )
 			{
@@ -992,12 +993,12 @@ namespace Axiom.RenderSystems.OpenGL
 					Gl.glStencilMaskSeparate( Gl.GL_BACK, mask );
 					Gl.glStencilFuncSeparate( Gl.GL_BACK, GLHelper.ConvertEnum( func ), refValue, mask );
 					Gl.glStencilOpSeparate( Gl.GL_BACK, GLHelper.ConvertEnum( stencilFailOp, !flip ),
-					                        GLHelper.ConvertEnum( depthFailOp, !flip ), GLHelper.ConvertEnum( passOp, !flip ) );
+											GLHelper.ConvertEnum( depthFailOp, !flip ), GLHelper.ConvertEnum( passOp, !flip ) );
 					// Front
 					Gl.glStencilMaskSeparate( Gl.GL_FRONT, mask );
 					Gl.glStencilFuncSeparate( Gl.GL_FRONT, GLHelper.ConvertEnum( func ), refValue, mask );
 					Gl.glStencilOpSeparate( Gl.GL_FRONT, GLHelper.ConvertEnum( stencilFailOp, flip ),
-					                        GLHelper.ConvertEnum( depthFailOp, flip ), GLHelper.ConvertEnum( passOp, flip ) );
+											GLHelper.ConvertEnum( depthFailOp, flip ), GLHelper.ConvertEnum( passOp, flip ) );
 
 					Gl.glActiveStencilFaceEXT( Gl.GL_FRONT );
 				}
@@ -1009,13 +1010,13 @@ namespace Axiom.RenderSystems.OpenGL
 					Gl.glStencilMask( mask );
 					Gl.glStencilFunc( GLHelper.ConvertEnum( func ), refValue, mask );
 					Gl.glStencilOp( GLHelper.ConvertEnum( stencilFailOp, !flip ), GLHelper.ConvertEnum( depthFailOp, !flip ),
-					                GLHelper.ConvertEnum( passOp, !flip ) );
+									GLHelper.ConvertEnum( passOp, !flip ) );
 					// Front
 					Gl.glActiveStencilFaceEXT( Gl.GL_FRONT );
 					Gl.glStencilMask( mask );
 					Gl.glStencilFunc( GLHelper.ConvertEnum( func ), refValue, mask );
 					Gl.glStencilOp( GLHelper.ConvertEnum( stencilFailOp, flip ), GLHelper.ConvertEnum( depthFailOp, flip ),
-					                GLHelper.ConvertEnum( passOp, flip ) );
+									GLHelper.ConvertEnum( passOp, flip ) );
 				}
 			}
 			else
@@ -1025,7 +1026,7 @@ namespace Axiom.RenderSystems.OpenGL
 				Gl.glStencilMask( mask );
 				Gl.glStencilFunc( GLHelper.ConvertEnum( func ), refValue, mask );
 				Gl.glStencilOp( GLHelper.ConvertEnum( stencilFailOp, flip ), GLHelper.ConvertEnum( depthFailOp, flip ),
-				                GLHelper.ConvertEnum( passOp, flip ) );
+								GLHelper.ConvertEnum( passOp, flip ) );
 			}
 		}
 
@@ -1035,7 +1036,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive,
-		                                       Real shininess, TrackVertexColor tracking )
+											   Real shininess, TrackVertexColor tracking )
 		{
 			if ( tracking == TrackVertexColor.None )
 			{
@@ -1134,7 +1135,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetPointParameters( Real size, bool attenuationEnabled, Real constant, Real linear,
-		                                         Real quadratic, Real minSize, Real maxSize )
+												 Real quadratic, Real minSize, Real maxSize )
 		{
 			var val = this._tempLightVals;
 			val[ 0 ] = 1.0f;
@@ -1548,17 +1549,17 @@ namespace Axiom.RenderSystems.OpenGL
 			this.useAutoTextureMatrix = false;
 
 			float[] eyePlaneS = {
-			                    	1.0f, 0.0f, 0.0f, 0.0f
-			                    };
+									1.0f, 0.0f, 0.0f, 0.0f
+								};
 			float[] eyePlaneT = {
-			                    	0.0f, 1.0f, 0.0f, 0.0f
-			                    };
+									0.0f, 1.0f, 0.0f, 0.0f
+								};
 			float[] eyePlaneR = {
-			                    	0.0f, 0.0f, 1.0f, 0.0f
-			                    };
+									0.0f, 0.0f, 1.0f, 0.0f
+								};
 			float[] eyePlaneQ = {
-			                    	0.0f, 0.0f, 0.0f, 1.0f
-			                    };
+									0.0f, 0.0f, 0.0f, 1.0f
+								};
 
 			if ( !ActivateGLTextureUnit( stage ) )
 			{
@@ -1833,24 +1834,14 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					HighLevelGpuProgramManager.Instance.RemoveFactory( this._GLSLProgramFactory );
 				}
-				this._GLSLProgramFactory.Dispose();
-				this._GLSLProgramFactory = null;
+				this._GLSLProgramFactory.SafeDispose();
 			}
 
-			if ( this.gpuProgramMgr != null )
-			{
-				this.gpuProgramMgr.Dispose();
-			}
+			this.gpuProgramMgr.SafeDispose();
 
-			if ( this._hardwareBufferManager != null )
-			{
-				this._hardwareBufferManager.Dispose();
-			}
+			this._hardwareBufferManager.SafeDispose();
 
-			if ( this.rttManager != null )
-			{
-				this.rttManager.Dispose();
-			}
+			this.rttManager.SafeDispose();
 
 			// Delete extra threads contexts
 			foreach ( var curContext in this._backgroundContextList )
@@ -1863,10 +1854,7 @@ namespace Axiom.RenderSystems.OpenGL
 			this._glSupport.Stop();
 			this._stopRendering = true;
 
-			if ( textureManager != null )
-			{
-				textureManager.Dispose();
-			}
+			textureManager.SafeDispose();
 
 			// There will be a new initial window and so forth, thus any call to test
 			//  some params will access an invalid pointer, so it is best to reset
@@ -2422,8 +2410,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
-		                                               SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha,
-		                                               SceneBlendOperation op, SceneBlendOperation alphaOp )
+													   SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha,
+													   SceneBlendOperation op, SceneBlendOperation alphaOp )
 		{
 			int sourceBlend = GLHelper.ConvertEnum( sourceFactor );
 			int destBlend = GLHelper.ConvertEnum( destFactor );
@@ -2431,7 +2419,7 @@ namespace Axiom.RenderSystems.OpenGL
 			int destBlendAlpha = GLHelper.ConvertEnum( destFactorAlpha );
 
 			if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
-			     sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
+				 sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
 			{
 				Gl.glDisable( Gl.GL_BLEND );
 			}
@@ -2710,7 +2698,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms,
-		                                               GpuProgramParameters.GpuParamVariability mask )
+													   GpuProgramParameters.GpuParamVariability mask )
 		{
 			if ( ( mask & GpuProgramParameters.GpuParamVariability.Global ) != 0 )
 			{
@@ -3104,7 +3092,7 @@ namespace Axiom.RenderSystems.OpenGL
 					var depthBuffer = (GLDepthBuffer)( value.DepthBuffer );
 
 					if ( value.DepthBufferPool != PoolId.NoDepth &&
-					     ( depthBuffer == null || depthBuffer.GLContext != this._currentContext ) )
+						 ( depthBuffer == null || depthBuffer.GLContext != this._currentContext ) )
 					{
 						//Depth is automatically managed and there is no depth buffer attached to this RT
 						//or the Current context doesn't match the one this Depth buffer was created with

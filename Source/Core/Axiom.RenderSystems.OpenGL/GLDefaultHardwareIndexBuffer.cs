@@ -110,7 +110,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public IntPtr DataPtr(int offset)
 		{
-            return new IntPtr( (this._dataPtr + offset).Ptr );
+			return new IntPtr( (this._dataPtr + offset).Ptr );
 		}
 	}
 }
