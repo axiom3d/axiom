@@ -105,16 +105,13 @@ namespace Axiom.RenderSystems.OpenGL
 
 				if ( currentCapabilities.HasCapability( Graphics.Capabilities.VertexBuffer ) )
 				{
-					Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB,
-					                    ( (GLHardwareIndexBuffer)( op.indexData.indexBuffer ) ).GLBufferID );
+					Gl.glBindBufferARB( Gl.GL_ELEMENT_ARRAY_BUFFER_ARB, ( (GLHardwareIndexBuffer)( op.indexData.indexBuffer ) ).GLBufferID );
 
 					pBufferData = BUFFER_OFFSET( op.indexData.indexStart*op.indexData.indexBuffer.IndexSize );
 				}
 				else
 				{
-					pBufferData =
-						( (GLDefaultHardwareIndexBuffer)( op.indexData.indexBuffer ) ).DataPtr( op.indexData.indexStart*
-						                                                                        op.indexData.indexBuffer.IndexSize );
+					pBufferData = ( (GLDefaultHardwareIndexBuffer)( op.indexData.indexBuffer ) ).DataPtr( op.indexData.indexStart * op.indexData.indexBuffer.IndexSize );
 				}
 
 				var indexType = ( op.indexData.indexBuffer.Type == IndexType.Size16 ) ? Gl.GL_UNSIGNED_SHORT : Gl.GL_UNSIGNED_INT;
