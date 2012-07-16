@@ -44,7 +44,6 @@ using Axiom.Core;
 using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Media;
-
 using OpenTK;
 using OpenTK.Graphics;
 
@@ -231,9 +230,9 @@ namespace Axiom.RenderSystems.OpenGL
 			if( glContext == null )
 			{
 				// create window
-				var graphicsMode = new GraphicsMode( new ColorFormat( this.ColorDepth ), depthBuffer, GraphicsMode.Default.Stencil, FSAA );
+				var graphicsMode = new GraphicsMode( new ColorFormat( this.ColorDepth ), depthBuffer,  this.ColorDepth-depthBuffer > 0 ? this.ColorDepth-depthBuffer : 0, FSAA );
 				
-				_window = new NativeWindow( width, height, title, WindowFlags.Default, graphicsMode, displayDevice );
+				_window = new NativeWindow( width, height, title, GameWindowFlags.Default, graphicsMode, displayDevice );
 				glContext = new OpenTKGLContext( graphicsMode, _window.WindowInfo );
 
 				FileSystem.FileInfoList ico = ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" );
