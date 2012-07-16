@@ -8,7 +8,7 @@
     <ProjectGuid>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Axiom.RenderSystems.OpenGL</RootNamespace>
-    <AssemblyName>Axiom.RenderSystems.OpenGL.OpenTK</AssemblyName>
+    <AssemblyName>Axiom.RenderSystems.OpenGL</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTK">

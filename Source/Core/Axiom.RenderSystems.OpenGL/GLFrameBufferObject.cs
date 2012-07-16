@@ -44,14 +44,15 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Graphics;
-using Tao.OpenGl;
 using Axiom.Configuration;
+
+using Tao.OpenGl;
 
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	internal class GLFrameBufferObject : IDisposable
+	internal class GLFrameBufferObject : DisposableObject
 	{
 		#region Fields and Properties
 
@@ -128,11 +129,6 @@ namespace Axiom.RenderSystems.OpenGL
 
 			/// Initialize state
 			this._color = new GLSurfaceDesc[Config.MaxMultipleRenderTargets];
-		}
-
-		~GLFrameBufferObject()
-		{
-			dispose( false );
 		}
 
 		#endregion Construction and Destruction
@@ -326,42 +322,13 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region IDisposable Implementation
 
-		#region isDisposed Property
-
-		/// <summary>
-		/// Determines if this instance has been disposed of already.
-		/// </summary>
-		protected bool isDisposed { get; set; }
-
-		#endregion isDisposed Property
-
 		/// <summary>
 		/// Class level dispose method
 		/// </summary>
-		/// <remarks>
-		/// When implementing this method in an inherited class the following template should be used;
-		/// protected override void dispose( bool disposeManagedResources )
-		/// {
-		/// 	if ( !isDisposed )
-		/// 	{
-		/// 		if ( disposeManagedResources )
-		/// 		{
-		/// 			// Dispose managed resources.
-		/// 		}
-		///
-		/// 		// There are no unmanaged resources to release, but
-		/// 		// if we add them, they need to be released here.
-		/// 	}
-		///
-		/// 	// If it is available, make the call to the
-		/// 	// base class's Dispose(Boolean) method
-		/// 	base.dispose( disposeManagedResources );
-		/// }
-		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected virtual void dispose( bool disposeManagedResources )
 		{
-			if ( !isDisposed )
+			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
@@ -381,13 +348,7 @@ namespace Axiom.RenderSystems.OpenGL
 					LogManager.Instance.Write( "Error Deleting Framebuffer[{0}].", this._frameBuffer );
 				}
 			}
-			isDisposed = true;
-		}
-
-		public void Dispose()
-		{
-			dispose( true );
-			GC.SuppressFinalize( this );
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion IDisposable Implementation
