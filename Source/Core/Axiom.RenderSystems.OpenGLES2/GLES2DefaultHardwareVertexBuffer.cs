@@ -48,11 +48,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 	[OgreVersion( 1, 8, 0, "It's from trunk rev.'b0d2092773fb'" )]
 	public class GLES2DefaultHardwareVertexBuffer : HardwareVertexBuffer
 	{
-		/// <summary>
-		/// </summary>
-		protected BufferBase _dataPtr;
-
 		protected byte[] _data;
+		protected BufferBase _dataPtr;
 
 		/// <summary>
 		/// </summary>
