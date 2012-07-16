@@ -156,17 +156,37 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="isManual"></param>
 		/// <param name="loader"></param>
 		/// <param name="glSupport"></param>
-		internal GLTexture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
-		                    IManualResourceLoader loader, BaseGLSupport glSupport )
+		internal GLTexture( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual, IManualResourceLoader loader, BaseGLSupport glSupport )
 			: base( parent, name, handle, group, isManual, loader )
 		{
 			this._glSupport = glSupport;
 			this._glTextureID = 0;
 		}
 
-		~GLTexture()
+		/// <summary>
+		///		Implementation of IDisposable to determine how resources are disposed of.
+		/// </summary>
+		protected override void dispose( bool disposeManagedResources )
 		{
-			dispose( false );
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					if ( IsLoaded )
+					{
+						Unload();
+					}
+				}
+
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
+
+				FreeInternalResources();
+			}
+
+			// If it is available, make the call to the
+			// base class's Dispose(Boolean) method
+			base.dispose( disposeManagedResources );
 		}
 
 		#endregion Construction and Destruction
@@ -224,9 +244,9 @@ namespace Axiom.RenderSystems.OpenGL
 				// Call internal _loadImages, not loadImage since that's external and
 				// will determine load status etc again
 				LoadImages( new Image[]
-				            {
-				            	image
-				            } );
+							{
+								image
+							} );
 			}
 			else if ( TextureType == TextureType.CubeMap )
 			{
@@ -240,15 +260,15 @@ namespace Axiom.RenderSystems.OpenGL
 					// Call internal _loadImages, not loadImage since that's external and
 					// will determine load status etc again
 					LoadImages( new Image[]
-					            {
-					            	image
-					            } );
+								{
+									image
+								} );
 				}
 				else
 				{
 					string[] postfixes = {
-					                     	"_rt", "_lf", "_up", "_dn", "_fr", "_bk"
-					                     };
+											"_rt", "_lf", "_up", "_dn", "_fr", "_bk"
+										 };
 					var images = new List<Image>();
 
 					for ( int i = 0; i < 6; i++ )
@@ -304,13 +324,13 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					// TODO: Tao needs glTexImage3D
 					Gl.glTexImage3DEXT( type, 0, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, SrcWidth, SrcHeight, Depth, 0, GLFormat,
-					                    Gl.GL_UNSIGNED_BYTE, data );
+										Gl.GL_UNSIGNED_BYTE, data );
 				}
 				else
 				{
 					// build the mipmaps
 					Glu.gluBuild2DMipmaps( type, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, Width, Height, GLFormat, Gl.GL_UNSIGNED_BYTE,
-					                       data );
+										   data );
 				}
 			}
 			else
@@ -323,7 +343,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					// TODO: Tao needs glTexImage3D
 					Gl.glTexImage3DEXT( type, 0, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, SrcWidth, SrcHeight, Depth, 0, GLFormat,
-					                    Gl.GL_UNSIGNED_BYTE, data );
+										Gl.GL_UNSIGNED_BYTE, data );
 				}
 				else
 				{
@@ -338,7 +358,7 @@ namespace Axiom.RenderSystems.OpenGL
 					else
 					{
 						Gl.glTexImage2D( type, 0, HasAlpha ? Gl.GL_RGBA8 : Gl.GL_RGB8, Width, Height, 0, GLFormat, Gl.GL_UNSIGNED_BYTE,
-						                 data );
+										 data );
 					}
 				}
 			}
@@ -380,7 +400,7 @@ namespace Axiom.RenderSystems.OpenGL
 
 				if (
 					Glu.gluScaleImage( GLFormat, SrcWidth, SrcHeight, Gl.GL_UNSIGNED_BYTE, src.Data, newWidth, newHeight,
-					                   Gl.GL_UNSIGNED_BYTE, tempData ) != 0 )
+									   Gl.GL_UNSIGNED_BYTE, tempData ) != 0 )
 				{
 					throw new AxiomException( "Error while rescaling image!" );
 				}
@@ -437,9 +457,9 @@ namespace Axiom.RenderSystems.OpenGL
 				for ( int mip = 0; mip <= MipmapCount; mip++ )
 				{
 					GLHardwarePixelBuffer buf = new GLTextureBuffer( Name, GLTextureType, this._glTextureID, face, mip,
-					                                                 (BufferUsage)Usage,
-					                                                 doSoftware && mip == 0, this._glSupport, HardwareGammaEnabled,
-					                                                 FSAA );
+																	 (BufferUsage)Usage,
+																	 doSoftware && mip == 0, this._glSupport, HardwareGammaEnabled,
+																	 FSAA );
 					this._surfaceList.Add( buf );
 
 					/// Check for error
@@ -491,7 +511,7 @@ namespace Axiom.RenderSystems.OpenGL
 			// If we can do automip generation and the user desires this, do so
 			mipmapsHardwareGenerated = Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.HardwareMipMaps );
 			if ( ( ( Usage & TextureUsage.AutoMipMap ) == TextureUsage.AutoMipMap ) && requestedMipmapCount != 0 &&
-			     MipmapsHardwareGenerated )
+				 MipmapsHardwareGenerated )
 			{
 				Gl.glTexParameteri( GLTextureType, Gl.GL_GENERATE_MIPMAP, Gl.GL_TRUE );
 			}
@@ -519,13 +539,13 @@ namespace Axiom.RenderSystems.OpenGL
 							break;
 						case TextureType.ThreeD:
 							Gl.glTexImage3D( Gl.GL_TEXTURE_3D, mip, format, width, height, depth, 0, Gl.GL_RGBA, Gl.GL_UNSIGNED_BYTE,
-							                 IntPtr.Zero );
+											 IntPtr.Zero );
 							break;
 						case TextureType.CubeMap:
 							for ( int face = 0; face < 6; face++ )
 							{
 								Gl.glTexImage2D( Gl.GL_TEXTURE_CUBE_MAP_POSITIVE_X + face, mip, format, width, height, 0, Gl.GL_RGBA,
-								                 Gl.GL_UNSIGNED_BYTE, IntPtr.Zero );
+												 Gl.GL_UNSIGNED_BYTE, IntPtr.Zero );
 							}
 							break;
 					}
@@ -580,30 +600,5 @@ namespace Axiom.RenderSystems.OpenGL
 			return this._surfaceList[ idx ];
 		}
 
-		/// <summary>
-		///		Implementation of IDisposable to determine how resources are disposed of.
-		/// </summary>
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					if ( IsLoaded )
-					{
-						Unload();
-					}
-				}
-
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-
-				FreeInternalResources();
-			}
-
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
 	}
 }

@@ -74,8 +74,7 @@ namespace Axiom.RenderSystems.OpenGL
 			_createWarningTexture();
 		}
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual,
-		                                     IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
+		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
 		{
 			return new GLTexture( this, name, handle, group, isManual, loader, this._glSupport );
 		}
@@ -133,10 +132,10 @@ namespace Axiom.RenderSystems.OpenGL
 
 		/// <see cref="Axiom.Core.TextureManager.IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>
 #if NET_40
-        public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly = false )
+		public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly = false )
 #else
 		public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage,
-		                                                   bool preciseFormatOnly )
+														   bool preciseFormatOnly )
 #endif
 		{
 			if ( format == PixelFormat.Unknown )
@@ -163,20 +162,20 @@ namespace Axiom.RenderSystems.OpenGL
 			// TODO: Add cards that 16 bits floating point flitering supported by
 			// hardware below
 			String[] sFloat16SupportedCards = {
-			                                  	// GeForce 8 Series
-			                                  	"*GeForce*8800*", // GeForce 7 Series
-			                                  	"*GeForce*7950*", "*GeForce*7900*", "*GeForce*7800*", "*GeForce*7600*",
-			                                  	"*GeForce*7500*", "*GeForce*7300*", // GeForce 6 Series
-			                                  	"*GeForce*6800*", "*GeForce*6700*", "*GeForce*6600*", "*GeForce*6500*",
-			                                  	"*GeForce*6200*", "" // Empty string means end of list
-			                                  };
+												// GeForce 8 Series
+												"*GeForce*8800*", // GeForce 7 Series
+												"*GeForce*7950*", "*GeForce*7900*", "*GeForce*7800*", "*GeForce*7600*",
+												"*GeForce*7500*", "*GeForce*7300*", // GeForce 6 Series
+												"*GeForce*6800*", "*GeForce*6700*", "*GeForce*6600*", "*GeForce*6500*",
+												"*GeForce*6200*", "" // Empty string means end of list
+											  };
 
 			// TODO: Add cards that 32 bits floating point flitering supported by
 			// hardware below
 			String[] sFloat32SupportedCards = {
-			                                  	// GeForce 8 Series
-			                                  	"*GeForce*8800*", "" // Empty string means end of list
-			                                  };
+												// GeForce 8 Series
+												"*GeForce*8800*", "" // Empty string means end of list
+											  };
 
 			PixelComponentType pct = PixelUtil.GetComponentType( nativeFormat );
 			String[] supportedCards;
@@ -211,11 +210,6 @@ namespace Axiom.RenderSystems.OpenGL
 			{
 				if ( disposeManagedResources )
 				{
-					foreach ( Resource texture in Resources )
-					{
-						texture.Dispose();
-					}
-
 					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
 				}
 

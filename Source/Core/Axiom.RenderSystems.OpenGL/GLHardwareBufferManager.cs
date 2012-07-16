@@ -38,7 +38,11 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
+
+using Axiom.Core;
 using Axiom.Graphics;
+using Axiom.Utilities;
+
 using Tao.OpenGl;
 
 #endregion Namespace Declarations
@@ -74,7 +78,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		[OgreVersion( 1, 7, 2 )]
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage,
-		                                                       bool useShadowBuffer )
+															   bool useShadowBuffer )
 		{
 			var buffer = new GLHardwareIndexBuffer( this, type, numIndices, usage, useShadowBuffer );
 			lock ( IndexBuffersMutex )
@@ -92,7 +96,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <returns></returns>
 		[OgreVersion( 1, 7, 2 )]
 		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts,
-		                                                         BufferUsage usage, bool useShadowBuffer )
+																 BufferUsage usage, bool useShadowBuffer )
 		{
 			var buffer = new GLHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage, useShadowBuffer );
 			lock ( VertexBuffersMutex )
@@ -112,12 +116,15 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected override void dispose( bool disposeManagedResources )
 		{
-			if ( disposeManagedResources )
+			if (!IsDisposed)
 			{
-				_baseInstance.Dispose();
-				_baseInstance = null;
+				if (disposeManagedResources)
+				{
+					_baseInstance.SafeDispose();
+				}
 			}
-			base.dispose( disposeManagedResources );
+
+			base.dispose(disposeManagedResources);
 		}
 
 		public static int GetGLType( VertexElementType type )
@@ -144,9 +151,5 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			;
 		}
-	}
-
-	public class GLSoftwareBufferManager : DefaultHardwareBufferManager
-	{
 	}
 }

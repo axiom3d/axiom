@@ -261,8 +261,8 @@ namespace Axiom.RenderSystems.OpenGL
 
 			// NFZ - Check if GLSL is supported
 			if ( this.GLEW_VERSION_2_0 ||
-			     ( this.GLEW_ARB_shading_language_100 && this.GLEW_ARB_shader_objects && this.GLEW_ARB_fragment_shader &&
-			       this.GLEW_ARB_vertex_shader ) )
+				 ( this.GLEW_ARB_shading_language_100 && this.GLEW_ARB_shader_objects && this.GLEW_ARB_fragment_shader &&
+				   this.GLEW_ARB_vertex_shader ) )
 			{
 				rsc.AddShaderProfile( "glsl" );
 			}
@@ -319,8 +319,8 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 #if __APPLE__ && __PPC__
 	// Apple on ATI & PPC has errors in DXT
-			    if (_glSupport.Vendor.Contains("ATI") == false)
-    #endif
+				if (_glSupport.Vendor.Contains("ATI") == false)
+	#endif
 					rsc.SetCapability( Graphics.Capabilities.TextureCompressionDXT );
 				}
 				// Check for vtc compression

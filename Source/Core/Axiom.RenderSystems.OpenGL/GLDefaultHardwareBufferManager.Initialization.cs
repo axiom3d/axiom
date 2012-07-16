@@ -2,7 +2,7 @@
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	public class GLDefaultHardwareBufferManagerBase : GLHardwareBufferManagerBase
+	public class GLDefaultHardwareBufferManagerBase : HardwareBufferManagerBase
 	{
 		protected override void dispose(bool disposeManagedResources)
 		{

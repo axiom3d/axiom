@@ -30,7 +30,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 // <file>
 //     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-//     <id value="$Id:"/>
+//     <id value="$Id$"/>
 // </file>
 
 #endregion SVN Version Information
@@ -192,8 +192,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// <param name="vsync"></param>
 		/// <param name="target"></param>
 		/// <returns></returns>
-		public override RenderWindow NewWindow( string name, int width, int height, bool fullScreen,
-		                                        NamedParameterList miscParams )
+		public override RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams )
 		{
 			var window = new OpenTKWindow();
 			window.Create( name, width, height, fullScreen, miscParams );
@@ -320,8 +319,7 @@ namespace Axiom.RenderSystems.OpenGL
 					}
 					if ( !optDisplayFrequency.PossibleValues.ContainsValue( item.RefreshRate.ToString() ) )
 					{
-						optDisplayFrequency.PossibleValues.Add( optDisplayFrequency.PossibleValues.Values.Count,
-						                                        item.RefreshRate.ToString() );
+						optDisplayFrequency.PossibleValues.Add( optDisplayFrequency.PossibleValues.Values.Count, item.RefreshRate.ToString() );
 					}
 				}
 			}
@@ -334,8 +332,7 @@ namespace Axiom.RenderSystems.OpenGL
 			else
 			{
 				optDisplayFrequency.Immutable = false;
-				optDisplayFrequency.Value =
-					optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
+				optDisplayFrequency.Value = optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
 			}
 			if ( optColorDepth.PossibleValues.Values.Count > 0 )
 			{
@@ -343,8 +340,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			if ( optDisplayFrequency.Value != "N/A" )
 			{
-				optDisplayFrequency.Value =
-					optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
+				optDisplayFrequency.Value = optDisplayFrequency.PossibleValues.Values[ optDisplayFrequency.PossibleValues.Count - 1 ];
 			}
 		}
 
