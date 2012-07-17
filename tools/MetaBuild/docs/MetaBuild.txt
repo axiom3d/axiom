@@ -1,0 +1,537 @@
+The MetaBuild Modular Build System
+==================================
+
+Usage
+======
+
+On the command-line, run the following command:
+
+  MetaBuild.bat Module1.module Module2.module ...
+
+This command will build all projects specified in the specified modules
+and place the build outputs into a folder named "build" in the
+current directory.
+
+If no modules are specified, then all modules that can be found within
+the current directory are considered.
+
+For a complete list of options, run the following command:
+
+  MetaBuild.bat /?
+
+  
+Refer to the list of properties and targets below for more information
+about these options.
+
+
+Usage Tips
+==========
+
+- Create one or more batch files to build your projects in various
+  modes with a single command.
+
+- MetaBuild can also be run directly using MSBuild so it can easily
+  be integrated into CruiseControl.Net and other continuous integration
+  build systems.  Just call MetaBuild.msbuild and provide appropriate
+  property values as defined below.
+
+- If you have multiple CPUs, you may improve performance by specifying the
+  "/m" option to MSBuild to enable parallel builds.  This is the default
+  in the helper MetaBuild.bat script.
+
+  eg. %SystemRoot%\Windows\Microsoft.Net\Framework\v3.5\MSBuild.exe Main.module /m
+
+
+Build Phases
+============
+
+MetaBuild works in 6 phases: Load, Clean, Build, Image, Test and Dist.
+
+1. Load
+
+   During the Load phase, MetaBuild recursively calls into all modules
+   to verify that they are reachable and to provide an opportunity for early
+   initialization.
+
+   The load phase is typically used to publish items from modules so
+   that they can be accessed by containing modules.  This is accomplished
+   by adding items to the LoadItem item group.
+
+   Most users of MetaBuild will not need to concern themselves with
+   this phase.
+
+2. Clean
+
+   During the Clean phase, MetaBuild recursively deletes intermediate
+   outputs from all specified modules.  It also deletes the entire
+   build directory.
+
+   The purpose of this phase is to remove old files from previous builds
+   to ensure that subsequent builds start from scratch.  Otherwise the
+   previous output may be used to perform an incremental build of the
+   modules.
+
+   It is a good idea to invoke the Clean phase prior to creating
+   release-worthy builds.
+
+3. Build
+
+   During the Build phase, MetaBuild recursively builds all specified
+   modules.  The build output is generally stored within the source tree
+   but some of it may be copied to the "image" directory in ancipation of
+   the Image phase.  (see below)
+
+4. Image
+
+   During the Image phase, MetaBuild recursively gathers build output
+   from all specified modules and populares the "image" directory to
+   create a build image.
+
+   A build image is a collection of files that have been gathered together
+   and organized in preparation for testing and redistribution.
+   This is very useful because those files may previously have been
+   scattered around the source tree wherever the compiler dropped them.
+
+   Additional resources may be produce during this phase to complete
+   the build image.  For example, we might merge or compress files
+   generated during the Build phase.
+
+5. Test
+
+   During the Test phase, MetaBuild recursively executes the tests for all
+   modules.  Since this phase occurs after the Image phase, tests may
+   assume that the build image contains all of the program's files
+   arranged appropriately for testing.
+
+   Add-ins contribute support for various test frameworks.
+
+6. Dist
+
+   During the Dist phase, MetaBuild recursively performs tasks specified by
+   the modules in order to produce one or more final packages for
+   distribution.
+
+   This phase may be used to generate a ZIP file or an installer package.
+   
+
+Build Directory Layout
+======================
+
+By convention, MetaBuild stores build outputs in the following structure:
+
+  /build     : The build directory.
+
+    /image   : The build image directory.
+               Contains files copied or created during the Image phase.
+
+    /dist    : The build distribution directory.
+               Contains files copied or created during the Dist phase.
+
+    /report  : The build report directory.
+               Contains log files, test results or other artifacts generated
+               during the build.
+
+    /temp    : The build temporary directory.
+               Contains temporary files generated during the build.
+
+
+Modules
+=======
+
+A module is an MSBuild project that contains a declarative specification
+of how MetaBuild should build code.  By convention, its name ends with
+".module" and it imports the "MetaBuild.Module.targets" file.
+
+Add-ins declare properties, items and targets that may be used in modules
+to effect build operations.
+
+Refer to the documentation of each add-in for more information.
+
+The following example is a module whose purpose is presumably to build
+a C# project then to ensure its output is copied to the image directory.
+The example also includes another module to be built recursively.
+
+<Project ToolsVersion="3.5' xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+  
+  <ItemGroup>
+    <!-- The path of a project to be built. -->
+    <CSharpProject Include="MyProject.csproj" />
+
+    <!-- The path of a built file to be copied to the "image" directory. -->
+    <File Include="MyProject\bin\MyProject.dll" />
+
+    <!-- The path of an included module. -->
+    <Module Include="SubModule.module" />
+  </ItemGroup>
+</Project>
+
+Note: The ToolsVersion="3.5" attribute on the Project element of the module
+      is very important.  Without it certain features will almost certainly
+      be broken because the wrong version of MSBuild will be used.
+
+
+Global Targets and Properties
+================================
+
+The MetaBuild.msbuild project defines several targets and properties
+that are used to control the operation of the build scripts.
+
+Add-ins may define additional non-standard targets and properties.
+Consult the add-in documentation for more information.
+
+
+Global Targets
+--------------
+
+MetaBuild.msbuild defines five primary MSBuild targets.  Each one corresponds
+to a particular MetaBuild phase.
+
+  Clean  : Performs the Clean phase.
+
+  Build  : Performs the Build phase.
+
+  Image  : Performs the Image phase.
+
+  Test   : Performs the Test phase.
+
+  Dist   : Performs the Dist phase.
+
+MetaBuild.msbuild also defines some auxiliary special purpose targets.
+
+  Load   : Runs the Load phase but does nothing else.
+
+  Debug  : Prints debugging information about modules.
+
+  Call   : Invokes the targets named in $(CallTargets) of the initial module.
+           This is useful for debugging custom targets in modules since they
+           can be run in isolation of the ordinary build phases.  Be sure
+           to specify prerequisite targets as a semi-colon delimited list in
+           $(CallTargets).
+
+           eg. $(CallTargets) => Load;BeforeBuild;MyBuildTargetToTest
+
+
+
+Global Properties
+-----------------
+
+MetaBuild.msbuild recognizes several MSBuild properties as global parameters.
+Most of these properties remain constant throughout the execution of MetaBuild.
+
+All parameters are optional.  If no value is specified then a default one
+is chosen.
+
+  MetaBuildBinDir:
+     The full path of the MetaBuild "bin" directory that contains
+     target files, add-ins and other resources.
+
+     Default value: $(MSBuildProjectDirectory)
+
+     [This default value assumes that msbuild is invoked as the
+      top-level MSBuild project and that it is installed in the "bin"
+      directory as usual.]
+
+  MetaBuildContribDir:
+     The full path of the MetaBuild "contrib" directory that contains
+     additional third-party contributions and dependencies.
+
+     Default value: $(MetaBuildBinDir)\..\contrib
+
+  MetaBuildConfigFile:
+     The full path of the config file that specifies the add-ins
+     to be imported and other settings.
+
+     Default value: $(MetaBuildBinDir)\MetaBuild.config
+
+  StartDir:
+     The full path of the initial directory where MetaBuild was launched.
+
+     Default value: $(MSBuildStartupDirectory)
+
+  InitialModules:
+     The semi-colon delimited paths of the initial modules to build.
+     May contain wildcards.
+
+     Default value: $(StartDir)\*.module
+
+  RootDir:
+     The full path of the root directory of the source tree.
+     Modules may use this value to refer to global resources
+     within the source such as libraries that may be referenced
+     relative to the root.
+
+     Default value: $(StartDir)
+
+  BuildDir:
+     The full path of the build directory.
+
+     Default value: $(RootDir)\build
+
+  ImageDir:
+     The full path of the build image directory.
+
+     Default value: $(BuildDir)\image
+
+  DistDir:
+     The full path of the build distribution directory.
+
+     Default value: $(BuildDir)\dist
+     
+  ReportDir:
+     The full path of the build report directory.
+
+     Default value: $(BuildDir)\report
+
+  TempDir:
+     The full path of the build temporary directory.
+
+     Default value: $(BuildDir)\temp
+
+  Version:
+     The build version number, specified in "X.Y.Z.W" form where each
+     component ranges from 0 to 65535 (standard for .Net applications).
+
+     Default value: "0.0.0.0"
+
+  Configuration:
+     The build configuration setting.
+     It is used to set the default build Configuration for modules
+     and projects (unless overridden).
+     
+     The value may be overridden for particular modules or projects.
+
+     Default value: (none).
+     
+  Platform:
+     The build platform setting.
+     It is used to set the default build Platform for modules
+     and projects (unless overridden).
+
+     The value may be overridden for particular modules or projects.
+
+     Default value: (none).
+
+  Runtime:
+     The .Net runtime targeted by the build.
+     May be "CLR" or "Mono".
+
+     Default value: CLR.
+
+  Mono:
+     The path of the default Mono installation.
+
+     Default value: (Determined from Registry).
+
+  MonoExe:
+     The path of the default Mono runtime executable (ie. mono.exe).
+
+     Default value: $(Mono)\bin\mono.exe
+
+  CallTargets:
+     The semi-colon delimited list of targets within the initial module
+     to call when the Call target runs.  This is used to assist with
+     debugging custom targets within modules.
+
+     This property is only used when the Call target is specified.
+
+     Default value: (none).
+
+
+Module Targets, Properties and Items
+====================================
+
+In addition to the global targets and properties defined above,
+MetaBuild declares several additional targets, properties and items that
+may be used within the context of a module.
+
+Add-ins may define additional non-standard targets, properties and items.
+Consult the add-in documentation for more information.
+
+A module (or add-in acting on its behalf) may also publish items that can
+be consumed by calling modules.  This is accomplished by defining items
+named [Phase]Item where [Phase] is any of the 6 phases and including
+ItemName metadata to specify the name of the item to be created when published.
+
+For example, we can publish items during the Load phase as follows:
+
+  <ItemGroup>
+    <LoadItem Include="@(MyPublishedItem)">
+      <ItemName>MyPublishedItem</ItemName>
+    </LoadItem>
+  </ItemGroup>
+
+
+Module Targets
+--------------
+
+  BeforeLoad, AfterLoad
+  BeforeClean, AfterClean
+  BeforeBuild, AfterBuild
+  BeforeImage, AfterImage
+  BeforeTest, AfterTest
+  BeforeDist, AfterDist:
+    These targets may be overridden (redefined) by modules to perform
+    work before or after the "core" part of the associated phase.
+    This is the easiest way to register custom build actions.
+
+Module Properties
+-----------------
+
+  Module:
+    The full path of the module being built.
+
+  ModuleDir:
+    The full path of the directory that contains the module being built.
+
+  Configuration, Platform:
+    These properties may be configured on a per module basis or default
+    to global values.
+
+  MonoCompatible:
+    Defaults to "true".  If set to false, the module is not built when
+    $(Runtime) equals "Mono".
+
+  CLRCompatible:
+    Defaults to "true".  If set to false, the module is not built when
+    $(Runtime) equals "CLR".
+
+Module Items
+------------
+
+  Module
+    The path of an included module.
+    See MetaBuild.Module.txt.
+
+  Project
+    The path of an included raw MSBuild project.
+    End-users will not typically use this item directly.  Instead, they
+    will use more specialized items defined by add-ins that provide support
+    for specific kinds of projects (such as CSharpProject).  The add-in will
+    then take care of translating those specialized items into these
+    general-purpose Project items as appropriate.
+
+    A Project item may include additional metadata:
+
+    * Properties (OPTIONAL)
+      Specifies custom MSBuild properties for the project.
+
+    * Configuration (OPTIONAL)
+      Specifies the build configuration.
+      Default value: $(Configuration)
+
+    * Platform (OPTIONAL)
+      Specifies the build platform.
+      Default value: $(Platform)
+
+    * Version (OPTIONAL)
+      Specifies the version number.
+      Default value: $(Version)
+
+    * Dependency (OPTIONAL)
+      If true, the referenced project is considered a dependency of the module
+      and will be built prior to all other projects within the module.
+      Default value: false
+
+    * SupportsLoadTarget (OPTIONAL)
+      Indicates that the Load target is supported when set to "true".
+
+    * SupportsCleanTarget (OPTIONAL)
+      Indicates that the Clean target is supported when set to "true".
+
+    * SupportsBuildTarget (OPTIONAL)
+      Indicates that the Build target is supported when set to "true".
+
+    * SupportsImageTarget (OPTIONAL)
+      Indicates that the Image target is supported when set to "true".
+
+    * SupportsTestTarget (OPTIONAL)
+      Indicates that the Test target is supported when set to "true".
+
+    * SupportsDistTarget (OPTIONAL)
+      Indicates that the Dist target is supported when set to "true".
+
+    * SupportsDebugTarget (OPTIONAL)
+      Indicates that the Debug target is supported when set to "true".
+
+    * Kind (OPTIONAL, INTERNAL USE ONLY)
+      Specifies the kind of project represented by the item.
+      eg. "Module".
+
+  Warning: The Properties, Configuration, and Platform must be set
+           identically each time a project appears.  Otherwise the
+	   project may end up being rebuilt multiple times.
+
+
+How to Create an Add-In
+=======================
+
+When MetaBuild.msbuild runs, it will automatically import all add-ins
+to compose them together.  This structure is designed to improve the
+separation of concerns in the build system and to make it easier to
+add new behaviors incrementally without having to modify the base system.
+
+Consequently you may use any of the properties defined by the
+MetaBuild script as part of the add-in.
+
+  1. Create an MSBuild project file whose name ends with ".addin"
+     and place it into the MetaBuild folder.
+
+  2. Override the various target depends-on properties for each build phase.
+     They are defined according to the following pattern where [Phase]
+     may be Load, Clean, Build, Image, Test, or Dist.
+
+       [Phase]DependsOn:
+         The top-level target sequence for the phase.
+
+         The initial value is:
+         Before[Phase];Core[Phase];After[Phase]
+
+         This value is prefixed with Initialize[Phase] and suffixed with
+         Finalize[Phase] in the top-level build script only.
+
+       Core[Phase]DependsOn:
+         The primary target sequence for the phase.
+
+         The initial value is:
+           Recursive[Phase]
+
+         Add-ins may add new targets here to do all of the main part of
+         the work before or after the recursive parts.
+
+       Initialize[Phase]DependsOn:
+         The initialization target sequence for the phase.
+
+         Add-ins may add new targets here to perform early initialization
+         work in the context of the top-level build script.
+
+       Finalize[Phase]DependsOn:
+         The finalization target sequence for the phase.
+
+         Add-ins may add new targets here to perform late finalization
+         work in the context of the top-level build script.
+
+     The following target depends-on properties are also available.
+
+       ValidateDependsOn:
+         The target sequence for initial validation on startup.
+
+         Add-ins may add new targets here to perform early validation
+         of build parameters and module structure before the build commences.
+
+  3. Define new targets for each new behavior that is injected.
+
+  4. Define additional properties to be passed to all recursive invocations
+     by appending property name/value pairs to the InheritedProperties property.
+     The value will be set by the top-level invocation of MetaBuild and will
+     be assumed to remain fixed for the duration of the build.
+
+     All invoked MSBuild projects will inherit these values.
+
+       <PropertyGroup>
+         <InheritedProperties>$(InheritedProperties);Name=Value</InheritedProperties>
+       </PropertyGroup>
+
+  5. Edit the MetaBuild.config file and add an additional
+     Import directive to register the new add-in.
+
