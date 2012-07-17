@@ -51,6 +51,7 @@ using Axiom.Graphics;
 using System.Reflection;
 
 using Axiom.Scripting;
+using System.Globalization;
 
 #endregion Namespace Declarations
 
@@ -1174,7 +1175,7 @@ namespace Axiom.ParticleSystems
 				return;
 			}
 
-			system.IterationInterval = float.Parse( values[ 0 ] );
+            system.IterationInterval = float.Parse(values[0], CultureInfo.InvariantCulture);
 		}
 
 		[ParserCommand( "nonvisible_update_timeout", PARTICLE )]
@@ -1186,7 +1187,7 @@ namespace Axiom.ParticleSystems
 				return;
 			}
 
-			system.NonVisibleUpdateTimeout = float.Parse( values[ 0 ] );
+            system.NonVisibleUpdateTimeout = float.Parse(values[0], CultureInfo.InvariantCulture);
 		}
 
 		#endregion
