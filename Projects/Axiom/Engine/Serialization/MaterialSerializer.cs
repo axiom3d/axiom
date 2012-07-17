@@ -52,6 +52,7 @@ using Axiom.Media;
 using Axiom.Scripting;
 using Axiom.Core.Collections;
 using Axiom.Collections;
+using System.Globalization;
 
 #endregion Namespace Declarations
 
@@ -1047,11 +1048,11 @@ namespace Axiom.Serialization
 			                                               	' ', '\t'
 			                                               } );
 
-			float constantBias = float.Parse( values[ 0 ] );
+            float constantBias = float.Parse(values[0], CultureInfo.InvariantCulture);
 			float slopeScaleBias = 0.0f;
 			if( values.Length > 1 )
 			{
-				slopeScaleBias = float.Parse( values[ 1 ] );
+                slopeScaleBias = float.Parse(values[1], CultureInfo.InvariantCulture);
 			}
 
 			context.pass.SetDepthBias( constantBias, slopeScaleBias );
@@ -2733,17 +2734,17 @@ namespace Axiom.Serialization
 				}
 				if( isFloat && extras )
 				{
-					context.programParams.SetAutoConstant( index, constantType, float.Parse( parameters[ 2 ] ) );
+                    context.programParams.SetAutoConstant(index, constantType, float.Parse(parameters[2], CultureInfo.InvariantCulture));
 				}
 				else if( extras )
 				{
-					context.programParams.SetAutoConstant( index, constantType, int.Parse( parameters[ 2 ] ) );
+                    context.programParams.SetAutoConstant(index, constantType, int.Parse(parameters[2]));
 				}
 				else if( constantType == GpuProgramParameters.AutoConstantType.Time )
 				{
 					if( parameters.Length == 3 )
 					{
-						context.programParams.SetAutoConstant( index, constantType, float.Parse( parameters[ 2 ] ) );
+                        context.programParams.SetAutoConstant(index, constantType, float.Parse(parameters[2], CultureInfo.InvariantCulture));
 					}
 					else
 					{

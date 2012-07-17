@@ -48,6 +48,7 @@ using System.Text;
 using Axiom.Core;
 using Axiom.Media;
 using Axiom.Scripting;
+using System.Globalization;
 
 #endregion Namespace Declarations
 
@@ -613,7 +614,7 @@ namespace Axiom.Graphics
 			string n = s.Trim();
 			try
 			{
-				return float.Parse( n );
+				return float.Parse( n,  CultureInfo.InvariantCulture );
 			}
 			catch( Exception e )
 			{
