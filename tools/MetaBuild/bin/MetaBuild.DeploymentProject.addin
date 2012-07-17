@@ -1,7 +1,0 @@
-<!--
- ! Provides support for Visual Studio Setup/Deployment Projects.  (*.vdproj)
- !-->
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="MetaBuild.DeploymentProject.shell.ext"
-          Condition="'$(MetaBuildProjectType)'=='Shell'" />
-</Project>

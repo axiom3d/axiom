@@ -1,7 +1,0 @@
-<!--
- ! Provides support for Visual Studio solution builds.
- !-->
-<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="MetaBuild.Solution.shell.ext"
-          Condition="'$(MetaBuildProjectType)'=='Shell'" />
-</Project>
