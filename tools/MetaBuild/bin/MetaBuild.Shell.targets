@@ -1,0 +1,321 @@
+<!--
+ ! Targets for custom MetaBuild project types, such as modules, that support
+ ! recursive inclusion of other projects.  This targets file effectively
+ ! provides a shell (or a template) for implementing derived project types.
+ !
+ ! The behavior of these targets may be augmented by add-ins.
+ !
+ ! Refer to MetaBuild.txt for documentation.
+ !-->
+<Project InitialTargets="SetLateBoundInheritedProperties;Validate" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Set the project type so that add-ins know what they're embedded in. -->
+  <PropertyGroup>
+    <MetaBuildProjectType>Shell</MetaBuildProjectType>
+
+    <MonoCompatible Condition="'$(MonoCompatible)'==''">true</MonoCompatible>
+    <CLRCompatible Condition="'$(CLRCompatible)'==''">true</CLRCompatible>
+    <BuildInParallel Condition="'$(BuildInParallel)'==''">true</BuildInParallel>
+    <StopOnFirstFailure Condition="'$(StopOnFirstFailure)'==''">true</StopOnFirstFailure>
+    
+    <InheritedProperties>MetaBuildBinDir=$(MetaBuildBinDir);MetaBuildContribDir=$(MetaBuildContribDir);MetaBuildConfigFile=$(MetaBuildConfigFile);InitialModules=$(InitialModules);StartDir=$(StartDir);RootDir=$(RootDir);BuildDir=$(BuildDir);ImageDir=$(ImageDir);DistDir=$(DistDir);ReportDir=$(ReportDir);TempDir=$(TempDir);Version=$(Version);Runtime=$(Runtime)</InheritedProperties>
+  </PropertyGroup>
+
+  <!-- Define item metadata defaults. --> 
+  <ItemDefinitionGroup>
+    <Project>
+      <Properties />
+      <Configuration>$(Configuration)</Configuration>
+      <Platform>$(Platform)</Platform>
+      <Version>$(Version)</Version>
+      <Dependency>false</Dependency>
+      <Kind>Unknown</Kind>
+      <SupportsLoadTarget>false</SupportsLoadTarget>
+      <SupportsCleanTarget>false</SupportsCleanTarget>
+      <SupportsBuildTarget>false</SupportsBuildTarget>
+      <SupportsImageTarget>false</SupportsImageTarget>
+      <SupportsTestTarget>false</SupportsTestTarget>
+      <SupportsDistTarget>false</SupportsDistTarget>
+      <SupportsDebugTarget>false</SupportsDebugTarget>
+    </Project>
+  </ItemDefinitionGroup>
+
+  <!-- Define the initial target properties. -->
+  <PropertyGroup>
+    <LoadDependsOn>BeforeLoad;CoreLoad;AfterLoad</LoadDependsOn>
+    <CleanDependsOn>Load;BeforeClean;CoreClean;AfterClean</CleanDependsOn>
+    <BuildDependsOn>Load;BeforeBuild;CoreBuild;AfterBuild</BuildDependsOn>
+    <ImageDependsOn>Load;BeforeImage;CoreImage;AfterImage</ImageDependsOn>
+    <TestDependsOn>Load;BeforeTest;CoreTest;AfterTest</TestDependsOn>
+    <DistDependsOn>Load;BeforeDist;CoreDist;AfterDist</DistDependsOn>
+
+    <CallDependsOn>Load;RecursiveCall</CallDependsOn>
+    <DebugDependsOn>Load;DebugPrintProjectItems;RecursiveDebug</DebugDependsOn>
+
+    <CoreLoadDependsOn>LoadAddIns;RecursiveLoad</CoreLoadDependsOn>
+    <CoreCleanDependsOn>RecursiveClean</CoreCleanDependsOn>
+    <CoreBuildDependsOn>RecursiveBuild</CoreBuildDependsOn>
+    <CoreImageDependsOn>RecursiveImage</CoreImageDependsOn>
+    <CoreTestDependsOn>RecursiveTest</CoreTestDependsOn>
+    <CoreDistDependsOn>RecursiveDist</CoreDistDependsOn>
+
+    <LoadAddInsDependsOn></LoadAddInsDependsOn>
+  </PropertyGroup>
+
+  <!-- Import the base MetaBuild targets to load the configuration file. -->
+  <Import Project="MetaBuild.targets" />
+
+  <!-- Define the standard targets. -->
+  <Target Name="Validate" DependsOnTargets="CheckModuleEnabled;_Validate" />
+  <Target Name="Load" DependsOnTargets="CheckModuleEnabled;_Load" Outputs="@(LoadItem)" />
+  <Target Name="Clean" DependsOnTargets="CheckModuleEnabled;_Clean" Outputs="@(CleanItem)" />
+  <Target Name="Build" DependsOnTargets="CheckModuleEnabled;_Build" Outputs="@(BuildItem)" />
+  <Target Name="Image" DependsOnTargets="CheckModuleEnabled;_Image" Outputs="@(ImageItem)" />
+  <Target Name="Test" DependsOnTargets="CheckModuleEnabled;_Test" Outputs="@(TestItem)" />
+  <Target Name="Dist" DependsOnTargets="CheckModuleEnabled;_Dist" Outputs="@(DistItem)" />
+  <Target Name="Debug" DependsOnTargets="CheckModuleEnabled;_Debug" />
+  <Target Name="Call" DependsOnTargets="CheckModuleEnabled;_Call" />
+
+  <Target Name="_Validate" Condition="$(ModuleEnabled)" DependsOnTargets="$(ValidateDependsOn)" />
+  <Target Name="_Load" Condition="$(ModuleEnabled)" DependsOnTargets="$(LoadDependsOn)" />
+  <Target Name="_Clean" Condition="$(ModuleEnabled)" DependsOnTargets="$(CleanDependsOn)" />
+  <Target Name="_Build" Condition="$(ModuleEnabled)" DependsOnTargets="$(BuildDependsOn)" />
+  <Target Name="_Image" Condition="$(ModuleEnabled)" DependsOnTargets="$(ImageDependsOn)" />
+  <Target Name="_Test" Condition="$(ModuleEnabled)" DependsOnTargets="$(TestDependsOn)" />
+  <Target Name="_Dist" Condition="$(ModuleEnabled)" DependsOnTargets="$(DistDependsOn)" />
+  <Target Name="_Debug" Condition="$(ModuleEnabled)" DependsOnTargets="$(DebugDependsOn)" />
+  <Target Name="_Call" Condition="$(ModuleEnabled)" DependsOnTargets="$(CallDependsOn)" />
+
+  <Target Name="CoreLoad" DependsOnTargets="$(CoreLoadDependsOn)" />
+  <Target Name="CoreClean" DependsOnTargets="$(CoreCleanDependsOn)" />
+  <Target Name="CoreBuild" DependsOnTargets="$(CoreBuildDependsOn)" />
+  <Target Name="CoreImage" DependsOnTargets="$(CoreImageDependsOn)" />
+  <Target Name="CoreTest" DependsOnTargets="$(CoreTestDependsOn)" />
+  <Target Name="CoreDist" DependsOnTargets="$(CoreDistDependsOn)" />
+
+  <Target Name="LoadAddIns" DependsOnTargets="$(LoadAddInsDependsOn)" />
+
+  <!-- Define overridable targets for custom module actions. -->
+  <Target Name="BeforeLoad" />
+  <Target Name="AfterLoad" />
+  <Target Name="BeforeClean" />
+  <Target Name="AfterClean" />
+  <Target Name="BeforeBuild" />
+  <Target Name="AfterBuild" />
+  <Target Name="BeforeImage" />
+  <Target Name="AfterImage" />
+  <Target Name="BeforeTest" />
+  <Target Name="AfterTest" />
+  <Target Name="BeforeDist" />
+  <Target Name="AfterDist" />
+
+  <!-- Checks whether the module is enabled and sets the $(ModuleEnabled)
+       flag accordingly.
+       
+       The flag may be set to "false" and a warning issued based on whether
+       a compatible runtime has been selected.
+    -->
+  <Target Name="CheckModuleEnabled">
+    <PropertyGroup>
+      <IsRuntimeCompatible>false</IsRuntimeCompatible>
+      <IsRuntimeCompatible Condition="'$(Runtime)'=='CLR' and '$(CLRCompatible)'">true</IsRuntimeCompatible>
+      <IsRuntimeCompatible Condition="'$(Runtime)'=='Mono' and '$(MonoCompatible)'">true</IsRuntimeCompatible>
+
+      <ModuleEnabled>$(IsRuntimeCompatible)</ModuleEnabled>
+    </PropertyGroup>
+
+    <Warning Text="Module will be skipped because it is not compatible with runtime '$(Runtime)'."
+             Condition="! $(IsRuntimeCompatible)" />
+  </Target>
+
+  <!-- Initialization -->
+  <Target Name="ResolveRecursiveProjects">
+    <ItemGroup>
+      <RecursiveProject Include="@(Project)" Condition="'@(Project)'!=''">
+        <Properties>%(Properties)</Properties>
+        <AdditionalProperties Condition="'%(Configuration)'=='' and '%(Platform)'==''">$(InheritedProperties);ProjectVersion=%(Version)</AdditionalProperties>
+        <AdditionalProperties Condition="'%(Configuration)'!='' and '%(Platform)'==''">$(InheritedProperties);ProjectVersion=%(Version);Configuration=%(Configuration)</AdditionalProperties>
+        <AdditionalProperties Condition="'%(Configuration)'=='' and '%(Platform)'!=''">$(InheritedProperties);ProjectVersion=%(Version);Platform=%(Platform)</AdditionalProperties>
+        <AdditionalProperties Condition="'%(Configuration)'!='' and '%(Platform)'!=''">$(InheritedProperties);ProjectVersion=%(Version);Configuration=%(Configuration);Platform=%(Platform)</AdditionalProperties>
+        <Configuration>%(Configuration)</Configuration>
+        <Platform>%(Platform)</Platform>
+        <Version>%(Version)</Version>
+        <Dependency>%(Dependency)</Dependency>
+        <SupportsLoadTarget>%(SupportsLoadTarget)</SupportsLoadTarget>
+        <SupportsCleanTarget>%(SupportsCleanTarget)</SupportsCleanTarget>
+        <SupportsBuildTarget>%(SupportsBuildTarget)</SupportsBuildTarget>
+        <SupportsImageTarget>%(SupportsImageTarget)</SupportsImageTarget>
+        <SupportsTestTarget>%(SupportsTestTarget)</SupportsTestTarget>
+        <SupportsDistTarget>%(SupportsDistTarget)</SupportsDistTarget>
+        <SupportsDebugTarget>%(SupportsDebugTarget)</SupportsDebugTarget>
+        <Kind>%(Kind)</Kind>
+      </RecursiveProject>
+    </ItemGroup>
+  </Target>
+
+  <!-- Recursive targets -->
+  <Target Name="RecursiveLoad"
+          DependsOnTargets="ResolveRecursiveProjects">
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsLoadTarget)'=='true' and '%(Dependency)'=='true'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Load" />
+
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsLoadTarget)'=='true' and '%(Dependency)'=='false'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Load">
+      <Output TaskParameter="TargetOutputs" ItemName="RecursiveLoadItem" />
+    </MSBuild>
+
+    <CreateItem Include="@(RecursiveLoadItem)"
+                Condition="'%(RecursiveLoadItem.ItemName)'!=''">
+      <Output TaskParameter="Include" ItemName="%(RecursiveLoadItem.ItemName)" />
+    </CreateItem>
+  </Target>
+
+  <Target Name="RecursiveClean"
+          DependsOnTargets="ResolveRecursiveProjects">
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsCleanTarget)'=='true' and '%(Dependency)'=='true'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Clean" />
+
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsCleanTarget)'=='true' and '%(Dependency)'=='false'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Clean">
+      <Output TaskParameter="TargetOutputs" ItemName="RecursiveCleanItem" />
+    </MSBuild>
+
+    <CreateItem Include="@(RecursiveCleanItem)"
+                Condition="'%(RecursiveCleanItem.ItemName)'!=''">
+      <Output TaskParameter="Include" ItemName="%(RecursiveCleanItem.ItemName)" />
+    </CreateItem>
+  </Target>
+
+  <Target Name="RecursiveBuild"
+          DependsOnTargets="ResolveRecursiveProjects">
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsBuildTarget)'=='true' and '%(Dependency)'=='true'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Build" />
+
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsBuildTarget)'=='true' and '%(Dependency)'=='false'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Build">
+      <Output TaskParameter="TargetOutputs" ItemName="RecursiveBuildItem" />
+    </MSBuild>
+
+    <CreateItem Include="@(RecursiveBuildItem)"
+                Condition="'%(RecursiveBuildItem.ItemName)'!=''">
+      <Output TaskParameter="Include" ItemName="%(RecursiveBuildItem.ItemName)" />
+    </CreateItem>
+  </Target>
+
+  <Target Name="RecursiveImage"
+          DependsOnTargets="ResolveRecursiveProjects">
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsImageTarget)'=='true' and '%(Dependency)'=='true'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Image" />
+
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsImageTarget)'=='true' and '%(Dependency)'=='false'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Image">
+      <Output TaskParameter="TargetOutputs" ItemName="RecursiveImageItem" />
+    </MSBuild>
+
+    <CreateItem Include="@(RecursiveImageItem)"
+                Condition="'%(RecursiveImageItem.ItemName)'!=''">
+      <Output TaskParameter="Include" ItemName="%(RecursiveImageItem.ItemName)" />
+    </CreateItem>
+  </Target>
+
+  <Target Name="RecursiveTest"
+          DependsOnTargets="ResolveRecursiveProjects">
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsTestTarget)'=='true' and '%(Dependency)'=='true'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Test" />
+
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsTestTarget)'=='true' and '%(Dependency)'=='false'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Test">
+      <Output TaskParameter="TargetOutputs" ItemName="RecursiveTestItem" />
+    </MSBuild>
+
+    <CreateItem Include="@(RecursiveTestItem)"
+                Condition="'%(RecursiveTestItem.ItemName)'!=''">
+      <Output TaskParameter="Include" ItemName="%(RecursiveTestItem.ItemName)" />
+    </CreateItem>
+  </Target>
+
+  <Target Name="RecursiveDist"
+          DependsOnTargets="ResolveRecursiveProjects">
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsDistTarget)'=='true' and '%(Dependency)'=='true'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Dist" />
+
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsDistTarget)'=='true' and '%(Dependency)'=='false'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="Dist">
+      <Output TaskParameter="TargetOutputs" ItemName="RecursiveDistItem" />
+    </MSBuild>
+
+    <CreateItem Include="@(RecursiveDistItem)"
+                Condition="'%(RecursiveDistItem.ItemName)'!=''">
+      <Output TaskParameter="Include" ItemName="%(RecursiveDistItem.ItemName)" />
+    </CreateItem>
+  </Target>
+
+  <Target Name="RecursiveDebug"
+          DependsOnTargets="ResolveRecursiveProjects">
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(SupportsDebugTarget)'=='true' and '%(Dependency)'=='false'"
+             BuildInParallel="false"
+             StopOnFirstFailure="false"
+             Targets="Debug" />
+  </Target>
+
+  <Target Name="DebugPrintProjectItems"
+          DependsOnTargets="ResolveRecursiveProjects">
+    <Message Importance="High" Text="%0A*** $(MSBuildProjectFullPath)%0A* Platform: $(Platform)%0A* Configuration: $(Configuration)%0A* Version: $(Version)%0A" /> 
+          
+    <Message Importance="High" Text="@(RecursiveProject->'[%(Kind)] %(FullPath)%0A- Properties: %(Properties)%0A- AdditionalProperties: %(AdditionalProperties)%0A- SupportsCleanTarget: %(SupportsCleanTarget)%0A- SupportsBuildTarget: %(SupportsBuildTarget)%0A- SupportsImageTarget: %(SupportsImageTarget)%0A- SupportsTestTarget: %(SupportsTestTarget)%0A- SupportsDistTarget: %(SupportsDistTarget)%0A- SupportsDebugTarget: %(SupportsDebugTarget)%0A- Dependency: %(Dependency)%0A','%0A')" />
+  </Target>
+
+  <Target Name="RecursiveCall"
+          DependsOnTargets="ResolveRecursiveProjects">
+    <Error Text="Call target requires CallTargets property to contain a list of targets to be invoked."
+          Condition="'$(CallTargets)'==''" />
+
+    <MSBuild Projects="@(RecursiveProject)"
+             Condition="'%(Dependency)'=='false'"
+             BuildInParallel="$(BuildInParallel)"
+             StopOnFirstFailure="$(StopOnFirstFailure)"
+             Targets="$(CallTargets)" />
+  </Target>
+  
+  <Target Name="SetLateBoundInheritedProperties">
+    <PropertyGroup>
+      <InheritedProperties>$(InheritedProperties);Mono=$(Mono);MonoExe=$(MonoExe)</InheritedProperties>
+    </PropertyGroup>
+  </Target>
+</Project>

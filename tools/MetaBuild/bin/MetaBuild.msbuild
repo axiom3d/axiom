@@ -1,0 +1,130 @@
+<!--
+ ! The MetaBuild modular build system.
+ !
+ ! Refer to MetaBuild.txt for documentation.
+ !-->
+<Project InitialTargets="SetLateBoundGlobalProperties;Validate" DefaultTargets="Build;Image" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Declare the global properties used throughout MetaBuild. -->
+  <PropertyGroup>
+    <MetaBuildBinDir Condition="'$(MetaBuildBinDir)'==''">$(MSBuildProjectDirectory)</MetaBuildBinDir>
+    <MetaBuildContribDir Condition="'$(MetaBuildContribDir)'==''">$(MetaBuildBinDir)\..\contrib</MetaBuildContribDir>
+    <MetaBuildConfigFile Condition="'$(MetaBuildConfigFile)'==''">$(MetaBuildBinDir)\MetaBuild.config</MetaBuildConfigFile>
+
+    <StartDir Condition="'$(StartDir)'==''">$(MSBuildStartupDirectory)</StartDir>
+    <InitialModules Condition="'$(InitialModules)'==''">$(StartDir)\*.module</InitialModules>
+
+    <RootDir Condition="'$(RootDir)'==''">$(StartDir)</RootDir>
+    <BuildDir Condition="'$(BuildDir)'==''">$(RootDir)\build</BuildDir>
+    <ImageDir Condition="'$(ImageDir)'==''">$(BuildDir)\image</ImageDir>
+    <DistDir Condition="'$(DistDir)'==''">$(BuildDir)\dist</DistDir>
+    <ReportDir Condition="'$(ReportDir)'==''">$(BuildDir)\report</ReportDir>
+    <TempDir Condition="'$(TempDir)'==''">$(BuildDir)\temp</TempDir>
+
+    <Version Condition="'$(Version)'==''">0.0.0.0</Version>
+
+    <Runtime Condition="'$(Runtime)'==''">CLR</Runtime>
+  </PropertyGroup>
+
+  <!-- Declare standard top-level targets and properties.
+       These values may be extended or overridden by add-ins. -->
+  <PropertyGroup>
+    <InitializeCleanDependsOn>DeleteBuildDir;CreateBuildDir</InitializeCleanDependsOn>
+    <FinalizeCleanDependsOn></FinalizeCleanDependsOn>
+
+    <InitializeBuildDependsOn>CreateBuildDir</InitializeBuildDependsOn>
+    <FinalizeBuildDependsOn></FinalizeBuildDependsOn>
+
+    <InitializeImageDependsOn>CreateBuildDir</InitializeImageDependsOn>
+    <FinalizeImageDependsOn></FinalizeImageDependsOn>
+
+    <InitializeTestDependsOn>CreateBuildDir</InitializeTestDependsOn>
+    <FinalizeTestDependsOn></FinalizeTestDependsOn>
+
+    <InitializeDistDependsOn>CreateBuildDir</InitializeDistDependsOn>
+    <FinalizeDistDependsOn></FinalizeDistDependsOn>
+  </PropertyGroup>
+
+  <!-- Include the initial modules. -->
+  <ItemGroup>
+    <Module Include="$(InitialModules)"
+            Condition="'$(InitialModules)'!=''" />
+  </ItemGroup>
+
+  <!-- Import the module targets. -->
+  <Import Project="$(MetaBuildBinDir)\MetaBuild.Module.targets" />
+
+  <!-- Declare initialization and finalization targets. -->
+  <PropertyGroup>
+    <ValidateDependsOn>ValidateRequiredInitialProperties;$(ValidateDependsOn)</ValidateDependsOn>
+    <CleanDependsOn>InitializeClean;$(CleanDependsOn);FinalizeClean</CleanDependsOn>
+    <BuildDependsOn>InitializeBuild;$(BuildDependsOn);FinalizeBuild</BuildDependsOn>
+    <ImageDependsOn>InitializeImage;$(ImageDependsOn);FinalizeImage</ImageDependsOn>
+    <TestDependsOn>InitializeTest;$(TestDependsOn);FinalizeTest</TestDependsOn>
+    <DistDependsOn>InitializeDist;$(DistDependsOn);FinalizeDist</DistDependsOn>
+  </PropertyGroup>
+
+  <Target Name="InitializeClean" DependsOnTargets="PrintCleanBanner;$(InitializeCleanDependsOn)" />
+  <Target Name="FinalizeClean" DependsOnTargets="$(FinalizeCleanDependsOn)" />
+  <Target Name="InitializeBuild" DependsOnTargets="PrintBuildBanner;$(InitializeBuildDependsOn)" />
+  <Target Name="FinalizeBuild" DependsOnTargets="$(FinalizeBuildDependsOn)" />
+  <Target Name="InitializeImage" DependsOnTargets="PrintImageBanner;$(InitializeImageDependsOn)" />
+  <Target Name="FinalizeImage" DependsOnTargets="$(FinalizeImageDependsOn)" />
+  <Target Name="InitializeTest" DependsOnTargets="PrintTestBanner;$(InitializeTestDependsOn)" />
+  <Target Name="FinalizeTest" DependsOnTargets="$(FinalizeTestDependsOn)" />
+  <Target Name="InitializeDist" DependsOnTargets="PrintDistBanner;$(InitializeDistDependsOn)" />
+  <Target Name="FinalizeDist" DependsOnTargets="$(FinalizeDistDependsOn)" />
+
+  <!-- Banner text. -->
+  <Target Name="PrintCleanBanner">
+    <Message Importance="High" Text="%0A[Clean]%0A" />
+  </Target>
+  <Target Name="PrintBuildBanner">
+    <Message Importance="High" Text="%0A[Build]%0A" />
+  </Target>
+  <Target Name="PrintImageBanner">
+    <Message Importance="High" Text="%0A[Image]%0A" />
+  </Target>
+  <Target Name="PrintTestBanner">
+    <Message Importance="High" Text="%0A[Test]%0A" />
+  </Target>
+  <Target Name="PrintDistBanner">
+    <Message Importance="High" Text="%0A[Dist]%0A" />
+  </Target>
+
+  <!-- Standard actions for creating the build folders. -->
+  <Target Name="CreateBuildDir">
+    <MakeDir Directories="$(BuildDir);$(TempDir);$(ReportDir);$(ImageDir);$(DistDir)" />
+  </Target>
+
+  <Target Name="DeleteBuildDir">
+    <RemoveDir Directories="$(BuildDir)" />
+  </Target>
+
+  <Target Name="ValidateRequiredInitialProperties">
+    <Error Text="No modules were found in '$(StartDir)'.  Did you forget to set %24(InitialModules)?"
+           Condition="'@(Module)'==''" />
+  </Target>
+  
+  <Target Name="SetLateBoundGlobalProperties">
+    <RegistryRead Condition="'$(Mono)'==''"
+                  KeyName="HKEY_LOCAL_MACHINE\Software\Novell\Mono"
+                  DefaultValue="MISSING"
+                  ValueName="DefaultCLR">
+      <Output TaskParameter="Value" PropertyName="_MonoDefaultCLR" />
+    </RegistryRead>
+
+    <RegistryRead Condition="'$(Mono)'=='' and '$(_MonoDefaultCLR)'!='MISSING'"
+                  KeyName="HKEY_LOCAL_MACHINE\Software\Novell\Mono\$(_MonoDefaultCLR)"
+                  DefaultValue="MISSING"
+                  ValueName="SdkInstallRoot">
+      <Output TaskParameter="Value" PropertyName="Mono" />
+    </RegistryRead>
+
+    <Error Text="Could not find default Mono installation in registry.  Please set Mono property when calling MSBuild or change the runtime type."
+           Condition="('$(Mono)'=='' or '$(Mono)'=='MISSING') and '$(Runtime)'=='Mono'" />
+
+    <PropertyGroup>
+      <MonoExe Condition="'$(MonoExe)'=='' and '$(Mono)'!=''">$(Mono)\bin\mono.exe</MonoExe>
+    </PropertyGroup>
+  </Target>
+</Project>
