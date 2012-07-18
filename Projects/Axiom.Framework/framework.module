@@ -3,7 +3,6 @@
   
   <ItemGroup>
     <CSharpProject Include="Axiom.Framework$(ProjectVariant).csproj" />
-    <CSharpProject Include="Axiom.Framework.Xbox.csproj" />
   
     <AssemblyFile Include="bin\x86\Axiom.Framework.dll">
       <ImagePath>bin\Net35</ImagePath>
@@ -11,15 +10,21 @@
     <PdbFile Include="bin\x86\Axiom.Framework.pdb">
       <ImagePath>bin\Net35</ImagePath>
     </PdbFile>
+
+    <XmlDocFile Include="bin\x86\Axiom.Framework.xml">
+      <ImagePath>bin</ImagePath>
+    </XmlDocFile>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IncludeXna)'=='true'">
+    <CSharpProject Include="Axiom.Framework.Xbox.csproj" />
+  
     <AssemblyFile Include="bin\Xbox\Axiom.Framework.dll">
       <ImagePath>bin\Xbox</ImagePath>
     </AssemblyFile>
     <PdbFile Include="bin\Xbox\Axiom.Framework.pdb">
       <ImagePath>bin\Xbox</ImagePath>
     </PdbFile>
-    <XmlDocFile Include="bin\x86\Axiom.Framework.xml">
-      <ImagePath>bin</ImagePath>
-    </XmlDocFile>
   </ItemGroup>
 
-</Project>
+  </Project>

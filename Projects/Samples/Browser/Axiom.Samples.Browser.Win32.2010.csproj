@@ -125,7 +125,7 @@
       <Project>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</Project>
       <Name>Axiom.RenderSystems.OpenGL.OpenTK.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.2010.csproj">
+    <ProjectReference Include="..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.2010.csproj" Condition="'$(IncludeXna)'=='true'">
       <Project>{628E7ED7-EC58-4C93-B8AB-CB69087D381B}</Project>
       <Name>Axiom.RenderSystems.Xna.2010</Name>
     </ProjectReference>

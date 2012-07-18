@@ -148,6 +148,8 @@
     <SkipInstaller Condition="'$(SkipInstaller)'==''">false</SkipInstaller>
     <SkipCodeCoverage Condition="'$(SkipCodeCoverage)'==''">false</SkipCodeCoverage>
 	<SkipAssemblyInfoUpdate Condition="'$(SkipAssemblyInfoUpdate)'==''">false</SkipAssemblyInfoUpdate>
+
+	<IncludeXna Condition="'$(IncludeXna)'==''">true</IncludeXna>
 	
     <IgnoreTestFailures Condition="'$(IgnoreTestFailures)'==''">false</IgnoreTestFailures>
 
@@ -550,6 +552,7 @@
       CustomAfterMicrosoftCommonTargets=$(RootDir)\bin\Custom.After.Microsoft.Common.targets;
       ProjectAssemblyFileVersion=$(FileVersion);
       ProjectAssemblyVersion=$(AssemblyVersion);
+	  IncludeXna=$(IncludeXna);
     </CommonProjectProperties>
   </PropertyGroup>
 
