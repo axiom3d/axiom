@@ -96,7 +96,7 @@
       <HintPath>..\..\..\SharpInput\bin\Release\DirectX\log4net.dll</HintPath>
     </Reference>
     <Reference Include="SharpInputSystem.Core">
-      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+      <HintPath>..\..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\x86\release\SharpInputSystem.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
