@@ -4,15 +4,15 @@
   
   <ItemGroup>
     <CSharpProject Include="Engine\Axiom$(ProjectVariant).csproj" />
-    <CSharpProject Include="Engine\Axiom.XBox.csproj" />
+    <CSharpProject Include="Engine\Axiom.XBox.csproj" Condition="'$(IncludeXna)='true'"/>
     <CSharpProject Include="Platforms\Win32\Axiom.Platforms.Win32$(ProjectVariant).csproj" />
     <CSharpProject Include="Platforms\OpenTK\Axiom.Platforms.OpenTK$(ProjectVariant).csproj" />
     <CSharpProject Include="RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9$(ProjectVariant).csproj" />
     <CSharpProject Include="RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK$(ProjectVariant).csproj" />
-    <CSharpProject Include="RenderSystems\Xna\Axiom.RenderSystems.Xna$(ProjectVariant).csproj" />
-    <CSharpProject Include="RenderSystems\Xna\Axiom.RenderSystems.Xna.XBox.csproj" />
-    <CSharpProject Include="Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.X86$(ProjectVariant).csproj" />
-    <CSharpProject Include="Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.XBox.csproj" />
+    <CSharpProject Include="RenderSystems\Xna\Axiom.RenderSystems.Xna$(ProjectVariant).csproj" Condition="'$(IncludeXna)='true'"/>
+    <CSharpProject Include="RenderSystems\Xna\Axiom.RenderSystems.Xna.XBox.csproj" Condition="'$(IncludeXna)='true'"/>
+    <CSharpProject Include="Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.X86$(ProjectVariant).csproj" Condition="'$(IncludeXna)='true'"/>
+    <CSharpProject Include="Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.XBox.csproj" Condition="'$(IncludeXna)='true'"/>
     <CSharpProject Include="SceneManagers\BSP\Axiom.SceneManagers.BSP$(ProjectVariant).csproj" />
     <CSharpProject Include="SceneManagers\BSP\Axiom.SceneManagers.BSP.XBox.csproj" />
     <CSharpProject Include="SceneManagers\Octree\Axiom.SceneManagers.Octree$(ProjectVariant).csproj" />
@@ -42,10 +42,10 @@
 	<ConfigFile Include="Engine\bin\x86\Axiom.dll.config" >
       <ImagePath>bin\Net35</ImagePath>
 	</ConfigFile>
-    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.dll">
+    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.dll" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Xbox</ImagePath>
     </AssemblyFile>
-    <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.pdb">
+    <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.pdb" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Xbox</ImagePath>
     </PdbFile>
 	<AssemblyFile Include="$(RootDir)\Lib\Managed\CompactFramework\ICSharpCode.SharpZipLib\0.85.4.369\ICSharpCode.SharpZipLib.dll" >
@@ -113,37 +113,37 @@
       <ImagePath>bin</ImagePath>
     </XmlDocFile>
 	
-    <AssemblyFile Include="$(ModuleTempDir)\x86\Axiom.RenderSystems.Xna.dll">
+    <AssemblyFile Include="$(ModuleTempDir)\x86\Axiom.RenderSystems.Xna.dll" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Net35</ImagePath>
     </AssemblyFile>
-    <PdbFile Include="$(ModuleTempDir)\x86\Axiom.RenderSystems.Xna.pdb">
+    <PdbFile Include="$(ModuleTempDir)\x86\Axiom.RenderSystems.Xna.pdb" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Net35</ImagePath>
     </PdbFile>
-    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.RenderSystems.Xna.dll">
+    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.RenderSystems.Xna.dll" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Xbox</ImagePath>
     </AssemblyFile>
-    <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.RenderSystems.Xna.pdb">
+    <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.RenderSystems.Xna.pdb" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Xbox</ImagePath>
     </PdbFile>
 <!--
-    <XmlDocFile Include="RenderSystems\Xna\bin\x86\Axiom.RenderSystems.Xna.xml">
+    <XmlDocFile Include="RenderSystems\Xna\bin\x86\Axiom.RenderSystems.Xna.xml" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin</ImagePath>
     </XmlDocFile>
 -->
-    <AssemblyFile Include="$(ModuleTempDir)\x86\Axiom.RenderSystems.Xna.Content.dll">
+    <AssemblyFile Include="$(ModuleTempDir)\x86\Axiom.RenderSystems.Xna.Content.dll" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Net35</ImagePath>
     </AssemblyFile>
-    <PdbFile Include="$(ModuleTempDir)\x86\Axiom.RenderSystems.Xna.Content.pdb">
+    <PdbFile Include="$(ModuleTempDir)\x86\Axiom.RenderSystems.Xna.Content.pdb" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Net35</ImagePath>
     </PdbFile>
-    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.RenderSystems.Xna.Content.dll">
+    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.RenderSystems.Xna.Content.dll" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Xbox</ImagePath>
     </AssemblyFile>
-    <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.RenderSystems.Xna.Content.pdb">
+    <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.RenderSystems.Xna.Content.pdb" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Xbox</ImagePath>
     </PdbFile>
 <!--
-    <XmlDocFile Include="Tools\Axiom.RenderSystems.Xna.Content\bin\x86\Axiom.RenderSystems.Xna.Content.xml">
+    <XmlDocFile Include="Tools\Axiom.RenderSystems.Xna.Content\bin\x86\Axiom.RenderSystems.Xna.Content.xml" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin</ImagePath>
     </XmlDocFile>
 -->
@@ -165,10 +165,10 @@
     <PdbFile Include="$(ModuleTempDir)\x86\Axiom.SceneManagers.BSP.pdb">
       <ImagePath>bin\Net35</ImagePath>
     </PdbFile>
-    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.SceneManagers.BSP.dll">
+    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.SceneManagers.BSP.dll" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Xbox</ImagePath>
     </AssemblyFile>
-    <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.SceneManagers.BSP.pdb">
+    <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.SceneManagers.BSP.pdb" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Xbox</ImagePath>
     </PdbFile>
     <XmlDocFile Include="SceneManagers\BSP\bin\x86\Axiom.SceneManagers.BSP.xml">
@@ -181,10 +181,10 @@
     <PdbFile Include="$(ModuleTempDir)\x86\Axiom.SceneManagers.Octree.pdb">
       <ImagePath>bin\Net35</ImagePath>
     </PdbFile>
-    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.SceneManagers.Octree.dll">
+    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.SceneManagers.Octree.dll" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Xbox</ImagePath>
     </AssemblyFile>
-    <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.SceneManagers.Octree.pdb">
+    <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.SceneManagers.Octree.pdb" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Xbox</ImagePath>
     </PdbFile>
     <XmlDocFile Include="SceneManagers\Octree\bin\x86\Axiom.SceneManagers.Octree.xml">
@@ -241,10 +241,10 @@
     <PdbFile Include="$(ModuleTempDir)\x86\Axiom.Plugins.ParticleFX.pdb">
       <ImagePath>bin\Net35</ImagePath>
     </PdbFile>
-    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.Plugins.ParticleFX.dll">
+    <AssemblyFile Include="$(ModuleTempDir)\Xbox\Axiom.Plugins.ParticleFX.dll" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Xbox</ImagePath>
     </AssemblyFile>
-    <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.Plugins.ParticleFX.pdb">
+    <PdbFile Include="$(ModuleTempDir)\Xbox\Axiom.Plugins.ParticleFX.pdb" Condition="'$(IncludeXna)='true'">
       <ImagePath>bin\Xbox</ImagePath>
     </PdbFile>
     <XmlDocFile Include="Plugins\ParticleFX\bin\x86\Axiom.Plugins.ParticleFX.xml">
@@ -315,9 +315,10 @@
 	  
     <Copy 
       SourceFiles="@(Axiom_Xbox_SourceFile)"
-      DestinationFolder="$(ModuleTempDir)\Xbox\" />
+      DestinationFolder="$(ModuleTempDir)\Xbox\" 
+	  Condition="'$(IncludeXna)='true'"/>
 
-	  <Copy 
+	<Copy 
       SourceFiles="@(GallioMergeDependency)"
       DestinationFolder="$(ModuleImageDir)\bin" />
       
