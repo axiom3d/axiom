@@ -23,7 +23,7 @@
 		<SkipILMerge>true</SkipILMerge>
 		<SkipNDoc>true</SkipNDoc>
 		
-		<IncludeXna>false</IncludeXna>
+		<IncludeXna>true</IncludeXna>
 	</PropertyGroup>
 
 	<Target Name="Build">
