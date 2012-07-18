@@ -13,6 +13,7 @@
     <CSharpProject Include="SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected$(ProjectVariant).csproj" />
     <CSharpProject Include="Plugins\Axiom.Plugins.FreeImageCodecs\Axiom.Plugins.FreeImageCodecs$(ProjectVariant).csproj" />
     <CSharpProject Include="Plugins\Axiom.Plugins.SystemDrawingCodecs\Axiom.Plugins.SystemDrawingCodecs$(ProjectVariant).csproj" />
+    <CSharpProject Include="Plugins\OctreeZone\Axiom.Plugins.OctreeZone$(ProjectVariant).csproj" />
     <CSharpProject Include="Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs$(ProjectVariant).csproj" />
     <CSharpProject Include="Plugins\ParticleFX\Axiom.Plugins.ParticleFX$(ProjectVariant).csproj" />
     <CSharpProject Include="Plugins\CGProgramManager\Axiom.Plugins.CGProgramManager$(ProjectVariant).csproj" />
@@ -225,7 +226,6 @@
     <CSharpProject Include="Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.XBox.csproj"/>
     <CSharpProject Include="SceneManagers\BSP\Axiom.SceneManagers.BSP.XBox.csproj" />
     <CSharpProject Include="SceneManagers\Octree\Axiom.SceneManagers.Octree.Xbox.csproj" />
-    <CSharpProject Include="Plugins\OctreeZone\Axiom.Plugins.OctreeZone$(ProjectVariant).csproj" />
     <CSharpProject Include="Plugins\ParticleFX\Axiom.Plugins.ParticleFX.Xbox.csproj" />
 
 
@@ -350,10 +350,6 @@
 	<Axiom_x86_SourceFile Include="RenderSystems\DirectX9\bin\x86\Axiom.RenderSystems.DirectX9.pdb" />
 	<Axiom_x86_SourceFile Include="RenderSystems\OpenGL\bin\x86\Axiom.RenderSystems.OpenGL.dll" />
 	<Axiom_x86_SourceFile Include="RenderSystems\OpenGL\bin\x86\Axiom.RenderSystems.OpenGL.pdb" />
-	<Axiom_x86_SourceFile Include="RenderSystems\Xna\bin\x86\Axiom.RenderSystems.Xna.dll" />
-	<Axiom_x86_SourceFile Include="RenderSystems\Xna\bin\x86\Axiom.RenderSystems.Xna.pdb" />
-	<Axiom_x86_SourceFile Include="Tools\Axiom.RenderSystems.Xna.Content\bin\x86\Axiom.RenderSystems.Xna.Content.dll" />
-	<Axiom_x86_SourceFile Include="Tools\Axiom.RenderSystems.Xna.Content\bin\x86\Axiom.RenderSystems.Xna.Content.pdb" />
 	<Axiom_x86_SourceFile Include="SceneManagers\BSP\bin\x86\Axiom.SceneManagers.BSP.dll" />
 	<Axiom_x86_SourceFile Include="SceneManagers\BSP\bin\x86\Axiom.SceneManagers.BSP.pdb" />
 	<Axiom_x86_SourceFile Include="SceneManagers\Octree\bin\x86\Axiom.SceneManagers.Octree.dll" />
@@ -374,7 +370,14 @@
 	<Axiom_x86_SourceFile Include="Plugins\CGProgramManager\bin\x86\Axiom.Plugins.CGProgramManager.pdb" />
   </ItemGroup>
   
-  <ItemGroup>
+  <ItemGroup Condition="'$(IncludeXna)'=='true'">
+	<Axiom_x86_SourceFile Include="RenderSystems\Xna\bin\x86\Axiom.RenderSystems.Xna.dll" />
+	<Axiom_x86_SourceFile Include="RenderSystems\Xna\bin\x86\Axiom.RenderSystems.Xna.pdb" />
+	<Axiom_x86_SourceFile Include="Tools\Axiom.RenderSystems.Xna.Content\bin\x86\Axiom.RenderSystems.Xna.Content.dll" />
+	<Axiom_x86_SourceFile Include="Tools\Axiom.RenderSystems.Xna.Content\bin\x86\Axiom.RenderSystems.Xna.Content.pdb" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(IncludeXna)'=='true'">
 	<Axiom_Xbox_SourceFile Include="Engine\bin\Xbox\Axiom.dll" />
 	<Axiom_Xbox_SourceFile Include="Engine\bin\Xbox\Axiom.pdb" />
 	<Axiom_Xbox_SourceFile Include="RenderSystems\Xna\bin\XBox\Axiom.RenderSystems.Xna.dll" />
