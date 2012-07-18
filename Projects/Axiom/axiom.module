@@ -396,7 +396,30 @@
 		  DependsOnTargets="AxiomDist_NuGetPackage" />
 		  
   <ItemGroup>
-    <Axiom_NuGetPackage Include="NuGet Package\*.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.Framework.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.Platforms.OpenTK.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.Platforms.Win32.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.Plugins.CgProgramManager.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.Plugins.DevILCodecs.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.Plugins.FreeImageCodecs.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.Plugins.OctreeZone.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.Plugins.ParticleFX.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.Plugins.SystemDrawingCodecs.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.RenderSystems.DirectX9.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.RenderSystems.OpenGL.OpenTK.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.SceneManagers.Bsp.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.SceneManagers.Bsp.nuspec" />
+	<Axiom_NuGetPackage Include="NuGet Package\Axiom.SceneManagers.Octree.nuspec" />
+	<Axiom_NuGetPackage Include="NuGet Package\Axiom.SceneManagers.PortalConnected.nuspec" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(IncludeXna)'=='true'">
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.RenderSystems.Xna.nuspec" />
+    <Axiom_NuGetPackage Include="NuGet Package\Axiom.RenderSystems.Xna.Content.nuspec" />
+  </ItemGroup>
+  
+  <ItemGroup>
 	<Axiom_Package_Tool Include="NuGet Package\tools\*.*" />
   </ItemGroup>
   
