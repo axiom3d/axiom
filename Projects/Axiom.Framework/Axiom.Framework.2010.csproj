@@ -78,11 +78,11 @@
     <Reference Include="System.Xml" />
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=d1244a0b33714b38">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\log4net.dll</HintPath>
+      <HintPath>..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\x86\Release\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="SharpInputSystem.Core">
-      <HintPath>..\..\Lib\Managed\XPlatform\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+      <HintPath>..\..\Lib\Managed\XPlatform\SharpInputSystem\DirectX\x86\Release\SharpInputSystem.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
