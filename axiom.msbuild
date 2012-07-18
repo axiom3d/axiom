@@ -4,7 +4,7 @@
 		<TestReportTypes>XML-Inline</TestReportTypes>
 		
 		<Version>$(CCNetLabel)</Version>
-		<Version Condition="'$(Version)'==''">0.8.0.0</Version>
+		<Version Condition="'$(Version)'==''">0.8.3102.12095</Version>
 		
 		<AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
 		<AssemblyVersion Condition="'$(AssemblyVersion)'==''">$(Version)</AssemblyVersion>
@@ -19,8 +19,11 @@
 		
 		<SkipInstaller>true</SkipInstaller>
 		<SkipSourceServer>true</SkipSourceServer>
+		<SkipSources>false</SkipSources>
 		<SkipILMerge>true</SkipILMerge>
 		<SkipNDoc>true</SkipNDoc>
+		
+		<IncludeXna>false</IncludeXna>
 	</PropertyGroup>
 
 	<Target Name="Build">
@@ -33,8 +36,10 @@
 							 StartDir=$(StartDir);
 							 SkipInstaller=$(SkipInstaller);
 							 SkipSourceServer=$(SkipSourceServer);
+							 SkipSources=$(SkipSources);
 							 NoILMerge=$(SkipILMerge);
-							 SkipNDoc=$(SkipNDoc);"
+							 SkipNDoc=$(SkipNDoc);
+							 IncludeXna=$(IncludeXna)"
 				 Targets="Clean;Compile;Image;Test;Dist" />
 	</Target>
 </Project>
