@@ -16,7 +16,7 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="..\..\x86\Axiom.RenderSystems.OpenGL.OpenTK.dll" target="lib\net35\Axiom.RenderSystems.OpenGL.OpenTK.dll" /> 
+    <file src="..\..\x86\Axiom.RenderSystems.OpenGL.dll" target="lib\net35\Axiom.RenderSystems.OpenGL.dll" /> 
     <file src="..\tools\install.ps1" target="tools\install.ps1" />
     <file src="..\tools\uninstall.ps1" target="tools\uninstall.ps1" />
   </files>
