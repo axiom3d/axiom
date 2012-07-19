@@ -1,6 +1,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <Import Project="$(RootDir)\tools\build\Module.targets" />
-
+  <Import Project="$(RootDir)\tools\build\Axiom.Build.Version.targets" />
+  
   <ItemGroup>
     <Module Include="$(RootDir)\Top.module">
       <Inherit>true</Inherit>
@@ -22,14 +23,9 @@
       <Inherit>true</Inherit>
     </Module>    
   </ItemGroup>
-  
   <ItemGroup>
-    <ReleaseImageArchive Include="Axiom-SDK-$(FileVersion).zip" />
-    <ReleaseDebugSymbols Include="Symbols\$(FileVersion)" />
-    
-    <Installer Include="GallioBundle" />
+     <Version Include="$(SourceDir)\Axiom\version.txt" />
   </ItemGroup>
-  
   <ItemGroup Condition="'$(SkipNDoc)'!='true'">
     <Feature Include="FEATURE_CHM_HELP" />
     <Feature Include="FEATURE_VS_HELP" />
@@ -85,6 +81,22 @@
 	  <_CPProject>Axiom</_CPProject>
 	  <_ReleaseName>%(CodePlexRelease.Name)</_ReleaseName>
 	</PropertyGroup>
+	
+  <Target Name="BeforePrecondition" 
+		  DependsOnTargets="UpdateVersionTxtFile" />
+	
+  <Target Name="AfterImage"
+          DependsOnTargets="DistSetProperties" />
+		  
+  <Target Name="DistSetProperties" >
+	  <ItemGroup>
+		<ReleaseImageArchive Include="Axiom-SDK-$(FileVersion).zip" />
+		<ReleaseDebugSymbols Include="Symbols\$(FileVersion)" />
+		
+		<Installer Include="GallioBundle" />
+	  </ItemGroup>
+
+  </Target>
   
   <Target Name="AfterPublish"
 		  DependsOnTargets="PublishToCodeplex;" />
