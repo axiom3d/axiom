@@ -30,6 +30,7 @@ using Axiom.Core;
 namespace Axiom.Samples.Core
 {
 	using ShaderControlsContainer = System.Collections.Generic.List<ShaderControl>;
+    using System.Globalization;
 
 	/// <summary>
 	/// 
@@ -98,8 +99,8 @@ namespace Axiom.Samples.Core
 				newControl.Name = lineParams[ 0 ].Trim();
 				newControl.ParamName = lineParams[ 1 ].Trim();
 				newControl.Type = lineParams[ 2 ].Trim() == "GPU_VERTEX" ? ShaderType.GpuVertex : ShaderType.GpuFragment;
-				newControl.MinVal = float.Parse( lineParams[ 3 ].Trim() );
-				newControl.MaxVal = float.Parse( lineParams[ 4 ].Trim() );
+                newControl.MinVal = float.Parse(lineParams[3].Trim(), CultureInfo.InvariantCulture);
+                newControl.MaxVal = float.Parse(lineParams[4].Trim(), CultureInfo.InvariantCulture);
 				newControl.ElementIndex = int.Parse( lineParams[ 5 ].Trim() );
 				shaderControlsContainer.Add( newControl );
 			}
