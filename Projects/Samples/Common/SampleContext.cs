@@ -500,21 +500,23 @@ namespace Axiom.Samples
 		/// </summary>
 		virtual protected void SetupInput()
 		{
-			SIS.ParameterList pl = new SIS.ParameterList();
-			pl.Add( new SIS.Parameter( "WINDOW", RenderWindow[ "WINDOW" ] ) );
+			var pl = new SIS.ParameterList();
+			pl.Add(new SIS.Parameter( "WINDOW", RenderWindow[ "WINDOW" ] ) );
 #if !(XBOX || XBOX360 )
-			pl.Add( new SIS.Parameter( "w32_mouse", "CLF_BACKGROUND" ) );
-			pl.Add( new SIS.Parameter( "w32_mouse", "CLF_NONEXCLUSIVE" ) );
+			if ( !RenderWindow.GetType().Name.Contains( "OpenTK" ) )
+			{
+				pl.Add( new SIS.Parameter( "w32_mouse", "CLF_BACKGROUND" ) );
+				pl.Add( new SIS.Parameter( "w32_mouse", "CLF_NONEXCLUSIVE" ) );
+			}
+			else
+				pl.Add( new SIS.Parameter( "w32_no_coop", string.Empty ) );
 #endif
-			pl.Add( new SIS.Parameter( "x11_keyboard_grab", false ) );
-			pl.Add( new SIS.Parameter( "x11_mouse_grab", false ) );
-			pl.Add( new SIS.Parameter( "x11_mouse_hide", true ) );
 
 			this.InputManager = SIS.InputManager.CreateInputSystem( pl );
 
 			CreateInputDevices(); // create the specific input devices
 
-			this.WindowResized( RenderWindow ); // do an initial adjustment of mouse area
+			WindowResized( RenderWindow ); // do an initial adjustment of mouse area
 		}
 
 		/// <summary>

@@ -41,6 +41,7 @@ namespace Axiom.Samples.Core
 			AddSample( new SmokeSample() );
 			AddSample( new SphereMappingSample() );
 			AddSample( new VolumeTextureSample() );
+			/*AddSample( new ShadowSample() );*/
 		}
 	}
 }
