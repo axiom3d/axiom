@@ -114,6 +114,7 @@ namespace Axiom.RenderSystems.DirectX9
 			this._classStyle = classStyle;
 			this._dwStyleEx = dwStyleEx;
 			this._windowStyle = windowStyle;
+            this.Text = title;
 
 			SuspendLayout();
 
