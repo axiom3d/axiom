@@ -64,17 +64,24 @@ namespace Axiom.RenderSystems.OpenGL
 
 		#region Methods
 
+		private static bool firstTime = true;
+
 		public static void MessagePump()
 		{
-			foreach( var renderWindow in WindowEventMonitor.Instance.Windows )
+			foreach ( var renderWindow in WindowEventMonitor.Instance.Windows )
 			{
-				var window = renderWindow[ "WINDOW" ];
-				if( null != window && window is INativeWindow )
+				var window = renderWindow[ "nativewindow" ];
+				if ( null != window && window is INativeWindow )
 				{
 					( (INativeWindow)window ).ProcessEvents();
+					if ( firstTime )
+					{
+						( (INativeWindow)window ).Closing +=
+							( sender, args ) => WindowEventMonitor.Instance.WindowClosed( renderWindow );
+					}
 				}
 			}
-			// TODO: implement MessagePump 
+			firstTime = false;
 		}
 
 		#endregion Methods
