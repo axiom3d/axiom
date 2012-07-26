@@ -38,9 +38,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using Axiom.Core;
 
 #endregion Namespace Declarations
@@ -54,69 +52,70 @@ namespace Axiom.Graphics
 		public DefaultHardwareIndexBuffer( IndexType idxType, int numIndexes, BufferUsage usage )
 			: base( null, idxType, numIndexes, usage, true, false )
 		{
-			this._mpData = new byte[sizeInBytes];
+            _mpData = new byte[ sizeInBytes ];
 		}
 
 		public DefaultHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType idxType, int numIndexes,
 		                                   BufferUsage usage )
 			: base( manager, idxType, numIndexes, usage, true, false )
 		{
-			this._mpData = new byte[sizeInBytes];
+            _mpData = new byte[ sizeInBytes ];
 		}
 
 		public override void ReadData( int offset, int length, BufferBase dest )
 		{
-			var data = Memory.PinObject( this._mpData );
-			Memory.Copy( dest, data, length );
-			Memory.UnpinObject( this._mpData );
+            Debug.Assert( ( offset + length ) <= base.sizeInBytes );
+
+            using ( var data = BufferBase.Wrap( _mpData ).Offset( offset ) )
+                Memory.Copy( dest, data, length );
 		}
 
 		public override void WriteData( int offset, int length, Array data, bool discardWholeBuffer )
 		{
-			var pSource = Memory.PinObject( data );
-			var pIntData = Memory.PinObject( this._mpData );
-			Memory.Copy( pSource, pIntData, length );
-			Memory.UnpinObject( data );
-			Memory.UnpinObject( this._mpData );
-		}
+            Debug.Assert( ( offset + length ) <= base.sizeInBytes );
+
+            using ( var pSource = BufferBase.Wrap( data ) )
+            {
+                using ( var pIntData = BufferBase.Wrap( _mpData ).Offset( offset ) )
+                    Memory.Copy( pSource, pIntData, length );
+            }
+        }
 
 		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
-		{
-			var pIntData = Memory.PinObject( this._mpData );
-			Memory.Copy( src, pIntData, length );
-			Memory.UnpinObject( this._mpData );
-		}
+        {
+            Debug.Assert( ( offset + length ) <= base.sizeInBytes );
+
+            using ( var pIntData = BufferBase.Wrap( _mpData ).Offset( offset ) )
+                Memory.Copy( src, pIntData, length );
+        }
 
 		public override BufferBase Lock( int offset, int length, BufferLocking locking )
 		{
 			Debug.Assert( !isLocked );
 			isLocked = true;
-			var ret = Memory.PinObject( this._mpData );
-			ret.Ptr = offset;
-			return ret;
+            return Memory.PinObject( _mpData ).Offset( offset );
+
 		}
 
 		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{
 			Debug.Assert( !isLocked );
 			isLocked = true;
-			var ret = Memory.PinObject( this._mpData );
-			ret.Ptr = offset;
-			return ret;
-		}
+            return Memory.PinObject( _mpData ).Offset( offset );
+        }
 
 		public override void Unlock()
 		{
 			Debug.Assert( isLocked );
-			Memory.UnpinObject( this._mpData );
+			Memory.UnpinObject( _mpData );
 			isLocked = false;
 		}
 
 		protected override void UnlockImpl()
 		{
 			Debug.Assert( isLocked );
-			Memory.UnpinObject( this._mpData );
+			Memory.UnpinObject( _mpData );
 			isLocked = false;
 		}
-	}
+	};
 }
