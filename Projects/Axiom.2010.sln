@@ -6,36 +6,18 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platform Managers", "Platform Managers", "{676C7702-0B62-4E50-8211-EA5BC21A5DF5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.Win32.2010", "Axiom\Platforms\Win32\Axiom.Platforms.Win32.2010.csproj", "{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Platforms.OpenTK.2010", "Axiom\Platforms\OpenTK\Axiom.Platforms.OpenTK.2010.csproj", "{081F78DE-8224-4CA6-BD34-8B7939CF21AB}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Render Systems", "Render Systems", "{FC473D51-36A2-4437-BC06-92A8E92374B7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.DirectX9.2010", "Axiom\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.2010.csproj", "{68DBB62F-F98D-47B5-A769-C20B461227AB}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.Xna.2010", "Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.2010.csproj", "{628E7ED7-EC58-4C93-B8AB-CB69087D381B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.OpenTK.2010", "Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK.2010.csproj", "{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.Xna.Content.x86.2010", "Axiom\Tools\Axiom.RenderSystems.Xna.Content\Axiom.RenderSystems.Xna.Content.x86.2010.csproj", "{6E5E6221-0235-49C9-9273-449F5F0E8EF6}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scene Managers", "Scene Managers", "{E1A9CC1D-88A0-4CF6-9A8F-05E80D371DE4}"
 EndProject
@@ -48,39 +30,18 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{DC26813F-4527-477E-8068-272E10CF5C37}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.CgProgramManager.2010", "Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.2010.csproj", "{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.ParticleFX.2010", "Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.2010.csproj", "{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.OctreeZone.2010", "Axiom\Plugins\OctreeZone\Axiom.Plugins.OctreeZone.2010.csproj", "{BBEAD250-47B9-4DE8-BA58-BFADB4563C3C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.DevILCodecs.2010", "Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.2010.csproj", "{B2BB7F09-2AD3-49C4-9268-D33BC13AA5E7}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.SystemDrawingCodecs.2010", "Axiom\Plugins\Axiom.Plugins.SystemDrawingCodecs\Axiom.Plugins.SystemDrawingCodecs.2010.csproj", "{7440613A-4487-46BE-998E-25F554ACE980}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Plugins.FreeImageCodecs.2010", "Axiom\Plugins\Axiom.Plugins.FreeImageCodecs\Axiom.Plugins.FreeImageCodecs.2010.csproj", "{3FA3E842-91DE-4A78-99A8-DE3546763136}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.2010", "Axiom\Engine\Axiom.2010.csproj", "{BAA6AE8A-B259-4883-9805-CE538660A59A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{2A0C6270-CDA1-46F8-A4D8-09C005ECF3F9}"
 EndProject
@@ -115,21 +76,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Browser.Linux.2010", "Samples\Browser\Axiom.Samples.Browser.Linux.2010.csproj", "{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Framework.2010", "Axiom.Framework\Axiom.Framework.2010.csproj", "{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Components", "Components", "{47B1A6E3-B79C-481B-9A52-10E561745651}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Components.Terrain.2010", "Components\Terrain\Axiom.Components.Terrain.2010.csproj", "{79674E34-9EC2-4819-B47E-3DD75DFA4173}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Components.Paging.2010", "Components\Paging\Axiom.Components.Paging.2010.csproj", "{89C3D207-913D-4BCB-BD6E-F8673E20D8EA}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A643AC49-3085-4008-BF43-D6C9847C340D} = {A643AC49-3085-4008-BF43-D6C9847C340D}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Core.2010", "Samples\Core\Axiom.Samples.Core.2010.csproj", "{FC6B7267-E14E-459B-BCD3-EBFFFB34B54C}"
 EndProject
@@ -620,21 +572,13 @@ Global
 		{5EF4FD98-8D4F-4441-A6C3-F75930A36618}.Xna Release|x86.ActiveCfg = Release|x86
 		{5EF4FD98-8D4F-4441-A6C3-F75930A36618}.Xna Release|x86.Build.0 = Release|x86
 		{A643AC49-3085-4008-BF43-D6C9847C340D}.Debug|x86.ActiveCfg = Debug|x86
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.Debug|x86.Build.0 = Debug|x86
 		{A643AC49-3085-4008-BF43-D6C9847C340D}.DirectX Debug|x86.ActiveCfg = Debug|x86
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.DirectX Debug|x86.Build.0 = Debug|x86
 		{A643AC49-3085-4008-BF43-D6C9847C340D}.DirectX Release|x86.ActiveCfg = Release|x86
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.DirectX Release|x86.Build.0 = Release|x86
 		{A643AC49-3085-4008-BF43-D6C9847C340D}.OpenGL Debug|x86.ActiveCfg = Debug|x86
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.OpenGL Debug|x86.Build.0 = Debug|x86
 		{A643AC49-3085-4008-BF43-D6C9847C340D}.OpenGL Release|x86.ActiveCfg = Release|x86
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.OpenGL Release|x86.Build.0 = Release|x86
 		{A643AC49-3085-4008-BF43-D6C9847C340D}.Release|x86.ActiveCfg = Release|x86
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.Release|x86.Build.0 = Release|x86
 		{A643AC49-3085-4008-BF43-D6C9847C340D}.Xna Debug|x86.ActiveCfg = Debug|x86
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.Xna Debug|x86.Build.0 = Debug|x86
 		{A643AC49-3085-4008-BF43-D6C9847C340D}.Xna Release|x86.ActiveCfg = Release|x86
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.Xna Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
