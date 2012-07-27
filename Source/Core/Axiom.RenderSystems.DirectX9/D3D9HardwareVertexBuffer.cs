@@ -115,9 +115,7 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				if ( it.IsOutOfDate )
-				{
 					_updateBufferResources( this._systemMemoryBuffer, ref it );
-				}
 
 				it.LastUsedFrame = Root.Instance.NextFrameNumber;
 
@@ -366,17 +364,17 @@ namespace Axiom.RenderSystems.DirectX9
 			catch ( Exception ex )
 			{
 				throw new AxiomException( "Cannot lock D3D9 vertex buffer!", ex );
-			}
+            }
 
-			using ( var src = systemMemoryBuffer + bufferResources.LockOffset )
-			{
-				using ( var dest = BufferBase.Wrap( dstBytes.DataPointer, bufferResources.LockLength  ) )
-				{
-					Memory.Copy( src, dest, bufferResources.LockLength );
-				}
-			}
+            using ( var src = (BufferBase)systemMemoryBuffer.Clone() + bufferResources.LockOffset )
+            {
+                using ( var dest = BufferBase.Wrap( dstBytes.DataPointer, bufferResources.LockLength ) )
+                {
+                    Memory.Copy( src, dest, bufferResources.LockLength );
+                }
+            }
 
-			// Unlock the buffer.
+            // Unlock the buffer.
 			var hr = bufferResources.VertexBuffer.Unlock();
 			if ( hr.Failure )
 			{
