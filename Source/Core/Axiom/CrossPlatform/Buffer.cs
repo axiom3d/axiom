@@ -884,21 +884,19 @@ namespace Axiom.Core
 		}
 
 		short ITypePointer<short>.this[ int index ]
-		{
-			get
-			{
-                //TODO checkBounds
-				return BitConverter.ToInt16( Buf, ( index << 1 ) + IdxPtr );
-			}
+        {
+            get
+            {
+                var idx = ( index << 1 ) + IdxPtr;
+                checkBounds( idx + 1 );
+                return BitConverter.ToInt16( Buf, idx );
+            }
 			set
 			{
-                //TODO checkBounds
-				index = ( index << 2 ) + IdxPtr;
+				index = ( index << 1 ) + IdxPtr;
+                checkBounds( index + 1 );
 				var v = BitConverter.GetBytes( value );
-				for ( var i = 0; i < sizeof ( short ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
+                Buffer.BlockCopy( v, 0, Buf, index, sizeof( short ) );
 			}
 		}
 
@@ -906,18 +904,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-                //TODO checkBounds
-				return BitConverter.ToUInt16( Buf, ( index << 1 ) + IdxPtr );
+                var idx = ( index << 1 ) + IdxPtr;
+                checkBounds( idx + 1 );
+				return BitConverter.ToUInt16( Buf, idx );
 			}
 			set
 			{
-                //TODO checkBounds
-				index = ( index << 2 ) + IdxPtr;
+                index = ( index << 1 ) + IdxPtr;
+                checkBounds( index + 1 );
 				var v = BitConverter.GetBytes( value );
-				for ( var i = 0; i < sizeof ( ushort ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
+                Buffer.BlockCopy( v, 0, Buf, index, sizeof( ushort ) );
 			}
 		}
 
@@ -925,18 +921,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-                //TODO checkBounds
-				return BitConverter.ToInt32( Buf, ( index << 2 ) + IdxPtr );
+                var idx = ( index << 2 ) + IdxPtr;
+                checkBounds( idx + 3 );
+				return BitConverter.ToInt32( Buf, idx );
 			}
 			set
 			{
-                //TODO checkBounds
 				index = ( index << 2 ) + IdxPtr;
+                checkBounds( index + 3 );
 				var v = BitConverter.GetBytes( value );
-				for ( var i = 0; i < sizeof ( int ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
+                Buffer.BlockCopy( v, 0, Buf, index, sizeof( int ) );
 			}
 		}
 
@@ -944,18 +938,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-                //TODO checkBounds
-				return BitConverter.ToUInt32( Buf, ( index << 2 ) + IdxPtr );
+                var idx = ( index << 2 ) + IdxPtr;
+                checkBounds( idx + 3 );
+				return BitConverter.ToUInt32( Buf, idx );
 			}
 			set
 			{
-                //TODO checkBounds
 				index = ( index << 2 ) + IdxPtr;
+                checkBounds( index + 3 );
 				var v = BitConverter.GetBytes( value );
-				for ( var i = 0; i < sizeof ( uint ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
+                Buffer.BlockCopy( v, 0, Buf, index, sizeof( uint ) );
 			}
 		}
 
@@ -963,18 +955,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-                //TODO checkBounds
-				return BitConverter.ToInt64( Buf, ( index << 3 ) + IdxPtr );
+                var idx = ( index << 3 ) + IdxPtr;
+                checkBounds( idx + 7 );
+				return BitConverter.ToInt64( Buf, idx );
 			}
 			set
 			{
-                //TODO checkBounds
 				index = ( index << 3 ) + IdxPtr;
+                checkBounds( index + 7 );
 				var v = BitConverter.GetBytes( value );
-				for ( var i = 0; i < sizeof ( long ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
+                Buffer.BlockCopy( v, 0, Buf, index, sizeof( long ) );
 			}
 		}
 
@@ -982,18 +972,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-                //TODO checkBounds
-				return BitConverter.ToUInt64( Buf, ( index << 3 ) + IdxPtr );
+                var idx = ( index << 3 ) + IdxPtr;
+                checkBounds( idx + 7 );
+				return BitConverter.ToUInt64( Buf, idx );
 			}
 			set
 			{
-                //TODO checkBounds
-				index = ( index << 3 ) + IdxPtr;
+                index = ( index << 3 ) + IdxPtr;
+                checkBounds( index + 7 );
 				var v = BitConverter.GetBytes( value );
-				for ( var i = 0; i < sizeof ( ulong ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
+                Buffer.BlockCopy( v, 0, Buf, index, sizeof( ulong ) );
 			}
 		}
 
@@ -1001,18 +989,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-                //TODO checkBounds
-				return BitConverter.ToSingle( Buf, ( index << 2 ) + IdxPtr );
+                var idx = ( index << 2 ) + IdxPtr;
+                checkBounds( idx + 3 );
+                return BitConverter.ToSingle( Buf, idx );
 			}
 			set
 			{
-                //TODO checkBounds
 				index = ( index << 2 ) + IdxPtr;
+                checkBounds( index + 3 );
 				var v = BitConverter.GetBytes( value );
-				for ( var i = 0; i < sizeof ( float ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
+                Buffer.BlockCopy( v, 0, Buf, index, sizeof( float ) );
 			}
 		}
 
@@ -1020,18 +1006,16 @@ namespace Axiom.Core
 		{
 			get
 			{
-                //TODO checkBounds
-				return BitConverter.ToDouble( Buf, ( index << 3 ) + IdxPtr );
+                var idx = ( index << 3 ) + IdxPtr;
+                checkBounds( idx + 7 );
+				return BitConverter.ToDouble( Buf, idx );
 			}
 			set
 			{
-                //TODO checkBounds
 				index = ( index << 3 ) + IdxPtr;
+                checkBounds( index + 7 );
 				var v = BitConverter.GetBytes( value );
-				for ( var i = 0; i < sizeof ( double ); ++i, ++index )
-				{
-					Buf[ index ] = v[ i ];
-				}
+                Buffer.BlockCopy( v, 0, Buf, index, sizeof( double ) );
 			}
 		}
 	};
