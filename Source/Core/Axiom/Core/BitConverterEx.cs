@@ -57,23 +57,23 @@ namespace Axiom.Core
 			{
 				size = Memory.SizeOf( typeof ( T ) );
 				buffer = new byte[size];
-				dst = Memory.PinObject( buffer );
-				Marshal.StructureToPtr( value, dst.Pin(), true );
-				dst.UnPin();
+                using ( dst = BufferBase.Wrap( buffer ) )
+                {
+                    Marshal.StructureToPtr( value, dst.Pin(), true );
+                    dst.UnPin();
+                }
 			}
 			else
 			{
 				size = Memory.SizeOf( typeof ( T ).GetElementType() )*
 				       (int)typeof ( T ).GetProperty( "Length" ).GetValue( value, null );
-				buffer = new byte[size];
-				dst = Memory.PinObject( buffer );
-
-				var src = Memory.PinObject( value as Array );
-				Memory.Copy( src, dst, size );
-				Memory.UnpinObject( value );
+                buffer = new byte[ size ];
+                using ( dst = BufferBase.Wrap( buffer ) )
+                {
+                    using ( var src = BufferBase.Wrap( value as Array ) )
+                        Memory.Copy( src, dst, size );
+                }
 			}
-
-			Memory.UnpinObject( buffer );
 
 			return buffer;
 		}
@@ -81,22 +81,24 @@ namespace Axiom.Core
 		public static T SetBytes<T>( byte[] buffer )
 		{
 			var size = Memory.SizeOf( typeof ( T ) );
-			var src = Memory.PinObject( buffer );
-			var retStruct = src.Pin().PtrToStructure<T>();
-			src.UnPin();
-			Memory.UnpinObject( buffer );
+            T retStruct;
+            using ( var src = BufferBase.Wrap( buffer ) )
+            {
+                retStruct = src.Pin().PtrToStructure<T>();
+                src.UnPin();
+            }
 			return retStruct;
 		}
 
 		public static void SetBytes<T>( byte[] buffer, out T[] dest )
 		{
-			var size = buffer.Length/Memory.SizeOf( typeof ( T ) );
-			dest = new T[size];
-			var src = Memory.PinObject( buffer );
-			var dst = Memory.PinObject( dest );
-			Memory.Copy( src, dst, buffer.Length );
-			Memory.UnpinObject( buffer );
-			Memory.UnpinObject( dest );
+            var size = buffer.Length / Memory.SizeOf( typeof( T ) );
+            dest = new T[ size ];
+            using ( var src = BufferBase.Wrap( buffer ) )
+            {
+                using ( var dst = BufferBase.Wrap( dest ) )
+                    Memory.Copy( src, dst, buffer.Length );
+            }
 		}
-	}
+	};
 }

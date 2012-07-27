@@ -1,9 +1,41 @@
-﻿#region Namespace Declarations
+﻿#region MIT/X11 License
+
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//
+//Permission is hereby granted, free of charge, to any person obtaining a copy
+//of this software and associated documentation files (the "Software"), to deal
+//in the Software without restriction, including without limitation the rights
+//to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//copies of the Software, and to permit persons to whom the Software is
+//furnished to do so, subject to the following conditions:
+//
+//The above copyright notice and this permission notice shall be included in
+//all copies or substantial portions of the Software.
+//
+//THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//THE SOFTWARE.
+
+#endregion License
+
+#region SVN Version Information
+
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
+
+#endregion SVN Version Information
+
+#region Namespace Declarations
 
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
-using Axiom.Core;
 
 #endregion Namespace Declarations
 
@@ -161,6 +193,11 @@ namespace Axiom.Core
 
 		public abstract int Ptr { get; set; }
 
+        /// <summary>
+        /// Gets a 32-bit integer that represents the length of this Buffer ( expressed in bytes )
+        /// </summary>
+        public virtual int Length { get; protected set; }
+
 		public BufferBase Offset( int offset )
 		{
 			Ptr += offset;
@@ -207,7 +244,14 @@ namespace Axiom.Core
 
 		public abstract object Clone();
 
-		public abstract void Copy( BufferBase src, int srcOffset, int destOffset, int length );
+		public virtual void Copy( BufferBase src, int srcOffset, int destOffset, int length )
+        {
+            if ( src == null || srcOffset < 0 || destOffset < 0 || length < 0 )
+                throw new ArgumentException();
+
+            if ( src.Length - srcOffset < length || this.Length - destOffset < length )
+                throw new ArgumentOutOfRangeException();
+        }
 
 		//#if !AXIOM_SAFE_ONLY
 		public abstract IntPtr Pin();
@@ -245,14 +289,14 @@ namespace Axiom.Core
 			return new ManagedBuffer( buffer );
 		}
 
-		public static BufferBase Wrap( object buffer )
+        public static BufferBase Wrap( IntPtr buffer, int length )
 		{
-			return new UnsafeBuffer( buffer );
+			return new UnsafeBuffer( buffer, length );
 		}
 
-		public static BufferBase Wrap( IntPtr buffer, int size )
+		public static BufferBase Wrap( object buffer, int length = 0 )
 		{
-			return new UnsafeBuffer( buffer );
+			return new UnsafeBuffer( buffer, length );
 		}
 #elif AXIOM_SAFE_ONLY
 		public static BufferBase Wrap( byte[] buffer )
@@ -260,29 +304,29 @@ namespace Axiom.Core
 			return new ManagedBuffer( buffer );
 		}
 
-		public static BufferBase Wrap( object buffer )
+        public static BufferBase Wrap( IntPtr buffer, int length )
+		{
+			return new ManagedBuffer( buffer, length );
+		}
+
+		public static BufferBase Wrap( object buffer, int length = 0 )
 		{
 			return new ManagedBuffer( buffer );
 		}
-
-		public static BufferBase Wrap( IntPtr buffer, int size )
-		{
-			return new ManagedBuffer( buffer, size );
-		}
 #else
-		public static BufferBase Wrap( byte[] buffer )
+        public static BufferBase Wrap( byte[] buffer )
 		{
-			return new UnsafeBuffer( buffer );
+			return new UnsafeBuffer( buffer, buffer.Length );
 		}
 
-		public static BufferBase Wrap( IntPtr buffer, int size )
+		public static BufferBase Wrap( IntPtr buffer, int length )
 		{
-			return new UnsafeBuffer( buffer );
+            return new UnsafeBuffer( buffer, length );
 		}
 
-		public static BufferBase Wrap( object buffer )
+		public static BufferBase Wrap( object buffer, int length = 0 )
 		{
-			return new UnsafeBuffer( buffer );
+			return new UnsafeBuffer( buffer, length );
 		}
 #endif
 
@@ -400,6 +444,14 @@ namespace Axiom.Core
 			}
 		}
 
+        public override int Length
+        {
+            get
+            {
+                return this.Buf.Length;
+            }
+        }
+
 		public ManagedBuffer( ManagedBuffer buffer )
 			: base()
 		{
@@ -424,7 +476,7 @@ namespace Axiom.Core
 				var buf = (Array)this.obj;
 				var te = t.GetElementType();
 				size = buf.Length*te.Size();
-				this.Buf = new byte[size];
+                this.Buf = new byte[ size ];
 				if ( te.IsPrimitive )
 				{
 					Buffer.BlockCopy( buf, 0, this.Buf, 0, size );
@@ -434,7 +486,7 @@ namespace Axiom.Core
 				return;
 			}
 			size = t.Size();
-			this.Buf = new byte[size];
+            this.Buf = new byte[ size ];
 			this.Buf.CopyFrom( this.obj );
 		}
 
@@ -442,7 +494,7 @@ namespace Axiom.Core
 			: base()
 		{
 			this.obj = buffer;
-			this.Buf = new byte[size];
+            this.Buf = new byte[ size ];
 			Marshal.Copy( buffer, this.Buf, 0, size );
 		}
 
@@ -454,7 +506,7 @@ namespace Axiom.Core
 				{
 					if ( this.obj is IntPtr )
 					{
-						Marshal.Copy( this.Buf, 0, (IntPtr)this.obj, this.Buf.Length );
+						Marshal.Copy( this.Buf, 0, (IntPtr)this.obj, this.Length );
 					}
 					else
 					{
@@ -463,7 +515,7 @@ namespace Axiom.Core
 						{
 							if ( t.GetElementType().IsPrimitive )
 							{
-								Buffer.BlockCopy( this.Buf, 0, (Array)this.obj, 0, this.Buf.Length );
+								Buffer.BlockCopy( this.Buf, 0, (Array)this.obj, 0, this.Length );
 							}
 							else
 							{
@@ -489,6 +541,8 @@ namespace Axiom.Core
 
 		public override void Copy( BufferBase src, int srcOffset, int destOffset, int length )
 		{
+            base.Copy( src, srcOffset, destOffset, length );
+
 			if ( src is ManagedBuffer )
 			{
 				Buffer.BlockCopy( ( src as ManagedBuffer ).Buf, ( src as ManagedBuffer ).IdxPtr + srcOffset, this.Buf,
@@ -512,8 +566,7 @@ namespace Axiom.Core
 					return
 						new IntPtr(
 							( PinHandle.IsAllocated ? PinHandle : PinHandle = GCHandle.Alloc( this.Buf, GCHandleType.Pinned ) ).
-								AddrOfPinnedObject
-								().ToInt32() + this.IdxPtr );
+                                AddrOfPinnedObject().ToInt32() + this.IdxPtr );
 				}
 			}
 			throw new AxiomException( "LockCount <= 0" );
@@ -969,40 +1022,44 @@ namespace Axiom.Core
 			}
 		}
 
-		public UnsafeBuffer( object buffer )
+		public UnsafeBuffer( object buffer, int length )
 			: base()
 		{
 			unsafe
 			{
 				this.Buf = (byte*)( PinHandle = GCHandle.Alloc( buffer, GCHandleType.Pinned ) ).AddrOfPinnedObject();
 				PinCount = 1;
-				this.PtrBuf = this.Buf;
-			}
-		}
+                this.PtrBuf = this.Buf;
+                this.Length = length;
+            }
+        }
 
-		public UnsafeBuffer( IntPtr buffer )
+		public UnsafeBuffer( IntPtr buffer, int length )
 			: base()
 		{
 			unsafe
 			{
 				this.Buf = (byte*)buffer;
 				this.PtrBuf = this.Buf;
+                this.Length = length;
 			}
 		}
 
 		public override object Clone()
 		{
-			unsafe
-			{
-				return new UnsafeBuffer( (IntPtr)this.Buf )
-				       {
-				       	Ptr = Ptr
-				       };
-			}
+            unsafe
+            {
+                return new UnsafeBuffer( (IntPtr)this.Buf, Length )
+                       {
+                           Ptr = Ptr,
+                       };
+            }
 		}
 
 		public override void Copy( BufferBase src, int srcOffset, int destOffset, int length )
 		{
+            base.Copy( src, srcOffset, destOffset, length );
+
 			unsafe
 			{
 				if ( src is ManagedBuffer )
@@ -1012,14 +1069,29 @@ namespace Axiom.Core
 				}
 				else if ( src is UnsafeBuffer )
 				{
-					var pSrc = (byte*)src.Pin() + srcOffset;
-					var pDest = (byte*)Pin() + destOffset;
-					for ( var i = 0; i < length; i++ )
-					{
-						*pDest++ = *pSrc++;
-					}
-					UnPin();
-					src.UnPin();
+
+                    var pSrc = src.ToBytePointer();
+                    var pDest = dest.ToBytePointer();
+
+                    //Following code snippet was taken from http://msdn.microsoft.com/en-us/library/28k1s2k6(v=vs.80).aspx
+                    var ps = pSrc + srcOffset;
+                    var pd = pDest + destOffset;
+
+                    // Loop over the count in blocks of 4 bytes, copying an integer (4 bytes) at a time:
+                    for ( var i = 0; i < length / 4; i++ )
+                    {
+                        *( (int*)pd ) = *( (int*)ps );
+                        pd += 4;
+                        ps += 4;
+                    }
+
+                    // Complete the copy by moving any bytes that weren't moved in blocks of 4:
+                    for ( var i = 0; i < length % 4; i++ )
+                    {
+                        *pd = *ps;
+                        pd++;
+                        ps++;
+                    }
 				}
 			}
 		}

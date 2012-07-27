@@ -35,6 +35,7 @@
 
 using System;
 using System.Collections.Generic;
+using Axiom.Utilities;
 #if !AXIOM_SAFE_ONLY
 using System.Runtime.InteropServices;
 
@@ -84,22 +85,9 @@ namespace Axiom.Core
 		/// <param name="length">Length of data (in bytes) to copy.</param>
 		public static void Copy( BufferBase src, BufferBase dest, int srcOffset, int destOffset, int length )
 		{
-			// TODO: Block copy would be faster, find a cross platform way to do it
-#if AXIOM_SAFE_ONLY
+            Contract.RequiresNotNull( dest, "dest" );
 			dest.Copy( src, srcOffset, destOffset, length );
-#else
-			unsafe
-			{
-				var pSrc = src.ToBytePointer();
-				var pDest = dest.ToBytePointer();
-
-				for ( var i = 0; i < length; i++ )
-				{
-					pDest[ i + destOffset ] = pSrc[ i + srcOffset ];
-				}
-			}
-#endif
-		}
+        }
 
 		#endregion Copy Method
 
@@ -146,15 +134,12 @@ namespace Axiom.Core
 		public static BufferBase PinObject( object obj )
 		{
 			ManagedBuffer handle;
-			if ( _pinnedReferences.ContainsKey( obj ) )
-			{
-				handle = _pinnedReferences[ obj ];
-			}
-			else
+			if ( !_pinnedReferences.TryGetValue( obj, out handle ) )
 			{
 				handle = obj is byte[] ? new ManagedBuffer( obj as byte[] ) : new ManagedBuffer( obj );
 				_pinnedReferences.Add( obj, handle );
 			}
+
 			return handle;
 		}
 #else
@@ -163,16 +148,14 @@ namespace Axiom.Core
 		public static BufferBase PinObject( object obj )
 		{
 			GCHandle handle;
-			if ( _pinnedReferences.ContainsKey( obj ) )
-			{
-				handle = _pinnedReferences[ obj ];
-			}
-			else
+            if ( !_pinnedReferences.TryGetValue( obj, out handle ) )
 			{
 				handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
 				_pinnedReferences.Add( obj, handle );
 			}
-			return new UnsafeBuffer( handle.AddrOfPinnedObject() );
+
+            int length = obj is byte[] ?( (byte[])obj ).Length : 0;
+            return new UnsafeBuffer( handle.AddrOfPinnedObject(), length );
 		}
 #endif
 

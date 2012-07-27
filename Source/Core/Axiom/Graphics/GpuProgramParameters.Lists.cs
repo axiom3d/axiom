@@ -98,7 +98,7 @@ namespace Axiom.Graphics
 			public FixedPointer Fix( int offset )
 			{
 				this._ptr.Owner = Data;
-				this._ptr.Pointer = Memory.PinObject( this._ptr.Owner ).Offset( this._size*offset );
+                this._ptr.Pointer = Memory.PinObject( this._ptr.Owner ).Offset( this._size * offset );
 				return this._ptr;
 			}
 

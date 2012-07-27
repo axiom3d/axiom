@@ -785,18 +785,16 @@ namespace Axiom.Graphics
 		internal void ReadRawConstants( int physicalIndex, float[] dest )
 		{
 			Debug.Assert( physicalIndex + dest.Length <= this.floatConstants.Count );
-			var destBuf = Memory.PinObject( dest );
-			Memory.Copy( GetFloatPointer( physicalIndex ).Pointer, destBuf, sizeof ( float )*dest.Length );
-			Memory.UnpinObject( dest );
+            using ( var destBuf = BufferBase.Wrap( dest ) )
+                Memory.Copy( GetFloatPointer( physicalIndex ).Pointer, destBuf, sizeof( float ) * dest.Length );
 		}
 
 		[OgreVersion( 1, 7, 2 )]
 		internal void ReadRawConstants( int physicalIndex, int[] dest )
 		{
 			Debug.Assert( physicalIndex + dest.Length <= this.intConstants.Count );
-			var destBuf = Memory.PinObject( dest );
-			Memory.Copy( GetFloatPointer( physicalIndex ).Pointer, destBuf, sizeof ( int )*dest.Length );
-			Memory.UnpinObject( dest );
+			using ( var destBuf = BufferBase.Wrap( dest ) )
+                Memory.Copy( GetFloatPointer( physicalIndex ).Pointer, destBuf, sizeof( int ) * dest.Length );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]

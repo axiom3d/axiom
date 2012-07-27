@@ -1949,7 +1949,7 @@ namespace Axiom.Components.Terrain
 			}
 
 			//Load delta data
-			var deltaData = new float[sizeof ( float )*numVertices];
+            var deltaData = new float[ sizeof( float ) * numVertices ];
 			stream.Read( out deltaData );
 			this.mDeltaDataPtr = BufferBase.Wrap( deltaData );
 
