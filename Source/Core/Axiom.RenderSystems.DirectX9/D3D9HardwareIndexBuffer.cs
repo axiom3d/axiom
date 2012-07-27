@@ -114,9 +114,7 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				if ( resources.IsOutOfDate )
-				{
 					_updateBufferResources( this._systemMemoryBuffer, ref resources );
-				}
 
 				resources.LastUsedFrame = Root.Instance.NextFrameNumber;
 
@@ -375,7 +373,7 @@ namespace Axiom.RenderSystems.DirectX9
 				throw new AxiomException( "Cannot lock D3D9 index buffer!", ex );
 			}
 
-			using ( var src = systemMemoryBuffer + bufferResources.LockOffset )
+			using ( var src = (BufferBase)systemMemoryBuffer.Clone() + bufferResources.LockOffset )
 			{
 				using ( var dest = BufferBase.Wrap( dstBytes.DataPointer, bufferResources.LockLength ) )
 				{
