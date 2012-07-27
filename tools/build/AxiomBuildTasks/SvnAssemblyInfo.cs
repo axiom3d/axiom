@@ -66,8 +66,8 @@ namespace Axiom.Build.Tasks
 				{
 					if ( string.IsNullOrEmpty( svn.RootUrl ) )
 						svn.RootUrl = item.RepositoryRoot.AbsoluteUri;
-					svn.MinRevision = item.Revision > 0 && ( svn.MinRevision > item.Revision || svn.MinRevision == 0 ) ? item.Revision : svn.MinRevision;
-					svn.MaxRevision = item.Revision > 0 && item.Revision > svn.MaxRevision ? item.Revision : svn.MaxRevision;
+					svn.MinRevision = item.Revision > 0 && ( item.Revision < svn.MinRevision || svn.MinRevision == 0 ) ? item.Revision : svn.MinRevision;
+					svn.MaxRevision = item.Revision > 0 && ( item.Revision > svn.MaxRevision || svn.MaxRevision == 0 ) ? item.Revision : svn.MaxRevision;
 					svn.IsSvnItem = false;
 					switch ( item.LocalNodeStatus )
 					{
