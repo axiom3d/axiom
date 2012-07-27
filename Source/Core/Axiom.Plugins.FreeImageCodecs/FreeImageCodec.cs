@@ -595,19 +595,20 @@ namespace Axiom.Plugins.FreeImageCodecs
 			}
 
 			var srcPitch = (int)FI.FreeImage.GetPitch( fiBitmap );
-			// Final data - invert image and trim pitch at the same time
-			var dstPitch = imgData.width*PixelUtil.GetNumElemBytes( imgData.format );
-			imgData.size = dstPitch*imgData.height;
-			// Bind output buffer
-			var outputData = new byte[imgData.size];
 
-			using ( var srcData = BufferBase.Wrap( FI.FreeImage.GetBits( fiBitmap ), imgData.height*srcPitch ) )
+			// Final data - invert image and trim pitch at the same time
+            var dstPitch = imgData.width * PixelUtil.GetNumElemBytes( imgData.format );
+            imgData.size = dstPitch * imgData.height;
+			// Bind output buffer
+            var outputData = new byte[ imgData.size ];
+
+            using ( var srcData = BufferBase.Wrap( FI.FreeImage.GetBits( fiBitmap ), imgData.height * srcPitch ) )
 			{
 				var pDst = BufferBase.Wrap( outputData );
 
 				for ( var y = 0; y < imgData.height; ++y )
 				{
-					using ( var pSrc = srcData + ( imgData.height - y - 1 )*srcPitch )
+                    using ( var pSrc = srcData + ( imgData.height - y - 1 ) * srcPitch )
 					{
 						Memory.Copy( pSrc, pDst, dstPitch );
 						pDst += dstPitch;
