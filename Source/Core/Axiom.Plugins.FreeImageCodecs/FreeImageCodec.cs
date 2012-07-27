@@ -309,9 +309,9 @@ namespace Axiom.Plugins.FreeImageCodecs
 
 				var conversionRequired = false;
 				input.Position = 0;
-				var srcData = new byte[(int)input.Length];
+                var srcData = new byte[ (int)input.Length ];
 				input.Read( srcData, 0, srcData.Length );
-				var srcDataPtr = Memory.PinObject( srcData );
+				var srcDataPtr = BufferBase.Wrap( srcData );
 
 				// Check BPP
 				var bpp = PixelUtil.GetNumElemBits( requiredFormat );
@@ -358,7 +358,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 				{
 					if ( conversionRequired )
 					{
-						Memory.UnpinObject( srcData );
+                        srcDataPtr.SafeDispose();
 						convBox = null;
 					}
 
@@ -380,13 +380,13 @@ namespace Axiom.Plugins.FreeImageCodecs
 
 				// Copy data, invert scanlines and respect FreeImage pitch
 				var pSrc = srcDataPtr;
-				using ( var pDest = BufferBase.Wrap( FI.FreeImage.GetBits( ret ), imgData.height*srcPitch ) )
+                using ( var pDest = BufferBase.Wrap( FI.FreeImage.GetBits( ret ), imgData.height * srcPitch ) )
 				{
 					var byteSrcData = pSrc;
 					var byteDstData = pDest;
-					for ( int y = 0; y < imgData.height; ++y )
+					for ( var y = 0; y < imgData.height; ++y )
 					{
-						byteSrcData += ( imgData.height - y - 1 )*srcPitch;
+                        byteSrcData += ( imgData.height - y - 1 ) * srcPitch;
 						Memory.Copy( pSrc, pDest, srcPitch );
 						byteDstData += dstPitch;
 					}
@@ -395,7 +395,7 @@ namespace Axiom.Plugins.FreeImageCodecs
 				if ( conversionRequired )
 				{
 					// delete temporary conversion area
-					Memory.UnpinObject( srcData );
+                    srcDataPtr.SafeDispose();
 					convBox = null;
 				}
 			}

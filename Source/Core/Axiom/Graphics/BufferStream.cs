@@ -209,24 +209,21 @@ namespace Axiom.Graphics
 			}
 
 			// pin the array so we can get a pointer to it
-			var handle = Memory.PinObject( val );
-
+            using ( var handle = BufferBase.Wrap( val ) )
+            {
 #if !AXIOM_SAFE_ONLY
-			unsafe
+                unsafe
 #endif
-			{
-				// get byte pointers for the source and target
-				var b = handle.ToBytePointer();
-				var dataPtr = this.data.ToBytePointer();
+                {
+                    // get byte pointers for the source and target
+                    var b = handle.ToBytePointer();
+                    var dataPtr = this.data.ToBytePointer();
 
-				// copy the data from the source to the target
-				for ( var i = 0; i < count; i++ )
-				{
-					dataPtr[ (int)( i + newOffset ) ] = b[ i ];
-				}
-			}
-
-			Memory.UnpinObject( val );
+                    // copy the data from the source to the target
+                    for ( var i = 0; i < count; i++ )
+                        dataPtr[ (int)( i + newOffset ) ] = b[ i ];
+                }
+            }
 		}
 
 		/// <summary>

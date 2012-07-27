@@ -377,7 +377,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			using ( var src = systemMemoryBuffer + bufferResources.LockOffset )
 			{
-				using ( var dest = BufferBase.Wrap( dstBytes.DataPointer, (int)dstBytes.Length ) )
+				using ( var dest = BufferBase.Wrap( dstBytes.DataPointer, bufferResources.LockLength ) )
 				{
 					Memory.Copy( src, dest, bufferResources.LockLength );
 				}

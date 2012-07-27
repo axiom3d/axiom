@@ -71,7 +71,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// Case we have to create the declaration for this device.
 				if ( declFound == false || it == null )
 				{
-					var d3dElements = new D3D9.VertexElement[elements.Count + 1];
+                    var d3dElements = new D3D9.VertexElement[ elements.Count + 1 ];
 
 					// loop through and configure each element for D3D
 					ushort idx;

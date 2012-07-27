@@ -338,39 +338,29 @@ namespace Axiom.Graphics
 		///     position, normal, etc data.  The size of the struct *must* match the vertex size of the buffer,
 		///     so use with care.
 		/// </param>
-		public void WriteData( int offset, int length, System.Array data )
-		{
-			var dataPtr = Memory.PinObject( data );
-
-			WriteData( offset, length, dataPtr, false );
-
-			Memory.UnpinObject( data );
-		}
-
-		/// <summary>
-		///    Allows passing in a managed array of data to fill the vertex buffer.
-		/// </summary>
-		/// <param name="offset">The byte offset from the start of the buffer to start writing.</param>
-		/// <param name="length">The size of the data to write to, in bytes.</param>
-		/// <param name="data">
-		///     Array of data to blast into the buffer.  This can be an array of custom structs, that hold
-		///     position, normal, etc data.  The size of the struct *must* match the vertex size of the buffer,
-		///     so use with care.
-		/// </param>
 		/// <param name="discardWholeBuffer">
 		///     If true, this allows the driver to discard the entire buffer when writing,
 		///     such that DMA stalls can be avoided; use if you can.
 		/// </param>
-		public virtual void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
+#if NET_40
+		public virtual void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer = false )
+#else
+        public virtual void WriteData( int offset, int length, System.Array data, bool discardWholeBuffer )
+#endif
 		{
-			var dataPtr = Memory.PinObject( data );
-
-			WriteData( offset, length, dataPtr, discardWholeBuffer );
-
-			Memory.UnpinObject( data );
+            using ( var dataPtr = BufferBase.Wrap( data, length ) )
+                WriteData( offset, length, dataPtr, discardWholeBuffer );
 		}
 
-		/// <summary>
+#if !NET_40
+        /// <see cref="HardwareBuffer.WriteData(int, int, System.Array, bool)"/>
+        public void WriteData( int offset, int length, System.Array data )
+        {
+            this.WriteData( offset, length, data, false );
+        }
+#endif
+
+        /// <summary>
 		/// Copy data from another buffer into this one.
 		/// </summary>
 		/// <param name="srcBuffer">The buffer from which to read the copied data.</param>
