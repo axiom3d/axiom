@@ -253,6 +253,12 @@ namespace Axiom.Core
                 throw new ArgumentOutOfRangeException();
         }
 
+        protected void checkBounds( int value )
+        {
+            if ( value < 0 || value >= this.Length )
+                throw new ArgumentOutOfRangeException();
+        }
+
 		//#if !AXIOM_SAFE_ONLY
 		public abstract IntPtr Pin();
 
@@ -578,10 +584,12 @@ namespace Axiom.Core
 		{
 			get
 			{
+                checkBounds( index + this.IdxPtr );
 				return this.Buf[ index + this.IdxPtr ];
 			}
 			set
 			{
+                checkBounds( index + this.IdxPtr );
 				this.Buf[ index + this.IdxPtr ] = value;
 			}
 		}
@@ -592,6 +600,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 1;
+                checkBounds( index + this.IdxPtr + 1 );
 				return new TwoByte
 				       {
 				       	b0 = buf[ index += this.IdxPtr ],
@@ -602,6 +611,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 1;
+                checkBounds( index + this.IdxPtr + 1 );
 				var v = new TwoByte
 				        {
 				        	Short = value
@@ -617,6 +627,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 1;
+                checkBounds( index + this.IdxPtr + 1 );
 				return new TwoByte
 				       {
 				       	b0 = buf[ index += this.IdxPtr ],
@@ -627,6 +638,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 1;
+                checkBounds( index + this.IdxPtr + 1 );
 				var v = new TwoByte
 				        {
 				        	UShort = value
@@ -642,6 +654,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 2;
+                checkBounds( index + this.IdxPtr + 3 );
 				return new FourByte
 				       {
 				       	b0 = buf[ index += this.IdxPtr ],
@@ -654,6 +667,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 2;
+                checkBounds( index + this.IdxPtr + 3 );
 				var v = new FourByte
 				        {
 				        	Int = value
@@ -671,6 +685,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 2;
+                checkBounds( index + this.IdxPtr + 3 );
 				return new FourByte
 				       {
 				       	b0 = buf[ index += this.IdxPtr ],
@@ -683,6 +698,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 2;
+                checkBounds( index + this.IdxPtr + 3 );
 				var v = new FourByte
 				        {
 				        	UInt = value
@@ -700,6 +716,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 3;
+                checkBounds( index + this.IdxPtr + 7 );
 				return new EightByte
 				       {
 				       	b0 = buf[ index += this.IdxPtr ],
@@ -716,6 +733,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 3;
+                checkBounds( index + this.IdxPtr + 7 );
 				var v = new EightByte
 				        {
 				        	Long = value
@@ -737,6 +755,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 3;
+                checkBounds( index + this.IdxPtr + 7 );
 				return new EightByte
 				       {
 				       	b0 = buf[ index += this.IdxPtr ],
@@ -753,6 +772,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 3;
+                checkBounds( index + this.IdxPtr + 7 );
 				var v = new EightByte
 				        {
 				        	ULong = value
@@ -774,6 +794,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 2;
+                checkBounds( index + this.IdxPtr + 3 );
 				return new FourByte
 				       {
 				       	b0 = buf[ index += this.IdxPtr ],
@@ -786,6 +807,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 2;
+                checkBounds( index + this.IdxPtr + 3 );
 				var v = new FourByte
 				        {
 				        	Float = value
@@ -803,6 +825,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 3;
+                checkBounds( index + this.IdxPtr + 7 );
 				return new EightByte
 				       {
 				       	b0 = buf[ index += this.IdxPtr ],
@@ -819,6 +842,7 @@ namespace Axiom.Core
 			{
 				var buf = this.Buf;
 				index <<= 3;
+                checkBounds( index + this.IdxPtr + 7 );
 				var v = new EightByte
 				        {
 				        	Double = value
@@ -863,10 +887,12 @@ namespace Axiom.Core
 		{
 			get
 			{
+                //TODO checkBounds
 				return BitConverter.ToInt16( Buf, ( index << 1 ) + IdxPtr );
 			}
 			set
 			{
+                //TODO checkBounds
 				index = ( index << 2 ) + IdxPtr;
 				var v = BitConverter.GetBytes( value );
 				for ( var i = 0; i < sizeof ( short ); ++i, ++index )
@@ -880,10 +906,12 @@ namespace Axiom.Core
 		{
 			get
 			{
+                //TODO checkBounds
 				return BitConverter.ToUInt16( Buf, ( index << 1 ) + IdxPtr );
 			}
 			set
 			{
+                //TODO checkBounds
 				index = ( index << 2 ) + IdxPtr;
 				var v = BitConverter.GetBytes( value );
 				for ( var i = 0; i < sizeof ( ushort ); ++i, ++index )
@@ -897,10 +925,12 @@ namespace Axiom.Core
 		{
 			get
 			{
+                //TODO checkBounds
 				return BitConverter.ToInt32( Buf, ( index << 2 ) + IdxPtr );
 			}
 			set
 			{
+                //TODO checkBounds
 				index = ( index << 2 ) + IdxPtr;
 				var v = BitConverter.GetBytes( value );
 				for ( var i = 0; i < sizeof ( int ); ++i, ++index )
@@ -914,10 +944,12 @@ namespace Axiom.Core
 		{
 			get
 			{
+                //TODO checkBounds
 				return BitConverter.ToUInt32( Buf, ( index << 2 ) + IdxPtr );
 			}
 			set
 			{
+                //TODO checkBounds
 				index = ( index << 2 ) + IdxPtr;
 				var v = BitConverter.GetBytes( value );
 				for ( var i = 0; i < sizeof ( uint ); ++i, ++index )
@@ -931,10 +963,12 @@ namespace Axiom.Core
 		{
 			get
 			{
+                //TODO checkBounds
 				return BitConverter.ToInt64( Buf, ( index << 3 ) + IdxPtr );
 			}
 			set
 			{
+                //TODO checkBounds
 				index = ( index << 3 ) + IdxPtr;
 				var v = BitConverter.GetBytes( value );
 				for ( var i = 0; i < sizeof ( long ); ++i, ++index )
@@ -948,10 +982,12 @@ namespace Axiom.Core
 		{
 			get
 			{
+                //TODO checkBounds
 				return BitConverter.ToUInt64( Buf, ( index << 3 ) + IdxPtr );
 			}
 			set
 			{
+                //TODO checkBounds
 				index = ( index << 3 ) + IdxPtr;
 				var v = BitConverter.GetBytes( value );
 				for ( var i = 0; i < sizeof ( ulong ); ++i, ++index )
@@ -965,10 +1001,12 @@ namespace Axiom.Core
 		{
 			get
 			{
+                //TODO checkBounds
 				return BitConverter.ToSingle( Buf, ( index << 2 ) + IdxPtr );
 			}
 			set
 			{
+                //TODO checkBounds
 				index = ( index << 2 ) + IdxPtr;
 				var v = BitConverter.GetBytes( value );
 				for ( var i = 0; i < sizeof ( float ); ++i, ++index )
@@ -982,10 +1020,12 @@ namespace Axiom.Core
 		{
 			get
 			{
+                //TODO checkBounds
 				return BitConverter.ToDouble( Buf, ( index << 3 ) + IdxPtr );
 			}
 			set
 			{
+                //TODO checkBounds
 				index = ( index << 3 ) + IdxPtr;
 				var v = BitConverter.GetBytes( value );
 				for ( var i = 0; i < sizeof ( double ); ++i, ++index )
@@ -1069,9 +1109,8 @@ namespace Axiom.Core
 				}
 				else if ( src is UnsafeBuffer )
 				{
-
                     var pSrc = src.ToBytePointer();
-                    var pDest = dest.ToBytePointer();
+                    var pDest = this.ToBytePointer();
 
                     //Following code snippet was taken from http://msdn.microsoft.com/en-us/library/28k1s2k6(v=vs.80).aspx
                     var ps = pSrc + srcOffset;
@@ -1113,6 +1152,7 @@ namespace Axiom.Core
 			{
 				unsafe
 				{
+                    checkBounds( this.Ptr + index );
 					return *( this.PtrBuf + index );
 				}
 			}
@@ -1120,6 +1160,7 @@ namespace Axiom.Core
 			{
 				unsafe
 				{
+                    checkBounds( this.Ptr + index );
 					*( this.PtrBuf + index ) = value;
 				}
 			}
@@ -1132,6 +1173,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 1;
+                    checkBounds( this.Ptr + index );
 					return *(short*)( this.PtrBuf + index );
 				}
 			}
@@ -1140,6 +1182,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 1;
+                    checkBounds( this.Ptr + index );
 					*(short*)( this.PtrBuf + index ) = value;
 				}
 			}
@@ -1152,6 +1195,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 1;
+                    checkBounds( this.Ptr + index );
 					return *(ushort*)( this.PtrBuf + index );
 				}
 			}
@@ -1160,6 +1204,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 1;
+                    checkBounds( this.Ptr + index );
 					*(ushort*)( this.PtrBuf + index ) = value;
 				}
 			}
@@ -1172,6 +1217,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 2;
+                    checkBounds( this.Ptr + index );
 					return *(int*)( this.PtrBuf + index );
 				}
 			}
@@ -1180,6 +1226,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 2;
+                    checkBounds( this.Ptr + index );
 					*(int*)( this.PtrBuf + index ) = value;
 				}
 			}
@@ -1192,6 +1239,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 2;
+                    checkBounds( this.Ptr + index );
 					return *(uint*)( this.PtrBuf + index );
 				}
 			}
@@ -1200,6 +1248,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 2;
+                    checkBounds( this.Ptr + index );
 					*(uint*)( this.PtrBuf + index ) = value;
 				}
 			}
@@ -1212,6 +1261,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 3;
+                    checkBounds( this.Ptr + index );
 					return *(long*)( this.PtrBuf + index );
 				}
 			}
@@ -1220,6 +1270,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 3;
+                    checkBounds( this.Ptr + index );
 					*(long*)( this.PtrBuf + index ) = value;
 				}
 			}
@@ -1232,6 +1283,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 3;
+                    checkBounds( this.Ptr + index );
 					return *(ulong*)( this.PtrBuf + index );
 				}
 			}
@@ -1240,6 +1292,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 3;
+                    checkBounds( this.Ptr + index );
 					*(ulong*)( this.PtrBuf + index ) = value;
 				}
 			}
@@ -1252,6 +1305,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 2;
+                    checkBounds( this.Ptr + index );
 					return *(float*)( this.PtrBuf + index );
 				}
 			}
@@ -1260,6 +1314,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 2;
+                    checkBounds( this.Ptr + index );
 					*(float*)( this.PtrBuf + index ) = value;
 				}
 			}
@@ -1272,6 +1327,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 3;
+                    checkBounds( this.Ptr + index );
 					return *(double*)( this.PtrBuf + index );
 				}
 			}
@@ -1280,6 +1336,7 @@ namespace Axiom.Core
 				unsafe
 				{
 					index <<= 3;
+                    checkBounds( this.Ptr + index );
 					*(double*)( this.PtrBuf + index ) = value;
 				}
 			}
