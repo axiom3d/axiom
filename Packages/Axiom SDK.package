@@ -35,13 +35,7 @@
       <VSDocsDir>$(ModuleImageDir)\doc\vs</VSDocsDir>
       <WebDocsDir>$(ModuleImageDir)\doc\$(FileVersion)</WebDocsDir>
     </NDoc>
-	
-    <NDoc Include="$(SourceDir)\Axiom\axiom.ndoc">
-      <CHMDocsDir>$(ModuleDistDir)\doc</CHMDocsDir>
-      <VSDocsDir>$(ModuleDistDir)\doc\vs</VSDocsDir>
-      <WebDocsDir>$(ModuleDistDir)\doc\$(FileVersion)</WebDocsDir>
-    </NDoc>
-	
+		
   </ItemGroup>
 
   <ItemGroup>
