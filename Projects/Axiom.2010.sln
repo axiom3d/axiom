@@ -621,13 +621,20 @@ Global
 		{5EF4FD98-8D4F-4441-A6C3-F75930A36618}.Xna Release|x86.Build.0 = Release|x86
 		{A643AC49-3085-4008-BF43-D6C9847C340D}.Debug|x86.ActiveCfg = Debug|x86
 		{A643AC49-3085-4008-BF43-D6C9847C340D}.Debug|x86.Build.0 = Debug|x86
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.DirectX Debug|x86.ActiveCfg = Debug|Any CPU
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.DirectX Release|x86.ActiveCfg = Release|Any CPU
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.OpenGL Debug|x86.ActiveCfg = Debug|Any CPU
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.OpenGL Release|x86.ActiveCfg = Release|Any CPU
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.Release|x86.ActiveCfg = Release|Any CPU
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.Xna Debug|x86.ActiveCfg = Debug|Any CPU
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.Xna Release|x86.ActiveCfg = Release|Any CPU
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.DirectX Debug|x86.ActiveCfg = Debug|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.DirectX Debug|x86.Build.0 = Debug|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.DirectX Release|x86.ActiveCfg = Release|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.DirectX Release|x86.Build.0 = Release|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.OpenGL Debug|x86.ActiveCfg = Debug|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.OpenGL Debug|x86.Build.0 = Debug|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.OpenGL Release|x86.ActiveCfg = Release|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.OpenGL Release|x86.Build.0 = Release|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.Release|x86.ActiveCfg = Release|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.Release|x86.Build.0 = Release|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.Xna Debug|x86.ActiveCfg = Debug|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.Xna Debug|x86.Build.0 = Debug|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.Xna Release|x86.ActiveCfg = Release|x86
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.Xna Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
