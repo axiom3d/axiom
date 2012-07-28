@@ -10,10 +10,12 @@
     <AxiomSafeCodeMode Condition=" '$(AxiomUseSafeCodeOnly)' == '' ">Mixed</AxiomSafeCodeMode>
     <AxiomBigEndian Condition=" '$(AxiomBigEndian)' == '' ">false</AxiomBigEndian>
     <AxiomSign Condition=" '$(AxiomSign)' == '' ">false</AxiomSign>
+    <AxiomFullDisposalLog Condition=" '$(AxiomFullDisposalLog)' == '' ">false</AxiomFullDisposalLog>
     <AxiomGlobalDefines Condition=" '$(AxiomUseNewCompilers)' == 'true' ">$(AxiomGlobalDefines);AXIOM_USENEWCOMPILERS</AxiomGlobalDefines>
     <AxiomGlobalDefines Condition=" '$(AxiomSafeCodeMode)' == 'SafeOnly' ">$(AxiomGlobalDefines);AXIOM_SAFE_ONLY</AxiomGlobalDefines>
     <AxiomGlobalDefines Condition=" '$(AxiomSafeCodeMode)' == 'Mixed' ">$(AxiomGlobalDefines);AXIOM_SAFE_MIXED</AxiomGlobalDefines>
     <AxiomGlobalDefines Condition=" '$(AxiomBigEndian)' == 'true' ">$(AxiomGlobalDefines);AXIOM_BIG_ENDIAN</AxiomGlobalDefines>
+    <AxiomGlobalDefines Condition=" '$(AxiomFullDisposalLog)' == 'true' ">$(AxiomGlobalDefines);AXIOM_ENABLE_LOG_STACKTRACE</AxiomGlobalDefines>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
