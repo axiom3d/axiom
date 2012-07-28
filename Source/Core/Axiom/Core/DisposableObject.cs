@@ -116,7 +116,7 @@ namespace Axiom.Core
 					var perTypeCount = new Dictionary<string, int>();
 
 #if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE || ANDROID) && AXIOM_ENABLE_LOG_STACKTRACE
-					var msg = new StringBuilder();
+					var msg = new System.Text.StringBuilder();
 #endif
 					// Dispose managed resources.
 					foreach ( var item in this._objects )
