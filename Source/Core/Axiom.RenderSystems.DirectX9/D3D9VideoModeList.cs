@@ -81,6 +81,10 @@ namespace Axiom.RenderSystems.DirectX9
 		public void Dispose()
 		{
 			this._mpDriver = null;
+
+            foreach ( var currentVideoMode in this )
+                currentVideoMode.SafeDispose();
+
 			Clear();
 
 			GC.SuppressFinalize( this );
