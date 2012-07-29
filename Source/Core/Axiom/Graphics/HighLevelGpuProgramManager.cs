@@ -254,6 +254,11 @@ namespace Axiom.Graphics
 			{
 				if ( disposeManagedResources )
 				{
+                    foreach ( var currentFactory in factories )
+                        currentFactory.SafeDispose();
+
+                    factories.Clear();
+
 					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
 					_instance = null;
 				}
