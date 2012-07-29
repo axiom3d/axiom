@@ -1425,25 +1425,18 @@ namespace Axiom.Overlays
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-					if ( this.renderOperation != null )
-					{
-						if ( !this.renderOperation.IsDisposed )
-						{
-							this.renderOperation.Dispose();
-						}
+        {
+            if ( !IsDisposed )
+            {
+                if ( disposeManagedResources )
+                {
+                    // Dispose managed resources.
+                    this.renderOperation.SafeDispose();
+                    this.renderOperation = null;
+                }
 
-						this.renderOperation = null;
-					}
-				}
-
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
 			}
 
 			base.dispose( disposeManagedResources );

@@ -373,26 +373,34 @@ namespace Axiom.Overlays
 		/// <summary>
 		/// destroys all OverlayElements
 		/// </summary>
-		public void DestroyAllElements()
+#if NET_40
+		public void DestroyAllElements( bool isTemplate = false )
+#else
+        public void DestroyAllElements( bool isTemplate )
+#endif
 		{
-			DestroyAllElements( false );
+            var dict = ( isTemplate ? this._elementTemplates : this._elementInstances );
+            foreach ( var current in dict.Values )
+                current.SafeDispose();
+			
+            dict.Clear();
 		}
 
-		/// <summary>
-		/// destroys all OverlayElements
-		/// </summary>
-		public void DestroyAllElements( bool isTemplate )
-		{
-			( isTemplate ? this._elementTemplates : this._elementInstances ).Clear();
-		}
+#if !NET_40
+        /// <see cref="DestroyAllElements( bool )"/>
+        public void DestroyAllElements()
+        {
+            DestroyAllElements( false );
+        }
+#endif
 
-		#endregion Destroy*OverlayElement
+        #endregion Destroy*OverlayElement
 
-		#endregion Methods
+        #endregion Methods
 
-		#region IDisposable Implementation
+        #region IDisposable Implementation
 
-		/// <summary>
+        /// <summary>
 		///     Called when the engine is shutting down.
 		/// </summary>
 		protected override void dispose( bool disposeManagedResources )

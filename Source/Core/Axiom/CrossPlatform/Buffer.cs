@@ -213,7 +213,7 @@ namespace Axiom.Core
 			}
 
 			var buf = (BufferBase)buffer.Clone();
-			buf.Ptr += (int)offset;
+			buf.Ptr += offset;
 			return buf;
 		}
 
