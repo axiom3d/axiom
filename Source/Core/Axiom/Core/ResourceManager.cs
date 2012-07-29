@@ -624,13 +624,9 @@ namespace Axiom.Core
 		public virtual void RemoveAll()
 		{
 			foreach ( var resource in this._resources.Values )
-			{
-				if ( !resource.IsDisposed )
-				{
-					resource.Dispose();
-				}
-			}
-			this._resources.Clear();
+                resource.SafeDispose();
+
+            this._resources.Clear();
 			this._resourceHandleMap.Clear();
 
 			ResourceGroupManager.Instance.notifyAllResourcesRemoved( this );

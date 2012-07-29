@@ -819,8 +819,7 @@ namespace Axiom.Graphics
 					FreePooledTextures( false );
 					Singleton<CompositorManager>.Destroy();
 
-					return;
-					this.rectangle.Dispose();
+					this.rectangle.SafeDispose();
 					this.rectangle = null;
 				}
 
