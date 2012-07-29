@@ -217,7 +217,7 @@ namespace Axiom.Overlays
 				return;
 			}
 
-			this._overlays[ name ].Dispose();
+			this._overlays[ name ].SafeDispose();
 			this._overlays.Remove( name );
 		}
 
@@ -230,18 +230,12 @@ namespace Axiom.Overlays
 			if ( !this._overlays.ContainsValue( overlay ) )
 			{
 				LogManager.Instance.Write( "Overlay '" + overlay.Name + "' not found to destroy." );
-				if ( !overlay.IsDisposed )
-				{
-					overlay.Dispose();
-				}
+                overlay.SafeDispose();
 				return;
 			}
 
 			this._overlays.Remove( overlay.Name );
-			if ( !overlay.IsDisposed )
-			{
-				overlay.Dispose();
-			}
+            overlay.SafeDispose();
 		}
 
 		/// <summary>
@@ -249,13 +243,9 @@ namespace Axiom.Overlays
 		/// </summary>
 		public void DestroyAll()
 		{
-			foreach ( var entry in this._overlays )
-			{
-				if ( !entry.Value.IsDisposed )
-				{
-					entry.Value.Dispose();
-				}
-			}
+            foreach ( var entry in this._overlays.Values )
+                entry.SafeDispose();
+
 			this._overlays.Clear();
 		}
 
