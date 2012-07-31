@@ -1,10 +1,11 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
 	<PropertyGroup>
 		<Configuration>Release</Configuration>
+		<Platform>x86</Platform>
 		<TestReportTypes>XML-Inline</TestReportTypes>
 		
 		<Version>$(CCNetLabel)</Version>
-		<Version Condition="'$(Version)'==''">0.8.3102.12095</Version>
+		<Version Condition="'$(Version)'==''">0.8.0.0</Version>
 		
 		<AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
 		<AssemblyVersion Condition="'$(AssemblyVersion)'==''">$(Version)</AssemblyVersion>
@@ -21,7 +22,7 @@
 		<SkipSourceServer>true</SkipSourceServer>
 		<SkipSources>false</SkipSources>
 		<SkipILMerge>true</SkipILMerge>
-		<SkipNDoc>true</SkipNDoc>
+		<SkipNDoc>false</SkipNDoc>
 		
 		<IncludeXna>true</IncludeXna>
 	</PropertyGroup>
@@ -29,6 +30,7 @@
 	<Target Name="Build">
 		<MSBuild Projects="$(Modules)"
 				 Properties="Configuration=$(Configuration);
+							 Platform=$(Platform);
 							 TestReportTypes=$(ReportTypes);
 							 AssemblyVersion=$(AssemblyVersion);
 							 FileVersion=$(FileVersion);
