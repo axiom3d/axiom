@@ -166,12 +166,21 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		/// Creates a loader instance for the specified assembly
+		/// Creates a loader instance for the specified assembly file
 		/// </summary>
 		public DynamicLoader( string assemblyFilename )
 			: this()
 		{
 			this._assemblyFilename = assemblyFilename;
+		}
+
+		/// <summary>
+		/// Creates a loader instance for the specified assembly
+		/// </summary>
+		public DynamicLoader( Assembly assembly )
+			: this()
+		{
+			this._assembly = assembly;
 		}
 
 		#endregion Construction and Destruction

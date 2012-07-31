@@ -129,7 +129,7 @@ namespace Axiom.Core
 					//    continue;
 					try
 					{
-						var platformMgr = new DynamicLoader( assemblies[ index ].Location );
+						var platformMgr = new DynamicLoader( assemblies[ index ] );
 						var platforms = platformMgr.Find( typeof ( IPlatformManager ) );
 						if ( platforms.Count != 0 )
 						{
