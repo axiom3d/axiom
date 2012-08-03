@@ -61,9 +61,9 @@ using System.Runtime.InteropServices;
 //      YearWeekDayOfWeek
 //
 
-[assembly: AssemblyVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3038.12073" )]
+[assembly: AssemblyVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3367.12314" )]
 #if !( XBOX || XBOX360 )
-[assembly: AssemblyFileVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3038.12073" )]
+[assembly: AssemblyFileVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3367.12314" )]
 #endif
 
-[assembly: AssemblyInformationalVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3038.12073" )]
+[assembly: AssemblyInformationalVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3367.12314" )]
