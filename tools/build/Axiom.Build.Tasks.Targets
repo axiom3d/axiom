@@ -18,7 +18,8 @@
   
   <UsingTask TaskName="CreateRelease" AssemblyFile="$(CodePlexWebServicesTasksLib)" />
   <UsingTask TaskName="UploadFiles" AssemblyFile="$(AxiomBuildTasksLib)" />
-  
+  <UsingTask TaskName="SvnInfo" AssemblyFile="$(AxiomBuildTasksLib)" />
+
   <ItemDefinitionGroup>
     
 	  <SourceForge>

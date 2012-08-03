@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
   <TemplateData>
     <TemplateID>306584BC-C375-4B4D-B75E-D6B094813E10</TemplateID>
@@ -28,10 +28,10 @@
   </WizardExtension>
   <WizardData>
     <packages repository="extension" repositoryId="AxiomVSTemplates..269b9557-44d1-4b21-bdfe-6580da19999e">
-      <package id="Axiom" version="0.8.3366.12314" />
-      <package id="Axiom.Platforms.Win32" version="0.8.3366.12314" />
-      <package id="Axiom.RenderSystems.DirectX9" version="0.8.3366.12314" />
-      <package id="Axiom.Plugins.FreeImageCodecs" version="0.8.3366.12314" />
+      <package id="Axiom" version="0.8.{CommitRevision}.{Now:yywwdd}" />
+      <package id="Axiom.Platforms.Win32" version="0.8.{CommitRevision}.{Now:yywwdd}" />
+      <package id="Axiom.RenderSystems.DirectX9" version="0.8.{CommitRevision}.{Now:yywwdd}" />
+      <package id="Axiom.Plugins.FreeImageCodecs" version="0.8.{CommitRevision}.{Now:yywwdd}" />
     </packages>
   </WizardData>  
 </VSTemplate>

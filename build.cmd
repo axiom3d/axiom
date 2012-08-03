@@ -13,13 +13,13 @@ if not defined MSBUILD_ARGS (
   exit /b 1
 )
 
-call :FIND_MSBUILD %SystemRoot%\Microsoft.Net\Framework\v3.5\MSBuild.exe
 call :FIND_MSBUILD %SystemRoot%\Microsoft.Net\Framework\v4.0.30319\MSBuild.exe
+call :FIND_MSBUILD %SystemRoot%\Microsoft.Net\Framework\v3.5\MSBuild.exe
 if not defined MSBUILD (
   echo Could not find path to MSBuild.exe.
   exit /b 1
 )
-
+echo Building using %MSBUILD%
 call :SANITIZE ROOT_DIR
 
 "%MSBUILD%" /nologo /clp:NoSummary /p:"RootDir=%ROOT_DIR%" %MSBUILD_ARGS%

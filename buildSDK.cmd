@@ -1,2 +1,3 @@
-call build axiom.msbuild
+call build axiom.msbuild %*
+
 pause
