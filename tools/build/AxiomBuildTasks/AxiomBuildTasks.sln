@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 11
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AxiomBuildTasks", "AxiomBuildTasks.csproj", "{A643AC49-3085-4008-BF43-D6C9847C340D}"
 EndProject
 Global
@@ -8,8 +8,7 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A643AC49-3085-4008-BF43-D6C9847C340D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A643AC49-3085-4008-BF43-D6C9847C340D}.Release|Any CPU.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

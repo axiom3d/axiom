@@ -97,6 +97,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Packages", "Packages", "{CD0C390C-89FA-4CF4-8A58-1CF1A07A58D1}"
 	ProjectSection(SolutionItems) = preProject
 		..\Packages\Axiom SDK.package = ..\Packages\Axiom SDK.package
+		..\Packages\Axiom.Templates.package = ..\Packages\Axiom.Templates.package
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AxiomBuildTasks", "..\tools\build\AxiomBuildTasks\AxiomBuildTasks.csproj", "{A643AC49-3085-4008-BF43-D6C9847C340D}"

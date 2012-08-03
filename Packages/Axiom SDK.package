@@ -1,62 +1,71 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
-  <Import Project="$(RootDir)\tools\build\Module.targets" />
-  <Import Project="$(RootDir)\tools\build\Axiom.Build.Version.targets" />
-  
-  <ItemGroup>
-    <Module Include="$(RootDir)\Top.module">
-      <Inherit>true</Inherit>
-    </Module>
-      
-    <Module Include="$(SourceDir)\Axiom\Axiom.module">
-      <Inherit>true</Inherit>
-    </Module>
-<!--	
-    <Module Include="$(SourceDir)\Components\Components.module">
-      <Inherit>true</Inherit>
-    </Module>
--->		
-    <Module Include="$(SourceDir)\Axiom.Framework\Framework.module">
-      <Inherit>true</Inherit>
-    </Module>
+	<PropertyGroup>
+	<OutputPath>bin</OutputPath>
+	</PropertyGroup>
+	<Import Project="$(RootDir)\tools\build\Module.targets" />
+	<Import Project="$(RootDir)\tools\build\Axiom.Build.Version.targets" />
 	
-    <Module Include="$(SourceDir)\Samples\Samples.module">
-      <Inherit>true</Inherit>
-    </Module>    
-  </ItemGroup>
-  <ItemGroup>
-     <Version Include="$(SourceDir)\Axiom\version.txt" />
-  </ItemGroup>
-  <ItemGroup Condition="'$(SkipNDoc)'!='true'">
-    <Feature Include="FEATURE_CHM_HELP" />
-    <Feature Include="FEATURE_VS_HELP" />
-    
-    <NDoc Include="$(SourceDir)\Axiom\axiom.ndoc">
-      <CHMDocsDir>$(ModuleImageDir)\doc</CHMDocsDir>
-      <VSDocsDir>$(ModuleImageDir)\doc\vs</VSDocsDir>
-      <WebDocsDir>$(ModuleImageDir)\doc\$(FileVersion)</WebDocsDir>
-    </NDoc>
-		
-  </ItemGroup>
+	
+	<ItemGroup>
+		<Module Include="$(RootDir)\Top.module">
+			<Inherit>true</Inherit>
+		</Module>
+			
+		<Module Include="$(SourceDir)\Axiom\Axiom.module">
+			<Inherit>true</Inherit>
+		</Module>
+<!--	
+		<Module Include="$(SourceDir)\Components\Components.module">
+			<Inherit>true</Inherit>
+		</Module>
+-->		
+		<Module Include="$(SourceDir)\Axiom.Framework\Framework.module">
+			<Inherit>true</Inherit>
+		</Module>
+	
+		<Module Include="$(SourceDir)\Samples\Samples.module">
+			<Inherit>true</Inherit>
+		</Module>
 
-  <ItemGroup>
+    <Module Include="$(SourceDir)\ProjectTemplates\Templates.module">
+      <Inherit>true</Inherit>
+    </Module>
+
+  </ItemGroup>
+	<ItemGroup>
+		 <Version Include="$(SourceDir)\Axiom\version.txt" />
+	</ItemGroup>
+	<ItemGroup Condition="'$(SkipNDoc)'!='true'">
+		<Feature Include="FEATURE_CHM_HELP" />
+		<Feature Include="FEATURE_VS_HELP" />
+		
+		<NDoc Include="$(SourceDir)\Axiom\axiom.ndoc">
+			<CHMDocsDir>$(ModuleImageDir)\doc</CHMDocsDir>
+			<VSDocsDir>$(ModuleImageDir)\doc\vs</VSDocsDir>
+			<WebDocsDir>$(ModuleImageDir)\doc\$(FileVersion)</WebDocsDir>
+		</NDoc>
+		
+	</ItemGroup>
+
+	<ItemGroup>
 	<ReleaseFile Include="$(ModuleDistDir)\Axiom-SDK-$(FileVersion).zip">
 		<Release>v$(FileVersion)</Release>
 		<MimeType>application/zip</MimeType>
 		<FileType>RuntimeBinary</FileType>
 	</ReleaseFile>
-  </ItemGroup>
-  <ItemGroup>  
+	</ItemGroup>
+	<ItemGroup>  
 	<CodePlexRelease Include="1">
-	  <Name>v$(FileVersion)</Name>
-	  <Default>false</Default>
-	  <ShowToPublic>false</ShowToPublic>
-      <Description>testing</Description>
-	  <ReleaseDate>$([System.DateTime]::Now.ToString("yyyy.MM.dd"))</ReleaseDate>
-	  <ReleaseStatus>Stable</ReleaseStatus>
+		<Name>v$(FileVersion)</Name>
+		<Default>false</Default>
+		<ShowToPublic>false</ShowToPublic>
+			<Description>testing</Description>
+		<ReleaseDate>$([System.DateTime]::Now.ToString("yyyy.MM.dd"))</ReleaseDate>
+		<ReleaseStatus>Stable</ReleaseStatus>
 	</CodePlexRelease>
-  </ItemGroup>
-  
-  <ItemGroup>
+	</ItemGroup>
+	
+	<ItemGroup>
 	<SourceForge Include="$(ModuleTempDir)\axiomengine.sf">
 		<WebProjectPath>/home/project-web/axiomengine/htdocs</WebProjectPath>
 		<FRSProjectPath>/home/frs/project/a/ax/axiomengine</FRSProjectPath>
@@ -67,69 +76,69 @@
 		<SourcePath>$(ModuleDistDir)</SourcePath>
 		<DestinationPath>Symbols/$(FileVersion)</DestinationPath>
 	</SourceForgeWebFile>
-  </ItemGroup>
-  
+	</ItemGroup>
+	
 	<PropertyGroup>
-	  <_CPUsername></_CPUsername>
-	  <_CPPassword></_CPPassword>
-	  <_CPProject>Axiom</_CPProject>
-	  <_ReleaseName>%(CodePlexRelease.Name)</_ReleaseName>
+		<_CPUsername></_CPUsername>
+		<_CPPassword></_CPPassword>
+		<_CPProject>Axiom</_CPProject>
+		<_ReleaseName>%(CodePlexRelease.Name)</_ReleaseName>
 	</PropertyGroup>
 	
-  <Target Name="BeforePrecondition" 
-		  DependsOnTargets="UpdateVersionTxtFile" />
+	<Target Name="BeforePrecondition" 
+			DependsOnTargets="UpdateVersionTxtFile" />
 	
-  <Target Name="AfterImage"
-          DependsOnTargets="DistSetProperties" />
-		  
-  <Target Name="DistSetProperties" >
-	  <ItemGroup>
+	<Target Name="AfterImage"
+					DependsOnTargets="DistSetProperties" />
+			
+	<Target Name="DistSetProperties" >
+		<ItemGroup>
 		<ReleaseImageArchive Include="Axiom-SDK-$(FileVersion).zip" />
 		<ReleaseDebugSymbols Include="Symbols\$(FileVersion)" />
 		
 		<Installer Include="GallioBundle" />
-	  </ItemGroup>
+		</ItemGroup>
 
-  </Target>
-  
-  <Target Name="AfterPublish"
-		  DependsOnTargets="PublishToCodeplex;" />
-		  
-  <Target Name="PublishToCodeplex"
-		  DependsOnTargets="EnsureCodePlexCredentials;CreateCodePlexReleases;UploadReleaseFiles"
-          Condition="'@(CodePlexRelease)'!=''" />
+	</Target>
+	
+	<Target Name="AfterPublish"
+			DependsOnTargets="PublishToCodeplex;" />
+			
+	<Target Name="PublishToCodeplex"
+			DependsOnTargets="EnsureCodePlexCredentials;CreateCodePlexReleases;UploadReleaseFiles"
+					Condition="'@(CodePlexRelease)'!=''" />
 
-  <Target Name="EnsureCodePlexCredentials" >
+	<Target Name="EnsureCodePlexCredentials" >
 	<Prompt Text="CodePlex Username:" Condition="'$(_CPUsername)'==''" >
-              <Output TaskParameter="UserInput" PropertyName="_CPUsername" />
-    </Prompt>
-    <Prompt Text="CodePlex Password:" Condition="'$(_CPPassword)'==''" >
-              <Output TaskParameter="UserInput" PropertyName="_CPPassword" />
-    </Prompt>
-  </Target>
-  
-  <Target Name="CreateCodePlexReleases" >
-    <CreateRelease ProjectName="$(_CPProject)"
-				   ReleaseName="%(CodePlexRelease.Name)"
-				   IsDefaultRelease="%(CodePlexRelease.Default)"
-				   ShowToPublic="%(CodePlexRelease.ShowToPublic)"
-				   Description="%(CodePlexRelease.Description)"
-				   ReleaseDate="%(CodePlexRelease.ReleaseDate)"
-				   ReleaseStatus="%(CodePlexRelease.ReleaseStatus)"
-				   Username="$(_CPUsername)"
-				   Password="$(_CPPassword)" ContinueOnError="true"/>
-				   
-  </Target>
-  <Target Name="UploadReleaseFiles" >
-    <UploadFiles ProjectName="$(_CPProject)" 
-		         ReleaseName="%(ReleaseFile.Release)" 
+							<Output TaskParameter="UserInput" PropertyName="_CPUsername" />
+		</Prompt>
+		<Prompt Text="CodePlex Password:" Condition="'$(_CPPassword)'==''" >
+							<Output TaskParameter="UserInput" PropertyName="_CPPassword" />
+		</Prompt>
+	</Target>
+	
+	<Target Name="CreateCodePlexReleases" >
+		<CreateRelease ProjectName="$(_CPProject)"
+					 ReleaseName="%(CodePlexRelease.Name)"
+					 IsDefaultRelease="%(CodePlexRelease.Default)"
+					 ShowToPublic="%(CodePlexRelease.ShowToPublic)"
+					 Description="%(CodePlexRelease.Description)"
+					 ReleaseDate="%(CodePlexRelease.ReleaseDate)"
+					 ReleaseStatus="%(CodePlexRelease.ReleaseStatus)"
+					 Username="$(_CPUsername)"
+					 Password="$(_CPPassword)" ContinueOnError="true"/>
+					 
+	</Target>
+	<Target Name="UploadReleaseFiles" >
+		<UploadFiles ProjectName="$(_CPProject)" 
+						 ReleaseName="%(ReleaseFile.Release)" 
 				 ReleaseFiles="@(ReleaseFile)"
 				 Username="$(_CPUsername)"
 				 Password="$(_CPPassword)" />
-  </Target>
-  
-  <Target Name="UploadSymbolFiles" DependsOnTargets="">
+	</Target>
+	
+	<Target Name="UploadSymbolFiles" DependsOnTargets="">
 	<!-- Upload dist\Symbols to SF.Net website -->
-  </Target>
-  
+	</Target>
+	
 </Project>

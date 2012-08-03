@@ -12,6 +12,7 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
+    <OutputPath>..\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -64,6 +65,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfoFile.cs" />
     <Compile Include="SvnAssemblyInfo.cs" />
+    <Compile Include="SvnInfo.cs" />
     <Compile Include="SvnInformation.cs" />
     <Compile Include="TokenFormatter.cs" />
     <Compile Include="UploadFiles.cs" />

@@ -4,7 +4,7 @@
 		<TestReportTypes>XML-Inline</TestReportTypes>
 		
 		<Version>$(CCNetLabel)</Version>
-		<Version Condition="'$(Version)'==''">0.8.0.0</Version>
+		<Version Condition="'$(Version)'==''">0.8.3102.12095</Version>
 		
 		<AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
 		<AssemblyVersion Condition="'$(AssemblyVersion)'==''">$(Version)</AssemblyVersion>
@@ -20,7 +20,8 @@
 		<SkipInstaller>true</SkipInstaller>
 		<SkipSourceServer>true</SkipSourceServer>
 		<SkipILMerge>true</SkipILMerge>
-		<SkipNDoc>true</SkipNDoc>
+		<SkipNDoc>false</SkipNDoc>
+		<IncludeXna>true</IncludeXna>
 	</PropertyGroup>
 
 	<Target Name="Build">

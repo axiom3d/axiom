@@ -45,7 +45,7 @@
   <PropertyGroup>
     <CoreCompileDependsOn>
       $(CoreCompileDependsOn);
-      UpdateAssemblyInfoFiles
+      UpdateAssemblyInfoFiles;UpdateVersionTxtFile;
     </CoreCompileDependsOn>
   </PropertyGroup>
 
@@ -67,7 +67,24 @@
     <!-- Read revision from SVN Repository -->
 	<Message Text="The version file is @(Version)"/>
     <SvnAssemblyInfo AssemblyInfoFiles="@(AssemblyInfoTemplate)" WorkingCopy="$(RootDir)" />
-    <Version VersionFile="@(Version)" >
+
+  </Target>
+  
+  <Target Name="UpdateVersionTxtFile"
+          Condition="'$(SkipAssemblyInfoUpdate)'!='true'"  
+		  Inputs="$(MSBuildAllProjects);
+				@(Compile);
+				@(ManifestResourceWithNoCulture);
+				$(ApplicationIcon);
+				$(AssemblyOriginatorKeyFile);
+				@(ManifestNonResxWithNoCultureOnDisk);
+				@(ReferencePath);
+				@(CompiledLicenseFile);
+				@(EmbeddedDocumentation);                
+				@(CustomAdditionalCompileInputs);
+				@(AssemblyInfoTemplate)"
+          Outputs="@(Version)">
+      <Version VersionFile="@(Version)" >
 		<Output TaskParameter="Major" PropertyName="Major" />
 		<Output TaskParameter="Minor" PropertyName="Minor" />
 		<Output TaskParameter="Build" PropertyName="Revision" />
@@ -80,7 +97,5 @@
 		<AssemblyVersion>$(Version)</AssemblyVersion>
 
 		<FileVersion>$(Version)</FileVersion>		
-	</PropertyGroup>
-  </Target>
-  
+	</PropertyGroup></Target>
 </Project>

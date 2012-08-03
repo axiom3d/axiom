@@ -1,7 +1,6 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
 	<PropertyGroup>
 		<Configuration>Release</Configuration>
-		<Platform>x86</Platform>
 		<TestReportTypes>XML-Inline</TestReportTypes>
 		
 		<Version>$(CCNetLabel)</Version>
@@ -17,12 +16,12 @@
 		<StartDir>$(RootDir)</StartDir>
 		
 		<Modules Condition="'$(Modules)'==''">packages\Axiom SDK.package</Modules>
-		
+	
 		<SkipInstaller>true</SkipInstaller>
 		<SkipSourceServer>true</SkipSourceServer>
 		<SkipSources>false</SkipSources>
 		<SkipILMerge>true</SkipILMerge>
-		<SkipNDoc>false</SkipNDoc>
+		<SkipNDoc>true</SkipNDoc>
 		
 		<IncludeXna>true</IncludeXna>
 	</PropertyGroup>
@@ -30,7 +29,6 @@
 	<Target Name="Build">
 		<MSBuild Projects="$(Modules)"
 				 Properties="Configuration=$(Configuration);
-							 Platform=$(Platform);
 							 TestReportTypes=$(ReportTypes);
 							 AssemblyVersion=$(AssemblyVersion);
 							 FileVersion=$(FileVersion);
