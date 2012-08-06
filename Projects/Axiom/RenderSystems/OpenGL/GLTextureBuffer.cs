@@ -228,8 +228,10 @@ namespace Axiom.RenderSystems.OpenGL
 				if( disposeManagedResources )
 				{
 					// Dispose managed resources.
-					foreach( RenderTexture rt in _sliceTRT )
+					for ( int index = 0; index < _sliceTRT.Count; index++ )
 					{
+						var rt = _sliceTRT[ index ];
+						Root.Instance.RenderSystem.DetachRenderTarget( rt );
 						rt.Dispose();
 					}
 				}

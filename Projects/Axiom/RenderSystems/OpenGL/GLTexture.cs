@@ -575,7 +575,12 @@ namespace Axiom.RenderSystems.OpenGL
 
 		protected override void freeInternalResources()
 		{
+			foreach ( var surface in _surfaceList )
+			{
+				surface.Dispose();
+			}
 			_surfaceList.Clear();
+
 			try
 			{
 				Gl.glDeleteTextures( 1, ref _glTextureID );
