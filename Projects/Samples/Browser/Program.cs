@@ -62,9 +62,8 @@ namespace Axiom.Samples
 #if !(XBOX || XBOX360)
 				IErrorDialog messageBox = new WinFormErrorDialog();
 				messageBox.Show( ex );
-#else
-				Debug.WriteLine( LogManager.BuildExceptionString( ex ) );
 #endif
+				Debug.WriteLine( LogManager.BuildExceptionString( ex ) );
 			}
 		}
 	}

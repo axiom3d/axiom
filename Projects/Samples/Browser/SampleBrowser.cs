@@ -112,6 +112,8 @@ namespace Axiom.Samples
 					( (Button)TrayManager.GetWidget( "StartStop" ) ).Caption = "Start Sample";
 
 					TrayManager.ShowOkDialog( "Error!", ex.ToString() + "\nSource " + this.ToString() );
+					LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
+
 				}
 			}
 		}
