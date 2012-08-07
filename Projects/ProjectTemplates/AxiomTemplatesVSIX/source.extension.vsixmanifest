@@ -3,7 +3,7 @@
   <Identifier Id="AxiomVSTemplates..269b9557-44d1-4b21-bdfe-6580da19999e">
     <Name>Axiom Game Templates</Name>
     <Author>Axiom Project Team</Author>
-    <Version>0.8.3101.12095</Version>
+    <Version>0.8.3376.12322</Version>
     <Description xml:space="preserve">Templates for creating games and applications using the Axiom 3D Rendering Engine.</Description>
     <Locale>1033</Locale>
     <MoreInfoUrl>http://axiom3d.net</MoreInfoUrl>
@@ -20,5 +20,7 @@
     <SupportedFrameworkRuntimeEdition MinVersion="2.0" MaxVersion="4.0" />
   </Identifier>
   <References />
-  <Content />
+  <Content>
+    <ProjectTemplate>ProjectTemplates</ProjectTemplate>
+  </Content>
 </Vsix>

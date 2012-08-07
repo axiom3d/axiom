@@ -28,10 +28,10 @@
   </WizardExtension>
   <WizardData>
     <packages repository="extension" repositoryId="AxiomVSTemplates..269b9557-44d1-4b21-bdfe-6580da19999e">
-      <package id="Axiom" version="0.8.3101.12095" />
-      <package id="Axiom.Platforms.Win32" version="0.8.3101.12095" />
-      <package id="Axiom.RenderSystems.DirectX9" version="0.8.3101.12095" />
-      <package id="Axiom.Plugins.FreeImageCodecs" version="0.8.3101.12095" />
+      <package id="Axiom" version="0.8.3376.12322" />
+      <package id="Axiom.Platforms.Win32" version="0.8.3376.12322" />
+      <package id="Axiom.RenderSystems.DirectX9" version="0.8.3376.12322" />
+      <package id="Axiom.Plugins.FreeImageCodecs" version="0.8.3376.12322" />
     </packages>
   </WizardData>  
 </VSTemplate>
