@@ -107,6 +107,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{D0FF
 		Axiom\axiom.module = Axiom\axiom.module
 		Axiom.Framework\framework.module = Axiom.Framework\framework.module
 		Samples\samples.module = Samples\samples.module
+		ProjectTemplates\templates.module = ProjectTemplates\templates.module
 		..\Top.module = ..\Top.module
 	EndProjectSection
 EndProject
