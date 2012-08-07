@@ -61,6 +61,7 @@
   <ItemGroup>
     <VSTemplate Include="Axiom.Game.DX9.vstemplate">
       <OutputSubPath>Axiom</OutputSubPath>
+      <SubType>Designer</SubType>
     </VSTemplate>
   </ItemGroup>
   <ItemGroup>

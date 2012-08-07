@@ -10,6 +10,12 @@
     <AssemblyInfoTemplate Include="Axiom.Game.DX9\Axiom.Game.DX9.vstemplate.in" >
       <OutputFile>Axiom.Game.DX9\Axiom.Game.DX9.vstemplate</OutputFile>
     </AssemblyInfoTemplate>
+    <AssemblyInfoTemplate Include="AxiomTemplatesVSIX\AxiomTemplatesVSIX.csproj.in" >
+      <OutputFile>AxiomTemplatesVSIX\AxiomTemplatesVSIX.csproj</OutputFile>
+    </AssemblyInfoTemplate>
+    <AssemblyInfoTemplate Include="AxiomTemplatesVSIX\source.extension.vsixmanifest.in" >
+      <OutputFile>AxiomTemplatesVSIX\source.extension.vsixmanifest.csproj</OutputFile>
+    </AssemblyInfoTemplate>
   </ItemGroup>
   <Import Project="$(AxiomBuildTasksPath)\Axiom.Build.Version.targets" />
 
