@@ -31,6 +31,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -102,14 +104,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-	<AxiomBuildTasksPath>$(ProjectDir)..\..\..\..\tools\build</AxiomBuildTasksPath>
+    <AxiomBuildTasksPath>$(ProjectDir)..\..\..\..\tools\build</AxiomBuildTasksPath>
   </PropertyGroup>
   <ItemGroup>
-	<Svn Include="$(ProjectDir)..\..\..\.." />
-	<Version Include="..\..\version.txt" />
-	<AssemblyInfoTemplate Include="..\..\GlobalAssemblyInfo.cs.in" >
-		<OutputFile>..\..\GlobalAssemblyInfo.cs</OutputFile>
-	</AssemblyInfoTemplate>
+    <Svn Include="$(ProjectDir)..\..\..\.." />
+    <Version Include="..\..\version.txt" />
+    <AssemblyInfoTemplate Include="..\..\GlobalAssemblyInfo.cs.in">
+      <OutputFile>..\..\GlobalAssemblyInfo.cs</OutputFile>
+    </AssemblyInfoTemplate>
   </ItemGroup>
   <Import Project="$(AxiomBuildTasksPath)\Axiom.Build.Version.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
