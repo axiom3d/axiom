@@ -47,16 +47,16 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\Axiom.0.8.3101.12095.nupkg">
+    <Content Include="packages\Axiom.0.8.3376.12322.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\Axiom.Platforms.Win32.0.8.3101.12095.nupkg">
+    <Content Include="packages\Axiom.Platforms.Win32.0.8.3376.12322.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\Axiom.Plugins.FreeImageCodecs.0.8.3101.12095.nupkg">
+    <Content Include="packages\Axiom.Plugins.FreeImageCodecs.0.8.3376.12322.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\Axiom.RenderSystems.DirectX9.0.8.3101.12095.nupkg">
+    <Content Include="packages\Axiom.RenderSystems.DirectX9.0.8.3376.12322.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="source.extension.vsixmanifest">
