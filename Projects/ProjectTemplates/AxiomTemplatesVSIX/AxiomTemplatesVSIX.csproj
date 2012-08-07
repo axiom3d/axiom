@@ -1,27 +1,5 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <PropertyGroup>
-    <MSBuildCommunityTasksPath>..\..\..\tools\MSBuild Community Tasks</MSBuildCommunityTasksPath>
-  </PropertyGroup>
-
-  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
-
-  <Target Name="BeforeResolveReferences">
-        <Message Text="Getting FileVersion for NuGet Packages."
-             Importance="High" />
-	<Version VersionFile="../../Axiom/version.txt" BuildType="None" RevisionType="None">
-		<Output TaskParameter="Major" PropertyName="Major" />
-		<Output TaskParameter="Minor" PropertyName="Minor" />
-		<Output TaskParameter="Build" PropertyName="Build" />
-		<Output TaskParameter="Revision" PropertyName="Revision" />
-	</Version>
-	<PropertyGroup>
-		<Version>$(Major).$(Minor).$(Build).$(Revision)</Version>
-		<AssemblyVersion>$(Major).$(Minor).$(Build).$(Revision)</AssemblyVersion>
-		<FileVersion>$(Major).$(Minor).$(Build).$(Revision)</FileVersion>
-	</PropertyGroup>  
-  </Target>
-
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -69,16 +47,16 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\Axiom.$(FileVersion).nupkg">
+    <Content Include="packages\Axiom.0.8.3101.12095.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\Axiom.Platforms.Win32.$(FileVersion).nupkg">
+    <Content Include="packages\Axiom.Platforms.Win32.0.8.3101.12095.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\Axiom.Plugins.FreeImageCodecs.$(FileVersion).nupkg">
+    <Content Include="packages\Axiom.Plugins.FreeImageCodecs.0.8.3101.12095.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="packages\Axiom.RenderSystems.DirectX9.$(FileVersion).nupkg">
+    <Content Include="packages\Axiom.RenderSystems.DirectX9.0.8.3101.12095.nupkg">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="source.extension.vsixmanifest">
