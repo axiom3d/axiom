@@ -14,7 +14,7 @@
       <OutputFile>AxiomTemplatesVSIX\AxiomTemplatesVSIX.csproj</OutputFile>
     </AssemblyInfoTemplate>
     <AssemblyInfoTemplate Include="AxiomTemplatesVSIX\source.extension.vsixmanifest.in" >
-      <OutputFile>AxiomTemplatesVSIX\source.extension.vsixmanifest.csproj</OutputFile>
+      <OutputFile>AxiomTemplatesVSIX\source.extension.vsixmanifest</OutputFile>
     </AssemblyInfoTemplate>
   </ItemGroup>
   <Import Project="$(AxiomBuildTasksPath)\Axiom.Build.Version.targets" />

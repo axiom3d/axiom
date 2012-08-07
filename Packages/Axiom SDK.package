@@ -27,11 +27,11 @@
 			<Inherit>true</Inherit>
 		</Module>
 
-    <Module Include="$(SourceDir)\ProjectTemplates\Templates.module">
-      <Inherit>true</Inherit>
-    </Module>
+		<Module Include="$(SourceDir)\ProjectTemplates\Templates.module">
+			<Inherit>true</Inherit>
+		</Module>
 
-  </ItemGroup>
+	</ItemGroup>
 	<ItemGroup>
 		 <Version Include="$(SourceDir)\Axiom\version.txt" />
 	</ItemGroup>

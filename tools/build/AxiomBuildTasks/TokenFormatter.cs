@@ -65,7 +65,7 @@ namespace Axiom.Build.Tasks
 			}
 			catch ( Exception )
 			{
-				throw new FormatException();
+				return "{" + expression + "}";
 			}
 		}
 

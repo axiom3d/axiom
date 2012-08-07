@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Vsix xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
   <Identifier Id="AxiomVSTemplates..269b9557-44d1-4b21-bdfe-6580da19999e">
     <Name>Axiom Game Templates</Name>
     <Author>Axiom Project Team</Author>
-    <Version>1.0</Version>
+    <Version>0.8.3101.12095</Version>
     <Description xml:space="preserve">Templates for creating games and applications using the Axiom 3D Rendering Engine.</Description>
     <Locale>1033</Locale>
     <MoreInfoUrl>http://axiom3d.net</MoreInfoUrl>
