@@ -1,6 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
 	<PropertyGroup>
-	<OutputPath>bin</OutputPath>
+		<OutputPath>bin</OutputPath>
 	</PropertyGroup>
 	<Import Project="$(RootDir)\tools\build\Module.targets" />
 	<Import Project="$(RootDir)\tools\build\Axiom.Build.Version.targets" />
@@ -48,36 +48,43 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	<ReleaseFile Include="$(ModuleDistDir)\Axiom-SDK-$(FileVersion).zip">
-		<Release>v$(FileVersion)</Release>
-		<MimeType>application/zip</MimeType>
-		<FileType>RuntimeBinary</FileType>
-	</ReleaseFile>
+		<ReleaseFile Include="$(ModuleDistDir)\Axiom-SDK-$(FileVersion).zip">
+			<Release>v$(FileVersion)</Release>
+			<MimeType>application/zip</MimeType>
+			<FileType>RuntimeBinary</FileType>
+		</ReleaseFile>
 	</ItemGroup>
 	<ItemGroup>  
-	<CodePlexRelease Include="1">
-		<Name>v$(FileVersion)</Name>
-		<Default>false</Default>
-		<ShowToPublic>false</ShowToPublic>
-			<Description>testing</Description>
-		<ReleaseDate>$([System.DateTime]::Now.ToString("yyyy.MM.dd"))</ReleaseDate>
-		<ReleaseStatus>Stable</ReleaseStatus>
-	</CodePlexRelease>
+		<CodePlexRelease Include="1">
+			<Name>v$(FileVersion)</Name>
+			<Default>false</Default>
+			<ShowToPublic>false</ShowToPublic>
+				<Description>testing</Description>
+			<ReleaseDate>$([System.DateTime]::Now.ToString("yyyy.MM.dd"))</ReleaseDate>
+			<ReleaseStatus>Stable</ReleaseStatus>
+		</CodePlexRelease>
 	</ItemGroup>
 	
 	<ItemGroup>
-	<SourceForge Include="$(ModuleTempDir)\axiomengine.sf">
-		<WebProjectPath>/home/project-web/axiomengine/htdocs</WebProjectPath>
-		<FRSProjectPath>/home/frs/project/a/ax/axiomengine</FRSProjectPath>
-		<Username></Username>
-		<Password></Password>
-	</SourceForge>
-	<SourceForgeWebFile Include="@(ReleaseDebugSymbols)">
-		<SourcePath>$(ModuleDistDir)</SourcePath>
-		<DestinationPath>Symbols/$(FileVersion)</DestinationPath>
-	</SourceForgeWebFile>
+		<SourceForge Include="$(ModuleTempDir)\axiomengine.sf">
+			<WebProjectPath>/home/project-web/axiomengine/htdocs</WebProjectPath>
+			<FRSProjectPath>/home/frs/project/a/ax/axiomengine</FRSProjectPath>
+			<Username></Username>
+			<Password></Password>
+		</SourceForge>
+		<SourceForgeWebFile Include="@(ReleaseDebugSymbols)">
+			<SourcePath>$(ModuleDistDir)</SourcePath>
+			<DestinationPath>Symbols/$(FileVersion)</DestinationPath>
+		</SourceForgeWebFile>
 	</ItemGroup>
 	
+	<ItemGroup>
+		<NuGetPackage Include="$(ModuleDistDir)\packages\*.nupkg" />
+	</ItemGroup>
+	<PropertyGroup>
+		<_NuGetGalleryApiKey></_NuGetGalleryApiKey>
+	</PropertyGroup>
+
 	<PropertyGroup>
 		<_CPUsername></_CPUsername>
 		<_CPPassword></_CPPassword>
@@ -102,14 +109,17 @@
 	</Target>
 	
 	<Target Name="AfterPublish"
-			DependsOnTargets="PublishToCodeplex;" />
-			
+			DependsOnTargets="PublishToCodeplex;PublishToNuGetGallery" />
+	
+	<!--
+	   - CodePlex
+	-->
 	<Target Name="PublishToCodeplex"
 			DependsOnTargets="EnsureCodePlexCredentials;CreateCodePlexReleases;UploadReleaseFiles"
 					Condition="'@(CodePlexRelease)'!=''" />
 
 	<Target Name="EnsureCodePlexCredentials" >
-	<Prompt Text="CodePlex Username:" Condition="'$(_CPUsername)'==''" >
+		<Prompt Text="CodePlex Username:" Condition="'$(_CPUsername)'==''" >
 							<Output TaskParameter="UserInput" PropertyName="_CPUsername" />
 		</Prompt>
 		<Prompt Text="CodePlex Password:" Condition="'$(_CPPassword)'==''" >
@@ -139,6 +149,24 @@
 	
 	<Target Name="UploadSymbolFiles" DependsOnTargets="">
 	<!-- Upload dist\Symbols to SF.Net website -->
+	</Target>
+
+	<!--
+	   - Nuget Gallery
+	-->
+	<Target Name="PublishToNuGetGallery"
+			DependsOnTargets="EnsureGalleryApiKey;PushNugetPackages"
+					Condition="'@(NugetPackage)'!=''" />
+	<Target Name="EnsureGalleryApiKey" >
+		<Prompt Text="NuGet Gallery ApiKey :" Condition="'$(_NuGetGalleryApiKey)'==''" >
+			<Output TaskParameter="UserInput" PropertyName="_NuGetGalleryApiKey" />
+		</Prompt>
+	</Target>
+	
+	<Target Name="PushNugetPackages" DependsOnTargets="">
+		<EXEC WorkingDirectory="$(ModuleDistDir)\packages" ContinueOnError="True"
+		      Command="$(ToolsDir)\Nuget\Nuget.exe push &quot;$(ModuleDistDir)\packages\%(NuGetPackage.Filename).nupkg&quot; -ApiKey $(_NuGetGalleryApiKey)" />
+		
 	</Target>
 	
 </Project>
