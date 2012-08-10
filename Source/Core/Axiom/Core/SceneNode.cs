@@ -583,6 +583,9 @@ namespace Axiom.Core
 		public MovableObject GetObject( int index )
 		{
 			var i = 0;
+			if ( index < 0 || index >= this.objectList.Values.Count )
+				throw new IndexOutOfRangeException( "Invalid index specified." );
+
 			foreach ( var mo in this.objectList.Values )
 			{
 				if ( i == index )
@@ -591,7 +594,9 @@ namespace Axiom.Core
 				}
 				i++;
 			}
-			throw new IndexOutOfRangeException( "Invalid index specified." );
+
+			//Make the compiler happy
+			return null;
 		}
 
 		/// <summary>

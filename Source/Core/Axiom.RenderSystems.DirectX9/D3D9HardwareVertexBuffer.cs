@@ -129,7 +129,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9HardwareVertexBuffer( HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration,
-		                                 int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
+										 int numVertices, BufferUsage usage, bool useSystemMemory, bool useShadowBuffer )
 			: base( manager, vertexDeclaration, numVertices, usage, useSystemMemory, useShadowBuffer )
 		{
 			//Entering critical section
@@ -139,10 +139,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 #if AXIOM_D3D_MANAGE_BUFFERS
 			var eResourcePool = useSystemMemory
-			                    	? D3D9.Pool.SystemMemory
-			                    	: // If not system mem, use managed pool UNLESS buffer is discardable
-			                    // if discardable, keeping the software backing is expensive
-			                    ( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D9.Pool.Default : D3D9.Pool.Managed;
+									? D3D9.Pool.SystemMemory
+									: // If not system mem, use managed pool UNLESS buffer is discardable
+								// if discardable, keeping the software backing is expensive
+								( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D9.Pool.Default : D3D9.Pool.Managed;
 #else
 			var eResourcePool = useSystemMemory ? D3D9.Pool.SystemMemory : D3D9.Pool.Default;
 #endif
@@ -151,7 +151,7 @@ namespace Axiom.RenderSystems.DirectX9
 			this._bufferDesc.Pool = eResourcePool;
 
 			// Allocate the system memory buffer.
-            this._systemMemoryBuffer = BufferBase.Wrap( new byte[ sizeInBytes ] );
+			this._systemMemoryBuffer = BufferBase.Wrap( new byte[ sizeInBytes ] );
 
 			// Case we have to create this buffer resource on loading.
 			if ( D3D9RenderSystem.ResourceManager.CreationPolicy == D3D9ResourceManager.ResourceCreationPolicy.CreateOnAllDevices )
@@ -262,7 +262,7 @@ namespace Axiom.RenderSystems.DirectX9
 				var bufferResources = it.Value;
 
 				if ( bufferResources.IsOutOfDate && bufferResources.VertexBuffer != null &&
-				     nextFrameNumber - bufferResources.LastUsedFrame <= 1 )
+					 nextFrameNumber - bufferResources.LastUsedFrame <= 1 )
 				{
 					_updateBufferResources( this._systemMemoryBuffer, ref bufferResources );
 				}
@@ -358,23 +358,22 @@ namespace Axiom.RenderSystems.DirectX9
 			// Lock the buffer
 			try
 			{
-				dstBytes = bufferResources.VertexBuffer.Lock( bufferResources.LockOffset, bufferResources.LockLength,
-				                                              D3D9Helper.ConvertEnum( bufferResources.LockOptions, usage ) );
+				dstBytes = bufferResources.VertexBuffer.Lock( bufferResources.LockOffset, bufferResources.LockLength, D3D9Helper.ConvertEnum( bufferResources.LockOptions, usage ) );
 			}
 			catch ( Exception ex )
 			{
 				throw new AxiomException( "Cannot lock D3D9 vertex buffer!", ex );
-            }
+			}
 
-            using ( var src = ( (BufferBase)systemMemoryBuffer.Clone() ).Offset( bufferResources.LockOffset ) )
-            {
-                using ( var dest = BufferBase.Wrap( dstBytes.DataPointer, bufferResources.LockLength ) )
-                {
-                    Memory.Copy( src, dest, bufferResources.LockLength );
-                }
-            }
+			var src = systemMemoryBuffer.Offset( bufferResources.LockOffset );
+			{
+				using ( var dest = BufferBase.Wrap( dstBytes.DataPointer, bufferResources.LockLength ) )
+				{
+					Memory.Copy( src, dest, bufferResources.LockLength );
+				}
+			}
 
-            // Unlock the buffer.
+			// Unlock the buffer.
 			var hr = bufferResources.VertexBuffer.Unlock();
 			if ( hr.Failure )
 			{
