@@ -128,7 +128,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9HardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage,
-		                                bool useSystemMemory, bool useShadowBuffer )
+										bool useSystemMemory, bool useShadowBuffer )
 			: base( manager, type, numIndices, usage, useSystemMemory, useShadowBuffer )
 		{
 			//Entering critical section
@@ -138,10 +138,10 @@ namespace Axiom.RenderSystems.DirectX9
 
 #if AXIOM_D3D_MANAGE_BUFFERS
 			var eResourcePool = useSystemMemory
-			                    	? D3D9.Pool.SystemMemory
-			                    	: // If not system mem, use managed pool UNLESS buffer is discardable
-			                    // if discardable, keeping the software backing is expensive
-			                    ( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D9.Pool.Default : D3D9.Pool.Managed;
+									? D3D9.Pool.SystemMemory
+									: // If not system mem, use managed pool UNLESS buffer is discardable
+								// if discardable, keeping the software backing is expensive
+								( ( usage & BufferUsage.Discardable ) != 0 ) ? D3D9.Pool.Default : D3D9.Pool.Managed;
 #else
 			var eResourcePool = useSystemMemory ? D3D9.Pool.SystemMemory : D3D9.Pool.Default;
 #endif
@@ -261,7 +261,7 @@ namespace Axiom.RenderSystems.DirectX9
 				var bufferResources = it.Value;
 
 				if ( bufferResources.IsOutOfDate && bufferResources.IndexBuffer != null &&
-				     nextFrameNumber - bufferResources.LastUsedFrame <= 1 )
+					 nextFrameNumber - bufferResources.LastUsedFrame <= 1 )
 				{
 					_updateBufferResources( this._systemMemoryBuffer, ref bufferResources );
 				}
@@ -338,7 +338,7 @@ namespace Axiom.RenderSystems.DirectX9
 			try
 			{
 				bufferResources.IndexBuffer = new D3D9.IndexBuffer( d3d9Device, sizeInBytes, D3D9Helper.ConvertEnum( usage ), ePool,
-				                                                    D3D9Helper.ConvertEnum( type ) );
+																	D3D9Helper.ConvertEnum( type ) );
 			}
 			catch ( Exception ex )
 			{
@@ -365,15 +365,14 @@ namespace Axiom.RenderSystems.DirectX9
 			// Lock the buffer
 			try
 			{
-				dstBytes = bufferResources.IndexBuffer.Lock( bufferResources.LockOffset, bufferResources.LockLength,
-				                                             D3D9Helper.ConvertEnum( bufferResources.LockOptions, usage ) );
+				dstBytes = bufferResources.IndexBuffer.Lock( bufferResources.LockOffset, bufferResources.LockLength, D3D9Helper.ConvertEnum( bufferResources.LockOptions, usage ) );
 			}
 			catch ( Exception ex )
 			{
 				throw new AxiomException( "Cannot lock D3D9 index buffer!", ex );
 			}
 
-            using ( var src = ( (BufferBase)systemMemoryBuffer.Clone() ).Offset( bufferResources.LockOffset ) )
+			var src = systemMemoryBuffer.Offset( bufferResources.LockOffset );
 			{
 				using ( var dest = BufferBase.Wrap( dstBytes.DataPointer, bufferResources.LockLength ) )
 				{
