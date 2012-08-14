@@ -274,7 +274,7 @@ namespace Axiom.Components.Terrain
 		{
 			if ( this.mData != null && this.mDirty )
 			{
-				using ( var mDataBuf = BufferBase.Wrap( this.mData ) )
+				using ( var mDataBuf = BufferBase.Wrap( this.mData, mData.Length * sizeof(float) ) )
 				{
 					var pSrcBase = mDataBuf + ( this.mDirtyBox.Top*this.mBuffer.Width + this.mDirtyBox.Left );
 					var pDstBase = this.mBuffer.Lock( this.mDirtyBox, BufferLocking.Normal ).Data;
@@ -336,13 +336,12 @@ namespace Axiom.Components.Terrain
 			{
 				// we need to rescale src to dst size first (also confvert format)
 				var tmpData = new float[dstBox.Width*dstBox.Height];
-				srcBox = new PixelBox( dstBox.Width, dstBox.Height, 1, PixelFormat.L8, BufferBase.Wrap( tmpData ) );
+				srcBox = new PixelBox( dstBox.Width, dstBox.Height, 1, PixelFormat.L8, BufferBase.Wrap( tmpData, tmpData.Length * sizeof(float) ) );
 				Image.Scale( src, srcBox );
 			}
 
 			//pixel conversion
-			var dstMemBox = new PixelBox( dstBox.Width, dstBox.Height, dstBox.Depth, PixelFormat.L8,
-			                              BufferBase.Wrap( this.mData ) );
+			var dstMemBox = new PixelBox( dstBox.Width, dstBox.Height, dstBox.Depth, PixelFormat.L8, BufferBase.Wrap( this.mData, mData.Length * sizeof( float ) ) );
 			PixelConverter.BulkPixelConversion( src, dstMemBox );
 
 			if ( srcBox != src )
@@ -408,7 +407,7 @@ namespace Axiom.Components.Terrain
 			unsafe
 #endif
 			{
-				using ( var pDst = BufferBase.Wrap( this.mData ) )
+				using ( var pDst = BufferBase.Wrap( this.mData, mData.Length * sizeof( float ) ) )
 				{
 					var pDstPtr = pDst.ToFloatPointer();
 					var pDstIdx = 0;

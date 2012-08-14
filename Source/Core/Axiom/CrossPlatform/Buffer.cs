@@ -268,15 +268,13 @@ namespace Axiom.Core
 		public void UnPin( bool all )
 #endif
 		{
-			if ( !this.PinHandle.IsAllocated || !( all || Interlocked.Decrement( ref this.PinCount ) == 0 ) )
+			if ( this.PinHandle.IsAllocated && ( all || Interlocked.Decrement( ref this.PinCount ) == 0 ) ) 
 			{
-				return;
-			}
-
-			lock ( _mutex )
-			{
-				this.PinHandle.Free();
-				this.PinCount = 0;
+				lock ( _mutex )
+				{
+					this.PinHandle.Free();
+					this.PinCount = 0;
+				}
 			}
 		}
 
@@ -330,7 +328,7 @@ namespace Axiom.Core
 			return new UnsafeBuffer( buffer, length );
 		}
 
-		public static BufferBase Wrap( object buffer, int length = 0 )
+		public static BufferBase Wrap( object buffer, int length )
 		{
 			return new UnsafeBuffer( buffer, length );
 		}

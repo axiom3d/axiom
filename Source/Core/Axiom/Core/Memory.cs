@@ -85,9 +85,9 @@ namespace Axiom.Core
 		/// <param name="length">Length of data (in bytes) to copy.</param>
 		public static void Copy( BufferBase src, BufferBase dest, int srcOffset, int destOffset, int length )
 		{
-            Contract.RequiresNotNull( dest, "dest" );
+			Contract.RequiresNotNull( dest, "dest" );
 			dest.Copy( src, srcOffset, destOffset, length );
-        }
+		}
 
 		#endregion Copy Method
 
@@ -148,14 +148,14 @@ namespace Axiom.Core
 		public static BufferBase PinObject( object obj )
 		{
 			GCHandle handle;
-            if ( !_pinnedReferences.TryGetValue( obj, out handle ) )
+			if ( !_pinnedReferences.TryGetValue( obj, out handle ) )
 			{
 				handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
 				_pinnedReferences.Add( obj, handle );
 			}
 
-            int length = obj is byte[] ?( (byte[])obj ).Length : 0;
-            return new UnsafeBuffer( handle.AddrOfPinnedObject(), length );
+			int length = obj is byte[] ?( (byte[])obj ).Length : 0;
+			return new UnsafeBuffer( handle.AddrOfPinnedObject(), length );
 		}
 #endif
 

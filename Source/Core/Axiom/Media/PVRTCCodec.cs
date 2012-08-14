@@ -175,14 +175,14 @@ namespace Axiom.Media
 
 				// Get format flags
 				var flags = header.flags;
-				using ( var wrap = BufferBase.Wrap( flags ) )
+				using ( var wrap = BufferBase.Wrap( flags, 2 ) )
 				{
 					_flipEndian( wrap, sizeof ( int ) );
 				}
 				var formatFlags = flags & PVR_TEXTURE_FLAG_TYPE_MASK;
 
 				var bitmaskAlpha = header.bitmaskAlpha;
-				using ( var wrap = BufferBase.Wrap( bitmaskAlpha ) )
+				using ( var wrap = BufferBase.Wrap( bitmaskAlpha, 2 ) )
 				{
 					_flipEndian( wrap, sizeof ( int ) );
 				}
@@ -256,7 +256,7 @@ namespace Axiom.Media
 			if ( maxbytes >= sizeof ( int ) )
 			{
 				var fileType = BitConverter.ToInt32( magicNumberBuf, 0 );
-				using ( var data = BufferBase.Wrap( fileType ) )
+				using ( var data = BufferBase.Wrap( fileType, 2 ) )
 				{
 					_flipEndian( data, sizeof ( int ), 1 );
 				}

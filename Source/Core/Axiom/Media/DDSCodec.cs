@@ -512,12 +512,12 @@ namespace Axiom.Media
 				ddsHeader.caps.reserved[ 1 ] = 0;
 
 				// Swap endian
-				using ( var wrap = BufferBase.Wrap( ddsMagic ) )
+				using ( var wrap = BufferBase.Wrap( ddsMagic, 2 ) )
 				{
 					_flipEndian( wrap, sizeof ( uint ), 1 );
 				}
 
-				using ( var wrap = BufferBase.Wrap( ddsHeader ) )
+				using ( var wrap = BufferBase.Wrap( ddsHeader, Memory.SizeOf( typeof( DDSHeader ) ) ) )
 				{
 					_flipEndian( wrap, 4, Memory.SizeOf( typeof ( DDSHeader ) )/4 );
 				}
@@ -636,12 +636,12 @@ namespace Axiom.Media
 			// Colour lookup table
 			var derivedColours = new ColorEx[4];
 
-			using ( var src = BufferBase.Wrap( block.colour_0 ) )
+			using ( var src = BufferBase.Wrap( block.colour_0, 1 ) )
 			{
 				derivedColours[ 0 ] = PixelConverter.UnpackColor( PixelFormat.R5G6B5, src );
 			}
 
-			using ( var src = BufferBase.Wrap( block.colour_1 ) )
+			using ( var src = BufferBase.Wrap( block.colour_1, 1 ) )
 			{
 				derivedColours[ 1 ] = PixelConverter.UnpackColor( PixelFormat.R5G6B5, src );
 			}
@@ -776,7 +776,7 @@ namespace Axiom.Media
 			{
 				// Read 4 character code
 				var fileType = br.ReadInt32();
-				using ( var wrap = BufferBase.Wrap( fileType ) )
+				using ( var wrap = BufferBase.Wrap( fileType, 2 ) )
 				{
 					_flipEndian( wrap, sizeof ( uint ), 1 );
 				}
@@ -790,7 +790,7 @@ namespace Axiom.Media
 				var header = DDSHeader.Read( br );
 
 				// Endian flip if required, all 32-bit values
-				using ( var wrap = BufferBase.Wrap( header ) )
+				using ( var wrap = BufferBase.Wrap( header, Memory.SizeOf( typeof( DDSHeader ) ) ) )
 				{
 					_flipEndian( wrap, 4, Memory.SizeOf( typeof ( DDSHeader ) )/4 );
 				}
@@ -870,12 +870,12 @@ namespace Axiom.Media
 								// from which the 16-bit samples are calculated may have been
 								// 32-bit so can benefit from this.
 								var block = DXTColorBlock.Read( br );
-								using ( var wrap = BufferBase.Wrap( block.colour_0 ) )
+								using ( var wrap = BufferBase.Wrap( block.colour_0, sizeof( ushort ) ) )
 								{
 									_flipEndian( wrap, sizeof ( ushort ), 1 );
 								}
 
-								using ( var wrap = BufferBase.Wrap( block.colour_1 ) )
+								using ( var wrap = BufferBase.Wrap( block.colour_1, sizeof( ushort ) ) )
 								{
 									_flipEndian( wrap, sizeof ( ushort ), 1 );
 								}
@@ -921,8 +921,7 @@ namespace Axiom.Media
 				}
 
 				// Calculate total size from number of mipmaps, faces and size
-				imgData.size = Image.CalculateSize( imgData.numMipMaps, numFaces, imgData.width, imgData.height, imgData.depth,
-				                                    imgData.format );
+				imgData.size = Image.CalculateSize( imgData.numMipMaps, numFaces, imgData.width, imgData.height, imgData.depth, imgData.format );
 
 				// Now deal with the data
 				var dest = new byte[imgData.size];
@@ -965,7 +964,7 @@ namespace Axiom.Media
 											{
 												// explicit alpha
 												eAlpha = DXTExplicitAlphaBlock.Read( br );
-												using ( var wrap = BufferBase.Wrap( eAlpha.alphaRow ) )
+												using ( var wrap = BufferBase.Wrap( eAlpha.alphaRow, eAlpha.alphaRow.Length * sizeof(ushort) ) )
 												{
 													_flipEndian( wrap, sizeof ( ushort ), 4 );
 												}
@@ -975,12 +974,12 @@ namespace Axiom.Media
 											{
 												// interpolated alpha
 												iAlpha = DXTInterpolatedAlphaBlock.Read( br );
-												using ( var wrap = BufferBase.Wrap( iAlpha.alpha_0 ) )
+												using ( var wrap = BufferBase.Wrap( iAlpha.alpha_0, 1 ) )
 												{
 													_flipEndian( wrap, sizeof ( ushort ), 1 );
 												}
 
-												using ( var wrap = BufferBase.Wrap( iAlpha.alpha_1 ) )
+												using ( var wrap = BufferBase.Wrap( iAlpha.alpha_1, 1 ) )
 												{
 													_flipEndian( wrap, sizeof ( ushort ), 1 );
 												}
@@ -989,12 +988,12 @@ namespace Axiom.Media
 											// always read colour
 											col = DXTColorBlock.Read( br );
 
-											using ( var wrap = BufferBase.Wrap( col.colour_0 ) )
+											using ( var wrap = BufferBase.Wrap( col.colour_0, sizeof(ushort)) )
 											{
 												_flipEndian( wrap, sizeof ( ushort ), 1 );
 											}
 
-											using ( var wrap = BufferBase.Wrap( col.colour_1 ) )
+											using ( var wrap = BufferBase.Wrap( col.colour_1, sizeof(ushort) ) )
 											{
 												_flipEndian( wrap, sizeof ( ushort ), 1 );
 											}
@@ -1137,7 +1136,7 @@ namespace Axiom.Media
 			if ( maxbytes >= sizeof ( int ) )
 			{
 				var fileType = BitConverter.ToInt32( magicBuf, 0 );
-				using ( var data = BufferBase.Wrap( fileType ) )
+				using ( var data = BufferBase.Wrap( fileType, sizeof(int) ) )
 				{
 					_flipEndian( data, sizeof ( int ), 1 );
 				}

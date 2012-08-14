@@ -52,48 +52,48 @@ namespace Axiom.Graphics
 		public DefaultHardwareIndexBuffer( IndexType idxType, int numIndexes, BufferUsage usage )
 			: base( null, idxType, numIndexes, usage, true, false )
 		{
-            _mpData = new byte[ sizeInBytes ];
+			_mpData = new byte[ sizeInBytes ];
 		}
 
 		public DefaultHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType idxType, int numIndexes,
-		                                   BufferUsage usage )
+										   BufferUsage usage )
 			: base( manager, idxType, numIndexes, usage, true, false )
 		{
-            _mpData = new byte[ sizeInBytes ];
+			_mpData = new byte[ sizeInBytes ];
 		}
 
 		public override void ReadData( int offset, int length, BufferBase dest )
 		{
-            Debug.Assert( ( offset + length ) <= base.sizeInBytes );
+			Debug.Assert( ( offset + length ) <= base.sizeInBytes );
 
-            using ( var data = BufferBase.Wrap( _mpData ).Offset( offset ) )
-                Memory.Copy( dest, data, length );
+			using ( var data = BufferBase.Wrap( _mpData ).Offset( offset ) )
+				Memory.Copy( dest, data, length );
 		}
 
 		public override void WriteData( int offset, int length, Array data, bool discardWholeBuffer )
 		{
-            Debug.Assert( ( offset + length ) <= base.sizeInBytes );
+			Debug.Assert( ( offset + length ) <= base.sizeInBytes );
 
-            using ( var pSource = BufferBase.Wrap( data ) )
-            {
-                using ( var pIntData = BufferBase.Wrap( _mpData ).Offset( offset ) )
-                    Memory.Copy( pSource, pIntData, length );
-            }
-        }
+			using ( var pSource = BufferBase.Wrap( data, length ) )
+			{
+				using ( var pIntData = BufferBase.Wrap( _mpData ).Offset( offset ) )
+					Memory.Copy( pSource, pIntData, length );
+			}
+		}
 
 		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
-        {
-            Debug.Assert( ( offset + length ) <= base.sizeInBytes );
+		{
+			Debug.Assert( ( offset + length ) <= base.sizeInBytes );
 
-            using ( var pIntData = BufferBase.Wrap( _mpData ).Offset( offset ) )
-                Memory.Copy( src, pIntData, length );
-        }
+			using ( var pIntData = BufferBase.Wrap( _mpData ).Offset( offset ) )
+				Memory.Copy( src, pIntData, length );
+		}
 
 		public override BufferBase Lock( int offset, int length, BufferLocking locking )
 		{
 			Debug.Assert( !isLocked );
 			isLocked = true;
-            return Memory.PinObject( _mpData ).Offset( offset );
+			return Memory.PinObject( _mpData ).Offset( offset );
 
 		}
 
@@ -101,8 +101,8 @@ namespace Axiom.Graphics
 		{
 			Debug.Assert( !isLocked );
 			isLocked = true;
-            return Memory.PinObject( _mpData ).Offset( offset );
-        }
+			return Memory.PinObject( _mpData ).Offset( offset );
+		}
 
 		public override void Unlock()
 		{

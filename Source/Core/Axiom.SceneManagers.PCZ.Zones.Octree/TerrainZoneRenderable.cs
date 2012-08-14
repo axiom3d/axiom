@@ -748,16 +748,16 @@ namespace OctreeZone
 							v.b = 0;
 						}
 
-						var colour = new IntPtr( Root.Instance.ConvertColor( v ) );
+						var colour = Root.Instance.ConvertColor( v );
 						//Check: Should be a better way...
-						var bufcolour = BufferBase.Wrap( colour );
+						var bufcolour = BufferBase.Wrap( colour, sizeof( int ) );
 						vbuf.WriteData( ( Index( i, j )*vbuf.VertexSize ) + elem.Offset, sizeof ( int ), bufcolour );
 					}
 
 					else
 					{
-						var colour = new IntPtr( Root.Instance.ConvertColor( ambient ) );
-						var bufcolour = BufferBase.Wrap( colour );
+						var colour = Root.Instance.ConvertColor( ambient );
+						var bufcolour = BufferBase.Wrap( colour, sizeof( int ) );
 						vbuf.WriteData( ( Index( i, j )*vbuf.VertexSize ) + elem.Offset, sizeof ( int ), bufcolour );
 					}
 				}
