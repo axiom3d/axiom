@@ -486,9 +486,9 @@ namespace Axiom.SceneManagers.Bsp
 				{
 					QuakeVertexToBspVertex( q3lvl.Vertices[ v ], out vert, out texLightMap );
 
-					using ( var bvptr = BufferBase.Wrap( vert ) )
+					using ( var bvptr = BufferBase.Wrap( vert, Memory.SizeOf( typeof( BspVertex ) ) ) )
 					{
-						using ( var tlptr = BufferBase.Wrap( texLightMap ) )
+						using ( var tlptr = BufferBase.Wrap( texLightMap, Memory.SizeOf( typeof ( TextureLightMap ) ) ) )
 						{
 							vbuf.WriteData( v*ManagedBufferBspVertex.Size, ManagedBufferBspVertex.Size, bvptr );
 
