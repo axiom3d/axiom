@@ -39,6 +39,7 @@
       <NuGetPackage Include="Axiom.nupkg" />
       <NuGetPackage Include="Axiom.Platforms.Win32.nupkg" />
       <NuGetPackage Include="Axiom.RenderSystems.DirectX9.nupkg" />
+      <NuGetPackage Include="Axiom.RenderSystems.OpenGL.OpenTK.nupkg" />
       <NuGetPackage Include="Axiom.Plugins.FreeImageCodecs.nupkg" />
 
     </ItemGroup>

@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Project" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <TemplateID>49F410CC-9DBF-43B3-82F0-68EEC819C536</TemplateID>
+    <Name>Axiom OpenGL Game</Name>
+    <Description>Axiom OpenGL Game in C#</Description>
+    <ProjectType>CSharp</ProjectType>
+    <ProjectSubType>Axiom</ProjectSubType>
+    <SortOrder>1000</SortOrder>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>AxiomOpenGLGame</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <LocationField>Enabled</LocationField>
+    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+    <Icon>AxiomGame.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <Project File="ProjectTemplate.csproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="true" TargetFileName="Properties\AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="false">Program.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="true" OpenInEditor="true">Game.cs</ProjectItem>
+      <ProjectItem ReplaceParameters="false" OpenInEditor="false">App.config</ProjectItem>
+    </Project>
+  </TemplateContent>
+  <WizardExtension>
+    <Assembly>NuGet.VisualStudio.Interop, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</Assembly>
+    <FullClassName>NuGet.VisualStudio.TemplateWizard</FullClassName>
+  </WizardExtension>
+  <WizardData>
+    <packages repository="extension" repositoryId="AxiomVSTemplates..269b9557-44d1-4b21-bdfe-6580da19999e">
+      <package id="Axiom" version="0.8.{CommitRevision}.{Now:yywwdd}" />
+      <package id="Axiom.Platforms.Win32" version="0.8.{CommitRevision}.{Now:yywwdd}" />
+      <package id="Axiom.RenderSystems.OpenGL.OpenTK" version="0.8.{CommitRevision}.{Now:yywwdd}" />
+      <package id="Axiom.Plugins.FreeImageCodecs" version="0.8.{CommitRevision}.{Now:yywwdd}" />
+    </packages>
+  </WizardData>  
+</VSTemplate>

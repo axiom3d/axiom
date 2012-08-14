@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AxiomTemplatesVSIX", "Axiom
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Game.DX9", "Axiom.Game.DX9\Axiom.Game.DX9.csproj", "{B05B7548-56FE-47FD-B2F6-086A569D7ACF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Game.OpenGL", "Axiom.Game.OpenGL\Axiom.Game.OpenGL.csproj", "{3474AAEF-0C9F-4096-AE70-7315DD5D45F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,10 @@ Global
 		{B05B7548-56FE-47FD-B2F6-086A569D7ACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B05B7548-56FE-47FD-B2F6-086A569D7ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B05B7548-56FE-47FD-B2F6-086A569D7ACF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3474AAEF-0C9F-4096-AE70-7315DD5D45F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3474AAEF-0C9F-4096-AE70-7315DD5D45F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3474AAEF-0C9F-4096-AE70-7315DD5D45F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3474AAEF-0C9F-4096-AE70-7315DD5D45F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
