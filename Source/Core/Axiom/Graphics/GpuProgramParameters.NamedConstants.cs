@@ -71,7 +71,7 @@ namespace Axiom.Graphics
 			}
 
 			GpuConstantDefinition def;
-			if ( !this._namedConstants.Map.TryGetValue( name, out def ) )
+			if ( !this._namedConstants.Map.TryGetValue( name.ToLower(), out def ) )
 			{
 				if ( throwExceptionIfNotFound )
 				{
