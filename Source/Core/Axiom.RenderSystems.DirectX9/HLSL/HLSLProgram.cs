@@ -201,6 +201,7 @@ namespace Axiom.RenderSystems.DirectX9.HLSL
 					}
 					else
 					{
+						macro.Name = define;
 						macro.Definition = "1";
 					}
 
