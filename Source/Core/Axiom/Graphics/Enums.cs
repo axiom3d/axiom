@@ -333,8 +333,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports hardware render-to-texture (bigger than framebuffer)
 		/// </summary>
-		[OgreVersion( 1, 7, 2790, "RSC_HWRENDER_TO_TEXTURE in Ogre" )] HardwareRenderToTexture =
-			CapCategoryShift.Common | ( 1 << 18 ),
+		[OgreVersion( 1, 7, 2790, "RSC_HWRENDER_TO_TEXTURE in Ogre" )] HardwareRenderToTexture = CapCategoryShift.Common | ( 1 << 18 ),
 
 		#endregion
 

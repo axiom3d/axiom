@@ -91,7 +91,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		///    Flag enum holding the bits that identify each supported feature.
 		/// </summary>
-		private Capabilities _caps;
+		private Capabilities[] _capabilities = new Capabilities[CapsUtil.Categories];
 
 		#region RendersystemName
 
@@ -355,7 +355,7 @@ namespace Axiom.Graphics
 		/// </summary>
 		public RenderSystemCapabilities()
 		{
-			this._caps = 0;
+			//this._capabilities = 0;
 		}
 
 		#endregion Construction and Destruction
@@ -367,18 +367,33 @@ namespace Axiom.Graphics
 		/// </summary>
 		/// <param name="cap">Feature to query (i.e. Dot3 bump mapping)</param>
 		/// <returns></returns>
+		[OgreVersion( 1, 8, 0x08a907fc )]
 		public bool HasCapability( Capabilities cap )
 		{
-			return ( this._caps & cap ) > 0;
+			var index = ( CapsUtil.Mask & (int)cap ) >> CapsUtil.Shift;
+			return ( this._capabilities[index] & (Capabilities)( (int)cap & ~CapsUtil.Mask ) ) > 0;
 		}
 
 		/// <summary>
 		///    Sets a flag stating the specified feature is supported.
 		/// </summary>
 		/// <param name="cap"></param>
+		[OgreVersion( 1, 8, 0x08a907fc )]
 		public void SetCapability( Capabilities cap )
 		{
-			this._caps |= cap;
+			var index = ( CapsUtil.Mask & (int)cap ) >> CapsUtil.Shift;
+			this._capabilities[index] |= (Capabilities)( (int)cap & ~CapsUtil.Mask );
+		}
+
+		/// <summary>
+		///    Unsets a flag stating the specified feature is supported.
+		/// </summary>
+		/// <param name="cap"></param>
+		[OgreVersion( 1, 8, 0x08a907fc )]
+		public void UnsetCapability( Capabilities cap )
+		{
+			var index = ( CapsUtil.Mask & (int)cap ) >> CapsUtil.Shift;
+			this._capabilities[index] &= (Capabilities)( ~((int)cap) | CapsUtil.Mask );
 		}
 
 		/// <summary>
@@ -533,9 +548,5 @@ namespace Axiom.Graphics
 			// TODO: implement for IsCategoryRelevant()
 		}
 
-		public void UnsetCapability( Capabilities cap )
-		{
-			this._caps &= ~cap;
-		}
 	}
 }
