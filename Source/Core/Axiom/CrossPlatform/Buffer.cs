@@ -249,7 +249,7 @@ namespace Axiom.Core
 			if ( src == null || srcOffset < 0 || destOffset < 0 || length < 0 )
 				throw new ArgumentException();
 
-			if ( src.Length - srcOffset + src.Ptr < length || this.Length - destOffset + this.Ptr < length )
+			if ( src.Length - srcOffset + src.Ptr > length || this.Length - destOffset + this.Ptr > length )
 				throw new ArgumentOutOfRangeException();
 		}
 
