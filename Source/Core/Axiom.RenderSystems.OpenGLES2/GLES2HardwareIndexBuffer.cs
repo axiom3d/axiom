@@ -179,7 +179,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				unsafe
 				{
 					// return offset
-					retPtr = BufferBase.Wrap( pBuffer );
+					retPtr = BufferBase.Wrap( pBuffer, sizeInBytes );
 				}
 
 				this._lockedToScratch = false;

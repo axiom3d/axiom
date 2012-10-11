@@ -208,7 +208,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			{
 				if ( unit < Capabilities.TextureUnitCount )
 				{
-					GL.ActiveTexture( (GLenum) (((int)GLenum.Texture) + unit ) );
+					GL.ActiveTexture( (GLenum) (((int)GLenum.Texture0) + unit ) );
 					GLES2Config.GlCheckError( this );
 					this.activeTextureUnit = (OpenTK.Graphics.ES20.TextureUnit) unit;
 					return true;
@@ -385,9 +385,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		{
 			GLES2Config.GlClearError();
 			float curAniso = 0;
-			LogManager.Instance.Write( "[GLES2] Getting TextureAnistropy from unit {0}.", unit  );
-			GL.GetTexParameter( GLenum.Texture2D /*this.textureTypes[ unit ]*/, GLenum.TextureMaxAnisotropyExt, ref curAniso );
-			LogManager.Instance.Write( "[GLES2] Got TextureAnistropy {1} from unit {0}.", unit, curAniso );
+			GL.GetTexParameter( this.textureTypes[ unit ], All.TextureMaxAnisotropyExt, ref curAniso );
 			GLES2Config.GlCheckError( this );
 
 			return ( curAniso != 0.0f ) ? curAniso : 1.0f;
@@ -726,15 +724,21 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 
 			//Deleting the GPU program manager and hardware buffer manager. Has to be done before the glSupport.Stop()
-			this.gpuProgramManager.Dispose();
-			this.gpuProgramManager = null;
+			if ( null != this.gpuProgramManager )
+			{
+				this.gpuProgramManager.Dispose();
+				this.gpuProgramManager = null;
+			}
 
 			this.hardwareBufferManager = null;
 
 			this.rttManager = null;
 
-			textureManager.Dispose();
-			textureManager = null;
+			if ( null != this.textureManager ) 
+			{
+				textureManager.Dispose();
+				textureManager = null;
+			}
 
 			base.Shutdown();
 
@@ -1333,7 +1337,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 
 			float largest_supported_anisotropy = 0;
-			GL.GetFloat( GLenum.MaxTextureMaxAnisotropyExt, ref largest_supported_anisotropy );
+			GL.GetFloat( All.MaxTextureMaxAnisotropyExt, ref largest_supported_anisotropy );
 			GLES2Config.GlCheckError( this );
 
 			if ( maxAnisotropy > largest_supported_anisotropy )
@@ -1684,9 +1688,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 			throw new NotImplementedException();
 		}
 
+		[OgreVersion( 1, 8, 0x08a907fc )]
 		protected override void SetClipPlanesImpl( Math.Collections.PlaneList clipPlanes )
 		{
-			throw new NotImplementedException();
 		}
 
 		public override void BindGpuProgram( GpuProgram program )
@@ -2154,7 +2158,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			get { return base.CullingMode; }
 			set
 			{
-				base.CullingMode = value;
+				this.cullingMode = value;
 
 				// NB: Because two-sided stencil API dependence of the front face, we must
 				// use the same 'winding' for the front face everywhere. As the OGRE default
