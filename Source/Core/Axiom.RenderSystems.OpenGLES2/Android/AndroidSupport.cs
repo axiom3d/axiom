@@ -66,7 +66,7 @@ namespace Axiom.RenderSystems.OpenGLES2.Android
 
 		public override RenderWindow CreateWindow( bool autoCreateWindow, GLES2RenderSystem renderSystem, string windowTitle )
 		{
-			LogManager.Instance.Write( "/tGLSupport CreateWindow called" );
+			LogManager.Instance.Write( "\tGLSupport CreateWindow called" );
 
 			RenderWindow window = null;
 			if ( autoCreateWindow )
@@ -87,7 +87,7 @@ namespace Axiom.RenderSystems.OpenGLES2.Android
 
 		public override RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams )
 		{
-			LogManager.Instance.Write( "TGLSupport NewWindow called" );
+			LogManager.Instance.Write( "\tGLSupport NewWindow called" );
 
 			var window = new AndroidWindow( this );
 
@@ -98,17 +98,17 @@ namespace Axiom.RenderSystems.OpenGLES2.Android
 
 		public override void Start()
 		{
-			LogManager.Instance.Write( "/tGLSupport start called" );
+			LogManager.Instance.Write( "\tGLSupport start called" );
 		}
 
 		public override void Stop()
 		{
-			LogManager.Instance.Write( "/tGLSupport stop called" );
+			LogManager.Instance.Write( "\tGLSupport stop called" );
 		}
 
 		public override void AddConfig()
 		{
-			LogManager.Instance.Write( "/tGLSupport AddConfig called" );
+			LogManager.Instance.Write( "\tGLSupport AddConfig called" );
 
 			//currently no config options supported
 			this.RefreshConfig();

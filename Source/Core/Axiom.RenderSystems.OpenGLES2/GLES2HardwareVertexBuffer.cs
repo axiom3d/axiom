@@ -147,7 +147,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				}
 
 				//return offsetted
-				retPtr = BufferBase.Wrap( pbuffer ) + offset;
+				retPtr = BufferBase.Wrap( pbuffer, sizeInBytes ) + offset;
 				this._lockedToScratch = false;
 			}
 			isLocked = true;
