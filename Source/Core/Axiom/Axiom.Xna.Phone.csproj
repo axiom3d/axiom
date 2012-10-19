@@ -79,7 +79,7 @@
   <ItemGroup>
     <Compile Include="Core\AtomicWrappers.cs" />
     <Compile Include="Core\ICopyable.cs" />
-    <Compile Include="Core\ObjectExtentions.cs" />
+    <Compile Include="Core\ObjectExtensions.cs" />
     <Compile Include="CrossPlatform\ExtensionMethods.cs" />
     <Compile Include="FileSystem\EmbeddedArchive.cs" />
     <Compile Include="FileSystem\IsolatedStorageArchive.cs" />
