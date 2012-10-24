@@ -244,13 +244,11 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( this.glContext == null )
 			{
 				// create window
-				this._window = new NativeWindow( width, height, title, GameWindowFlags.Default,
-				                                 new GraphicsMode( GraphicsMode.Default.ColorFormat, depthBuffer,
-				                                                   GraphicsMode.Default.Stencil, FSAA ), this.displayDevice );
+				var graphicsMode = new GraphicsMode( new ColorFormat( this.ColorDepth ), depthBuffer, this.ColorDepth - depthBuffer > 0 ? this.ColorDepth - depthBuffer : 0, FSAA );
+				this._window = new NativeWindow( width, height, title, GameWindowFlags.Default, graphicsMode , this.displayDevice );
 				this.glContext = new OpenTKGLContext( this._window.WindowInfo );
 
-				FileSystem.FileInfoList ico =
-					ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" );
+				FileSystem.FileInfoList ico = ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" );
 				if ( ico.Count != 0 )
 				{
 					this._window.Icon = System.Drawing.Icon.ExtractAssociatedIcon( ico[ 0 ].Filename );
@@ -323,7 +321,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void CopyContentsToMemory( PixelBox dst, FrameBuffer buffer )
 		{
 			if ( ( dst.Left < 0 ) || ( dst.Right > Width ) || ( dst.Top < 0 ) || ( dst.Bottom > Height ) || ( dst.Front != 0 ) ||
-			     ( dst.Back != 1 ) )
+				 ( dst.Back != 1 ) )
 			{
 				throw new Exception( "Invalid box." );
 			}

@@ -49,7 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\ICopyable.cs" />
-    <Compile Include="Core\ObjectExtentions.cs" />
+    <Compile Include="Core\ObjectExtensions.cs" />
     <Compile Include="FileSystem\EmbeddedArchive.cs" />
     <Compile Include="FileSystem\WebArchive.cs" />
     <Compile Include="FileSystem\IsolatedStorageArchive.cs">

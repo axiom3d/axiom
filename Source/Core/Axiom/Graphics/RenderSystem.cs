@@ -446,10 +446,7 @@ namespace Axiom.Graphics
 			{
 				return this.cullingMode;
 			}
-			set
-			{
-				throw new MethodAccessException( "Abstract call" );
-			}
+			set { this.cullingMode = value; }
 		}
 
 		#endregion
