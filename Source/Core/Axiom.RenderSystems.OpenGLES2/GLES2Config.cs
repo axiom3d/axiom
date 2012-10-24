@@ -35,6 +35,8 @@
 
 using System;
 
+using Axiom.Core;
+
 using OpenGL = OpenTK.Graphics.ES20.GL;
 
 #endregion Namespace Declarations
@@ -54,7 +56,11 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		internal static void GlClearError()
 		{
-			OpenGL.GetError();
+			var e = (int)OpenGL.GetError();
+			if ( e != 0 )
+			{
+				LogManager.Instance.Write( string.Format( "[GLES2] Ignoring error {0} on stack.", e ) );
+			}
 		}
 	}
 }
