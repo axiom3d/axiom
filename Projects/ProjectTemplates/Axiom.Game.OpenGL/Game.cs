@@ -49,6 +49,15 @@ namespace $safeprojectname$
 		{
 		}
 
+		public virtual void OnFrameEnded(object sender, FrameEventArgs evt)
+		{
+			// quit if window was closed
+			if (_window.IsClosed)
+			{
+				evt.StopRendering = true;
+			}
+		}
+
 		public void Run()
 		{
 			using (_engine = new Root())
@@ -59,6 +68,7 @@ namespace $safeprojectname$
 					OnLoad();
 					CreateScene();
 					_engine.FrameRenderingQueued += OnRenderFrame;
+					_engine.FrameEnded += OnFrameEnded;
 					_engine.StartRendering();
 					OnUnload();
 				}
