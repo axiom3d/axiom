@@ -33,7 +33,6 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.InteropServices;
 using System.Security;
-using System.Security.Permissions;
 using System.Diagnostics;
 
 // HashSet is basically implemented as a reduction of Dictionary<K, V>
@@ -584,7 +583,9 @@ namespace System.Collections.Generic
         }
 
         //[MonoTODO]
+#if !(NETFX_CORE)
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+#endif
         public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new NotImplementedException();

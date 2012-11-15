@@ -1,9 +1,4 @@
-﻿using System.Globalization;
-using System.Runtime.Serialization;
-using System.Security.Permissions;
-#if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || PORTABLE)
-using System;
-using System.Collections;
+﻿#if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || PORTABLE || NETFX_CORE )
 
 namespace X
 {
@@ -36,6 +31,11 @@ namespace X
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
+
+using System;
+using System.Collections;
+using System.Globalization;
+using System.Runtime.Serialization;
 
 namespace System.Collections
 {
@@ -90,9 +90,10 @@ namespace System.Collections
 
 			throw new ArgumentException("Neither 'a' nor 'b' implements IComparable.");
 		}
-
+#if !(NETFX_CORE)
 		// ISerializable
 		[SecurityPermission(SecurityAction.LinkDemand)] //, SerializationFormatter = true)]
+#endif
 		public void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
 			if (info == null)
@@ -103,7 +104,7 @@ namespace System.Collections
 	}
 }
 
-#if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || PORTABLE)
+#if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || PORTABLE || NETFX_CORE)
 }
 
 #endif

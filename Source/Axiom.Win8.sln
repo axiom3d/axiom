@@ -1,0 +1,59 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1EAB961C-47EC-4015-B61E-E672AE1C82A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platform Managers", "Platform Managers", "{676C7702-0B62-4E50-8211-EA5BC21A5DF5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Render Systems", "Render Systems", "{FC473D51-36A2-4437-BC06-92A8E92374B7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Scene Managers", "Scene Managers", "{E1A9CC1D-88A0-4CF6-9A8F-05E80D371DE4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{DC26813F-4527-477E-8068-272E10CF5C37}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{3C9DB289-54DB-4EB5-BA0D-8D4CBF5FF282}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Browser", "Browser", "{0F42529C-34AE-47A8-8F7A-7DFF85C541E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Win8", "Core\Axiom\Axiom.Win8.csproj", "{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Debug|ARM.ActiveCfg = Debug|ARM
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Debug|ARM.Build.0 = Debug|ARM
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Debug|x64.ActiveCfg = Debug|x64
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Debug|x64.Build.0 = Debug|x64
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Debug|x86.ActiveCfg = Debug|x86
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Debug|x86.Build.0 = Debug|x86
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Release|ARM.ActiveCfg = Release|ARM
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Release|ARM.Build.0 = Release|ARM
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Release|x64.ActiveCfg = Release|x64
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Release|x64.Build.0 = Release|x64
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Release|x86.ActiveCfg = Release|x86
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{676C7702-0B62-4E50-8211-EA5BC21A5DF5} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
+		{FC473D51-36A2-4437-BC06-92A8E92374B7} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
+		{E1A9CC1D-88A0-4CF6-9A8F-05E80D371DE4} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
+		{DC26813F-4527-477E-8068-272E10CF5C37} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
+		{F49D72B7-5DBB-4B64-9D1A-F61060D1EC55} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
+		{0F42529C-34AE-47A8-8F7A-7DFF85C541E7} = {3C9DB289-54DB-4EB5-BA0D-8D4CBF5FF282}
+	EndGlobalSection
+EndGlobal

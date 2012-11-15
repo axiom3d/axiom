@@ -52,6 +52,13 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Win8UIDebug' Or '$(Configuration)' == 'Win8UIRelease'  ">
+    <AxiomWin8>true</AxiomWin8>
+    <ImplicitlyExpandTargetFramework>true</ImplicitlyExpandTargetFramework>
+    <TargetFrameworkIdentifier>.NETCore</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetPlatformVersion>8.0</TargetPlatformVersion>
+  </PropertyGroup>
   <PropertyGroup>
     <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>

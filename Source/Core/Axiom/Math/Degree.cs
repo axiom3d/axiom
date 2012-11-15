@@ -45,7 +45,6 @@ using Numeric = System.Double;
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 
 #endregion Namespace Declarations
 
@@ -232,7 +231,9 @@ namespace Axiom.Math
 			this._value = (Real)info.GetValue( "value", typeof ( Real ) );
 		}
 
-		[SecurityPermission( SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter )]
+#if !NETFX_CORE
+        [SecurityPermission( SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter )]
+#endif
 		public void GetObjectData( SerializationInfo info, StreamingContext context )
 		{
 			info.AddValue( "value", this._value );

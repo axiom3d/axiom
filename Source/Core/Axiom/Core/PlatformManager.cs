@@ -40,7 +40,6 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -71,9 +70,13 @@ namespace Axiom.Core
 		{
 			get
 			{
+#if !NETFX_CORE
 				//return ((int)Environment.OSVersion.Platform) == 128;	//if is a unix-based operating system (running Mono), not sure if this will work for GNU Portable .NET
 				var os = Environment.OSVersion.ToString();
 				return os.IndexOf( "Microsoft" ) != -1;
+#else
+			    return true;
+#endif
 			}
 		}
 
@@ -117,7 +120,7 @@ namespace Axiom.Core
 			}
 #endif
 
-#if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 )
+#if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || NETFX_CORE)
 			// Then look in loaded assemblies
 			if ( instance == null )
 			{
@@ -193,7 +196,7 @@ namespace Axiom.Core
 			}
 #endif
 
-			// All else fails, yell loudly
+            // All else fails, yell loudly
 			if ( instance == null )
 			{
 				throw new PluginException(

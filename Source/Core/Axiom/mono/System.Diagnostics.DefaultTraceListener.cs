@@ -1,7 +1,8 @@
-﻿using System.IO;
-using System.IO.IsolatedStorage;
-
+﻿
 #if (SILVERLIGHT || WINDOWS_PHONE || XBOX )
+
+using System.IO;
+using System.IO.IsolatedStorage;
 
 namespace System.Diagnostics
 {

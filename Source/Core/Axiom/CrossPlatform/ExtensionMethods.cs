@@ -27,10 +27,14 @@ namespace Axiom.Core
 	{
 		public static string SafePath( this string path )
 		{
+#if !NETFX_CORE
 			return path.Replace( '\\', Path.DirectorySeparatorChar ).Replace( '/', Path.DirectorySeparatorChar );
+#else
+            return path.Replace('/', '\\');
+#endif
 		}
 
-#if !SILVERLIGHT || WINDOWS_PHONE
+#if (!SILVERLIGHT || WINDOWS_PHONE) && !NETFX_CORE
 		public static IEnumerable<Assembly> Neighbors( IEnumerable<string> names )
 		{
 			Assembly assembly;
@@ -57,9 +61,9 @@ namespace Axiom.Core
 		{
 #if WINDOWS_PHONE && SILVERLIGHT
 			return Neighbors(from part in Deployment.Current.Parts select part.Source); //TODO: where filter
-#elif SILVERLIGHT
-			return AppDomain.CurrentDomain.GetAssemblies();
-#elif (WINDOWS_PHONE || XBOX || XBOX360)
+#elif SILVERLIGHT 
+            return AppDomain.CurrentDomain.GetAssemblies();
+#elif (WINDOWS_PHONE || XBOX || XBOX360 )
 			return Neighbors(from file in Directory.GetFiles(folder??".", filter??"*.dll") select file);
 #else
 			var loc = folder ?? Assembly.GetExecutingAssembly().Location;

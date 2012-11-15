@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Runtime.InteropServices;
 
-#if (SILVERLIGHT || WINDOWS_PHONE || XBOX )
+#if (SILVERLIGHT || WINDOWS_PHONE || XBOX || NETFX_CORE)
 
 namespace System
 {
