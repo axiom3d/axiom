@@ -75,7 +75,7 @@ namespace Axiom.Core
 				var os = Environment.OSVersion.ToString();
 				return os.IndexOf( "Microsoft" ) != -1;
 #else
-			    return true;
+				return true;
 #endif
 			}
 		}
@@ -196,7 +196,7 @@ namespace Axiom.Core
 			}
 #endif
 
-            // All else fails, yell loudly
+			// All else fails, yell loudly
 			if ( instance == null )
 			{
 				throw new PluginException(
