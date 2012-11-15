@@ -45,6 +45,9 @@ using Numeric = System.Double;
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+#if !NETFX_CORE
+using System.Security.Permissions;
+#endif
 
 #endregion Namespace Declarations
 
@@ -232,7 +235,7 @@ namespace Axiom.Math
 		}
 
 #if !NETFX_CORE
-        [SecurityPermission( SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter )]
+		[SecurityPermission( SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter )]
 #endif
 		public void GetObjectData( SerializationInfo info, StreamingContext context )
 		{

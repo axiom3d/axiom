@@ -50,6 +50,9 @@ using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using System.Xml;
 using System.Xml.Schema;
+#if !NETFX_CORE
+using System.Security.Permissions;
+#endif
 
 #endregion Namespace Declarations
 
@@ -67,9 +70,9 @@ namespace Axiom.Math
 	[Serializable]
 	public struct Real : ISerializable, IComparable<Real>, IConvertible, IXmlSerializable
 #elif NETFX_CORE
-    public struct Real : IComparable<Real>
+	public struct Real : IComparable<Real>
 #else
-    public struct Real : IComparable<Real>, IConvertible
+	public struct Real : IComparable<Real>, IConvertible
 #endif
 	{
 		#region Fields
