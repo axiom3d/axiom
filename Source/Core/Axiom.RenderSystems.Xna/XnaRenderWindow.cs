@@ -67,7 +67,7 @@ namespace Axiom.RenderSystems.Xna
 	/// </summary>
 	public class XnaRenderWindow : RenderWindow
 #if !SILVERLIGHT
-        , IGraphicsDeviceService
+		, IGraphicsDeviceService
 #endif
 	{
 		#region Fields and Properties
@@ -480,8 +480,7 @@ namespace Axiom.RenderSystems.Xna
 			IsActive = true;
 			_isClosed = false;
 
-			LogManager.Instance.Write( "[XNA] : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", Name, Width,
-									   Height, ColorDepth );
+			LogManager.Instance.Write( "[XNA] : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", Name, Width, Height, ColorDepth );
 		}
 
 		private void CreateXnaResources()
@@ -531,8 +530,7 @@ namespace Axiom.RenderSystems.Xna
 				// low is < 200fps in this context
 				if ( !IsFullScreen )
 				{
-					LogManager.Instance.Write(
-						"[XNA] : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem." );
+					LogManager.Instance.Write( "[XNA] : WARNING - disabling VSync in windowed mode can cause timing issues at lower frame rates, turn VSync on if you observe this problem." );
 				}
 				_xnapp.PresentationInterval = PresentInterval.Immediate;
 			}
@@ -611,14 +609,10 @@ namespace Axiom.RenderSystems.Xna
 							// If it is present, override default settings
 							foreach ( var adapter in GraphicsAdapter.Adapters )
 							{
-								LogManager.Instance.Write(
-									"[XNA] : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.DeviceName,
-									adapter.Description );
+								LogManager.Instance.Write( "[XNA] : NVIDIA PerfHUD requested, checking adapter {0}:{1}", adapter.DeviceName, adapter.Description );
 								if ( adapter.Description.ToLower().Contains( "perfhud" ) )
 								{
-									LogManager.Instance.Write(
-										"[XNA] : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.DeviceName,
-										adapter.Description );
+									LogManager.Instance.Write( "[XNA] : NVIDIA PerfHUD requested, using adapter {0}:{1}", adapter.DeviceName, adapter.Description );
 									adapterToUse = adapter;
 									GraphicsAdapter.UseReferenceDevice = true;
 									break;
@@ -1032,9 +1026,9 @@ namespace Axiom.RenderSystems.Xna
 
 		#endregion IGraphicsDeviceService Members
 
-        public override void Destroy()
-        {
-            throw new NotImplementedException();
-        }
-    }
+		public override void Destroy()
+		{
+			throw new NotImplementedException();
+		}
+	}
 }
