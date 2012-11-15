@@ -148,8 +148,7 @@ namespace Axiom.RenderSystems.Xna
         {
             try
             {
-                var strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico",
-                                                                       ResourceGroupManager.BootstrapResourceGroupName );
+                var strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
                 if ( strm != null )
                 {
                     Icon = new Icon( strm );
