@@ -143,7 +143,7 @@ namespace Axiom.RenderSystems.DirectX9
 			get
 			{
 				return _getForm( this._windowHandle ) != null &&
-				       _getForm( this._windowHandle ).WindowState != SWF.FormWindowState.Minimized;
+					   _getForm( this._windowHandle ).WindowState != SWF.FormWindowState.Minimized;
 			}
 		}
 
@@ -347,8 +347,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region Methods
 
-		[OgreVersion( 1, 7, 2790,
-			"Check for fsaa settings, like suggested in http://axiom3d.net/forums/viewtopic.php?f=1&t=1309" )]
+		[OgreVersion( 1, 7, 2790, "Check for fsaa settings, like suggested in http://axiom3d.net/forums/viewtopic.php?f=1&t=1309" )]
 		public override void Create( string name, int width, int height, bool fullScreen, NamedParameterList miscParams )
 		{
 			SWF.Control parentHWnd = null;
@@ -396,45 +395,13 @@ namespace Axiom.RenderSystems.DirectX9
 				// parentWindowHandle		-> parentHWnd
 				if ( miscParams.TryGetValue( "parentWindowHandle", out opt ) )
 				{
-					// This is Axiom specific
-					var handle = opt;
-					var ptr = IntPtr.Zero;
-					if ( handle.GetType() == typeof ( IntPtr ) )
-					{
-						ptr = (IntPtr)handle;
-					}
-					else if ( handle.GetType() == typeof ( Int32 ) )
-					{
-						ptr = new IntPtr( (int)handle );
-					}
-					else
-					{
-						throw new AxiomException( "unhandled parentWindowHandle type" );
-					}
-
-					parentHWnd = SWF.Control.FromHandle( ptr );
+					parentHWnd = GetControlFromParameter( opt );
 				}
 
 				// externalWindowHandle		-> externalHWnd
 				if ( miscParams.TryGetValue( "externalWindowHandle", out opt ) )
 				{
-					// This is Axiom specific
-					var handle = opt;
-					var ptr = IntPtr.Zero;
-					if ( handle.GetType() == typeof ( IntPtr ) )
-					{
-						ptr = (IntPtr)handle;
-					}
-					else if ( handle.GetType() == typeof ( Int32 ) )
-					{
-						ptr = new IntPtr( (int)handle );
-					}
-					else
-					{
-						throw new AxiomException( "unhandled externalWindowHandle type" );
-					}
-
-					externalHWnd = SWF.Control.FromHandle( ptr );
+					externalHWnd = GetControlFromParameter(opt);
 				}
 
 				// vsync	[parseBool]
@@ -525,10 +492,9 @@ namespace Axiom.RenderSystems.DirectX9
 
 			if ( externalHWnd == null )
 			{
-				var dwStyle = WindowStyles.WS_VISIBLE | WindowStyles.WS_CLIPCHILDREN;
+				var dwStyle = WindowStyles.Visible | WindowStyles.ClipChildren;
 				var dwStyleEx = (WindowsExtendedStyle)0;
 				var monitorHandle = IntPtr.Zero;
-				RECT rc;
 
 				// If we specified which adapter we want to use - find it's monitor.
 				if ( monitorIndex != -1 )
@@ -604,8 +570,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 				if ( fullScreen )
 				{
-					dwStyleEx |= WindowsExtendedStyle.WS_EX_TOPMOST;
-					dwStyle |= WindowStyles.WS_POPUP;
+					dwStyleEx |= WindowsExtendedStyle.TopMost;
+					dwStyle |= WindowStyles.Popup;
 					this.top = monitorInfo.Bounds.Top;
 					this.left = monitorInfo.Bounds.Left;
 				}
@@ -613,22 +579,22 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					if ( parentHWnd != null )
 					{
-						dwStyle |= WindowStyles.WS_CHILD;
+						dwStyle |= WindowStyles.Child;
 					}
 					else
 					{
 						if ( border == "none" )
 						{
-							dwStyle |= WindowStyles.WS_POPUP;
+							dwStyle |= WindowStyles.Popup;
 						}
 						else if ( border == "fixed" )
 						{
-							dwStyle |= WindowStyles.WS_OVERLAPPED | WindowStyles.WS_BORDER | WindowStyles.WS_CAPTION |
-							           WindowStyles.WS_SYSMENU | WindowStyles.WS_MINIMIZEBOX;
+							dwStyle |= WindowStyles.Overlapped | WindowStyles.Border | WindowStyles.Caption |
+									   WindowStyles.SystemMenu | WindowStyles.MinimizeBox;
 						}
 						else
 						{
-							dwStyle |= WindowStyles.WS_OVERLAPPEDWINDOW;
+							dwStyle |= WindowStyles.OverlappedWindow;
 						}
 					}
 
@@ -638,7 +604,7 @@ namespace Axiom.RenderSystems.DirectX9
 					{
 						// Calculate window dimensions required
 						// to get the requested client area
-						rc = new RECT( 0, 0, this.width, this.height );
+						var rc = new RECT( 0, 0, this.width, this.height );
 						AdjustWindowRect( ref rc, dwStyle, false );
 						this.width = rc.Right - rc.Left;
 						this.height = rc.Bottom - rc.Top;
@@ -669,15 +635,15 @@ namespace Axiom.RenderSystems.DirectX9
 				WindowClassStyle classStyle = 0;
 				if ( enableDoubleClick )
 				{
-					classStyle |= WindowClassStyle.CS_DBLCLKS;
+					classStyle |= WindowClassStyle.DoubleClicks;
 				}
 
 				// Create our main window
 				this._isExternal = false;
-				var wnd = new DefaultForm( classStyle, dwStyleEx, title, dwStyle, this.left, this.top, winWidth, winHeight,
-				                           parentHWnd );
-				wnd.RenderWindow = this;
-				this._windowHandle = wnd;
+				this._windowHandle = new DefaultForm( classStyle, dwStyleEx, title, dwStyle, this.left, this.top, winWidth, winHeight, parentHWnd )
+									 {
+										 RenderWindow = this
+									 };
 				this._style = dwStyle;
 				WindowEventMonitor.Instance.RegisterWindow( this );
 			}
@@ -704,11 +670,25 @@ namespace Axiom.RenderSystems.DirectX9
 			isFullScreen = fullScreen;
 			this.colorDepth = colorDepth;
 
-			LogManager.Instance.Write( "D3D9 : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", this.name, this.width,
-			                           this.height, ColorDepth );
+			LogManager.Instance.Write( "D3D9 : Created D3D9 Rendering Window '{0}' : {1}x{2}, {3}bpp", this.name, this.width, this.height, ColorDepth );
 
 			active = true;
 			this._isClosed = false;
+		}
+
+		private static SWF.Control GetControlFromParameter( object opt )
+		{
+			if (opt is IntPtr)
+			{
+				return SWF.Control.FromHandle( (IntPtr)opt );
+			}
+
+			if (opt is int)
+			{
+				return SWF.Control.FromHandle( new IntPtr( (int)opt ) );
+			}
+
+			throw new AxiomException( "unhandled WindowHandle type" );
 		}
 
 		/// <see cref="Axiom.Graphics.RenderWindow.SetFullScreen"/>
@@ -722,7 +702,7 @@ namespace Axiom.RenderSystems.DirectX9
 					this._switchingFullScreen = true;
 				}
 
-				this._style = WindowStyles.WS_VISIBLE | WindowStyles.WS_CLIPCHILDREN;
+				this._style = WindowStyles.Visible | WindowStyles.ClipChildren;
 
 				var oldFullScreen = isFullScreen;
 				isFullScreen = fullScreen;
@@ -731,7 +711,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				if ( fullScreen )
 				{
-					this._style |= WindowStyles.WS_POPUP;
+					this._style |= WindowStyles.Popup;
 
 					// Get the nearest monitor to this window.
 					var windowAnchorPoint = new Point( left, top );
@@ -754,7 +734,7 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 				else
 				{
-					this._style |= WindowStyles.WS_OVERLAPPEDWINDOW;
+					this._style |= WindowStyles.OverlappedWindow;
 
 					// Calculate window dimensions required
 					// to get the requested client area
@@ -764,9 +744,9 @@ namespace Axiom.RenderSystems.DirectX9
 					( (DefaultForm)this._windowHandle ).WindowStyles = this._style;
 					( (DefaultForm)this._windowHandle ).TopMost = false;
 					( (DefaultForm)this._windowHandle ).SetBounds( 0, 0, winWidth, winHeight );
+
 					//TODO
-					//SetWindowPos(mHWnd, HWND_NOTOPMOST, 0, 0, winWidth, winHeight,
-					//SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOACTIVATE);
+					//SetWindowPos(mHWnd, HWND_NOTOPMOST, 0, 0, winWidth, winHeight, SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOMOVE | SWP_NOACTIVATE);
 
 					// Note that we also set the position in the restoreLostDevice method
 					// via FinishSwitchingFullScreen
@@ -846,8 +826,7 @@ namespace Axiom.RenderSystems.DirectX9
 				( (DefaultForm)this._windowHandle ).SetBounds( left, top, winWidth, winHeight );
 
 				//TODO check the above statement with the following one
-				//SetWindowPos(mHWnd, HWND_NOTOPMOST, left, top, winWidth, winHeight,
-				// SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOACTIVATE);
+				//SetWindowPos(mHWnd, HWND_NOTOPMOST, left, top, winWidth, winHeight, SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOACTIVATE);
 
 				if ( width != this._desiredWidth || height != this._desiredHeight )
 				{
@@ -876,8 +855,7 @@ namespace Axiom.RenderSystems.DirectX9
 				devType = this._device.DeviceType;
 			}
 
-#warning Do we need to zero anything here or does everything get inited?
-			//ZeroMemory( presentParams, sizeof(D3DPRESENT_PARAMETERS) );
+		    presentParams.InitDefaults();
 
 			presentParams.Windowed = !isFullScreen;
 			presentParams.SwapEffect = D3D9.SwapEffect.Discard;
@@ -945,8 +923,8 @@ namespace Axiom.RenderSystems.DirectX9
 				if ( !isFullScreen )
 				{
 					LogManager.Instance.Write( "D3D9 : WARNING - " +
-					                           "disabling VSync in windowed mode can cause timing issues at lower " +
-					                           "frame rates, turn VSync on if you observe this problem." );
+											   "disabling VSync in windowed mode can cause timing issues at lower " +
+											   "frame rates, turn VSync on if you observe this problem." );
 				}
 				presentParams.PresentationInterval = D3D9.PresentInterval.Immediate;
 			}
@@ -963,14 +941,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 				if (
 					!pD3D.CheckDeviceFormat( this._device.AdapterNumber, devType, presentParams.BackBufferFormat,
-					                         D3D9.Usage.DepthStencil,
-					                         D3D9.ResourceType.Surface, D3D9.Format.D24S8 ) )
+											 D3D9.Usage.DepthStencil,
+											 D3D9.ResourceType.Surface, D3D9.Format.D24S8 ) )
 				{
 					// Bugger, no 8-bit hardware stencil, just try 32-bit zbuffer
 					if (
 						!pD3D.CheckDeviceFormat( this._device.AdapterNumber, devType, presentParams.BackBufferFormat,
-						                         D3D9.Usage.DepthStencil,
-						                         D3D9.ResourceType.Surface, D3D9.Format.D32 ) )
+												 D3D9.Usage.DepthStencil,
+												 D3D9.ResourceType.Surface, D3D9.Format.D32 ) )
 					{
 						// Jeez, what a naff card. Fall back on 16-bit depth buffering
 						presentParams.AutoDepthStencilFormat = D3D9.Format.D16;
@@ -984,7 +962,7 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					// Woohoo!
 					if ( pD3D.CheckDepthStencilMatch( this._device.AdapterNumber, devType, presentParams.BackBufferFormat,
-					                                  presentParams.BackBufferFormat, D3D9.Format.D24S8 ) )
+													  presentParams.BackBufferFormat, D3D9.Format.D24S8 ) )
 					{
 						presentParams.AutoDepthStencilFormat = D3D9.Format.D24S8;
 					}
@@ -1004,7 +982,7 @@ namespace Axiom.RenderSystems.DirectX9
 			var rsys = (D3D9RenderSystem)Root.Instance.RenderSystem;
 
 			rsys.DetermineFSAASettings( this._device.D3DDevice, fsaa, fsaaHint, presentParams.BackBufferFormat, isFullScreen,
-			                            out this._fsaaType, out this._fsaaQuality );
+										out this._fsaaType, out this._fsaaQuality );
 
 			presentParams.MultiSampleType = this._fsaaType;
 			presentParams.MultiSampleQuality = ( this._fsaaQuality == 0 ) ? 0 : this._fsaaQuality;
@@ -1068,7 +1046,7 @@ namespace Axiom.RenderSystems.DirectX9
 		public override void WindowMovedOrResized()
 		{
 			if ( _getForm( this._windowHandle ) == null ||
-			     _getForm( this._windowHandle ).WindowState == SWF.FormWindowState.Minimized )
+				 _getForm( this._windowHandle ).WindowState == SWF.FormWindowState.Minimized )
 			{
 				return;
 			}
@@ -1209,7 +1187,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[DllImport( "user32.dll", SetLastError = true )]
 		[return: MarshalAs( UnmanagedType.Bool )]
 		private static extern bool AdjustWindowRect( ref RECT lpRect, WindowStyles dwStyle,
-		                                             [MarshalAs( UnmanagedType.Bool )] bool bMenu );
+													 [MarshalAs( UnmanagedType.Bool )] bool bMenu );
 
 		#endregion Methods
 	};

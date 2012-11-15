@@ -109,12 +109,12 @@ namespace Axiom.RenderSystems.DirectX9
 		}
 
 		public DefaultForm( WindowClassStyle classStyle, WindowsExtendedStyle dwStyleEx, string title,
-		                    WindowStyles windowStyle, int left, int top, int winWidth, int winHeight, Control parentHWnd )
+							WindowStyles windowStyle, int left, int top, int winWidth, int winHeight, Control parentHWnd )
 		{
 			this._classStyle = classStyle;
 			this._dwStyleEx = dwStyleEx;
 			this._windowStyle = windowStyle;
-            this.Text = title;
+			this.Text = title;
 
 			SuspendLayout();
 
@@ -176,8 +176,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			try
 			{
-				var strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico",
-				                                                       ResourceGroupManager.BootstrapResourceGroupName );
+				var strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
 				if ( strm != null )
 				{
 					Icon = new Icon( strm );
