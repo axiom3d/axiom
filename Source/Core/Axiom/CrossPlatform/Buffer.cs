@@ -249,7 +249,8 @@ namespace Axiom.Core
 			if ( src == null || srcOffset < 0 || destOffset < 0 || length < 0 )
 				throw new ArgumentException();
 
-			if ( src.Length - srcOffset + src.Ptr > length || this.Length - destOffset + this.Ptr > length )
+			// Ensure we don't read past the end of either buffer.
+			if ( (src.Ptr + srcOffset ) + length > src.Length || ( this.Ptr + destOffset ) + length > this.Length )
 				throw new ArgumentOutOfRangeException();
 		}
 
