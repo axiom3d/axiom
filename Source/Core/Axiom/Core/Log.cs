@@ -40,6 +40,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using System.Collections.Generic;
 using System.IO;
+#if NETFX_CORE
+using Windows.Storage;
+using Windows.Storage.Streams;
+#endif
 
 #if SILVERLIGHT
 using System.IO.IsolatedStorage;
@@ -109,15 +113,19 @@ namespace Axiom.Core
 		private IsolatedStorageFile file;
 #endif
 
+#if !NETFX_CORE
 		/// <summary>
 		///     File stream used for kepping the log file open.
 		/// </summary>
 		private readonly FileStream log;
-
 		/// <summary>
 		///     Writer used for writing to the log file.
 		/// </summary>
 		private readonly StreamWriter writer;
+#else
+        private readonly IOutputStream log;
+        private readonly DataWriter writer;
+#endif
 
 		/// <summary>
 		///     Level of detail for this log.
@@ -156,7 +164,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="fileName">Name of the log file to open.</param>
 		/// <param name="debugOutput">Write log messages to the debug output?</param>
-		public Log( string fileName, bool debugOutput )
+		public  Log( string fileName, bool debugOutput )
 			: base()
 		{
 			this.mLogName = fileName;
@@ -175,13 +183,21 @@ namespace Axiom.Core
 #if SILVERLIGHT
 					file = IsolatedStorageFile.GetUserStoreForApplication();
 					log = file.OpenFile(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+#elif NETFX_CORE
+                    StorageFile sampleFile = Windows.Storage.ApplicationData.Current.LocalFolder.CreateFileAsync(fileName, CreationCollisionOption.OpenIfExists).GetResults();
+                    IRandomAccessStream writeStream = sampleFile.OpenAsync(FileAccessMode.ReadWrite).GetResults();
+                    log = writeStream.GetOutputStreamAt(0);
+                    this.writer = new DataWriter(log);
+
 #else
 					this.log = File.Open( fileName, FileMode.Create, FileAccess.Write, FileShare.Read );
 #endif
 
+#if !NETFX_CORE
 					// get a stream writer using the file stream
 					this.writer = new StreamWriter( this.log );
 					this.writer.AutoFlush = true; //always flush after write
+#endif
 #endif
 				}
 				catch
@@ -290,6 +306,7 @@ namespace Axiom.Core
 				System.Diagnostics.Debug.WriteLine( message );
 			}
 
+#if !NETFX_CORE
 			if ( this.writer != null && this.writer.BaseStream != null )
 			{
 				// prepend the current time to the message
@@ -300,6 +317,18 @@ namespace Axiom.Core
 					this.writer.WriteLine( message );
 				//writer auto-flushes
 			}
+#else
+            if ( null != this.writer )
+            {
+                // prepend the current time to the message
+                message = string.Format("[{0}] {1}", DateTime.Now.ToString("hh:mm:ss"), message);
+
+                this.writer.WriteString(message);
+
+                this.writer.StoreAsync();
+                this.log.FlushAsync();
+            }
+#endif
 
 			FireMessageLogged( level, maskDebug, message );
 		}
@@ -329,17 +358,27 @@ namespace Axiom.Core
 					{
 						if ( this.writer != null )
 						{
+#if !NETFX_CORE
 							this.writer.Close();
+#else
+                            this.writer.SafeDispose();
+#endif
 						}
 
 						if ( this.log != null )
 						{
+#if !NETFX_CORE
 							this.log.Close();
-						}
+#else
+                            this.log.SafeDispose();
+#endif
+                        }
+
+
 
 #if SILVERLIGHT
-				if (file != null)
-					file.Dispose();
+				        if (file != null)
+					        file.SafeDispose();
 #endif
 					}
 					catch

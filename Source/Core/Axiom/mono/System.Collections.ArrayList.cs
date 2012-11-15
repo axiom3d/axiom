@@ -1,4 +1,4 @@
-#if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || PORTABLE)
+#if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || PORTABLE || NETFX_CORE)
 using System;
 using System.Collections;
 
@@ -3198,7 +3198,7 @@ namespace System.Collections
     }
 }
 
-#if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || PORTABLE)
+#if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || PORTABLE || NETFX_CORE )
 }
 
 #endif

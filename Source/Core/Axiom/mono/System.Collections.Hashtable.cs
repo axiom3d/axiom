@@ -2,6 +2,10 @@
 #if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || PORTABLE)
 using System;
 using System.Collections;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace X
 {
@@ -36,10 +40,6 @@ namespace X
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 #if NET_2_0
 using System.Runtime.ConstrainedExecution;

@@ -47,7 +47,6 @@ using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using System.Security.Permissions;
 using System.Xml.Serialization;
 using System.Xml;
 using System.Xml.Schema;
@@ -64,9 +63,11 @@ namespace Axiom.Math
 	/// AXIOM_REAL_AS_SINGLE to use a single-precision value.
 	/// </remarks>
 	[StructLayout( LayoutKind.Sequential )]
-#if !( XBOX || XBOX360 )
+#if !( XBOX || XBOX360 || NETFX_CORE )
 	[Serializable]
 	public struct Real : ISerializable, IComparable<Real>, IConvertible, IXmlSerializable
+#elif NETFX_CORE
+    public struct Real : IComparable<Real>
 #else
     public struct Real : IComparable<Real>, IConvertible
 #endif
@@ -680,7 +681,7 @@ namespace Axiom.Math
 
 		#endregion System.Object Overrides
 
-#if !( XBOX || XBOX360 )
+#if !( XBOX || XBOX360 || NETFX_CORE )
 
 		#region ISerializable Implementation
 
@@ -722,6 +723,8 @@ namespace Axiom.Math
 		}
 
 		#endregion
+
+#if !(NETFX_CORE)
 
 		#region IConvertible Members
 
@@ -811,6 +814,7 @@ namespace Axiom.Math
 		}
 
 		#endregion
+#endif
 
 		public static int Size
 		{

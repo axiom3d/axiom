@@ -1,4 +1,4 @@
-﻿#if (SILVERLIGHT || WINDOWS_PHONE)
+﻿#if (SILVERLIGHT || WINDOWS_PHONE || NETFX_CORE )
 
 using System.Runtime.InteropServices;
 

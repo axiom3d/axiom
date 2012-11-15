@@ -40,7 +40,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Collections.Generic;
+#if (SILVERLIGHT && WINDOWS_PHONE) || ( XBOX || XBOX360)
 using System.IO.IsolatedStorage;
+#endif
 using System.Linq;
 using System.Reflection;
 using System.Text;
