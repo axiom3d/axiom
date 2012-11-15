@@ -144,14 +144,14 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Formats to try, in decreasing order of preference
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] private static readonly D3D9.Format[] DepthStencilFormats = {
-		                                                                                        	D3D9.Format.D24SingleS8,
-		                                                                                        	D3D9.Format.D24S8,
-		                                                                                        	D3D9.Format.D24X4S4,
-		                                                                                        	D3D9.Format.D24X8,
-		                                                                                        	D3D9.Format.D15S1,
-		                                                                                        	D3D9.Format.D16,
-		                                                                                        	D3D9.Format.D32
-		                                                                                        };
+																									D3D9.Format.D24SingleS8,
+																									D3D9.Format.D24S8,
+																									D3D9.Format.D24X4S4,
+																									D3D9.Format.D24X8,
+																									D3D9.Format.D15S1,
+																									D3D9.Format.D16,
+																									D3D9.Format.D32
+																								};
 
 		private D3D9DriverList _driverList;
 
@@ -335,8 +335,8 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					// use w-buffer if available
 					if ( wBuffer &&
-					     ( this._deviceManager.ActiveDevice.D3D9DeviceCaps.RasterCaps & D3D9.RasterCaps.WBuffer ) ==
-					     D3D9.RasterCaps.WBuffer )
+						 ( this._deviceManager.ActiveDevice.D3D9DeviceCaps.RasterCaps & D3D9.RasterCaps.WBuffer ) ==
+						 D3D9.RasterCaps.WBuffer )
 					{
 						_setRenderState( D3D9.RenderState.ZEnable, (int)D3D9.ZBufferType.UseWBuffer );
 					}
@@ -427,7 +427,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// If this is called without going through RenderWindow::update, then 
 				// the device will not have been set. Calling it twice is safe, the 
 				// implementation ensures nothing happens if the same device is set twice
-				if ( this._renderWindows.Cast<RenderTarget>().Contains( value ) )
+				if ( this._renderWindows.Contains( value ) )
 				{
 					var window = (D3D9RenderWindow)value;
 					this._deviceManager.ActiveRenderTargetDevice = window.Device;
@@ -462,7 +462,7 @@ namespace Axiom.RenderSystems.DirectX9
 					// dimensions of the render target.
 					var srfDesc = pBack[ 0 ].Description;
 					pDepth = GetDepthStencilFor( srfDesc.Format, srfDesc.MultiSampleType, srfDesc.MultiSampleQuality, srfDesc.Width,
-					                             srfDesc.Height );
+												 srfDesc.Height );
 				}
 
 				// Bind render targets
@@ -579,8 +579,8 @@ namespace Axiom.RenderSystems.DirectX9
 					try
 					{
 						ActiveD3D9Device.SetStreamSource( source, d3d9buf.D3DVertexBuffer, 0,
-						                                  // no stream offset, this is handled in _render instead
-						                                  d3d9buf.VertexSize ); // stride
+														  // no stream offset, this is handled in _render instead
+														  d3d9buf.VertexSize ); // stride
 					}
 					catch ( Exception ex )
 					{
@@ -861,7 +861,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )]
 		private bool _checkMultiSampleQuality( D3D9.MultisampleType type, out int outQuality, D3D9.Format format, int adaptNum,
-		                                       D3D9.DeviceType deviceType, bool fullScreen )
+											   D3D9.DeviceType deviceType, bool fullScreen )
 		{
 			return this._pD3D.CheckDeviceMultisampleType( adaptNum, deviceType, format, fullScreen, type, out outQuality );
 		}
@@ -1040,7 +1040,7 @@ namespace Axiom.RenderSystems.DirectX9
 						int numLevels;
 						if (
 							!_checkMultiSampleQuality( n, out numLevels, videoMode.Format, driver.AdapterNumber, D3D9.DeviceType.Hardware,
-							                           true ) )
+													   true ) )
 						{
 							continue;
 						}
@@ -1084,7 +1084,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// Just pick the first driver
 				SetConfigOption( "Rendering Device", this._driverList.First().DriverDescription );
 				return "Your DirectX driver name has changed since the last time you ran Axiom; " +
-				       "the 'Rendering Device' has been changed.";
+					   "the 'Rendering Device' has been changed.";
 			}
 
 			it = mOptions[ "VSync" ];
@@ -1129,24 +1129,23 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <see cref="Axiom.Graphics.RenderSystem.CreateRenderWindow(string, int, int, bool, NamedParameterList)"/>
 		[OgreVersion( 1, 7, 2790 )]
 		public override RenderWindow CreateRenderWindow( string name, int width, int height, bool isFullScreen,
-		                                                 NamedParameterList miscParams )
+														 NamedParameterList miscParams )
 		{
 			// Log a message
 			LogManager.Instance.Write( "D3D9RenderSystem.CreateRenderWindow \"{0}\", {1}x{2} {3} ", name, width, height,
-			                           isFullScreen ? "fullscreen" : "windowed" );
+									   isFullScreen ? "fullscreen" : "windowed" );
 
 			LogManager.Instance.Write( "miscParams: {0}",
-			                           miscParams.Aggregate( new StringBuilder(),
-			                                                 ( s, kv ) =>
-			                                                 s.AppendFormat( "{0} = {1};", kv.Key, kv.Value ).AppendLine() ).
-			                           	ToString() );
+									   miscParams.Aggregate( new StringBuilder(),
+															 ( s, kv ) =>
+															 s.AppendFormat( "{0} = {1};", kv.Key, kv.Value ).AppendLine() ).
+										ToString() );
 
 			// Make sure we don't already have a render target of the
 			// same name as the one supplied
 			if ( renderTargets.ContainsKey( name ) )
 			{
-				throw new AxiomException(
-					"A render target of the same name '{0}' already exists." + "You cannot create a new window with this name.", name );
+				throw new AxiomException( "A render target of the same name '{0}' already exists." + "You cannot create a new window with this name.", name );
 			}
 
 			var window = new D3D9RenderWindow();
@@ -1171,7 +1170,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <see cref="Axiom.Graphics.RenderSystem.CreateRenderWindows(RenderWindowDescriptionList, RenderWindowList)"/>
 		[OgreVersion( 1, 7, 2 )]
 		public override bool CreateRenderWindows( RenderWindowDescriptionList renderWindowDescriptions,
-		                                          RenderWindowList createdWindows )
+												  RenderWindowList createdWindows )
 		{
 			// Call base render system method.
 			if ( base.CreateRenderWindows( renderWindowDescriptions, createdWindows ) == false )
@@ -1185,8 +1184,8 @@ namespace Axiom.RenderSystems.DirectX9
 				var curRenderWindowDescription = renderWindowDescriptions[ i ];
 
 				var curWindow = CreateRenderWindow( curRenderWindowDescription.Name, (int)curRenderWindowDescription.Width,
-				                                    (int)curRenderWindowDescription.Height, curRenderWindowDescription.UseFullScreen,
-				                                    curRenderWindowDescription.MiscParams );
+													(int)curRenderWindowDescription.Height, curRenderWindowDescription.UseFullScreen,
+													curRenderWindowDescription.MiscParams );
 
 				createdWindows.Add( curWindow );
 			}
@@ -1249,8 +1248,8 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 
 				var hr = this._pD3D.CheckDeviceFormat( currDevice.AdapterNumber, currDevice.DeviceType, srfDesc.Format, d3Dusage,
-				                                       rtype,
-				                                       d3Dpf );
+													   rtype,
+													   d3Dpf );
 
 				if ( !hr )
 				{
@@ -1385,7 +1384,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetSurfaceParams( ColorEx ambient, ColorEx diffuse, ColorEx specular, ColorEx emissive,
-		                                       Real shininess, TrackVertexColor tracking )
+											   Real shininess, TrackVertexColor tracking )
 		{
 			var mat = new D3D9.Material();
 			mat.Diffuse = D3D9Helper.ToColor( diffuse );
@@ -1401,25 +1400,25 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				_setRenderState( D3D9.RenderState.ColorVertex, true );
 				_setRenderState( D3D9.RenderState.AmbientMaterialSource,
-				                 (int)
-				                 ( ( ( tracking & TrackVertexColor.Ambient ) != 0 )
-				                   	? D3D9.ColorSource.Color1
-				                   	: D3D9.ColorSource.Material ) );
+								 (int)
+								 ( ( ( tracking & TrackVertexColor.Ambient ) != 0 )
+									? D3D9.ColorSource.Color1
+									: D3D9.ColorSource.Material ) );
 				_setRenderState( D3D9.RenderState.DiffuseMaterialSource,
-				                 (int)
-				                 ( ( ( tracking & TrackVertexColor.Diffuse ) != 0 )
-				                   	? D3D9.ColorSource.Color1
-				                   	: D3D9.ColorSource.Material ) );
+								 (int)
+								 ( ( ( tracking & TrackVertexColor.Diffuse ) != 0 )
+									? D3D9.ColorSource.Color1
+									: D3D9.ColorSource.Material ) );
 				_setRenderState( D3D9.RenderState.SpecularMaterialSource,
-				                 (int)
-				                 ( ( ( tracking & TrackVertexColor.Specular ) != 0 )
-				                   	? D3D9.ColorSource.Color1
-				                   	: D3D9.ColorSource.Material ) );
+								 (int)
+								 ( ( ( tracking & TrackVertexColor.Specular ) != 0 )
+									? D3D9.ColorSource.Color1
+									: D3D9.ColorSource.Material ) );
 				_setRenderState( D3D9.RenderState.EmissiveMaterialSource,
-				                 (int)
-				                 ( ( ( tracking & TrackVertexColor.Emissive ) != 0 )
-				                   	? D3D9.ColorSource.Color1
-				                   	: D3D9.ColorSource.Material ) );
+								 (int)
+								 ( ( ( tracking & TrackVertexColor.Emissive ) != 0 )
+									? D3D9.ColorSource.Color1
+									: D3D9.ColorSource.Material ) );
 			}
 			else
 			{
@@ -1429,7 +1428,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetPointParameters( Real size, bool attenuationEnabled, Real constant, Real linear,
-		                                         Real quadratic, Real minSize, Real maxSize )
+												 Real quadratic, Real minSize, Real maxSize )
 		{
 			if ( attenuationEnabled )
 			{
@@ -1554,8 +1553,8 @@ namespace Axiom.RenderSystems.DirectX9
 			// Record settings
 			this._texStageDesc[ stage ].CoordIndex = index;
 			_setTextureStageState( stage, D3D9.TextureStage.TexCoordIndex,
-			                       ( D3D9Helper.ConvertEnum( this._texStageDesc[ stage ].AutoTexCoordType,
-			                                                 this._deviceManager.ActiveDevice.D3D9DeviceCaps ) | index ) );
+								   ( D3D9Helper.ConvertEnum( this._texStageDesc[ stage ].AutoTexCoordType,
+															 this._deviceManager.ActiveDevice.D3D9DeviceCaps ) | index ) );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -1566,8 +1565,8 @@ namespace Axiom.RenderSystems.DirectX9
 			this._texStageDesc[ stage ].Frustum = frustum;
 
 			_setTextureStageState( stage, D3D9.TextureStage.TexCoordIndex,
-			                       D3D9Helper.ConvertEnum( method, this._deviceManager.ActiveDevice.D3D9DeviceCaps ) |
-			                       this._texStageDesc[ stage ].CoordIndex );
+								   D3D9Helper.ConvertEnum( method, this._deviceManager.ActiveDevice.D3D9DeviceCaps ) |
+								   this._texStageDesc[ stage ].CoordIndex );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -1630,7 +1629,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// set operation  
 			_setTextureStageState( stage, tss,
-			                       (int)D3D9Helper.ConvertEnum( bm.operation, this._deviceManager.ActiveDevice.D3D9DeviceCaps ) );
+								   (int)D3D9Helper.ConvertEnum( bm.operation, this._deviceManager.ActiveDevice.D3D9DeviceCaps ) );
 
 			// choose source 1
 			switch ( bm.blendType )
@@ -1667,10 +1666,10 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 			// set source 1
 			_setTextureStageState( stage, tss,
-			                       (int)
-			                       D3D9Helper.ConvertEnum( bm.source1,
-			                                               currentCapabilities.HasCapability(
-			                                               	Graphics.Capabilities.PerStageConstant ) ) );
+								   (int)
+								   D3D9Helper.ConvertEnum( bm.source1,
+														   currentCapabilities.HasCapability(
+															Graphics.Capabilities.PerStageConstant ) ) );
 
 			// choose source 2
 			switch ( bm.blendType )
@@ -1703,14 +1702,14 @@ namespace Axiom.RenderSystems.DirectX9
 
 			// Now set source 2
 			_setTextureStageState( stage, tss,
-			                       (int)
-			                       D3D9Helper.ConvertEnum( bm.source2,
-			                                               currentCapabilities.HasCapability(
-			                                               	Graphics.Capabilities.PerStageConstant ) ) );
+								   (int)
+								   D3D9Helper.ConvertEnum( bm.source2,
+														   currentCapabilities.HasCapability(
+															Graphics.Capabilities.PerStageConstant ) ) );
 
 			// Set interpolation factor if lerping
 			if ( bm.operation != LayerBlendOperationEx.BlendDiffuseColor ||
-			     ( this._deviceManager.ActiveDevice.D3D9DeviceCaps.TextureOperationCaps & D3D9.TextureOperationCaps.Lerp ) == 0 )
+				 ( this._deviceManager.ActiveDevice.D3D9DeviceCaps.TextureOperationCaps & D3D9.TextureOperationCaps.Lerp ) == 0 )
 			{
 				return;
 			}
@@ -1751,11 +1750,11 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetSeparateSceneBlending( SceneBlendFactor sourceFactor, SceneBlendFactor destFactor,
-		                                               SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha,
-		                                               SceneBlendOperation op, SceneBlendOperation alphaOp )
+													   SceneBlendFactor sourceFactorAlpha, SceneBlendFactor destFactorAlpha,
+													   SceneBlendOperation op, SceneBlendOperation alphaOp )
 		{
 			if ( sourceFactor == SceneBlendFactor.One && destFactor == SceneBlendFactor.Zero &&
-			     sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
+				 sourceFactorAlpha == SceneBlendFactor.One && destFactorAlpha == SceneBlendFactor.Zero )
 			{
 				_setRenderState( D3D9.RenderState.AlphaBlendEnable, false );
 			}
@@ -1923,8 +1922,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetStencilBufferParams( CompareFunction function, int refValue, int mask,
-		                                             StencilOperation stencilFailOp, StencilOperation depthFailOp,
-		                                             StencilOperation passOp, bool twoSidedOperation )
+													 StencilOperation stencilFailOp, StencilOperation depthFailOp,
+													 StencilOperation passOp, bool twoSidedOperation )
 		{
 			bool flip;
 
@@ -1941,7 +1940,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// NB: We should always treat CCW as front face for consistent with default
 				// culling mode. Therefore, we must take care with two-sided stencil settings.
 				flip = ( invertVertexWinding && activeRenderTarget.RequiresTextureFlipping ) ||
-				       ( !invertVertexWinding && !activeRenderTarget.RequiresTextureFlipping );
+					   ( !invertVertexWinding && !activeRenderTarget.RequiresTextureFlipping );
 
 				_setRenderState( D3D9.RenderState.CcwStencilFail, (int)D3D9Helper.ConvertEnum( stencilFailOp, !flip ) );
 				_setRenderState( D3D9.RenderState.CcwStencilZFail, (int)D3D9Helper.ConvertEnum( depthFailOp, !flip ) );
@@ -2305,13 +2304,13 @@ namespace Axiom.RenderSystems.DirectX9
 					if ( derivedDepthBias && currentPassIterationNum > 0 )
 					{
 						SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier*currentPassIterationNum,
-						              derivedDepthBiasSlopeScale );
+									  derivedDepthBiasSlopeScale );
 					}
 
 					// draw the indexed primitives
 					ActiveD3D9Device.DrawIndexedPrimitive( primType, op.vertexData.vertexStart, 0,
-					                                       // Min vertex index - assume we can go right down to 0 
-					                                       op.vertexData.vertexCount, op.indexData.indexStart, primCount );
+														   // Min vertex index - assume we can go right down to 0 
+														   op.vertexData.vertexCount, op.indexData.indexStart, primCount );
 				}
 				while ( UpdatePassIterationRenderState() );
 			}
@@ -2324,7 +2323,7 @@ namespace Axiom.RenderSystems.DirectX9
 					if ( derivedDepthBias && currentPassIterationNum > 0 )
 					{
 						SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier*currentPassIterationNum,
-						              derivedDepthBiasSlopeScale );
+									  derivedDepthBiasSlopeScale );
 					}
 
 					// Unindexed, a little simpler!
@@ -2384,7 +2383,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2790 )]
 		public override void BindGpuProgramParameters( GpuProgramType gptype, GpuProgramParameters parms,
-		                                               GpuProgramParameters.GpuParamVariability variability )
+													   GpuProgramParameters.GpuParamVariability variability )
 		{
 			// special case pass iteration
 			if ( variability == GpuProgramParameters.GpuParamVariability.PassIterationNumber )
@@ -2524,13 +2523,13 @@ namespace Axiom.RenderSystems.DirectX9
 					// programmable clips in clip space (ugh)
 					// must transform worldspace planes by view/proj
 					var xform = DX.Matrix.Multiply( D3D9Helper.MakeD3DMatrix( this._viewMatrix ),
-					                                D3D9Helper.MakeD3DMatrix( ProjectionMatrix ) );
+													D3D9Helper.MakeD3DMatrix( ProjectionMatrix ) );
 					xform = DX.Matrix.Invert( xform );
 					xform = DX.Matrix.Transpose( xform );
 					dx9ClipPlane = DX.Plane.Transform( dx9ClipPlane, xform );
 				}
 
-                ActiveD3D9Device.SetClipPlane( i, new DX.Vector4( dx9ClipPlane.Normal, dx9ClipPlane.D ) );
+				ActiveD3D9Device.SetClipPlane( i, new DX.Vector4( dx9ClipPlane.Normal, dx9ClipPlane.D ) );
 			}
 			var bits = ( 1ul << ( planes.Count + 1 ) ) - 1;
 			_setRenderState( D3D9.RenderState.ClipPlaneEnable, (int)bits );
@@ -2575,11 +2574,11 @@ namespace Axiom.RenderSystems.DirectX9
 			ActiveD3D9Device.Clear( flags, color.ToARGB(), depth, stencil );
 		}
 
-        [OgreVersion( 1, 7, 2790 )]
-        public void SetClipPlane( ushort index, Real a, Real b, Real c, Real d )
-        {
-            ActiveD3D9Device.SetClipPlane( index, new DX.Vector4( a, b, c, d ) );
-        }
+		[OgreVersion( 1, 7, 2790 )]
+		public void SetClipPlane( ushort index, Real a, Real b, Real c, Real d )
+		{
+			ActiveD3D9Device.SetClipPlane( index, new DX.Vector4( a, b, c, d ) );
+		}
 
 		[OgreVersion( 1, 7, 2790 )]
 		public void EnableClipPlane( ushort index, bool enable )
@@ -2624,7 +2623,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// Verify that the depth format exists
 				if (
 					!this._pD3D.CheckDeviceFormat( activeDevice.AdapterNumber, activeDevice.DeviceType, srfDesc.Format,
-					                               D3D9.Usage.DepthStencil, D3D9.ResourceType.Surface, df ) )
+												   D3D9.Usage.DepthStencil, D3D9.ResourceType.Surface, df ) )
 				{
 					continue;
 				}
@@ -2651,7 +2650,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// <returns>A directx surface, or 0 if there is no compatible depthstencil possible.</returns>
 		[OgreVersion( 1, 7, 2 )]
 		public D3D9.Surface GetDepthStencilFor( D3D9.Format fmt, D3D9.MultisampleType multisample, int multisample_quality,
-		                                        int width, int height )
+												int width, int height )
 		{
 			var dsfmt = GetDepthStencilFormatFor( fmt );
 			if ( dsfmt == D3D9.Format.Unknown )
@@ -2693,7 +2692,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				// If not, destroy current buffer
 				surface = D3D9.Surface.CreateDepthStencil( ActiveD3D9Device, width, height, dsfmt, multisample, multisample_quality,
-				                                           true );
+														   true );
 
 				//and cache it
 				var zb = new ZBufferRef();
@@ -2806,8 +2805,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2790 )]
 		internal void DetermineFSAASettings( D3D9.Device d3D9Device, int fsaa, string fsaaHint, D3D9.Format d3DPixelFormat,
-		                                     bool fullScreen, out D3D9.MultisampleType outMultisampleType,
-		                                     out int outMultisampleQuality )
+											 bool fullScreen, out D3D9.MultisampleType outMultisampleType,
+											 out int outMultisampleQuality )
 		{
 			outMultisampleType = D3D9.MultisampleType.None;
 			outMultisampleQuality = 0;
@@ -2882,7 +2881,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				int outQuality;
 				var hr = this._pD3D.CheckDeviceMultisampleType( deviceDriver.AdapterNumber, D3D9.DeviceType.Hardware, d3DPixelFormat,
-				                                                fullScreen, outMultisampleType, out outQuality );
+																fullScreen, outMultisampleType, out outQuality );
 
 				if ( hr && ( !tryCsaa || outQuality > outMultisampleQuality ) )
 				{
@@ -2956,9 +2955,9 @@ namespace Axiom.RenderSystems.DirectX9
 				case "FSAA":
 				{
 					var values = value.Split( new[]
-					                          {
-					                          	' '
-					                          } );
+											  {
+												' '
+											  } );
 					this._fsaaSamples = 0;
 					int.TryParse( values[ 0 ], out this._fsaaSamples );
 					if ( values.Length > 1 )
