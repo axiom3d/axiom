@@ -45,6 +45,9 @@ using Numeric = System.Double;
 using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
+#if !NETFX_CORE
+using System.Security.Permissions;
+#endif
 
 #endregion Namespace Declarations
 
