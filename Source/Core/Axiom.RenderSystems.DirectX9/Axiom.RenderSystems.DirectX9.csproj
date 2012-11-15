@@ -12,6 +12,7 @@
     <AssemblyName>Axiom.RenderSystems.DirectX9</AssemblyName>
     <DefineConstants>$(DefineConstants);AXIOM_D3D_MANAGE_BUFFERS</DefineConstants>
     <RestorePackages>true</RestorePackages>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpDX">

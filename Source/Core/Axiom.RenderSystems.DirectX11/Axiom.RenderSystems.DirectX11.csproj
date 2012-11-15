@@ -11,6 +11,7 @@
     <RootNamespace>Axiom.RenderSystems.DirectX11</RootNamespace>
     <AssemblyName>Axiom.RenderSystems.DirectX11</AssemblyName>
     <RestorePackages>true</RestorePackages>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpDX">
