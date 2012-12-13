@@ -1355,11 +1355,25 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		public override void Render( RenderOperation op )
 		{
+			GLES2Config.GlCheckError( this );
+
 			base.Render( op );
 
 			var bufferData = 0;
 
 			var decl = op.vertexData.vertexDeclaration.Elements;
+			var gles2decl = op.vertexData.vertexDeclaration as GLES2VertexDeclaration;
+
+			// Use a little shorthand
+#if !AXIOM_NO_GLES2_VAO_SUPPORT
+			bool useVAO = ( null != gles2decl && gles2decl.IsInitialized() );
+#else
+			bool useVAO = false;
+#endif
+	
+			if ( useVAO )
+				SetVertexDeclaration( op.vertexData.vertexDeclaration, op.vertexData.vertexBufferBinding );
+
 			foreach ( var elem in decl )
 			{
 				if ( !op.vertexData.vertexBufferBinding.IsBufferBound( elem.Source ) )
@@ -1468,6 +1482,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 					{
 						this.SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationNum, derivedDepthBiasSlopeScale );
 					}
+					GLES2Config.GlCheckError( this );
+				
 					GL.DrawElements( ( this.polygonMode == GLenum.PolygonOffsetFill ) ? primType : this.polygonMode, op.indexData.indexCount, indexType, ref bufferData );
 					GLES2Config.GlCheckError( this );
 				} while ( UpdatePassIterationRenderState() );
@@ -1481,7 +1497,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 					{
 						this.SetDepthBias( derivedDepthBiasBase + derivedDepthBiasMultiplier * currentPassIterationNum, derivedDepthBiasSlopeScale );
 					}
-					GL.DrawArrays( ( this.polygonMode == GLenum.PolygonOffsetFill ) ? primType : this.polygonMode, 0, op.vertexData.vertexCount );
+					GLES2Config.GlCheckError( this );
+
+					//GL.DrawArrays( ( this.polygonMode == GLenum.PolygonOffsetFill ) ? primType : this.polygonMode, 0, op.vertexData.vertexCount );
+					GL.DrawArrays( All.Triangles, 0, op.vertexData.vertexCount );
 					GLES2Config.GlCheckError( this );
 				} while ( UpdatePassIterationRenderState() );
 			}
@@ -2282,9 +2301,17 @@ namespace Axiom.RenderSystems.OpenGLES2
 			}
 		}
 
+		public void SetVertexDeclaration( VertexDeclaration declaration, VertexBufferBinding binding )
+		{
+			var gles2decl = declaration as GLES2VertexDeclaration;
+			
+			if( null != gles2decl )
+				gles2decl.Bind();
+		}
+
 		public override VertexDeclaration VertexDeclaration
 		{
-			set { }
+			set { throw new AxiomException("Cannot directly set VertexDeclaration in the GLES2 render system - cast then use 'SetVertexDeclaration( VertexDeclaration declaration, VertexBufferBinding binding )' ."); }
 		}
 
 		public override VertexBufferBinding VertexBufferBinding
