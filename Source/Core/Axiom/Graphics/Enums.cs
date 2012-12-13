@@ -187,319 +187,177 @@ namespace Axiom.Graphics
 	[Flags]
 	public enum Capabilities
 	{
-		#region HardwareMipMaps
-
 		/// <summary>
 		///	Supports generating mipmaps in hardware.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "RSC_AUTOMIPMAP in Ogre" )] HardwareMipMaps = CapCategoryShift.Common | ( 1 << 0 ),
 
-		#endregion
-
-		#region Blending
-
 		[OgreVersion( 1, 7, 2790 )] Blending = CapCategoryShift.Common | ( 1 << 1 ),
-
-		#endregion
-
-		#region AnisotropicFiltering
 
 		/// <summary>
 		/// Supports anisotropic texture filtering
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "RSC_ANISOTROPY in Ogre" )] AnisotropicFiltering = CapCategoryShift.Common | ( 1 << 2 ),
 
-		#endregion
-
-		#region Dot3
-
 		/// <summary>
 		///	Supports fixed-function DOT3 texture blend.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] Dot3 = CapCategoryShift.Common | ( 1 << 3 ),
-
-		#endregion
-
-		#region CubeMapping
 
 		/// <summary>
 		///	Supports cube mapping.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] CubeMapping = CapCategoryShift.Common | ( 1 << 4 ),
 
-		#endregion
-
-		#region StencilBuffer
-
 		/// <summary>
 		///	Supports hardware stencil buffer.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "RSC_HWSTENCIL in Ogre" )] StencilBuffer = CapCategoryShift.Common | ( 1 << 5 ),
-
-		#endregion
-
-		#region VertexBuffer
 
 		/// <summary>
 		///	Supports hardware vertex and index buffers.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "RSC_VBO in Ogre" )] VertexBuffer = CapCategoryShift.Common | ( 1 << 7 ),
 
-		#endregion
-
-		#region VertexPrograms
-
 		/// <summary>
 		///	Supports vertex programs (vertex shaders).
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] VertexPrograms = CapCategoryShift.Common | ( 1 << 9 ),
-
-		#endregion
-
-		#region FragmentPrograms
 
 		/// <summary>
 		///	Supports fragment programs (pixel shaders).
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] FragmentPrograms = CapCategoryShift.Common | ( 1 << 10 ),
 
-		#endregion
-
-		#region ScissorTest
-
 		/// <summary>
 		///	Supports performing a scissor test to exclude areas of the screen.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] ScissorTest = CapCategoryShift.Common | ( 1 << 11 ),
-
-		#endregion
-
-		#region TwoSidedStencil
 
 		/// <summary>
 		///	Supports separate stencil updates for both front and back faces.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] TwoSidedStencil = CapCategoryShift.Common | ( 1 << 12 ),
 
-		#endregion
-
-		#region StencilWrap
-
 		/// <summary>
 		///	Supports wrapping the stencil value at the range extremeties.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] StencilWrap = CapCategoryShift.Common | ( 1 << 13 ),
-
-		#endregion
-
-		#region HardwareOcculusion
 
 		/// <summary>
 		///	Supports hardware occlusion queries.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "RSC_HWOCCLUSION in Ogre" )] HardwareOcculusion = CapCategoryShift.Common | ( 1 << 14 ),
 
-		#endregion
-
-		#region UserClipPlanes
-
 		/// <summary>
 		///	Supports user clipping planes.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] UserClipPlanes = CapCategoryShift.Common | ( 1 << 15 ),
-
-		#endregion
-
-		#region VertexFormatUByte4
 
 		/// <summary>
 		///	Supports the VET_UBYTE4 vertex element type
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] VertexFormatUByte4 = CapCategoryShift.Common | ( 1 << 16 ),
 
-		#endregion
-
-		#region InfiniteFarPlane
-
 		/// <summary>
 		///	Supports infinite far plane projection
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] InfiniteFarPlane = CapCategoryShift.Common | ( 1 << 17 ),
-
-		#endregion
-
-		#region HardwareRenderToTexture
 
 		/// <summary>
 		/// Supports hardware render-to-texture (bigger than framebuffer)
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "RSC_HWRENDER_TO_TEXTURE in Ogre" )] HardwareRenderToTexture = CapCategoryShift.Common | ( 1 << 18 ),
 
-		#endregion
-
-		#region TextureFloat
-
 		/// <summary>
 		/// Supports float textures and render targets
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] TextureFloat = CapCategoryShift.Common | ( 1 << 19 ),
-
-		#endregion
-
-		#region NonPowerOf2Textures
 
 		/// <summary>
 		/// Supports non-power of two textures
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] NonPowerOf2Textures = CapCategoryShift.Common | ( 1 << 20 ),
 
-		#endregion
-
-		#region Texture3D
-
 		/// <summary>
 		/// Supports 3d (volume) textures
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] Texture3D = CapCategoryShift.Common | ( 1 << 21 ),
-
-		#endregion
-
-		#region PointSprites
 
 		/// <summary>
 		/// Supports basic point sprite rendering
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] PointSprites = CapCategoryShift.Common | ( 1 << 22 ),
 
-		#endregion
-
-		#region PointExtendedParameters
-
 		/// <summary>
 		/// Supports extra point parameters (minsize, maxsize, attenuation)
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] PointExtendedParameters = CapCategoryShift.Common | ( 1 << 23 ),
-
-		#endregion
-
-		#region VertexTextureFetch
 
 		/// <summary>
 		///	Supports vertex texture fetch
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] VertexTextureFetch = CapCategoryShift.Common | ( 1 << 24 ),
 
-		#endregion
-
-		#region MipmapLODBias
-
 		/// <summary>
 		/// Supports mipmap LOD biasing
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] MipmapLODBias = CapCategoryShift.Common | ( 1 << 25 ),
-
-		#endregion
-
-		#region FragmentPrograms
 
 		/// <summary>
 		///	Supports hardware geometry programs
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] GeometryPrograms = CapCategoryShift.Common | ( 1 << 26 ),
 
-		#endregion
-
-		#region HardwareRenderToVertexBuffer
-
 		/// <summary>
 		/// HardwareRenderToVertexBuffer
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] HardwareRenderToVertexBuffer = CapCategoryShift.Common | ( 1 << 27 ),
-
-		#endregion
-
-		#region TextureCompression
 
 		/// <summary>
 		///	Supports compressed textures.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] TextureCompression = CapCategoryShift.Common2 | ( 1 << 0 ),
 
-		#endregion
-
-		#region TextureCompressionDXT
-
 		/// <summary>
 		///	Supports compressed textures in the DXT/ST3C formats.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] TextureCompressionDXT = CapCategoryShift.Common2 | ( 1 << 1 ),
-
-		#endregion
-
-		#region TextureCompressionVTC
 
 		/// <summary>
 		///	Supports compressed textures in the VTC format.
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] TextureCompressionVTC = CapCategoryShift.Common2 | ( 1 << 2 ),
 
-		#endregion
-
-		#region TextureCompressionPVRTC
-
 		/// <summary>
 		/// Supports compressed textures in the PVRTC format
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] TextureCompressionPVRTC = CapCategoryShift.Common2 | ( 1 << 3 ),
-
-		#endregion
-
-		#region FixedFunction
 
 		/// <summary>
 		/// Supports fixed-function pipeline
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] FixedFunction = CapCategoryShift.Common2 | ( 1 << 4 ),
 
-		#endregion
-
-		#region MRTDifferentBitDepths
-
 		/// <summary>
 		/// Supports MRTs with different bit depths
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] MRTDifferentBitDepths = CapCategoryShift.Common2 | ( 1 << 5 ),
-
-		#endregion
-
-		#region AlphaToCoverage
 
 		/// <summary>
 		/// Supports Alpha to Coverage (A2C)
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] AlphaToCoverage = CapCategoryShift.Common2 | ( 1 << 6 ),
 
-		#endregion
-
-		#region AdvancedBlendOperations
-
 		/// <summary>
 		/// Supports Blending operations other than +
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] AdvancedBlendOperations = CapCategoryShift.Common2 | ( 1 << 7 ),
 
-		#endregion
-
-		#region RTTSerperateDepthBuffer
-
 		/// <summary>
 		/// Supports a separate depth buffer for RTTs. D3D 9 & 10, OGL w/FBO (RSC_FBO implies this flag)
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] RTTSerperateDepthBuffer = CapCategoryShift.Common2 | ( 1 << 8 ),
-
-		#endregion
-
-		#region RTTMainDepthbufferAttachable
 
 		/// <summary>
 		/// Supports using the MAIN depth buffer for RTTs. D3D 9&10, OGL w/FBO support unknown
@@ -507,121 +365,86 @@ namespace Axiom.Graphics
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] RTTMainDepthbufferAttachable = CapCategoryShift.Common2 | ( 1 << 9 ),
 
-		#endregion
-
-		#region RTTDepthbufferResolutionLessEqual
-
 		/// <summary>
 		/// Supports attaching a depth buffer to an RTT that has width & height less or equal than RTT's.
 		/// Otherwise must be of _exact_ same resolution. D3D 9, OGL 3.0 (not 2.0, not D3D10)
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] RTTDepthbufferResolutionLessEqual = CapCategoryShift.Common2 | ( 1 << 10 ),
 
-		#endregion
-
-		#region VertexBufferInstanceData
-
 		/// <summary>
 		/// Supports using vertex buffers for instance data
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] VertexBufferInstanceData = CapCategoryShift.Common2 | ( 1 << 11 ),
 
-		#endregion
-
-		#region CanGetCompiledShaderBuffer
-
 		[OgreVersion( 1, 7, 2790 )] CanGetCompiledShaderBuffer = CapCategoryShift.Common2 | ( 1 << 12 ),
 
-		#endregion
+		/// <summary>
+		/// Supports dynamic linkage/shader subroutine
+		/// </summary>
+		[OgreVersion( 1, 8, 0x08a907fc)] ShaderSubroutine = CapCategoryShift.Common2 | ( 1 <<  13),
+
+		TextureBlending = CapCategoryShift.Common2 | ( 1 << 25 ),
+		MultiTexturing = CapCategoryShift.Common2 | ( 1 << 26 ),
 
 		// ***** DirectX specific caps *****
-
-		#region CanGetCompiledShaderBuffer
 
 		/// <summary>
 		/// Is DirectX feature "per stage constants" supported
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] PerStageConstant = CapCategoryShift.D3D9 | ( 1 << 0 ),
 
-		#endregion
-
 		// ***** GL Specific Caps *****
-
-		#region GL15NoVbo
 
 		/// <summary>
 		/// Supports openGL GLEW version 1.5
 		/// </summary>
-		[OgreVersion( 1, 7, 2790, "RSC_GL1_5_NOVBO in Ogre" )] GL15NoVbo = CapCategoryShift.GL | ( 1 << 1 ),
-
-		#endregion
-
-		#region FrameBufferObjects
+		[OgreVersion( 1, 7, 2790 )] GL15NoVbo = CapCategoryShift.GL | ( 1 << 1 ),
 
 		/// <summary>
 		/// Support for Frame Buffer Objects (FBOs)
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "RSC_FBO in Ogre" )] FrameBufferObjects = CapCategoryShift.GL | ( 1 << 2 ),
 
-		#endregion
-
-		#region FrameBufferObjectsARB
-
 		/// <summary>
 		/// Support for Frame Buffer Objects ARB implementation (regular FBO is higher precedence)
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "RSC_FBO_ARB in Ogre" )] FrameBufferObjectsARB = CapCategoryShift.GL | ( 1 << 3 ),
-
-		#endregion
-
-		#region FrameBufferObjectsATI
 
 		/// <summary>
 		/// Support for Frame Buffer Objects ATI implementation (ARB FBO is higher precedence)
 		/// </summary>
 		[OgreVersion( 1, 7, 2790, "RSC_FBO_ATI in Ogre" )] FrameBufferObjectsATI = CapCategoryShift.GL | ( 1 << 4 ),
 
-		#endregion
-
-		#region PBuffer
-
 		/// <summary>
 		/// Support for PBuffer
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] PBuffer = CapCategoryShift.GL | ( 1 << 5 ),
 
-		#endregion
-
-		#region GL15NoHardwareOcclusion
-
 		/// <summary>
 		/// Support for GL 1.5 but without HW occlusion workaround
 		/// </summary>
-		[OgreVersion( 1, 7, 2790, "RSC_GL1_5_NOHWOCCLUSION in Ogre" )] GL15NoHardwareOcclusion =
-			CapCategoryShift.GL | ( 1 << 6 ),
-
-		#endregion
-
-		#region PointExtendedParametersARB
+		[OgreVersion( 1, 7, 2790, "RSC_GL1_5_NOHWOCCLUSION in Ogre" )] GL15NoHardwareOcclusion = CapCategoryShift.GL | ( 1 << 6 ),
 
 		/// <summary>
 		/// Support for point parameters ARB implementation
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] PointExtendedParametersARB = CapCategoryShift.GL | ( 1 << 7 ),
 
-		#endregion
-
-		#region PointExtendedParametersEXT
-
 		/// <summary>
 		/// Support for point parameters EXT implementation
 		/// </summary>
 		[OgreVersion( 1, 7, 2790 )] PointExtendedParametersEXT = CapCategoryShift.GL | ( 1 << 8 ),
 
-		#endregion
+		/// <summary>
+		// Support for Separate Shader Objects
+		/// </summary>
+		[OgreVersion( 1, 8, 0x08a907fc )] SeperateShaderObjects = CapCategoryShift.GL | ( 1 << 9 ),
 
-		TextureBlending = CapCategoryShift.Common2 | ( 1 << 25 ),
-		MultiTexturing = CapCategoryShift.Common2 | ( 1 << 26 ),
+		/// <summary>
+		/// Support for Vertex Array Objects (VAOs)
+		/// </summary>
+		[OgreVersion( 1, 8, 0x08a907fc, "RSC_VAO in OGRE"  )] VertexArrayObjects = CapCategoryShift.GL | ( 1 << 10 )
+
 	}
 
 	/// <summary>
