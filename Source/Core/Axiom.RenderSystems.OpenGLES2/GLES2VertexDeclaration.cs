@@ -7,7 +7,10 @@ namespace Axiom.RenderSystems.OpenGLES2
 {
 	public class GLES2VertexDeclaration : VertexDeclaration
 	{
+		private int _vao;
+
 		public bool IsInitialized { get; protected set; }
+
 		public GLES2VertexDeclaration()
 		{
 			_vao = 0;
@@ -56,27 +59,3 @@ namespace Axiom.RenderSystems.OpenGLES2
 		}
 	}
 }
-
-/*
-        //-----------------------------------------------------------------------
-
-
-        //-----------------------------------------------------------------------
-        GLES2VertexDeclaration::~GLES2VertexDeclaration()
-        {
-
-        }
-
-        //-----------------------------------------------------------------------
-    void GLES2VertexDeclaration::bind(void)
-    {
-#if OGRE_NO_GLES2_VAO_SUPPORT == 0
-#   if GL_OES_vertex_array_object
-//        LogManager::getSingleton().logMessage("Binding VAO " + StringConverter::toString(mVAO));
-        glBindVertexArrayOES(mVAO);
-        GL_CHECK_ERROR
-#   endif
-#endif
-    }
-}
- * /

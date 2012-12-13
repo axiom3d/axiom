@@ -43,8 +43,8 @@ namespace Axiom.Samples.Browser
 			// the default GraphicsMode that is set consists of (16, 16, 0, 0, 2, false)
 			try
 			{
-				Log.Verbose("GLCube", "Loading with default settings");
-				GraphicsMode = new AndroidGraphicsMode( new ColorFormat(8,8,8,8), 24, 8, 0, 2, false );
+				Log.Verbose("AxiomSampleBrowser", "Loading with default settings");
+				//GraphicsMode = new AndroidGraphicsMode( new ColorFormat(8,8,8,8), 24, 8, 0, 2, false );
 				
 				// if you don't call this, the context won't be created
 				base.CreateFrameBuffer();
@@ -53,14 +53,14 @@ namespace Axiom.Samples.Browser
 			}
 			catch (Exception ex)
 			{
-				Log.Verbose("GLCube", "{0}", ex);
+				Log.Verbose("AxiomSampleBrowser", "{0}", ex);
 			}
 
 			// this is a graphics setting that sets everything to the lowest mode possible so
 			// the device returns a reliable graphics setting.
 			try
 			{
-				Log.Verbose("GLCube", "Loading with custom Android settings (low mode)");
+				Log.Verbose("AxiomSampleBrowser", "Loading with custom Android settings (low mode)");
 				GraphicsMode = new AndroidGraphicsMode(0, 0, 0, 0, 0, false);
 
 				// if you don't call this, the context won't be created
@@ -69,7 +69,7 @@ namespace Axiom.Samples.Browser
 			}
 			catch (Exception ex)
 			{
-				Log.Verbose("GLCube", "{0}", ex);
+				Log.Verbose("AxiomSampleBrowser", "{0}", ex);
 			}
 			throw new Exception("Can't load egl, aborting");
 		}

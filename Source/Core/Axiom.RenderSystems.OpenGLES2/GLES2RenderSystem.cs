@@ -1376,72 +1376,80 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			foreach ( var elem in decl )
 			{
-				if ( !op.vertexData.vertexBufferBinding.IsBufferBound( elem.Source ) )
+				var elemIndex = elem.Index;
+				var elemSource = elem.Source;
+				var elemType = elem.Type;
+
+				if ( !op.vertexData.vertexBufferBinding.IsBufferBound( elemSource ) )
 				{
 					continue; //skip unbound elements
 				}
+				GLES2Config.GlCheckError( this );
 
-				HardwareVertexBuffer vertexBuffer = op.vertexData.vertexBufferBinding.GetBuffer( elem.Source );
+				HardwareVertexBuffer vertexBuffer = op.vertexData.vertexBufferBinding.GetBuffer( elemSource );
 
 				this.BindGLBuffer( GLenum.ArrayBuffer, ( vertexBuffer as GLES2HardwareVertexBuffer ).GLBufferID );
-				bufferData = elem.Offset;
 
-				if ( op.vertexData.vertexStart != 0 )
+				if ( !useVAO || ( useVAO && null != gles2decl && !gles2decl.IsInitialized ) )
 				{
-					bufferData = bufferData + op.vertexData.vertexStart & vertexBuffer.VertexSize;
-				}
+					bufferData = elem.Offset;
 
-				VertexElementSemantic sem = elem.Semantic;
-				var typeCount = VertexElement.GetTypeCount( elem.Type );
-				bool normalized = false;
-				int attrib = 0;
+					VertexElementSemantic sem = elem.Semantic;
+					var typeCount = VertexElement.GetTypeCount( elemType );
+					bool normalized = false;
+					int attrib = 0;
 
-				if ( Capabilities.HasCapability( Graphics.Capabilities.SeperateShaderObjects ) )
-				{
-					GLSLESProgramPipeline programPipeline = GLSLESProgramPipelineManager.Instance.ActiveProgramPipeline;
-
-					if ( !programPipeline.IsAttributeValid( sem, elem.Index ) )
+					if ( op.vertexData.vertexStart != 0 )
 					{
-						continue;
+						bufferData = bufferData + op.vertexData.vertexStart & vertexBuffer.VertexSize;
 					}
 
-					attrib = programPipeline.GetAttributeIndex( sem, elem.Index );
-				}
-				else
-				{
-					GLSLESLinkProgram linkProgram = GLSLESLinkProgramManager.Instance.ActiveLinkProgram;
-					if ( null == linkProgram || !linkProgram.IsAttributeValid( sem, elem.Index ) )
+					if ( Capabilities.HasCapability( Graphics.Capabilities.SeperateShaderObjects ) )
 					{
-						continue;
+						GLSLESProgramPipeline programPipeline = GLSLESProgramPipelineManager.Instance.ActiveProgramPipeline;
+
+						if ( !programPipeline.IsAttributeValid( sem, elemIndex ) )
+						{
+							continue;
+						}
+
+						attrib = programPipeline.GetAttributeIndex( sem, elemIndex );
+					}
+					else
+					{
+						GLSLESLinkProgram linkProgram = GLSLESLinkProgramManager.Instance.ActiveLinkProgram;
+						if ( null == linkProgram || !linkProgram.IsAttributeValid( sem, elemIndex ) )
+						{
+							continue;
+						}
+
+						attrib = linkProgram.GetAttributeIndex( sem, elemIndex );
 					}
 
-					attrib = linkProgram.GetAttributeIndex( sem, elem.Index );
+					switch ( elem.Type )
+					{
+						case VertexElementType.Color:
+						case VertexElementType.Color_ARGB:
+						case VertexElementType.Color_ABGR:
+							//Because GL takes these as a sequence of single unsigned bytes, count needs to be 4
+							//VertexElement.GetTypeCount treams them as 1 (RGBA)
+							//Also need to normalize the fixed-point data
+							typeCount = 4;
+							normalized = true;
+							break;
+						default:
+							break;
+					}
+
+					GL.VertexAttribPointer( attrib, typeCount, GLES2HardwareBufferManager.GetGLType( elemType ), normalized, vertexBuffer.VertexSize, ref bufferData );
+					GLES2Config.GlCheckError( this );
+
+					GL.EnableVertexAttribArray( attrib );
+					GLES2Config.GlCheckError( this );
+
+					this.renderAttribsBound.Add( attrib );
 				}
-
-				switch ( elem.Type )
-				{
-					case VertexElementType.Color:
-					case VertexElementType.Color_ARGB:
-					case VertexElementType.Color_ABGR:
-						//Because GL takes these as a sequence of single unsigned bytes, count needs to be 4
-						//VertexElement.GetTypeCount treams them as 1 (RGBA)
-						//Also need to normalize the fixed-point data
-						typeCount = 4;
-						normalized = true;
-						break;
-					default:
-						break;
-				}
-
-				GL.VertexAttribPointer( attrib, typeCount, GLES2HardwareBufferManager.GetGLType( elem.Type ), normalized, vertexBuffer.VertexSize, ref bufferData );
-				GLES2Config.GlCheckError( this );
-
-				GL.EnableVertexAttribArray( attrib );
-				GLES2Config.GlCheckError( this );
-
-				this.renderAttribsBound.Add( attrib );
 			}
-
 			//Find the correct type to render
 			GLenum primType = GLenum.TriangleFan;
 
@@ -1469,7 +1477,9 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 			if ( op.useIndices )
 			{
-				this.BindGLBuffer( GLenum.ElementArrayBuffer, ( op.indexData.indexBuffer as GLES2HardwareIndexBuffer ).BufferID );
+				// If we are using VAO's then only bind the buffer the first time through. Otherwise, always bind.
+				if (!useVAO || ( useVAO && null != gles2decl && !gles2decl.IsInitialized ) )
+					this.BindGLBuffer( GLenum.ElementArrayBuffer, ((GLES2HardwareIndexBuffer )op.indexData.indexBuffer).BufferID );
 
 				bufferData = op.indexData.indexStart * op.indexData.indexBuffer.IndexSize;
 
@@ -1485,7 +1495,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 					GLES2Config.GlCheckError( this );
 				
 					GL.DrawElements( ( this.polygonMode == GLenum.PolygonOffsetFill ) ? primType : this.polygonMode, op.indexData.indexCount, indexType, ref bufferData );
-					GLES2Config.GlCheckError( this );
+					GLES2Config.GlCheckError( this, false );
 				} while ( UpdatePassIterationRenderState() );
 			}
 			else
@@ -1501,7 +1511,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 					//GL.DrawArrays( ( this.polygonMode == GLenum.PolygonOffsetFill ) ? primType : this.polygonMode, 0, op.vertexData.vertexCount );
 					GL.DrawArrays( All.Triangles, 0, op.vertexData.vertexCount );
-					GLES2Config.GlCheckError( this );
+					GLES2Config.GlCheckError( this, false );
 				} while ( UpdatePassIterationRenderState() );
 			}
 
@@ -1706,6 +1716,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 		[OgreVersion( 1, 8, 0x08a907fc )]
 		protected override void SetClipPlanesImpl( Math.Collections.PlaneList clipPlanes )
 		{
+			// Empty in Ogre
 		}
 
 		public override void BindGpuProgram( GpuProgram program )
@@ -2311,7 +2322,12 @@ namespace Axiom.RenderSystems.OpenGLES2
 
 		public override VertexDeclaration VertexDeclaration
 		{
-			set { throw new AxiomException("Cannot directly set VertexDeclaration in the GLES2 render system - cast then use 'SetVertexDeclaration( VertexDeclaration declaration, VertexBufferBinding binding )' ."); }
+			set 
+			{ 
+				// 20121011 - borrillis
+				// Not really sure why this is...SetVertexDeclaration( VertexDeclaration, VertexBinding ) does use the binding parameter at all.
+				throw new AxiomException("[GLES2] Cannot directly set VertexDeclaration in the GLES2 render system - use 'SetVertexDeclaration( VertexDeclaration declaration, VertexBufferBinding binding )' ."); 
+			}
 		}
 
 		public override VertexBufferBinding VertexBufferBinding

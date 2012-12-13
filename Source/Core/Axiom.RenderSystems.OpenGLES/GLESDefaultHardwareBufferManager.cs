@@ -54,46 +54,35 @@ namespace Axiom.RenderSystems.OpenGLES
 	/// </remarks>
 	public class GLESDefaultHardwareBufferManager : HardwareBufferManagerBase
 	{
-		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
+		public GLESDefaultHardwareBufferManager() {}
+		
+		protected override void dispose( bool disposeManagedResources )
 		{
-			return CreateVertexBuffer( vertexSize, numVerts, usage, false );
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					DestroyAllDeclarations();
+					DestroyAllBindings();
+				}
+			}
+			
+			base.dispose( disposeManagedResources );
 		}
-
-		/// <summary>
-		///   Creates a vertex buffer
-		/// </summary>
-		/// <param name="vertexSize"> </param>
-		/// <param name="numVerts"> </param>
-		/// <param name="usage"> </param>
-		/// <param name="useShadowBuffer"> </param>
-		/// <returns> </returns>
-		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		
+		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
-			return new GLESDefaultHardwareVertexBuffer( vertexSize, numVerts, usage );
+			return new GLESDefaultHardwareVertexBuffer( vertexDeclaration, numVerts, usage );
 		}
-
-		/// <summary>
-		/// </summary>
-		/// <param name="type"> </param>
-		/// <param name="numIndices"> </param>
-		/// <param name="usage"> </param>
-		/// <returns> </returns>
-		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
-		{
-			return CreateIndexBuffer( type, numIndices, usage, false );
-		}
-
-		/// <summary>
-		///   Creates an index buffer
-		/// </summary>
-		/// <param name="type"> </param>
-		/// <param name="numIndices"> </param>
-		/// <param name="usage"> </param>
-		/// <param name="useShadowBuffer"> </param>
-		/// <returns> </returns>
+		
 		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
 		{
 			return new GLESDefaultHardwareIndexBuffer( type, numIndices, usage );
 		}
+		
+		//public override RenderToVertexBuffer CreateRenderToVertexBuffer()
+		//{
+		//    throw new AxiomException("Cannot create RenderToVertexBuffer in GLES2DefaultHardwareBufferManagerBase);
+		//}
 	}
 }
