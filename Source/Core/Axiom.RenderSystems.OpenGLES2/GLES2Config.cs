@@ -39,21 +39,36 @@ using Axiom.Core;
 
 using OpenGL = OpenTK.Graphics.ES20.GL;
 
+using Axiom.Core;
+
 #endregion Namespace Declarations
 
 namespace Axiom.RenderSystems.OpenGLES2
 {
 	public static class GLES2Config
 	{
-		public static void GlCheckError( object caller )
+#if NET_40
+		public static void GlCheckError( object caller, bool raiseException = true )
+#else
+		public static void GlCheckError( object caller, bool raiseException )
+#endif
 		{
-			var e = (int) OpenGL.GetError();
-			if ( e != 0 )
+			var e = OpenGL.GetError();
+			if ( e != OpenTK.Graphics.ES20.All.None )
 			{
-				throw new Exception( string.Format( "[GLES2] Error {0} from {1}", e, caller.ToString() ) );
+				var msg = string.Format( "[GLES2] Error {0}: {1} from {2}", (int)e, e, caller.ToString() );
+				LogManager.Write( msg );
+				if ( raiseException )
+					throw new AxiomException( msg );
 			}
 		}
 
+#if !NET_40
+		public static void GlCheckError( object caller )
+		{
+			GlCheckError( caller, true );
+		}
+#endif
 		internal static void GlClearError()
 		{
 			var e = (int)OpenGL.GetError();
