@@ -614,8 +614,8 @@ namespace Axiom.RenderSystems.OpenGLES2
 			rsc.SetCapability( Graphics.Capabilities.FragmentPrograms );
 
 			//Sepearte shader objects
-			//if (glSupport.CheckExtension("GL_EXT_seperate_shader_objects"))
-			//    rsc.SetCapability(Graphics.Capabilities.SeparateShaderObjects);
+			if ( glSupport.CheckExtension( "GL_EXT_seperate_shader_objects" ) )
+			    rsc.SetCapability( Graphics.Capabilities.SeperateShaderObjects );
 
 			float floatConstantCount = 0;
 			GL.GetFloat( All.MaxVertexUniformVectors, ref floatConstantCount );
@@ -1382,11 +1382,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				bool normalized = false;
 				int attrib = 0;
 
-				/*Port notes
-				 * Axiom is missing enum member Capabilities.SeparateShaderObjects
-				 * using check that determines cap instead
-				 */
-				if ( this.glSupport.CheckExtension( "GL_EXT_seperate_shader_objects" ) ) //Root.Instance.RenderSystem.Capabilities.HasCapability(Graphics.Capabilities.RTTSerperateDepthBuffer)
+				if ( Capabilities.HasCapability( Graphics.Capabilities.SeperateShaderObjects ) )
 				{
 					GLSLESProgramPipeline programPipeline = GLSLESProgramPipelineManager.Instance.ActiveProgramPipeline;
 
@@ -1400,7 +1396,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 				else
 				{
 					GLSLESLinkProgram linkProgram = GLSLESLinkProgramManager.Instance.ActiveLinkProgram;
-					if ( !linkProgram.IsAttributeValid( sem, elem.Index ) )
+					if ( null == linkProgram || !linkProgram.IsAttributeValid( sem, elem.Index ) )
 					{
 						continue;
 					}
