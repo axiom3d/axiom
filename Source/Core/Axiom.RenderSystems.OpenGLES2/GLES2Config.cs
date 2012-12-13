@@ -57,7 +57,7 @@ namespace Axiom.RenderSystems.OpenGLES2
 			if ( e != OpenTK.Graphics.ES20.All.None )
 			{
 				var msg = string.Format( "[GLES2] Error {0}: {1} from {2}", (int)e, e, caller.ToString() );
-				LogManager.Write( msg );
+				LogManager.Instance.Write( msg );
 				if ( raiseException )
 					throw new AxiomException( msg );
 			}
