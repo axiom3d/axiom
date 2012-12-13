@@ -55,6 +55,7 @@ using Axiom.Utilities;
 using OpenTK.Graphics.ES11;
 
 using OpenGL = OpenTK.Graphics.ES11.GL;
+using GLenum = OpenTK.Graphics.ES11.All;
 
 #endregion Namespace Declarations
 
@@ -64,38 +65,35 @@ namespace Axiom.RenderSystems.OpenGLES
 	/// </summary>
 	public class GLESRenderSystem : RenderSystem
 	{
-		public const int MaxLights = 8;
-		public const int GLFill = 0x1B02;
+		private class TexEnviMap : Dictionary<GLenum, int> {}
+		private class TexEnvfMap : Dictionary<GLenum, float> {}
+		private class TexEnvfvMap : Dictionary<GLenum, float> {}
+		private class PointParamfMap : Dictionary<GLenum, float> {}
+		private class PointParamfvMap : Dictionary<GLenum, float> {}
+		private class MaterialfvMap : Dictionary<GLenum, float> {}
+		private class LightfMap : Dictionary<GLenum, float> {}
+		private class LightfvMap : Dictionary<GLenum, float> {}
 
-		public static IntPtr VBOBufferOffset( int i )
-		{
-			return new IntPtr( i );
-		}
-
-		#region - private -
-
+		private const int MaxLights = 8;
 		private readonly Light[] _lights = new Light[ MaxLights ];
+		private int _lightCount;
+
+		private const int GLFill = 0x1B02;
 
 		/// View matrix to set world against
 		private Matrix4 _ViewMatrix;
-
 		private Matrix4 _worldMatrix;
 		private Matrix4 _textureMatrix;
 
 		/// Last min & mip filtering options, so we can combine them
 		private FilterOptions _minFilter;
-
 		private FilterOptions _mipFilter;
-
-		/// <summary>
-		/// </summary>
-		private int _textureMipmapCount;
 
 		/// <summary>
 		///   What texture coord set each texture unit is using
 		/// </summary>
 		private readonly int[] _textureCoodIndex = new int[ Config.MaxTextureLayers ];
-
+		
 		/// <summary>
 		///   Number of fixed-function texture units
 		/// </summary>
@@ -107,9 +105,14 @@ namespace Axiom.RenderSystems.OpenGLES
 		private readonly bool[] _colorWrite = new bool[ 4 ];
 
 		/// <summary>
+		///   Store last depth write state
+		/// </summary>
+		private bool _depthWrite;
+
+		/// <summary>
 		///   Store last stencil mask state
 		/// </summary>
-		private readonly uint _stencilMask;
+		private uint _stencilMask;
 
 		/// <summary>
 		/// </summary>
@@ -138,21 +141,60 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		private GLESGpuProgramManager _gpuProgramManager;
 
+		private HardwareBufferManager _hardwareBufferManager;
+
 		/// <summary>
 		///   Manager object for creating render textures. direct render to texture via GL_OES_framebuffer_object is preferable to pbuffers, which depend on the GL support used and are generally unwieldy and slow. However, FBO support for stencil buffers is poor.
 		/// </summary>
 		private GLESRTTManager _rttManager;
 
+		// These variables are used for caching RenderSystem state.
+		// They are cached because OpenGL state changes can be quite expensive,
+		// which is especially important on mobile or embedded systems.
 		private short _activeTextureUnit;
 		private short _activeClientTextureUnit;
+		private TexEnviMap _activeTexEnviMap;
+		private TexEnvfMap _activeTexEnvfMap;
+		private TexEnvfvMap _activeTexEnvfvMap;
+		private PointParamfMap _activePointParamfMap;
+		private PointParamfvMap _activePointParamfvMap;
+		private MaterialfvMap _activeMaterialfvMap;
+		private LightfMap _activeLightfMap;
+		private LightfvMap _activeLightfvMap;
+		private int _activeSourceBlend;
+		private int _activeDestBlend;
+		private int _activeDepthFunc;
+		private GLenum _activeShadeModel;
+		private GLenum _activeMatrixMode;
+		private float _activePointSize;
+		private GLenum _activeCullFaceMode;
+		private float _texMaxAnisotropy;
+		private float _maxTexMaxAnisotropy;
+		private float _activeClearDepth;
+		private ColorEx _activeClearColor;
+		private GLenum _activeAlphaFunc;
+		private float _activeAlphaFuncValue;
+
 		//Check if the GL system has already been initialized
 		private bool _glInitialized;
+
+		/// Mask of buffers who contents can be discarded if GL_EXT_discard_framebuffer is supported
+		private uint _discardBuffers;
 
 		/// <summary>
 		///   OpenGL ES doesn't support setting the PolygonMode like desktop GL So we will cache the value and set it manually
 		/// </summary>
 		private int _polygonMode;
 
+		/// <summary>
+		/// </summary>
+		private int _textureMipmapCount;
+		
+		private static IntPtr VBOBufferOffset( int i )
+		{
+			return new IntPtr( i );
+		}
+		
 		/// <summary>
 		/// </summary>
 		private int CombinedMinMipFilter
@@ -386,7 +428,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			if ( this._activeTextureUnit != unit )
 			{
-				if ( unit < HardwareCapabilities.VertexTextureUnitCount )
+				if ( unit < Capabilities.VertexTextureUnitCount )
 				{
 					OpenGL.ActiveTexture( All.Texture0 + unit );
 					GLESConfig.GlCheckError( this );
@@ -470,15 +512,11 @@ namespace Axiom.RenderSystems.OpenGLES
 			throw new NotImplementedException();
 		}
 
-		#endregion
-
-		#region - Abstracts -
-
 		/// <summary>
 		/// </summary>
 		public override string Name
 		{
-			get { return "OpenGL ES 1.x Rendering Subsystem"; }
+			get { return "OpenGL ES 1.1 Rendering Subsystem"; }
 		}
 
 		/// <summary>
@@ -508,9 +546,9 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 		}
 
-		private Shading _shadingMode = Shading.Flat;
+		private ShadeOptions _shadingMode = ShadeOptions.Flat;
 		
-		public override Shading ShadingType
+		public override ShadeOptions ShadingType
 		{
 			get { return this._shadingMode; }
 			set
@@ -522,7 +560,7 @@ namespace Axiom.RenderSystems.OpenGLES
 
 				switch ( value )
 				{
-					case Shading.Flat:
+					case ShadeOptions.Flat:
 						OpenGL.ShadeModel( All.Flat );
 						GLESConfig.GlCheckError( this );
 						break;
@@ -587,7 +625,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// <summary>
 		/// </summary>
 		/// <returns> </returns>
-		public override string ValidateConfiguration()
+		public override string ValidateConfigOptions()
 		{
 			return this._glSupport.ValidateConfig();
 		}
@@ -601,10 +639,18 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			this._glSupport.Start();
 
+			this.textureManager = new GLESTextureManager( this._glSupport );
+
 			RenderWindow autoWindow = this._glSupport.CreateWindow( autoCreateWindow, this, windowTitle );
 			base.Initialize( autoCreateWindow, windowTitle );
 
 			return autoWindow;
+		}
+
+		public void Reinitialize()
+		{
+			this.Shutdown();
+			this.Initialize( true );
 		}
 
 		/// <summary>
@@ -613,19 +659,15 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			base.Shutdown();
 
-			this._gpuProgramManager.Dispose();
-			this._gpuProgramManager = null;
+			this._gpuProgramManager.SafeDispose();
 
-			hardwareBufferManager.Dispose();
-			hardwareBufferManager = null;
+			this._hardwareBufferManager.SafeDispose();
 
-			//_rttManager.Dispose();
-			this._rttManager = null;
+			this._rttManager.SafeDispose();
 
 			this._glSupport.Stop();
 
-			textureManager.Dispose();
-			textureManager = null;
+			textureManager.SafeDispose();
 
 			this._glInitialized = false;
 		}
@@ -670,11 +712,11 @@ namespace Axiom.RenderSystems.OpenGLES
 				InitializeContext( window );
 
 				// set the number of texture units
-				this._fixedFunctionTextureUnits = this._rsCapabilities.TextureUnitCount;
+				this._fixedFunctionTextureUnits = this.Capabilities.TextureUnitCount;
 
 				// in GL there can be less fixed function texture units than general
 				// texture units. use the smaller of the two.
-				if ( HardwareCapabilities.HasCapability( Capabilities.FragmentPrograms ) )
+				if ( Capabilities.HasCapability( Graphics.Capabilities.FragmentPrograms ) )
 				{
 					int maxTexUnits = 0;
 					//Gl.glGetIntegerv( Gl.GL_MAX_TEXTURE_UNITS, out maxTexUnits );
@@ -702,7 +744,6 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			// Set main and current context
 			this._mainContext = (GLESContext) primary[ "GLCONTEXT" ];
-			LogManager.Instance.Write( this._mainContext == null ? "maincontext NULL" : "maincontext NOT NULL" );
 			this._currentContext = this._mainContext;
 
 			// Set primary context as active
@@ -714,62 +755,62 @@ namespace Axiom.RenderSystems.OpenGLES
 			// intialize GL extensions and check capabilites
 			this._glSupport.InitializeExtensions();
 
-			LogManager.Instance.Write( "***************************" );
-			LogManager.Instance.Write( "*** GLES Renderer Started ***" );
-			LogManager.Instance.Write( "***************************" );
+			LogManager.Instance.Write( "**************************************" );
+			LogManager.Instance.Write( "*** OpenGL ES 1.1 Renderer Started ***" );
+			LogManager.Instance.Write( "**************************************" );
+		}
 
-			// log hardware info
-			LogManager.Instance.Write( "Vendor: {0}", this._glSupport.Vendor );
-			LogManager.Instance.Write( "Video Board: {0}", this._glSupport.VideoCard );
-			LogManager.Instance.Write( "Version: {0}", this._glSupport.Version );
+		public override RenderSystemCapabilities CreateRenderSystemCapabilities ()
+		{
+			var rsc = new RenderSystemCapabilities();
 
-			LogManager.Instance.Write( "Extensions supported: " );
-
-			foreach ( string ext in this._glSupport.Extensions )
+			rsc.SetCategoryRelevant( CapabilitiesCategory.GL, true );
+			rsc.DriverVersion = driverVersion;
+			
+			string deviceName = GL.GetString( All.Renderer );
+			GLESConfig.GlCheckError( this );
+			string vendorName = GL.GetString( All.Vendor );
+			GLESConfig.GlCheckError( this );
+			
+			deviceName = deviceName ?? string.Empty;
+			vendorName = vendorName ?? string.Empty;
+			
+			if ( !string.IsNullOrEmpty( deviceName ) )
 			{
-				LogManager.Instance.Write( ext );
+				rsc.DeviceName = deviceName;
 			}
-
-			// create our special program manager
-			this._gpuProgramManager = new GLESGpuProgramManager();
-
-			// query hardware capabilites
-			CheckCaps( primary );
-
-			// create a specialized instance, which registers itself as the singleton instance of HardwareBufferManager
-			// use software buffers as a fallback, which operate as regular vertex arrays
-			if ( this.Capabilities.HasCapability( Capabilities.VertexBuffer ) )
+			
+			rsc.RendersystemName = this.Name;
+			
+			//Determine vendor
+			if ( vendorName.Contains( "Imagination Technologies" ) )
 			{
-				hardwareBufferManager = new GLESHardwareBufferManager();
+				rsc.Vendor = GPUVendor.ImaginationTechnologies;
+			}
+			else if ( vendorName.Contains( "Apple Computer, Inc." ) )
+			{
+				rsc.Vendor = GPUVendor.Apple; // iOS Simulator
+			}
+			else if ( vendorName.Contains( "NVIDIA" ) )
+			{
+				rsc.Vendor = GPUVendor.Nvidia;
+			}
+			else if ( vendorName.Contains( "Nokia" ) )
+			{
+				rsc.Vendor = GPUVendor.Nokia;
 			}
 			else
 			{
-				hardwareBufferManager = new GLESDefaultHardwareBufferManager();
+				rsc.Vendor = GPUVendor.Unknown;
 			}
 
-			// by creating our texture manager, singleton TextureManager will hold our implementation
-			textureManager = new GLESTextureManager( this._glSupport );
-			this._polygonMode = GLFill;
-			this._glInitialized = true;
-		}
-
-		/// <summary>
-		/// </summary>
-		/// <param name="primary"> </param>
-		private void CheckCaps( RenderTarget primary )
-		{
-			_rsCapabilities = new RenderSystemCapabilities();
-
-			_rsCapabilities.DeviceName = OpenTK.Graphics.ES11.GL.GetString( All.Renderer );
-			_rsCapabilities.VendorName = OpenTK.Graphics.ES11.GL.GetString( All.Vendor );
-			_rsCapabilities.RendersystemName = Name;
-
 			// GL ES 1.x is fixed function only
-			_rsCapabilities.SetCapability( Capabilities.FixedFunction );
+			rsc.SetCapability( Graphics.Capabilities.FixedFunction );
+
 			// Multitexturing support and set number of texture units
 			int units = 0;
 			OpenGL.GetInteger( All.MaxTextureUnits, ref units );
-			_rsCapabilities.TextureUnitCount = units;
+			rsc.TextureUnitCount = units;
 
 			// Check for hardware stencil support and set bit depth
 			int stencil = 0;
@@ -778,196 +819,187 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			if ( stencil != 0 )
 			{
-				_rsCapabilities.SetCapability( Capabilities.StencilBuffer );
-				_rsCapabilities.StencilBufferBitCount = stencil;
+				rsc.SetCapability( Graphics.Capabilities.StencilBuffer );
+				rsc.StencilBufferBitCount = stencil;
 			}
 
 			// Scissor test is standard
-			_rsCapabilities.SetCapability( Capabilities.ScissorTest );
+			rsc.SetCapability( Graphics.Capabilities.ScissorTest );
 
 			// Vertex Buffer Objects are always supported by OpenGL ES
-			_rsCapabilities.SetCapability( Capabilities.VertexBuffer );
+			rsc.SetCapability( Graphics.Capabilities.VertexBuffer );
 
 			// OpenGL ES - Check for these extensions too
 			// For 1.1, http://www.khronos.org/registry/gles/api/1.1/glext.h
-			// For 2.0, http://www.khronos.org/registry/gles/api/2.0/gl2ext.h
 
-			if ( this._glSupport.CheckExtension( "GL_IMG_texture_compression_pvrtc" ) || this._glSupport.CheckExtension( "GL_AMD_compressed_3DC_texture" ) || this._glSupport.CheckExtension( "GL_AMD_compressed_ATC_texture" ) || this._glSupport.CheckExtension( "GL_OES_compressed_ETC1_RGB8_texture" ) || this._glSupport.CheckExtension( "GL_OES_compressed_paletted_texture" ) )
+			if ( this._glSupport.CheckExtension( "GL_IMG_texture_compression_pvrtc" ) || 
+			     this._glSupport.CheckExtension( "GL_AMD_compressed_3DC_texture" ) || 
+			     this._glSupport.CheckExtension( "GL_AMD_compressed_ATC_texture" ) || 
+			     this._glSupport.CheckExtension( "GL_OES_compressed_ETC1_RGB8_texture" ) || 
+			     this._glSupport.CheckExtension( "GL_OES_compressed_paletted_texture" ) )
 			{
 				// TODO: Add support for compression types other than pvrtc
-				_rsCapabilities.SetCapability( Capabilities.TextureCompression );
+				rsc.SetCapability( Graphics.Capabilities.TextureCompression );
 
 				if ( this._glSupport.CheckExtension( "GL_IMG_texture_compression_pvrtc" ) )
 				{
-					_rsCapabilities.SetCapability( Capabilities.TextureCompressionPVRTC );
+					rsc.SetCapability( Graphics.Capabilities.TextureCompressionPVRTC );
 				}
 			}
 
 			if ( this._glSupport.CheckExtension( "GL_EXT_texture_filter_anisotropic" ) )
 			{
-				_rsCapabilities.SetCapability( Capabilities.AnisotropicFiltering );
+				rsc.SetCapability( Graphics.Capabilities.AnisotropicFiltering );
 			}
 
 			if ( this._glSupport.CheckExtension( "GL_OES_framebuffer_object" ) )
 			{
 				LogManager.Instance.Write( "[GLES] Framebuffers are supported." );
-				_rsCapabilities.SetCapability( Capabilities.FrameBufferObjects );
-				_rsCapabilities.SetCapability( Capabilities.HardwareRenderToTexture );
+				rsc.SetCapability( Graphics.Capabilities.FrameBufferObjects );
+				rsc.SetCapability( Graphics.Capabilities.HardwareRenderToTexture );
 			}
 			else
 			{
-				_rsCapabilities.SetCapability( Capabilities.PBuffer );
-				_rsCapabilities.SetCapability( Capabilities.HardwareRenderToTexture );
+				rsc.SetCapability( Graphics.Capabilities.PBuffer );
+				rsc.SetCapability( Graphics.Capabilities.HardwareRenderToTexture );
 			}
 
 			// Cube map
 			if ( this._glSupport.CheckExtension( "GL_OES_texture_cube_map" ) )
 			{
-				_rsCapabilities.SetCapability( Capabilities.CubeMapping );
+				rsc.SetCapability( Graphics.Capabilities.CubeMapping );
 			}
 
 			if ( this._glSupport.CheckExtension( "GL_OES_stencil_wrap" ) )
 			{
-				_rsCapabilities.SetCapability( Capabilities.StencilWrap );
+				rsc.SetCapability( Graphics.Capabilities.StencilWrap );
 			}
 
 			if ( this._glSupport.CheckExtension( "GL_OES_blend_subtract" ) )
 			{
-				_rsCapabilities.SetCapability( Capabilities.AdvancedBlendOperations );
+				rsc.SetCapability( Graphics.Capabilities.AdvancedBlendOperations );
 			}
 
-			if ( this._glSupport.CheckExtension( "GL_ANDROID_user_clip_plane" ) )
+			rsc.SetCapability( Graphics.Capabilities.UserClipPlanes );
+
+			if ( this._glSupport.CheckExtension( "GL_OES_texture3d" ) )
 			{
-				_rsCapabilities.SetCapability( Capabilities.UserClipPlanes );
+				rsc.SetCapability( Graphics.Capabilities.Texture3D );
 			}
-
-			if ( this._glSupport.CheckExtension( "GL_OES_texture3D" ) )
-			{
-				_rsCapabilities.SetCapability( Capabilities.Texture3D );
-			}
-
 			// GL always shares vertex and fragment texture units (for now?)
-			_rsCapabilities.VertexTextureUnitsShared = true;
+			rsc.VertexTextureUnitsShared = true;
+			
 			// Hardware support mipmapping
-			_rsCapabilities.SetCapability( Capabilities.Automipmap );
+			rsc.SetCapability( Graphics.Capabilities.HardwareMipMaps );
 
 			if ( this._glSupport.CheckExtension( "GL_EXT_texture_lod_bias" ) )
 			{
-				_rsCapabilities.SetCapability( Capabilities.MipmapLODBias );
+				rsc.SetCapability( Graphics.Capabilities.MipmapLODBias );
 			}
 
 			//blending support
-			_rsCapabilities.SetCapability( Capabilities.TextureBlending );
+			rsc.SetCapability( Graphics.Capabilities.TextureBlending );
 
 			// DOT3 support is standard
-			_rsCapabilities.SetCapability( Capabilities.Dot3 );
-
-
-			if ( _rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
-			{
-				hardwareBufferManager = new GLESHardwareBufferManager();
-			}
-			else
-			{
-				hardwareBufferManager = new GLESDefaultHardwareBufferManager();
-			}
-
-			/// Do this after extension function pointers are initialised as the extension
-			/// is used to probe further capabilities.
-			int rttMode = 0;
-			if ( ConfigOptions.ContainsKey( "RTT Preferred Mode" ) )
-			{
-				ConfigOption opt = ConfigOptions[ "RTT Preferred Mode" ];
-				// RTT Mode: 0 use whatever available, 1 use PBuffers, 2 force use copying
-				if ( opt.Value == "PBuffer" )
-				{
-					rttMode = 1;
-				}
-				else if ( opt.Value == "Copy" )
-				{
-					rttMode = 2;
-				}
-			}
-			LogManager.Instance.Write( "[GLES] 'RTT Preferred Mode' = {0}", rttMode );
-			// Check for framebuffer object extension
-			if ( _rsCapabilities.HasCapability( Capabilities.FrameBufferObjects ) && ( rttMode < 1 ) )
-			{
-				if ( _rsCapabilities.HasCapability( Capabilities.HardwareRenderToTexture ) )
-				{
-					// Create FBO manager
-					LogManager.Instance.Write( "[GLES] Using GL_OES_framebuffer_object for rendering to textures (best)" );
-					this._rttManager = new GLESFBORTTManager();
-				}
-			}
-			else
-			{
-				// Check GLSupport for PBuffer support
-				if ( _rsCapabilities.HasCapability( Capabilities.PBuffer ) && rttMode < 2 )
-				{
-					if ( _rsCapabilities.HasCapability( Capabilities.HardwareRenderToTexture ) )
-					{
-						// Use PBuffers
-						this._rttManager = new GLESPBRTTManager();
-						LogManager.Instance.Write( "[GLES] Using PBuffers for rendering to textures" );
-					}
-				}
-				else
-				{
-					// No pbuffer support either -- fallback to simplest copying from framebuffer
-					this._rttManager = new GLESCopyingRTTManager();
-					LogManager.Instance.Write( "[GLES] Using framebuffer copy for rendering to textures (worst)" );
-					LogManager.Instance.Write( "[GLES] Warning: RenderTexture size is restricted to size of framebuffer." );
-				}
-				_rsCapabilities.MultiRenderTargetCount = 1;
-			}
+			rsc.SetCapability( Graphics.Capabilities.Dot3 );
 
 			// Point size
 			float ps = 0;
 			OpenGL.GetFloat( All.PointSizeMax, ref ps );
 			GLESConfig.GlCheckError( this );
-			_rsCapabilities.MaxPointSize = ps;
+			rsc.MaxPointSize = ps;
 
 			// Point sprites
 			if ( this._glSupport.CheckExtension( "GL_OES_point_sprite" ) )
 			{
-				_rsCapabilities.SetCapability( Capabilities.PointSprites );
+				rsc.SetCapability( Graphics.Capabilities.PointSprites );
 			}
 
-			_rsCapabilities.SetCapability( Capabilities.PointExtendedParameters );
+			rsc.SetCapability( Graphics.Capabilities.PointExtendedParameters );
 
 			// UBYTE4 always supported
-			_rsCapabilities.SetCapability( Capabilities.VertexFormatUByte4 );
+			rsc.SetCapability( Graphics.Capabilities.VertexFormatUByte4 );
 
 			// Infinite far plane always supported
-			_rsCapabilities.SetCapability( Capabilities.InfiniteFarPlane );
-
-			// hardware occlusion support
-			_rsCapabilities.SetCapability( Capabilities.HardwareOcculusion );
-
-			//// Check for Float textures
-			if ( this._glSupport.CheckExtension( "GL_OES_texture_half_float" ) )
-			{
-				_rsCapabilities.SetCapability( Capabilities.TextureFloat );
-			}
+			rsc.SetCapability( Graphics.Capabilities.InfiniteFarPlane );
 
 			// Alpha to coverage always 'supported' when MSAA is available
 			// although card may ignore it if it doesn't specifically support A2C
-			_rsCapabilities.SetCapability( Capabilities.AlphaToCoverage );
+			rsc.SetCapability( Graphics.Capabilities.AlphaToCoverage );
+		}
+
+		public override void InitializeFromRenderSystemCapabilities (RenderSystemCapabilities caps, Axiom.Graphics.RenderTarget primary)
+		{
+			if( caps.RendersystemName != this.Name ) 
+			{
+				throw new AxiomException ("Trying to initialize GLES2RenderSystem from RenderSystemCapabilities that do not support OpenGL ES");
+			}
+			
+			this._gpuProgramManager = new GLESGpuProgramManager();
+
+			//Set texture the number of texture units
+			this._fixedFunctionTextureUnits = caps.TextureUnitCount;
+
+			//Use VBO's by default
+			if( Capabilities.HasCapability( Graphics.Capabilities.VertexBuffer ) ) 
+			{
+				this._hardwareBufferManager = new GLESHardwareBufferManager();
+			}
+			else 
+			{
+				this._hardwareBufferManager = new GLESDefaultHardwareBufferManager();
+			}
+
+			// Check for framebuffer object extension
+			if( Capabilities.HasCapability( Graphics.Capabilities.FrameBufferObjects ) ) 
+			{
+				if( Capabilities.HasCapability( Graphics.Capabilities.HardwareRenderToTexture ) ) 
+				{
+					//Create FBO manager
+					LogManager.Instance.Write( "[GLES] Using FBOs for rendering to textures" );
+					this._rttManager = new GLESFBORTTManager();
+					caps.SetCapability( Graphics.Capabilities.RTTSeperateDepthBuffer );
+				}
+			}
+			else 
+			{
+				if( Capabilities.HasCapability( Graphics.Capabilities.PBuffer ) ) 
+				{
+					if( Capabilities.HasCapability( Graphics.Capabilities.HardwareRenderToTexture ) ) 
+					{
+						//Create FBO manager
+						LogManager.Instance.Write( "[GLES] Using PBuffers for rendering to textures" );
+						this._rttManager = new GLESRTTManager( GLESSupport, primary );
+					}
+				}
+				// Downgrade number of simultaneous targets
+				Capabilities.MultiRenderTargetCount = 1;
+			}
+			
+			Log defaultLog = LogManager.Instance.DefaultLog;
+			if ( defaultLog != null )
+			{
+				caps.Log( defaultLog );
+			}
+
+			GLESConfig.GlCheckError( this );
+
+			this._glInitialized = true;
 		}
 
 		private void _oneTimeContextInitialization()
 		{
-			//OpenGL.Disable(All.Dither);
-			//GLESConfig.GlCheckError(this);
-			//int fsaa_active = 0;
-			//OpenGL.GetInteger(All.SampleBuffers, ref fsaa_active);
-			//GLESConfig.GlCheckError(this);
-			//if (fsaa_active != 0)
-			//{
-			//    OpenGL.Enable(All.Multisample);
-			//    GLESConfig.GlCheckError(this);
-			//    LogManager.Instance.Write("Using FSAA OpenGL ES.");
-			//}
+			OpenGL.Disable(All.Dither);
+			GLESConfig.GlCheckError(this);
+			int fsaa_active = 0;
+			OpenGL.GetInteger(All.SampleBuffers, ref fsaa_active);
+			GLESConfig.GlCheckError(this);
+			if (fsaa_active != 0)
+			{
+			    OpenGL.Enable(All.Multisample);
+			    GLESConfig.GlCheckError(this);
+			    LogManager.Instance.Write("Using FSAA OpenGL ES.");
+			}
 		}
 
 		/// <summary>
@@ -1000,7 +1032,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			{
 				throw new AxiomException( "Cannot begin frame - no viewport selected." );
 			}
-			if ( _rsCapabilities.HasCapability( Capabilities.ScissorTest ) )
+			if ( Capabilities.HasCapability( Graphics.Capabilities.ScissorTest ) )
 			{
 				OpenGL.Enable( All.ScissorTest );
 				GLESConfig.GlCheckError( this );
@@ -1032,15 +1064,17 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		/// <param name="type"> </param>
 		/// <param name="parms"> </param>
-		public override void BindGpuProgramParameters( GpuProgramType type, GpuProgramParameters parms )
+		public override void BindGpuProgramParameters (GpuProgramType type, GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
 		{
 			//not implemented
 		}
 
-		public override void ClearFrameBuffer( FrameBufferType buffers, ColorEx color, float depth, int stencil )
+		public override void ClearFrameBuffer (FrameBufferType buffers, ColorEx color, Real depth, ushort stencil)
 		{
 			bool colorMask = !this._colorWrite[ 0 ] || !this._colorWrite[ 1 ] || !this._colorWrite[ 2 ] || !this._colorWrite[ 3 ];
+
 			int flags = 0;
+
 			if ( ( buffers & FrameBufferType.Color ) != 0 )
 			{
 				flags |= (int) All.ColorBufferBit;
@@ -1058,7 +1092,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			{
 				flags |= (int) All.DepthBufferBit;
 				// Enable buffer for writing if it isn't
-				if ( !depthWrite )
+				if ( !DepthWrite )
 				{
 					OpenGL.DepthMask( true );
 					GLESConfig.GlCheckError( this );
@@ -1088,31 +1122,31 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 
 			// Sets the scissor box as same as viewport
-			unsafe
+			var viewport = new int[ 4 ];
+			var scissor = new int[ 4 ];
+
+			OpenGL.GetInteger( All.Viewport, viewport );
+			GLESConfig.GlCheckError( this );
+
+			OpenGL.GetInteger( All.ScissorBox, scissor );
+			GLESConfig.GlCheckError( this );
+
+			bool scissorBoxDifference = viewport[ 0 ] != scissor[ 0 ] || viewport[ 1 ] != scissor[ 1 ] || viewport[ 2 ] != scissor[ 2 ] || viewport[ 3 ] != scissor[ 3 ];
+			if ( scissorBoxDifference )
 			{
-				var viewport = new int[ 4 ];
-				var scissor = new int[ 4 ];
-				//OpenGL.GetInteger(All.Viewport, viewport);
+				OpenGL.Scissor( viewport[ 0 ], viewport[ 1 ], viewport[ 2 ], viewport[ 3 ] );
 				GLESConfig.GlCheckError( this );
-				//OpenGL.GetInteger(All.ScissorBox, scissor);
-				GLESConfig.GlCheckError( this );
-				bool scissorBoxDifference = viewport[ 0 ] != scissor[ 0 ] || viewport[ 1 ] != scissor[ 1 ] || viewport[ 2 ] != scissor[ 2 ] || viewport[ 3 ] != scissor[ 3 ];
-				if ( scissorBoxDifference )
-				{
-					OpenGL.Scissor( viewport[ 0 ], viewport[ 1 ], viewport[ 2 ], viewport[ 3 ] );
-					GLESConfig.GlCheckError( this );
-				}
+			}
 
-				//clear buffers
-				OpenGL.Clear( flags );
-				GLESConfig.GlCheckError( this );
+			//clear buffers
+			OpenGL.Clear( flags );
+			GLESConfig.GlCheckError( this );
 
-				//restore scissor box
-				if ( scissorBoxDifference )
-				{
-					OpenGL.Scissor( scissor[ 0 ], scissor[ 1 ], scissor[ 2 ], scissor[ 3 ] );
-					GLESConfig.GlCheckError( this );
-				}
+			//restore scissor box
+			if ( scissorBoxDifference )
+			{
+				OpenGL.Scissor( scissor[ 0 ], scissor[ 1 ], scissor[ 2 ], scissor[ 3 ] );
+				GLESConfig.GlCheckError( this );
 			}
 
 			// Restore scissor test
@@ -1123,7 +1157,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 
 			// Reset buffer write state
-			if ( !depthWrite && ( ( buffers & FrameBufferType.Depth ) != 0 ) )
+			if ( !DepthWrite && ( ( buffers & FrameBufferType.Depth ) != 0 ) )
 			{
 				OpenGL.DepthMask( false );
 				GLESConfig.GlCheckError( this );
@@ -1146,15 +1180,15 @@ namespace Axiom.RenderSystems.OpenGLES
 			return color.ToABGR();
 		}
 
-		public override ColorEx ConvertColor( int color )
-		{
-			ColorEx colorEx;
-			colorEx.a = (float) ( ( color >> 24 ) % 256 ) / 255;
-			colorEx.r = (float) ( ( color >> 16 ) % 256 ) / 255;
-			colorEx.g = (float) ( ( color >> 8 ) % 256 ) / 255;
-			colorEx.b = (float) ( ( color ) % 256 ) / 255;
-			return colorEx;
-		}
+		//public override ColorEx ConvertColor( int color )
+		//{
+		//	ColorEx colorEx;
+		//	colorEx.a = (float) ( ( color >> 24 ) % 256 ) / 255;
+		//	colorEx.r = (float) ( ( color >> 16 ) % 256 ) / 255;
+		//	colorEx.g = (float) ( ( color >> 8 ) % 256 ) / 255;
+		//	colorEx.b = (float) ( ( color ) % 256 ) / 255;
+		//	return colorEx;
+		//}
 
 		private All ConvertCompareFunction( CompareFunction func )
 		{
@@ -1206,11 +1240,10 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 		}
 
-		public override Matrix4 ConvertProjectionMatrix( Matrix4 matrix, bool forGpuProgram )
+		public override void ConvertProjectionMatrix( Matrix4 matrix, out Matrix4 dest, bool forGpuProgram )
 		{
 			// no any conversion request for OpenGL
-			Matrix4 dest = matrix;
-			return dest;
+			dest = matrix;
 		}
 
 		public override HardwareOcclusionQuery CreateHardwareOcclusionQuery()
@@ -1317,12 +1350,12 @@ namespace Axiom.RenderSystems.OpenGLES
 			get { throw new NotImplementedException(); }
 			set
 			{
-				if ( depthWrite == value )
+				if ( _depthWrite == value )
 				{
 					return;
 				}
 
-				depthWrite = value;
+				_depthWrite = value;
 
 				OpenGL.DepthMask( value );
 				GLESConfig.GlCheckError( this );
@@ -1354,13 +1387,20 @@ namespace Axiom.RenderSystems.OpenGLES
 			base.DisableTextureUnitsFrom( texUnit );
 		}
 
-		/*
 		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{
 				if ( disposeManagedResources )
 				{
+					Shutdown();
+					//Destroy Render Windows
+					foreach( var rw in renderTargets )
+					{
+						rw.SafeDispose();
+					}
+					renderTargets.Clear();
+					_glSupport.SafeDispose();
 				}
 
 				// There are no unmanaged resources to release, but
@@ -1370,7 +1410,6 @@ namespace Axiom.RenderSystems.OpenGLES
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );
 		}
-		*/
 
 		public override void EnableClipPlane( ushort index, bool enable )
 		{
@@ -1380,21 +1419,11 @@ namespace Axiom.RenderSystems.OpenGLES
 		public override void EndFrame()
 		{
 			// Deactivate the viewport clipping.
-			if ( _rsCapabilities.HasCapability( Capabilities.ScissorTest ) )
+			if ( Capabilities.HasCapability( Graphics.Capabilities.ScissorTest ) )
 			{
 				OpenGL.Disable( All.ScissorTest );
 				GLESConfig.GlCheckError( this );
 			}
-		}
-
-		public override bool Equals( object obj )
-		{
-			return base.Equals( obj );
-		}
-
-		public override int GetHashCode()
-		{
-			return base.GetHashCode();
 		}
 
 		public override float HorizontalTexelOffset
@@ -1449,7 +1478,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			set
 			{
-				if ( _rsCapabilities.HasCapability( Capabilities.PointSprites ) )
+				if ( Capabilities.HasCapability( Graphics.Capabilities.PointSprites ) )
 				{
 					return;
 				}
@@ -1528,11 +1557,6 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 		}
 
-		public override void RemoveRenderTargets()
-		{
-			base.RemoveRenderTargets();
-		}
-
 		/// <summary>
 		/// </summary>
 		/// <param name="op"> </param>
@@ -1542,7 +1566,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			base.Render( op );
 
 			IntPtr pBufferData = IntPtr.Zero;
-			bool multitexturing = ( _rsCapabilities.TextureUnitCount > 1 );
+			bool multitexturing = ( Capabilities.TextureUnitCount > 1 );
 
 			List<VertexElement> decl = op.vertexData.vertexDeclaration.Elements;
 
@@ -1556,7 +1580,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				}
 
 				HardwareVertexBuffer vertexBuffer = op.vertexData.vertexBufferBinding.GetBuffer( elem.Source );
-				if ( _rsCapabilities.HasCapability( Capabilities.VertexBuffer ) )
+				if ( Capabilities.HasCapability( Graphics.Capabilities.VertexBuffer ) )
 				{
 					OpenGL.BindBuffer( All.ArrayBuffer, ( (GLESHardwareVertexBuffer) vertexBuffer ).BufferID );
 					GLESConfig.GlCheckError( this );
@@ -1564,7 +1588,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				}
 				else
 				{
-					pBufferData = ( (GLESDefaultHardwareVertexBuffer) vertexBuffer ).GetData( elem.Offset );
+					pBufferData = ( (GLESDefaultHardwareVertexBuffer) vertexBuffer ).ReadData( elem.Offset );
 				}
 
 				if ( op.vertexData.vertexStart != 0 )
@@ -1664,7 +1688,7 @@ namespace Axiom.RenderSystems.OpenGLES
 
 			if ( op.useIndices )
 			{
-				if ( Capabilities.HasCapability( Capabilities.FrameBufferObjects ) )
+				if ( Capabilities.HasCapability( Graphics.Capabilities.FrameBufferObjects ) )
 				{
 					OpenGL.BindBuffer( All.ElementArrayBuffer, ( (GLESHardwareIndexBuffer) op.indexData.indexBuffer ).BufferID );
 					GLESConfig.GlCheckError( this );
@@ -1672,7 +1696,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				}
 				else
 				{
-					pBufferData = ( (GLESDefaultHardwareIndexBuffer) op.indexData.indexBuffer ).GetData( op.indexData.indexStart * op.indexData.indexBuffer.IndexSize );
+					pBufferData = ( (GLESDefaultHardwareIndexBuffer) op.indexData.indexBuffer ).ReadData( op.indexData.indexStart * op.indexData.indexBuffer.IndexSize );
 				}
 
 				All indexType = ( op.indexData.indexBuffer.Type == IndexType.Size16 ) ? All.UnsignedShort : All.UnsignedByte;
@@ -1730,14 +1754,14 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			if ( constantBias != 0 || slopeScaleBias != 0 )
 			{
-				OpenGL.Enable( All.PolygonOffsetFill );
+				GL.Enable( GLenum.PolygonOffsetFill );
 				GLESConfig.GlCheckError( this );
-				OpenGL.PolygonOffset( -slopeScaleBias, -constantBias );
+				GL.PolygonOffset( -slopeScaleBias, -constantBias );
 				GLESConfig.GlCheckError( this );
 			}
 			else
 			{
-				OpenGL.Disable( All.PolygonOffsetFill );
+				GL.Disable( GLenum.PolygonOffsetFill );
 				GLESConfig.GlCheckError( this );
 			}
 		}
@@ -1762,7 +1786,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				GL.AlphaFunc( ConvertCompareFunction( func ), value / 255.0f );
 				GLESConfig.GlCheckError( this );
 			}
-			if ( a2c != this.lasta2c && _rsCapabilities.HasCapability( Capabilities.AlphaToCoverage ) )
+			if ( a2c != this.lasta2c && Capabilities.HasCapability( Graphics.Capabilities.AlphaToCoverage ) )
 			{
 				if ( a2c )
 				{
@@ -1779,9 +1803,8 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 		}
 
-		public override void SetClipPlane( ushort index, float A, float B, float C, float D )
+		protected override void SetClipPlanesImpl( Axiom.Math.Collections.PlaneList clipPlanes )
 		{
-			throw new NotImplementedException();
 		}
 
 		public override void UseLights( Core.Collections.LightList lightList, int limit )
@@ -1804,12 +1827,12 @@ namespace Axiom.RenderSystems.OpenGLES
 			}
 
 			// Disable extra lights
-			for ( ; num < numCurrentLights; ++num )
+			for ( ; num < _lightCount; ++num )
 			{
 				SetGLLight( num, null );
 				this._lights[ num ] = null;
 			}
-			numCurrentLights = System.Math.Min( limit, lightList.Count );
+			_lightCount = System.Math.Min( limit, lightList.Count );
 
 			SetLights();
 			// restore previous
@@ -2031,7 +2054,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		public override void SetPointParameters( float size, bool attenuationEnabled, float constant, float linear, float quadratic, float minSize, float maxSize )
 		{
 			GLESConfig.GlCheckError( this );
-			if ( attenuationEnabled && _rsCapabilities.HasCapability( Capabilities.PointExtendedParameters ) )
+			if ( attenuationEnabled && Capabilities.HasCapability( Graphics.Capabilities.PointExtendedParameters ) )
 			{
 				// Point size is still calculated in pixels even when attenuation is
 				// enabled, which is pretty awkward, since you typically want a viewport
@@ -2043,7 +2066,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				Real adjMaxSize = 0;
 				if ( maxSize == 0 )
 				{
-					adjMaxSize = _rsCapabilities.MaxPointSize;
+					adjMaxSize = Capabilities.MaxPointSize;
 				}
 				else
 				{
@@ -2071,7 +2094,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				OpenGL.PointSize( size );
 				GLESConfig.GlCheckError( this );
 
-				if ( _rsCapabilities.HasCapability( Capabilities.PointExtendedParameters ) )
+				if ( Capabilities.HasCapability( Graphics.Capabilities.PointExtendedParameters ) )
 				{
 					var val = new float[] { 1, 0, 0, 1 };
 					OpenGL.PointParameter( All.PointDistanceAttenuation, val );
@@ -2080,7 +2103,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					GLESConfig.GlCheckError( this );
 					if ( maxSize == 0.0f )
 					{
-						maxSize = _rsCapabilities.MaxPointSize;
+						maxSize = Capabilities.MaxPointSize;
 					}
 					OpenGL.PointParameter( All.PointSizeMax, maxSize );
 					GLESConfig.GlCheckError( this );
@@ -2295,7 +2318,7 @@ namespace Axiom.RenderSystems.OpenGLES
 		///// <param name="bias"></param>
 		//public void SetTextureMipmapBias(int unit, float bias)
 		//{
-		//    if (_rsCapabilities.HasCapability(Capabilities.MipmapLODBias))
+		//    if (rsc.HasCapability(Capabilities.MipmapLODBias))
 		//    {
 		//        if (ActivateGLTextureUnit(unit))
 		//        {
@@ -2315,7 +2338,7 @@ namespace Axiom.RenderSystems.OpenGLES
 				return;
 			}
 			// Check to see if blending is supported
-			if ( !_rsCapabilities.HasCapability( Capabilities.TextureBlending ) )
+			if ( !Capabilities.HasCapability( Graphics.Capabilities.TextureBlending ) )
 			{
 				return;
 			}
@@ -2427,7 +2450,7 @@ namespace Axiom.RenderSystems.OpenGLES
 					cmd = All.Interpolate;
 					break;
 				case LayerBlendOperationEx.DotProduct:
-					bool cap = _rsCapabilities.HasCapability( Capabilities.Dot3 );
+					bool cap = Capabilities.HasCapability( Graphics.Capabilities.Dot3 );
 					cmd = cap ? All.Dot3Rgb : All.Modulate;
 					break;
 				default:
@@ -2642,7 +2665,7 @@ namespace Axiom.RenderSystems.OpenGLES
 
 		public override void SetTextureLayerAnisotropy( int unit, int maxAnisotropy )
 		{
-			if ( !_rsCapabilities.HasCapability( Capabilities.AnisotropicFiltering ) )
+			if ( !Capabilities.HasCapability( Graphics.Capabilities.AnisotropicFiltering ) )
 			{
 				return;
 			}
@@ -2733,8 +2756,6 @@ namespace Axiom.RenderSystems.OpenGLES
 			set { throw new NotImplementedException(); }
 		}
 
-		#endregion
-
 		/// <summary>
 		/// </summary>
 		public GLESContext MainContext
@@ -2747,8 +2768,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		/// </summary>
 		public GLESRenderSystem()
 		{
-			depthWrite = true;
+			_depthWrite = true;
 			this._stencilMask = 0xFFFFFFFF;
+			_activeTextureUnit = 0;
+
 			int i;
 
 			LogManager.Instance.Write( string.Format( "{0} created.", Name ) );
@@ -2778,11 +2801,11 @@ namespace Axiom.RenderSystems.OpenGLES
 			this._currentContext = null;
 			this._mainContext = null;
 			this._glInitialized = false;
-			numCurrentLights = 0;
+			_lightCount = 0;
 			this._textureMipmapCount = 0;
 			this._minFilter = FilterOptions.Linear;
 			this._mipFilter = FilterOptions.Point;
-			// _polygonMode = OpenTK.Graphics.ES11.
+			_polygonMode = GLESRenderSystem.GLFill;	
 		}
 
 		/// <summary>

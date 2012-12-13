@@ -55,63 +55,55 @@ namespace Axiom.RenderSystems.OpenGLES
 	{
 		protected byte[] _data;
 		protected BufferBase _dataPtr;
-
+		
 		/// <summary>
 		/// </summary>
 		/// <param name="idxType"> </param>
 		/// <param name="numIndexes"> </param>
 		/// <param name="usage"> </param>
-		public GLESDefaultHardwareIndexBuffer( HardwareBufferManagerBase manager, IndexType idxType, int numIndexes, BufferUsage usage )
-			: base( manager, idxType, numIndexes, usage, true, false ) // always software, never shadowed
+		public GLESDefaultHardwareIndexBuffer( IndexType idxType, int numIndexes, BufferUsage usage )
+			: base( null, idxType, numIndexes, usage, true, false ) // always software, never shadowed
 		{
 			if ( idxType == IndexType.Size32 )
 			{
 				throw new AxiomException( "32 bit hardware buffers are not allowed in OpenGL ES." );
 			}
-
+			
 			this._data = new byte[ sizeInBytes ];
-			this._dataPtr = Memory.PinObject( this._data );
+			this._dataPtr = BufferBase.Wrap( this._data );
 		}
-
-		/// <summary>
-		/// </summary>
-		/// <param name="offset"> </param>
-		public BufferBase GetData( int offset )
-		{
-			return this._dataPtr.Clone() + offset );
-		}
-
+		
 		/// <summary>
 		/// </summary>
 		/// <param name="offset"> </param>
 		/// <param name="length"> </param>
 		/// <param name="locking"> </param>
 		/// <returns> </returns>
-		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{
 			// Only for use internally, no 'locking' as such
-			return GetData( offset );
+			return this._dataPtr + offset;
 		}
-
+		
 		/// <summary>
 		/// </summary>
 		protected override void UnlockImpl()
 		{
 			// Nothing to do
 		}
-
+		
 		/// <summary>
 		/// </summary>
 		/// <param name="offset"> </param>
 		/// <param name="length"> </param>
 		/// <param name="locking"> </param>
 		/// <returns> </returns>
-		public override IntPtr Lock( int offset, int length, BufferLocking locking )
+		public override BufferBase Lock( int offset, int length, BufferLocking locking )
 		{
 			isLocked = true;
-			return GetData( offset );
+			return this._dataPtr + offset;
 		}
-
+		
 		/// <summary>
 		/// </summary>
 		public override void Unlock()
@@ -119,7 +111,7 @@ namespace Axiom.RenderSystems.OpenGLES
 			isLocked = false;
 			// Nothing to do
 		}
-
+		
 		/// <summary>
 		/// </summary>
 		/// <param name="offset"> </param>
@@ -128,9 +120,10 @@ namespace Axiom.RenderSystems.OpenGLES
 		public override void ReadData( int offset, int length, BufferBase dest )
 		{
 			Contract.Requires( ( offset + length ) <= sizeInBytes );
-			Memory.Copy( GetData( offset ), dest, length );
+			
+			Memory.Copy( this._dataPtr + offset, dest, length );
 		}
-
+		
 		/// <summary>
 		/// </summary>
 		/// <param name="offset"> </param>
@@ -141,9 +134,9 @@ namespace Axiom.RenderSystems.OpenGLES
 		{
 			Contract.Requires( ( offset + length ) <= sizeInBytes );
 			// ignore discard, memory is not guaranteed to be zeroised
-			Memory.Copy( src, GetData( offset ), length );
+			Memory.Copy( src, this._dataPtr + offset, length );
 		}
-
+		
 		/// <summary>
 		/// </summary>
 		/// <param name="disposeManagedResources"> </param>
@@ -155,12 +148,12 @@ namespace Axiom.RenderSystems.OpenGLES
 				{
 					if ( this._data != null )
 					{
-						Memory.UnpinObject( this._data );
+						this._dataPtr.SafeDispose();
 						this._data = null;
 					}
 				}
 			}
-
+			
 			// If it is available, make the call to the
 			// base class's Dispose(Boolean) method
 			base.dispose( disposeManagedResources );

@@ -357,7 +357,7 @@ namespace Axiom.Graphics
 		/// <summary>
 		/// Supports a separate depth buffer for RTTs. D3D 9 & 10, OGL w/FBO (RSC_FBO implies this flag)
 		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] RTTSerperateDepthBuffer = CapCategoryShift.Common2 | ( 1 << 8 ),
+		[OgreVersion( 1, 7, 2790 )] RTTSeperateDepthBuffer = CapCategoryShift.Common2 | ( 1 << 8 ),
 
 		/// <summary>
 		/// Supports using the MAIN depth buffer for RTTs. D3D 9&10, OGL w/FBO support unknown

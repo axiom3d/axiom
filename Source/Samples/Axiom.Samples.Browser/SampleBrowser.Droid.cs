@@ -68,22 +68,12 @@ namespace Axiom.Samples.Browser
 
 //            this.WindowResized( RenderWindow );    // do an initial adjustment of mouse area
 		}
+
 		protected override void LocateResources()
 		{
 			ResourceGroupManager.Instance.AddResourceLocation( "Archives/SdkTrays.zip", "AndroidZipAsset", "Essential" );
 			ResourceGroupManager.Instance.CreateResourceGroup( "Popular" );
 			base.LocateResources();
 		}
-
-#if WINDOWS_PHONE
-		protected override void CreateWindow()
-		{
-			base.Root.Initialize( false, "Axiom Sample Browser" );
-			var parms = new Collections.NamedParameterList();
-			parms.Add( "xnaGraphicsDevice", Graphics );
-			base.RenderWindow = base.Root.CreateRenderWindow( "Axiom Sample Browser", 480, 800, true, parms );
-
-		}
-#endif
 	}
 }
