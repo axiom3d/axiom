@@ -165,7 +165,7 @@ namespace Axiom.Core
 				else
 				{
 					var isWindows = IsWindowsOS;
-					var platform = IsWindowsOS ? "Win32" : "OpenTK";
+					var platform = IsWindowsOS ? "Windows" : "Linux";
 
 					if ( files.Length == 1 )
 					{
@@ -199,8 +199,7 @@ namespace Axiom.Core
 			// All else fails, yell loudly
 			if ( instance == null )
 			{
-				throw new PluginException(
-					"The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
+				throw new PluginException( "The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
 			}
 		}
 

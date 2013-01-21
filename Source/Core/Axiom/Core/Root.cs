@@ -114,8 +114,8 @@ namespace Axiom.Core
 
 				// write the initial info at the top of the log
 				info.AppendFormat( "*********Axiom 3D Engine Log *************\n" );
-				info.AppendFormat( "Copyright {0}\n", Copyright );
-				info.AppendFormat( "Version: {0}\n", Version );
+				info.AppendFormat( "{0}\n", Copyright );
+                info.AppendFormat("Version: {0}\n", Version);
 				info.AppendFormat( "Operating System: {0}\n", Environment.OSVersion.ToString() );
 				var isMono = Type.GetType( "Mono.Runtime" ) != null;
 				info.AppendFormat( "{1} Framework: {0}\n", Environment.Version.ToString(), isMono ? "Mono" : ".Net" );
