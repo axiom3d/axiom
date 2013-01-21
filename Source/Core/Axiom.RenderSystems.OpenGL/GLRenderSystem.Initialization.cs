@@ -351,7 +351,7 @@ namespace Axiom.RenderSystems.OpenGL
 					// Create FBO manager
 					LogManager.Instance.Write( "GL: Using GL_EXT_framebuffer_object for rendering to textures (best)" );
 					this.rttManager = new GLFBORTTManager( this._glSupport, false );
-					caps.SetCapability( Graphics.Capabilities.RTTSerperateDepthBuffer );
+					caps.SetCapability( Graphics.Capabilities.RTTSeperateDepthBuffer );
 
 					//TODO: Check if we're using OpenGL 3.0 and add RSC_RTT_DEPTHBUFFER_RESOLUTION_LESSEQUAL flag
 				}
@@ -375,8 +375,7 @@ namespace Axiom.RenderSystems.OpenGL
 					// No pbuffer support either -- fallback to simplest copying from framebuffer
 					this.rttManager = new GLCopyingRTTManager( this._glSupport );
 					LogManager.Instance.Write( "GL: Using framebuffer copy for rendering to textures (worst)" );
-					LogManager.Instance.Write(
-						"GL: Warning: RenderTexture size is restricted to size of framebuffer. If you are on Linux, consider using GLX instead of SDL." );
+					LogManager.Instance.Write( "GL: Warning: RenderTexture size is restricted to size of framebuffer. If you are on Linux, consider using GLX instead of SDL." );
 
 					//Copy method uses the main depth buffer but no other depth buffer
 					caps.SetCapability( Graphics.Capabilities.RTTMainDepthbufferAttachable );
