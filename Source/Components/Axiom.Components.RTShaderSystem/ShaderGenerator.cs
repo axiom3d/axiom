@@ -10,7 +10,7 @@ using Axiom.Serialization;
 
 namespace Axiom.Components.RTShaderSystem
 {
-	public class ShaderGenerator
+	public class ShaderGenerator : Singleton<ShaderGenerator>
 	{
 		#region Fields
 
@@ -27,11 +27,10 @@ namespace Axiom.Components.RTShaderSystem
 		private Dictionary<string, SGScheme> SGSchemeMap;
 		private Dictionary<string, SGScriptTranslator> SGScriptTranslatorMap;
 
-		private static ShaderGenerator instance;
 		private SceneManager activeSceneMgr;
 		private Dictionary<string, SceneManager> sceneManagerMap;
 		private SgScriptTranslatorManager scriptTranslatorManager;
-		private Dictionary<string, SGScriptTranslator> scriptTranslatorMap;
+		private Dictionary<string, SGScriptTranslator> scriptTranslatorMap= new Dictionary<string, SGScriptTranslator>();
 		private SGScriptTranslator coreScriptTranslator;
 		private string shaderLanguage;
 		private string vertexShaderProfiles;
@@ -42,12 +41,12 @@ namespace Axiom.Components.RTShaderSystem
 		private ProgramManager programManager;
 		private ProgramWriterManager programWriteManager;
 		private FFPRenderStateBuilder ffpRenderStateBuilder;
-		private List<Tuple<MatGroupPair, SGMaterial>> materialEntriesMap;
-		private Dictionary<string, SGScheme> schemeEntriesMap;
+		private List<Tuple<MatGroupPair, SGMaterial>> materialEntriesMap = new List<Tuple<MatGroupPair, SGMaterial>>();
+		private Dictionary<string, SGScheme> schemeEntriesMap = new Dictionary<string, SGScheme>();
 		//List<Tuple<SGTechnique, SGTechnique>> techniqueEntriesMap;
-		private Dictionary<SGTechnique, SGTechnique> techniqueEntriesMap;
-		private Dictionary<string, SubRenderStateFactory> subRenderStateFactories;
-		private Dictionary<string, SubRenderStateFactory> subRenderStateExFactories;
+		private Dictionary<SGTechnique, SGTechnique> techniqueEntriesMap=  new Dictionary<SGTechnique, SGTechnique>();
+		private Dictionary<string, SubRenderStateFactory> subRenderStateFactories = new Dictionary<string, SubRenderStateFactory>();
+		private Dictionary<string, SubRenderStateFactory> subRenderStateExFactories = new Dictionary<string, SubRenderStateFactory>();
 		private bool activeViewportValid;
 		private readonly int[] lightCount = new int[3];
 		private bool isFinalizing;
@@ -112,35 +111,6 @@ namespace Axiom.Components.RTShaderSystem
 		#endregion
 
 		#region Public Methods
-
-		/// <summary>
-		///   Initializes the Shader Generator System.
-		/// </summary>
-		/// <returns> True upon succcess </returns>
-		public static bool Initialize()
-		{
-			if ( ShaderGenerator.instance == null )
-			{
-				ShaderGenerator.instance = new ShaderGenerator();
-				if ( ShaderGenerator.instance._initialize() )
-				{
-					ShaderGenerator.instance = null;
-					return false;
-				}
-			}
-			return true;
-		}
-
-		/// <summary>
-		///   finalize the Shader Generator instance
-		/// </summary>
-		public static void Finalize()
-		{
-			if ( instance != null )
-			{
-				instance = null;
-			}
-		}
 
 		/// <summary>
 		///   Add a scene manager to the shader generator scene managers list
@@ -1337,14 +1307,6 @@ namespace Axiom.Components.RTShaderSystem
 			}
 		}
 
-		public static ShaderGenerator Instance
-		{
-			get
-			{
-				return ShaderGenerator.instance;
-			}
-		}
-
 		#endregion
 
 		#region Nested Types
@@ -1374,7 +1336,7 @@ namespace Axiom.Components.RTShaderSystem
 			public void BuildRenderTargetRenderState()
 			{
 				string schemeName = this._parent.DestinationTechniqueSchemeName;
-				RenderState renderStateGlobal = ShaderGenerator.instance.GetRenderState( schemeName );
+				RenderState renderStateGlobal = ShaderGenerator.Instance.GetRenderState( schemeName );
 				this.targetRenderState = new TargetRenderState();
 
 				//Set light properties
@@ -1482,7 +1444,7 @@ namespace Axiom.Components.RTShaderSystem
 				if ( this.customRenderState == null )
 				{
 					string schemeName = this._parent.DestinationTechniqueSchemeName;
-					RenderState renderStateGlobal = ShaderGenerator.instance.GetRenderState( schemeName );
+					RenderState renderStateGlobal = ShaderGenerator.Instance.GetRenderState( schemeName );
 					this.customRenderState = GetCustomFFPSubState( subStateOrder, renderStateGlobal );
 				}
 
@@ -1499,7 +1461,7 @@ namespace Axiom.Components.RTShaderSystem
 						if ( curSubRenderState.ExecutionOrder == subStateOrder )
 						{
 							SubRenderState clone;
-							clone = ShaderGenerator.instance.CreateSubRenderState( curSubRenderState.Type );
+							clone = ShaderGenerator.Instance.CreateSubRenderState( curSubRenderState.Type );
 							return clone;
 						}
 					}
@@ -2014,7 +1976,7 @@ namespace Axiom.Components.RTShaderSystem
 
 			private void SynchronizeWithFogSettings()
 			{
-				SceneManager sceneManager = ShaderGenerator.instance.ActiveSceneManager;
+				SceneManager sceneManager = ShaderGenerator.Instance.ActiveSceneManager;
 				if ( sceneManager != null && sceneManager.FogMode != this.fogMode )
 				{
 					this.fogMode = sceneManager.FogMode;
@@ -2024,7 +1986,7 @@ namespace Axiom.Components.RTShaderSystem
 
 			private void SynchronizeWithLightSettings()
 			{
-				SceneManager sceneManager = ShaderGenerator.instance.ActiveSceneManager;
+				SceneManager sceneManager = ShaderGenerator.Instance.ActiveSceneManager;
 				var curRenderState = RenderState;
 
 				if ( sceneManager != null && curRenderState.LightCountAutoUpdate )

@@ -738,7 +738,7 @@ namespace Axiom.Samples.ShaderSystem
 			//Set ambient
 			SceneManager.AmbientLight = new ColorEx( 0.2f, 0.2f, 0.2f );
 
-			SceneManager.SetSkyBox( true, "Examples/SceneCubMap2", 10000 );
+			SceneManager.SetSkyBox( true, "Examples/SceneCubeMap2", 10000 );
 
 			MeshManager.Instance.CreatePlane( "Myplane", ResourceGroupManager.DefaultResourceGroupName,
 			                                  new Plane( Vector3.UnitY, 0 ),
@@ -1016,7 +1016,7 @@ namespace Axiom.Samples.ShaderSystem
 			this.exportMaterialPath = "C:/";
 
 			rgm.CreateResourceGroup( SampleMaterialGroup );
-			rgm.AddResourceLocation( this.exportMaterialPath, "FileSystem", SampleMaterialGroup );
+			rgm.AddResourceLocation( this.exportMaterialPath, "Folder", SampleMaterialGroup );
 			rgm.InitializeResourceGroup( SampleMaterialGroup );
 			rgm.LoadResourceGroup( SampleMaterialGroup, true, false );
 		}
@@ -1089,16 +1089,16 @@ namespace Axiom.Samples.ShaderSystem
 			{
 				//todo
 				//HardwareBufferManager.Instance.DestroyVertexBufferBinding(Root.RenderSystem.GlobalInstanceVertexBufferVertexDeclaration);
-				Root.RenderSystem.GlobalInstanceVertexBufferVertexDeclaration = null;
+				//Root.RenderSystem.GlobalInstanceVertexBufferVertexDeclaration = null;
 			}
 			Root.RenderSystem.GlobalNumberOfInstances = 1;
 			//todo
-			//Root.RenderSystem.GlobalInstanceVertexBuffer = new HardwareVertexBuffer();
+		    //Root.RenderSystem.GlobalInstanceVertexBuffer = new HardwareVertexBuffer();
 
 			ShaderGenerator.Instance.InvalidateScheme( ShaderGenerator.DefaultSchemeName );
 			ShaderGenerator.Instance.ValidateScheme( ShaderGenerator.DefaultSchemeName );
 
-			DestroyInstancedViewports();
+			DestroyInstancedViewportsFactory();
 		}
 
 		private void DestroyInstancedViewportsFactory()
