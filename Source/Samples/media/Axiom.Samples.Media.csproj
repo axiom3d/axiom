@@ -59,6 +59,7 @@
     <None Include="Archives\AxiomCore.zip" />
     <None Include="Archives\chiropteraDM.pk3" />
     <None Include="Archives\chiropteraDM.zip" />
+    <None Include="Archives\cubemap.zip" />
     <None Include="Archives\cubemapsJS.zip" />
     <None Include="Archives\ogretestmap.zip" />
     <None Include="Archives\SdkTrays.zip" />
@@ -83,6 +84,7 @@
     <None Include="Materials\OgreHead.material" />
     <None Include="Materials\Penguin.material" />
     <None Include="Materials\Rockwall.material" />
+    <None Include="Materials\SceneCubeMap2.material" />
     <None Include="Materials\SphereMappedRustySteel.material" />
     <None Include="Materials\StormySkyBox.material" />
     <None Include="Materials\TudorHouse.material">
