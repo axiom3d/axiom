@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8BC701D9-46A9-48B4-B860-27D768763C68}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Zip.Droid</RootNamespace>
+    <AssemblyName>Ionic.Zip.Axiom</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\droid</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NO_SFX;READ_ONLY;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidLinkMode>None</AndroidLinkMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\droid</OutputPath>
+    <DefineConstants>TRACE;NO_SFX;READ_ONLY;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Android" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Resources\Resource.Designer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\DotNetZip.Codeplex\Zip\EncryptionAlgorithm.cs">
+      <Link>Zip\EncryptionAlgorithm.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\Events.cs">
+      <Link>Zip\Events.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\Exceptions.cs">
+      <Link>Zip\Exceptions.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ExtractExistingFileAction.cs">
+      <Link>Zip\ExtractExistingFileAction.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\OffsetStream.cs">
+      <Link>Zip\OffsetStream.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\Shared.cs">
+      <Link>Zip\Shared.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipConstants.cs">
+      <Link>Zip\ZipConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipCrypto.cs">
+      <Link>Zip\ZipCrypto.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipDirEntry.cs">
+      <Link>Zip\ZipDirEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipEntry.cs">
+      <Link>Zip\ZipEntry.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipEntry.Extract.cs">
+      <Link>Zip\ZipEntry.Extract.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipEntry.Read.cs">
+      <Link>Zip\ZipEntry.Read.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipEntrySource.cs">
+      <Link>Zip\ZipEntrySource.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipErrorAction.cs">
+      <Link>Zip\ZipErrorAction.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipFile.cs">
+      <Link>Zip\ZipFile.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipFile.Events.cs">
+      <Link>Zip\ZipFile.Events.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipFile.Extract.cs">
+      <Link>Zip\ZipFile.Extract.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipFile.Read.cs">
+      <Link>Zip\ZipFile.Read.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipFile.x-IEnumerable.cs">
+      <Link>Zip\ZipFile.x-IEnumerable.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipInputStream.cs">
+      <Link>Zip\ZipInputStream.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipOutputStream.cs">
+      <Link>Zip\ZipOutputStream.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zip\ZipSegmentedStream.cs">
+      <Link>Zip\ZipSegmentedStream.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zlib\Deflate.cs">
+      <Link>Zlib\Deflate.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zlib\DeflateStream.cs">
+      <Link>Zlib\DeflateStream.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zlib\GZipStream.cs">
+      <Link>Zlib\GZipStream.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zlib\Inflate.cs">
+      <Link>Zlib\Inflate.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zlib\InfTree.cs">
+      <Link>Zlib\InfTree.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zlib\ParallelDeflateOutputStream.cs">
+      <Link>Zlib\ParallelDeflateOutputStream.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zlib\Tree.cs">
+      <Link>Zlib\Tree.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zlib\Zlib.cs">
+      <Link>Zlib\Zlib.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zlib\ZlibBaseStream.cs">
+      <Link>Zlib\ZlibBaseStream.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zlib\ZlibCodec.cs">
+      <Link>Zlib\ZlibCodec.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zlib\ZlibConstants.cs">
+      <Link>Zlib\ZlibConstants.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\Zlib\ZlibStream.cs">
+      <Link>Zlib\ZlibStream.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\BZip2\BitWriter.cs">
+      <Link>BZip2\BitWriter.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\BZip2\BZip2Compressor.cs">
+      <Link>BZip2\BZip2Compressor.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\BZip2\BZip2InputStream.cs">
+      <Link>BZip2\BZip2InputStream.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\BZip2\BZip2OutputStream.cs">
+      <Link>BZip2\BZip2OutputStream.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\BZip2\ParallelBZip2OutputStream.cs">
+      <Link>BZip2\ParallelBZip2OutputStream.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\BZip2\Rand.cs">
+      <Link>BZip2\Rand.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\CommonSrc\CRC32.cs">
+      <Link>CRC32.cs</Link>
+    </Compile>
+    <Compile Include="..\DotNetZip.Codeplex\SolutionInfo.cs">
+      <Link>Properties\SolutionInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AboutResources.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Values\Strings.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ItemGroup>
+    <Folder Include="Zip\" />
+    <Folder Include="Zlib\" />
+    <Folder Include="BZip2\" />
+  </ItemGroup>
+</Project>
