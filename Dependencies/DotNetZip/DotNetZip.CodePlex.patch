@@ -1,6 +1,44 @@
+Index: BZip2/BZip2OutputStream.cs
+===================================================================
+--- BZip2/BZip2OutputStream.cs	(revision 101377)
++++ BZip2/BZip2OutputStream.cs	(working copy)
+@@ -512,12 +512,12 @@
+                 //lock(outputLock)
+                 {
+                     int tid = System.Threading.Thread.CurrentThread.GetHashCode();
+-#if !SILVERLIGHT && !NETCF
++#if !SILVERLIGHT && !NETCF && !__ANDROID__
+                     Console.ForegroundColor = (ConsoleColor) (tid % 8 + 10);
+ #endif
+                     Console.Write("{0:000} PBOS ", tid);
+                     Console.WriteLine(format, varParams);
+-#if !SILVERLIGHT && !NETCF
++#if !SILVERLIGHT && !NETCF && !__ANDROID__
+                     Console.ResetColor();
+ #endif
+                 }
+Index: BZip2/ParallelBZip2OutputStream.cs
+===================================================================
+--- BZip2/ParallelBZip2OutputStream.cs	(revision 101377)
++++ BZip2/ParallelBZip2OutputStream.cs	(working copy)
+@@ -982,12 +982,12 @@
+                 lock(outputLock)
+                 {
+                     int tid = Thread.CurrentThread.GetHashCode();
+-#if !SILVERLIGHT
++#if !SILVERLIGHT && !NETCF && !__ANDROID__
+                     Console.ForegroundColor = (ConsoleColor) (tid % 8 + 10);
+ #endif
+                     Console.Write("{0:000} PBOS ", tid);
+                     Console.WriteLine(format, varParams);
+-#if !SILVERLIGHT
++#if !SILVERLIGHT && !NETCF && !__ANDROID__
+                     Console.ResetColor();
+ #endif
+                 }
 Index: Zip/Shared.cs
 ===================================================================
---- Zip/Shared.cs	(revision 90507)
+--- Zip/Shared.cs	(revision 101377)
 +++ Zip/Shared.cs	(working copy)
 @@ -660,10 +660,12 @@
          // generates the JIT-compile time exception.
@@ -17,7 +55,7 @@ Index: Zip/Shared.cs
  
 Index: Zip/ZipEntry.cs
 ===================================================================
---- Zip/ZipEntry.cs	(revision 90507)
+--- Zip/ZipEntry.cs	(revision 101377)
 +++ Zip/ZipEntry.cs	(working copy)
 @@ -869,20 +869,11 @@
                  // rename the entry!
@@ -57,7 +95,7 @@ Index: Zip/ZipEntry.cs
              }
 Index: Zip/ZipEntry.Write.cs
 ===================================================================
---- Zip/ZipEntry.Write.cs	(revision 90507)
+--- Zip/ZipEntry.Write.cs	(revision 101377)
 +++ Zip/ZipEntry.Write.cs	(working copy)
 @@ -34,6 +34,21 @@
  {
@@ -83,7 +121,7 @@ Index: Zip/ZipEntry.Write.cs
              byte[] bytes = new byte[4096];
 Index: Zip/ZipFile.cs
 ===================================================================
---- Zip/ZipFile.cs	(revision 90507)
+--- Zip/ZipFile.cs	(revision 101377)
 +++ Zip/ZipFile.cs	(working copy)
 @@ -2325,7 +2325,11 @@
          {
@@ -123,7 +161,7 @@ Index: Zip/ZipFile.cs
          #region Destructors and Disposers
 Index: Zip/ZipOutputStream.cs
 ===================================================================
---- Zip/ZipOutputStream.cs	(revision 90507)
+--- Zip/ZipOutputStream.cs	(revision 101377)
 +++ Zip/ZipOutputStream.cs	(working copy)
 @@ -50,6 +50,7 @@
  
@@ -285,3 +323,24 @@ Index: Zip/ZipOutputStream.cs
                  return ZipOption.Never; // n/a
              }
          }
+Index: Zlib/ParallelDeflateOutputStream.cs
+===================================================================
+--- Zlib/ParallelDeflateOutputStream.cs	(revision 101377)
++++ Zlib/ParallelDeflateOutputStream.cs	(working copy)
+@@ -1231,12 +1231,14 @@
+                 lock(_outputLock)
+                 {
+                     int tid = Thread.CurrentThread.GetHashCode();
+-#if !SILVERLIGHT
++#if !SILVERLIGHT && !NETCF && !__ANDROID__
++
+                     Console.ForegroundColor = (ConsoleColor) (tid % 8 + 8);
+ #endif
+                     Console.Write("{0:000} PDOS ", tid);
+                     Console.WriteLine(format, varParams);
+-#if !SILVERLIGHT
++#if !SILVERLIGHT && !NETCF && !__ANDROID__
++
+                     Console.ResetColor();
+ #endif
+                 }
