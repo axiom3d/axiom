@@ -2,16 +2,19 @@
   <Target Name="Clean">
     <MSBuild Projects="DotNetZip\DotNetZip.msbuild" Targets="Clean" />
     <MSBuild Projects="OpenTK\OpenTK.msbuild" Targets="Clean" />
+    <MSBuild Projects="XDotNet\XDotNet.msbuild" Targets="Clean" />
   </Target>
 
   <Target Name="Build">
     <MSBuild Projects="DotNetZip\DotNetZip.msbuild" Targets="Build" />
     <MSBuild Projects="OpenTK\OpenTK.msbuild" Targets="Build" />
+    <MSBuild Projects="XDotNet\XDotNet.msbuild" Targets="Build" />
   </Target>
 
   <Target Name="Publish">
     <MSBuild Projects="DotNetZip\DotNetZip.msbuild" Targets="Publish" />
     <MSBuild Projects="OpenTK\OpenTK.msbuild" Targets="Publish" />
+    <MSBuild Projects="XDotNet\XDotNet.msbuild" Targets="Publish" />
   </Target>
 
 </Project>
