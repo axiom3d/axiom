@@ -30,10 +30,13 @@ namespace Axiom.Graphics
 			[OgreVersion( 1, 7, 2790 )]
 			public void ExportNamedConstants( GpuNamedConstants pConsts, string filename, Endian endianMode )
 			{
-				using ( var f = new FileStream( filename, FileMode.CreateNew, FileAccess.Write ) )
-				{
-					ExportNamedConstants( pConsts, f, endianMode );
-				}
+                throw new NotImplementedException();
+
+                // Need generic cross platfrom file access
+                //using ( var f = new FileStream( filename, FileMode.CreateNew, FileAccess.Write ) )
+                //{
+                //    ExportNamedConstants( pConsts, f, endianMode );
+                //}
 			}
 
 			private void ExportNamedConstants( GpuNamedConstants pConsts, Stream stream, Endian endianMode )

@@ -61,7 +61,7 @@ namespace Axiom.Math
 	/// will be done automatically between them.
 	/// </remarks>
 	[StructLayout( LayoutKind.Sequential )]
-#if !( XBOX || XBOX360 )
+#if !( XBOX || XBOX360 || NETFX_CORE)
 	[Serializable]
 	public struct Degree : ISerializable, IComparable<Degree>, IComparable<Radian>, IComparable<Real>
 #else

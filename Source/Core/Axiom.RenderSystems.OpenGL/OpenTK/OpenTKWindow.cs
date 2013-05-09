@@ -244,11 +244,17 @@ namespace Axiom.RenderSystems.OpenGL
 			if ( this.glContext == null )
 			{
 				// create window
-				var graphicsMode = new GraphicsMode( new ColorFormat( this.ColorDepth ), depthBuffer, this.ColorDepth - depthBuffer > 0 ? this.ColorDepth - depthBuffer : 0, FSAA );
-				this._window = new NativeWindow( width, height, title, GameWindowFlags.Default, graphicsMode , this.displayDevice );
+				var graphicsMode = new GraphicsMode( new ColorFormat( this.ColorDepth ), depthBuffer,
+													 this.ColorDepth - depthBuffer > 0
+														 ? this.ColorDepth - depthBuffer
+														 : 0, FSAA );
+				this._window = new NativeWindow( width, height, title, GameWindowFlags.Default, graphicsMode,
+												 this.displayDevice );
 				this.glContext = new OpenTKGLContext( this._window.WindowInfo );
 
-				FileSystem.FileInfoList ico = ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName, "AxiomIcon.ico" );
+				FileSystem.FileInfoList ico =
+					ResourceGroupManager.Instance.FindResourceFileInfo( ResourceGroupManager.DefaultResourceGroupName,
+																		"AxiomIcon.ico" );
 				if ( ico.Count != 0 )
 				{
 					this._window.Icon = System.Drawing.Icon.ExtractAssociatedIcon( ico[ 0 ].Filename );
@@ -300,14 +306,20 @@ namespace Axiom.RenderSystems.OpenGL
 
 		public override void Resize( int width, int height )
 		{
-			if ( this._window == null )
+			if ( _window == null )
 			{
-				return;
+				this.width = width;
+				this.height = height;
+				this.WindowMovedOrResized();
 			}
-			this._window.Width = width;
-			this._window.Height = height;
-			WindowEventMonitor.Instance.WindowResized( this );
+			else
+			{
+				_window.Width = width;
+				_window.Height = height;
+				WindowEventMonitor.Instance.WindowResized( this );
+			}
 		}
+
 
 		public override void WindowMovedOrResized()
 		{

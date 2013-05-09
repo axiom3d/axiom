@@ -56,45 +56,45 @@ using T = Axiom.Math.Quaternion;
 namespace Axiom.Math.Collections
 {
 	/*
-    /// <summary>
-    /// Summary description for QuaternionCollection.
-    /// </summary>
-    public class QuaternionCollection : BaseCollection {
-        #region Constructors
+	/// <summary>
+	/// Summary description for QuaternionCollection.
+	/// </summary>
+	public class QuaternionCollection : BaseCollection {
+		#region Constructors
 
-        /// <summary>
-        ///		Default constructor.
-        /// </summary>
-        public QuaternionCollection() : base() {}
+		/// <summary>
+		///		Default constructor.
+		/// </summary>
+		public QuaternionCollection() : base() {}
 
-        #endregion
+		#endregion
 
-        #region Strongly typed methods and indexers
+		#region Strongly typed methods and indexers
 
-        /// <summary>
-        ///		Get/Set indexer that allows access to the collection by index.
-        /// </summary>
-        new public T this[int index] {
-            get { return (T)base[index]; }
-            set { base[index] = value; }
-        }
+		/// <summary>
+		///		Get/Set indexer that allows access to the collection by index.
+		/// </summary>
+		new public T this[int index] {
+			get { return (T)base[index]; }
+			set { base[index] = value; }
+		}
 
-        /// <summary>
-        ///		Adds an object to the collection.
-        /// </summary>
-        /// <param name="item"></param>
-        public void Add(T item) {
-            base.Add(item);
-        }
+		/// <summary>
+		///		Adds an object to the collection.
+		/// </summary>
+		/// <param name="item"></param>
+		public void Add(T item) {
+			base.Add(item);
+		}
 
-        #endregion
+		#endregion
 
-    } */
+	} */
 
 	/// <summary>
 	///		A strongly-typed collection of <see cref="Quaternion"/> objects.
 	/// </summary>
-#if !( XBOX || XBOX360 )
+#if !( XBOX || XBOX360 || NETFX_CORE)
 	[Serializable]
 #endif
 	public class QuaternionCollection : ICollection, IList, IEnumerable, ICloneable
@@ -632,7 +632,7 @@ namespace Axiom.Math.Collections
 					"Index was out of range.  Must be non-negative and less than the size of the collection.", (object)i,
 					"Specified argument was out of the range of valid values." );
 #else
-                throw new System.ArgumentOutOfRangeException("Index was out of range.  Must be non-negative and less than the size of the collection.", "Specified argument was out of the range of valid values.");
+				throw new System.ArgumentOutOfRangeException("Index was out of range.  Must be non-negative and less than the size of the collection.", "Specified argument was out of the range of valid values.");
 #endif
 			}
 		}

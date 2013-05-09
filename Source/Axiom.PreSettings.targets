@@ -7,7 +7,7 @@
         Mixed - allow both safe and unsafe methods
         SafeOnly - Only allow safe methods
     -->
-    <AxiomSafeCodeMode Condition=" '$(AxiomUseSafeCodeOnly)' == '' ">Mixed</AxiomSafeCodeMode>
+    <AxiomSafeCodeMode Condition=" '$(AxiomUseSafeCodeOnly)' == '' ">SafeOnly</AxiomSafeCodeMode>
     <AxiomBigEndian Condition=" '$(AxiomBigEndian)' == '' ">false</AxiomBigEndian>
     <AxiomSign Condition=" '$(AxiomSign)' == '' ">false</AxiomSign>
     <AxiomFullDisposalLog Condition=" '$(AxiomFullDisposalLog)' == '' ">false</AxiomFullDisposalLog>
@@ -101,13 +101,13 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Net40Release|x86' ">
     <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Win8Debug|x86'">
+  <PropertyGroup Condition="'$(Configuration)' == 'Win8Debug'">
     <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
-    <DefineConstants>$(DefineConstants);WIN8</DefineConstants>
+    <DefineConstants>NETFX_CORE;$(DefineConstants);WIN8</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Win8Release|x86'">
+  <PropertyGroup Condition="'$(Configuration)' == 'Win8Release'">
     <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
-    <DefineConstants>$(DefineConstants);WIN8</DefineConstants>
+    <DefineConstants>NETFX_CORE;$(DefineConstants);WIN8</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' And '$(AxiomSign)' == 'true'">
     <DefineConstants>$(DefineConstants);AXIOM_SIGNED</DefineConstants>

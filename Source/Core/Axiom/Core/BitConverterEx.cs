@@ -65,8 +65,7 @@ namespace Axiom.Core
 			}
 			else
 			{
-				size = Memory.SizeOf( typeof ( T ).GetElementType() )*
-					   (int)typeof ( T ).GetProperty( "Length" ).GetValue( value, null );
+				size = Memory.SizeOf( typeof ( T ).GetElementType() ) * (value as Array).Length;
 				buffer = new byte[ size ];
 				using ( dst = BufferBase.Wrap( buffer ) )
 				{

@@ -175,9 +175,9 @@ namespace Axiom.Scripting
 #if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360)
 				if (
 					nestType.FindInterfaces( ( typeObj, criteriaObj ) => typeObj.Name == criteriaObj.ToString(),
-					                         typeof ( IPropertyCommand ).Name ).Length > 0 )
+											 typeof ( IPropertyCommand ).Name ).Length > 0 )
 #else
-                foreach ( Type iface in nestType.GetInterfaces() )
+				foreach ( Type iface in nestType.GetInterfaces() )
 					if ( iface.Name == typeof ( IPropertyCommand ).Name )
 #endif
 				{

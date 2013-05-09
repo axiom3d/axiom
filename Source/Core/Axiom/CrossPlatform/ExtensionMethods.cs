@@ -65,6 +65,8 @@ namespace Axiom.Core
             return AppDomain.CurrentDomain.GetAssemblies();
 #elif (WINDOWS_PHONE || XBOX || XBOX360 )
 			return Neighbors(from file in Directory.GetFiles(folder??".", filter??"*.dll") select file);
+#elif NETFX_CORE
+		    return null; // typeof(AssemblyEx).GetTypeInfo().Assembly;
 #else
 			var loc = folder ?? Assembly.GetExecutingAssembly().Location;
 			loc = loc.Substring( 0, loc.LastIndexOf( Path.DirectorySeparatorChar ) );
@@ -105,7 +107,7 @@ namespace Axiom.Core
 		{
 			try
 			{
-#if WINDOWS_PHONE || SILVERLIGHT
+#if WINDOWS_PHONE || SILVERLIGHT || NETFX_CORE
 				var catalogs = new AggregateCatalog(NeighborsCatalog(folder, filter).ToArray());
 #else
 				var catalogs = new DirectoryCatalog( folder ?? Path.GetDirectoryName( Assembly.GetExecutingAssembly().Location ), filter ?? "*.dll" );
@@ -190,6 +192,7 @@ namespace Axiom.Core
 
 		public struct Field
 		{
+		    public string Name;
 			public Func<object, object> Get;
 			public Func<object, object, object> Set;
 		}
@@ -252,10 +255,11 @@ namespace Axiom.Core
 		}
 #endif
 
+#if !NETFX_CORE
 		public static Field[] Fields<T>( this T obj )
 		{
 			Field[] reflectors;
-			var type = obj.GetType();
+		    var type = obj.GetType();
 			if ( !fastFields.TryGetValue( type, out reflectors ) )
 			{
 				var fields = type.GetFields( BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic );
@@ -265,6 +269,7 @@ namespace Axiom.Core
 					var name = fields[ i ].Name;
 					delegates.Add( new Field
 					               {
+                                    Name = name,
 					               	Get = type.FieldGet( name ),
 					               	Set = type.FieldSet( name )
 					               } );
@@ -273,6 +278,27 @@ namespace Axiom.Core
 			}
 			return reflectors;
 		}
+#else
+        public static Field[] Fields<T>(this T obj)
+        {
+            Field[] reflectors;
+            var type = obj.GetType();
+            var typeInfo = type.GetTypeInfo();
+
+            if (!fastFields.TryGetValue(type, out reflectors))
+            {
+                var declaredFields = typeInfo.DeclaredFields;
+                var fields = new List<FieldInfo>(declaredFields);
+                fastFields.Add(type, reflectors = fields.Select(t => t.Name).Select(name => new Field
+                    {
+                        Name = name,
+                        Get = type.FieldGet(name), 
+                        Set = type.FieldSet(name)
+                    }).ToArray());
+            }
+            return reflectors;
+        }
+#endif
 
 #if SILVERLIGHT
 		public static int CopyFrom<T>(this byte[] dst, T obj, int ofs = 0)
