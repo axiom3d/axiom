@@ -65,7 +65,7 @@ namespace Axiom.Core
 		}
 
 		public ObjectCreator( Type type )
-			: this( type.Assembly, type )
+			: this( type.Assembly(), type )
 		{
 		}
 

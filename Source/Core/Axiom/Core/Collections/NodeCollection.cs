@@ -46,7 +46,7 @@ namespace Axiom.Core.Collections
 	/// <summary>
 	///	Represents a collection of <see cref="Node">Nodes</see> that are sorted by name.
 	/// </summary>
-#if !( XBOX || XBOX360 )
+#if !( XBOX || XBOX360 || NETFX_CORE)
 	[Serializable]
 #endif
 	public class NodeCollection : AxiomCollection<Node>

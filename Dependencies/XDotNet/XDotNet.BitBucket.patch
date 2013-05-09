@@ -1,5 +1,5 @@
---- C:/users/mcumming/appdata/local/temp/thg.dqson1/xdotnet.bitbucket.2.36/XdotNet.mscorlib.Metro.csproj	Sat Apr 13 01:25:48 2013
-+++ C:/Projects/Axiom/Win8Metro/Dependencies/XDotNet/xdotnet.bitbucket/XdotNet.mscorlib.Metro.csproj	Sat Mar 16 09:35:16 2013
+--- XdotNet.mscorlib.Metro.csproj	Sat Apr 13 01:25:48 2013
++++ XdotNet.mscorlib.Metro.csproj	Sat Mar 16 09:35:16 2013
 @@ -86,7 +86,6 @@
      <Compile Include="corlib\System.Collections.Concurrent.Partitioners\EnumerablePartitioner.cs" />
      <Compile Include="corlib\System.Collections.Concurrent.Partitioners\ListPartitioner.cs" />

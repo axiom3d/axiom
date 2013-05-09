@@ -59,39 +59,39 @@ namespace Axiom.Math.Collections
 	// Summary description for Vector3List.
 	// </summary>
 	/*   public class Vector3List : BaseCollection {
-           #region Constructors
+		   #region Constructors
 
-           /// <summary>
-           ///		Default constructor.
-           /// </summary>
-           public Vector3List() : base() {}
+		   /// <summary>
+		   ///		Default constructor.
+		   /// </summary>
+		   public Vector3List() : base() {}
 
-           #endregion
+		   #endregion
 
-           #region Strongly typed methods and indexers
+		   #region Strongly typed methods and indexers
 
-           /// <summary>
-           ///		Get/Set indexer that allows access to the collection by index.
-           /// </summary>
-           new public T this[int index] {
-               get { return (T)base[index]; }
-               set { base[index] = value; }
-           }
+		   /// <summary>
+		   ///		Get/Set indexer that allows access to the collection by index.
+		   /// </summary>
+		   new public T this[int index] {
+			   get { return (T)base[index]; }
+			   set { base[index] = value; }
+		   }
 
-           /// <summary>
-           ///		Adds an object to the collection.
-           /// </summary>
-           /// <param name="item"></param>
-           public void Add(T item) {
-               base.Add(item);
-           }
+		   /// <summary>
+		   ///		Adds an object to the collection.
+		   /// </summary>
+		   /// <param name="item"></param>
+		   public void Add(T item) {
+			   base.Add(item);
+		   }
 
-           #endregion
+		   #endregion
 
-       } */
+	   } */
 
 
-#if !( XBOX || XBOX360 )
+#if !( XBOX || XBOX360 || NETFX_CORE )
 	/// <summary>
 	///		A strongly-typed collection of <see cref="Vector3"/> objects.
 	/// </summary>
@@ -632,7 +632,7 @@ namespace Axiom.Math.Collections
 					"Index was out of range.  Must be non-negative and less than the size of the collection.", (object)i,
 					"Specified argument was out of the range of valid values." );
 #else
-                throw new System.ArgumentOutOfRangeException("Index was out of range.  Must be non-negative and less than the size of the collection.", "Specified argument was out of the range of valid values.");
+				throw new System.ArgumentOutOfRangeException("Index was out of range.  Must be non-negative and less than the size of the collection.", "Specified argument was out of the range of valid values.");
 #endif
 			}
 		}

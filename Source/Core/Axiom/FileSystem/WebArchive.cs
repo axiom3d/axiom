@@ -138,18 +138,14 @@ namespace Axiom.FileSystem
 				throw new AxiomException( "Cannot create a file in a read-only archive." );
 			}
 			Stream result = null;
-			var wait = new AutoResetEvent( false );
-			var wc = new WebClient();
-			wc.OpenReadCompleted += ( s, o ) =>
-			                        {
-			                        	if ( o.Error == null )
-			                        	{
-			                        		result = o.Result;
-			                        	}
-			                        	wait.Set();
-			                        };
-			wc.OpenReadAsync( new Uri( _basePath + filename, UriKind.RelativeOrAbsolute ) );
-			wait.WaitOne();
+			var wc = WebRequest.Create( new Uri( _basePath + filename, UriKind.RelativeOrAbsolute ) );
+		    wc.BeginGetResponse( ( asyncResult ) =>
+		        {
+                    var request = (HttpWebRequest)asyncResult.AsyncState;
+                    var response = (HttpWebResponse)request.EndGetResponse(asyncResult);
+		            result = response.GetResponseStream();
+		        }, wc);
+
 			return result;
 		}
 

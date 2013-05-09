@@ -120,9 +120,9 @@ namespace Axiom.Overlays
 
 		// world transforms
 		protected Matrix4[] xform = new Matrix4[1]
-		                            {
-		                            	Matrix4.Identity
-		                            };
+									{
+										Matrix4.Identity
+									};
 
 		protected bool isEnabled;
 
@@ -579,16 +579,16 @@ namespace Axiom.Overlays
 				parentRect = this.parent.ClippingRegion;
 
 				var childRect = new Rectangle( (long)this.derivedLeft, (long)this.derivedTop,
-				                               (long)( this.derivedLeft + this.width ),
-				                               (long)( this.derivedTop + this.height ) );
+											   (long)( this.derivedLeft + this.width ),
+											   (long)( this.derivedTop + this.height ) );
 
 				this.clippingRegion = Rectangle.Intersect( parentRect, childRect );
 			}
 			else
 			{
 				this.clippingRegion = new Rectangle( (long)this.derivedLeft, (long)this.derivedTop,
-				                                     (long)( this.derivedLeft + this.width ),
-				                                     (long)( this.derivedTop + this.height ) );
+													 (long)( this.derivedLeft + this.width ),
+													 (long)( this.derivedTop + this.height ) );
 			}
 		}
 
@@ -1425,18 +1425,18 @@ namespace Axiom.Overlays
 		/// </remarks>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
 		protected override void dispose( bool disposeManagedResources )
-        {
-            if ( !IsDisposed )
-            {
-                if ( disposeManagedResources )
-                {
-                    // Dispose managed resources.
-                    this.renderOperation.SafeDispose();
-                    this.renderOperation = null;
-                }
+		{
+			if ( !IsDisposed )
+			{
+				if ( disposeManagedResources )
+				{
+					// Dispose managed resources.
+					this.renderOperation.SafeDispose();
+					this.renderOperation = null;
+				}
 
-                // There are no unmanaged resources to release, but
-                // if we add them, they need to be released here.
+				// There are no unmanaged resources to release, but
+				// if we add them, they need to be released here.
 			}
 
 			base.dispose( disposeManagedResources );
