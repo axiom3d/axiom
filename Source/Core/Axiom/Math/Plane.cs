@@ -147,12 +147,12 @@ namespace Axiom.Math
 		{
 			var distance = GetDistance( point );
 
-			if ( distance < 0.0f )
+			if ( distance < Real.Zero )
 			{
 				return PlaneSide.Negative;
 			}
 
-			if ( distance > 0.0f )
+			if ( distance > Real.Zero )
 			{
 				return PlaneSide.Positive;
 			}
@@ -205,7 +205,7 @@ namespace Axiom.Math
 				return PlaneSide.Negative;
 			}
 
-			if ( dist > +maxAbsDist )
+			if ( dist > maxAbsDist )
 			{
 				return PlaneSide.Positive;
 			}

@@ -270,7 +270,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static Vector3 operator /( Vector3 left, Real scalar )
 		{
-			Debug.Assert( scalar != 0.0f, "Cannot divide a Vector3 by zero." );
+			Debug.Assert( scalar != Real.Zero, "Cannot divide a Vector3 by zero." );
 
 			Vector3 vector;
 
@@ -814,12 +814,12 @@ namespace Axiom.Math
 			var d = v0.Dot( v1 );
 
 			// If dot == 1, vectors are the same
-			if ( d >= 1.0f )
+			if ( d >= Real.One )
 			{
 				return Quaternion.Identity;
 			}
 
-			if ( d < ( 1e-6f - 1.0f ) )
+			if ( d < (Real) 1e-6f - 1.0f  )
 			{
 				if ( fallbackAxis != Vector3.Zero )
 				{
@@ -907,7 +907,7 @@ namespace Axiom.Math
 		{
 			get
 			{
-				return this.x == 0f && this.y == 0f && this.z == 0f;
+				return this.x == Real.Zero && this.y == Real.Zero && this.z == Real.Zero;
 			}
 		}
 
@@ -919,7 +919,7 @@ namespace Axiom.Math
 			get
 			{
 				var sqlen = ( this.x*this.x ) + ( this.y*this.y ) + ( this.z*this.z );
-				return ( sqlen < ( 1e-06f*1e-06f ) );
+				return ( sqlen < (Real) 1e-06f*1e-06f );
 			}
 		}
 

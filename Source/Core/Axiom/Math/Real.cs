@@ -85,7 +85,7 @@ namespace Axiom.Math
 		/// <summary>Internal storage for value</summary>
 		private Numeric _value;
 
-		public static Numeric Tolerance = 0.0001f;
+		public static readonly Real Tolerance = 0.0001f;
 
 		#endregion Fields
 
@@ -547,9 +547,19 @@ namespace Axiom.Math
 		/// </summary>
 		/// <param name="left"></param>
 		/// <returns></returns>
-		public static Real operator -( Real left )
+		public static Real operator -( Real operand )
 		{
-			return -left._value;
+			return -operand._value;
+		}
+
+		/// <summary>
+		///		Used to negate the elements of a Real.
+		/// </summary>
+		/// <param name="left"></param>
+		/// <returns></returns>
+		public static Real operator +( Real operand )
+		{
+			return operand._value;
 		}
 
 		#endregion Arithmatic Operators

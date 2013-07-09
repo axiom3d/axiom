@@ -256,7 +256,7 @@ namespace Axiom.Core
 
 					Quaternion rotationQuat;
 
-					if ( ( zAxis + zAdjustVector ).LengthSquared < 0.00005f )
+					if ( ( zAxis + zAdjustVector ).LengthSquared < (Real)0.00005f )
 					{
 						// Oops, a 180 degree turn (infinite possible rotation axes)
 						// Default to yaw i.e. use current UP
@@ -661,7 +661,7 @@ namespace Axiom.Core
 			}
 			set
 			{
-				Debug.Assert( value > 0.0f, "Lod bias must be greater than 0" );
+				Debug.Assert( value > Real.Zero, "Lod bias must be greater than 0" );
 				this.sceneLodFactor = value;
 				this.invSceneLodFactor = 1.0f/this.sceneLodFactor;
 			}
@@ -1552,7 +1552,7 @@ namespace Axiom.Core
 				edir.MoveNext();
 				var cur = edir.Current;
 				var test = cur.z*delta;
-				if ( test == 0.0 )
+				if ( test == Real.Zero )
 				{
 					vec[ i ] = cur;
 					infpt[ i ] = 1;
@@ -1561,7 +1561,7 @@ namespace Axiom.Core
 				{
 					var lambda = delta/cur.z;
 					vec[ i ] = anchor + ( lambda*cur );
-					if ( test < 0.0 )
+					if ( test < Real.Zero )
 					{
 						infpt[ i ] = 2;
 					}
@@ -1646,7 +1646,7 @@ namespace Axiom.Core
 
 			// need some sort of rotation that will bring the plane normal to the z axis
 			var pval = worldPlane;
-			if ( pval.Normal.z < 0.0 )
+			if ( pval.Normal.z < Real.Zero )
 			{
 				pval.Normal *= -1.0;
 				pval.D *= -1.0;

@@ -129,11 +129,11 @@ namespace Axiom.Math
 			}
 
 			// quick special cases
-			if ( t == 0.0f )
+			if ( t == Real.Zero )
 			{
 				return pointList[ index ];
 			}
-			else if ( t == 1.0f )
+			else if ( t == Real.One )
 			{
 				return pointList[ index + 1 ];
 			}

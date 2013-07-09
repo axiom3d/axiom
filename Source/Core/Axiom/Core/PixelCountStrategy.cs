@@ -120,7 +120,7 @@ namespace Axiom.Core
 					var distanceSquared = movableObject.ParentNode.GetSquaredViewDepth( camera );
 
 					// Check for 0 distance
-					if ( distanceSquared <= float.Epsilon )
+					if ( distanceSquared <= Real.Epsilon )
 					{
 						return BaseValue;
 					}

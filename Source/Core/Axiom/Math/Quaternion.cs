@@ -419,9 +419,9 @@ namespace Axiom.Math
 			get
 			{
 				var test = this.x*this.y + this.z*this.w;
-				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
+				if ( Utility.Abs( test ) > (Real)0.499f ) // singularity at north and south pole
 				{
-					return 0f;
+					return Real.Zero;
 				}
 				return (Real)Utility.ATan2( 2*this.x*this.w - 2*this.y*this.z, 1 - 2*this.x*this.x - 2*this.z*this.z );
 			}
@@ -439,7 +439,7 @@ namespace Axiom.Math
 			get
 			{
 				var test = this.x*this.y + this.z*this.w;
-				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
+				if ( Utility.Abs( test ) > (Real)0.499f ) // singularity at north and south pole
 				{
 					return Utility.Sign( test )*2*Utility.ATan2( this.x, this.w );
 				}
@@ -458,7 +458,7 @@ namespace Axiom.Math
 			get
 			{
 				var test = this.x*this.y + this.z*this.w;
-				if ( Utility.Abs( test ) > 0.499f ) // singularity at north and south pole
+				if ( Utility.Abs( test ) > (Real)0.499f ) // singularity at north and south pole
 				{
 					return Utility.Sign( test )*Utility.PI/2;
 				}
@@ -489,7 +489,7 @@ namespace Axiom.Math
 
 			var angle = (Real)Utility.ACos( cos );
 
-			if ( Utility.Abs( angle ) < EPSILON )
+			if ( Utility.Abs( angle ) < Real.Epsilon )
 			{
 				return quatA;
 			}
@@ -501,7 +501,7 @@ namespace Axiom.Math
 
 			Quaternion result;
 
-			if ( cos < 0.0f && useShortestPath )
+			if ( cos < Real.Zero && useShortestPath )
 			{
 				coeff0 = -coeff0;
 				// taking the complement requires renormalisation
@@ -535,7 +535,7 @@ namespace Axiom.Math
 		{
 			Quaternion result;
 			var fCos = rkP.Dot( rkQ );
-			if ( fCos < 0.0f && shortestPath )
+			if ( fCos < Real.Zero && shortestPath )
 			{
 				result = rkP + fT*( ( -rkQ ) - rkP );
 			}
@@ -620,7 +620,7 @@ namespace Axiom.Math
 		public void ToEulerAngles( out Real pitch, out Real yaw, out Real roll )
 		{
 			var halfPi = Utility.PI/2;
-			var test = this.x*this.y + this.z*this.w;
+			float test = this.x*this.y + this.z*this.w;
 			if ( test > 0.499f )
 			{
 				// singularity at north pole
@@ -737,7 +737,7 @@ namespace Axiom.Math
 
 			var sqrLength = this.x*this.x + this.y*this.y + this.z*this.z;
 
-			if ( sqrLength > 0.0f )
+			if ( sqrLength > Real.Zero )
 			{
 				angle = 2.0f*(Real)Utility.ACos( this.w );
 				var invLength = Utility.InvSqrt( sqrLength );
@@ -795,7 +795,7 @@ namespace Axiom.Math
 		public Quaternion Inverse()
 		{
 			var norm = this.w*this.w + this.x*this.x + this.y*this.y + this.z*this.z;
-			if ( norm > 0.0f )
+			if ( norm > Real.Zero )
 			{
 				var inverseNorm = 1.0f/norm;
 				return new Quaternion( this.w*inverseNorm, -this.x*inverseNorm, -this.y*inverseNorm, -this.z*inverseNorm );
@@ -887,7 +887,7 @@ namespace Axiom.Math
 
 			Real root = 0.0f;
 
-			if ( trace > 0.0f )
+			if ( trace > Real.Zero )
 			{
 				// |this.w| > 1/2, may as well choose this.w > 1/2
 				root = Utility.Sqrt( trace + 1.0f ); // 2w
@@ -962,12 +962,12 @@ namespace Axiom.Math
 			// start off with a zero quat
 			var result = Quaternion.Zero;
 
-			if ( Utility.Abs( this.w ) < 1.0f )
+			if ( Utility.Abs( this.w ) < Real.One )
 			{
 				var angle = (Real)Utility.ACos( this.w );
 				var sin = Utility.Sin( angle );
 
-				if ( Utility.Abs( sin ) >= EPSILON )
+				if ( Utility.Abs( sin ) >= Real.Epsilon )
 				{
 					var coeff = angle/sin;
 					result.x = coeff*this.x;
@@ -1003,7 +1003,7 @@ namespace Axiom.Math
 
 			result.w = Utility.Cos( angle );
 
-			if ( Utility.Abs( sin ) >= EPSILON )
+			if ( Utility.Abs( sin ) >= Real.Epsilon )
 			{
 				var coeff = sin/angle;
 

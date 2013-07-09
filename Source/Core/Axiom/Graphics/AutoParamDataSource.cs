@@ -693,7 +693,7 @@ namespace Axiom.Graphics
 					dir.Normalize();
 					Vector3 up = Vector3.UnitY;
 					// Check it's not coincident with dir
-					if ( Math.Utility.Abs( up.Dot( dir ) ) >= 1.0f )
+					if ( Math.Utility.Abs( up.Dot( dir ) ) >= Real.One )
 					{
 						// Use camera up
 						up = Vector3.UnitZ;

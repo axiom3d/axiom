@@ -73,7 +73,7 @@ namespace Axiom.Core
 
 			// get the shadow frustum's far distance
 			var shadowDist = light.ShadowFarDistance;
-			if ( shadowDist == 0.0f )
+			if ( shadowDist == (Real)0.0f )
 			{
 				// need a shadow distance, make one up
 				shadowDist = camera.Near*300;
@@ -116,7 +116,7 @@ namespace Axiom.Core
 
 				var up = Vector3.UnitY;
 				// Check it's not coincident with dir
-				if ( Utility.Abs( up.Dot( dir ) ) >= 1.0f )
+				if ( Utility.Abs( up.Dot( dir ) ) >= Real.One )
 				{
 					// Use camera up
 					up = Vector3.UnitZ;
@@ -203,7 +203,7 @@ namespace Axiom.Core
 			var up2 = Vector3.UnitY;
 
 			// Check it's not coincident with dir
-			if ( Utility.Abs( up2.Dot( dir ) ) >= 1.0f )
+			if ( Utility.Abs( up2.Dot( dir ) ) >= Real.One )
 			{
 				// Use camera up
 				up2 = Vector3.UnitZ;
