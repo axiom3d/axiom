@@ -38,3 +38,6 @@ packages/**
 *.ncrunch*
 *.ndproj
 *.orig
+*.SourceForge/**
+*.BitBucket/**
+*.GitHub/**
