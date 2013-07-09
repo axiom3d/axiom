@@ -1,4 +1,4 @@
-<!-- Common Targets used by SharpDX projects -->
+<!-- Common Targets used by Axiom projects -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DocumentationFile>bin\Release\$(AssemblyName).xml</DocumentationFile>

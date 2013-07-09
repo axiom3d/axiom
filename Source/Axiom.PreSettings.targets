@@ -1,4 +1,4 @@
-<!-- Common Settings used by SharpDX projects -->
+<!-- Common Settings used by Axiom projects -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <AxiomUseNewCompilers Condition=" '$(AxiomUseNewCompilers)' == '' ">false</AxiomUseNewCompilers>
