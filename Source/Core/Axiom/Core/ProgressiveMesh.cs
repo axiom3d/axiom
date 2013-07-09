@@ -791,7 +791,7 @@ namespace Axiom.Core
 
 					// Dot old and new face normal
 					// If < 0 then more than 90 degree difference
-					if ( newNormal.Dot( srcFace.normal ) < 0.0f )
+					if ( newNormal.Dot( srcFace.normal ) < Real.Zero )
 					{
 						// Don't do it!
 						cost = float.MaxValue;

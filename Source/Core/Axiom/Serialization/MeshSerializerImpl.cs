@@ -104,7 +104,7 @@ namespace Axiom.Serialization
 			LogManager.Instance.Write( "MeshSerializer writing mesh data to {0} ...", fileName );
 			this.mesh = mesh;
 			// Check that the mesh has it's bounds set
-			if ( mesh.BoundingBox.IsNull || mesh.BoundingSphereRadius == 0.0F )
+			if ( mesh.BoundingBox.IsNull || mesh.BoundingSphereRadius == Real.Zero )
 			{
 				throw new AxiomException(
 					"The mesh you supplied does not have its bounds completely defined. Define them first before exporting." );

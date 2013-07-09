@@ -349,7 +349,7 @@ namespace Axiom.Graphics
 					newPos = ParentNode.DerivedOrientation.UnitInverse*( newPos - ParentNode.DerivedPosition )/ParentNode.DerivedScale;
 				}
 				var diff = newPos - nextElement.Position;
-				float sqlen = diff.LengthSquared;
+				var sqlen = diff.LengthSquared;
 				if ( sqlen >= this.squaredElementLength )
 				{
 					// Move existing head to elemLength

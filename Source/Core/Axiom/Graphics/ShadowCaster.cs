@@ -187,7 +187,7 @@ namespace Axiom.Graphics
 
 				for ( var vert = 0; vert < originalVertexCount; vert++ )
 				{
-					if ( lightPosition.w != 0.0f )
+					if ( lightPosition.w != Real.Zero )
 					{
 						// Point light, adjust extrusionDir
 						extrusionDir.x = pSrc[ srcCount + 0 ] - lightPosition.x;

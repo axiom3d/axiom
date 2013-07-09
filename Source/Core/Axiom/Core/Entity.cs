@@ -1573,7 +1573,7 @@ namespace Axiom.Core
 		///    LOD will be limited by the number in the material)</param>
 		public void SetMaterialLodBias( Real factor, int maxDetailIndex, int minDetailIndex )
 		{
-			Debug.Assert( factor > 0.0f, "Bias factor must be > 0!" );
+			Debug.Assert( factor > Real.Zero, "Bias factor must be > 0!" );
 			this.materialLodFactor = factor;
 			this.materialLodFactorTransformed = this.mesh.LodStrategy.TransformBias( factor );
 			this.maxMaterialLodIndex = maxDetailIndex;

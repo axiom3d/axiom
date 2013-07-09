@@ -1136,7 +1136,7 @@ namespace Axiom.Core
 			// If so, object is not visible
 			for ( var plane = 0; plane < 6; plane++ )
 			{
-				if ( this._farDistance == 0 && plane == (int)FrustumPlane.Far )
+				if ( this._farDistance == Real.Zero && plane == (int)FrustumPlane.Far )
 				{
 					continue;
 				}
@@ -1214,7 +1214,7 @@ namespace Axiom.Core
 
 			if ( eyeSpacePos.z < 0 )
 			{
-				float r = sphere.Radius;
+				var r = sphere.Radius;
 				// early-exit
 				if ( eyeSpacePos.LengthSquared <= r*r )
 				{
@@ -1367,7 +1367,7 @@ namespace Axiom.Core
 					Real C = ( vpRight + vpLeft )*inv_w;
 					Real D = ( vpTop + vpBottom )*inv_h;
 					Real q, qn;
-					if ( this._farDistance == 0.0f )
+					if ( this._farDistance == Real.Zero )
 					{
 						// Infinite far plane
 						q = Frustum.InfiniteFarPlaneAdjust - 1.0f;
@@ -1451,7 +1451,7 @@ namespace Axiom.Core
 					Real C = -( vpRight + vpLeft )*inv_w;
 					Real D = -( vpTop + vpBottom )*inv_h;
 					Real q, qn;
-					if ( this._farDistance == 0.0f )
+					if ( this._farDistance == Real.Zero )
 					{
 						// Can not do infinite far plane here, avoid divided zero only
 						q = -Frustum.InfiniteFarPlaneAdjust/this._nearDistance;
@@ -1499,7 +1499,7 @@ namespace Axiom.Core
 			// Calculate bounding box (local)
 			// Box is from 0, down -Z, max dimensions as determined from far plane
 			// If infinite view frustum just pick a far value
-			var farDist = ( this._farDistance == 0.0f ) ? InfiniteFarPlaneDistance : this._farDistance;
+			var farDist = ( this._farDistance == Real.Zero ) ? InfiniteFarPlaneDistance : this._farDistance;
 
 			// Near plane bounds
 			var min = new Vector3( vpLeft, vpBottom, -farDist );

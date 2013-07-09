@@ -410,7 +410,7 @@ namespace Axiom.Core
 			const float subdiv = 10;
 			int level;
 
-			var test = subdiv*subdiv;
+			var maxSquaredLength = new Real(subdiv*subdiv);
 
 			var s = Vector3.Zero;
 			var t = Vector3.Zero;
@@ -426,7 +426,7 @@ namespace Axiom.Core
 				// Get the vector between this subdivided midpoint and the middle point of the original line
 				d = c - b;
 				// Find the squared length, and break when small enough
-				if ( d.Dot( d ) < test )
+				if ( d.Dot( d ) < maxSquaredLength )
 				{
 					break;
 				}

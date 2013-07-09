@@ -146,7 +146,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static bool RealEqual( Real a, Real b, Real tolerance )
 		{
-			return ( System.Math.Abs( b - a ) <= tolerance );
+			return ( (Real)System.Math.Abs( b - a ) <= tolerance );
 		}
 
 		/// <summary>
@@ -160,7 +160,7 @@ namespace Axiom.Math
 		/// <returns></returns>
 		public static bool RealEqual( Real a, Real b )
 		{
-			return ( System.Math.Abs( b - a ) <= Real.Epsilon );
+			return ( (Real)System.Math.Abs( b - a ) <= Real.Epsilon );
 		}
 
 		public static Real ParseReal( string value )
@@ -528,7 +528,7 @@ namespace Axiom.Math
 			// This is because the triangle has been mirrored when going from tangent space to object space.
 			// reverse tangents if necessary.
 			var tangentCross = tangent.Cross( binormal );
-			if ( tangentCross.Dot( normal ) < 0.0f )
+			if ( tangentCross.Dot( normal ) < Real.Zero )
 			{
 				tangent = -tangent;
 				binormal = -binormal;
@@ -591,7 +591,7 @@ namespace Axiom.Math
 			v2x = px - bx;
 			v2y = py - by;
 
-			bClockwise = ( v1x*v2y - v1y*v2x >= 0.0 );
+			bClockwise = ( v1x*v2y - v1y*v2x >= Real.Zero );
 
 			v1x = cx - bx;
 			v1y = cy - by;
@@ -599,7 +599,7 @@ namespace Axiom.Math
 			v2x = px - cx;
 			v2y = py - cy;
 
-			if ( ( v1x*v2y - v1y*v2x >= 0.0 ) != bClockwise )
+			if ( ( v1x*v2y - v1y*v2x >= Real.Zero ) != bClockwise )
 			{
 				return false;
 			}
@@ -610,7 +610,7 @@ namespace Axiom.Math
 			v2x = px - ax;
 			v2y = py - ay;
 
-			if ( ( v1x*v2y - v1y*v2x >= 0.0 ) != bClockwise )
+			if ( ( v1x*v2y - v1y*v2x >= Real.Zero ) != bClockwise )
 			{
 				return false;
 			}
@@ -804,7 +804,7 @@ namespace Axiom.Math
 			{
 				var denom = normal.Dot( ray.Direction );
 				// Check intersect side
-				if ( denom > +Real.Epsilon )
+				if ( denom > Real.Epsilon )
 				{
 					if ( !negativeSide )
 					{
@@ -1302,9 +1302,9 @@ namespace Axiom.Math
 					nom = -nom;
 				}
 
-				if ( dist > 0.0f )
+				if ( dist > Real.Zero )
 				{
-					if ( nom > 0.0f )
+					if ( nom > Real.Zero )
 					{
 						if ( maxExtDist < dist )
 						{
@@ -1327,7 +1327,7 @@ namespace Axiom.Math
 						denom = -denom;
 					}
 
-					if ( denom > 0.0f )
+					if ( denom > Real.Zero )
 					{
 						return new IntersectResult( false, 0 );
 					}

@@ -79,7 +79,7 @@ namespace Axiom.Core
 				// Ensure reference value has been set before being enabled
 				if ( value )
 				{
-					Debug.Assert( this.ReferenceViewValue != float.NaN, "Reference view must be set before being enabled!" );
+					Debug.Assert( Real.IsNaN( this.ReferenceViewValue ), "Reference view must be set before being enabled!" );
 				}
 
 				this._referenceViewEnabled = value;
@@ -101,7 +101,7 @@ namespace Axiom.Core
 			if ( instance == null )
 			{
 				instance = this;
-				this.ReferenceViewValue = float.NaN;
+				this.ReferenceViewValue = Real.NaN;
 			}
 			else
 			{
@@ -120,16 +120,17 @@ namespace Axiom.Core
 		/// <param name="viewportWidth"></param>
 		/// <param name="viewportHeight"></param>
 		/// <param name="fovY"></param>
-		public virtual void SetReferenceView( float viewportWidth, float viewportHeight, Radian fovY )
+		public virtual void SetReferenceView( Real viewportWidth, Real viewportHeight, Radian fovY )
 		{
 			// Determine x FOV based on aspect ratio
-			var fovX = fovY*( (Real)viewportWidth/(Real)viewportHeight );
+			var fovX = fovY*( viewportWidth/viewportHeight );
 
 			// Determine viewport area
 			var viewportArea = viewportHeight*viewportWidth;
 
 			// Compute reference view value based on viewport area and FOVs
-			this.ReferenceViewValue = viewportArea*MathHelper.Tan( fovX*(Real)0.5f )*MathHelper.Tan( fovY*(Real)0.5f );
+			var pointFive = new Real(0.5f);
+			this.ReferenceViewValue = viewportArea*MathHelper.Tan( fovX*pointFive )*MathHelper.Tan( fovY*pointFive );
 
 			// Enable use of reference view
 			this._referenceViewEnabled = true;
@@ -141,7 +142,7 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return 0;
+				return Real.Zero;
 			}
 		}
 
@@ -187,8 +188,8 @@ namespace Axiom.Core
 
 		public override Real TransformBias( Real factor )
 		{
-			Debug.Assert( factor > 0.0f, "Bias factor must be > 0!" );
-			return 1.0f/factor;
+			Debug.Assert( factor > Real.Zero, "Bias factor must be > 0!" );
+			return Real.One/factor;
 		}
 
 		public override Real TransformUserValue( Real userValue )

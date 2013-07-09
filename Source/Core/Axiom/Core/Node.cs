@@ -1043,7 +1043,7 @@ namespace Axiom.Core
 		/// </summary>
 		/// <param name="camera"></param>
 		/// <returns></returns>
-		public float GetSquaredViewDepth( Camera camera )
+		public Real GetSquaredViewDepth( Camera camera )
 		{
 			var difference = DerivedPosition - camera.DerivedPosition;
 

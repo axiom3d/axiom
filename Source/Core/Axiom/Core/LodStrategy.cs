@@ -115,7 +115,7 @@ namespace Axiom.Core
 		{
 			for ( var i = 0; i < values.Count; i++ )
 			{
-				float prev = values[ i ];
+				var prev = values[ i ];
 				if ( i + 1 < values.Count )
 				{
 					if ( values[ i + 1 ] < prev )
@@ -136,7 +136,7 @@ namespace Axiom.Core
 		{
 			for ( var i = 0; i < values.Count; i++ )
 			{
-				float prev = values[ i ];
+				var prev = values[ i ];
 				if ( i + 1 < values.Count )
 				{
 					if ( values[ i + 1 ] > prev )
@@ -172,7 +172,7 @@ namespace Axiom.Core
 		/// <param name="value"></param>
 		/// <param name="meshLodUsageList"></param>
 		/// <returns></returns>
-		protected static ushort GetIndexAscending( float value, MeshLodUsageList meshLodUsageList )
+		protected static ushort GetIndexAscending( Real value, MeshLodUsageList meshLodUsageList )
 		{
 			ushort index = 0;
 			for ( var i = 0; i < meshLodUsageList.Count; i++, index++ )
@@ -191,7 +191,7 @@ namespace Axiom.Core
 		/// <param name="value"></param>
 		/// <param name="meshLodUsageList"></param>
 		/// <returns></returns>
-		protected static ushort GetIndexDescending( float value, MeshLodUsageList meshLodUsageList )
+		protected static ushort GetIndexDescending( Real value, MeshLodUsageList meshLodUsageList )
 		{
 			ushort index = 0;
 			for ( var i = 0; i < meshLodUsageList.Count; i++, index++ )
@@ -206,7 +206,7 @@ namespace Axiom.Core
 
 		/// <summary>
 		/// </summary>
-		protected static ushort GetIndexAscending( float value, LodValueList materialLodValueList )
+		protected static ushort GetIndexAscending( Real value, LodValueList materialLodValueList )
 		{
 			ushort index = 0;
 			for ( var i = 0; i < materialLodValueList.Count; i++, index++ )
@@ -221,7 +221,7 @@ namespace Axiom.Core
 
 		/// <summary>
 		/// </summary>
-		protected static ushort GetIndexDescending( float value, LodValueList materialLodValueList )
+		protected static ushort GetIndexDescending( Real value, LodValueList materialLodValueList )
 		{
 			ushort index = 0;
 			for ( var i = 0; i < materialLodValueList.Count; i++, index++ )

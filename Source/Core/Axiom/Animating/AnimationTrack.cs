@@ -799,7 +799,7 @@ namespace Axiom.Animating
 				var axis = Vector3.Zero;
 				Real angle = 0f;
 				kf.Rotation.ToAngleAxis( ref angle, ref axis );
-				var tolerance = 1e-3f;
+				Real tolerance = 1e-3f;
 				if ( trans.Length > tolerance || ( scale - Vector3.UnitScale ).Length > tolerance ||
 				     !Utility.RealEqual( Utility.DegreesToRadians( angle ), 0.0f, tolerance ) )
 				{

@@ -371,7 +371,7 @@ namespace Axiom.Graphics
 					{
 						vec4 = source.GetLightAs4DVector( entry.Data );
 						vec3 = new Vector3( vec4.x, vec4.y, vec4.z );
-						if ( vec4.w > 0.0f )
+						if ( vec4.w > Real.Zero )
 						{
 							// point light
 							vec3 = source.InverseWorldMatrix.TransformAffine( vec3 );
@@ -413,7 +413,7 @@ namespace Axiom.Graphics
 						{
 							vec4 = source.GetLightAs4DVector( l );
 							vec3 = new Vector3( vec4.x, vec4.y, vec4.z );
-							if ( vec4.w > 0.0f )
+							if ( vec4.w > Real.Zero )
 							{
 								// point light
 								vec3 = source.InverseWorldMatrix.TransformAffine( vec3 );
