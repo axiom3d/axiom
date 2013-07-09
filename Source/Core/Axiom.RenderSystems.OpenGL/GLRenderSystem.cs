@@ -1152,7 +1152,7 @@ namespace Axiom.RenderSystems.OpenGL
 				// what D3D does as standard)
 				size = size*activeViewport.ActualHeight;
 				minSize = minSize*activeViewport.ActualHeight;
-				if ( maxSize == 0.0f )
+				if ( maxSize == Real.Zero )
 				{
 					maxSize = currentCapabilities.MaxPointSize; // pixels
 				}
@@ -1177,7 +1177,7 @@ namespace Axiom.RenderSystems.OpenGL
 			}
 			else
 			{
-				if ( maxSize == 0.0f )
+				if ( maxSize == Real.Zero )
 				{
 					maxSize = currentCapabilities.MaxPointSize;
 				}
