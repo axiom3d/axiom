@@ -5,12 +5,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{1EAB961C-4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.OSX", "Core\Axiom\Axiom.OSX.csproj", "{BAA6AE8A-B259-4883-9805-CE538660A59A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.RenderSystems.OpenGL.OSX", "Core\Axiom.RenderSystems.OpenGL\Axiom.RenderSystems.OpenGL.OSX.csproj", "{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BAA6AE8A-B259-4883-9805-CE538660A59A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BAA6AE8A-B259-4883-9805-CE538660A59A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAA6AE8A-B259-4883-9805-CE538660A59A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -18,6 +24,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BAA6AE8A-B259-4883-9805-CE538660A59A} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
+		{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Core\Axiom\Axiom.OSX.csproj
