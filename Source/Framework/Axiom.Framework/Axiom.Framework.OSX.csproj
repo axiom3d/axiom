@@ -17,6 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>OSX</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -40,6 +41,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="SharpInputSystem.Core">
       <HintPath>..\..\..\Lib\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMac, Version=0.0.0.0, Culture=neutral">
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +76,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\OSXConfigurationManager.cs" />
+    <Compile Include="Configuration\OSXConfigurationDialogFactory.cs" />
+    <Compile Include="Configuration\OSXConfigurationDialog.cs">
+      <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

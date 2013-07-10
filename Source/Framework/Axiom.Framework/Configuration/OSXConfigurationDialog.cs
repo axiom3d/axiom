@@ -23,41 +23,58 @@
 #endregion License
 
 using System;
+using System.ComponentModel;
+using Axiom.Configuration;
+using Axiom.Core;
 
 namespace Axiom.Framework.Configuration
 {
-	public class ConfigurationManagerFactory
+	/// <summary>
+	/// 
+	/// </summary>
+	public class OSXConfigurationDialog : IConfigurationDialog
 	{
-		public static IConfigurationManager CreateDefault()
+		#region Fields and Properties
+
+		private const string _logoResourceNameDefault = "AxiomLogo.png";
+		public string LogoResourceName { get; set; }
+
+		private const string _iconResourceNameDefault = "AxiomIcon.ico";
+		public string IconResourceName { get; set; }
+
+		public Root Engine { get; set; }
+
+		public ResourceGroupManager ResourceManager { get; set; }
+
+		#endregion Fields and Properties
+
+		public OSXConfigurationDialog( Root engine, ResourceGroupManager resourceManager )
 		{
-#if OSX
-			return new OSXConfigurationManager();
-#else
-			var platform = Environment.OSVersion.Platform;
-			switch ( platform )
-			{
-				case PlatformID.Xbox:
-					return new XBoxConfigurationManager();
-#if !(XBOX || XBOX360 || WINDOWS_PHONE)
-				case PlatformID.MacOSX:
-#endif
-				case PlatformID.Unix:
-#if SILVERLIGHT && WINDOWS_PHONE
-				case PlatformID.NokiaS60:
-#endif
-				case PlatformID.WinCE:
-					return new XBoxConfigurationManager();
-				case PlatformID.Win32NT:
-				case PlatformID.Win32S:
-				case PlatformID.Win32Windows:
-				default:
-#if !(XBOX || XBOX360 || WINDOWS_PHONE || SILVERLIGHT || ANDROID)
-					return new DefaultConfigurationManager();
-#else
-					return null;
-#endif
-			}
-#endif
+			Engine = engine;
+			ResourceManager = resourceManager;
+
+			LogoResourceName = _logoResourceNameDefault;
+			IconResourceName = _iconResourceNameDefault;
 		}
+
+		#region Event Handlers
+		#endregion Event Handlers
+
+		#region IConfigurationDialog Implementation
+
+		public Axiom.Graphics.RenderSystem RenderSystem
+		{
+			get
+			{
+				return null as Axiom.Graphics.RenderSystem;
+			}
+		}
+
+		public virtual DialogResult Show()
+		{
+			return true ? Configuration.DialogResult.Ok : Configuration.DialogResult.Cancel;
+		}
+
+		#endregion IConfigurationDialog Implementation
 	}
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build;BeforeBuild" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
@@ -29,6 +29,14 @@
     <CreatePackage>false</CreatePackage>
     <CodeSigningKey>Mac Developer</CodeSigningKey>
     <UseSGen>false</UseSGen>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="AfterBuild" />
+      </CustomCommands>
+    </CustomCommands>
+    <DefineConstants>OSX</DefineConstants>
+    <PackageSigningKey>Developer ID Installer</PackageSigningKey>
+    <I18n />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <Optimize>true</Optimize>
@@ -753,4 +761,7 @@
     </BundleResource>
     <BundleResource Include="Resources\AxiomIcon.icns" />
   </ItemGroup>
+  <Target Name="BeforeBuild">
+    <Message Text="This is the MSBuildExtensionsPath : '$(MSBuildExtensionsPath)'" Importance="high" />
+  </Target>
 </Project>
