@@ -177,7 +177,6 @@ namespace Axiom.Plugins.FreeImageCodecs
 				var data = new byte[(int)input.Length];
 				input.Read( data, 0, data.Length );
 				var dataPtr = BufferBase.Wrap( data );
-				var src = new PixelBox( imgData.width, imgData.height, imgData.depth, imgData.format, dataPtr );
 
 				// The required format, which will adjust to the format
 				// actually supported by FreeImage.
@@ -453,13 +452,11 @@ namespace Axiom.Plugins.FreeImageCodecs
 			var data = new byte[(int)input.Length];
 			input.Read( data, 0, data.Length );
 			FI.FIMEMORY fiMem;
-			FI.FREE_IMAGE_FORMAT ff;
 			FI.FIBITMAP fiBitmap;
 			using ( var datPtr = BufferBase.Wrap( data ) )
 			{
 				fiMem = FI.FreeImage.OpenMemory( datPtr.Pin(), (uint)data.Length );
 				datPtr.UnPin();
-				ff = (FI.FREE_IMAGE_FORMAT)this._freeImageType;
 				fiBitmap = FI.FreeImage.LoadFromMemory( (FI.FREE_IMAGE_FORMAT)this._freeImageType, fiMem,
 				                                        FI.FREE_IMAGE_LOAD_FLAGS.DEFAULT );
 			}
