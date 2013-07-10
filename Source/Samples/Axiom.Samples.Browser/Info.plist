@@ -16,5 +16,7 @@
 	<string>public.app-category.games</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
+	<key>CFBundleIconFile</key>
+	<string>AxiomIcon</string>
 </dict>
 </plist>

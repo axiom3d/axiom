@@ -751,5 +751,6 @@
     <BundleResource Include="..\media\Materials\smoke.material">
       <Link>media\Materials\smoke.material</Link>
     </BundleResource>
+    <BundleResource Include="Resources\AxiomIcon.icns" />
   </ItemGroup>
 </Project>
