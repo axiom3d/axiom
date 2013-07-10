@@ -304,7 +304,6 @@ namespace Axiom.Framework.Configuration
 			this.lstOptions.Items.Clear();
 			this.cboOptionValues.Items.Clear();
 			var system = (Axiom.Graphics.RenderSystem)this.cboRenderSystems.SelectedItem;
-			ConfigOption optVideoMode;
 
 			// Load Render Subsystem Options
 			foreach ( ConfigOption option in system.ConfigOptions.Values )
