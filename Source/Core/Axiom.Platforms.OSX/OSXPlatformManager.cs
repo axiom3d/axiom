@@ -9,16 +9,16 @@ using Axiom.Input;
 namespace Axiom.Platforms.Linux
 {
 	[Export( typeof ( IPlatformManager ) )]
-	public class LinuxPlatformManager : IPlatformManager
+	public class OSXPlatformManager : IPlatformManager
 	{
-		public LinuxPlatformManager()
+		public OSXPlatformManager()
 		{
-			LogManager.Instance.Write( "Linux Platform Manager Loaded." );
+			LogManager.Instance.Write( "OSX Platform Manager Loaded." );
 		}
 
 		public void Dispose()
 		{
-			LogManager.Instance.Write( "Linux Platform Manager Shutdown." );
+			LogManager.Instance.Write( "OSX Platform Manager Shutdown." );
 		}
 	}
 }
