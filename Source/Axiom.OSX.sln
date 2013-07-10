@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{4A83
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Common.OSX", "Samples\Axiom.Samples.Common\Axiom.Samples.Common.OSX.csproj", "{A9B352AA-24CF-42F6-9D2E-812382055F5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Axiom.Samples.Browser.OSX", "Samples\Axiom.Samples.Browser\Axiom.Samples.Browser.OSX.csproj", "{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FA3E842-91DE-4A78-99A8-DE3546763136}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9B352AA-24CF-42F6-9D2E-812382055F5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A9B352AA-24CF-42F6-9D2E-812382055F5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9B352AA-24CF-42F6-9D2E-812382055F5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,9 +63,10 @@ Global
 		{3FA3E842-91DE-4A78-99A8-DE3546763136} = {1EAB961C-47EC-4015-B61E-E672AE1C82A1}
 		{AF0AAC88-68C8-4CF4-AFFA-526AD899758A} = {7019B845-6A46-406F-864C-AC9DCE41CE3C}
 		{A9B352AA-24CF-42F6-9D2E-812382055F5E} = {4A833E18-CD75-4536-AEF5-CEAC4E9592A6}
+		{4E65C33E-A3AA-4DBB-988F-03A291A06ECF} = {4A833E18-CD75-4536-AEF5-CEAC4E9592A6}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Core\Axiom\Axiom.OSX.csproj
+		StartupItem = Samples\Axiom.Samples.Browser\Axiom.Samples.Browser.OSX.csproj
 		Policies = $0
 		$0.DotNetNamingPolicy = $1
 		$1.DirectoryNamespaceAssociation = None

@@ -1,0 +1,755 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Axiom.Samples.Browser</RootNamespace>
+    <AssemblyName>Axiom.Samples.Browser</AssemblyName>
+    <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
+    <OutputPath>$(SolutionDir)\Samples\bin\osx</OutputPath>
+    <ProjectGuid>{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}</ProjectGuid>
+    <ProjectTypeGuids>{948B3504-5B70-4649-8FE4-BDE1FB46EC69};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SuppressXamMacUpsell>True</SuppressXamMacUpsell>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\osx</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PlatformTarget>x86</PlatformTarget>
+    <IncludeMonoRuntime>false</IncludeMonoRuntime>
+    <EnableCodeSigning>false</EnableCodeSigning>
+    <ConsolePause>false</ConsolePause>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <CreatePackage>false</CreatePackage>
+    <CodeSigningKey>Mac Developer</CodeSigningKey>
+    <UseSGen>false</UseSGen>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>..\bin\osx</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateDocumentation>true</GenerateDocumentation>
+    <LinkMode>Full</LinkMode>
+    <PlatformTarget>x86</PlatformTarget>
+    <IncludeMonoRuntime>true</IncludeMonoRuntime>
+    <EnableCodeSigning>true</EnableCodeSigning>
+    <ConsolePause>false</ConsolePause>
+    <EnablePackageSigning>false</EnablePackageSigning>
+    <CreatePackage>true</CreatePackage>
+    <CodeSigningKey>Developer ID Application</CodeSigningKey>
+    <UseSGen>false</UseSGen>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|x86' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\OSX\AppStore</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <IncludeMonoRuntime>true</IncludeMonoRuntime>
+    <PlatformTarget>x86</PlatformTarget>
+    <LinkMode>Full</LinkMode>
+    <EnableCodeSigning>true</EnableCodeSigning>
+    <ConsolePause>false</ConsolePause>
+    <CodeSigningKey>3rd Party Mac Developer Application</CodeSigningKey>
+    <PackageSigningKey>3rd Party Mac Developer Installer</PackageSigningKey>
+    <EnablePackageSigning>true</EnablePackageSigning>
+    <CreatePackage>true</CreatePackage>
+    <UseSGen>false</UseSGen>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SharpInputSystem.Core">
+      <HintPath>..\..\..\Lib\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.ComponentModel.Composition">
+      <HintPath>$(SolutionDir)\..\Lib\MEF\Net3.5\System.ComponentModel.Composition.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMac, Version=0.0.0.0, Culture=neutral">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <Compile Include="SampleBrowser.cs" />
+    <Compile Include="Program.OSX.cs" />
+    <None Include="..\media\Archives\AxiomCore.zip">
+      <Link>media\Archives\AxiomCore.zip</Link>
+    </None>
+    <None Include="..\media\Archives\chiropteraDM.pk3">
+      <Link>media\Archives\chiropteraDM.pk3</Link>
+    </None>
+    <None Include="..\media\Archives\chiropteraDM.txt">
+      <Link>media\Archives\chiropteraDM.txt</Link>
+    </None>
+    <None Include="..\media\Archives\chiropteraDM.zip">
+      <Link>media\Archives\chiropteraDM.zip</Link>
+    </None>
+    <None Include="..\media\Archives\ogretestmap.zip">
+      <Link>media\Archives\ogretestmap.zip</Link>
+    </None>
+    <None Include="..\media\Icons\AxiomIcon.ico">
+      <Link>media\Icons\AxiomIcon.ico</Link>
+    </None>
+    <None Include="..\media\Icons\AxiomIcon.png">
+      <Link>media\Icons\AxiomIcon.png</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Framework\Axiom.Framework\Axiom.Framework.OSX.csproj">
+      <Project>{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}</Project>
+      <Name>Axiom.Framework.OSX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.OSX.csproj">
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Name>Axiom.OSX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Axiom.Platforms.OSX\Axiom.Platforms.OSX.csproj">
+      <Project>{081F78DE-8224-4CA6-BD34-8B7939CF21AB}</Project>
+      <Name>Axiom.Platforms.OSX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Axiom.RenderSystems.OpenGL\Axiom.RenderSystems.OpenGL.OSX.csproj">
+      <Project>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</Project>
+      <Name>Axiom.RenderSystems.OpenGL.OSX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Axiom.Samples.Common\Axiom.Samples.Common.OSX.csproj">
+      <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>
+      <Name>Axiom.Samples.Common.OSX</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\AxiomIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Mono\MonoMac\v0.0\Mono.MonoMac.targets" />
+  <ItemGroup>
+    <Folder Include="media\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="..\media\Archives\cubemap.zip">
+      <Link>media\Archives\cubemap.zip</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Archives\cubemapsJS.zip">
+      <Link>media\Archives\cubemapsJS.zip</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Archives\Sinbad.zip">
+      <Link>media\Archives\Sinbad.zip</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Archives\skybox.zip">
+      <Link>media\Archives\skybox.zip</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Archives\SdkTrays.zip">
+      <Link>media\Archives\SdkTrays.zip</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_bezier.png">
+      <Link>media\Thumbnails\thumb_bezier.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_bsp.png">
+      <Link>media\Thumbnails\thumb_bsp.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_bump.png">
+      <Link>media\Thumbnails\thumb_bump.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_camtrack.png">
+      <Link>media\Thumbnails\thumb_camtrack.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_cel.png">
+      <Link>media\Thumbnails\thumb_cel.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_char.png">
+      <Link>media\Thumbnails\thumb_char.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_comp.png">
+      <Link>media\Thumbnails\thumb_comp.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_cubemap.png">
+      <Link>media\Thumbnails\thumb_cubemap.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_deferred.png">
+      <Link>media\Thumbnails\thumb_deferred.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_dyntex.png">
+      <Link>media\Thumbnails\thumb_dyntex.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_error.png">
+      <Link>media\Thumbnails\thumb_error.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_facial.png">
+      <Link>media\Thumbnails\thumb_facial.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_fresnel.png">
+      <Link>media\Thumbnails\thumb_fresnel.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_grass.png">
+      <Link>media\Thumbnails\thumb_grass.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_instancing.png">
+      <Link>media\Thumbnails\thumb_instancing.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_isosurf.png">
+      <Link>media\Thumbnails\thumb_isosurf.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_lighting.png">
+      <Link>media\Thumbnails\thumb_lighting.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_ocean.png">
+      <Link>media\Thumbnails\thumb_ocean.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_particlegs.png">
+      <Link>media\Thumbnails\thumb_particlegs.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_particles.png">
+      <Link>media\Thumbnails\thumb_particles.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_picking.png">
+      <Link>media\Thumbnails\thumb_picking.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_playpen.png">
+      <Link>media\Thumbnails\thumb_playpen.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_shadersystem.png">
+      <Link>media\Thumbnails\thumb_shadersystem.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_shadows.png">
+      <Link>media\Thumbnails\thumb_shadows.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_skelanim.png">
+      <Link>media\Thumbnails\thumb_skelanim.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_skybox.png">
+      <Link>media\Thumbnails\thumb_skybox.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_skydome.png">
+      <Link>media\Thumbnails\thumb_skydome.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_skyplane.png">
+      <Link>media\Thumbnails\thumb_skyplane.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_smoke.png">
+      <Link>media\Thumbnails\thumb_smoke.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_spheremap.png">
+      <Link>media\Thumbnails\thumb_spheremap.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_terrain.png">
+      <Link>media\Thumbnails\thumb_terrain.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_texfx.png">
+      <Link>media\Thumbnails\thumb_texfx.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_trans.png">
+      <Link>media\Thumbnails\thumb_trans.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_triangle.png">
+      <Link>media\Thumbnails\thumb_triangle.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_voltex.png">
+      <Link>media\Thumbnails\thumb_voltex.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Thumbnails\thumb_water.png">
+      <Link>media\Thumbnails\thumb_water.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\BumpyMetal.jpg">
+      <Link>media\Textures\BumpyMetal.jpg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\GreenSkin.jpg">
+      <Link>media\Textures\GreenSkin.jpg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\NoiseVolume.dds">
+      <Link>media\Textures\NoiseVolume.dds</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\RustySteel.jpg">
+      <Link>media\Textures\RustySteel.jpg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\aureola.png">
+      <Link>media\Textures\aureola.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\axiomlogo.png">
+      <Link>media\Textures\axiomlogo.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\basic_droplet.png">
+      <Link>media\Textures\basic_droplet.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\clouds.jpg">
+      <Link>media\Textures\clouds.jpg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\dirt_grayrocky_diffusespecular.dds">
+      <Link>media\Textures\dirt_grayrocky_diffusespecular.dds</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\dirt_grayrocky_normalheight.dds">
+      <Link>media\Textures\dirt_grayrocky_normalheight.dds</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\flare.png">
+      <Link>media\Textures\flare.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\flaretrail.png">
+      <Link>media\Textures\flaretrail.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\frost.png">
+      <Link>media\Textures\frost.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\fw12b.jpg">
+      <Link>media\Textures\fw12b.jpg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\grass_green-01_diffusespecular.dds">
+      <Link>media\Textures\grass_green-01_diffusespecular.dds</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\grass_green-01_normalheight.dds">
+      <Link>media\Textures\grass_green-01_normalheight.dds</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\growth_weirdfungus-03_diffusespecular.dds">
+      <Link>media\Textures\growth_weirdfungus-03_diffusespecular.dds</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\growth_weirdfungus-03_normalheight.dds">
+      <Link>media\Textures\growth_weirdfungus-03_normalheight.dds</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\penguin.jpg">
+      <Link>media\Textures\penguin.jpg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\rockwall.tga">
+      <Link>media\Textures\rockwall.tga</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\rockwall_NH.tga">
+      <Link>media\Textures\rockwall_NH.tga</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\smoke.png">
+      <Link>media\Textures\smoke.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\smokecolors.png">
+      <Link>media\Textures\smokecolors.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\spheremap.png">
+      <Link>media\Textures\spheremap.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\terrain.png">
+      <Link>media\Textures\terrain.png</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\tusk.jpg">
+      <Link>media\Textures\tusk.jpg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Textures\waves2.dds">
+      <Link>media\Textures\waves2.dds</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\ASCIIFP.cg">
+      <Link>media\Programs\ASCIIFP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\AmbientOneTexture.glsl">
+      <Link>media\Programs\AmbientOneTexture.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Bloom2_ps20.glsl">
+      <Link>media\Programs\Bloom2_ps20.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Bloom2_ps20.hlsl">
+      <Link>media\Programs\Bloom2_ps20.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Bloom_ps20.hlsl">
+      <Link>media\Programs\Bloom_ps20.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Bloom_vs11.hlsl">
+      <Link>media\Programs\Bloom_vs11.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Blur0_ps20.hlsl">
+      <Link>media\Programs\Blur0_ps20.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Blur0_vs.glsl">
+      <Link>media\Programs\Blur0_vs.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Blur0_vs11.hlsl">
+      <Link>media\Programs\Blur0_vs11.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Blur1_ps20.hlsl">
+      <Link>media\Programs\Blur1_ps20.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Blur1_vs.glsl">
+      <Link>media\Programs\Blur1_vs.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Blur1_vs11.hlsl">
+      <Link>media\Programs\Blur1_vs11.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\BlurH_ps20.glsl">
+      <Link>media\Programs\BlurH_ps20.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\BlurH_ps20.hlsl">
+      <Link>media\Programs\BlurH_ps20.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\BlurV_ps20.glsl">
+      <Link>media\Programs\BlurV_ps20.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\BlurV_ps20.hlsl">
+      <Link>media\Programs\BlurV_ps20.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Blur_ps.glsl">
+      <Link>media\Programs\Blur_ps.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Blur_vs.glsl">
+      <Link>media\Programs\Blur_vs.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Blur_vs11.hlsl">
+      <Link>media\Programs\Blur_vs11.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\BrightBloom2_ps20.glsl">
+      <Link>media\Programs\BrightBloom2_ps20.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\BrightBloom2_ps20.hlsl">
+      <Link>media\Programs\BrightBloom2_ps20.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Combine_fp.cg">
+      <Link>media\Programs\Combine_fp.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Common.cg">
+      <Link>media\Programs\Common.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\DOF_ps.cg">
+      <Link>media\Programs\DOF_ps.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\DepthShadowmap.hlsl">
+      <Link>media\Programs\DepthShadowmap.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\DepthShadowmapCasterFp.glsl">
+      <Link>media\Programs\DepthShadowmapCasterFp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\DepthShadowmapCasterVp.glsl">
+      <Link>media\Programs\DepthShadowmapCasterVp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\DepthShadowmapNormalMapReceiverFp.glsl">
+      <Link>media\Programs\DepthShadowmapNormalMapReceiverFp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\DepthShadowmapNormalMapReceiverVp.glsl">
+      <Link>media\Programs\DepthShadowmapNormalMapReceiverVp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\DepthShadowmapReceiverFp.glsl">
+      <Link>media\Programs\DepthShadowmapReceiverFp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\DepthShadowmapReceiverVp.glsl">
+      <Link>media\Programs\DepthShadowmapReceiverVp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\DitherFP.cg">
+      <Link>media\Programs\DitherFP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Example_Basic.cg">
+      <Link>media\Programs\Example_Basic.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Example_Basic.hlsl">
+      <Link>media\Programs\Example_Basic.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Example_BumpMapping.cg">
+      <Link>media\Programs\Example_BumpMapping.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Example_CelShading.cg">
+      <Link>media\Programs\Example_CelShading.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Example_Fresnel.cg">
+      <Link>media\Programs\Example_Fresnel.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Example_FresnelPS.asm">
+      <Link>media\Programs\Example_FresnelPS.asm</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Example_Projection.cg">
+      <Link>media\Programs\Example_Projection.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\GlassFP.cg">
+      <Link>media\Programs\GlassFP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Grass.cg">
+      <Link>media\Programs\Grass.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\GrayScale.cg">
+      <Link>media\Programs\GrayScale.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\HalftoneFP.cg">
+      <Link>media\Programs\HalftoneFP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\HeatVision.cg">
+      <Link>media\Programs\HeatVision.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\InvertFP.cg">
+      <Link>media\Programs\InvertFP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\LaplaceFP.cg">
+      <Link>media\Programs\LaplaceFP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\NightVisionFP.cg">
+      <Link>media\Programs\NightVisionFP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Ocean2GLSL.frag">
+      <Link>media\Programs\Ocean2GLSL.frag</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Ocean2GLSL.vert">
+      <Link>media\Programs\Ocean2GLSL.vert</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Ocean2HLSL_Cg.frag">
+      <Link>media\Programs\Ocean2HLSL_Cg.frag</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Ocean2HLSL_Cg.vert">
+      <Link>media\Programs\Ocean2HLSL_Cg.vert</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\OffsetMapping.cg">
+      <Link>media\Programs\OffsetMapping.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\OffsetMapping.hlsl">
+      <Link>media\Programs\OffsetMapping.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\OffsetMappingFp.glsl">
+      <Link>media\Programs\OffsetMappingFp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\OffsetMappingVp.glsl">
+      <Link>media\Programs\OffsetMappingVp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\OffsetMapping_specular.asm">
+      <Link>media\Programs\OffsetMapping_specular.asm</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\OldMovieFP.cg">
+      <Link>media\Programs\OldMovieFP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\OldTV.cg">
+      <Link>media\Programs\OldTV.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\ParticleGS.cg">
+      <Link>media\Programs\ParticleGS.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\PassthroughVP.glsl">
+      <Link>media\Programs\PassthroughVP.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\PosterizeFP.cg">
+      <Link>media\Programs\PosterizeFP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Radial_Blur_FP.cg">
+      <Link>media\Programs\Radial_Blur_FP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Radial_Blur_FP.hlsl">
+      <Link>media\Programs\Radial_Blur_FP.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\SharpenEdgesFP.cg">
+      <Link>media\Programs\SharpenEdgesFP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\StdQuad_vp.cg">
+      <Link>media\Programs\StdQuad_vp.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\StdQuad_vp.glsl">
+      <Link>media\Programs\StdQuad_vp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\Swizzle.gp">
+      <Link>media\Programs\Swizzle.gp</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\SwizzleGP.cg">
+      <Link>media\Programs\SwizzleGP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\SwizzleGP.glsl">
+      <Link>media\Programs\SwizzleGP.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\TilingFP.cg">
+      <Link>media\Programs\TilingFP.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\crowdVp.glsl">
+      <Link>media\Programs\crowdVp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\depthshadowobject.cg">
+      <Link>media\Programs\depthshadowobject.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\hdr.cg">
+      <Link>media\Programs\hdr.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\hdr.hlsl">
+      <Link>media\Programs\hdr.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\hdr_bloom.glsl">
+      <Link>media\Programs\hdr_bloom.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\hdr_downscale2x2luminence.glsl">
+      <Link>media\Programs\hdr_downscale2x2luminence.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\hdr_downscale3x3.glsl">
+      <Link>media\Programs\hdr_downscale3x3.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\hdr_downscale3x3brightpass.glsl">
+      <Link>media\Programs\hdr_downscale3x3brightpass.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\hdr_finalToneMapping.glsl">
+      <Link>media\Programs\hdr_finalToneMapping.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\hdr_tonemap_util.glsl">
+      <Link>media\Programs\hdr_tonemap_util.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\hdrutils.hlsl">
+      <Link>media\Programs\hdrutils.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\instancing.cg">
+      <Link>media\Programs\instancing.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\instancingVp.glsl">
+      <Link>media\Programs\instancingVp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\isosurf.cg">
+      <Link>media\Programs\isosurf.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\mrttestfp.hlsl">
+      <Link>media\Programs\mrttestfp.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\mrttestfp_quad.glsl">
+      <Link>media\Programs\mrttestfp_quad.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\mrttestfp_scene.glsl">
+      <Link>media\Programs\mrttestfp_scene.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\oceanGLSL.frag">
+      <Link>media\Programs\oceanGLSL.frag</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\oceanGLSL.vert">
+      <Link>media\Programs\oceanGLSL.vert</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\oceanHLSL_Cg.frag">
+      <Link>media\Programs\oceanHLSL_Cg.frag</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\oceanHLSL_Cg.vert">
+      <Link>media\Programs\oceanHLSL_Cg.vert</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\pssm.cg">
+      <Link>media\Programs\pssm.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\pssm.hlsl">
+      <Link>media\Programs\pssm.hlsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\shadows.cg">
+      <Link>media\Programs\shadows.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\skinningTwoWeightsShadowCasterVp.glsl">
+      <Link>media\Programs\skinningTwoWeightsShadowCasterVp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\skinningTwoWeightsVp.glsl">
+      <Link>media\Programs\skinningTwoWeightsVp.glsl</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\varianceshadowcasterfp.cg">
+      <Link>media\Programs\varianceshadowcasterfp.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\varianceshadowcastervp.cg">
+      <Link>media\Programs\varianceshadowcastervp.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\varianceshadowreceiverfp.cg">
+      <Link>media\Programs\varianceshadowreceiverfp.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Programs\varianceshadowreceivervp.cg">
+      <Link>media\Programs\varianceshadowreceivervp.cg</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Particles\Aureola.particle">
+      <Link>media\Particles\Aureola.particle</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Particles\Fireworks.particle">
+      <Link>media\Particles\Fireworks.particle</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Particles\GreenyNimbus.particle">
+      <Link>media\Particles\GreenyNimbus.particle</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Particles\PurpleFountain.particle">
+      <Link>media\Particles\PurpleFountain.particle</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Particles\Rain.particle">
+      <Link>media\Particles\Rain.particle</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Particles\Snow.particle">
+      <Link>media\Particles\Snow.particle</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Particles\smoke.particle">
+      <Link>media\Particles\smoke.particle</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Meshes\ogrehead.mesh">
+      <Link>media\Meshes\ogrehead.mesh</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Meshes\penguin.mesh">
+      <Link>media\Meshes\penguin.mesh</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Meshes\penguin.skeleton">
+      <Link>media\Meshes\penguin.skeleton</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Meshes\sphere.mesh">
+      <Link>media\Meshes\sphere.mesh</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Meshes\tudorhouse.mesh">
+      <Link>media\Meshes\tudorhouse.mesh</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\Aurora.material">
+      <Link>media\Materials\Aurora.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\BumpyMetal.material">
+      <Link>media\Materials\BumpyMetal.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\CloudyNoonSkyBox.material">
+      <Link>media\Materials\CloudyNoonSkyBox.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\CloudySkyBox.material">
+      <Link>media\Materials\CloudySkyBox.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\Droplet.material">
+      <Link>media\Materials\Droplet.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\EveningSkyBox.material">
+      <Link>media\Materials\EveningSkyBox.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\Examples-DynTex.material">
+      <Link>media\Materials\Examples-DynTex.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\Examples.program">
+      <Link>media\Materials\Examples.program</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\Flair2.material">
+      <Link>media\Materials\Flair2.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\Flare.material">
+      <Link>media\Materials\Flare.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\FlarePointSprite.material">
+      <Link>media\Materials\FlarePointSprite.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\MorningSkyBox.material">
+      <Link>media\Materials\MorningSkyBox.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\Ocean.controls">
+      <Link>media\Materials\Ocean.controls</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\Ocean.material">
+      <Link>media\Materials\Ocean.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\OgreHead.material">
+      <Link>media\Materials\OgreHead.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\Penguin.material">
+      <Link>media\Materials\Penguin.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\Rockwall.material">
+      <Link>media\Materials\Rockwall.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\SceneCubeMap2.material">
+      <Link>media\Materials\SceneCubeMap2.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\SphereMappedRustySteel.material">
+      <Link>media\Materials\SphereMappedRustySteel.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\StormySkyBox.material">
+      <Link>media\Materials\StormySkyBox.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\TudorHouse.material">
+      <Link>media\Materials\TudorHouse.material</Link>
+    </BundleResource>
+    <BundleResource Include="..\media\Materials\smoke.material">
+      <Link>media\Materials\smoke.material</Link>
+    </BundleResource>
+  </ItemGroup>
+</Project>
