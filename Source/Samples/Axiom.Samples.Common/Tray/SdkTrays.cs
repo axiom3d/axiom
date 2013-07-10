@@ -817,7 +817,7 @@ namespace Axiom.Samples
 						continue;
 					}
 
-					if ( e.Width > trayWidth )
+					if ( (Real)e.Width > trayWidth )
 					{
 						trayWidth = e.Width;
 					}
