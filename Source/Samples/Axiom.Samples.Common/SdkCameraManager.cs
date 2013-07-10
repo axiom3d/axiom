@@ -237,7 +237,7 @@ namespace Axiom.Samples
 					this.mVelocity.Normalize();
 					this.mVelocity *= TopSpeed;
 				}
-				else if ( this.mVelocity.LengthSquared < 0.1 )
+				else if ( this.mVelocity.LengthSquared < (Real)0.1 )
 				{
 					this.mVelocity = Vector3.Zero;
 				}
