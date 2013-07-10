@@ -131,7 +131,7 @@ namespace Axiom.Samples
 			{
 				// makes the carousel spin smoothly toward its right position
 				Real carouselOffset = this.SampleMenu.SelectionIndex - this.CarouselPlace;
-				if ( carouselOffset <= 0.001 && ( carouselOffset >= -0.001 ) )
+				if ( carouselOffset <= (Real)0.001 && ( carouselOffset >= -(Real)0.001 ) )
 				{
 					this.CarouselPlace = this.SampleMenu.SelectionIndex;
 				}
