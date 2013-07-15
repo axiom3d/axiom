@@ -1,0 +1,45 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+	<PropertyGroup>
+		<Configuration>Release</Configuration>
+		<TestReportTypes>XML-Inline</TestReportTypes>
+		
+		<Version>$(CCNetLabel)</Version>
+		<Version Condition="'$(Version)'==''">0.9.0.0</Version>
+		
+		<AssemblyVersion>$(AssemblyVersion)</AssemblyVersion>
+		<AssemblyVersion Condition="'$(AssemblyVersion)'==''">$(Version)</AssemblyVersion>
+
+		<FileVersion>$(FileVersion)</FileVersion>
+		<FileVersion Condition="'$(FileVersion)'==''">$(Version)</FileVersion>
+		
+		<RootDir>$(MSBuildProjectDirectory)</RootDir>
+		<StartDir>$(RootDir)</StartDir>
+		
+		<Modules Condition="'$(Modules)'==''">packages\Axiom SDK.package</Modules>
+	
+		<SkipInstaller>true</SkipInstaller>
+		<SkipSourceServer>true</SkipSourceServer>
+		<SkipSources>false</SkipSources>
+		<SkipILMerge>true</SkipILMerge>
+		<SkipNDoc>true</SkipNDoc>
+		
+		<IncludeXna>true</IncludeXna>
+	</PropertyGroup>
+
+	<Target Name="Build">
+		<MSBuild Projects="$(Modules)"
+				 Properties="Configuration=$(Configuration);
+							 TestReportTypes=$(ReportTypes);
+							 AssemblyVersion=$(AssemblyVersion);
+							 FileVersion=$(FileVersion);
+							 RootDir=$(RootDir);
+							 StartDir=$(StartDir);
+							 SkipInstaller=$(SkipInstaller);
+							 SkipSourceServer=$(SkipSourceServer);
+							 SkipSources=$(SkipSources);
+							 NoILMerge=$(SkipILMerge);
+							 SkipNDoc=$(SkipNDoc);
+							 IncludeXna=$(IncludeXna)"
+				 Targets="Clean;Compile;Image;Test;Dist" />
+	</Target>
+</Project>
