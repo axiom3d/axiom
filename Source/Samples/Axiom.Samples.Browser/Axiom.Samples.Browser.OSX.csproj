@@ -89,6 +89,9 @@
     <Reference Include="MonoMac, Version=0.0.0.0, Culture=neutral">
       <Private>False</Private>
     </Reference>
+    <Reference Include="SharpInputSystem.X11">
+      <HintPath>..\..\..\Lib\SharpInputSystem\X11\SharpInputSystem.X11.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />

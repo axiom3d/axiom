@@ -53,6 +53,8 @@ namespace Axiom.Framework.Configuration
 			Engine = engine;
 			ResourceManager = resourceManager;
 
+			Engine.RenderSystem = Engine.RenderSystems[0];
+
 			LogoResourceName = _logoResourceNameDefault;
 			IconResourceName = _iconResourceNameDefault;
 		}
@@ -66,7 +68,7 @@ namespace Axiom.Framework.Configuration
 		{
 			get
 			{
-				return null as Axiom.Graphics.RenderSystem;
+				return Engine.RenderSystems[0] as Axiom.Graphics.RenderSystem;
 			}
 		}
 
