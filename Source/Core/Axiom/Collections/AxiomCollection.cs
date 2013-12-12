@@ -37,11 +37,8 @@
 
 using System;
 using System.Linq;
-#if !USE_CUSTOM_SORTEDLIST
 using System.Collections;
 using System.Collections.Generic;
-
-#endif
 
 #endregion Namespace Declarations
 

@@ -1,7 +1,114 @@
+diff -r e18b3f06de37 XdotNet.System.Core.Metro.csproj
+--- a/XdotNet.System.Core.Metro.csproj	Fri Mar 30 16:32:02 2012 +0100
++++ b/XdotNet.System.Core.Metro.csproj	Thu Dec 12 11:06:27 2013 -0500
+@@ -9,7 +9,7 @@
+     <OutputType>Library</OutputType>
+     <AppDesignerFolder>Properties</AppDesignerFolder>
+     <RootNamespace>XdotNet.System.Core.Metro</RootNamespace>
+-    <AssemblyName>XdotNet.System.Core.Metro</AssemblyName>
++    <AssemblyName>XdotNet.System.Core</AssemblyName>
+     <DefaultLanguage>en-US</DefaultLanguage>
+     <FileAlignment>512</FileAlignment>
+     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+@@ -21,7 +21,7 @@
+     <DebugSymbols>true</DebugSymbols>
+     <DebugType>full</DebugType>
+     <Optimize>false</Optimize>
+-    <OutputPath>bin\Debug\</OutputPath>
++    <OutputPath>bin\WinRT\Debug\</OutputPath>
+     <DefineConstants>TRACE;DEBUG;XNET;METRO;NET_4_0;INSIDE_CORLIB</DefineConstants>
+     <ErrorReport>prompt</ErrorReport>
+     <WarningLevel>4</WarningLevel>
+diff -r e18b3f06de37 XdotNet.System.Drawing.Metro.csproj
+--- a/XdotNet.System.Drawing.Metro.csproj	Fri Mar 30 16:32:02 2012 +0100
++++ b/XdotNet.System.Drawing.Metro.csproj	Thu Dec 12 11:06:27 2013 -0500
+@@ -9,7 +9,7 @@
+     <OutputType>Library</OutputType>
+     <AppDesignerFolder>Properties</AppDesignerFolder>
+     <RootNamespace>XdotNet.System.Drawing.Metro</RootNamespace>
+-    <AssemblyName>XdotNet.System.Drawing.Metro</AssemblyName>
++    <AssemblyName>XdotNet.System.Drawing</AssemblyName>
+     <DefaultLanguage>en-US</DefaultLanguage>
+     <FileAlignment>512</FileAlignment>
+     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+@@ -21,7 +21,7 @@
+     <DebugSymbols>true</DebugSymbols>
+     <DebugType>full</DebugType>
+     <Optimize>false</Optimize>
+-    <OutputPath>bin\Debug\</OutputPath>
++    <OutputPath>bin\WinRT\Debug\</OutputPath>
+     <DefineConstants>TRACE;DEBUG;XNET;METRO;NET_4_0;INSIDE_CORLIB</DefineConstants>
+     <ErrorReport>prompt</ErrorReport>
+     <WarningLevel>4</WarningLevel>
+diff -r e18b3f06de37 XdotNet.System.Metro.csproj
+--- a/XdotNet.System.Metro.csproj	Fri Mar 30 16:32:02 2012 +0100
++++ b/XdotNet.System.Metro.csproj	Thu Dec 12 11:06:27 2013 -0500
+@@ -9,7 +9,7 @@
+     <OutputType>Library</OutputType>
+     <AppDesignerFolder>Properties</AppDesignerFolder>
+     <RootNamespace>XdotNet.System.Metro</RootNamespace>
+-    <AssemblyName>XdotNet.System.Metro</AssemblyName>
++    <AssemblyName>XdotNet.System</AssemblyName>
+     <DefaultLanguage>en-US</DefaultLanguage>
+     <FileAlignment>512</FileAlignment>
+     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+@@ -21,7 +21,7 @@
+     <DebugSymbols>true</DebugSymbols>
+     <DebugType>full</DebugType>
+     <Optimize>false</Optimize>
+-    <OutputPath>bin\Debug\</OutputPath>
++    <OutputPath>bin\WinRT\Debug\</OutputPath>
+     <DefineConstants>TRACE;DEBUG;XNET;METRO;NET_4_0;INSIDE_CORLIB</DefineConstants>
+     <ErrorReport>prompt</ErrorReport>
+     <WarningLevel>4</WarningLevel>
+diff -r e18b3f06de37 XdotNet.System.Xml.Metro.csproj
+--- a/XdotNet.System.Xml.Metro.csproj	Fri Mar 30 16:32:02 2012 +0100
++++ b/XdotNet.System.Xml.Metro.csproj	Thu Dec 12 11:06:27 2013 -0500
+@@ -9,19 +9,19 @@
+     <OutputType>Library</OutputType>
+     <AppDesignerFolder>Properties</AppDesignerFolder>
+     <RootNamespace>XdotNet.System.Xml.Metro</RootNamespace>
+-    <AssemblyName>XdotNet.System.Xml.Metro</AssemblyName>
++    <AssemblyName>XdotNet.System.Xml</AssemblyName>
+     <DefaultLanguage>en-US</DefaultLanguage>
+     <FileAlignment>512</FileAlignment>
+     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+-      <IntermediateOutputPath>obj\$(TargetFrameworkIdentifier)\$(Configuration)\</IntermediateOutputPath>
++    <IntermediateOutputPath>obj\$(TargetFrameworkIdentifier)\$(Configuration)\</IntermediateOutputPath>
+     <OutputPath>Bin\$(TargetFrameworkIdentifier)\$(Configuration)\</OutputPath>
+     <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
+-</PropertyGroup>
++  </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+     <DebugSymbols>true</DebugSymbols>
+     <DebugType>full</DebugType>
+     <Optimize>false</Optimize>
+-    <OutputPath>bin\Debug\</OutputPath>
++    <OutputPath>bin\WinRT\Debug\</OutputPath>
+     <DefineConstants>TRACE;DEBUG;XNET;METRO;NET_4_0;INSIDE_CORLIB</DefineConstants>
+     <ErrorReport>prompt</ErrorReport>
+     <WarningLevel>4</WarningLevel>
 diff -r e18b3f06de37 XdotNet.mscorlib.Metro.csproj
---- XdotNet.mscorlib.Metro.csproj	Fri Mar 30 16:32:02 2012 +0100
-+++ XdotNet.mscorlib.Metro.csproj	Wed Dec 11 23:28:15 2013 -0500
-@@ -86,7 +86,6 @@
+--- a/XdotNet.mscorlib.Metro.csproj	Fri Mar 30 16:32:02 2012 +0100
++++ b/XdotNet.mscorlib.Metro.csproj	Thu Dec 12 11:06:27 2013 -0500
+@@ -9,7 +9,7 @@
+     <OutputType>Library</OutputType>
+     <AppDesignerFolder>Properties</AppDesignerFolder>
+     <RootNamespace>XdotNet.mscorlib.Metro</RootNamespace>
+-    <AssemblyName>XdotNet.mscorlib.Metro</AssemblyName>
++    <AssemblyName>XdotNet.mscorlib</AssemblyName>
+     <DefaultLanguage>en-US</DefaultLanguage>
+     <FileAlignment>512</FileAlignment>
+     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+@@ -57,6 +57,7 @@
+     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+     <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
++    <OutputPath>Bin\WinRT\Debug\</OutputPath>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+     <DebugType>pdbonly</DebugType>
+@@ -86,7 +87,6 @@
      <Compile Include="corlib\System.Collections.Concurrent.Partitioners\EnumerablePartitioner.cs" />
      <Compile Include="corlib\System.Collections.Concurrent.Partitioners\ListPartitioner.cs" />
      <Compile Include="corlib\System.Collections.Concurrent.Partitioners\UserRangePartitioner.cs" />
@@ -9,9 +116,7 @@ diff -r e18b3f06de37 XdotNet.mscorlib.Metro.csproj
      <Compile Include="corlib\System.Collections.Concurrent\ConcurrentOrderedList.cs" />
      <Compile Include="corlib\System.Collections.Concurrent\ConcurrentQueue.cs" />
      <Compile Include="corlib\System.Collections.Concurrent\ConcurrentStack.cs" />
---- XdotNet.mscorlib.Metro.csproj	Fri Mar 30 16:32:02 2012 +0100
-+++ XdotNet.mscorlib.Metro.csproj	Wed Dec 11 23:28:15 2013 -0500
-@@ -101,10 +100,7 @@
+@@ -101,10 +101,7 @@
      <Compile Include="corlib\System.Collections\CollectionBase.cs" />
      <Compile Include="corlib\System.Collections\CollectionDebuggerView.cs" />
      <Compile Include="corlib\System.Collections\Comparer.cs" />
@@ -22,9 +127,7 @@ diff -r e18b3f06de37 XdotNet.mscorlib.Metro.csproj
      <Compile Include="corlib\System.Collections\IHashCodeProvider.cs" />
      <Compile Include="corlib\System.Collections\ReadOnlyCollectionBase.cs" />
      <Compile Include="corlib\System.Collections\SortedList.cs" />
---- XdotNet.mscorlib.Metro.csproj	Fri Mar 30 16:32:02 2012 +0100
-+++ XdotNet.mscorlib.Metro.csproj	Wed Dec 11 23:28:15 2013 -0500
-@@ -141,7 +137,6 @@
+@@ -141,7 +138,6 @@
      <Compile Include="corlib\System.Threading\Watch.cs" />
      <Compile Include="corlib\System\ApplicationException.cs" />
      <Compile Include="corlib\System\ICloneable.cs" />
@@ -32,9 +135,7 @@ diff -r e18b3f06de37 XdotNet.mscorlib.Metro.csproj
      <Compile Include="corlib\System\MarshalByRefObject.cs" />
      <Compile Include="corlib\System\NonSerializedAttribute.cs" />
      <Compile Include="corlib\System\SerializableAttribute.cs" />
---- XdotNet.mscorlib.Metro.csproj	Fri Mar 30 16:32:02 2012 +0100
-+++ XdotNet.mscorlib.Metro.csproj	Wed Dec 11 23:28:15 2013 -0500
-@@ -149,24 +144,6 @@
+@@ -149,24 +145,6 @@
      <Compile Include="corlib\System\TypeCode.cs" />
      <Compile Include="Managed.Windows.Forms\Assembly\Locale.cs" />
      <Compile Include="Properties\AssemblyInfo.cs" />
