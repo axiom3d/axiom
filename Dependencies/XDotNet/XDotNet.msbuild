@@ -21,7 +21,7 @@
   </Target>
 
   <Target Name="Patch" >
-    <Exec Command="..\..\Tools\Patch\bin\patch.exe --input=..\XDotNet.BitBucket.patch -d XDotNet.BitBucket -p0" />
+    <Exec Command="..\..\Tools\Patch\bin\patch.exe --input=..\XDotNet.BitBucket.patch -d XDotNet.BitBucket -p0 --verbose"/>
   </Target>
 
   <Target Name="Clean" >
