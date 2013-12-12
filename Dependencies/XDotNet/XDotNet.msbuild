@@ -1,38 +1,40 @@
 <Project DefaultTargets="Clean;Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <RootDir Condition="'$(RootDir)'==''">..\..</RootDir>
+    <RepositoryUrl>https://bitbucket.org/axiom3d/xdotnet#WinRT_Support</RepositoryUrl>
+    <RepositoryFolder>$(MSBuildProjectDirectory)\XDotNet.BitBucket</RepositoryFolder>
+    <PublishFolder>$(RootDir)\Lib\XDotNet</PublishFolder>
     <MSBuildMercurialTasksPath>$(RootDir)\Tools\MSBuild.Mercurial</MSBuildMercurialTasksPath>
   </PropertyGroup>
 
   <Import Project="$(MSBuildMercurialTasksPath)\MSBuild.Mercurial.Tasks" />
 
-  <Target Name="Build" DependsOnTargets="Checkout;Update;Patch">
-     <MSBuild Projects=".\XDotNet.BitBucket\XDotNet.sln" Targets="Build" Properties="Configuration=Release;"/>
+  <Target Name="Build" DependsOnTargets="Checkout">
+     <MSBuild Projects="$(RepositoryFolder)\XDotNet.sln" Targets="Build" Properties="Configuration=Release;"/>
   </Target>
 
   <Target Name="Update">
-    <HgPull Source="https://bitbucket.org/Nonnu/xdotnet" LocalPath="$(MSBuildProjectDirectory)\XDotNet.BitBucket" />      
+    <HgPull Source="$(RepositoryUrl)" LocalPath="$(RepositoryFolder)" />      
   </Target>
 
   <Target Name="Checkout">
-    <RemoveDir Directories="$(MSBuildProjectDirectory)\XDotNet.BitBucket" />
-    <HgClone Source="https://bitbucket.org/Nonnu/xdotnet" LocalPath="$(MSBuildProjectDirectory)\XDotNet.BitBucket"/>
+    <RemoveDir Directories="$(RepositoryFolder)" />
+    <HgClone Source="$(RepositoryUrl)" LocalPath="$(RepositoryFolder)" />
     <Message Text="Revision: $(Revision)"/>
   </Target>
 
   <Target Name="Patch" >
-    <Exec Command="..\..\Tools\Patch\bin\patch.exe --input=..\XDotNet.BitBucket.patch -d XDotNet.BitBucket -p0 --verbose"/>
+    <!-- Exec Command="$(RootDir)\Tools\Patch\bin\patch.exe -/-input=..\XDotNet.BitBucket.patch -d XDotNet.BitBucket -p0 -/-verbose" / -->
   </Target>
 
   <Target Name="Clean" >
-    <!-- MSBuild Projects=".\XDotNet.BitBucket\XDotNet.sln" Targets="Clean"  Properties="Configuration=Release;"/ -->
-    <RemoveDir Directories="$(MSBuildProjectDirectory)\XDotNet.BitBucket" />
+    <RemoveDir Directories="$(RepositoryFolder)" />
   </Target>
 
   <Target Name="Publish" DependsOnTargets="Build" >
     <ItemGroup>
-      <SourceFiles Include="XDotNet.BitBucket\Bin\*" />
+      <SourceFiles Include="XDotNet.BitBucket\Bin\Release\*\**" />
     </ItemGroup>
-    <Copy SourceFiles="@(SourceFiles)" DestinationFiles="@(SourceFiles->'$(MSBuildProjectDirectory)\..\..\Lib\XDotNet\%(RecursiveDir)%(Filename)%(Extension)')" />
+    <Copy SourceFiles="@(SourceFiles)" DestinationFiles="@(SourceFiles->'$(PublishFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
   </Target>
 </Project>

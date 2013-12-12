@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <Import Project="$(SolutionDir)\Axiom.PreSettings.targets" />
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>8.0.30703</ProductVersion>
@@ -14,6 +13,56 @@
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <AxiomUseNewCompilers Condition=" '$(AxiomUseNewCompilers)' == '' ">false</AxiomUseNewCompilers>
+    <!--
+      AxiomSafeCodeMode 
+        Mixed - allow both safe and unsafe methods
+        SafeOnly - Only allow safe methods
+    -->
+    <AxiomSafeCodeMode Condition=" '$(AxiomUseSafeCodeOnly)' == '' ">SafeOnly</AxiomSafeCodeMode>
+    <AxiomBigEndian Condition=" '$(AxiomBigEndian)' == '' ">false</AxiomBigEndian>
+    <AxiomSign Condition=" '$(AxiomSign)' == '' ">false</AxiomSign>
+    <AxiomFullDisposalLog Condition=" '$(AxiomFullDisposalLog)' == '' ">false</AxiomFullDisposalLog>
+    <AxiomGlobalDefines Condition=" '$(AxiomUseNewCompilers)' == 'true' ">$(AxiomGlobalDefines);AXIOM_USENEWCOMPILERS</AxiomGlobalDefines>
+    <AxiomGlobalDefines Condition=" '$(AxiomSafeCodeMode)' == 'SafeOnly' ">$(AxiomGlobalDefines);AXIOM_SAFE_ONLY</AxiomGlobalDefines>
+    <AxiomGlobalDefines Condition=" '$(AxiomSafeCodeMode)' == 'Mixed' ">$(AxiomGlobalDefines);AXIOM_SAFE_MIXED</AxiomGlobalDefines>
+    <AxiomGlobalDefines Condition=" '$(AxiomBigEndian)' == 'true' ">$(AxiomGlobalDefines);AXIOM_BIG_ENDIAN</AxiomGlobalDefines>
+    <AxiomGlobalDefines Condition=" '$(AxiomFullDisposalLog)' == 'true' ">$(AxiomGlobalDefines);AXIOM_ENABLE_LOG_STACKTRACE</AxiomGlobalDefines>
+    <AxiomWin8>true</AxiomWin8>
+    <ImplicitlyExpandTargetFramework>true</ImplicitlyExpandTargetFramework>
+    <TargetFrameworkIdentifier>.NETCore</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetPlatformVersion>8.0</TargetPlatformVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Net40Debug'  Or '$(Configuration)' == 'SL5Debug'  Or '$(Configuration)' == 'Win8Debug' ">
+    <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
+    <DefineConstants>TRACE;DEBUG;$(TargetFrameworkDefine);$(AxiomGlobalDefines)</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
+    <DefineConstants>NETFX_CORE;$(DefineConstants);WIN8</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' Or '$(Configuration)' == 'Net40Release' Or '$(Configuration)' == 'SL5Release' Or '$(Configuration)' == 'Win8Release' ">
+    <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
+    <DocumentationFile>bin\Release\$(TargetFrameworkVersion)\$(AssemblyName).xml</DocumentationFile>
+    <DefineConstants>TRACE;$(TargetFrameworkDefine);$(AxiomGlobalDefines)</DefineConstants>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\$(AssemblyName).xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
+    <DefineConstants>NETFX_CORE;$(DefineConstants);WIN8</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Core\AtomicWrappers.cs" />
@@ -765,15 +814,39 @@
     <Reference Include="Ionic.Zip">
       <HintPath>$(SolutionDir)\..\Lib\DotNetZip\x86\Ionic.Zip.Axiom.dll</HintPath>
     </Reference>
+    <Reference Include="System.Composition.AttributedModel">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.20\lib\portable-net45+win8\System.Composition.AttributedModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Convention">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.20\lib\portable-net45+win8\System.Composition.Convention.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Hosting">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.20\lib\portable-net45+win8\System.Composition.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.Runtime">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.20\lib\portable-net45+win8\System.Composition.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Composition.TypedParts">
+      <HintPath>..\..\packages\Microsoft.Composition.1.0.20\lib\portable-net45+win8\System.Composition.TypedParts.dll</HintPath>
+    </Reference>
     <Reference Include="XdotNet.mscorlib.Metro">
-      <HintPath>..\..\..\Lib\XdotNet\WinRT\XdotNet.mscorlib.Metro.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\WinRT\XdotNet.mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="XdotNet.System.Core.Metro">
-      <HintPath>..\..\..\Lib\XdotNet\WinRT\XdotNet.System.Core.Metro.dll</HintPath>
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\WinRT\XdotNet.System.Core.dll</HintPath>
     </Reference>
-    <Reference Include="XdotNet.System.Metro">
-      <HintPath>..\..\..\Lib\XdotNet\WinRT\XdotNet.System.Metro.dll</HintPath>
+    <Reference Include="XdotNet.System.Drawing.Metro">
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\WinRT\XdotNet.System.Drawing.dll</HintPath>
     </Reference>
+    <Reference Include="XdotNet.System.Xml.Metro">
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\WinRT\XdotNet.System.Xml.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="mono\" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '11.0' ">
     <VisualStudioVersion>11.0</VisualStudioVersion>
@@ -787,4 +860,5 @@
   </Target>
   -->
   <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
 </Project>

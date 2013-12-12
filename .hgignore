@@ -1,0 +1,7 @@
+syntax: glob
+Dependencies/OpenTK/OpenTK.SourceForge/
+Dependencies/DotNetZip/DotNetZip.Codeplex/
+[O|o]bj
+[B|b]in
+*.pri
+Source/packages/
