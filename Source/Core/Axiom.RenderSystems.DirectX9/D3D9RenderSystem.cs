@@ -427,7 +427,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// If this is called without going through RenderWindow::update, then 
 				// the device will not have been set. Calling it twice is safe, the 
 				// implementation ensures nothing happens if the same device is set twice
-				if ( this._renderWindows.Contains( value ) )
+				if ( value is RenderWindow &&  this._renderWindows.Contains((RenderWindow) value ) )
 				{
 					var window = (D3D9RenderWindow)value;
 					this._deviceManager.ActiveRenderTargetDevice = window.Device;
