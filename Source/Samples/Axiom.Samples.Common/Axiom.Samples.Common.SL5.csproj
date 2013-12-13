@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(SolutionDir)\Axiom.PreSettings.targets" />
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{3BA11D30-BB12-412E-AA23-A3B2C6E10DE0}</ProjectGuid>
+    <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Axiom.Samples.Common</RootNamespace>
+    <AssemblyName>Axiom.Samples.Common</AssemblyName>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <DefineConstants>TRACE;SILVERLIGHT;AXIOM_SAFE_ONLY;$(TargetFrameworkDefine)</DefineConstants>
+    <SilverlightApplication>false</SilverlightApplication>
+    <ValidateXaml>true</ValidateXaml>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="SharpInputSystem.Core">
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Xna\Phone\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.Composition, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows" />
+    <Reference Include="system" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Browser" />
+    <Reference Include="XdotNet.mscorlib">
+      <HintPath>$(SolutionDir)\..\Lib\XdotNet\XdotNet.mscorlib.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sample.cs" />
+    <Compile Include="SampleContext.cs" />
+    <Compile Include="SamplePlugin.cs" />
+    <Compile Include="SdkCameraManager.cs" />
+    <Compile Include="SdkSample.cs" />
+    <Compile Include="Tray\Button.cs" />
+    <Compile Include="Tray\CheckBox.cs" />
+    <Compile Include="Tray\DecorWidget.cs" />
+    <Compile Include="Tray\ISdkTrayListener.cs" />
+    <Compile Include="Tray\Label.cs" />
+    <Compile Include="Tray\LogoWidget.cs" />
+    <Compile Include="Tray\ParamsPanel.cs" />
+    <Compile Include="Tray\ProgressBar.cs" />
+    <Compile Include="Tray\SdkTrays.cs" />
+    <Compile Include="Tray\SelectMenu.cs" />
+    <Compile Include="Tray\Separator.cs" />
+    <Compile Include="Tray\Slider.cs" />
+    <Compile Include="Tray\TextBox.cs" />
+    <Compile Include="Tray\Widget.cs" />
+    <Compile Include="Tray\WidgetEventArgs.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(SolutionDir)\Core\Axiom\Axiom.SL5.csproj">
+      <Project>{F81A4DA2-7E93-40F1-9A7E-F76D06B7E5F1}</Project>
+      <Name>Axiom.SL5</Name>
+    </ProjectReference>
+    <ProjectReference Include="$(SolutionDir)\Framework\Axiom.Framework\Axiom.Framework.SL5.csproj">
+      <Project>{3309AE07-3A38-4913-A9AD-33B1B26C109B}</Project>
+      <Name>Axiom.Framework.SL5</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\v5.0\Microsoft.Silverlight.CSharp.targets" />
+  <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{A1591282-1198-4647-A2B1-27E5FF5F6F3B}">
+        <SilverlightProjectProperties />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
