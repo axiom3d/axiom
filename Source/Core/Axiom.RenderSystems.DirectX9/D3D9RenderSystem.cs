@@ -69,6 +69,7 @@ namespace Axiom.RenderSystems.DirectX9
 	/// </summary>
 	public partial class D3D9RenderSystem : RenderSystem
 	{
+
 		// Not implemented methods / fields: 
 		// notifyOnDeviceReset
 
@@ -230,6 +231,16 @@ namespace Axiom.RenderSystems.DirectX9
 
 		[OgreVersion( 1, 7, 2790 )] private static D3D9RenderSystem _D3D9RenderSystem;
 
+        public static D3D9RenderSystem Instance
+        {
+            get
+            {
+                if(_D3D9RenderSystem == null)
+                    throw new AxiomException("D3D9RenderSystem was not properly initialized !!!");
+
+                return _D3D9RenderSystem;
+            }
+        }
 		#endregion Class Fields
 
 		#region Class Properties

@@ -86,7 +86,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				this._activeDevice = value;
 
-				var renderSystem = (D3D9RenderSystem)( Root.Instance.RenderSystem );
+                var renderSystem = D3D9RenderSystem.Instance;
 				var driverList = renderSystem.Direct3DDrivers;
 
 				// Update the active driver member.
@@ -226,7 +226,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		private D3D9Device _selectDevice( D3D9RenderWindow renderWindow, D3D9RenderWindowList renderWindowsGroup )
 		{
-			var renderSystem = (D3D9RenderSystem)Root.Instance.RenderSystem;
+            var renderSystem = D3D9RenderSystem.Instance;
 			D3D9Device renderDevice = null;
 			var direct3D9 = D3D9RenderSystem.Direct3D9;
 			var nAdapterOrdinal = 0; // D3DADAPTER_DEFAULT
@@ -493,7 +493,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		private D3D9Driver _findDriver( D3D9RenderWindow renderWindow )
 		{
-			var renderSystem = (D3D9RenderSystem)Root.Instance.RenderSystem;
+            var renderSystem = D3D9RenderSystem.Instance;
 			var direct3D9 = D3D9RenderSystem.Direct3D9;
 			var driverList = renderSystem.Direct3DDrivers;
 

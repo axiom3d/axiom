@@ -134,7 +134,7 @@ namespace Axiom.RenderSystems.DirectX9
 				format = GetNativeFormat( ttype, format, usage );
 			}
 
-			var rs = (D3D9RenderSystem)Root.Instance.RenderSystem;
+            var rs = D3D9RenderSystem.Instance;
 			return rs.CheckTextureFilteringSupported( ttype, format, usage );
 		}
 	};

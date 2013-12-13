@@ -1194,7 +1194,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Check FSAA level
 			if ( ( usage & TextureUsage.RenderTarget ) != 0 )
 			{
-				var rsys = (D3D9RenderSystem)Root.Instance.RenderSystem;
+                var rsys = D3D9RenderSystem.Instance;
 				rsys.DetermineFSAASettings( d3d9Device, fsaa, fsaaHint, d3dPF, false, out this._fsaaType, out this._fsaaQuality );
 			}
 			else
@@ -1327,7 +1327,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Check FSAA level
 			if ( ( usage & TextureUsage.RenderTarget ) != 0 )
 			{
-				var rsys = (D3D9RenderSystem)Root.Instance.RenderSystem;
+                var rsys = D3D9RenderSystem.Instance;
 				rsys.DetermineFSAASettings( d3d9Device, fsaa, fsaaHint, d3dPF, false, out this._fsaaType, out this._fsaaQuality );
 			}
 			else
