@@ -1105,7 +1105,7 @@ namespace Axiom.RenderSystems.DirectX9
 				// Check if we should use that id or, alternatively, the hashcode
 				var name = string.Format( "rtt/{0}/{1}", ID, srcName );
 				this.renderTexture = new D3D9RenderTexture( name, this, writeGamma, fsaa );
-				Root.Instance.RenderSystem.AttachRenderTarget( this.renderTexture );
+                D3D9RenderSystem.Instance.AttachRenderTarget(this.renderTexture);
 			}
 		}
 
@@ -1117,7 +1117,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			if ( this.renderTexture != null )
 			{
-				Root.Instance.RenderSystem.DestroyRenderTarget( this.renderTexture.Name );
+                D3D9RenderSystem.Instance.DestroyRenderTarget(this.renderTexture.Name);
 				this.renderTexture = null;
 			}
 		}

@@ -979,7 +979,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 
-			var rsys = (D3D9RenderSystem)Root.Instance.RenderSystem;
+            var rsys = D3D9RenderSystem.Instance;
 
 			rsys.DetermineFSAASettings( this._device.D3DDevice, fsaa, fsaaHint, presentParams.BackBufferFormat, isFullScreen,
 										out this._fsaaType, out this._fsaaQuality );

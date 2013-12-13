@@ -69,7 +69,8 @@ namespace Axiom.RenderSystems.DirectX9
 			this._renderSystem = new D3D9RenderSystem();
 
 			// add an instance of this plugin to the list of available RenderSystems
-			Root.Instance.RenderSystems.Add( "DirectX9", this._renderSystem );
+            if(Root.Instance != null)
+			    Root.Instance.RenderSystems.Add( "DirectX9", this._renderSystem );
 		}
 
 		public void Shutdown()

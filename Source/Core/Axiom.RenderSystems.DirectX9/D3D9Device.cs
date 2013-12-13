@@ -480,7 +480,7 @@ namespace Axiom.RenderSystems.DirectX9
 				return;
 			}
 
-			var renderSystem = (D3D9RenderSystem)Root.Instance.RenderSystem;
+			var renderSystem = D3D9RenderSystem.Instance;
 
 			// Clean up depth stencil surfaces
 			renderSystem.CleanupDepthStencils( this.pDevice );
@@ -513,7 +513,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Case we just moved from valid state to lost state.
 			this.DeviceLost = true;
 
-			var renderSystem = (D3D9RenderSystem)Root.Instance.RenderSystem;
+            var renderSystem = D3D9RenderSystem.Instance;
 			renderSystem.NotifyOnDeviceLost( this );
 		}
 
@@ -597,7 +597,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// Lock access to rendering device.
 			D3D9RenderSystem.ResourceManager.LockDeviceAccess();
 
-			var renderSystem = (D3D9RenderSystem)Root.Instance.RenderSystem;
+            var renderSystem = D3D9RenderSystem.Instance;
 
 			// Inform all resources that device lost.
 			D3D9RenderSystem.ResourceManager.NotifyOnDeviceLost( this.pDevice );
@@ -716,7 +716,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		public void ClearDeviceStreams()
 		{
-			var renderSystem = (D3D9RenderSystem)Root.Instance.RenderSystem;
+            var renderSystem = D3D9RenderSystem.Instance;
 
 			// Set all texture units to nothing to release texture surfaces
 			for ( var stage = 0; stage < D3D9DeviceCaps.MaxSimultaneousTextures; ++stage )

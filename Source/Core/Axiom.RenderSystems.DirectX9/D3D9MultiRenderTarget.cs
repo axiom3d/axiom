@@ -99,7 +99,7 @@ namespace Axiom.RenderSystems.DirectX9
 					throw new AxiomException( "MultiRenderTarget surfaces are not the same size." );
 				}
 
-				if ( !Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.MRTDifferentBitDepths ) &&
+                if (!D3D9RenderSystem.Instance.Capabilities.HasCapability(Capabilities.MRTDifferentBitDepths) &&
 				     ( PixelUtil.GetNumElemBits( this._renderTargets[ y ].Format ) != PixelUtil.GetNumElemBits( buffer.Format ) ) )
 				{
 					throw new AxiomException( "MultiRenderTarget surfaces are not of same bit depth and hardware requires it" );

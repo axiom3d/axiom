@@ -189,7 +189,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 		private void _defaultFormResize( object sender, EventArgs e )
 		{
-			Root.Instance.SuspendRendering = WindowState == FormWindowState.Minimized;
+            if(Root.Instance != null)
+			    Root.Instance.SuspendRendering = WindowState == FormWindowState.Minimized;
 		}
 	};
 }
