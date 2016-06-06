@@ -1,0 +1,138 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A836B773-8B22-4713-A9D4-D4E32BA73296}</ProjectGuid>
+    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Axiom.UnitTests</RootNamespace>
+    <AssemblyName>Axiom.UnitTests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+	<TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+	<TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkSubset>
+    </TargetFrameworkSubset>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;$(TargetFrameworkDefine)</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;$(TargetFrameworkDefine)</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
+    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Gallio, Version=3.1.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL" />
+    <Reference Include="MbUnit, Version=3.1.0.0, Culture=neutral, PublicKeyToken=eb9cfa67ee6ab36e, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Typemock.ArrangeActAssert, Version=6.0.4.0, Culture=neutral, PublicKeyToken=3dae460033b8d8e2, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Collections\AddRemoveMovableObjectRegressionTests.cs" />
+    <Compile Include="Collections\RenameMovableObjectRegressionTests.cs" />
+    <Compile Include="Core\ChainedEventTests.cs" />
+    <Compile Include="Core\LodStrategyTests.cs" />
+    <Compile Include="Core\ResourceGroupManager.ManualResourceCreation.Test.cs" />
+    <Compile Include="Core\SceneManagerRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\SceneNodeRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Core\SceneNodeTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Fonts\FontManagerRegressionTests.cs" />
+    <Compile Include="Graphics\GpuProgramParametersTestFixture.cs" />
+    <Compile Include="Math\AxisAlignedBoxTest.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SceneManagers\Bsp\BspSceneManagerRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\Bsp\BspSceneNodeRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\Bsp\BspSceneNodeTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\Octree\OctreeNodeRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\Octree\OctreeNodeTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\Octree\OctreeSceneManagerRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\PortalConnected\PCZSceneManagerRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\PortalConnected\PCZSceneNodeRegressionTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SceneManagers\PortalConnected\PCZSceneNodeTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Serialization\BitConverterExtensionTests.cs" />
+    <Compile Include="Serialization\StreamSerializerTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Axiom\Engine\Axiom.csproj">
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Name>Axiom</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\Platforms\Win32\Axiom.Platforms.Win32.csproj">
+      <Project>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</Project>
+      <Name>Axiom.Platforms.Win32</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\RenderSystems\DirectX9\Axiom.RenderSystems.DirectX9.csproj">
+      <Project>{68DBB62F-F98D-47B5-A769-C20B461227AB}</Project>
+      <Name>Axiom.RenderSystems.DirectX9</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.csproj">
+      <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
+      <Name>Axiom.SceneManagers.Bsp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.csproj">
+      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
+      <Name>Axiom.SceneManagers.Octree</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\SceneManagers\PCZ\Axiom.SceneManagers.PortalConnected.csproj">
+      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
+      <Name>Axiom.SceneManagers.PortalConnected</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

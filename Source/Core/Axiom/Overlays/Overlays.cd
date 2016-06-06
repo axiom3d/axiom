@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Axiom.Overlays.Elements.BorderPanel">
+    <Position X="15.25" Y="7" Width="1.5" />
+    <NestedTypes>
+      <Class Name="Axiom.Overlays.Elements.BorderPanel.CellUV" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Overlays\Elements\BorderPanel.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="Axiom.Overlays.Elements.BorderPanel.BorderRenderable" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Overlays\Elements\BorderPanel.cs</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+      <Enum Name="Axiom.Overlays.Elements.BorderPanel.BorderCell" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Overlays\Elements\BorderPanel.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>BuSAADEGMFAIQxgFIAAERBQgBAgQAIAAAAIBAMIAgJQ=</HashCode>
+      <FileName>Overlays\Elements\BorderPanel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Axiom.Overlays.Elements.BorderPanelFactory" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAQAAAAAAAAA=</HashCode>
+      <FileName>Overlays\Elements\Factories.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Axiom.Overlays.Elements.PanelFactory" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAQAAAAAAAAA=</HashCode>
+      <FileName>Overlays\Elements\Factories.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Axiom.Overlays.Elements.TextAreaFactory" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAQAAAAAAAAA=</HashCode>
+      <FileName>Overlays\Elements\Factories.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Axiom.Overlays.Elements.Panel">
+    <Position X="13" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAggAAAIBwABAAgAARAMAAoAAAAAAAAEAAEAAAA=</HashCode>
+      <FileName>Overlays\Elements\Panel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Axiom.Overlays.Elements.TextArea">
+    <Position X="2.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AkYEgAAAAAAAAxAQEAQIABRMCAkAQoiBAAAAiQEVJAQ=</HashCode>
+      <FileName>Overlays\Elements\TextArea.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Axiom.Overlays.OverlayManager" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="8" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CIAMIAEAAClEgQQgEAAQAAAACABQAEAAYACAAAIAEAg=</HashCode>
+      <FileName>Overlays\OverlayManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Axiom.Overlays.Overlay" Collapsed="true">
+    <Position X="9.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>aOACBAAAEIABFYQAEnIQAAgCFAAEASACAAAghkBAAAA=</HashCode>
+      <FileName>Overlays\Overlay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Axiom.Overlays.OverlayElement">
+    <Position X="7.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RfxMRGAqLGgg04RB2xADVlwEgQRcJwCbKFQAiEF4BjA=</HashCode>
+      <FileName>Overlays\OverlayElement.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Axiom.Overlays.OverlayElementContainer">
+    <Position X="10.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AATAAAAAAAAAMQQBAAIEAEAAAAYAAQEAIAQACAAIAAA=</HashCode>
+      <FileName>Overlays\OverlayElementContainer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Axiom.Overlays.OverlayElementManager" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAQAAAAAIOAAAAQAgAAAAAAgAgBAAAAAQAAAAAAJAAA=</HashCode>
+      <FileName>Overlays\OverlayElementManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Interface Name="Axiom.Overlays.IOverlayElementFactory" Collapsed="true">
+    <Position X="8" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAQAAAAAAAAA=</HashCode>
+      <FileName>Overlays\IOverlayElementFactory.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Axiom.Overlays.MetricsMode" Collapsed="true">
+    <Position X="9.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>Overlays\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Axiom.Overlays.HorizontalAlignment" Collapsed="true">
+    <Position X="8" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAIAAA=</HashCode>
+      <FileName>Overlays\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Axiom.Overlays.VerticalAlignment" Collapsed="true">
+    <Position X="11.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAAAIAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Overlays\Enums.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
