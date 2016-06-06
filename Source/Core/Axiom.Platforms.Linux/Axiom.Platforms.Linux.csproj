@@ -9,6 +9,15 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Axiom.Platforms.Linux</RootNamespace>
     <AssemblyName>Axiom.Platforms.Linux</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;AXIOM_SAFE_MIXED</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\v4.0\</OutputPath>
+    <DefineConstants>TRACE;AXIOM_SAFE_MIXED</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
