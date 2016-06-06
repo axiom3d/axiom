@@ -1,5 +1,9 @@
 # Axiom 3D Rendering Engine
 
+# Build Status
+** Windows **
+[![Build Status](http://axiombuild.cloudapp.net/job/Axiom%20Windows/badge/icon)](http://axiombuild.cloudapp.net/job/Axiom%20Windows/)
+
 **Welcome!** 
 The Axiom 3D Rendering Engine is a fully object oriented 3D graphics engine using C# and the .Net platform. Axiom 3D aims to be an easy to use, flexible, extendable, and powerful engine that allows for rapid development of games and other graphical applications. By using the .Net framework as the target platform, developers can focus more on core functionality and logic, rather than dealing with the complexities of languages like C++.
 
