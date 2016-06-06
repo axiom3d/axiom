@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="$(SolutionDir)\Axiom.PreSettings.targets" />
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Axiom.Plugins.ParticleFX</RootNamespace>
+    <AssemblyName>Axiom.Plugins.ParticleFX</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5' " />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' ">
+      <HintPath>$(SolutionDir)\..\Lib\MEF\Net3.5\System.ComponentModel.Composition.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AreaEmitter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DeflectorPlaneAffector.cs" />
+    <Compile Include="DirectionRandomizerAffector.cs" />
+    <Compile Include="Factories\DeflectorPlaneFactory.cs" />
+    <Compile Include="Factories\DirectionRandomizerFactory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BoxEmitter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ColorFaderAffector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ColorFaderAffector2.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ColorImageAffector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ColorInterpolatorAffector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CylinderEmitter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="EllipsoidEmitter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="HollowEllipsoidEmitter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LinearForceAffector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ParticleFX.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PointEmitter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RingEmitter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="RotationAffector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ScaleAffector.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\BoxEmitterFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\ColorFaderAffector2Factory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\ColorFaderAffectorFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\ColorImageAffectorFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\ColorInterpolatorAffectorFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\CylinderEmitterFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\EllipsoidEmitterFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\HollowEllipsoidEmitterFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\LinearForceAffectorFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\PointEmitterFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\RingEmitterFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\RotationAffectorFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Factories\ScaleAffectorFactory.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Axiom\Axiom.csproj">
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Name>Axiom</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
+  <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
+</Project>

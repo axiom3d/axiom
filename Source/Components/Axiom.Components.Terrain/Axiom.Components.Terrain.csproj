@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(SolutionDir)\Axiom.PreSettings.targets" />
+  <PropertyGroup>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{79674E34-9EC2-4819-B47E-3DD75DFA4173}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Axiom.Components.Terrain</RootNamespace>
+    <AssemblyName>Axiom.Components.Terrain</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5' " />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' ">
+      <HintPath>$(SolutionDir)\..\Lib\MEF\Net3.5\System.ComponentModel.Composition.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Core\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="GpuBufferAllocator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Terrain.cs" />
+    <Compile Include="TerrainGlobalOptions.cs" />
+    <Compile Include="TerrainGroup.cs" />
+    <Compile Include="TerrainLayerBlendMap.cs" />
+    <Compile Include="TerrainMaterialGenerator.cs" />
+    <Compile Include="TerrainMaterialGeneratorA.cs" />
+    <Compile Include="TerrainPagedWorldSection.cs" />
+    <Compile Include="TerrainPaging.cs" />
+    <Compile Include="TerrainQuadTreeNode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj">
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Name>Axiom.2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Axiom.Components.Paging\Axiom.Components.Paging.csproj">
+      <Project>{89C3D207-913D-4BCB-BD6E-F8673E20D8EA}</Project>
+      <Name>Axiom.Components.Paging</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
+</Project>
