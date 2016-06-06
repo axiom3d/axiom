@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{F77391D7-3E0B-411C-984A-33ECD98FD734}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Axiom.Samples.Browser</RootNamespace>
+    <AssemblyName>Axiom.Samples.Browser</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <AndroidApplication>true</AndroidApplication>
+    <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
+    <AndroidSupportedAbis>armeabi%3barmeabi-v7a</AndroidSupportedAbis>
+    <AndroidStoreUncompressedFileExtensions />
+    <MandroidI18n />
+    <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidLinkMode>None</AndroidLinkMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
+    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Android" />
+    <Reference Include="OpenTK" />
+    <Reference Include="mscorlib" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Common.Logging, Version=2.0.0.4042, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\Lib\SharpInputSystem\Core\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip.Axiom, Version=1.9.1.9000, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\..\..\Lib\DotNetZip\Phone\Ionic.Zip.Axiom.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpInputSystem.Core">
+      <HintPath>..\..\..\Lib\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.Droid.cs" />
+    <Compile Include="SampleBrowser.cs" />
+    <Compile Include="SampleBrowser.Droid.cs" />
+    <Compile Include="Resources\Resource.Designer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SampleBrowserView.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="..\media\Archives\SdkTrays.zip">
+      <Link>Assets\Archives\SdkTrays.zip</Link>
+    </AndroidAsset>
+    <None Include="Resources\AboutResources.txt" />
+    <None Include="Assets\AboutAssets.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Layout\Main.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Values\Strings.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\Drawable\GameThumbnail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Axiom.Platforms.Android\Axiom.Platforms.Android.csproj">
+      <Project>{56E559D6-84BA-4EC3-BB9E-F6A9F7B07FAF}</Project>
+      <Name>Axiom.Platforms.Android</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Axiom.RenderSystems.OpenGLES2\Axiom.RenderSystems.OpenGLES2.Droid.csproj">
+      <Project>{D7EB0CDB-D53E-44AD-AF2C-886CC8A5EE1B}</Project>
+      <Name>Axiom.RenderSystems.OpenGLES2.Droid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.Droid.csproj">
+      <Project>{CE54DB12-FD64-4F5F-9D1F-4B451E2DB68E}</Project>
+      <Name>Axiom.Droid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Framework\Axiom.Framework\Axiom.Framework.Droid.csproj">
+      <Project>{8C6DB9C4-C16A-4B46-BD27-76765982C40B}</Project>
+      <Name>Axiom.Framework.Droid</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Axiom.Samples.Common\Axiom.Samples.Common.Droid.csproj">
+      <Project>{AD8DEE23-E6AF-4DBC-9A26-9AEA7319F39A}</Project>
+      <Name>Axiom.Samples.Common.Droid</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\AndroidManifest.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+     Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

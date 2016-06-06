@@ -1,0 +1,45 @@
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration>Release</Configuration>
+
+    <Version>$(CCNetLabel)</Version>
+    <Version Condition="'$(Version)'==''">0.8.0.0</Version>
+    <RootDir>$(MSBuildProjectDirectory)</RootDir>
+    <BuildDir>$(RootDir)\..\build</BuildDir>
+    <StartDir>$(RootDir)</StartDir>
+    <MetaBuildBinDir>$(RootDir)\..\tools\MetaBuild\bin</MetaBuildBinDir>
+    <MetaBuildConfigFile>$(RootDir)\..\tools\MetaBuild\bin\MetaBuild.config.custom</MetaBuildConfigFile>
+  </PropertyGroup>
+
+  <Target Name="Build">
+    <MSBuild Projects="$(MetaBuildBinDir)\MetaBuild.msbuild"
+             Properties="
+	       Configuration=$(Configuration);
+	       ShowReports=$(ShowReports);
+	       ReportTypes=$(ReportTypes);
+	       Coverage=$(Coverage);
+	       Version=$(Version);
+	       RootDir=$(RootDir);
+	       StartDir=$(StartDir);
+         BuildDir=$(BuildDir);
+	       MetaBuildBinDir=$(MetaBuildBinDir);
+	       MetaBuildConfigFile=$(MetaBuildConfigFile)"
+	     Targets="Clean;Build;Image;Test;Dist" />
+  </Target>
+
+  <Target Name="Clean">
+    <MSBuild Projects="$(MetaBuildBinDir)\MetaBuild.msbuild"
+             Properties="
+	       Configuration=$(Configuration);
+	       ShowReports=$(ShowReports);
+	       ReportTypes=$(ReportTypes);
+	       Coverage=$(Coverage);
+	       Version=$(Version);
+	       RootDir=$(RootDir);
+	       StartDir=$(StartDir);
+         BuildDir=$(BuildDir);
+	       MetaBuildBinDir=$(MetaBuildBinDir);
+	       MetaBuildConfigFile=$(MetaBuildConfigFile)"
+	     Targets="Clean" />
+  </Target>
+</Project>

@@ -1,0 +1,122 @@
+<!-- Common Settings used by Axiom projects -->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <AxiomUseNewCompilers Condition=" '$(AxiomUseNewCompilers)' == '' ">false</AxiomUseNewCompilers>
+    <!--
+      AxiomSafeCodeMode 
+        Mixed - allow both safe and unsafe methods
+        SafeOnly - Only allow safe methods
+    -->
+    <AxiomSafeCodeMode Condition=" '$(AxiomUseSafeCodeOnly)' == '' ">Mixed</AxiomSafeCodeMode>
+    <AxiomBigEndian Condition=" '$(AxiomBigEndian)' == '' ">false</AxiomBigEndian>
+    <AxiomSign Condition=" '$(AxiomSign)' == '' ">false</AxiomSign>
+    <AxiomFullDisposalLog Condition=" '$(AxiomFullDisposalLog)' == '' ">false</AxiomFullDisposalLog>
+    <AxiomGlobalDefines Condition=" '$(AxiomUseNewCompilers)' == 'true' ">$(AxiomGlobalDefines);AXIOM_USENEWCOMPILERS</AxiomGlobalDefines>
+    <AxiomGlobalDefines Condition=" '$(AxiomSafeCodeMode)' == 'SafeOnly' ">$(AxiomGlobalDefines);AXIOM_SAFE_ONLY</AxiomGlobalDefines>
+    <AxiomGlobalDefines Condition=" '$(AxiomSafeCodeMode)' == 'Mixed' ">$(AxiomGlobalDefines);AXIOM_SAFE_MIXED</AxiomGlobalDefines>
+    <AxiomGlobalDefines Condition=" '$(AxiomBigEndian)' == 'true' ">$(AxiomGlobalDefines);AXIOM_BIG_ENDIAN</AxiomGlobalDefines>
+    <AxiomGlobalDefines Condition=" '$(AxiomFullDisposalLog)' == 'true' ">$(AxiomGlobalDefines);AXIOM_ENABLE_LOG_STACKTRACE</AxiomGlobalDefines>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <OutputType>Library</OutputType>
+    <FileAlignment>512</FileAlignment>
+    <AllowUnsafeBlocks Condition=" '$(AxiomSafeCodeMode)' == 'Mixed' ">true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks Condition=" '$(AxiomSafeCodeMode)' == 'SafeOnly' ">false</AllowUnsafeBlocks>
+    <PlatformTarget>x86</PlatformTarget>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Release'  ">
+    <AxiomWin8>false</AxiomWin8>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile></TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Net40Debug' Or '$(Configuration)' == 'Net40Release'  ">
+    <AxiomWin8>false</AxiomWin8>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'SL5Debug' Or '$(Configuration)' == 'SL5Release'  ">
+    <AxiomWin8>false</AxiomWin8>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
+    <SilverlightVersion>v5.0</SilverlightVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Win8Debug' Or '$(Configuration)' == 'Win8Release'  ">
+    <AxiomWin8>true</AxiomWin8>
+    <ImplicitlyExpandTargetFramework>true</ImplicitlyExpandTargetFramework>
+    <TargetFrameworkIdentifier>.NETCore</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetPlatformVersion>8.0</TargetPlatformVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Win8UIDebug' Or '$(Configuration)' == 'Win8UIRelease'  ">
+    <AxiomWin8>true</AxiomWin8>
+    <ImplicitlyExpandTargetFramework>true</ImplicitlyExpandTargetFramework>
+    <TargetFrameworkIdentifier>.NETCore</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetPlatformVersion>8.0</TargetPlatformVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.5' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Net40Debug'  Or '$(Configuration)' == 'SL5Debug'  Or '$(Configuration)' == 'Win8Debug' ">
+    <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
+    <DefineConstants>TRACE;DEBUG;$(TargetFrameworkDefine);$(AxiomGlobalDefines)</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>false</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' Or '$(Configuration)' == 'Net40Release' Or '$(Configuration)' == 'SL5Release' Or '$(Configuration)' == 'Win8Release' ">
+    <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
+    <DocumentationFile>bin\Release\$(TargetFrameworkVersion)\$(AssemblyName).xml</DocumentationFile>
+    <DefineConstants>TRACE;$(TargetFrameworkDefine);$(AxiomGlobalDefines)</DefineConstants>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <DocumentationFile>bin\Release\$(AssemblyName).xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Net40Debug|x86' ">
+    <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Net40Release|x86' ">
+    <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Win8Debug|x86'">
+    <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
+    <DefineConstants>$(DefineConstants);WIN8</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Win8Release|x86'">
+    <OutputPath>bin\Release\$(TargetFrameworkVersion)</OutputPath>
+    <DefineConstants>$(DefineConstants);WIN8</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' And '$(AxiomSign)' == 'true'">
+    <DefineConstants>$(DefineConstants);AXIOM_SIGNED</DefineConstants>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(SolutionDir)axiom.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>true</DelaySign>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(SolutionDir)\Axiom.PreSettings.targets" />
+  <PropertyGroup>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Axiom.Framework</RootNamespace>
+    <AssemblyName>Axiom.Framework</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SharpInputSystem.Core">
+      <HintPath>$(SolutionDir)\..\Lib\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5' " />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' ">
+      <HintPath>$(SolutionDir)\..\Lib\MEF\Net3.5\System.ComponentModel.Composition.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\AxiomConfigurationSection.csd.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AxiomConfigurationSection.csd</DependentUpon>
+    </Compile>
+    <Compile Include="Configuration\ConfigurationDialogFactory.cs" />
+    <Compile Include="Configuration\ConfigurationManagerBase.cs" />
+    <Compile Include="Configuration\ConfigurationManagerFactory.cs" />
+    <Compile Include="Configuration\DefaultConfigurationDialogFactory.cs" />
+    <Compile Include="Configuration\DefaultConfigurationManager.cs" />
+    <Compile Include="Configuration\DialogResult.cs" />
+    <Compile Include="Configuration\IConfigurationDialog.cs" />
+    <Compile Include="Configuration\IConfigurationDialogFactory.cs" />
+    <Compile Include="Configuration\IConfigurationManager.cs" />
+    <Compile Include="Configuration\XBoxConfigurationManager.cs" />
+    <Compile Include="Exceptions\IErrorDialog.cs" />
+    <Compile Include="Configuration\WinFormConfigurationDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Exceptions\WinFormErrorDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Game.cs" />
+    <Compile Include="Graphics\SpriteManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+    <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\AxiomIcon.ico" />
+    <None Include="Configuration\AxiomConfigurationSection.csd">
+      <Generator>CsdFileGenerator</Generator>
+      <LastGenOutput>AxiomConfigurationSection.csd.cs</LastGenOutput>
+    </None>
+    <None Include="Configuration\AxiomConfigurationSection.csd.config">
+      <DependentUpon>AxiomConfigurationSection.csd</DependentUpon>
+    </None>
+    <None Include="Configuration\AxiomConfigurationSection.csd.diagram">
+      <DependentUpon>AxiomConfigurationSection.csd</DependentUpon>
+    </None>
+    <None Include="Configuration\AxiomConfigurationSection.csd.xsd">
+      <DependentUpon>AxiomConfigurationSection.csd</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Resources\axiomlogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj">
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Name>Axiom</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
+</Project>
