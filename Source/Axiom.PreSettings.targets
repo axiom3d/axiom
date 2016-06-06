@@ -47,11 +47,6 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
   </PropertyGroup>
-  <PropertyGroup>
-    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.5' ">NET_40</TargetFrameworkDefine>
-    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Win8Debug' ">
     <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>
     <DefineConstants>TRACE;DEBUG;$(TargetFrameworkDefine);$(AxiomGlobalDefines)</DefineConstants>
