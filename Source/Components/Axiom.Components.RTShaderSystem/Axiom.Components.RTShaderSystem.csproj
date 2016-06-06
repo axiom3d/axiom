@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(SolutionDir)\Axiom.PreSettings.targets" />
+  <PropertyGroup>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{07760495-D15D-43B1-A303-14FC40EDF541}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Axiom.Components.RTShaderSystem</RootNamespace>
+    <AssemblyName>Axiom.Components.RTShaderSystem</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5' " />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' ">
+      <HintPath>$(SolutionDir)\..\Lib\MEF\Net3.5\System.ComponentModel.Composition.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(SolutionDir)\Core\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="CGProgramProcessor.cs" />
+    <Compile Include="CGProgramWriter.cs" />
+    <Compile Include="DualQuaternionSkinning.cs" />
+    <Compile Include="Factories\FFPColorFactory.cs" />
+    <Compile Include="Factories\FFPFogFactory.cs" />
+    <Compile Include="Factories\FFPLightingFactory.cs" />
+    <Compile Include="Factories\FFPTexturingFactory.cs" />
+    <Compile Include="Factories\FFPTransformFactory.cs" />
+    <Compile Include="FFPColor.cs" />
+    <Compile Include="FFPFog.cs" />
+    <Compile Include="FFPLighting.cs" />
+    <Compile Include="FFPRenderState.cs" />
+    <Compile Include="FFPRenderStateBuilder.cs" />
+    <Compile Include="FFPTexturing.cs" />
+    <Compile Include="FFPTransform.cs" />
+    <Compile Include="FunctionAtom.cs" />
+    <Compile Include="FunctionInvocation.cs" />
+    <Compile Include="GLSLESProgramProcessor.cs" />
+    <Compile Include="GLSLESProgramWriter.cs" />
+    <Compile Include="GLSLProgramProcessor.cs" />
+    <Compile Include="GLSLProgramWriter.cs" />
+    <Compile Include="HardwareSkinning.cs" />
+    <Compile Include="Factories\HardwareSkinningFactory.cs" />
+    <Compile Include="HardwareSkinningTechnique.cs" />
+    <Compile Include="HLSLProgramProcessor.cs" />
+    <Compile Include="HLSLProgramWriter.cs" />
+    <Compile Include="IntegratedPSSM3.cs" />
+    <Compile Include="Factories\IntegratedPSSM3Factory.cs" />
+    <Compile Include="Factories\LayerBlendingFactory.cs" />
+    <Compile Include="LayeredBlending.cs" />
+    <Compile Include="LinearSkinning.cs" />
+    <Compile Include="NormalMapLighting.cs" />
+    <Compile Include="Factories\NormalMapLightingFactory.cs" />
+    <Compile Include="PerPixelLighting.cs" />
+    <Compile Include="Factories\PerPixelLightingFactory.cs" />
+    <Compile Include="ProgramManager.cs" />
+    <Compile Include="ProgramWriteManager.cs" />
+    <Compile Include="ProgramWriter.cs" />
+    <Compile Include="ProgramWriterCGFactory.cs" />
+    <Compile Include="ProgramWriterFactory.cs" />
+    <Compile Include="ProgramWriterGLSLESFactory.cs" />
+    <Compile Include="ProgramWriterGLSLFactory.cs" />
+    <Compile Include="ProgramWriterHLSLFactory.cs" />
+    <Compile Include="RenderState.cs" />
+    <Compile Include="ScriptTranslator.cs" />
+    <Compile Include="Function.cs" />
+    <Compile Include="MergeParameter.cs" />
+    <Compile Include="Operand.cs" />
+    <Compile Include="Parameter.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="ProgramProcessor.cs" />
+    <Compile Include="ProgramSet.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ShaderGenerator.cs" />
+    <Compile Include="SubRenderState.cs" />
+    <Compile Include="TextureAtlasSampler.cs" />
+    <Compile Include="TextureAtlasSamplerFactory.cs" />
+    <Compile Include="TrackVertexColorType.cs" />
+    <Compile Include="UniformParameter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj">
+      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
+      <Name>Axiom</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
+</Project>

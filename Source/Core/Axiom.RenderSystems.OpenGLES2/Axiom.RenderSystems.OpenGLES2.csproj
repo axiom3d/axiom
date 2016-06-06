@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(SolutionDir)\Axiom.PreSettings.targets" />
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D7EB0CDB-D53E-44AD-AF2C-886CC8A5EE1B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Axiom.RenderSystems.OpenGLES2</RootNamespace>
+    <AssemblyName>Axiom.RenderSystems.OpenGLES2</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="OpenTK">
+      <HintPath>..\..\..\Lib\OpenTK\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\GlobalAssemblyInfo.cs">
+      <Link>Properties\GlobalAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="EGL\EGLSupport.cs" />
+    <Compile Include="EGL\Win32\Win32EGLContext.cs" />
+    <Compile Include="EGL\Win32\Win32EGLRenderTexture.cs" />
+    <Compile Include="EGL\Win32\Win32EGLSupport.cs" />
+    <Compile Include="EGL\Win32\Win32EGLWindow.cs" />
+    <Compile Include="GLES2Config.cs" />
+    <Compile Include="GLES2Context.cs" />
+    <Compile Include="GLES2DefaultHardwareBufferManager.cs" />
+    <Compile Include="GLES2DefaultHardwareIndexBuffer.cs" />
+    <Compile Include="GLES2DefaultHardwareVertexBuffer.cs" />
+    <Compile Include="GLES2DepthBuffer.cs" />
+    <Compile Include="GLES2FBOManager.cs" />
+    <Compile Include="GLES2FBOMultipleRenderTarget.cs" />
+    <Compile Include="GLES2FBORenderTexture.cs" />
+    <Compile Include="GLES2FrameBufferObject.cs" />
+    <Compile Include="GLES2GpuProgram.cs" />
+    <Compile Include="GLES2GpuProgramManager.cs" />
+    <Compile Include="GLES2HardwareBufferManager.cs" />
+    <Compile Include="GLES2HardwareBufferManagerBase.cs" />
+    <Compile Include="GLES2HardwareIndexBuffer.cs" />
+    <Compile Include="GLES2HardwareOcclusionQuery.cs" />
+    <Compile Include="GLES2HardwarePixelBuffer.cs" />
+    <Compile Include="GLES2HardwareVertexBuffer.cs" />
+    <Compile Include="GLES2InternalShaders.cs" />
+    <Compile Include="GLES2PixelUtil.cs" />
+    <Compile Include="GLES2Plugin.cs" />
+    <Compile Include="GLES2ProgramFactory.cs" />
+    <Compile Include="GLES2RenderBuffer.cs" />
+    <Compile Include="GLES2RenderSystem.cs" />
+    <Compile Include="GLES2RenderTexture.cs" />
+    <Compile Include="GLES2RTTManager.cs" />
+    <Compile Include="GLES2Support.cs" />
+    <Compile Include="GLES2Texture.cs" />
+    <Compile Include="GLES2TextureBuffer.cs" />
+    <Compile Include="GLES2TextureManager.cs" />
+    <Compile Include="GLESCgProgramFactory.cs" />
+    <Compile Include="GLSLESLinkProgram.cs" />
+    <Compile Include="GLSLESProgramPipeline.cs" />
+    <Compile Include="GLSLES\GLSLESCgProgramFactory.cs" />
+    <Compile Include="GLSLES\GLSLESCgProgram.cs" />
+    <Compile Include="GLSLES\GLSLESGpuProgram.cs" />
+    <Compile Include="GLSLES\GLSLESLinkProgram.cs" />
+    <Compile Include="GLSLES\GLSLESLinkProgramManager.cs" />
+    <Compile Include="GLSLES\GLSLESPreprocessor.cs" />
+    <Compile Include="GLSLES\GLSLESProgram.cs" />
+    <Compile Include="GLSLES\GLSLESProgramCommon.cs" />
+    <Compile Include="GLSLES\GLSLESProgramFactory.cs" />
+    <Compile Include="GLSLES\GLSLESProgramManagerCommon.cs" />
+    <Compile Include="GLSLES\GLSLESProgramPipeline.cs" />
+    <Compile Include="GLSLES\GLSLESProgramPipelineManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EGL\Win32\GLES2RenderSystem.Win32EGL.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Axiom\Axiom.csproj">
+      <Project>{baa6ae8a-b259-4883-9805-ce538660a59a}</Project>
+      <Name>Axiom</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
+  <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
+</Project>
