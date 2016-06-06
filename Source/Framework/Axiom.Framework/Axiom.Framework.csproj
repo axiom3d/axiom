@@ -8,6 +8,12 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Axiom.Framework</RootNamespace>
     <AssemblyName>Axiom.Framework</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;AXIOM_SAFE_MIXED</DefineConstants>
+    <OutputPath>bin\Debug\v4.0\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpInputSystem.Core">
