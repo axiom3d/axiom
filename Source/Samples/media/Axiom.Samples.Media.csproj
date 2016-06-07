@@ -269,12 +269,11 @@
   <ItemGroup>
     <Folder Include="Icons\Archives\" />
   </ItemGroup>
-  <Target Name="Build">
-  </Target>
-  <Target Name="Rebuild">
-  </Target>
-  <Target Name="Clean">
-  </Target>
+  <Target Name="Build" />
+  <Target Name="Rebuild" />
+  <Target Name="Clean" />
+  <Target Name="GetNativeManifest" />
+  <Target Name="GetCopyToOutputDirectoryItems" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
