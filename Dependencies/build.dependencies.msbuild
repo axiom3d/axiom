@@ -1,16 +1,13 @@
 <Project DefaultTargets="Clean;Build;Publish" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <Target Name="Clean">
-    <MSBuild Projects="DotNetZip\DotNetZip.msbuild" Targets="Clean" />
     <MSBuild Projects="OpenTK\OpenTK.msbuild" Targets="Clean" />
   </Target>
 
   <Target Name="Build">
-    <MSBuild Projects="DotNetZip\DotNetZip.msbuild" Targets="Build" />
     <MSBuild Projects="OpenTK\OpenTK.msbuild" Targets="Build" />
   </Target>
 
   <Target Name="Publish">
-    <MSBuild Projects="DotNetZip\DotNetZip.msbuild" Targets="Publish" />
     <MSBuild Projects="OpenTK\OpenTK.msbuild" Targets="Publish" />
   </Target>
 
