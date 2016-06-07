@@ -1,7 +1,7 @@
 # Axiom 3D Rendering Engine
 
 # Build Status
-Windows : [![Build Status](http://axiombuild.cloudapp.net/job/Axiom%20Windows/badge/icon)](http://axiombuild.cloudapp.net/job/Axiom%20Windows/)
+Windows :  [![Build Status](http://axiombuild.cloudapp.net/job/SDK-Windows-x86/badge/icon)](http://axiombuild.cloudapp.net/job/SDK-Windows-x86/)
 
 **Welcome!** 
 The Axiom 3D Rendering Engine is a fully object oriented 3D graphics engine using C# and the .Net platform. Axiom 3D aims to be an easy to use, flexible, extendable, and powerful engine that allows for rapid development of games and other graphical applications. By using the .Net framework as the target platform, developers can focus more on core functionality and logic, rather than dealing with the complexities of languages like C++.
@@ -29,4 +29,3 @@ Feature branches are work-in-progress branches that contain large chunks of new 
 ## hotfix/x
 
 Hotfixes are branched from *default* and exist to fix small bugs that are detected in a release after it has been tagged in *default*. These branches are usually small and concise, and are merged back into *default* and *develop* once they are completed. They should never be new features.
-
