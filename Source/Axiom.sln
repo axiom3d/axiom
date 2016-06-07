@@ -975,7 +975,6 @@ Global
 		{823CAB48-D145-466F-95C5-82B57FDC4737}.Win8Release|Mixed Platforms.Build.0 = Win8Release|x86
 		{823CAB48-D145-466F-95C5-82B57FDC4737}.Win8Release|x86.ActiveCfg = Release|Any CPU
 		{12A73491-253B-4EF6-A447-4652F0A94510}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12A73491-253B-4EF6-A447-4652F0A94510}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{12A73491-253B-4EF6-A447-4652F0A94510}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
 		{12A73491-253B-4EF6-A447-4652F0A94510}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{12A73491-253B-4EF6-A447-4652F0A94510}.Debug|x86.ActiveCfg = Debug|x86
