@@ -380,12 +380,8 @@ namespace Axiom.RenderSystems.DirectX9
 				}
 			}
 
-			// Unlock the buffer.
-			var hr = bufferResources.IndexBuffer.Unlock();
-			if ( hr.Failure )
-			{
-				throw new AxiomException( "Cannot unlock D3D9 index buffer: {0}", hr.ToString() );
-			}
+            // Unlock the buffer.
+            bufferResources.IndexBuffer.Unlock();
 
 			bufferResources.IsOutOfDate = false;
 			bufferResources.LockOffset = sizeInBytes;

@@ -41,6 +41,7 @@ using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Media;
 using D3D9 = SharpDX.Direct3D9;
+using DX = SharpDX;
 using ResourceHandle = System.UInt64;
 
 #endregion Namespace Declarations
@@ -306,7 +307,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// get the target
 			var other = (D3D9Texture)target;
 			// target rectangle (whole surface)
-			var dstRC = new System.Drawing.Rectangle( 0, 0, other.Width, other.Height );
+			var dstRC = new DX.Rectangle( 0, 0, other.Width, other.Height );
 
 			foreach ( var it in this._mapDeviceToTextureResources )
 			{
@@ -324,18 +325,8 @@ namespace Axiom.RenderSystems.DirectX9
 					var dstSurface = dstTextureResources.NormalTexture.GetSurfaceLevel( 0 );
 
 					// do the blit, it's called StretchRect in D3D9 :)
-					var res = it.Key.StretchRectangle( srcSurface, new System.Drawing.Rectangle(), dstSurface, dstRC,
+					it.Key.StretchRectangle( srcSurface, new DX.Rectangle(), dstSurface, dstRC,
 					                                   D3D9.TextureFilter.None );
-					if ( res.Failure )
-					{
-						srcSurface.SafeDispose();
-						srcSurface = null;
-
-						dstSurface.SafeDispose();
-						dstSurface = null;
-						throw new AxiomException( "Couldn't blit : {0}", res.ToString() );
-					}
-
 					// release temp. surfaces
 					srcSurface.SafeDispose();
 					srcSurface = null;
@@ -356,17 +347,8 @@ namespace Axiom.RenderSystems.DirectX9
 						var dstSurface = dstTextureResources.CubeTexture.GetCubeMapSurface( (D3D9.CubeMapFace)face, 0 );
 
 						// do the blit, it's called StretchRect in D3D9 :)
-						var res = it.Key.StretchRectangle( srcSurface, new System.Drawing.Rectangle(), dstSurface, dstRC,
+						it.Key.StretchRectangle( srcSurface, new DX.Rectangle(), dstSurface, dstRC,
 						                                   D3D9.TextureFilter.None );
-						if ( res.Failure )
-						{
-							srcSurface.SafeDispose();
-							srcSurface = null;
-
-							dstSurface.SafeDispose();
-							dstSurface = null;
-							throw new AxiomException( "Couldn't blit : {0}", res.ToString() );
-						}
 
 						// release temp. surfaces
 						srcSurface.SafeDispose();
@@ -1156,7 +1138,7 @@ namespace Axiom.RenderSystems.DirectX9
 			// determine which D3D9 pixel format we'll use
 			var d3dPF = _chooseD3DFormat( d3d9Device );
 
-			// let's D3DX check the corrected pixel format
+			// let D3DX check the corrected pixel format
 			var texRequires = D3D9.Texture.CheckRequirements( d3d9Device, 0, 0, 0, 0, d3dPF, this._d3dPool );
 			d3dPF = texRequires.Format;
 

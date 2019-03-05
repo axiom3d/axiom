@@ -480,11 +480,7 @@ namespace Axiom.RenderSystems.DirectX9
 				var count = currentCapabilities.MultiRenderTargetCount;
 				for ( var x = 0; x < count; ++x )
 				{
-					var hr = ActiveD3D9Device.SetRenderTarget( x, pBack[ x ] );
-					if ( hr.Failure )
-					{
-						throw new AxiomException( "Failed to setRenderTarget : {0}", hr.ToString() );
-					}
+					ActiveD3D9Device.SetRenderTarget( x, pBack[ x ] );
 				}
 				ActiveD3D9Device.DepthStencilSurface = pDepth;
 			}
@@ -514,7 +510,7 @@ namespace Axiom.RenderSystems.DirectX9
 					// that may need inverted vertex winding or texture flipping
 					CullingMode = cullingMode;
 
-					var d3Dvp = new D3D9.Viewport();
+					var d3Dvp = new DX.Viewport();
 
 					// set viewport dimensions
 					d3Dvp.X = value.ActualLeft;
@@ -530,8 +526,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 					// Z-values from 0.0 to 1.0
 					// TODO: standardize with OpenGL
-					d3Dvp.MinZ = 0.0f;
-					d3Dvp.MaxZ = 1.0f;
+					d3Dvp.MinDepth = 0.0f;
+					d3Dvp.MaxDepth = 1.0f;
 
 					// set the current D3D viewport
 					ActiveD3D9Device.Viewport = d3Dvp;
@@ -1512,11 +1508,7 @@ namespace Axiom.RenderSystems.DirectX9
 			{
 				if ( this._texStageDesc[ stage ].VertexTex != null )
 				{
-					var result = ActiveD3D9Device.SetTexture( ( (int)D3D9.VertexTextureSampler.Sampler0 ) + stage, null );
-					if ( result.Failure )
-					{
-						throw new AxiomException( "Unable to disable vertex texture '{0}' in D3D9.", stage );
-					}
+					ActiveD3D9Device.SetTexture( ( (int)D3D9.VertexTextureSampler.Sampler0 ) + stage, null );
 				}
 
 				// set stage description to defaults
@@ -1532,11 +1524,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				if ( this._texStageDesc[ stage ].VertexTex != ptex )
 				{
-					var result = ActiveD3D9Device.SetTexture( ( (int)D3D9.VertexTextureSampler.Sampler0 ) + stage, ptex );
-					if ( result.Failure )
-					{
-						throw new AxiomException( "Unable to set vertex texture '{0}' in D3D9.", texture.Name );
-					}
+					ActiveD3D9Device.SetTexture( ( (int)D3D9.VertexTextureSampler.Sampler0 ) + stage, ptex );
 				}
 
 				// set stage description
@@ -1609,7 +1597,7 @@ namespace Axiom.RenderSystems.DirectX9
 		[OgreVersion( 1, 7, 2790 )]
 		public override void SetTextureBorderColor( int stage, ColorEx borderColor )
 		{
-			_setSamplerState( stage, D3D9.SamplerState.BorderColor, D3D9Helper.ToColor( borderColor ).ToArgb() );
+			_setSamplerState( stage, D3D9.SamplerState.BorderColor, D3D9Helper.ToColor( borderColor ).ToRgba() );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]
@@ -1924,7 +1912,7 @@ namespace Axiom.RenderSystems.DirectX9
 				_setRenderState( fogTypeNot, (int)FogMode.None );
 				_setRenderState( fogType, (int)D3D9Helper.ConvertEnum( mode ) );
 
-				_setRenderState( D3D9.RenderState.FogColor, D3D9Helper.ToColor( color ).ToArgb() );
+				_setRenderState( D3D9.RenderState.FogColor, D3D9Helper.ToColor( color ));
 				_setFloatRenderState( D3D9.RenderState.FogStart, start );
 				_setFloatRenderState( D3D9.RenderState.FogEnd, end );
 				_setFloatRenderState( D3D9.RenderState.FogDensity, density );
@@ -2061,7 +2049,7 @@ namespace Axiom.RenderSystems.DirectX9
 			var oldVal = new DX.Color4( ActiveD3D9Device.GetRenderState<int>( state ) );
 			if ( oldVal != val )
 			{
-				ActiveD3D9Device.SetRenderState( state, val.ToArgb() );
+				ActiveD3D9Device.SetRenderState( state, val.ToRgba() );
 			}
 		}
 
@@ -2552,7 +2540,7 @@ namespace Axiom.RenderSystems.DirectX9
 			if ( enable )
 			{
 				_setRenderState( D3D9.RenderState.ScissorTestEnable, true );
-				ActiveD3D9Device.ScissorRect = new System.Drawing.Rectangle( left, top, right - left, bottom - top );
+                ActiveD3D9Device.ScissorRect = new SharpDX.Mathematics.Interop.RawRectangle(left, top, right - left, bottom - top);
 			}
 			else
 			{
@@ -2582,7 +2570,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// clear the device using the specified params
-			ActiveD3D9Device.Clear( flags, color.ToARGB(), depth, stencil );
+			ActiveD3D9Device.Clear( flags, ((DX.ColorBGRA)D3D9Helper.ToColor(color).ToBgra()), depth, stencil );
 		}
 
 		[OgreVersion( 1, 7, 2790 )]

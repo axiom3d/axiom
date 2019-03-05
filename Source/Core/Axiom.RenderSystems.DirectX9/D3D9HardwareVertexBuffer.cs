@@ -374,11 +374,7 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// Unlock the buffer.
-			var hr = bufferResources.VertexBuffer.Unlock();
-			if ( hr.Failure )
-			{
-				throw new AxiomException( "Cannot unlock D3D9 vertex buffer: {0}", hr.ToString() );
-			}
+			bufferResources.VertexBuffer.Unlock();
 
 			bufferResources.IsOutOfDate = false;
 			bufferResources.LockOffset = sizeInBytes;

@@ -208,7 +208,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 		#region WorldMatrix
 
-		private DX.Matrix _dxWorldMat;
+		private DX.Mathematics.Interop.RawMatrix _dxWorldMat;
 
 		/// <see cref="Axiom.Graphics.RenderSystem.WorldMatrix"/>
 		[OgreVersion( 1, 7, 2790 )]
@@ -216,13 +216,13 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return D3D9Helper.ConvertD3DMatrix( ref this._dxWorldMat );
+				return D3D9Helper.ConvertD3DMatrix( this._dxWorldMat );
 			}
 			set
 			{
 				// save latest matrix
 				this._dxWorldMat = D3D9Helper.MakeD3DMatrix( value );
-				ActiveD3D9Device.SetTransform( D3D9.TransformState.World, ref this._dxWorldMat );
+				ActiveD3D9Device.SetTransform( D3D9.TransformState.World, this._dxWorldMat );
 			}
 		}
 
@@ -253,8 +253,8 @@ namespace Axiom.RenderSystems.DirectX9
 				this._viewMatrix.m22 = -this._viewMatrix.m22;
 				this._viewMatrix.m23 = -this._viewMatrix.m23;
 
-				var dxView = D3D9Helper.MakeD3DMatrix( this._viewMatrix );
-				ActiveD3D9Device.SetTransform( D3D9.TransformState.View, ref dxView );
+				DX.Mathematics.Interop.RawMatrix dxView = D3D9Helper.MakeD3DMatrix( this._viewMatrix );
+				ActiveD3D9Device.SetTransform( D3D9.TransformState.View, dxView );
 
 				// also mark clip planes dirty
 				if ( clipPlanes.Count != 0 )
@@ -276,7 +276,7 @@ namespace Axiom.RenderSystems.DirectX9
 		{
 			get
 			{
-				return D3D9Helper.ConvertD3DMatrix( ref this._dxProjMat );
+				return D3D9Helper.ConvertD3DMatrix( this._dxProjMat );
 			}
 			set
 			{
@@ -291,7 +291,7 @@ namespace Axiom.RenderSystems.DirectX9
 					this._dxProjMat.M42 = -this._dxProjMat.M42;
 				}
 
-				ActiveD3D9Device.SetTransform( D3D9.TransformState.Projection, ref this._dxProjMat );
+				ActiveD3D9Device.SetTransform( D3D9.TransformState.Projection, this._dxProjMat );
 
 				// also mark clip planes dirty
 				if ( clipPlanes.Count != 0 )
@@ -410,10 +410,10 @@ namespace Axiom.RenderSystems.DirectX9
 			}
 
 			// convert our matrix to D3D format
-			var d3dMat = D3D9Helper.MakeD3DMatrix( newMat );
+			DX.Mathematics.Interop.RawMatrix d3dMat = D3D9Helper.MakeD3DMatrix( newMat );
 
 			// set the matrix if it is not the identity
-			if ( !D3D9Helper.IsIdentity( ref d3dMat ) )
+			if ( !D3D9Helper.IsIdentity( d3dMat ) )
 			{
 				//It's seems D3D automatically add a texture coordinate with value 1,
 				//and fill up the remaining texture coordinates with 0 for the input
@@ -500,7 +500,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 				// set the manually calculated texture matrix
 				var d3DTransType = (D3D9.TransformState)( (int)( D3D9.TransformState.Texture0 ) + stage );
-				ActiveD3D9Device.SetTransform( d3DTransType, ref d3dMat );
+				ActiveD3D9Device.SetTransform( d3DTransType, d3dMat );
 			}
 			else
 			{

@@ -175,7 +175,7 @@ namespace Axiom.RenderSystems.DirectX9
 				{
 					try
 					{
-						pixels = pOccQuery.GetData<int>( true );
+						pOccQuery.GetData<int>(out pixels, true );
 						LastFragmentCount = pixels;
 						NumOfFragments = pixels;
 						break;
@@ -226,7 +226,8 @@ namespace Axiom.RenderSystems.DirectX9
 
 			try
 			{
-				var pixels = pOccQuery.GetData<int>( false );
+                int pixels;
+				pOccQuery.GetData<int>( out pixels, false);
 				LastFragmentCount = pixels;
 				isQueryResultStillOutstanding = false;
 

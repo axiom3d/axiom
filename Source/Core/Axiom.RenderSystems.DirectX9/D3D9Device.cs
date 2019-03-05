@@ -625,8 +625,8 @@ namespace Axiom.RenderSystems.DirectX9
 			ClearDeviceStreams();
 
 			// Reset the device using the presentation parameters.
-			hr = this.pDevice.Reset( this.PresentationParams );
-
+			this.pDevice.Reset( this.PresentationParams );
+            
 			if ( hr == D3D9.ResultCode.DeviceLost )
 			{
 				// UnLock access to rendering device.
@@ -721,20 +721,12 @@ namespace Axiom.RenderSystems.DirectX9
 			// Set all texture units to nothing to release texture surfaces
 			for ( var stage = 0; stage < D3D9DeviceCaps.MaxSimultaneousTextures; ++stage )
 			{
-				var hr = this.pDevice.SetTexture( stage, null );
-				if ( hr.Failure )
-				{
-					throw new AxiomException( "Unable to disable texture '{0}' in D3D9", stage );
-				}
+				this.pDevice.SetTexture( stage, null );
 
 				var dwCurValue = this.pDevice.GetTextureStageState<D3D9.TextureOperation>( stage, D3D9.TextureStage.ColorOperation );
 				if ( dwCurValue != D3D9.TextureOperation.Disable )
 				{
-					hr = this.pDevice.SetTextureStageState( stage, D3D9.TextureStage.ColorOperation, D3D9.TextureOperation.Disable );
-					if ( hr.Failure )
-					{
-						throw new AxiomException( "Unable to disable texture '{0}' in D3D9", stage );
-					}
+					this.pDevice.SetTextureStageState( stage, D3D9.TextureStage.ColorOperation, D3D9.TextureOperation.Disable );
 				}
 
 				// set stage desc. to defaults
@@ -1305,7 +1297,7 @@ namespace Axiom.RenderSystems.DirectX9
 					}
 					else
 					{
-						pTempSurf = this.pDevice.GetFrontBufferData( 0 );
+						this.pDevice.GetFrontBufferData( 0, pTempSurf );
 					}
 				}
 				catch ( DX.SharpDXException ex )
@@ -1325,7 +1317,7 @@ namespace Axiom.RenderSystems.DirectX9
 						}
 						else
 						{
-							var rect = new System.Drawing.Rectangle( dst.Left, dst.Top, dst.Right - dst.Left, dst.Bottom - dst.Top );
+							var rect = new DX.Rectangle( dst.Left, dst.Top, dst.Right - dst.Left, dst.Bottom - dst.Top );
 							lockedRect = pTempSurf.LockRectangle( rect, D3D9.LockFlags.ReadOnly | D3D9.LockFlags.NoSystemLock );
 						}
 					}
@@ -1343,7 +1335,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 					point = System.Windows.Forms.Control.FromHandle( renderWindow.WindowHandle ).PointToScreen( point );
 
-					srcRect = new System.Drawing.Rectangle( point.X, point.Y, srcRect.Right + point.X - srcRect.Left,
+					var screenRect = new DX.Rectangle( point.X, point.Y, srcRect.Right + point.X - srcRect.Left,
 					                                        srcRect.Bottom + point.Y - dst.Top );
 
 					desc.Width = srcRect.Right - srcRect.Left;
@@ -1351,7 +1343,7 @@ namespace Axiom.RenderSystems.DirectX9
 
 					try
 					{
-						lockedRect = pTempSurf.LockRectangle( srcRect, D3D9.LockFlags.ReadOnly | D3D9.LockFlags.NoSystemLock );
+						lockedRect = pTempSurf.LockRectangle(screenRect, D3D9.LockFlags.ReadOnly | D3D9.LockFlags.NoSystemLock );
 					}
 					catch
 					{
@@ -1371,32 +1363,15 @@ namespace Axiom.RenderSystems.DirectX9
 
 				if ( desc.MultiSampleType == D3D9.MultisampleType.None )
 				{
-					var hr = this.pDevice.GetRenderTargetData( pSurf, pTempSurf );
-					if ( hr.Failure )
-					{
-						pTempSurf.SafeDispose();
-						throw new AxiomException( "Can't get render target data" );
-					}
+					this.pDevice.GetRenderTargetData( pSurf, pTempSurf );
 				}
 				else
 				{
 					var pStretchSurf = D3D9.Surface.CreateRenderTarget( this.pDevice, desc.Width, desc.Height, desc.Format,
 					                                                    D3D9.MultisampleType.None, 0, false );
-					var hr = this.pDevice.StretchRectangle( pSurf, pStretchSurf, D3D9.TextureFilter.None );
-					if ( hr.Failure )
-					{
-						pTempSurf.SafeDispose();
-						pStretchSurf.SafeDispose();
-						throw new AxiomException( "Can't stretch rect" );
-					}
+					this.pDevice.StretchRectangle( pSurf, pStretchSurf, D3D9.TextureFilter.None );
 
-					hr = this.pDevice.GetRenderTargetData( pStretchSurf, pTempSurf );
-					if ( hr.Failure )
-					{
-						pTempSurf.SafeDispose();
-						pStretchSurf.SafeDispose();
-						throw new AxiomException( "Can't get render target data" );
-					}
+					this.pDevice.GetRenderTargetData( pStretchSurf, pTempSurf );
 
 					pStretchSurf.SafeDispose();
 				}
@@ -1410,7 +1385,7 @@ namespace Axiom.RenderSystems.DirectX9
 					}
 					else
 					{
-						var rect = new System.Drawing.Rectangle( dst.Left, dst.Top, dst.Right - dst.Left, dst.Bottom - dst.Top );
+						var rect = new DX.Rectangle( dst.Left, dst.Top, dst.Right - dst.Left, dst.Bottom - dst.Top );
 						lockedRect = pTempSurf.LockRectangle( rect, D3D9.LockFlags.ReadOnly | D3D9.LockFlags.NoSystemLock );
 					}
 				}

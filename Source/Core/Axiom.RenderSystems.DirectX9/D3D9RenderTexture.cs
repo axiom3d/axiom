@@ -138,17 +138,12 @@ namespace Axiom.RenderSystems.DirectX9
 
 				foreach ( var device in deviceManager )
 				{
-					if ( device.IsDeviceLost == false )
-					{
-						var d3d9Device = device.D3DDevice;
-						var res = d3d9Device.StretchRectangle( buf.GetFSAASurface( d3d9Device ), buf.GetSurface( d3d9Device ),
-						                                       D3D9.TextureFilter.None );
-
-						if ( res.Failure )
-						{
-							throw new AxiomException( "Unable to copy AA buffer to final buffer: {0}", res.ToString() );
-						}
-					}
+                    if (device.IsDeviceLost == false)
+                    {
+                        var d3d9Device = device.D3DDevice;
+                        d3d9Device.StretchRectangle(buf.GetFSAASurface(d3d9Device), buf.GetSurface(d3d9Device),
+                                                               D3D9.TextureFilter.None);
+                    }
 				}
 			}
 		}

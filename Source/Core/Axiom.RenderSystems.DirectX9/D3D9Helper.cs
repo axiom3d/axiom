@@ -1086,7 +1086,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// Convert matrix from D3D style
 		/// </summary>
 		[OgreVersion( 1, 7, 2 )]
-		public static Matrix4 ConvertD3DMatrix( ref DX.Matrix d3DMat )
+		public static Matrix4 ConvertD3DMatrix( DX.Matrix d3DMat )
 		{
 			var mat = Matrix4.Zero;
 
@@ -1116,10 +1116,14 @@ namespace Axiom.RenderSystems.DirectX9
 		#endregion Matrix
 
 		[AxiomHelper( 0, 9 )]
-		public static System.Drawing.Color ToColor( ColorEx color )
+		public static DX.Color4 ToColor( ColorEx color )
 		{
-			return System.Drawing.Color.FromArgb( (int)( color.a < 1.0f ? color.a*255.0f : color.a ), (int)( color.r*255.0f ),
-			                                      (int)( color.g*255.0f ), (int)( color.b*255.0f ) );
+            DX.Color4 val;
+            val.Alpha = (int)(color.a < 1.0f ? color.a * 255.0f : color.a);
+            val.Red = (int)(color.r * 255.0f);
+            val.Green = (int)(color.g * 255.0f);
+            val.Blue = (int)(color.b * 255.0f);
+            return val;
 		}
 
 		/// <summary>
@@ -1130,7 +1134,7 @@ namespace Axiom.RenderSystems.DirectX9
 		/// struct are extremely slow....
 		/// </remarks>
 		[AxiomHelper( 0, 9 )]
-		public static bool IsIdentity( ref DX.Matrix matrix )
+		public static bool IsIdentity( DX.Matrix matrix )
 		{
 			if ( matrix.M11 == 1.0f && matrix.M12 == 0.0f && matrix.M13 == 0.0f && matrix.M14 == 0.0f && matrix.M21 == 0.0f &&
 			     matrix.M22 == 1.0f && matrix.M23 == 0.0f && matrix.M24 == 0.0f && matrix.M31 == 0.0f && matrix.M32 == 0.0f &&
