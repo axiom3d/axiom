@@ -9,6 +9,8 @@
     <OutputType>Library</OutputType>
     <RootNamespace>Axiom.RenderSystems.OpenGLES2</RootNamespace>
     <AssemblyName>Axiom.RenderSystems.OpenGLES2</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
@@ -81,7 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Axiom\Axiom.csproj">
-      <Project>{baa6ae8a-b259-4883-9805-ce538660a59a}</Project>
+      <Project>{77e8323a-5cdb-4b39-b9e0-7d12a2aad3a3}</Project>
       <Name>Axiom</Name>
     </ProjectReference>
   </ItemGroup>

@@ -1,7 +1,7 @@
 <!-- Common Settings used by Axiom projects -->
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <AxiomUseNewCompilers Condition=" '$(AxiomUseNewCompilers)' == '' ">false</AxiomUseNewCompilers>
+    <AxiomUseNewCompilers Condition=" '$(AxiomUseNewCompilers)' == '' ">true</AxiomUseNewCompilers>
     <!--
       AxiomSafeCodeMode 
         Mixed - allow both safe and unsafe methods
@@ -10,7 +10,7 @@
     <AxiomSafeCodeMode Condition=" '$(AxiomUseSafeCodeOnly)' == '' ">Mixed</AxiomSafeCodeMode>
     <AxiomBigEndian Condition=" '$(AxiomBigEndian)' == '' ">false</AxiomBigEndian>
     <AxiomSign Condition=" '$(AxiomSign)' == '' ">false</AxiomSign>
-    <AxiomFullDisposalLog Condition=" '$(AxiomFullDisposalLog)' == '' ">false</AxiomFullDisposalLog>
+    <AxiomFullDisposalLog Condition=" '$(AxiomFullDisposalLog)' == '' ">true</AxiomFullDisposalLog>
     <AxiomGlobalDefines Condition=" '$(AxiomUseNewCompilers)' == 'true' ">$(AxiomGlobalDefines);AXIOM_USENEWCOMPILERS</AxiomGlobalDefines>
     <AxiomGlobalDefines Condition=" '$(AxiomSafeCodeMode)' == 'SafeOnly' ">$(AxiomGlobalDefines);AXIOM_SAFE_ONLY</AxiomGlobalDefines>
     <AxiomGlobalDefines Condition=" '$(AxiomSafeCodeMode)' == 'Mixed' ">$(AxiomGlobalDefines);AXIOM_SAFE_MIXED</AxiomGlobalDefines>
@@ -26,11 +26,11 @@
     <AllowUnsafeBlocks Condition=" '$(AxiomSafeCodeMode)' == 'Mixed' ">true</AllowUnsafeBlocks>
     <AllowUnsafeBlocks Condition=" '$(AxiomSafeCodeMode)' == 'SafeOnly' ">false</AllowUnsafeBlocks>
     <PlatformTarget>x86</PlatformTarget>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Release'  ">
     <AxiomWin8>false</AxiomWin8>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Win8Debug' Or '$(Configuration)' == 'Win8Release'  ">
@@ -49,8 +49,10 @@
   </PropertyGroup>
   <PropertyGroup>
     <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.5' ">NET_40</TargetFrameworkDefine>
-	<TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.5' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.6' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.6.1' ">NET_40</TargetFrameworkDefine>
+    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' Or '$(Configuration)' == 'Win8Debug' ">
     <OutputPath>bin\Debug\$(TargetFrameworkVersion)</OutputPath>

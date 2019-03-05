@@ -9,6 +9,8 @@
     <RootNamespace>Axiom.Samples.Terrain</RootNamespace>
     <AssemblyName>Axiom.Samples.Terrain</AssemblyName>
     <OutputPath>$(SolutionDir)\Samples\bin\samples</OutputPath>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="SharpInputSystem.Core">
@@ -20,7 +22,7 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5' " />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5'  Or '$(TargetFrameworkVersion)'=='v4.6.1' " />
     <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' ">
       <HintPath>$(SolutionDir)\..\Lib\MEF\Net3.5\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
@@ -31,10 +33,6 @@
     <Compile Include="TerrainSample.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Components\Axiom.Components.Paging\Axiom.Components.Paging.csproj">
       <Project>{89C3D207-913D-4BCB-BD6E-F8673E20D8EA}</Project>
       <Name>Axiom.Components.Paging</Name>
@@ -42,6 +40,10 @@
     <ProjectReference Include="..\..\Components\Axiom.Components.Terrain\Axiom.Components.Terrain.csproj">
       <Project>{79674E34-9EC2-4819-B47E-3DD75DFA4173}</Project>
       <Name>Axiom.Components.Terrain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj">
+      <Project>{77e8323a-5cdb-4b39-b9e0-7d12a2aad3a3}</Project>
+      <Name>Axiom</Name>
     </ProjectReference>
     <ProjectReference Include="..\Axiom.Samples.Common\Axiom.Samples.Common.csproj">
       <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>

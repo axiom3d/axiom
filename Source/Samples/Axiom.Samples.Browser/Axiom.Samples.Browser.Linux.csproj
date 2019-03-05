@@ -9,10 +9,15 @@
     <AssemblyName>Axiom.Samples.Browser</AssemblyName>
     <OutputPath>$(SolutionDir)\Samples\bin\linux</OutputPath>
     <ProjectGuid>{4E65C33E-A3AA-4DBB-988F-03A291A06ECF}</ProjectGuid>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpInputSystem.Core">
-      <HintPath>..\..\..\Lib\SharpInputSystem\Core\SharpInputSystem.Core.dll</HintPath>
+    <Reference Include="SharpInputSystem.Core, Version=0.5.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharpInputSystem.Core.0.5.10\lib\netstandard2.0\SharpInputSystem.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpInputSystem.DirectX, Version=0.5.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharpInputSystem.DirectX.0.5.10\lib\netstandard2.0\SharpInputSystem.DirectX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -23,7 +28,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5' " />
+    <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v4.0' Or '$(TargetFrameworkVersion)'=='v4.5'  Or '$(TargetFrameworkVersion)'=='v4.6.1' " />
     <Reference Include="System.ComponentModel.Composition" Condition=" '$(TargetFrameworkVersion)'=='v3.5' ">
       <HintPath>$(SolutionDir)\..\Lib\MEF\Net3.5\System.ComponentModel.Composition.dll</HintPath>
     </Reference>
@@ -35,19 +40,16 @@
       <SubType>Designer</SubType>
     </None>
     <Compile Include="SampleBrowser.cs" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj">
+      <Project>{77e8323a-5cdb-4b39-b9e0-7d12a2aad3a3}</Project>
+      <Name>Axiom</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Framework\Axiom.Framework\Axiom.Framework.csproj">
       <Project>{AF0AAC88-68C8-4CF4-AFFA-526AD899758A}</Project>
       <Name>Axiom.Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj">
-      <Project>{BAA6AE8A-B259-4883-9805-CE538660A59A}</Project>
-      <Name>Axiom</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Core\Axiom.Platforms.Linux\Axiom.Platforms.Linux.csproj">
-      <Project>{081F78DE-8224-4CA6-BD34-8B7939CF21AB}</Project>
-      <Name>Axiom.Platforms.Linux</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Axiom.Plugins.CgProgramManager\Axiom.Plugins.CgProgramManager.csproj">
       <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
