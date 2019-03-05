@@ -44,6 +44,7 @@ using System.Diagnostics;
 using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
+using static Axiom.Math.Utility;
 using Axiom.Core.Collections;
 
 #endregion Namespace Declarations
@@ -420,11 +421,11 @@ namespace Axiom.Core
 			// calculate the radius of the bounding sphere for the billboard
 			if ( billboard.HasOwnDimensions )
 			{
-				this.sphere.Radius = Utility.Max( billboard.Width, billboard.Height );
+				this.sphere.Radius = Max( billboard.Width, billboard.Height );
 			}
 			else
 			{
-				this.sphere.Radius = Utility.Max( this.defaultParticleWidth, this.defaultParticleHeight );
+				this.sphere.Radius = Max( this.defaultParticleWidth, this.defaultParticleHeight );
 			}
 
 			// finally, see if the sphere is visible in the camera
@@ -832,8 +833,8 @@ namespace Axiom.Core
 			}
 			else
 			{
-				float cos_rot = Utility.Cos( bb.rotationInRadians );
-				float sin_rot = Utility.Sin( bb.rotationInRadians );
+				float cos_rot = Cos( bb.rotationInRadians );
+				float sin_rot = Sin( bb.rotationInRadians );
 
 				var width = ( r.Right - r.Left )/2;
 				var height = ( r.Bottom - r.Top )/2;
@@ -986,15 +987,15 @@ namespace Axiom.Core
 			newBillboard.NotifyOwner( this );
 
 			// Merge into bounds
-			var adjust = Utility.Max( this.defaultParticleWidth, this.defaultParticleHeight );
+			var adjust = Max( this.defaultParticleWidth, this.defaultParticleHeight );
 			var adjustVec = new Vector3( adjust, adjust, adjust );
 			var newMin = position - adjustVec;
 			var newMax = position + adjustVec;
 
 			this.aab.Merge( new AxisAlignedBox( newMin, newMax ) );
 
-			var sqlen = (float)Utility.Max( newMin.LengthSquared, newMax.LengthSquared );
-			this.boundingRadius = (float)Utility.Max( this.boundingRadius, Utility.Sqrt( sqlen ) );
+			var sqlen = (float)Max( newMin.LengthSquared, newMax.LengthSquared );
+			this.boundingRadius = (float)Max( this.boundingRadius, Sqrt( sqlen ) );
 
 			return newBillboard;
 		}
@@ -1182,11 +1183,11 @@ namespace Axiom.Core
 					min.Floor( pos );
 					max.Ceil( pos );
 
-					maxSqLen = Utility.Max( maxSqLen, pos.LengthSquared );
+					maxSqLen = Max( maxSqLen, pos.LengthSquared );
 				}
 
 				// adjust for billboard size
-				var adjust = Utility.Max( this.defaultParticleWidth, this.defaultParticleHeight );
+				var adjust = Max( this.defaultParticleWidth, this.defaultParticleHeight );
 				var vecAdjust = new Vector3( adjust, adjust, adjust );
 				min -= vecAdjust;
 				max += vecAdjust;
@@ -1194,7 +1195,7 @@ namespace Axiom.Core
 				// update our local aabb
 				this.aab.SetExtents( min, max );
 
-				this.boundingRadius = Utility.Sqrt( maxSqLen );
+				this.boundingRadius = Sqrt( maxSqLen );
 			}
 			// if we have a parent node, ask it to update us
 			if ( parentNode != null )
@@ -1902,16 +1903,16 @@ namespace Axiom.Core
 
 	public class BillboardSetFactory : MovableObjectFactory
 	{
-		public new const string TypeName = "BillboardSet";
+		public const string TypeName = "BillboardSet";
 
 		public BillboardSetFactory()
 			: base()
 		{
-			base.Type = BillboardSetFactory.TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Fx;
-		}
+            base._type = TypeName;
+        }
 
-		protected override MovableObject _createInstance( string name, NamedParameterList param )
+        protected override MovableObject _createInstance( string name, NamedParameterList param )
 		{
 			// may have parameters
 			var externalData = false;

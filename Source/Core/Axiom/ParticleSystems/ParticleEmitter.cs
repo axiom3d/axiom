@@ -44,6 +44,7 @@ using Axiom.Core;
 using Axiom.Math;
 using Axiom.Scripting;
 using System.Reflection;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -295,11 +296,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return Utility.RadiansToDegrees( (Real)this.angle );
+				return RadiansToDegrees( (Real)this.angle );
 			}
 			set
 			{
-				this.angle = Utility.DegreesToRadians( (Real)value );
+				this.angle = DegreesToRadians( (Real)value );
 			}
 		}
 
@@ -721,7 +722,7 @@ namespace Axiom.ParticleSystems
 		{
 			if ( this.angle != 0.0f )
 			{
-				float tempAngle = Utility.UnitRandom()*this.angle;
+				float tempAngle = UnitRandom()*this.angle;
 
 				// randomize direction
 				dest = this.Direction.RandomDeviant( tempAngle, this.up );
@@ -743,7 +744,7 @@ namespace Axiom.ParticleSystems
 
 			if ( !float.IsNaN( this.minSpeed ) )
 			{
-				scalar = this.minSpeed + ( Utility.UnitRandom()*( this.maxSpeed - this.minSpeed ) );
+				scalar = this.minSpeed + ( UnitRandom()*( this.maxSpeed - this.minSpeed ) );
 			}
 			else
 			{
@@ -761,7 +762,7 @@ namespace Axiom.ParticleSystems
 		{
 			if ( !float.IsNaN( this.minTTL ) )
 			{
-				return this.minTTL + ( Utility.UnitRandom()*( this.maxTTL - this.minTTL ) );
+				return this.minTTL + ( UnitRandom()*( this.maxTTL - this.minTTL ) );
 			}
 			else
 			{
@@ -836,10 +837,10 @@ namespace Axiom.ParticleSystems
 		{
 			if ( this.colorRangeStart != this.ColorRangeEnd )
 			{
-				color.r = this.colorRangeStart.r + Utility.UnitRandom() * ( this.colorRangeEnd.r - this.colorRangeStart.r );
-				color.g = this.colorRangeStart.g + Utility.UnitRandom() * ( this.colorRangeEnd.g - this.colorRangeStart.g );
-				color.b = this.colorRangeStart.b + Utility.UnitRandom() * ( this.colorRangeEnd.b - this.colorRangeStart.b );
-				color.a = this.colorRangeStart.a + Utility.UnitRandom() * ( this.colorRangeEnd.a - this.colorRangeStart.a );
+				color.r = this.colorRangeStart.r + UnitRandom() * ( this.colorRangeEnd.r - this.colorRangeStart.r );
+				color.g = this.colorRangeStart.g + UnitRandom() * ( this.colorRangeEnd.g - this.colorRangeStart.g );
+				color.b = this.colorRangeStart.b + UnitRandom() * ( this.colorRangeEnd.b - this.colorRangeStart.b );
+				color.a = this.colorRangeStart.a + UnitRandom() * ( this.colorRangeEnd.a - this.colorRangeStart.a );
 			}
 			else
 			{
@@ -863,7 +864,7 @@ namespace Axiom.ParticleSystems
 				}
 				else
 				{
-					this.durationRemain = Utility.RangeRandom( this.durationMin, this.durationMax );
+					this.durationRemain = RangeRandom( this.durationMin, this.durationMax );
 				}
 			}
 			else
@@ -875,7 +876,7 @@ namespace Axiom.ParticleSystems
 				}
 				else
 				{
-					this.repeatDelayRemain = Utility.RangeRandom( this.repeatDelayMin, this.repeatDelayMax );
+					this.repeatDelayRemain = RangeRandom( this.repeatDelayMin, this.repeatDelayMax );
 				}
 			}
 		}

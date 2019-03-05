@@ -510,13 +510,15 @@ namespace Axiom.Samples
 			else
 				pl.Add( new SIS.Parameter( "w32_no_coop", string.Empty )  );
 #endif
-#if !( WINDOWS_PHONE )
-			this.InputManager = SIS.InputManager.CreateInputSystem( pl );
-#else
-			this.InputManager = SIS.InputManager.CreateInputSystem( typeof(SIS.Xna.XnaInputManagerFactory), pl );
-#endif
+            switch(this.Root.RenderSystem.Name)
+            {
+                case "DirectX9":
+                default:
+                    this.InputManager = SIS.InputManager.CreateInputSystem(typeof(SIS.DirectX.DirectXInputManagerFactory), pl);
+                    break;
+            }
 
-			CreateInputDevices(); // create the specific input devices
+            CreateInputDevices(); // create the specific input devices
 
 			WindowResized( RenderWindow ); // do an initial adjustment of mouse area
 		}

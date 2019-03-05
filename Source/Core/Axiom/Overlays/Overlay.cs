@@ -44,6 +44,7 @@ using Axiom.Math;
 using Axiom.Graphics;
 using System.Collections.Generic;
 using Axiom.Utilities;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -493,7 +494,7 @@ namespace Axiom.Overlays
 			var rot3x3 = Matrix3.Identity;
 			var scale3x3 = Matrix3.Zero;
 
-			rot3x3.FromEulerAnglesXYZ( 0.0f, 0.0f, Utility.DegreesToRadians( (Real)this.rotate ) );
+			rot3x3.FromEulerAnglesXYZ( 0.0f, 0.0f, DegreesToRadians( (Real)this.rotate ) );
 			scale3x3.m00 = this.scaleX;
 			scale3x3.m11 = this.scaleY;
 			scale3x3.m22 = 1.0f;

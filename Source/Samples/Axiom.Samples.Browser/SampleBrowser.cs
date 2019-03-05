@@ -217,12 +217,9 @@ namespace Axiom.Samples
 		/// <param name="b"></param>
 		public void OnButtonHit( object sender, Button b )
 		{
-			if ( ButtonHit != null )
-			{
-				ButtonHit( sender, b );
-			}
+            ButtonHit?.Invoke(sender, b);
 
-			if ( b.Name == "StartStop" ) // start or stop sample
+            if ( b.Name == "StartStop" ) // start or stop sample
 			{
 				if ( b.Caption == "Start Sample" )
 				{
@@ -858,16 +855,15 @@ namespace Axiom.Samples
 
 			foreach ( IPlugin plugin in PluginManager.Instance.InstalledPlugins )
 			{
-				if ( plugin is SamplePlugin )
-				{
-					var pluginInstance = (SamplePlugin)plugin;
-					this.LoadedSamplePlugins.Add( pluginInstance.Name );
-					foreach ( SdkSample sample in pluginInstance.Samples )
-					{
-						this.LoadedSamples.Add( sample );
-					}
-				}
-			}
+                if (plugin is SamplePlugin pluginInstance)
+                {
+                    this.LoadedSamplePlugins.Add(pluginInstance.Name);
+                    foreach (SdkSample sample in pluginInstance.Samples)
+                    {
+                        this.LoadedSamples.Add(sample);
+                    }
+                }
+            }
 
 			foreach ( SdkSample sample in this.LoadedSamples )
 			{

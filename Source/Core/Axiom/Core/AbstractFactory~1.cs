@@ -66,12 +66,8 @@ namespace Axiom.Core
 		{
 			get
 			{
-				return typeof ( T ).Name;
-			}
-			protected set
-			{
-				throw new NotImplementedException();
-			}
+				return typeof(T).Name;
+			}            
 		}
 
 		/// <summary>

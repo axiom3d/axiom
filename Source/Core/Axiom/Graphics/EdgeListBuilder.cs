@@ -45,6 +45,7 @@ using Axiom.Core;
 using Axiom.Math;
 using Axiom.Math.Collections;
 using System.Collections.Generic;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -402,7 +403,7 @@ namespace Axiom.Graphics
 
 					// Calculate triangle normal (NB will require recalculation for 
 					// skeletally animated meshes)
-					tri.normal = Utility.CalculateFaceNormal( v[ 0 ], v[ 1 ], v[ 2 ] );
+					tri.normal = CalculateFaceNormal( v[ 0 ], v[ 1 ], v[ 2 ] );
 
 					// Add triangle to list
 					this.edgeData.triangles.Add( tri );
@@ -565,9 +566,9 @@ namespace Axiom.Graphics
 			{
 				var commonVec = (CommonVertex)this.vertices[ index ];
 
-				if ( Utility.RealEqual( vec.x, commonVec.position.x, 1e-04f ) &&
-				     Utility.RealEqual( vec.y, commonVec.position.y, 1e-04f ) &&
-				     Utility.RealEqual( vec.z, commonVec.position.z, 1e-04f ) &&
+				if ( RealEqual( vec.x, commonVec.position.x, 1e-04f ) &&
+				     RealEqual( vec.y, commonVec.position.y, 1e-04f ) &&
+				     RealEqual( vec.z, commonVec.position.z, 1e-04f ) &&
 				     ( commonVec.vertexSet == vertexSet || this.weldVerticesAcrossVertexSets ) &&
 				     ( commonVec.indexSet == indexSet || this.weldVerticesAcrossIndexSets ) &&
 				     ( commonVec.originalIndex == originalIndex || this.weldVertices ) )

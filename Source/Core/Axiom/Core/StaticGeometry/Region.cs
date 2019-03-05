@@ -49,6 +49,7 @@ using Axiom.Math;
 using Axiom.Collections;
 using Axiom.Graphics.Collections;
 using Axiom.Core.Collections;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -288,7 +289,7 @@ namespace Axiom.Core
 				for ( ushort lod = 1; lod < lodLevels; ++lod )
 				{
 					var meshLod = qsm.submesh.Parent.GetLodLevel( lod );
-					this.lodValues[ lod ] = Utility.Max( (float)this.lodValues[ lod ], meshLod.Value );
+					this.lodValues[ lod ] = Max( (float)this.lodValues[ lod ], meshLod.Value );
 				}
 
 				// update bounds
@@ -297,7 +298,7 @@ namespace Axiom.Core
 				this.aabb.Merge( localBounds );
 				foreach ( var corner in localBounds.Corners )
 				{
-					this.boundingRadius = Utility.Max( this.boundingRadius, corner.Length );
+					this.boundingRadius = Max( this.boundingRadius, corner.Length );
 				}
 			}
 
@@ -373,7 +374,7 @@ namespace Axiom.Core
 				// Distance from the edge of the bounding sphere
 				this.camDistanceSquared = diff.LengthSquared - this.boundingRadius*this.boundingRadius;
 				// Clamp to 0
-				this.camDistanceSquared = Utility.Max( 0.0f, this.camDistanceSquared );
+				this.camDistanceSquared = Max( 0.0f, this.camDistanceSquared );
 
 				var maxDist = this.parent.SquaredRenderingDistance;
 				if ( this.parent.RenderingDistance > 0 && this.camDistanceSquared > maxDist && cam.UseRenderingDistance )

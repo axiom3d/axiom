@@ -40,6 +40,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 using System;
 using Axiom.Core;
 using Axiom.Math;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -165,11 +166,11 @@ namespace Axiom.ParticleSystems
 		{
 			get
 			{
-				return this.rotationInRadians*Utility.DEGREES_PER_RADIAN;
+				return this.rotationInRadians*DEGREES_PER_RADIAN;
 			}
 			set
 			{
-				this.rotationInRadians = value*Utility.RADIANS_PER_DEGREE;
+				this.rotationInRadians = value*RADIANS_PER_DEGREE;
 				if ( this.rotationInRadians != 0 )
 				{
 					this.parentSystem.NotifyParticleRotated();

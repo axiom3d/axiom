@@ -43,6 +43,7 @@ using Axiom.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Math.Collections;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -1262,17 +1263,17 @@ namespace Axiom.Core
 
 			public override void SetValue( Real val )
 			{
-				this.light.SpotlightInnerAngle = Utility.RadiansToDegrees( (Real)val );
+				this.light.SpotlightInnerAngle = RadiansToDegrees( (Real)val );
 			}
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( Utility.DegreesToRadians( this.light.SpotlightInnerAngle ) + val );
+				SetValue( DegreesToRadians( this.light.SpotlightInnerAngle ) + val );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( Utility.DegreesToRadians( this.light.SpotlightInnerAngle ) );
+				SetAsBaseValue( DegreesToRadians( this.light.SpotlightInnerAngle ) );
 			}
 		}
 
@@ -1292,17 +1293,17 @@ namespace Axiom.Core
 
 			public override void SetValue( Real val )
 			{
-				this.light.SpotlightOuterAngle = Utility.RadiansToDegrees( (Real)val );
+				this.light.SpotlightOuterAngle = RadiansToDegrees( (Real)val );
 			}
 
 			public override void ApplyDeltaValue( Real val )
 			{
-				SetValue( Utility.DegreesToRadians( this.light.SpotlightOuterAngle ) + val );
+				SetValue( DegreesToRadians( this.light.SpotlightOuterAngle ) + val );
 			}
 
 			public override void SetCurrentStateAsBaseValue()
 			{
-				SetAsBaseValue( Utility.DegreesToRadians( this.light.SpotlightOuterAngle ) );
+				SetAsBaseValue( DegreesToRadians( this.light.SpotlightOuterAngle ) );
 			}
 		}
 
@@ -1469,13 +1470,13 @@ namespace Axiom.Core
 
 	public class LightFactory : MovableObjectFactory
 	{
-		public new const string TypeName = "Light";
+		public const string TypeName = "Light";
 
 		public LightFactory()
 			: base()
 		{
-			base.Type = LightFactory.TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Light;
+            base._type = TypeName;
 		}
 
 		protected override MovableObject _createInstance( string name, NamedParameterList param )

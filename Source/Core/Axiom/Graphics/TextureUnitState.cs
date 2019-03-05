@@ -46,6 +46,7 @@ using Axiom.Core;
 using Axiom.Graphics.Collections;
 using Axiom.Math;
 using Axiom.Media;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -2073,9 +2074,9 @@ namespace Axiom.Graphics
 			{
 				var rotation = Matrix4.Identity;
 
-				float theta = Utility.DegreesToRadians( this.rotate );
-				float cosTheta = Utility.Cos( theta );
-				float sinTheta = Utility.Sin( theta );
+				float theta = DegreesToRadians( this.rotate );
+				float cosTheta = Cos( theta );
+				float sinTheta = Sin( theta );
 
 				// set the rotation portion of the matrix
 				rotation.m00 = cosTheta;

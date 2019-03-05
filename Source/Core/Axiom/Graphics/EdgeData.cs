@@ -42,6 +42,7 @@ using System.Diagnostics;
 using Axiom.Core;
 using Axiom.Math;
 using Axiom.Graphics.Collections;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -141,7 +142,7 @@ namespace Axiom.Graphics
 						offset = t.vertIndex[ 2 ]*3;
 						var v3 = new Vector3( pVert[ offset ], pVert[ offset + 1 ], pVert[ offset + 2 ] );
 
-						t.normal = Utility.CalculateFaceNormal( v1, v2, v3 );
+						t.normal = CalculateFaceNormal( v1, v2, v3 );
 					}
 				}
 			}

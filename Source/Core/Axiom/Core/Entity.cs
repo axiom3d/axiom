@@ -46,6 +46,7 @@ using Axiom.Graphics;
 using Axiom.Math;
 using Axiom.Graphics.Collections;
 using Axiom.Core.Collections;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -454,7 +455,7 @@ namespace Axiom.Core
 				if ( parentNode != null )
 				{
 					var s = parentNode.DerivedScale;
-					radius *= Utility.Max( s.x, Utility.Max( s.y, s.z ) );
+					radius *= Max( s.x, Max( s.y, s.z ) );
 				}
 
 				return radius;
@@ -1686,10 +1687,10 @@ namespace Axiom.Core
 				var newMeshLodIndex = this.mesh.GetLodIndex( biasedMeshLodValue );
 
 				// Apply maximum detail restriction (remember lower = higher detail)
-				this.meshLodIndex = (int)Utility.Max( this.maxMeshLodIndex, this.meshLodIndex );
+				this.meshLodIndex = (int)Max( this.maxMeshLodIndex, this.meshLodIndex );
 
 				// Apply minimum detail restriction (remember higher = lower detail)
-				this.meshLodIndex = (int)Utility.Min( this.minMeshLodIndex, this.meshLodIndex );
+				this.meshLodIndex = (int)Min( this.minMeshLodIndex, this.meshLodIndex );
 
 				// Construct event object
 				EntityMeshLodChangedEvent evt;
@@ -1732,9 +1733,9 @@ namespace Axiom.Core
 					// Get the index at this biased depth
 					var idx = material.GetLodIndex( biasedMaterialLodValue );
 					// Apply maximum detail restriction (remember lower = higher detail)
-					idx = (int)Utility.Max( this.maxMaterialLodIndex, idx );
+					idx = (int)Max( this.maxMaterialLodIndex, idx );
 					// Apply minimum detail restriction (remember higher = lower detail)
-					idx = (int)Utility.Min( this.minMaterialLodIndex, idx );
+					idx = (int)Min( this.minMaterialLodIndex, idx );
 
 					// Construct event object
 					EntityMaterialLodChangedEvent materialLodEvent;
@@ -2208,12 +2209,12 @@ namespace Axiom.Core
 							this.hardwareAnimation = this.hardwareAnimation && p.VertexProgram.PoseAnimationCount > 0;
 							if ( subEntity.SubMesh.useSharedVertices )
 							{
-								this.hardwarePoseCount = (ushort)Utility.Max( this.hardwarePoseCount, p.VertexProgram.PoseAnimationCount );
+								this.hardwarePoseCount = (ushort)Max( this.hardwarePoseCount, p.VertexProgram.PoseAnimationCount );
 							}
 							else
 							{
 								subEntity.HardwarePoseCount =
-									(ushort)Utility.Max( subEntity.HardwarePoseCount, p.VertexProgram.PoseAnimationCount );
+									(ushort)Max( subEntity.HardwarePoseCount, p.VertexProgram.PoseAnimationCount );
 							}
 						}
 					}
@@ -2556,16 +2557,16 @@ namespace Axiom.Core
 
 	public class EntityFactory : MovableObjectFactory
 	{
-		public new const string TypeName = "Entity";
+		public const string TypeName = "Entity";
 
 		public EntityFactory()
 			: base()
 		{
-			base.Type = EntityFactory.TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Entity;
-		}
+            base._type = TypeName;
+        }
 
-		protected override MovableObject _createInstance( string name, NamedParameterList param )
+        protected override MovableObject _createInstance( string name, NamedParameterList param )
 		{
 			// must have mesh parameter
 			Mesh pMesh = null;

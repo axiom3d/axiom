@@ -43,6 +43,7 @@ using System.Diagnostics;
 using Axiom.Core.Collections;
 using Axiom.Graphics;
 using Axiom.Math;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -558,7 +559,7 @@ namespace Axiom.Core
 				     !( this.lastLinkedReflectionPlane == this.linkedReflectionPlane.DerivedPlane ) )
 				{
 					this._reflectionPlane = this.linkedReflectionPlane.DerivedPlane;
-					this._reflectionMatrix = Utility.BuildReflectionMatrix( this._reflectionPlane );
+					this._reflectionMatrix = BuildReflectionMatrix( this._reflectionPlane );
 					this.lastLinkedReflectionPlane = this.linkedReflectionPlane.DerivedPlane;
 					this._recalculateView = true;
 				}
@@ -800,7 +801,7 @@ namespace Axiom.Core
 				this._planes[ i ] = new Plane();
 			}
 
-			this._fieldOfView = Utility.PI/4.0f;
+			this._fieldOfView = PI/4.0f;
 			this._nearDistance = 100.0f;
 			this._farDistance = 100000.0f;
 			this._aspectRatio = 1.33333333333333f;
@@ -995,7 +996,7 @@ namespace Axiom.Core
 			this.isReflected = true;
 			this._reflectionPlane = plane;
 			this.linkedReflectionPlane = null;
-			this._reflectionMatrix = Utility.BuildReflectionMatrix( plane );
+			this._reflectionMatrix = BuildReflectionMatrix( plane );
 			InvalidateView();
 		}
 
@@ -1011,7 +1012,7 @@ namespace Axiom.Core
 			this.isReflected = true;
 			this.linkedReflectionPlane = plane;
 			this._reflectionPlane = this.linkedReflectionPlane.DerivedPlane;
-			this._reflectionMatrix = Utility.BuildReflectionMatrix( this._reflectionPlane );
+			this._reflectionMatrix = BuildReflectionMatrix( this._reflectionPlane );
 			this.lastLinkedReflectionPlane = this._reflectionPlane;
 			InvalidateView();
 		}
@@ -1232,10 +1233,10 @@ namespace Axiom.Core
 				float possTop = screenSpacePos.y + spheresize.y;
 				float possBottom = screenSpacePos.y - spheresize.y;
 
-				left = Utility.Max( -1.0f, possLeft );
-				right = Utility.Min( 1.0f, possRight );
-				top = Utility.Min( 1.0f, possTop );
-				bottom = Utility.Max( -1.0f, possBottom );
+				left = Max( -1.0f, possLeft );
+				right = Min( 1.0f, possRight );
+				top = Min( 1.0f, possTop );
+				bottom = Max( -1.0f, possBottom );
 			}
 
 			return ( left != -1.0f ) || ( top != 1.0f ) || ( right != 1.0f ) || ( bottom != -1.0f );
@@ -1292,7 +1293,7 @@ namespace Axiom.Core
 				// Calculate general projection parameters
 
 				Real thetaY = this._fieldOfView*0.5;
-				Real tanThetaY = Utility.Tan( thetaY );
+				Real tanThetaY = Tan( thetaY );
 				var tanThetaX = tanThetaY*this._aspectRatio;
 
 				// Unknown how to apply frustum offset to orthographic camera, just ignore here
@@ -1413,28 +1414,30 @@ namespace Axiom.Core
 
 						var plane = this._viewMatrix*this.obliqueProjPlane;
 
-						// Thanks to Eric Lenyel for posting this calculation
-						// at www.terathon.com
+                        // Thanks to Eric Lenyel for posting this calculation
+                        // at www.terathon.com
 
-						// Calculate the clip-space corner point opposite the
-						// clipping plane
-						// as (sgn(clipPlane.x), sgn(clipPlane.y), 1, 1) and
-						// transform it into camera space by multiplying it
-						// by the inverse of the projection matrix
+                        // Calculate the clip-space corner point opposite the
+                        // clipping plane
+                        // as (sgn(clipPlane.x), sgn(clipPlane.y), 1, 1) and
+                        // transform it into camera space by multiplying it
+                        // by the inverse of the projection matrix
 
-						/* generalised version
+                        /* generalised version
                         Vector4 q = matrix.inverse() *
                         Vector4(Math::Sign(plane.normal.x),
                         Math::Sign(plane.normal.y), 1.0f, 1.0f);
                          */
-						var q1 = new Vector4();
-						q1.x = ( System.Math.Sign( plane.Normal.x ) + this._projectionMatrix.m02 )/this._projectionMatrix.m00;
-						q1.y = ( System.Math.Sign( plane.Normal.y ) + this._projectionMatrix.m12 )/this._projectionMatrix.m11;
-						q1.z = -1.0f;
-						q1.w = ( 1.0f + this._projectionMatrix.m22 )/this._projectionMatrix.m23;
+                        var q1 = new Vector4
+                        {
+                            x = (System.Math.Sign(plane.Normal.x) + this._projectionMatrix.m02) / this._projectionMatrix.m00,
+                            y = (System.Math.Sign(plane.Normal.y) + this._projectionMatrix.m12) / this._projectionMatrix.m11,
+                            z = -1.0f,
+                            w = (1.0f + this._projectionMatrix.m22) / this._projectionMatrix.m23
+                        };
 
-						// Calculate the scaled plane vector
-						var clipPlane4d = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
+                        // Calculate the scaled plane vector
+                        var clipPlane4d = new Vector4( plane.Normal.x, plane.Normal.y, plane.Normal.z, plane.D );
 						var c = clipPlane4d*( 2.0f/( clipPlane4d.Dot( q1 ) ) );
 
 						// Replace the third row of the projection matrix

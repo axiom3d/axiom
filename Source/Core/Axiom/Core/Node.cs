@@ -44,6 +44,7 @@ using System.Threading;
 using Axiom.Math;
 using Axiom.Graphics;
 using Axiom.Core.Collections;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -323,7 +324,7 @@ namespace Axiom.Core
 			{
 				// Assumes up to date
 				matrices[ 0 ] = this._parent.cachedTransform;
-				if ( !Utility.RealEqual( this._scaling, 1.0 ) )
+				if ( !RealEqual( this._scaling, 1.0 ) )
 				{
 					var m = Matrix4.Identity;
 					var s = new Vector3( this._scaling, this._scaling, this._scaling );
@@ -859,7 +860,7 @@ namespace Axiom.Core
 		/// </summary>
 		public virtual void Rotate( Vector3 axis, float degrees, TransformSpace relativeTo )
 		{
-			var q = Quaternion.FromAngleAxis( Utility.DegreesToRadians( (Real)degrees ), axis );
+			var q = Quaternion.FromAngleAxis( DegreesToRadians( (Real)degrees ), axis );
 			Rotate( q, relativeTo );
 		}
 

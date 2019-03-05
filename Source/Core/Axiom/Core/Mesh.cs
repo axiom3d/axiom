@@ -52,6 +52,7 @@ using Axiom.Serialization;
 using Axiom.Graphics;
 using ResourceHandle = System.UInt64;
 using Axiom.Core.Collections;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -170,7 +171,7 @@ namespace Axiom.Core
 				float sqLen2 = this._boundingBox.Maximum.LengthSquared;
 
 				// update the bounding sphere radius as well
-				this._boundingSphereRadius = Utility.Sqrt( Utility.Max( sqLen1, sqLen2 ) );
+				this._boundingSphereRadius = Sqrt( Max( sqLen1, sqLen2 ) );
 			}
 		}
 
@@ -974,7 +975,7 @@ namespace Axiom.Core
 						} // for v = 1 to 3
 
 						// calculate the tangent space vector
-						var tangent = Utility.CalculateTangentSpaceVector( vertPos[ 0 ], vertPos[ 1 ], vertPos[ 2 ], u[ 0 ], v[ 0 ],
+						var tangent = CalculateTangentSpaceVector( vertPos[ 0 ], vertPos[ 1 ], vertPos[ 2 ], u[ 0 ], v[ 0 ],
 						                                                   u[ 1 ], v[ 1 ], u[ 2 ], v[ 2 ] );
 
 						// write new tex.coords
@@ -1664,7 +1665,7 @@ namespace Axiom.Core
 
 				// Now normalise if total weight is outside tolerance
 				var delta = 1.0f/( 1 << 24 );
-				if ( !Utility.RealEqual( totalWeight, 1.0f, delta ) )
+				if ( !RealEqual( totalWeight, 1.0f, delta ) )
 				{
 					foreach ( var vba in vbaList )
 					{

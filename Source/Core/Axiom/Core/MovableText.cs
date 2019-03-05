@@ -44,6 +44,7 @@ using Axiom.Graphics;
 using Axiom.Fonts;
 using Axiom.Math;
 using Axiom.Collections;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -487,7 +488,7 @@ namespace Axiom.Core
 					{
 						min.Floor( currPos );
 						max.Ceil( currPos );
-						maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+						maxSquaredRadius = Max( maxSquaredRadius, currPos.LengthSquared );
 					}
 
 					top -= this._characterHeight*2.0f;
@@ -518,7 +519,7 @@ namespace Axiom.Core
 
 					min.Floor( currPos );
 					max.Ceil( currPos );
-					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+					maxSquaredRadius = Max( maxSquaredRadius, currPos.LengthSquared );
 
 					top += this._characterHeight*2.0f;
 					left += horiz_height*this._characterHeight*2.0f;
@@ -549,7 +550,7 @@ namespace Axiom.Core
 					}
 					min.Floor( currPos );
 					max.Ceil( currPos );
-					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+					maxSquaredRadius = Max( maxSquaredRadius, currPos.LengthSquared );
 
 					//-------------------------------------------------------------------------------------
 					// Second tri
@@ -571,7 +572,7 @@ namespace Axiom.Core
 					currPos = new Vector3( left, top, -1.0f );
 					min.Floor( currPos );
 					max.Ceil( currPos );
-					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+					maxSquaredRadius = Max( maxSquaredRadius, currPos.LengthSquared );
 
 					top -= this._characterHeight*2.0f;
 					left -= horiz_height*this._characterHeight*2.0f;
@@ -593,7 +594,7 @@ namespace Axiom.Core
 					currPos = new Vector3( left, top, -1.0f );
 					min.Floor( currPos );
 					max.Ceil( currPos );
-					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+					maxSquaredRadius = Max( maxSquaredRadius, currPos.LengthSquared );
 
 					left += horiz_height*this._characterHeight*2.0f;
 
@@ -615,7 +616,7 @@ namespace Axiom.Core
 					currPos = new Vector3( left, top, -1.0f );
 					min.Floor( currPos );
 					max.Ceil( currPos );
-					maxSquaredRadius = Utility.Max( maxSquaredRadius, currPos.LengthSquared );
+					maxSquaredRadius = Max( maxSquaredRadius, currPos.LengthSquared );
 
 					// Go back up with top
 					top += this._characterHeight*2.0f;
@@ -632,7 +633,7 @@ namespace Axiom.Core
 
 			// update AABB/Sphere radius
 			box = new AxisAlignedBox( min, max );
-			this._radius = Utility.Sqrt( maxSquaredRadius );
+			this._radius = Sqrt( maxSquaredRadius );
 
 			if ( this._updateColor )
 			{
@@ -727,13 +728,13 @@ namespace Axiom.Core
 
 	public class MovableTextFactory : MovableObjectFactory
 	{
-		public new const string TypeName = "MovableText";
+		public const string TypeName = "MovableText";
 
 		public MovableTextFactory()
 		{
-			base.Type = MovableTextFactory.TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Entity;
-		}
+            base._type = TypeName;
+        }
 
 		protected override MovableObject _createInstance( string name, NamedParameterList param )
 		{

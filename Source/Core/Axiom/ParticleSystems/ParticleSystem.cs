@@ -48,6 +48,7 @@ using Axiom.Controllers;
 using Axiom.Graphics;
 using System.Reflection;
 using Axiom.Scripting;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -742,12 +743,12 @@ namespace Axiom.ParticleSystems
 					max.x = max.y = max.z = float.NegativeInfinity;
 				}
 				var halfScale = Vector3.UnitScale*0.5f;
-				var defaultPadding = halfScale*(float)Utility.Max( this.defaultHeight, this.defaultWidth );
+				var defaultPadding = halfScale*(float)Max( this.defaultHeight, this.defaultWidth );
 				foreach ( var p in this.activeParticles )
 				{
 					if ( p.HasOwnDimensions )
 					{
-						var padding = halfScale*(float)Utility.Max( p.Width, p.Height );
+						var padding = halfScale*(float)Max( p.Width, p.Height );
 						min.Floor( p.Position - padding );
 						max.Ceil( p.Position + padding );
 					}
@@ -963,8 +964,8 @@ namespace Axiom.ParticleSystems
 		protected void SetBounds( AxisAlignedBox aabb )
 		{
 			this.aab = (AxisAlignedBox)aabb.Clone();
-			var sqDist = (float)Utility.Max( this.aab.Minimum.LengthSquared, this.aab.Maximum.LengthSquared );
-			this.boundingRadius = (float)Utility.Sqrt( sqDist );
+			var sqDist = (float)Max( this.aab.Minimum.LengthSquared, this.aab.Maximum.LengthSquared );
+			this.boundingRadius = (float)Sqrt( sqDist );
 		}
 
 		//-----------------------------------------------------------------------

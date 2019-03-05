@@ -27,43 +27,23 @@ namespace Axiom.Graphics
 	/// </summary>
 	public class SoftwareBufferManager : HardwareBufferManager
 	{
-		#region Methods
+        public SoftwareBufferManager(HardwareBufferManagerBase baseInstance) : base(baseInstance)
+        {
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="numIndices"></param>
-		/// <param name="usage"></param>
-		/// <returns></returns>
-		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
-		{
-			return new SoftwareIndexBuffer( type, numIndices, usage );
-		}
+        #region Methods
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="numIndices"></param>
-		/// <param name="usage"></param>
-		/// <param name="useShadowBuffer"></param>
-		/// <returns></returns>
-		public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="numIndices"></param>
+        /// <param name="usage"></param>
+        /// <param name="useShadowBuffer"></param>
+        /// <returns></returns>
+        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
 		{
-			return new SoftwareIndexBuffer( type, numIndices, usage );
-		}
-
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVerts"></param>
-		/// <param name="usage"></param>
-		/// <returns></returns>
-		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage )
-		{
-			return new SoftwareVertexBuffer( vertexSize, numVerts, usage );
+			return new SoftwareIndexBuffer( this, type, numIndices, usage );
 		}
 
 		/// <summary>
@@ -74,9 +54,9 @@ namespace Axiom.Graphics
 		/// <param name="usage"></param>
 		/// <param name="useShadowBuffer"></param>
 		/// <returns></returns>
-		public override HardwareVertexBuffer CreateVertexBuffer( int vertexSize, int numVerts, BufferUsage usage, bool useShadowBuffer )
+		public override HardwareVertexBuffer CreateVertexBuffer(VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
 		{
-			return new SoftwareVertexBuffer( vertexSize, numVerts, usage );
+			return new SoftwareVertexBuffer(this, vertexDeclaration, numVerts, usage );
 		}
 
 		#endregion Methods
@@ -116,8 +96,8 @@ namespace Axiom.Graphics
 		/// <param name="vertexSize"></param>
 		/// <param name="numVertices"></param>
 		/// <param name="usage"></param>
-		public SoftwareVertexBuffer( int vertexSize, int numVertices, BufferUsage usage )
-			: base( vertexSize, numVertices, usage, true, false )
+		public SoftwareVertexBuffer(HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage )
+			: base(manager, vertexDeclaration, numVertices, usage, true, false )
 		{
 			data = new byte[ sizeInBytes ];
 		}
@@ -126,7 +106,7 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-		public override IntPtr Lock( int offset, int length, BufferLocking locking )
+		public override BufferBase Lock( int offset, int length, BufferLocking locking )
 		{
 			//Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
 			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "The data area to be locked exceeds the buffer." );
@@ -136,7 +116,7 @@ namespace Axiom.Graphics
 			return LockImpl( offset, length, locking );
 		}
 
-		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{
 			//Debug.Assert( !handle.IsAllocated, "Internal error, data being pinned twice." );
 
@@ -144,7 +124,7 @@ namespace Axiom.Graphics
 			return GetDataPointer( offset );
 		}
 
-		public override void ReadData( int offset, int length, IntPtr dest )
+		public override void ReadData( int offset, int length, BufferBase dest )
 		{
 			//Debug.Assert(!isLocked, "Cannot lock this buffer because it is already locked."); //imitating render system specific hardware buffer behaviour
 			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "Buffer overrun while trying to read a software buffer." );
@@ -152,7 +132,7 @@ namespace Axiom.Graphics
 			unsafe
 			{
 				// get a pointer to the destination intptr
-				byte* pDest = (byte*)dest.ToPointer();
+				byte* pDest = (byte*)dest.Ptr;
 
 				// copy the src data to the destination buffer
 				for ( int i = 0; i < length; i++ )
@@ -176,7 +156,7 @@ namespace Axiom.Graphics
 			Memory.UnpinObject( data );
 		}
 
-		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
 		{
 			//Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." ); //imitating render system specific hardware buffer behaviour
 			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer." );
@@ -184,7 +164,7 @@ namespace Axiom.Graphics
 			unsafe
 			{
 				// get a pointer to the destination intptr
-				byte* pSrc = (byte*)src.ToPointer();
+				byte* pSrc = (byte*)src.Ptr;
 
 				// copy the src data to the destination buffer
 				for ( int i = 0; i < length; i++ )
@@ -201,15 +181,12 @@ namespace Axiom.Graphics
 		/// <remarks>
 		/// The caller is responible for calling <see>Unlock</see> when they are done using this pointer
 		/// </remarks>
-		public IntPtr GetDataPointer( int offset )
+		public BufferBase GetDataPointer( int offset )
 		{
 			//Debug.Assert( isLocked, "Cannot get data pointer if the buffer wasn't locked." );
 			Debug.Assert( offset >= 0 && offset < sizeInBytes, "Offset into buffer out of range." );
-			IntPtr result = Memory.PinObject( data );
-			unsafe
-			{
-				result = (IntPtr)( (byte*)result + offset );
-			}
+            BufferBase result = Memory.PinObject( data );
+            result = result + offset;
 			return result;
 		}
 
@@ -264,8 +241,8 @@ namespace Axiom.Graphics
 		/// <param name="vertexSize"></param>
 		/// <param name="numVertices"></param>
 		/// <param name="usage"></param>
-		public SoftwareIndexBuffer( IndexType type, int numIndices, BufferUsage usage )
-			: base( type, numIndices, usage, true, false )
+		public SoftwareIndexBuffer(HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage )
+			: base( manager, type, numIndices, usage, true, false )
 		{
 			data = new byte[ sizeInBytes ];
 		}
@@ -274,7 +251,7 @@ namespace Axiom.Graphics
 
 		#region Methods
 
-		public override IntPtr Lock( int offset, int length, BufferLocking locking )
+		public override BufferBase Lock( int offset, int length, BufferLocking locking )
 		{
 			//Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
 			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "The data area to be locked exceeds the buffer." );
@@ -284,12 +261,12 @@ namespace Axiom.Graphics
 			return LockImpl( offset, length, locking );
 		}
 
-		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
+		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
 		{
 			return GetDataPointer( offset );
 		}
 
-		public override void ReadData( int offset, int length, IntPtr dest )
+		public override void ReadData( int offset, int length, BufferBase dest )
 		{
 			//Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." ); //imitating render system specific hardware buffer behaviour
 			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "Buffer overrun while trying to read a software buffer." );
@@ -297,7 +274,7 @@ namespace Axiom.Graphics
 			unsafe
 			{
 				// get a pointer to the destination intptr
-				byte* pDest = (byte*)dest.ToPointer();
+				byte* pDest = (byte*)dest.Ptr;
 
 				// copy the src data to the destination buffer
 				// TODO: use Memory.Copy() as soon as it provides a faster solution
@@ -322,7 +299,7 @@ namespace Axiom.Graphics
 			Memory.UnpinObject( data );
 		}
 
-		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
+		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
 		{
 			//Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." ); //imitating render system specific hardware buffer behaviour
 			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer." );
@@ -330,7 +307,7 @@ namespace Axiom.Graphics
 			unsafe
 			{
 				// get a pointer to the destination intptr
-				byte* pSrc = (byte*)src.ToPointer();
+				byte* pSrc = (byte*)src.Ptr;
 
 				// copy the src data to the destination buffer
 				for ( int i = 0; i < length; i++ )
@@ -347,15 +324,12 @@ namespace Axiom.Graphics
 		/// <remarks>
 		/// The caller is responible for calling <see>Unlock</see> when they are done using this pointer
 		/// </remarks>
-		public IntPtr GetDataPointer( int offset )
+		public BufferBase GetDataPointer( int offset )
 		{
 			//Debug.Assert( isLocked, "Cannot get data pointer if the buffer wasn't locked." );
 			Debug.Assert( offset >= 0 && offset < sizeInBytes, "Offset into buffer out of range." );
-			IntPtr result = Memory.PinObject( data );
-			unsafe
-			{
-				result = (IntPtr)( (byte*)result + offset );
-			}
+            BufferBase result = Memory.PinObject( data );
+            result = result + offset;
 			return result;
 		}
 

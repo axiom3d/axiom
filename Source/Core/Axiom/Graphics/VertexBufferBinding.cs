@@ -43,7 +43,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Axiom.Core;
-using Axiom.Math;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -145,7 +145,7 @@ namespace Axiom.Graphics
 		public virtual void SetBinding( short index, HardwareVertexBuffer buffer )
 		{
 			this.bindingMap[ index ] = buffer;
-			this.highIndex = (short)Utility.Max( this.highIndex, index + 1 );
+			this.highIndex = (short)Max( this.highIndex, index + 1 );
 		}
 
 		/// <summary>

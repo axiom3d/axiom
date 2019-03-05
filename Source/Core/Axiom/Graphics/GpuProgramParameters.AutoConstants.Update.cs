@@ -36,6 +36,7 @@
 using System;
 using Axiom.Core;
 using Axiom.Math;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -590,8 +591,8 @@ namespace Axiom.Graphics
 						source.WorldMatrix.Extract3x3Matrix( out m3 );
 						WriteRawConstant( entry.PhysicalIndex,
 						                  source.ShadowExtrusionDistance/
-						                  Utility.Sqrt(
-						                  	Utility.Max( Utility.Max( m3.GetColumn( 0 ).LengthSquared, m3.GetColumn( 1 ).LengthSquared ),
+						                  Sqrt(
+						                  	Max( Max( m3.GetColumn( 0 ).LengthSquared, m3.GetColumn( 1 ).LengthSquared ),
 						                  	             m3.GetColumn( 2 ).LengthSquared ) ) );
 					}
 						break;

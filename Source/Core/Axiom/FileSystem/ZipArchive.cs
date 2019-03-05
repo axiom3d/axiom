@@ -38,19 +38,13 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
 using System.Collections.Generic;
-#if (SILVERLIGHT && WINDOWS_PHONE) || ( XBOX || XBOX360)
+#if (XBOX || XBOX360)
 using System.IO.IsolatedStorage;
 #endif
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
-#if SILVERLIGHT
-using System.Windows;
-#endif
 using Axiom.Core;
 using Ionic.Zip;
 
@@ -58,157 +52,151 @@ using Ionic.Zip;
 
 namespace Axiom.FileSystem
 {
-	/// <summary>
-	/// Specialization of the Archive class to allow reading of files from from a zip format source archive.
-	/// </summary>
-	/// <remarks>
-	/// This archive format supports all archives compressed in the standard
-	/// zip format, including iD pk3 files.
-	/// </remarks>
-	/// <ogre name="ZipArchive">
-	///     <file name="OgreZip.h"   revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-	///     <file name="OgreZip.cpp" revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-	/// </ogre> 
-	public class ZipArchive : Archive
-	{
-		#region Fields and Properties
+    /// <summary>
+    /// Specialization of the Archive class to allow reading of files from from a zip format source archive.
+    /// </summary>
+    /// <remarks>
+    /// This archive format supports all archives compressed in the standard
+    /// zip format, including iD pk3 files.
+    /// </remarks>
+    /// <ogre name="ZipArchive">
+    ///     <file name="OgreZip.h"   revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    ///     <file name="OgreZip.cpp" revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    /// </ogre> 
+    public class ZipArchive : Archive
+    {
+        #region Fields and Properties
 
-		/// <summary>
-		/// root location of the zip file.
-		/// </summary>
-		protected string _zipFile;
+        /// <summary>
+        /// root location of the zip file.
+        /// </summary>
+        protected string _zipFile;
 
-		protected string _zipDir = "/";
-		protected ZipFile _zipStream;
-		protected List<FileInfo> _fileList = new List<FileInfo>();
+        protected string _zipDir = "/";
+        protected ZipFile _zipStream;
+        protected List<FileInfo> _fileList = new List<FileInfo>();
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Utility Methods
+        #region Utility Methods
 
-		/// <overloads><summary>
-		/// Utility method to retrieve all files in a directory matching pattern.
-		/// </summary>
-		/// <param name="pattern">File pattern</param>
-		/// <param name="recursive">Whether to cascade down directories</param>
-		/// <param name="simpleList">Populated if retrieving a simple list</param>
-		/// <param name="detailList">Populated if retrieving a detailed list</param>
-		/// </overloads>
-		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList )
-		{
-			findFiles( pattern, recursive, simpleList, detailList, "" );
-		}
+        /// <overloads><summary>
+        /// Utility method to retrieve all files in a directory matching pattern.
+        /// </summary>
+        /// <param name="pattern">File pattern</param>
+        /// <param name="recursive">Whether to cascade down directories</param>
+        /// <param name="simpleList">Populated if retrieving a simple list</param>
+        /// <param name="detailList">Populated if retrieving a detailed list</param>
+        /// </overloads>
+        protected void findFiles(string pattern, bool recursive, List<string> simpleList, FileInfoList detailList)
+        {
+            findFiles(pattern, recursive, simpleList, detailList, "");
+        }
 
-		/// <param name="detailList"></param>
-		/// <param name="currentDir">The current directory relative to the base of the archive, for file naming</param>
-		/// <param name="pattern"></param>
-		/// <param name="recursive"></param>
-		/// <param name="simpleList"></param>
-		protected void findFiles( string pattern, bool recursive, List<string> simpleList, FileInfoList detailList,
-		                          string currentDir )
-		{
-			if ( currentDir == "" )
-			{
-				currentDir = this._zipDir;
-			}
+        /// <param name="detailList"></param>
+        /// <param name="currentDir">The current directory relative to the base of the archive, for file naming</param>
+        /// <param name="pattern"></param>
+        /// <param name="recursive"></param>
+        /// <param name="simpleList"></param>
+        protected void findFiles(string pattern, bool recursive, List<string> simpleList, FileInfoList detailList,
+                                  string currentDir)
+        {
+            if (currentDir == "")
+            {
+                currentDir = this._zipDir;
+            }
 
-			Load();
-			if ( pattern.Contains( "*" ) )
-			{
-				pattern = pattern.Replace( ".", @"\." ).Replace( "*", ".*" ) + "$";
-			}
-			var ex = new Regex( pattern );
+            Load();
+            if (pattern.Contains("*"))
+            {
+                pattern = pattern.Replace(".", @"\.").Replace("*", ".*") + "$";
+            }
 
-			foreach ( var entry in this._zipStream )
-			{
-				// get the full path for the output file
-				var file = entry.FileName;
-				if ( ex.IsMatch( file ) )
-				{
-					if ( simpleList != null )
-					{
-						simpleList.Add( file );
-					}
-					if ( detailList != null )
-					{
-						FileInfo fileInfo;
-						fileInfo.Archive = this;
-						fileInfo.Filename = entry.FileName;
-						fileInfo.Basename = Path.GetFileName( entry.FileName );
-						fileInfo.Path = Path.GetDirectoryName( entry.FileName ) + Path.DirectorySeparatorChar;
-						fileInfo.CompressedSize = entry.CompressedSize;
-						fileInfo.UncompressedSize = entry.UncompressedSize;
-						fileInfo.ModifiedTime = entry.CreationTime;
-						detailList.Add( fileInfo );
-					}
-				}
-			}
-		}
 
-		#endregion Utility Methods
+            var ex = new Regex(pattern);
+            var files = from entry in _zipStream.Entries
+                        where ex.IsMatch(entry.FileName)
+                        select new FileInfo
+                        {
+                            Archive = this,
+                            Filename = entry.FileName,
+                            Basename = Path.GetFileName(entry.FileName),
+                            Path = Path.GetDirectoryName(entry.FileName) + Path.DirectorySeparatorChar,
+                            CompressedSize = entry.CompressedSize,
+                            UncompressedSize = entry.UncompressedSize,
+                            ModifiedTime = entry.CreationTime
+                        };
+            if (detailList != null)
+            {
+                detailList.AddRange(files);
+            }
 
-		#region Constructors and Destructor
+            if (simpleList != null)
+            {
+                simpleList.AddRange(from file in files
+                                    select file.Filename);
+            }
+        }
 
-		public ZipArchive( string name, string archType )
-			: base( name, archType )
-		{
-		}
+        #endregion Utility Methods
 
-		~ZipArchive()
-		{
-			Unload();
-		}
+        #region Constructors and Destructor
 
-		#endregion Constructors and Destructor
+        public ZipArchive(string name, string archType)
+            : base(name, archType)
+        {
+        }
 
-		#region Archive Implementation
+        ~ZipArchive()
+        {
+            Unload();
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public override bool IsCaseSensitive
-		{
-			get
-			{
-				return false;
-			}
-		}
+        #endregion Constructors and Destructor
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public override void Load()
-		{
-			if ( this._zipFile == null || this._zipFile.Length == 0 || this._zipStream == null )
-			{
-				// read the open the zip archive
-				Stream fs = null;
+        #region Archive Implementation
 
-#if SILVERLIGHT && !WINDOWS_PHONE
-				if (Application.Current.HasElevatedPermissions)
-#endif
-				{
-					this._zipFile = Path.GetFullPath( Name );
-					if ( File.Exists( this._zipFile ) )
-					{
-						fs = File.OpenRead( this._zipFile );
-					}
-				}
+        /// <summary>
+        /// 
+        /// </summary>
+        public override bool IsCaseSensitive
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-				if ( fs == null )
-				{
-					this._zipFile = Name.Replace( '/', '.' );
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void Load()
+        {
+            if (this._zipFile == null || this._zipFile.Length == 0 || this._zipStream == null)
+            {
+                // read the open the zip archive
+                Stream fs = null;
 
-					var assemblyContent = ( from assembly in AssemblyEx.Neighbors()
-					                        where this._zipFile.StartsWith( assembly.FullName.Split( ',' )[ 0 ] )
-					                        select assembly ).FirstOrDefault();
-					if ( assemblyContent != null )
-					{
-						fs = assemblyContent.GetManifestResourceStream( this._zipFile );
-					}
-				}
+                this._zipFile = Path.GetFullPath(Name);
+                if (File.Exists(this._zipFile))
+                {
+                    fs = File.OpenRead(this._zipFile);
+                }
 
-#if (SILVERLIGHT && WINDOWS_PHONE) || ( XBOX || XBOX360)
+                if (fs == null)
+                {
+                    this._zipFile = Name.Replace('/', '.');
+
+                    var assemblyContent = (from assembly in AssemblyEx.Neighbors()
+                                           where this._zipFile.StartsWith(assembly.FullName.Split(',')[0])
+                                           select assembly).FirstOrDefault();
+                    if (assemblyContent != null)
+                    {
+                        fs = assemblyContent.GetManifestResourceStream(this._zipFile);
+                    }
+                }
+
+#if (XBOX || XBOX360)
 				if (fs == null)
 				{
 					_zipFile = Name;
@@ -217,182 +205,163 @@ namespace Axiom.FileSystem
 				}
 #endif
 
-#if SILVERLIGHT
-				if (fs == null)
-				{
-					_zipFile = Name;
-					var res = Application.GetResourceStream(new Uri(_zipFile, UriKind.RelativeOrAbsolute));
-					if (res != null)
-						fs = res.Stream;
-				}
-#endif
-				if ( fs == null )
-				{
-					throw new FileNotFoundException( Name );
-				}
+                if (fs == null)
+                {
+                    throw new FileNotFoundException(Name);
+                }
 
-				fs.Position = 0;
+                fs.Position = 0;
 
-				// get a input stream from the zip file
-				this._zipStream = ZipFile.Read( fs );
-				//ZipEntry entry = _zipStream.GetNextEntry();
-				//Regex ex = new Regex( pattern );
+                // get a input stream from the zip file
+                this._zipStream = ZipFile.Read(fs);
 
-				//while ( entry != null )
-				//{
-				//    // get the full path for the output file
-				//    string file = entry.Name;
-				//    if ( ex.IsMatch( file ) )
-				//    {
-				//        FileInfo fileInfo;
-				//        fileInfo.Archive = this;
-				//        fileInfo.Filename = entry.Name;
-				//        fileInfo.Basename = Path.GetFileName( entry.Name );
-				//        fileInfo.Path = Path.GetDirectoryName( entry.Name ) + Path.DirectorySeparatorChar;
-				//        fileInfo.CompressedSize = entry.CompressedSize;
-				//        fileInfo.UncompressedSize = entry.Size;
-				//        _fileList.Add( fileInfo );
-				//    }
+                this._fileList.AddRange(from entry in _zipStream.Entries
+                                        select new FileInfo
+                                        {
+                                            Archive = this,
+                                            Filename = entry.FileName,
+                                            Basename = Path.GetFileName(entry.FileName),
+                                            Path = Path.GetDirectoryName(entry.FileName) + Path.DirectorySeparatorChar,
+                                            CompressedSize = entry.CompressedSize,
+                                            UncompressedSize = entry.UncompressedSize
+                                        });
+            }
+        }
 
-				//    entry = _zipStream.GetNextEntry();
-				//}
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void Unload()
+        {
+            if (this._zipStream != null)
+            {
+                this._zipStream.Dispose();
+                this._zipStream = null;
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public override void Unload()
-		{
-			if ( this._zipStream != null )
-			{
-				this._zipStream.Dispose();
-				this._zipStream = null;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="readOnly"></param>
+        /// <returns></returns>
+        public override Stream Open(string filename, bool readOnly)
+        {
+            Load();
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="filename"></param>
-		/// <param name="readOnly"></param>
-		/// <returns></returns>
-		public override Stream Open( string filename, bool readOnly )
-		{
-			Load();
+            if (this._zipStream.ContainsEntry(filename))
+            {
+                var entry = this._zipStream[filename];
+                var output = new MemoryStream();
+                entry.Extract(output);
 
-			if ( this._zipStream.ContainsEntry( filename ) )
-			{
-				var entry = this._zipStream[ filename ];
-				var output = new MemoryStream();
-				entry.Extract( output );
+                // reset the position to make sure it is at the beginning of the stream
+                output.Position = 0;
+                return output;
+            }
 
-				// reset the position to make sure it is at the beginning of the stream
-				output.Position = 0;
-				return output;
-			}
+            return null;
+        }
 
-			return null;
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="recursive"></param>
+        /// <returns></returns>
+        public override List<string> List(bool recursive)
+        {
+            return Find("*", recursive);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="recursive"></param>
-		/// <returns></returns>
-		public override List<string> List( bool recursive )
-		{
-			return Find( "*", recursive );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="recursive"></param>
+        /// <returns></returns>
+        public override FileInfoList ListFileInfo(bool recursive)
+        {
+            return FindFileInfo("*", recursive);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="recursive"></param>
-		/// <returns></returns>
-		public override FileInfoList ListFileInfo( bool recursive )
-		{
-			return FindFileInfo( "*", recursive );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="recursive"></param>
+        /// <returns></returns>
+        public override List<string> Find(string pattern, bool recursive)
+        {
+            var ret = new List<string>();
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="pattern"></param>
-		/// <param name="recursive"></param>
-		/// <returns></returns>
-		public override List<string> Find( string pattern, bool recursive )
-		{
-			var ret = new List<string>();
+            findFiles(pattern, recursive, ret, null);
 
-			findFiles( pattern, recursive, ret, null );
+            return ret;
+        }
 
-			return ret;
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="pattern"></param>
+        /// <param name="recursive"></param>
+        /// <returns></returns>
+        public override FileInfoList FindFileInfo(string pattern, bool recursive)
+        {
+            var ret = new FileInfoList();
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="pattern"></param>
-		/// <param name="recursive"></param>
-		/// <returns></returns>
-		public override FileInfoList FindFileInfo( string pattern, bool recursive )
-		{
-			var ret = new FileInfoList();
+            findFiles(pattern, recursive, null, ret);
 
-			findFiles( pattern, recursive, null, ret );
+            return ret;
+        }
 
-			return ret;
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public override bool Exists(string fileName)
+        {
+            var ret = new List<string>();
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="fileName"></param>
-		/// <returns></returns>
-		public override bool Exists( string fileName )
-		{
-			var ret = new List<string>();
+            findFiles(fileName, false, ret, null);
 
-			findFiles( fileName, false, ret, null );
+            return (bool)(ret.Count > 0);
+        }
 
-			return (bool)( ret.Count > 0 );
-		}
+        #endregion Archive Implementation
+    }
 
-		#endregion Archive Implementation
-	}
+    /// <summary>
+    /// Specialization of ArchiveFactory for Zip files.
+    /// </summary>
+    /// <ogre name="ZipArchive">
+    ///     <file name="OgreZip.h"   revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    ///     <file name="OgreZip.cpp" revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
+    /// </ogre> 
+    public class ZipArchiveFactory : ArchiveFactory
+    {
+        private const string _type = "ZipFile";
 
-	/// <summary>
-	/// Specialization of ArchiveFactory for Zip files.
-	/// </summary>
-	/// <ogre name="ZipArchive">
-	///     <file name="OgreZip.h"   revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-	///     <file name="OgreZip.cpp" revision="" lastUpdated="5/18/2006" lastUpdatedBy="Borrillis" />
-	/// </ogre> 
-	public class ZipArchiveFactory : ArchiveFactory
-	{
-		private const string _type = "ZipFile";
+        #region ArchiveFactory Implementation
 
-		#region ArchiveFactory Implementation
+        public override string Type
+        {
+            get
+            {
+                return _type;
+            }
+        }
 
-		public override string Type
-		{
-			get
-			{
-				return _type;
-			}
-		}
+        public override Archive CreateInstance(string name)
+        {
+            return new ZipArchive(name, _type);
+        }
 
-		public override Archive CreateInstance( string name )
-		{
-			return new ZipArchive( name, _type );
-		}
+        public override void DestroyInstance(ref Archive obj)
+        {
+            obj.Dispose();
+        }
 
-		public override void DestroyInstance( ref Archive obj )
-		{
-			obj.Dispose();
-		}
-
-		#endregion
-	};
+        #endregion
+    };
 }

@@ -44,6 +44,7 @@ using Axiom.Collections;
 using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Math;
+using static Axiom.Math.Utility;
 
 #endregion
 
@@ -284,7 +285,7 @@ namespace Axiom.Graphics
 						e = e%maxElementsPerChain;
 						var element = chainElementList[ segment.start + e ];
 						element.Width = element.Width - ( time*this.deltaWidth[ s ] );
-						element.Width = Utility.Max( 0.0f, element.Width );
+						element.Width = Max( 0.0f, element.Width );
 						element.Color = element.Color - ( this.deltaColor[ s ]*time );
 						element.Color.Saturate();
 						if ( e == segment.tail )
@@ -353,7 +354,7 @@ namespace Axiom.Graphics
 				if ( sqlen >= this.squaredElementLength )
 				{
 					// Move existing head to elemLength
-					var scaledDiff = diff*(float)( this.elementLength/Utility.Sqrt( sqlen ) );
+					var scaledDiff = diff*(float)( this.elementLength/Sqrt( sqlen ) );
 					headElement.Position = nextElement.Position + scaledDiff;
 					// Add a new element to be the new head
 					var newElem = new Element( newPos, this.initialWidth[ index ], 0.0f, this.initialColor[ index ] );
@@ -485,13 +486,13 @@ namespace Axiom.Graphics
 
 	public class RibbonTrailFactory : MovableObjectFactory
 	{
-		public new static string TypeName = "RibbonTrail";
+		public static string TypeName = "RibbonTrail";
 
 		public RibbonTrailFactory()
 		{
-			base.Type = TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Fx;
-		}
+            base._type = TypeName;
+        }
 
 		protected override MovableObject _createInstance( string name, NamedParameterList param )
 		{

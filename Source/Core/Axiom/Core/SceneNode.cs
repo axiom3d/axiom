@@ -39,12 +39,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 using System;
 using System.Diagnostics;
-using System.Collections;
 using Axiom.Collections;
-using Axiom.Math;
 using Axiom.Graphics;
 using System.Collections.Generic;
 using Axiom.Core.Collections;
+using static Axiom.Math.Utility;
+using Axiom.Math;
 
 #endregion Namespace Declarations
 
@@ -792,9 +792,9 @@ namespace Axiom.Core
 		public override Node.DebugRenderable GetDebugRenderable()
 		{
 			var hs = this.worldAABB.HalfSize;
-			var sz = Utility.Min( hs.x, hs.y );
-			sz = Utility.Min( sz, hs.z );
-			sz = Utility.Max( sz, (Real)1.0 );
+			var sz = Min( hs.x, hs.y );
+			sz = Min( sz, hs.z );
+			sz = Max( sz, (Real)1.0 );
 			return base.GetDebugRenderable( sz );
 		}
 
@@ -829,7 +829,7 @@ namespace Axiom.Core
 			{
 				// update
 				this.worldAABB.Merge( obj.GetWorldBoundingBox( true ) );
-				radius = Utility.Max( obj.BoundingRadius, radius );
+				radius = Max( obj.BoundingRadius, radius );
 			}
 
 			// merge with Children
@@ -837,7 +837,7 @@ namespace Axiom.Core
 			{
 				// merge our bounding box with that of the child node
 				this.worldAABB.Merge( child.worldAABB );
-				radius = Utility.Max( child.worldBoundingSphere.Radius, radius );
+				radius = Max( child.worldBoundingSphere.Radius, radius );
 			}
 
 			this.worldBoundingSphere.Radius = radius;
@@ -1077,7 +1077,7 @@ namespace Axiom.Core
 				{
 					// Oops, a 180 degree turn (infinite possible rotation axes)
 					// Default to yaw i.e. use current UP
-					rotationQuat = Quaternion.FromAngleAxis( Utility.PI, yAxis );
+					rotationQuat = Quaternion.FromAngleAxis( PI, yAxis );
 				}
 				else
 				{

@@ -44,6 +44,7 @@ using Axiom.Controllers;
 using Axiom.Core;
 using Axiom.Core.Collections;
 using Axiom.Math;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -421,7 +422,7 @@ namespace Axiom.Graphics
 			var l = GetLight( index );
 			if ( l.Type == LightType.Spotlight )
 			{
-				return new Vector4( Utility.Cos( l.SpotlightInnerAngle*0.5 ), Utility.Cos( l.SpotlightOuterAngle*0.5 ),
+				return new Vector4( Cos( l.SpotlightInnerAngle*0.5 ), Cos( l.SpotlightOuterAngle*0.5 ),
 				                    l.SpotlightFalloff, 1.0 );
 			}
 			else

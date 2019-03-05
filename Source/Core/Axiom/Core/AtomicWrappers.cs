@@ -34,6 +34,7 @@
 #region Namespace Declarations
 
 using System;
+using System.Reflection;
 
 #endregion Namespace Declarations
 
@@ -62,7 +63,7 @@ namespace Axiom.Core
 
 		public AtomicScalar()
 		{
-			var type = typeof ( T );
+			var type = typeof( T );
 			this._size = type.IsEnum ? 4 : Memory.SizeOf( type );
 		}
 

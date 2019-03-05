@@ -45,6 +45,7 @@ using Axiom.Animating;
 using Axiom.Core;
 using Axiom.Graphics;
 using Axiom.Math;
+using static Axiom.Math.Utility;
 
 #endregion Namespace Declarations
 
@@ -1357,7 +1358,7 @@ namespace Axiom.Serialization
 					// Read depth
 					var usage = new MeshLodUsage();
 					usage.Value = ReadFloat( reader );
-					usage.UserValue = Utility.Sqrt( usage.Value );
+					usage.UserValue = Sqrt( usage.Value );
 
 					if ( this.mesh.IsLodManual )
 					{
@@ -1855,7 +1856,7 @@ namespace Axiom.Serialization
 				// camera depth
 				var usage = new MeshLodUsage();
 				usage.Value = ReadFloat( reader );
-				usage.UserValue = Utility.Sqrt( usage.Value );
+				usage.UserValue = Sqrt( usage.Value );
 
 				if ( mesh.IsLodManual )
 				{

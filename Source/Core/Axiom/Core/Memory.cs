@@ -154,7 +154,7 @@ namespace Axiom.Core
 				_pinnedReferences.Add( obj, handle );
 			}
 
-			int length = obj is byte[] ?( (byte[])obj ).Length : 0;
+            int length = (obj is byte[]) ? ((byte[])obj).Length : 0;
 			return new UnsafeBuffer( handle.AddrOfPinnedObject(), length );
 		}
 #endif

@@ -1817,16 +1817,16 @@ namespace Axiom.Core
 
 	public class ManualObjectFactory : MovableObjectFactory
 	{
-		public new const string TypeName = "ManualObject";
+		public const string TypeName = "ManualObject";
 
 		public ManualObjectFactory()
 			: base()
 		{
-			base.Type = TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Entity;
-		}
+            base._type = TypeName;
+        }
 
-		protected override MovableObject _createInstance( string name, NamedParameterList param )
+        protected override MovableObject _createInstance( string name, NamedParameterList param )
 		{
 			return new ManualObject( name );
 		}

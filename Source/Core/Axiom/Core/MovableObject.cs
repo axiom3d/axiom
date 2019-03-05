@@ -894,7 +894,7 @@ namespace Axiom.Core
 					var squaredDepth = this.parentNode.GetSquaredViewDepth( camera.LodCamera );
 					// Max distance to still render
 					var maxDist = this.upperDistance + rad;
-					if ( squaredDepth > Utility.Sqr( maxDist ) )
+					if ( squaredDepth > Math.Utility.Sqr( maxDist ) )
 					{
 						this.beyondFarDistance = true;
 					}
@@ -952,8 +952,8 @@ namespace Axiom.Core
 
 	public abstract class MovableObjectFactory : AbstractFactory<MovableObject>
 	{
-		public const string TypeName = "MovableObject";
-		private string _type;
+		private const string TypeName = "MovableObject";
+		protected string _type;
 		private uint _typeFlag;
 
 		protected MovableObjectFactory()
@@ -963,7 +963,7 @@ namespace Axiom.Core
 		}
 
 		/// <summary>
-		///     Gets/Sets the type flag for this factory.
+		///     Gets the type flag for this factory.
 		/// </summary>
 		/// <remarks>
 		///     A type flag is like a query flag, except that it applies to all instances
@@ -1033,20 +1033,13 @@ namespace Axiom.Core
 		}
 
 		public override string Type
-		{
-			get
-			{
-				return this._type;
-			}
-			protected set
-			{
-				this._type = value;
-			}
-		}
+        {
+            get => this._type;
+        }
 
-		#endregion AbstractFactory<MovableObject> Members
+        #endregion AbstractFactory<MovableObject> Members
 
-		protected abstract MovableObject _createInstance( string name, NamedParameterList param );
+        protected abstract MovableObject _createInstance( string name, NamedParameterList param );
 
 		/// <summary>
 		///     Create a new instance of the object.

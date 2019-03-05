@@ -42,7 +42,8 @@ using System.Collections.Generic;
 using Axiom.Graphics;
 using Axiom.Math;
 using ResourceHandle = System.UInt64;
-
+using static Axiom.Math.Utility;
+ 
 #endregion Namespace Declarations
 
 namespace Axiom.Core
@@ -618,8 +619,8 @@ namespace Axiom.Core
 						else
 						{
 							min.Floor( vec );
-							max.Ceil( vec );
-							maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
+                            max.Ceil(vec);
+							maxSquaredLength = Max( maxSquaredLength, vec.LengthSquared );
 						}
 
 						if ( normals )
@@ -675,8 +676,8 @@ namespace Axiom.Core
 						// Here's where curved plane is different from standard plane.  Amazing, I know.
 						var diff_x = ( x - ( (Real)xSegments/2 ) )/(Real)xSegments;
 						var diff_y = ( y - ( (Real)ySegments/2 ) )/(Real)ySegments;
-						var dist = Utility.Sqrt( diff_x*diff_x + diff_y*diff_y );
-						vec.z = ( -Utility.Sin( ( 1 - dist )*( Utility.PI/2 ) )*curvature ) + curvature;
+						var dist = Sqrt( diff_x*diff_x + diff_y*diff_y );
+						vec.z = ( -Sin( ( 1 - dist )*( PI/2 ) )*curvature ) + curvature;
 
 						// Transform by orientation and distance
 						var pos = transform.TransformAffine( vec );
@@ -697,7 +698,7 @@ namespace Axiom.Core
 						{
 							min.Floor( vec );
 							max.Ceil( vec );
-							maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
+							maxSquaredLength = Max( maxSquaredLength, vec.LengthSquared );
 						}
 
 						if ( normals )
@@ -798,7 +799,7 @@ namespace Axiom.Core
 						{
 							min.Floor( vec );
 							max.Ceil( vec );
-							maxSquaredLength = Utility.Max( maxSquaredLength, vec.LengthSquared );
+							maxSquaredLength = Max( maxSquaredLength, vec.LengthSquared );
 						}
 
 						if ( normals )
@@ -817,7 +818,7 @@ namespace Axiom.Core
 
 						// find distance to sphere
 						sphereDistance =
-							Utility.Sqrt( cameraPosition*cameraPosition*( vec.y*vec.y - 1.0f ) + sphereRadius*sphereRadius ) -
+							Sqrt( cameraPosition*cameraPosition*( vec.y*vec.y - 1.0f ) + sphereRadius*sphereRadius ) -
 							cameraPosition*vec.y;
 
 						vec.x *= sphereDistance;
@@ -1003,7 +1004,7 @@ namespace Axiom.Core
 
 			// generate bounds for the mesh
 			mesh.BoundingBox = new AxisAlignedBox( min, max );
-			mesh.BoundingSphereRadius = Utility.Sqrt( maxSquaredLength );
+			mesh.BoundingSphereRadius = Sqrt( maxSquaredLength );
 		}
 
 		protected internal void FireProcessMaterialName( Mesh mesh, string name )

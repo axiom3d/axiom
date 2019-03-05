@@ -1088,14 +1088,14 @@ namespace Axiom.Core
 
 	public class BillboardChainFactory : MovableObjectFactory
 	{
-		public new const string TypeName = "BillboardChain";
+		public const string TypeName = "BillboardChain";
 
 		public BillboardChainFactory()
 			: base()
 		{
-			base.Type = BillboardChainFactory.TypeName;
 			base.TypeFlag = (uint)SceneQueryTypeMask.Fx;
-		}
+            base._type = TypeName;
+        }
 
 		protected override MovableObject _createInstance( string name, NamedParameterList param )
 		{
