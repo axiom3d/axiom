@@ -50,7 +50,7 @@ namespace Axiom.Platforms.Windows
 	/// <summary>
 	///	Platform management specialization for Microsoft Windows (r) platform.
 	/// </summary>
-	[Export( typeof ( IPlatformManager ) )]
+	//[Export( typeof ( IPlatformManager ) )]
 	public class WindowsPlatformManager : IPlatformManager
 	{
 		public WindowsPlatformManager()

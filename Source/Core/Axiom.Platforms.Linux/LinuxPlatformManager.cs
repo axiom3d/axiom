@@ -8,7 +8,7 @@ using Axiom.Input;
 
 namespace Axiom.Platforms.Linux
 {
-	[Export( typeof ( IPlatformManager ) )]
+	//[Export( typeof ( IPlatformManager ) )]
 	public class LinuxPlatformManager : IPlatformManager
 	{
 		public LinuxPlatformManager()

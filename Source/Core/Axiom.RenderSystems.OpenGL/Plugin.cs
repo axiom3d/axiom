@@ -51,7 +51,7 @@ namespace Axiom.RenderSystems.OpenGL
 	/// <summary>
 	/// Summary description for Plugin.
 	/// </summary>
-	[Export( typeof ( IPlugin ) )]
+	//[Export( typeof ( IPlugin ) )]
 	public sealed class Plugin : IPlugin
 	{
 		#region Implementation of IPlugin

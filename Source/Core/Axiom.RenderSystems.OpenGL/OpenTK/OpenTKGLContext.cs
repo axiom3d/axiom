@@ -38,10 +38,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #region Namespace Declarations
 
 using System;
-using System.Windows.Forms;
 using Axiom.Core;
 using OpenTK;
 using OpenTK.Graphics;
+using System.Windows.Forms;
 
 #endregion Namespace Declarations
 
@@ -107,11 +107,11 @@ namespace Axiom.RenderSystems.OpenGL
 		{
 			get
 			{
-				return this.graphicsContext.VSync;
+				return true;
 			}
 			set
 			{
-				this.graphicsContext.VSync = value;
+				
 			}
 		}
 
