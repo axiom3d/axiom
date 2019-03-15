@@ -90,18 +90,18 @@ namespace Axiom.Components.RTShaderSystem
 
 
 		public virtual SubRenderState CreateInstance( ScriptCompiler compiler, PropertyAbstractNode prop, Pass pass,
-		                                              SGScriptTranslator stranslator )
+		                                              ScriptTranslator stranslator )
 		{
 			return null;
 		}
 
 		public virtual SubRenderState CreateInstance( ScriptCompiler compiler, PropertyAbstractNode prop,
-		                                              TextureUnitState texState, SGScriptTranslator translator )
+		                                              TextureUnitState texState, ScriptTranslator translator )
 		{
 			return null;
 		}
 
-		internal virtual SubRenderState CreateOrRetrieveInstance( SGScriptTranslator translator )
+		internal virtual SubRenderState CreateOrRetrieveInstance( ScriptTranslator translator )
 		{
 			//check if we already creaet a srs
 			SubRenderState subRenderState = translator.GetGeneratedSubRenderState( Type );

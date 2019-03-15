@@ -63,7 +63,7 @@
 
 		public override SubRenderState CreateInstance( Scripting.Compiler.ScriptCompiler compiler,
 		                                               Scripting.Compiler.AST.PropertyAbstractNode prop,
-		                                               Graphics.TextureUnitState texState, SGScriptTranslator translator )
+		                                               Graphics.TextureUnitState texState, ScriptTranslator translator )
 		{
 			if ( prop.Name == "layered_blend" )
 			{
@@ -205,7 +205,7 @@
 			}
 		}
 
-		private LayeredBlending CreateOrRetrieveSubRenderState( SGScriptTranslator translator )
+		private LayeredBlending CreateOrRetrieveSubRenderState( ScriptTranslator translator )
 		{
 			LayeredBlending layeredBlendState = null;
 			//check if we already create a blend srs

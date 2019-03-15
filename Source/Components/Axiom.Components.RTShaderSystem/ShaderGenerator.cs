@@ -945,7 +945,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="translator"> The translator for the specific SubRenderState </param>
 		/// <returns> </returns>
 		public SubRenderState createSubRenderState( ScriptCompiler compiler, PropertyAbstractNode prop,
-													TextureUnitState texState, SGScriptTranslator translator )
+													TextureUnitState texState, ScriptTranslator translator )
 		{
 			SubRenderState subRenderState = null;
 			foreach ( var key in this.subRenderStateFactories.Keys )
@@ -968,7 +968,7 @@ namespace Axiom.Components.RTShaderSystem
 		/// <param name="translator"> The translator for the specific SubRenderState </param>
 		/// <returns> </returns>
 		public SubRenderState createSubRenderState( ScriptCompiler compiler, PropertyAbstractNode prop, Pass pass,
-													SGScriptTranslator translator )
+													ScriptTranslator translator )
 		{
 			SubRenderState subRenderState = null;
 			foreach ( var key in this.subRenderStateFactories.Keys )
@@ -2112,7 +2112,7 @@ namespace Axiom.Components.RTShaderSystem
 				}
 			}
 
-			public new virtual SGScriptTranslator GetTranslator( AbstractNode node )
+			public new virtual ScriptTranslator GetTranslator( AbstractNode node )
 			{
 				return this._owner.GetTranslator( node );
 			}

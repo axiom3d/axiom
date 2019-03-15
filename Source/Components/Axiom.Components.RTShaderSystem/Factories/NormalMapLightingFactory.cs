@@ -16,7 +16,7 @@ namespace Axiom.Components.RTShaderSystem
 
 		public override SubRenderState CreateInstance( Scripting.Compiler.ScriptCompiler compiler,
 		                                               PropertyAbstractNode prop, Graphics.Pass pass,
-		                                               SGScriptTranslator stranslator )
+		                                               ScriptTranslator stranslator )
 		{
 			if ( prop.Name == "lighting_stage" )
 			{

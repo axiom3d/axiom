@@ -4,7 +4,7 @@
 	{
 		public override SubRenderState CreateInstance( Scripting.Compiler.ScriptCompiler compiler,
 		                                               Scripting.Compiler.AST.PropertyAbstractNode prop,
-		                                               Graphics.Pass pass, SGScriptTranslator stranslator )
+		                                               Graphics.Pass pass, ScriptTranslator stranslator )
 		{
 			if ( prop.Name == "lighting_stage" )
 			{

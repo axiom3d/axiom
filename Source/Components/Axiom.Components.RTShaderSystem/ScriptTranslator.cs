@@ -3,7 +3,7 @@ using Axiom.Scripting.Compiler.AST;
 
 namespace Axiom.Components.RTShaderSystem
 {
-	public class SGScriptTranslator : Axiom.Scripting.Compiler.ScriptCompiler.Translator
+	public class ScriptTranslator : Axiom.Scripting.Compiler.ScriptCompiler.Translator
 	{
 		private RenderState generatedRenderState;
 
@@ -32,7 +32,7 @@ namespace Axiom.Components.RTShaderSystem
 			return Scripting.Compiler.ScriptCompiler.Translator.getString( node, out retVal );
 		}
 
-		public SGScriptTranslator()
+		public ScriptTranslator()
 		{
 			this.generatedRenderState = null;
 		}
