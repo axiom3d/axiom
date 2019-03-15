@@ -26,9 +26,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Core\InstancedGeometry\**" />
-    <EmbeddedResource Remove="Core\InstancedGeometry\**" />
-    <None Remove="Core\InstancedGeometry\**" />
     <Compile Remove="mono\**" />
     <Compile Remove="Properties\**" />
     <Compile Remove="FileSystem\XapArchive.cs" />

@@ -926,20 +926,18 @@ namespace Axiom.Core
 
 			if ( use32bitIndexes )
 			{
-				uint* pSrc32, pDst32;
-				pSrc32 = (uint*)id.indexBuffer.Lock(
-					id.indexStart, id.indexCount*id.indexBuffer.IndexSize, BufferLocking.ReadOnly );
-				pDst32 = (uint*)ibuf.Lock( BufferLocking.Discard );
+				var pSrc32 = id.indexBuffer.Lock(
+                    id.indexStart, id.indexCount * id.indexBuffer.IndexSize, BufferLocking.ReadOnly);
+				var pDst32 = ibuf.Lock( BufferLocking.Discard );
 				RemapIndexes( pSrc32, pDst32, ref indexRemap, id.indexCount );
 				id.indexBuffer.Unlock();
 				ibuf.Unlock();
 			}
 			else
 			{
-				ushort* pSrc16, pDst16;
-				pSrc16 = (ushort*)id.indexBuffer.Lock(
+				var pSrc16 = id.indexBuffer.Lock(
 					id.indexStart, id.indexCount*id.indexBuffer.IndexSize, BufferLocking.ReadOnly );
-				pDst16 = (ushort*)ibuf.Lock( BufferLocking.Discard );
+				var pDst16 = ibuf.Lock( BufferLocking.Discard );
 				RemapIndexes( pSrc16, pDst16, ref indexRemap, id.indexCount );
 				id.indexBuffer.Unlock();
 				ibuf.Unlock();
@@ -975,33 +973,22 @@ namespace Axiom.Core
 			for ( int i = 0; i < numIndexes; ++i )
 			{
 				// use insert since duplicates are silently discarded
-				remap.Add( pBuffer++, remap.Count );
+				remap.Add( pBuffer.Ptr++, remap.Count );
 				// this will have mapped oldindex -> new index IF oldindex
 				// wasn't already there
 			}
 		}
 
-		internal unsafe void RemapIndexes( uint* src, uint* dst, ref Dictionary<int, int> remap, int numIndexes )
+		internal unsafe void RemapIndexes( BufferBase src, BufferBase dst, ref Dictionary<int, int> remap, int numIndexes )
 		{
 			for ( int i = 0; i < numIndexes; ++i )
 			{
-				var searchIdx = (int)*src++;
+				var searchIdx = src++;
 				// look up original and map to target
-				Debug.Assert( remap.ContainsKey( searchIdx ) );
+				Debug.Assert( remap.ContainsKey( searchIdx.Ptr ) );
 
-				*dst++ = (uint)remap[ searchIdx ];
-			}
-		}
-
-		internal unsafe void RemapIndexes( ushort* src, ushort* dst, ref Dictionary<int, int> remap, int numIndexes )
-		{
-			for ( int i = 0; i < numIndexes; ++i )
-			{
-				var searchIdx = (int)*src++;
-				// look up original and map to target
-				Debug.Assert( remap.ContainsKey( searchIdx ) );
-
-				*dst++ = (ushort)remap[ searchIdx ];
+				dst.Ptr = remap[ searchIdx.Ptr ];
+                dst++;
 			}
 		}
 
