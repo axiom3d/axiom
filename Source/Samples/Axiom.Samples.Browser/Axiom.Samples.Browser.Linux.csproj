@@ -13,12 +13,6 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="SharpInputSystem.Core, Version=0.5.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SharpInputSystem.Core.0.5.10\lib\netstandard2.0\SharpInputSystem.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpInputSystem.DirectX, Version=0.5.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SharpInputSystem.DirectX.0.5.10\lib\netstandard2.0\SharpInputSystem.DirectX.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -40,7 +34,6 @@
       <SubType>Designer</SubType>
     </None>
     <Compile Include="SampleBrowser.cs" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj">
@@ -68,7 +61,7 @@
       <Name>Axiom.SceneManagers.Bsp</Name>
     </ProjectReference>
     <ProjectReference Include="..\Axiom.Samples.Common\Axiom.Samples.Common.csproj">
-      <Project>{A9B352AA-24CF-42F6-9D2E-812382055F5E}</Project>
+      <Project>{a9b352aa-24cf-42f6-9d2e-812382055f5e}</Project>
       <Name>Axiom.Samples.Common</Name>
     </ProjectReference>
   </ItemGroup>
@@ -76,7 +69,6 @@
     <Content Include="Resources\AxiomIcon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(SolutionDir)\Axiom.PostSettings.targets" />
   <PropertyGroup>
     <PreBuildEvent>
       if exist "Axiom.dll.locked" del "Axiom.dll.locked"

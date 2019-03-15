@@ -497,12 +497,14 @@ namespace Axiom.Samples
 		/// <summary>
 		/// Sets up SIS input.
 		/// </summary>
-		protected virtual void SetupInput()
+		protected virtual void SetupInput(Type factoryType = null)
 		{
-			var pl = new SIS.ParameterList();
-			pl.Add( new SIS.Parameter( "WINDOW", RenderWindow[ "WINDOW" ] ) );
-#if !(XBOX || XBOX360 )
-			if ( !RenderWindow.GetType().Name.Contains( "OpenTK" ) )
+            var pl = new SIS.ParameterList
+            {
+                new SIS.Parameter("WINDOW", RenderWindow["WINDOW"])
+            };
+#if !(XBOX || XBOX360)
+            if ( !RenderWindow.GetType().Name.Contains( "OpenTK" ) )
 			{
 				pl.Add( new SIS.Parameter( "w32_mouse", "CLF_BACKGROUND" ) );
 				pl.Add( new SIS.Parameter( "w32_mouse", "CLF_NONEXCLUSIVE" ) );
@@ -510,12 +512,19 @@ namespace Axiom.Samples
 			else
 				pl.Add( new SIS.Parameter( "w32_no_coop", string.Empty )  );
 #endif
-            switch(this.Root.RenderSystem.Name)
+            if (factoryType != null && factoryType.IsAssignableFrom(typeof(SIS.IInputManagerFactory)))
             {
-                case "DirectX9":
-                default:
-                    this.InputManager = SIS.InputManager.CreateInputSystem(typeof(SIS.DirectX.DirectXInputManagerFactory), pl);
-                    break;
+                this.InputManager = SIS.InputManager.CreateInputSystem(factoryType, pl);
+            }
+            else
+            {
+                switch (this.Root.RenderSystem.Name)
+                {
+                    case "DirectX9":
+                    default:
+                        this.InputManager = SIS.InputManager.CreateInputSystem(typeof(SIS.DirectX.DirectXInputManagerFactory), pl);
+                        break;
+                }
             }
 
             CreateInputDevices(); // create the specific input devices

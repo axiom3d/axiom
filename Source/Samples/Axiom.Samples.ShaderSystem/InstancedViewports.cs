@@ -332,7 +332,7 @@ namespace Axiom.Samples.ShaderSystem
 
 		public override SubRenderState CreateInstance( Scripting.Compiler.ScriptCompiler compiler,
 		                                               Scripting.Compiler.AST.PropertyAbstractNode prop, Graphics.Pass pass,
-		                                               SGScriptTranslator stranslator )
+		                                               ScriptTranslator stranslator )
 		{
 			SubRenderState subRenderState = CreateInstance();
 			return subRenderState;

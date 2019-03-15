@@ -145,13 +145,13 @@ namespace Axiom.Samples.Instancing
 
 			SetupControls();
 
-			ICollection<string> syntaxCodes = GpuProgramManager.Instance.SupportedSyntaxes;
-			foreach ( string syntax in syntaxCodes )
-			{
-				LogManager.Instance.Write( "supported syntax : ", syntax );
-			}
+            ICollection<string> syntaxCodes = Root.Instance.RenderSystem.Capabilities.ShaderProfiles;
+            foreach ( string syntax in syntaxCodes )
+            {
+            	LogManager.Instance.Write( "supported syntax : ", syntax );
+            }
 
-			this.mNumMeshes = 160;
+            this.mNumMeshes = 160;
 			this.mNumRendered = 0;
 			this.mSelectedMesh = 0;
 			this.mBurnAmount = 0;
@@ -272,7 +272,7 @@ namespace Axiom.Samples.Instancing
 
 		private void CreateInstanceGeom()
 		{
-			if ( Root.Instance.RenderSystem.HardwareCapabilities.HasCapability( Capabilities.VertexPrograms ) == false )
+			if ( Root.Instance.RenderSystem.Capabilities.HasCapability( Capabilities.VertexPrograms ) == false )
 			{
 				throw new AxiomException( "Your video card doesn't support batching" );
 			}
@@ -282,29 +282,32 @@ namespace Axiom.Samples.Instancing
 
 			this.renderInstance = new List<InstancedGeometry>( this.mNumRendered );
 
-			//Load a mesh to read data from.	
-			var batch = new InstancedGeometry( SceneManager, meshes[ this.mSelectedMesh ] + "s" );
-			batch.CastShadows = true;
+            //Load a mesh to read data from.	
+            var batch = new InstancedGeometry(SceneManager, meshes[this.mSelectedMesh] + "s")
+            {
+                CastShadows = true,
+                Origin = Vector3.Zero,
+                BatchInstanceDimensions = new Vector3(1000000f, 1000000f, 1000000f)
+            };
 
-			batch.BatchInstanceDimensions = new Vector3( 1000000f, 1000000f, 1000000f );
-			int batchSize = ( this.mNumMeshes > maxObjectsPerBatch ) ? maxObjectsPerBatch : this.mNumMeshes;
+            int batchSize = ( this.mNumMeshes > maxObjectsPerBatch ) ? maxObjectsPerBatch : this.mNumMeshes;
 			SetupInstancedMaterialToEntity( ent );
 			for ( int i = 0; i < batchSize; i++ )
 			{
 				batch.AddEntity( ent, Vector3.Zero );
 			}
-			batch.Origin = Vector3.Zero;
 
 			batch.Build();
 
 
-			for ( int k = 0; k < this.mNumRendered - 1; k++ )
+			int k;
+			for ( k = 0; k < this.mNumRendered - 1; k++ )
 			{
 				batch.AddBatchInstance();
 			}
 
-			k = 0;
-			foreach ( var batchInstance in batch.BatchInstances )
+            k = 0;
+            foreach ( var batchInstance in batch.BatchInstances )
 			{
 				int j = 0;
 				foreach ( var instancedObject in batchInstance.Objects )

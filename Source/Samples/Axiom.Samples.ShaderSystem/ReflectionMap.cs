@@ -389,7 +389,7 @@ namespace Axiom.Samples.ShaderSystem
 
 		public override SubRenderState CreateInstance( Scripting.Compiler.ScriptCompiler compiler,
 		                                               Scripting.Compiler.AST.PropertyAbstractNode prop, Pass pass,
-		                                               SGScriptTranslator stranslator )
+		                                               ScriptTranslator stranslator )
 		{
 			if ( prop.Name == "rtss_ext_reflection_map" )
 			{
@@ -399,7 +399,7 @@ namespace Axiom.Samples.ShaderSystem
 					int it = 0;
 
 					//Read reflection map type
-					if ( !SGScriptTranslator.GetString( prop.Values[ it ], out strValue ) )
+					if ( !ScriptTranslator.GetString( prop.Values[ it ], out strValue ) )
 					{
 						//compiler.AddError(...)
 						return null;
@@ -419,7 +419,7 @@ namespace Axiom.Samples.ShaderSystem
 						reflectionMapSubRenderState.ReflectionMapType = TextureType.TwoD;
 					}
 
-					if ( !SGScriptTranslator.GetString( prop.Values[ it ], out strValue ) )
+					if ( !ScriptTranslator.GetString( prop.Values[ it ], out strValue ) )
 					{
 						//compiler.AddError(...)
 						return null;
@@ -428,7 +428,7 @@ namespace Axiom.Samples.ShaderSystem
 					it++;
 
 					//read reflection texture
-					if ( !SGScriptTranslator.GetString( prop.Values[ it ], out strValue ) )
+					if ( !ScriptTranslator.GetString( prop.Values[ it ], out strValue ) )
 					{
 						//compiler.AddError(...);
 						return null;
@@ -438,7 +438,7 @@ namespace Axiom.Samples.ShaderSystem
 
 					//Read reflection power value
 					Real reflectionPower = 0.5;
-					if ( !SGScriptTranslator.GetReal( prop.Values[ it ], out reflectionPower ) )
+					if ( !ScriptTranslator.GetReal( prop.Values[ it ], out reflectionPower ) )
 					{
 						//compiler.AddError(...)
 						return null;

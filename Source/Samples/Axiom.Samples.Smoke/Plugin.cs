@@ -22,10 +22,7 @@
 
 #endregion License
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Text;
+using System.Composition;
 using Axiom.Core;
 
 namespace Axiom.Samples.Smoke

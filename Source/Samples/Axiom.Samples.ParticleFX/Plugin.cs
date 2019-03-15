@@ -33,7 +33,7 @@
 
 #region Namespace Declarations
 
-using System.ComponentModel.Composition;
+using System.Composition;
 using Axiom.Core;
 
 #endregion Namespace Declarations

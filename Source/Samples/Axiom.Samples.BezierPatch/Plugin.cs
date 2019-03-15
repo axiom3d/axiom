@@ -22,7 +22,7 @@
 
 #endregion License
 
-using System.ComponentModel.Composition;
+using System.Composition;
 using Axiom.Core;
 
 namespace Axiom.Samples.BezierPatch
