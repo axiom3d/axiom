@@ -35,7 +35,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
+using System.Composition;
 using Axiom.Core;
 using Axiom.Media;
 using Tao.DevIl;
