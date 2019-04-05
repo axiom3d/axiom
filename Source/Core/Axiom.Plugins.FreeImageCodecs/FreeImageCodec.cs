@@ -97,9 +97,15 @@ namespace Axiom.Plugins.FreeImageCodecs
 		[OgreVersion( 1, 7, 2, "Original name was startup" )]
 		public static void Initialize()
 		{
-            FI.FreeImage.ValidateAvailability();
+            try
+            {
+                FI.FreeImage.ValidateAvailability();
+            } catch { 
+                LogManager.Instance.Write("[ Warning ] No Freeimage found.");
+                return;
+            } 
 
-			LogManager.Instance.Write( "FreeImage Version: {0}", FI.FreeImage.GetVersion() );
+            LogManager.Instance.Write( "FreeImage Version: {0}", FI.FreeImage.GetVersion() );
 			LogManager.Instance.Write( FI.FreeImage.GetCopyrightMessage() );
 
 			// Register codecs

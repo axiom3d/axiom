@@ -52,6 +52,8 @@ namespace Axiom.Plugins.FreeImageCodecs
 		/// </summary>
 		public void Initialize()
 		{
+            NativeLibraryLoader.CopyNativeDll("FreeImage","FreeImage");
+
 			FreeImageCodec.Initialize();
 		}
 

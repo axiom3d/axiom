@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyTitle>Axiom.Plugins.SystemDrawingCodecs</AssemblyTitle>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <Copyright>Copyright (c) 2019 Axiom Rendering Engine Project Team.</Copyright>
     <Product>Axiom Rendering Engine</Product>
     <Company>Axiom Rendering Engine Project Team (http://axiom3d.net)</Company>
@@ -24,6 +24,32 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="runtimes\linux-arm\native\libfreeimage-3.17.0.so" />
+    <None Remove="runtimes\linux-x64\native\libfreeimage-3.17.0.so" />
+    <None Remove="runtimes\osx.10.10-x64\native\libfreeimage.3.17.0.dylib" />
+    <None Remove="runtimes\win-x64\native\FreeImage.dll" />
+    <None Remove="runtimes\win-x86\native\FreeImage.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="runtimes\linux-arm\native\libfreeimage-3.17.0.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="runtimes\linux-x64\native\libfreeimage-3.17.0.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="runtimes\osx.10.10-x64\native\libfreeimage.3.17.0.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="runtimes\win-x64\native\FreeImage.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="runtimes\win-x86\native\FreeImage.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FreeImage.Standard" Version="4.3.7" />
