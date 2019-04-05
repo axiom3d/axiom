@@ -1,7 +1,0 @@
-<OutOfBrowserSettings ShortName="Axiom.Samples.Browser" EnableGPUAcceleration="True" ShowInstallMenuItem="True">
-  <OutOfBrowserSettings.Blurb>Axiom Samples Browser on your desktop; at home, at work or on the go.</OutOfBrowserSettings.Blurb>
-  <OutOfBrowserSettings.WindowSettings>
-    <WindowSettings Title="Axiom Samples Browser" />
-  </OutOfBrowserSettings.WindowSettings>
-  <OutOfBrowserSettings.Icons />
-</OutOfBrowserSettings>

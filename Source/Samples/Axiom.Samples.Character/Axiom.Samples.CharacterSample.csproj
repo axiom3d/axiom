@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyTitle>Axiom.Samples.Character</AssemblyTitle>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <Copyright>Copyright (c) 2019 Axiom Rendering Engine Project Team.</Copyright>
     <Product>Axiom Rendering Engine Samples</Product>
     <Company>Axiom Rendering Engine Project Team (http://axiom3d.net)</Company>
