@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyTitle>Axiom.Plugins.CgProgramManager</AssemblyTitle>
-    <TargetFrameworks>net461</TargetFrameworks>
+    <TargetFrameworks>net472</TargetFrameworks>
     <Copyright>Copyright (c) 2019 Axiom Rendering Engine Project Team.</Copyright>
     <Product>Axiom Rendering Engine</Product>
     <Company>Axiom Rendering Engine Project Team (http://axiom3d.net)</Company>

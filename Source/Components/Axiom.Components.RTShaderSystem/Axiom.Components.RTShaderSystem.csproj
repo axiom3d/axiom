@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
   <PropertyGroup>
-    <AssemblyTitle>Axiom.Components.RTShader</AssemblyTitle>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <AssemblyTitle>Axiom.Components.RTShaderSystem</AssemblyTitle>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <Copyright>Copyright (c) 2019 Axiom Rendering Engine Project Team.</Copyright>
     <Product>Axiom Rendering Engine</Product>
     <Company>Axiom Rendering Engine Project Team (http://axiom3d.net)</Company>
@@ -15,7 +15,6 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseUrl>http://axiom3d.net/wiki/index.php/license.txt</PackageLicenseUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyName />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,10 +24,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Axiom.Components.RTShaderSystem.suo" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Composition" Version="1.3.0-preview3.19128.7" />
