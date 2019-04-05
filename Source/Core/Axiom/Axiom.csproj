@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyTitle>Axiom Rendering Engine Library</AssemblyTitle>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <Copyright>Copyright (c) 2019 Axiom Rendering Engine Project Team.</Copyright>
     <Product>Axiom Rendering Engine</Product>
     <Company>Axiom Rendering Engine Project Team (http://axiom3d.net)</Company>
@@ -29,6 +29,28 @@
     <Compile Remove="mono\**" />
     <Compile Remove="Properties\**" />
     <Compile Remove="FileSystem\XapArchive.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="runtimes\win-x64\native\freetype.dll" />
+    <None Remove="runtimes\win-x64\native\freetype.lib" />
+    <None Remove="runtimes\win-x86\native\freetype.dll" />
+    <None Remove="runtimes\win-x86\native\freetype.lib" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="runtimes\win-x64\native\freetype.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="runtimes\win-x64\native\freetype.lib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="runtimes\win-x86\native\freetype.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="runtimes\win-x86\native\freetype.lib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

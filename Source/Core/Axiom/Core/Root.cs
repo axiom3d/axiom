@@ -120,8 +120,10 @@ namespace Axiom.Core
 				var isMono = Type.GetType( "Mono.Runtime" ) != null;
 				info.AppendFormat( "{1} Framework: {0}\n", Environment.Version.ToString(), isMono ? "Mono" : ".Net" );
 
-				// Initializes the Log Manager singleton
-				if ( LogManager.Instance == null )
+                NativeLibraryLoader.CopyNativeDll("freetype", "freetype6");
+
+                // Initializes the Log Manager singleton
+                if ( LogManager.Instance == null )
 				{
 					new LogManager();
 				}
