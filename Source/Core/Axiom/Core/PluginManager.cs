@@ -166,28 +166,14 @@ namespace Axiom.Core
 		/// <returns>True if the module contains CLR data</returns>
 		private bool _isValidModule( string file )
 		{
-			using ( var fs = new FileStream( file, FileMode.Open, FileAccess.Read, FileShare.Read ) )
-			{
-				if ( fs.Length < 1024 )
-				{
-					return false;
-				}
-				using ( var reader = new BinaryReader( fs ) )
-				{
-					fs.Position = 0x3C;
-					var offset = reader.ReadUInt32(); // go to NT_HEADER
-					offset += 24; // go to optional header
-					offset += 208; // go to CLI header directory
+            try
+            {
+                AssemblyName a = AssemblyName.GetAssemblyName(file);
+                return true;
+            }
+            catch { }
 
-					if ( fs.Length < offset + 4 )
-					{
-						return false;
-					}
-
-					fs.Position = offset;
-					return reader.ReadUInt32() != 0; // check if the RVA to the CLI header is valid
-				}
-			}
+            return false;
 		}
 
 #if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE )
