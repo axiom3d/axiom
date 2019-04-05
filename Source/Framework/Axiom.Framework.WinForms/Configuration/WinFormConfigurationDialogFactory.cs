@@ -1,6 +1,6 @@
 #region MIT/X11 License
 
-//Copyright ï¿½ 2003-2012 Axiom 3D Rendering Engine Project
+//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -26,7 +26,7 @@ using Axiom.Core;
 
 namespace Axiom.Framework.Configuration
 {
-	internal class DefaultConfigurationDialogFactory : ConfigurationDialogFactory
+	internal class WinFormConfigurationDialogFactory : ConfigurationDialogFactory
 	{
 		#region Overrides of ConfigurationDialogFactory
 
@@ -36,7 +36,7 @@ namespace Axiom.Framework.Configuration
 		/// <returns></returns>
 		public override IConfigurationDialog CreateConfigurationDialog( Root engine, ResourceGroupManager resourceManager )
 		{
-			return null;
+			return new WinFormConfigurationDialog( engine, resourceManager );
 		}
 
 		#endregion

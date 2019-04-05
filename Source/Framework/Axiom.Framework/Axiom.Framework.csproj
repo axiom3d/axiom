@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <AssemblyTitle>Axiom.Framework</AssemblyTitle>
-    <TargetFrameworks>net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
     <Copyright>Copyright (c) 2019 Axiom Rendering Engine Project Team.</Copyright>
     <Product>Axiom Framework</Product>
     <Company>Axiom Rendering Engine Project Team (http://axiom3d.net)</Company>
@@ -37,10 +37,6 @@
       <Project>{77e8323a-5cdb-4b39-b9e0-7d12a2aad3a3}</Project>
       <Name>Axiom</Name>
     </ProjectReference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="System.Windows.Forms" />
   </ItemGroup>
 
 </Project>

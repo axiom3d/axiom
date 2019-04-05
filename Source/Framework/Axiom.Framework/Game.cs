@@ -1,6 +1,6 @@
 #region MIT/X11 License
 
-//Copyright © 2003-2012 Axiom 3D Rendering Engine Project
+//Copyright ï¿½ 2003-2012 Axiom 3D Rendering Engine Project
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy
 //of this software and associated documentation files (the "Software"), to deal
@@ -80,7 +80,6 @@ namespace Axiom.Framework
 		{
 			this.ConfigurationManager.RestoreConfiguration( this.Engine );
 		}
-
 
 		private void Engine_FrameRenderingQueued( object source, FrameEventArgs e )
 		{

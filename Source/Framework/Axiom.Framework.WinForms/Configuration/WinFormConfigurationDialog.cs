@@ -94,7 +94,7 @@ namespace Axiom.Framework.Configuration
 			// picLogo
 			// 
 			this.picLogo.BackColor = System.Drawing.Color.White;
-			this.picLogo.Image = global::Axiom.Framework.Properties.Resources.AxiomLogo;
+			this.picLogo.Image = global::Axiom.Framework.WinForms.Resources.Resource.AxiomLogo;
 			this.picLogo.Location = new System.Drawing.Point( 12, 3 );
 			this.picLogo.Name = "picLogo";
 			this.picLogo.Size = new System.Drawing.Size( 420, 174 );
@@ -304,7 +304,6 @@ namespace Axiom.Framework.Configuration
 			this.lstOptions.Items.Clear();
 			this.cboOptionValues.Items.Clear();
 			var system = (Axiom.Graphics.RenderSystem)this.cboRenderSystems.SelectedItem;
-			ConfigOption optVideoMode;
 
 			// Load Render Subsystem Options
 			foreach ( ConfigOption option in system.ConfigOptions.Values )

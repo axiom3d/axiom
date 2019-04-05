@@ -65,7 +65,7 @@ namespace Axiom.Framework.Exceptions
 			this.lblHeader.Size = new System.Drawing.Size( 422, 40 );
 			this.lblHeader.TabIndex = 9;
 			this.lblHeader.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.lblHeader.Text = global::Axiom.Framework.Properties.Resources.Axiom_Error_Header;
+			this.lblHeader.Text = global::Axiom.Framework.WinForms.Resources.Resource.Axiom_Error_Header;
 			// 
 			// txtMsg
 			// 
@@ -96,7 +96,7 @@ namespace Axiom.Framework.Exceptions
 			this.lblFooter.Size = new System.Drawing.Size( 422, 86 );
 			this.lblFooter.TabIndex = 9;
 			this.lblFooter.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.lblFooter.Text = global::Axiom.Framework.Properties.Resources.Axiom_Error_Footer;
+			this.lblFooter.Text = global::Axiom.Framework.WinForms.Resources.Resource.Axiom_Error_Footer;
 			// 
 			// cmdClose
 			// 
@@ -123,7 +123,7 @@ namespace Axiom.Framework.Exceptions
 			MinimizeBox = false;
 			Name = "WinFormErrorDialog";
 			StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			Text = global::Axiom.Framework.Properties.Resources.Axiom_Error_Title;
+			Text = global::Axiom.Framework.WinForms.Resources.Resource.Axiom_Error_Title;
 			ResumeLayout( false );
 		}
 
