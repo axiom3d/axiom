@@ -3082,7 +3082,7 @@ namespace Axiom.RenderSystems.OpenGL
 				{
 					// Switch context if different from current one
 					GLContext newContext;
-					newContext = (GLContext)value.GetCustomAttribute( "GLCONTEXT" );
+					newContext = (GLContext)value["GLCONTEXT"];
 					if ( newContext != null && this._currentContext != newContext )
 					{
 						_switchContext( newContext );

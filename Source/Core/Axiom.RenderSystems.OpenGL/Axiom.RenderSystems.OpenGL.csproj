@@ -47,9 +47,9 @@
     <PackageReference Include="OpenTK.GLControl" Version="3.0.1" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="OpenTK.Compatibility">
-      <HintPath>..\..\..\Lib\OpenTK\OpenTK.Compatibility.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="Tao.OpenGl">
+      <HintPath>..\..\..\Lib\Tao\2.1.0.0\Tao.OpenGl.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

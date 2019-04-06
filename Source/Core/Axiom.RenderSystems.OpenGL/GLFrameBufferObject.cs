@@ -326,7 +326,7 @@ namespace Axiom.RenderSystems.OpenGL
 		/// Class level dispose method
 		/// </summary>
 		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected virtual void dispose( bool disposeManagedResources )
+		protected override void dispose( bool disposeManagedResources )
 		{
 			if ( !IsDisposed )
 			{

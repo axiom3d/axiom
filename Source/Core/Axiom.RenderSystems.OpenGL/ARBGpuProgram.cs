@@ -42,7 +42,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Axiom.Core;
 using Axiom.Graphics;
-using Axiom.RenderSystems.OpenGL;
 using Tao.OpenGl;
 using ResourceHandle = System.UInt64;
 

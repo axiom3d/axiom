@@ -97,14 +97,11 @@ namespace Axiom.RenderSystems.OpenGL
 						target.Buffer = (GLHardwarePixelBuffer)pixelBuffer;
 						target.ZOffset = zOffset;
 						return target;
-						break;
 					case "GLCONTEXT":
 						// Get PBuffer for our internal format
 						return this.manager.GetContextFor( this.pbFormat, Width, Height );
-						break;
 					default:
 						return base[ attribute ];
-						break;
 				}
 			}
 		}

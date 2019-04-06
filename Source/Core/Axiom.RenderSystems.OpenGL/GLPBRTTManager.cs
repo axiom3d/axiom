@@ -82,7 +82,7 @@ namespace Axiom.RenderSystems.OpenGL
 			this._glSupport = glSupport;
 			this._mainWindow = target;
 
-			this._mainGLContext = (GLContext)target.GetCustomAttribute( "GLCONTEXT" );
+            this._mainGLContext = (GLContext)target["GLCONTEXT"];
 		}
 
 		#endregion Construction and Destruction
@@ -108,7 +108,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void Unbind( RenderTarget target )
 		{
 			// copy on unbind
-			object attr = target.GetCustomAttribute( "target" );
+			object attr = target["target"];
 			if ( attr != null )
 			{
 				var surface = (GLSurfaceDesc)attr;

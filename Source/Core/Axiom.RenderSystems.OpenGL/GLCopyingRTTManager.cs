@@ -80,7 +80,7 @@ namespace Axiom.RenderSystems.OpenGL
 		public override void Unbind( RenderTarget target )
 		{
 			// copy on unbind
-			object attr = target.GetCustomAttribute( "target" );
+			object attr = target["target"];
 			if ( attr != null )
 			{
 				var surface = (GLSurfaceDesc)attr;

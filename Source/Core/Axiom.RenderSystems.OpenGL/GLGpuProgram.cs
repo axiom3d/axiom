@@ -177,7 +177,6 @@ namespace Axiom.RenderSystems.OpenGL
 				case VertexElementSemantic.Tangent:
 					return true;
 			}
-			return false; // keeps compiler happy
 		}
 
 		internal static uint FixedAttributeIndex( VertexElementSemantic semantic, uint index )

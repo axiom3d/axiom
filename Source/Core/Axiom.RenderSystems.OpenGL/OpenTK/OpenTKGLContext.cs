@@ -148,7 +148,6 @@ namespace Axiom.RenderSystems.OpenGL
 		public override GLContext Clone()
 		{
 			throw new NotImplementedException();
-			return null;
 		}
 	}
 }
