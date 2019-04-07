@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2010 Axiom Project Team
+// Copyright (C) 2003-2009 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -26,12 +26,13 @@
 
 #region Namespace Declarations
 
+using System;
+
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.SceneManagers.Octree;
-
-using MbUnit.Framework;
-
-using TypeMock.ArrangeActAssert;
+using Moq;
+using NUnit.Framework;
 
 #endregion
 
@@ -48,7 +49,7 @@ namespace Axiom.UnitTests.SceneManagers.Octree
     [ TestFixture ]
     public class OctreeNodeRegressionTests
     {
-        private SceneManager fakeSceneManager;
+        private Mock<OctreeSceneManager> sceneManagerMock;
         private const string Name = "testName";
 
         /// <summary>
@@ -57,17 +58,8 @@ namespace Axiom.UnitTests.SceneManagers.Octree
         [ SetUp ]
         public void SetUp()
         {
-            this.fakeSceneManager = Isolate.Fake.Instance<OctreeSceneManager>();
-            Isolate.WhenCalled( () => this.fakeSceneManager.CreateSceneNode( Name ) ).WillReturn( new OctreeNode( this.fakeSceneManager, Name ) );
-        }
-
-        /// <summary>
-        /// Tears down each test.
-        /// </summary>
-        [ TearDown ]
-        public void TearDown()
-        {
-            Isolate.CleanUp();
+            this.sceneManagerMock = new Mock<OctreeSceneManager>();
+            this.sceneManagerMock.Setup(mock => mock.CreateSceneNode( Name ) ).Returns( new OctreeNode(this.sceneManagerMock.Object, Name ) );
         }
 
         /// <summary>
@@ -76,7 +68,7 @@ namespace Axiom.UnitTests.SceneManagers.Octree
         [ Test ]
         public void TestRecreationOfChildNodeAfterRemovalByReference()
         {
-            Node node = new OctreeNode( this.fakeSceneManager );
+            Node node = new OctreeNode(this.sceneManagerMock.Object);
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( childNode );
@@ -89,7 +81,7 @@ namespace Axiom.UnitTests.SceneManagers.Octree
         [ Test ]
         public void TestRecreationOfChildNodeAfterRemovalByName()
         {
-            Node node = new OctreeNode( this.fakeSceneManager );
+            Node node = new OctreeNode(this.sceneManagerMock.Object);
             node.CreateChild( Name );
 
             node.RemoveChild( Name );
@@ -102,7 +94,7 @@ namespace Axiom.UnitTests.SceneManagers.Octree
         [ Test ]
         public void TestReaddingOfChildNodeAfterRemovalByReference()
         {
-            Node node = new OctreeNode( this.fakeSceneManager );
+            Node node = new OctreeNode(this.sceneManagerMock.Object);
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( childNode );
@@ -115,7 +107,7 @@ namespace Axiom.UnitTests.SceneManagers.Octree
         [ Test ]
         public void TestReaddingOfChildNodeAfterRemovalByName()
         {
-            Node node = new OctreeNode( this.fakeSceneManager );
+            Node node = new OctreeNode(this.sceneManagerMock.Object);
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( Name );

@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2010 Axiom Project Team
+// Copyright (C) 2003-2009 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -29,13 +29,10 @@
 using System;
 using System.IO;
 using System.Text;
-
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Fonts;
-
-using MbUnit.Framework;
-
-using TypeMock.ArrangeActAssert;
+using NUnit.Framework;
 
 #endregion
 
@@ -66,8 +63,8 @@ namespace Axiom.UnitTests.Fonts
         [ SetUp ]
         public void SetUp()
         {
-            ResourceGroupManager fakeResourceGroupManager = Isolate.Fake.Instance<ResourceGroupManager>( Members.ReturnRecursiveFakes );
-            Isolate.Swap.AllInstances<ResourceGroupManager>().With( fakeResourceGroupManager );
+            //ResourceGroupManager fakeResourceGroupManager = Isolate.Fake.Instance<ResourceGroupManager>( Members.ReturnRecursiveFakes );
+            //Isolate.Swap.AllInstances<ResourceGroupManager>().With( fakeResourceGroupManager );
         }
 
         /// <summary>
@@ -76,7 +73,7 @@ namespace Axiom.UnitTests.Fonts
         [ TearDown ]
         public void TearDown()
         {
-            Isolate.CleanUp();
+            //Isolate.CleanUp();
         }
 
         /// <summary>

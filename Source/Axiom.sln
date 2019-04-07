@@ -95,6 +95,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axiom.Framework.WinForms", "Framework\Axiom.Framework.WinForms\Axiom.Framework.WinForms.csproj", "{F83F595D-523C-4D9B-8142-7AF1BFB3CEBA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B356F2B9-78E1-4E5E-A09A-683B82B2FAA0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Axiom.Tests.Unit", "Tests\Axiom.Tests.Unit\Axiom.Tests.Unit.csproj", "{A836B773-8B22-4713-A9D4-D4E32BA73296}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Samples\Axiom.Samples.Browser.Shared\Axiom.Samples.Browser.Shared.projitems*{030635e3-646d-4fe9-9857-8659c46ce1ba}*SharedItemsImports = 13
@@ -1447,6 +1451,42 @@ Global
 		{F83F595D-523C-4D9B-8142-7AF1BFB3CEBA}.Win8UIRelease|Mixed Platforms.Build.0 = Release|Any CPU
 		{F83F595D-523C-4D9B-8142-7AF1BFB3CEBA}.Win8UIRelease|x86.ActiveCfg = Release|Any CPU
 		{F83F595D-523C-4D9B-8142-7AF1BFB3CEBA}.Win8UIRelease|x86.Build.0 = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Debug|x86.Build.0 = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Release|x86.ActiveCfg = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Release|x86.Build.0 = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8Debug|x86.ActiveCfg = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8Debug|x86.Build.0 = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8Release|Any CPU.Build.0 = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8Release|x86.ActiveCfg = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8Release|x86.Build.0 = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8UIDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8UIDebug|Any CPU.Build.0 = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8UIDebug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8UIDebug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8UIDebug|x86.ActiveCfg = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8UIDebug|x86.Build.0 = Debug|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8UIRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8UIRelease|Any CPU.Build.0 = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8UIRelease|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8UIRelease|Mixed Platforms.Build.0 = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8UIRelease|x86.ActiveCfg = Release|Any CPU
+		{A836B773-8B22-4713-A9D4-D4E32BA73296}.Win8UIRelease|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1494,6 +1534,7 @@ Global
 		{0F73B59A-4204-4BD7-A9C0-D53C1A62F84F} = {EBD96CBA-6CF8-4FC3-B200-3B31F49BC147}
 		{030635E3-646D-4FE9-9857-8659C46CE1BA} = {EBD96CBA-6CF8-4FC3-B200-3B31F49BC147}
 		{F83F595D-523C-4D9B-8142-7AF1BFB3CEBA} = {CB9F6D65-29D2-48FA-8F4E-72B977AC446F}
+		{A836B773-8B22-4713-A9D4-D4E32BA73296} = {B356F2B9-78E1-4E5E-A09A-683B82B2FAA0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A01713A3-4275-484F-9660-9A2486A368A2}

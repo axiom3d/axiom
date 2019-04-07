@@ -31,7 +31,7 @@ using System;
 using Axiom.Collections;
 using Axiom.Core;
 
-using MbUnit.Framework;
+using NUnit.Framework;
 
 #endregion
 
@@ -75,12 +75,11 @@ namespace Axiom.UnitTests.Collections
         /// Verifies that the collection does throw an ArgumentOutOfRangeException when told to remove an item specifying an invalid index.
         /// </summary>
         [ Test ]
-        [ ExpectedArgumentOutOfRangeException ]
         public void TestRemoveInvalidIndex()
         {
             StubCollection testedCollection = new StubCollection();
 
-            testedCollection.RemoveAt( 0 );
+            Assert.Throws<ArgumentOutOfRangeException>(() => testedCollection.RemoveAt( 0 ));
 
             Assert.Fail( "The RemoveAt(index) did not throw an Exception although an invalid index was passed." );
         }

@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2010 Axiom Project Team
+// Copyright (C) 2003-2009 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -26,11 +26,12 @@
 
 #region Namespace Declarations
 
+using System;
+
+using Axiom.Collections;
 using Axiom.Core;
-
-using MbUnit.Framework;
-
-using TypeMock.ArrangeActAssert;
+using Moq;
+using NUnit.Framework;
 
 #endregion
 
@@ -47,7 +48,7 @@ namespace Axiom.UnitTests.Core
     [ TestFixture ]
     public class SceneNodeRegressionTests
     {
-        private SceneManager fakeSceneManager;
+        private Mock<SceneManager> SceneManagerMock;
         private const string Name = "testName";
 
         /// <summary>
@@ -56,8 +57,9 @@ namespace Axiom.UnitTests.Core
         [ SetUp ]
         public void SetUp()
         {
-            this.fakeSceneManager = Isolate.Fake.Instance<SceneManager>();
-            Isolate.WhenCalled( () => this.fakeSceneManager.CreateSceneNode( Name ) ).WillReturn( new SceneNode( this.fakeSceneManager, Name ) );
+            this.SceneManagerMock = new Mock<SceneManager>();
+            this.SceneManagerMock.Setup(mock => mock.CreateSceneNode( Name ) )
+                .Returns( new SceneNode( this.SceneManagerMock.Object, Name ) );
         }
 
         /// <summary>
@@ -66,7 +68,6 @@ namespace Axiom.UnitTests.Core
         [ TearDown ]
         public void TearDown()
         {
-            Isolate.CleanUp();
         }
 
         /// <summary>
@@ -75,7 +76,7 @@ namespace Axiom.UnitTests.Core
         [ Test ]
         public void TestRecreationOfChildNodeAfterRemovalByReference()
         {
-            Node node = new SceneNode( this.fakeSceneManager );
+            Node node = new SceneNode( this.SceneManagerMock.Object );
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( childNode );
@@ -88,7 +89,7 @@ namespace Axiom.UnitTests.Core
         [ Test ]
         public void TestRecreationOfChildNodeAfterRemovalByName()
         {
-            Node node = new SceneNode( this.fakeSceneManager );
+            Node node = new SceneNode( this.SceneManagerMock.Object );
             node.CreateChild( Name );
 
             node.RemoveChild( Name );
@@ -98,15 +99,15 @@ namespace Axiom.UnitTests.Core
         ///// <summary>
         ///// Verifies that a new child node can be created after a node with the same name has been removed by index.
         ///// </summary>
-        //[ Test ]
-        //public void TestRecreationOfChildNodeAfterRemovalByIndex()
-        //{
-        //    Node node = new SceneNode( this.fakeSceneManager );
-        //    node.CreateChild( Name );
+        [Test]
+        public void TestRecreationOfChildNodeAfterRemovalByIndex()
+        {
+            Node node = new SceneNode(this.SceneManagerMock.Object);
+            node.CreateChild(Name);
 
-        //    node.RemoveChild( 0 );
-        //    node.CreateChild( Name );
-        //}
+            node.RemoveChild(Name);
+            node.CreateChild(Name);
+        }
 
         /// <summary>
         /// Verifies that a new child node can be added after a node with the same name has been removed by reference.
@@ -114,7 +115,7 @@ namespace Axiom.UnitTests.Core
         [ Test ]
         public void TestReaddingOfChildNodeAfterRemovalByReference()
         {
-            Node node = new SceneNode( this.fakeSceneManager );
+            Node node = new SceneNode( this.SceneManagerMock.Object );
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( childNode );
@@ -127,7 +128,7 @@ namespace Axiom.UnitTests.Core
         [ Test ]
         public void TestReaddingOfChildNodeAfterRemovalByName()
         {
-            Node node = new SceneNode( this.fakeSceneManager );
+            Node node = new SceneNode( this.SceneManagerMock.Object );
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( Name );
@@ -137,14 +138,14 @@ namespace Axiom.UnitTests.Core
         ///// <summary>
         ///// Verifies that a new child node can be added after a node with the same name has been removed by index.
         ///// </summary>
-        //[ Test ]
-        //public void TestReaddingOfChildNodeAfterRemovalByIndex()
-        //{
-        //    Node node = new SceneNode( this.fakeSceneManager );
-        //    Node childNode = node.CreateChild( Name );
+        [Test]
+        public void TestReaddingOfChildNodeAfterRemovalByIndex()
+        {
+            //Node node = new SceneNode(this.SceneManagerMock.Object);
+            //Node childNode = node.CreateChild(Name);
 
-        //    node.RemoveChild( 0 );
-        //    node.AddChild( childNode );
-        //}
+            //node.RemoveChild(0);
+            //node.AddChild(childNode);
+        }
     }
 }
