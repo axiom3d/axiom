@@ -81,7 +81,7 @@ namespace Axiom.UnitTests.Collections
 
             Assert.Throws<ArgumentOutOfRangeException>(() => testedCollection.RemoveAt( 0 ));
 
-            Assert.Fail( "The RemoveAt(index) did not throw an Exception although an invalid index was passed." );
+            //Assert.Fail( "The RemoveAt(index) did not throw an Exception although an invalid index was passed." );
         }
 
         private class StubCollection : NamedCollection<TestObject>

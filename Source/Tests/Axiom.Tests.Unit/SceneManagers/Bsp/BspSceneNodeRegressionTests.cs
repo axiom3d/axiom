@@ -26,12 +26,9 @@
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Collections;
 using Axiom.Core;
 using Axiom.SceneManagers.Bsp;
-using Moq;
+using FakeItEasy;
 using NUnit.Framework;
 
 #endregion
@@ -49,26 +46,25 @@ namespace Axiom.UnitTests.SceneManagers.Bsp
     [ TestFixture ]
     public class OctreeNodeRegressionTests
     {
-        private Mock<BspSceneManager> sceneManagerMock;
+        private readonly SceneManager sceneManager = A.Fake<BspSceneManager>();
         private const string Name = "testName";
 
         /// <summary>
         /// Sets up each test.
         /// </summary>
-        [ SetUp ]
+        [SetUp]
         public void SetUp()
         {
-            this.sceneManagerMock = new Mock<BspSceneManager>();
-            this.sceneManagerMock.Setup(mock => mock.CreateSceneNode(Name)).Returns(new BspSceneNode(this.sceneManagerMock.Object, Name));
+            A.CallTo(() => sceneManager.CreateSceneNode(Name)).Returns(A.Fake<BspSceneNode>());
         }
 
         /// <summary>
         /// Verifies that a new child node can be created after a node with the same name has been removed by reference.
         /// </summary>
-        [ Test ]
+        [Test ]
         public void TestRecreationOfChildNodeAfterRemovalByReference()
         {
-            Node node = new BspSceneNode( this.sceneManagerMock.Object );
+            Node node = new BspSceneNode( this.sceneManager );
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( childNode );
@@ -81,7 +77,7 @@ namespace Axiom.UnitTests.SceneManagers.Bsp
         [ Test ]
         public void TestRecreationOfChildNodeAfterRemovalByName()
         {
-            Node node = new BspSceneNode(this.sceneManagerMock.Object);
+            Node node = new BspSceneNode(this.sceneManager);
             node.CreateChild( Name );
 
             node.RemoveChild( Name );
@@ -94,7 +90,7 @@ namespace Axiom.UnitTests.SceneManagers.Bsp
         [ Test ]
         public void TestReaddingOfChildNodeAfterRemovalByReference()
         {
-            Node node = new BspSceneNode(this.sceneManagerMock.Object);
+            Node node = new BspSceneNode(this.sceneManager);
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( childNode );
@@ -107,7 +103,7 @@ namespace Axiom.UnitTests.SceneManagers.Bsp
         [ Test ]
         public void TestReaddingOfChildNodeAfterRemovalByName()
         {
-            Node node = new BspSceneNode(this.sceneManagerMock.Object);
+            Node node = new BspSceneNode(this.sceneManager);
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( Name );

@@ -26,11 +26,8 @@
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Collections;
 using Axiom.Core;
-
+using FakeItEasy;
 using NUnit.Framework;
 
 #endregion
@@ -40,8 +37,8 @@ namespace Axiom.UnitTests.Collections
     [TestFixture]
     public class AddRemoveMovableObjectRegressionTests
     {
-        private SceneManager sceneManager;
-        private Entity entity;
+        private SceneManager sceneManager ;
+        private Entity entity ;
 
         /// <summary>
         /// Sets up each test.
@@ -49,6 +46,15 @@ namespace Axiom.UnitTests.Collections
         [SetUp]
         public void SetUp()
         {
+            var resourceMnager = A.Fake<ResourceManager>();
+            var iManualResourceLoader = A.Fake<IManualResourceLoader>();
+
+            var mesh = A.Fake<Mesh>();
+
+            entity = A.Fake<Entity>();
+
+            sceneManager = A.Fake<SceneManager>();
+            A.CallTo(() => sceneManager.CreateEntity(A<string>.That.IsNotNull(), A<string>.That.IsNotNull())).Returns(entity);
         }
 
 
@@ -56,12 +62,14 @@ namespace Axiom.UnitTests.Collections
         public void SceneNode_AddThenRemoveEntity_ShouldNotThrowException()
         {
             var sceneNode = new SceneNode(this.sceneManager, "Root");
-            
-            sceneNode.AttachObject( entity );
 
-            sceneNode.DetachObject( entity ); // detach old object
+            var newEntity = sceneManager.CreateEntity("", "");
 
-            Assert.IsTrue( sceneNode.ObjectCount == 0 );
+            sceneNode.AttachObject(newEntity);
+
+            sceneNode.DetachObject(newEntity); // detach old object
+
+            Assert.IsTrue(sceneNode.ObjectCount == 0);
         }
 
     }

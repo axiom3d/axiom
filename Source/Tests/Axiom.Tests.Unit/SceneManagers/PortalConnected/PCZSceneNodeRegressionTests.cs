@@ -26,12 +26,9 @@
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Collections;
 using Axiom.Core;
 using Axiom.SceneManagers.PortalConnected;
-using Moq;
+using FakeItEasy;
 using NUnit.Framework;
 
 #endregion
@@ -49,26 +46,25 @@ namespace Axiom.UnitTests.SceneManagers.PortalConnected
     [ TestFixture ]
     public class OctreeNodeRegressionTests
     {
-        private Mock<PCZSceneManager> sceneManagerMock;
+        private readonly SceneManager sceneManager = A.Fake<PCZSceneManager>();
         private const string Name = "testName";
 
         /// <summary>
         /// Sets up each test.
         /// </summary>
-        [ SetUp ]
+        [SetUp]
         public void SetUp()
         {
-            this.sceneManagerMock = new Mock<PCZSceneManager>();
-            this.sceneManagerMock.Setup( mock => this.sceneManagerMock.Object.CreateSceneNode( Name ) ).Returns( new PCZSceneNode(this.sceneManagerMock.Object, Name ) );
+            A.CallTo(() => sceneManager.CreateSceneNode(Name)).Returns(A.Fake<PCZSceneNode>());
         }
 
         /// <summary>
         /// Verifies that a new child node can be created after a node with the same name has been removed by reference.
         /// </summary>
-        [ Test ]
+        [Test ]
         public void TestRecreationOfChildNodeAfterRemovalByReference()
         {
-            Node node = new PCZSceneNode(this.sceneManagerMock.Object);
+            Node node = new PCZSceneNode(this.sceneManager);
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( childNode );
@@ -81,7 +77,7 @@ namespace Axiom.UnitTests.SceneManagers.PortalConnected
         [ Test ]
         public void TestRecreationOfChildNodeAfterRemovalByName()
         {
-            Node node = new PCZSceneNode(this.sceneManagerMock.Object);
+            Node node = new PCZSceneNode(this.sceneManager);
             node.CreateChild( Name );
 
             node.RemoveChild( Name );
@@ -94,7 +90,7 @@ namespace Axiom.UnitTests.SceneManagers.PortalConnected
         [ Test ]
         public void TestReaddingOfChildNodeAfterRemovalByReference()
         {
-            Node node = new PCZSceneNode(this.sceneManagerMock.Object);
+            Node node = new PCZSceneNode(this.sceneManager);
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( childNode );
@@ -107,7 +103,7 @@ namespace Axiom.UnitTests.SceneManagers.PortalConnected
         [ Test ]
         public void TestReaddingOfChildNodeAfterRemovalByName()
         {
-            Node node = new PCZSceneNode(this.sceneManagerMock.Object);
+            Node node = new PCZSceneNode(this.sceneManager);
             Node childNode = node.CreateChild( Name );
 
             node.RemoveChild( Name );

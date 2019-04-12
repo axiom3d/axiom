@@ -26,11 +26,8 @@
 
 #region Namespace Declarations
 
-using System;
-
-using Axiom.Collections;
 using Axiom.Core;
-using Moq;
+using FakeItEasy;
 using NUnit.Framework;
 
 #endregion
@@ -40,10 +37,9 @@ namespace Axiom.UnitTests.Collections
     [TestFixture]
     public class RenameMovableObjectRegressionTests
     {
-        private Mock<SceneManager> sceneManagerMock;
-        private Mock<Entity> entityMock;
-        private SceneManager sceneManager;
-        private Entity entity;
+        private readonly SceneManager sceneManager = A.Fake<SceneManager>();
+        private readonly Entity entity = A.Fake<Entity>(options => options.CallsBaseMethods());
+        private SceneNode sceneNode;
 
         /// <summary>
         /// Sets up each test.
@@ -51,40 +47,35 @@ namespace Axiom.UnitTests.Collections
         [SetUp]
         public void SetUp()
         {
-            this.sceneManagerMock = new Mock<SceneManager>();
-            sceneManagerMock.Setup( x => x.RootSceneNode )
-                .Returns( new SceneNode( this.sceneManagerMock.Object, "Root" ) );
-            this.entityMock = new Mock<Entity>();
-            this.sceneManager = sceneManagerMock.Object;
-            this.entity = entityMock.Object;
+            sceneNode = new SceneNode(this.sceneManager, "Root");
         }
 
 
         [Test]
         public void SceneNode_AddRenameEntity_ShouldNotThrowException()
         {
-            sceneManager.RootSceneNode.AttachObject( entity );
+            sceneNode.AttachObject( entity );
             entity.Name = "newName_" + "SceneNode_AddRenameEntity";
-            Assert.IsTrue( sceneManager.RootSceneNode.GetObject( entity.Name ) != null );
+            Assert.IsTrue( sceneNode.GetObject( entity.Name ) != null );
 
-            sceneManager.RootSceneNode.DetachAllObjects();
+            sceneNode.DetachAllObjects();
         }
 
         [Test]
         public void SceneManager_AddRenameEntity_ShouldNotThrowException()
         {
-            sceneManager.RootSceneNode.AttachObject( entity );
+            sceneNode.AttachObject( entity );
             entity.Name = "newName_" + "SceneManager_AddRenameEntity";
             Assert.IsTrue( sceneManager.GetMovableObject( entity.Name, "Entity" ) != null );
 
-            sceneManager.RootSceneNode.DetachAllObjects();
+            sceneNode.DetachAllObjects();
         }
 
         [Test]
         public void SceneManager_AttachDetachRenameEntity_ShouldNotThrowException()
         {
-            sceneManager.RootSceneNode.AttachObject( entity );
-            sceneManager.RootSceneNode.DetachAllObjects();
+            sceneNode.AttachObject( entity );
+            sceneNode.DetachAllObjects();
             entity.Name = "newName_" + "SceneManager_AddRenameEntity";
             Assert.IsTrue( sceneManager.GetMovableObject( entity.Name, "Entity" ) != null );
         }
