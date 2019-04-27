@@ -44,393 +44,393 @@ using Axiom.Core;
 
 namespace Axiom.Graphics
 {
-	/// <summary>
-	/// 	This class makes the usage of a vertex and fragment programs (low-level or high-level), 
-	/// 	with a given set of parameters, explicit.
-	/// </summary>
-	/// <remarks>
-	/// 	Using a vertex or fragment program can get fairly complex; besides the fairly rudimentary
-	/// 	process of binding a program to the GPU for rendering, managing usage has few
-	/// 	complications, such as:
-	/// 	<ul>
-	/// 	<li>Programs can be high level (e.g. Cg, GLSlang) or low level (assembler). Using
-	/// 	either should be relatively seamless, although high-level programs give you the advantage
-	/// 	of being able to use named parameters, instead of just indexed registers</li>
-	/// 	<li>Programs and parameters can be shared between multiple usages, in order to save
-	/// 	memory</li>
-	/// 	<li>When you define a user of a program, such as a material, you often want to be able to
-	/// 	set up the definition but not load / compile / assemble the program at that stage, because
-	/// 	it is not needed just yet. The program should be loaded when it is first needed, or
-	/// 	earlier if specifically requested. The program may not be defined at this time, you
-	/// 	may want to have scripts that can set up the definitions independent of the order in which
-	/// 	those scripts are loaded.</li>
-	/// 	</ul>
-	/// 	This class packages up those details so you don't have to worry about them. For example,
-	/// 	this class lets you define a high-level program and set up the parameters for it, without
-	/// 	having loaded the program (which you normally could not do). When the program is loaded and
-	/// 	compiled, this class will then validate the parameters you supplied earlier and turn them
-	/// 	into runtime parameters.
-	/// 	<p/>
-	/// 	Just incase it wasn't clear from the above, this class provides linkage to both 
-	/// 	GpuProgram and HighLevelGpuProgram, despite its name.
-	/// </remarks>
-	public class GpuProgramUsage : DisposableObject, Resource.IListener
-	{
-		#region Member variables
+    /// <summary>
+    /// 	This class makes the usage of a vertex and fragment programs (low-level or high-level), 
+    /// 	with a given set of parameters, explicit.
+    /// </summary>
+    /// <remarks>
+    /// 	Using a vertex or fragment program can get fairly complex; besides the fairly rudimentary
+    /// 	process of binding a program to the GPU for rendering, managing usage has few
+    /// 	complications, such as:
+    /// 	<ul>
+    /// 	<li>Programs can be high level (e.g. Cg, GLSlang) or low level (assembler). Using
+    /// 	either should be relatively seamless, although high-level programs give you the advantage
+    /// 	of being able to use named parameters, instead of just indexed registers</li>
+    /// 	<li>Programs and parameters can be shared between multiple usages, in order to save
+    /// 	memory</li>
+    /// 	<li>When you define a user of a program, such as a material, you often want to be able to
+    /// 	set up the definition but not load / compile / assemble the program at that stage, because
+    /// 	it is not needed just yet. The program should be loaded when it is first needed, or
+    /// 	earlier if specifically requested. The program may not be defined at this time, you
+    /// 	may want to have scripts that can set up the definitions independent of the order in which
+    /// 	those scripts are loaded.</li>
+    /// 	</ul>
+    /// 	This class packages up those details so you don't have to worry about them. For example,
+    /// 	this class lets you define a high-level program and set up the parameters for it, without
+    /// 	having loaded the program (which you normally could not do). When the program is loaded and
+    /// 	compiled, this class will then validate the parameters you supplied earlier and turn them
+    /// 	into runtime parameters.
+    /// 	<p/>
+    /// 	Just incase it wasn't clear from the above, this class provides linkage to both 
+    /// 	GpuProgram and HighLevelGpuProgram, despite its name.
+    /// </remarks>
+    public class GpuProgramUsage : DisposableObject, Resource.IListener
+    {
+        #region Member variables
 
-		#region type
+        #region type
 
-		/// <summary>
-		///    Type of program (vertex or fragment) this usage is being specified for.
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected GpuProgramType type;
+        /// <summary>
+        ///    Type of program (vertex or fragment) this usage is being specified for.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)] protected GpuProgramType type;
 
-		#endregion
+        #endregion
 
-		#region parent
+        #region parent
 
-		[OgreVersion( 1, 7, 2790 )] protected Pass parent;
+        [OgreVersion(1, 7, 2790)] protected Pass parent;
 
-		#endregion
+        #endregion
 
-		#region recreateParams
+        #region recreateParams
 
-		/// Whether to recreate parameters next load
-		[OgreVersion( 1, 7, 2790 )] private bool recreateParams;
+        /// Whether to recreate parameters next load
+        [OgreVersion(1, 7, 2790)] private bool recreateParams;
 
-		#endregion
+        #endregion
 
-		#region program
+        #region program
 
-		/// <summary>
-		///    Reference to the program whose usage is being specified within this class.
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected GpuProgram program;
+        /// <summary>
+        ///    Reference to the program whose usage is being specified within this class.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)] protected GpuProgram program;
 
-		#endregion
+        #endregion
 
-		#region parameters
+        #region parameters
 
-		/// <summary>
-		///    Low level GPU program parameters.
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )] protected GpuProgramParameters parameters;
+        /// <summary>
+        ///    Low level GPU program parameters.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)] protected GpuProgramParameters parameters;
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///    Default constructor.
-		/// </summary>
-		/// <param name="type">Type of program to link to.</param>
-		/// <param name="parent"></param>
-		[OgreVersion( 1, 7, 2790 )]
-		public GpuProgramUsage( GpuProgramType type, Pass parent )
-			: base()
-		{
-			this.type = type;
-			this.parent = parent;
-			this.recreateParams = false;
-		}
+        /// <summary>
+        ///    Default constructor.
+        /// </summary>
+        /// <param name="type">Type of program to link to.</param>
+        /// <param name="parent"></param>
+        [OgreVersion(1, 7, 2790)]
+        public GpuProgramUsage(GpuProgramType type, Pass parent)
+            : base()
+        {
+            this.type = type;
+            this.parent = parent;
+            this.recreateParams = false;
+        }
 
-		/// <summary>
-		/// Copy constructor
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		public GpuProgramUsage( GpuProgramUsage oth, Pass parent )
-			: base()
-		{
-			this.type = oth.type;
-			this.parent = parent;
-			this.program = oth.Program;
-			// nfz: parameters should be copied not just use a shared ptr to the original
-			this.parameters = new GpuProgramParameters( oth.parameters );
-			this.recreateParams = false;
-		}
+        /// <summary>
+        /// Copy constructor
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        public GpuProgramUsage(GpuProgramUsage oth, Pass parent)
+            : base()
+        {
+            this.type = oth.type;
+            this.parent = parent;
+            this.program = oth.Program;
+            // nfz: parameters should be copied not just use a shared ptr to the original
+            this.parameters = new GpuProgramParameters(oth.parameters);
+            this.recreateParams = false;
+        }
 
-		#endregion
+        #endregion
 
-		#region dispose
+        #region dispose
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					if ( this.program != null )
-					{
-						this.program.RemoveListener( this );
-					}
-				}
-			}
+        [OgreVersion(1, 7, 2790)]
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    if (this.program != null)
+                    {
+                        this.program.RemoveListener(this);
+                    }
+                }
+            }
 
-			base.dispose( disposeManagedResources );
-		}
+            base.dispose(disposeManagedResources);
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		#region Load
+        #region Load
 
-		/// <summary>
-		///    Load this usage (and ensure program is loaded).
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		internal void Load()
-		{
-			if ( !this.program.IsLoaded )
-			{
-				this.program.Load();
-			}
+        /// <summary>
+        ///    Load this usage (and ensure program is loaded).
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        internal void Load()
+        {
+            if (!this.program.IsLoaded)
+            {
+                this.program.Load();
+            }
 
-			// check type
-			if ( this.program.IsLoaded && this.program.Type != this.type )
-			{
-				var myType = this.type.ToString();
-				var yourType = this.program.Type.ToString();
-				throw new AxiomException( "{0} is a {1} program, but you are assigning it to a {2} program slot. This is invalid.",
-				                          this.program.Name, yourType, myType );
-			}
+            // check type
+            if (this.program.IsLoaded && this.program.Type != this.type)
+            {
+                var myType = this.type.ToString();
+                var yourType = this.program.Type.ToString();
+                throw new AxiomException("{0} is a {1} program, but you are assigning it to a {2} program slot. This is invalid.",
+                                          this.program.Name, yourType, myType);
+            }
 
-			// hackaround as Listener::loadingComplete is not in place, yet
-			if ( this.recreateParams )
-			{
-				RecreateParameters();
-			}
-		}
+            // hackaround as Listener::loadingComplete is not in place, yet
+            if (this.recreateParams)
+            {
+                RecreateParameters();
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Unload
+        #region Unload
 
-		/// <summary>
-		///    Unload this usage.
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		internal void Unload()
-		{
-			// TODO?
+        /// <summary>
+        ///    Unload this usage.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        internal void Unload()
+        {
+            // TODO?
 
-			// hackaround as Listener::unloadingComplete is not in place, yet
-			this.recreateParams = true;
-		}
+            // hackaround as Listener::unloadingComplete is not in place, yet
+            this.recreateParams = true;
+        }
 
-		#endregion
+        #endregion
 
-		#region RecreateParameters
+        #region RecreateParameters
 
-		[OgreVersion( 1, 7, 2790 )]
-		protected void RecreateParameters()
-		{
-			// Keep a reference to old ones to copy
-			var savedParams = this.parameters;
+        [OgreVersion(1, 7, 2790)]
+        protected void RecreateParameters()
+        {
+            // Keep a reference to old ones to copy
+            var savedParams = this.parameters;
 
-			// Create new params
-			this.parameters = this.program.CreateParameters();
+            // Create new params
+            this.parameters = this.program.CreateParameters();
 
-			// Copy old (matching) values across
-			// Don't use copyConstantsFrom since program may be different
-			if ( savedParams != null )
-			{
-				this.parameters.CopyMatchingNamedConstantsFrom( savedParams );
-			}
+            // Copy old (matching) values across
+            // Don't use copyConstantsFrom since program may be different
+            if (savedParams != null)
+            {
+                this.parameters.CopyMatchingNamedConstantsFrom(savedParams);
+            }
 
-			this.recreateParams = false;
-		}
+            this.recreateParams = false;
+        }
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		#region SetProgramName
+        #region SetProgramName
 
-		/// <summary>
-		/// Sets the name of the program to use.
-		/// </summary>
-		/// <param name="name">The name of the program to use</param>
-		/// <param name="resetParams">
-		/// If true, this will create a fresh set of parameters from the
-		/// new program being linked, so if you had previously set parameters
-		/// you will have to set them again. If you set this to false, you must
-		/// be absolutely sure that the parameters match perfectly, and in the
-		/// case of named parameters refers to the indexes underlying them, 
-		/// not just the names.
-		/// </param>
-		[OgreVersion( 1, 7, 2790 )]
+        /// <summary>
+        /// Sets the name of the program to use.
+        /// </summary>
+        /// <param name="name">The name of the program to use</param>
+        /// <param name="resetParams">
+        /// If true, this will create a fresh set of parameters from the
+        /// new program being linked, so if you had previously set parameters
+        /// you will have to set them again. If you set this to false, you must
+        /// be absolutely sure that the parameters match perfectly, and in the
+        /// case of named parameters refers to the indexes underlying them, 
+        /// not just the names.
+        /// </param>
+        [OgreVersion(1, 7, 2790)]
 #if NET_40
         public void SetProgramName( string name, bool resetParams = true )
 #else
-		public void SetProgramName( string name, bool resetParams )
+        public void SetProgramName(string name, bool resetParams)
 #endif
-		{
-			if ( this.program != null )
-			{
-				this.program.RemoveListener( this );
-				this.recreateParams = true;
-			}
+        {
+            if (this.program != null)
+            {
+                this.program.RemoveListener(this);
+                this.recreateParams = true;
+            }
 
-			// get a reference to the gpu program
-			this.program = GpuProgramManager.Instance.GetByName( name );
+            // get a reference to the gpu program
+            this.program = GpuProgramManager.Instance.GetByName(name);
 
-			if ( this.program == null )
-			{
-				var progType = this.type == GpuProgramType.Vertex
-				               	? "vertex"
-				               	: this.type == GpuProgramType.Geometry ? "geometry" : "fragment";
-				throw new AxiomException( "Unable to locate {0} program called '{1}'", progType, name );
-			}
+            if (this.program == null)
+            {
+                var progType = this.type == GpuProgramType.Vertex
+                                   ? "vertex"
+                                   : this.type == GpuProgramType.Geometry ? "geometry" : "fragment";
+                throw new AxiomException("Unable to locate {0} program called '{1}'", progType, name);
+            }
 
-			// Reset parameters 
-			if ( resetParams || this.parameters == null || this.recreateParams )
-			{
-				RecreateParameters();
-			}
+            // Reset parameters 
+            if (resetParams || this.parameters == null || this.recreateParams)
+            {
+                RecreateParameters();
+            }
 
-			// Listen in on reload events so we can regenerate params
-			this.program.AddListener( this );
-		}
+            // Listen in on reload events so we can regenerate params
+            this.program.AddListener(this);
+        }
 
 #if !NET_40
-		/// <see cref="SetProgramName(string, bool)"/>
-		public void SetProgramName( string name )
-		{
-			SetProgramName( name, true );
-		}
+        /// <see cref="SetProgramName(string, bool)"/>
+        public void SetProgramName(string name)
+        {
+            SetProgramName(name, true);
+        }
 #endif
 
-		#endregion
+        #endregion
 
-		#region ProgramName
+        #region ProgramName
 
-		/// <summary>
-		///    Gets the name of the program we're trying to link to.
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		public string ProgramName
-		{
-			get
-			{
-				return this.program.Name;
-			}
-		}
+        /// <summary>
+        ///    Gets the name of the program we're trying to link to.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        public string ProgramName
+        {
+            get
+            {
+                return this.program.Name;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Program
+        #region Program
 
-		/// <summary>
-		///    Gets the program this usage is linked to; only available after the usage has been
-		///    validated either via enableValidation or by enabling validation on construction.
-		/// </summary>
-		/// <remarks>
-		///    Note that this will create a fresh set of parameters from the
-		///    new program being linked, so if you had previously set parameters
-		///    you will have to set them again.
-		/// </remarks>
-		[OgreVersion( 1, 7, 2790 )]
-		public GpuProgram Program
-		{
-			get
-			{
-				return this.program;
-			}
-			set
-			{
-				this.program = value;
+        /// <summary>
+        ///    Gets the program this usage is linked to; only available after the usage has been
+        ///    validated either via enableValidation or by enabling validation on construction.
+        /// </summary>
+        /// <remarks>
+        ///    Note that this will create a fresh set of parameters from the
+        ///    new program being linked, so if you had previously set parameters
+        ///    you will have to set them again.
+        /// </remarks>
+        [OgreVersion(1, 7, 2790)]
+        public GpuProgram Program
+        {
+            get
+            {
+                return this.program;
+            }
+            set
+            {
+                this.program = value;
 
-				// create program specific parameters
-				this.parameters = this.program.CreateParameters();
-			}
-		}
+                // create program specific parameters
+                this.parameters = this.program.CreateParameters();
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Parameters
+        #region Parameters
 
-		/// <summary>
-		///    Gets/Sets the program parameters that should be used; because parameters can be
-		///    shared between multiple usages for efficiency, this method is here for you
-		///    to register externally created parameter objects.
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		public GpuProgramParameters Parameters
-		{
-			get
-			{
-				if ( this.parameters == null )
-				{
-					throw new AxiomException( "A program must be loaded before its parameters can be retreived." );
-				}
+        /// <summary>
+        ///    Gets/Sets the program parameters that should be used; because parameters can be
+        ///    shared between multiple usages for efficiency, this method is here for you
+        ///    to register externally created parameter objects.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        public GpuProgramParameters Parameters
+        {
+            get
+            {
+                if (this.parameters == null)
+                {
+                    throw new AxiomException("A program must be loaded before its parameters can be retreived.");
+                }
 
-				return this.parameters;
-			}
-			set
-			{
-				this.parameters = value;
-			}
-		}
+                return this.parameters;
+            }
+            set
+            {
+                this.parameters = value;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Type
+        #region Type
 
-		/// <summary>
-		///    Gets the type of program we're trying to link to.
-		/// </summary>
-		[OgreVersion( 1, 7, 2790 )]
-		public GpuProgramType Type
-		{
-			get
-			{
-				return this.type;
-			}
-		}
+        /// <summary>
+        ///    Gets the type of program we're trying to link to.
+        /// </summary>
+        [OgreVersion(1, 7, 2790)]
+        public GpuProgramType Type
+        {
+            get
+            {
+                return this.type;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#region Resource.IListener Members
+        #region Resource.IListener Members
 
-		public void BackgroundLoadingComplete( Resource res )
-		{
-			//NOTHING TO DO
-		}
+        public void BackgroundLoadingComplete(Resource res)
+        {
+            //NOTHING TO DO
+        }
 
-		public void BackgroundPreparingComplete( Resource res )
-		{
-			//NOTHING TO DO
-		}
+        public void BackgroundPreparingComplete(Resource res)
+        {
+            //NOTHING TO DO
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public void LoadingComplete( Resource res )
-		{
-			// Need to re-create parameters
-			if ( this.recreateParams )
-			{
-				RecreateParameters();
-			}
-		}
+        [OgreVersion(1, 7, 2)]
+        public void LoadingComplete(Resource res)
+        {
+            // Need to re-create parameters
+            if (this.recreateParams)
+            {
+                RecreateParameters();
+            }
+        }
 
-		public void PreparingComplete( Resource res )
-		{
-			//NOTHING TO DO
-		}
+        public void PreparingComplete(Resource res)
+        {
+            //NOTHING TO DO
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public void UnloadingComplete( Resource res )
-		{
-			this.recreateParams = true;
-		}
+        [OgreVersion(1, 7, 2)]
+        public void UnloadingComplete(Resource res)
+        {
+            this.recreateParams = true;
+        }
 
-		#endregion Resource.IListener Members
-	};
+        #endregion Resource.IListener Members
+    };
 }

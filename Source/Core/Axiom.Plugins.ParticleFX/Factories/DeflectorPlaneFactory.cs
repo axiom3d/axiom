@@ -43,24 +43,24 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.ParticleFX.Factories
 {
-	/// <summary>
-	/// Factory class for DeflectorPlaneAffector.
-	/// </summary>
-	public class DeflectorPlaneAffectorFactory : ParticleAffectorFactory
-	{
-		public override ParticleAffector CreateAffector( ParticleSystem psys )
-		{
-			ParticleAffector p = new DeflectorPlaneAffector( psys );
-			affectorList.Add( p );
-			return p;
-		}
+    /// <summary>
+    /// Factory class for DeflectorPlaneAffector.
+    /// </summary>
+    public class DeflectorPlaneAffectorFactory : ParticleAffectorFactory
+    {
+        public override ParticleAffector CreateAffector(ParticleSystem psys)
+        {
+            ParticleAffector p = new DeflectorPlaneAffector(psys);
+            affectorList.Add(p);
+            return p;
+        }
 
-		public override string Name
-		{
-			get
-			{
-				return "DeflectorPlane";
-			}
-		}
-	}
+        public override string Name
+        {
+            get
+            {
+                return "DeflectorPlane";
+            }
+        }
+    }
 }

@@ -44,142 +44,142 @@ using System.Collections.Generic;
 
 namespace Axiom.Core
 {
-	/// <summary>
-	/// Manager for lod strategies.
-	/// </summary>
-	public class LodStrategyManager : Singleton<LodStrategyManager>
-	{
-		#region Fields and Properties
+    /// <summary>
+    /// Manager for lod strategies.
+    /// </summary>
+    public class LodStrategyManager : Singleton<LodStrategyManager>
+    {
+        #region Fields and Properties
 
-		/// <summary>
-		/// Internal map of strategies.
-		/// </summary>
-		private readonly Dictionary<string, LodStrategy> _strategies = new Dictionary<string, LodStrategy>();
+        /// <summary>
+        /// Internal map of strategies.
+        /// </summary>
+        private readonly Dictionary<string, LodStrategy> _strategies = new Dictionary<string, LodStrategy>();
 
-		#region DefaultStrategy
+        #region DefaultStrategy
 
-		/// <summary>
-		/// Get's or set's the default strategy.
-		/// </summary>
-		public LodStrategy DefaultStrategy { set; get; }
+        /// <summary>
+        /// Get's or set's the default strategy.
+        /// </summary>
+        public LodStrategy DefaultStrategy { set; get; }
 
-		/// <summary>
-		/// Set the default strategy by name.
-		/// </summary>
-		/// <param name="name"></param>
-		public void SetDefaultStrategy( string name )
-		{
-			DefaultStrategy = GetStrategy( name );
-		}
+        /// <summary>
+        /// Set the default strategy by name.
+        /// </summary>
+        /// <param name="name"></param>
+        public void SetDefaultStrategy(string name)
+        {
+            DefaultStrategy = GetStrategy(name);
+        }
 
-		#endregion DefaultStrategy
+        #endregion DefaultStrategy
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		/// <summary>
-		/// Default constructor.
-		/// </summary>
-		public LodStrategyManager()
-			: base()
-		{
-			// Add default (distance) strategy
-			var distanceStrategy = new DistanceLodStrategy();
-			AddStrategy( distanceStrategy );
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public LodStrategyManager()
+            : base()
+        {
+            // Add default (distance) strategy
+            var distanceStrategy = new DistanceLodStrategy();
+            AddStrategy(distanceStrategy);
 
-			// Add new pixel-count strategy
-			var pixelCountStrategy = new PixelCountStrategy();
-			AddStrategy( pixelCountStrategy );
+            // Add new pixel-count strategy
+            var pixelCountStrategy = new PixelCountStrategy();
+            AddStrategy(pixelCountStrategy);
 
-			// Set the default strategy
-			DefaultStrategy = distanceStrategy;
-		}
+            // Set the default strategy
+            DefaultStrategy = distanceStrategy;
+        }
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !isDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-					RemoveAllStrategies();
-				}
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!isDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // Dispose managed resources.
+                    RemoveAllStrategies();
+                }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose(disposeManagedResources);
+        }
 
-		/// <summary>
-		/// Add a strategy to the manager.
-		/// </summary>
-		/// <param name="strategy"></param>
-		public void AddStrategy( LodStrategy strategy )
-		{
-			// Check for invalid strategy name
-			if ( strategy.Name.ToLower() == "default" )
-			{
-				throw new AxiomException( "Lod strategy name must not be 'default'", new object[]
-				                                                                     {
-				                                                                     } );
-			}
+        /// <summary>
+        /// Add a strategy to the manager.
+        /// </summary>
+        /// <param name="strategy"></param>
+        public void AddStrategy(LodStrategy strategy)
+        {
+            // Check for invalid strategy name
+            if (strategy.Name.ToLower() == "default")
+            {
+                throw new AxiomException("Lod strategy name must not be 'default'", new object[]
+                                                                                     {
+                                                                                     });
+            }
 
-			// Insert the strategy into the map with its name as the key
-			this._strategies.Add( strategy.Name, strategy );
-		}
+            // Insert the strategy into the map with its name as the key
+            this._strategies.Add(strategy.Name, strategy);
+        }
 
-		/// <summary>
-		/// Remove a strategy from the manager with a specified name.
-		/// </summary>
-		/// <remarks>
-		/// The removed strategy is returned so the user can control
-		/// how it is destroyed.
-		/// </remarks>
-		/// <param name="name"></param>
-		/// <returns></returns>
-		public LodStrategy RemoveStrategy( string name )
-		{
-			LodStrategy ret = null;
-			if ( this._strategies.TryGetValue( name, out ret ) )
-			{
-				this._strategies.Remove( name );
-				return ret;
-			}
-			return ret;
-		}
+        /// <summary>
+        /// Remove a strategy from the manager with a specified name.
+        /// </summary>
+        /// <remarks>
+        /// The removed strategy is returned so the user can control
+        /// how it is destroyed.
+        /// </remarks>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public LodStrategy RemoveStrategy(string name)
+        {
+            LodStrategy ret = null;
+            if (this._strategies.TryGetValue(name, out ret))
+            {
+                this._strategies.Remove(name);
+                return ret;
+            }
+            return ret;
+        }
 
-		/// <summary>
-		///  Remove and delete all strategies from the manager.
-		/// </summary>
-		/// <remarks>
-		/// All strategies are deleted.  If finer control is required
-		/// over strategy destruction, use removeStrategy.
-		/// </remarks>
-		public void RemoveAllStrategies()
-		{
-			this._strategies.Clear();
-		}
+        /// <summary>
+        ///  Remove and delete all strategies from the manager.
+        /// </summary>
+        /// <remarks>
+        /// All strategies are deleted.  If finer control is required
+        /// over strategy destruction, use removeStrategy.
+        /// </remarks>
+        public void RemoveAllStrategies()
+        {
+            this._strategies.Clear();
+        }
 
-		/// <summary>
-		/// Get the strategy with the specified name.
-		/// </summary>
-		/// <param name="name">name of the strategy</param>
-		/// <returns>strategy with the given name</returns>
-		public LodStrategy GetStrategy( string name )
-		{
-			// If name is "default", return the default strategy instead of performing a lookup
-			if ( name.ToLower() == "default" )
-			{
-				return DefaultStrategy;
-			}
+        /// <summary>
+        /// Get the strategy with the specified name.
+        /// </summary>
+        /// <param name="name">name of the strategy</param>
+        /// <returns>strategy with the given name</returns>
+        public LodStrategy GetStrategy(string name)
+        {
+            // If name is "default", return the default strategy instead of performing a lookup
+            if (name.ToLower() == "default")
+            {
+                return DefaultStrategy;
+            }
 
-			LodStrategy ret = null;
-			this._strategies.TryGetValue( name, out ret );
+            LodStrategy ret = null;
+            this._strategies.TryGetValue(name, out ret);
 
-			return ret;
-		}
-	}
+            return ret;
+        }
+    }
 }

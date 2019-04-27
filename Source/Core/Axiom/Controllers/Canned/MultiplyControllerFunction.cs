@@ -43,28 +43,28 @@ using Axiom.Math;
 
 namespace Axiom.Controllers.Canned
 {
-	/// <summary>
-	/// Summary description for MultiplyControllerValue.
-	/// </summary>
-	public class MultipyControllerFunction : BaseControllerFunction
-	{
-		private readonly Real rate = 10.0f;
+    /// <summary>
+    /// Summary description for MultiplyControllerValue.
+    /// </summary>
+    public class MultipyControllerFunction : BaseControllerFunction
+    {
+        private readonly Real rate = 10.0f;
 
-		public MultipyControllerFunction( Real rate )
-			: base( false )
-		{
-			this.rate = rate;
-		}
+        public MultipyControllerFunction(Real rate)
+            : base(false)
+        {
+            this.rate = rate;
+        }
 
-		public MultipyControllerFunction( Real rate, bool useDelta )
-			: base( useDelta )
-		{
-			this.rate = rate;
-		}
+        public MultipyControllerFunction(Real rate, bool useDelta)
+            : base(useDelta)
+        {
+            this.rate = rate;
+        }
 
-		public override Real Execute( Real sourceValue )
-		{
-			return AdjustInput( sourceValue*this.rate );
-		}
-	}
+        public override Real Execute(Real sourceValue)
+        {
+            return AdjustInput(sourceValue * this.rate);
+        }
+    }
 }

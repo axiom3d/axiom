@@ -30,206 +30,206 @@ using Axiom.Math;
 
 namespace Axiom.Samples.BezierPatch
 {
-	public class BezierSample : SdkSample
-	{
-		#region Protected Fields
+    public class BezierSample : SdkSample
+    {
+        #region Protected Fields
 
-		protected VertexDeclaration patchDeclaration;
-		protected float timeLapse;
-		protected float factor;
-		protected bool isWireframe;
-		protected PatchMesh patch;
-		protected Entity patchEntity;
-		protected Pass patchPass;
+        protected VertexDeclaration patchDeclaration;
+        protected float timeLapse;
+        protected float factor;
+        protected bool isWireframe;
+        protected PatchMesh patch;
+        protected Entity patchEntity;
+        protected Pass patchPass;
 
-		#endregion Protected Fields
+        #endregion Protected Fields
 
-		#region Private Structs
+        #region Private Structs
 
-		private struct PatchVertex
-		{
-			public float X, Y, Z;
-			public float Nx, Ny, Nz;
-			public float U, V;
+        private struct PatchVertex
+        {
+            public float X, Y, Z;
+            public float Nx, Ny, Nz;
+            public float U, V;
 
-			public PatchVertex( float x, float y, float z, float nx, float ny, float nz, float u, float v )
-			{
-				this.X = x;
-				this.Y = y;
-				this.Z = z;
-				this.Nx = nx;
-				this.Ny = ny;
-				this.Nz = nz;
-				this.U = u;
-				this.V = v;
-			}
-		}
+            public PatchVertex(float x, float y, float z, float nx, float ny, float nz, float u, float v)
+            {
+                this.X = x;
+                this.Y = y;
+                this.Z = z;
+                this.Nx = nx;
+                this.Ny = ny;
+                this.Nz = nz;
+                this.U = u;
+                this.V = v;
+            }
+        }
 
-		#endregion Private Structs
+        #endregion Private Structs
 
-		public BezierSample()
-		{
-			Metadata[ "Title" ] = "Bezier Patch";
-			Metadata[ "Description" ] = "A demonstration of the Bezier patch support.";
-			Metadata[ "Thumbnail" ] = "thumb_bezier.png";
-			Metadata[ "Category" ] = "Geometry";
-		}
+        public BezierSample()
+        {
+            Metadata["Title"] = "Bezier Patch";
+            Metadata["Description"] = "A demonstration of the Bezier patch support.";
+            Metadata["Thumbnail"] = "thumb_bezier.png";
+            Metadata["Category"] = "Geometry";
+        }
 
-		protected override void SetupContent()
-		{
-			ResourceGroupManager.Instance.InitializeAllResourceGroups();
-			// setup some basic lighting for our scene
-			SceneManager.AmbientLight = new ColorEx( 0.5f, 0.5f, 0.5f );
-			SceneManager.CreateLight( "BezierLight" ).Position = new Vector3( 100, 100, 100 );
+        protected override void SetupContent()
+        {
+            ResourceGroupManager.Instance.InitializeAllResourceGroups();
+            // setup some basic lighting for our scene
+            SceneManager.AmbientLight = new ColorEx(0.5f, 0.5f, 0.5f);
+            SceneManager.CreateLight("BezierLight").Position = new Vector3(100, 100, 100);
 
-			// define the control point vertices for our patch
-			// Patch data
-			var patchVertices = new PatchVertex[9];
+            // define the control point vertices for our patch
+            // Patch data
+            var patchVertices = new PatchVertex[9];
 
-			patchVertices[ 0 ].X = -500;
-			patchVertices[ 0 ].Y = 200;
-			patchVertices[ 0 ].Z = -500;
-			patchVertices[ 0 ].Nx = -0.5f;
-			patchVertices[ 0 ].Ny = 0.5f;
-			patchVertices[ 0 ].Nz = 0;
-			patchVertices[ 0 ].U = 0;
-			patchVertices[ 0 ].V = 0;
+            patchVertices[0].X = -500;
+            patchVertices[0].Y = 200;
+            patchVertices[0].Z = -500;
+            patchVertices[0].Nx = -0.5f;
+            patchVertices[0].Ny = 0.5f;
+            patchVertices[0].Nz = 0;
+            patchVertices[0].U = 0;
+            patchVertices[0].V = 0;
 
-			patchVertices[ 1 ].X = 0;
-			patchVertices[ 1 ].Y = 500;
-			patchVertices[ 1 ].Z = -750;
-			patchVertices[ 1 ].Nx = 0;
-			patchVertices[ 1 ].Ny = 0.5f;
-			patchVertices[ 1 ].Nz = 0;
-			patchVertices[ 1 ].U = 0.5f;
-			patchVertices[ 1 ].V = 0;
+            patchVertices[1].X = 0;
+            patchVertices[1].Y = 500;
+            patchVertices[1].Z = -750;
+            patchVertices[1].Nx = 0;
+            patchVertices[1].Ny = 0.5f;
+            patchVertices[1].Nz = 0;
+            patchVertices[1].U = 0.5f;
+            patchVertices[1].V = 0;
 
-			patchVertices[ 2 ].X = 500;
-			patchVertices[ 2 ].Y = 1000;
-			patchVertices[ 2 ].Z = -500;
-			patchVertices[ 2 ].Nx = 0.5f;
-			patchVertices[ 2 ].Ny = 0.5f;
-			patchVertices[ 2 ].Nz = 0;
-			patchVertices[ 2 ].U = 1;
-			patchVertices[ 2 ].V = 0;
+            patchVertices[2].X = 500;
+            patchVertices[2].Y = 1000;
+            patchVertices[2].Z = -500;
+            patchVertices[2].Nx = 0.5f;
+            patchVertices[2].Ny = 0.5f;
+            patchVertices[2].Nz = 0;
+            patchVertices[2].U = 1;
+            patchVertices[2].V = 0;
 
-			patchVertices[ 3 ].X = -500;
-			patchVertices[ 3 ].Y = 0;
-			patchVertices[ 3 ].Z = 0;
-			patchVertices[ 3 ].Nx = -0.5f;
-			patchVertices[ 3 ].Ny = 0.5f;
-			patchVertices[ 3 ].Nz = 0;
-			patchVertices[ 3 ].U = 0;
-			patchVertices[ 3 ].V = 0.5f;
+            patchVertices[3].X = -500;
+            patchVertices[3].Y = 0;
+            patchVertices[3].Z = 0;
+            patchVertices[3].Nx = -0.5f;
+            patchVertices[3].Ny = 0.5f;
+            patchVertices[3].Nz = 0;
+            patchVertices[3].U = 0;
+            patchVertices[3].V = 0.5f;
 
-			patchVertices[ 4 ].X = 0;
-			patchVertices[ 4 ].Y = 500;
-			patchVertices[ 4 ].Z = 0;
-			patchVertices[ 4 ].Nx = 0;
-			patchVertices[ 4 ].Ny = 0.5f;
-			patchVertices[ 4 ].Nz = 0;
-			patchVertices[ 4 ].U = 0.5f;
-			patchVertices[ 4 ].V = 0.5f;
+            patchVertices[4].X = 0;
+            patchVertices[4].Y = 500;
+            patchVertices[4].Z = 0;
+            patchVertices[4].Nx = 0;
+            patchVertices[4].Ny = 0.5f;
+            patchVertices[4].Nz = 0;
+            patchVertices[4].U = 0.5f;
+            patchVertices[4].V = 0.5f;
 
-			patchVertices[ 5 ].X = 500;
-			patchVertices[ 5 ].Y = -50;
-			patchVertices[ 5 ].Z = 0;
-			patchVertices[ 5 ].Nx = 0.5f;
-			patchVertices[ 5 ].Ny = 0.5f;
-			patchVertices[ 5 ].Nz = 0;
-			patchVertices[ 5 ].U = 1;
-			patchVertices[ 5 ].V = 0.5f;
+            patchVertices[5].X = 500;
+            patchVertices[5].Y = -50;
+            patchVertices[5].Z = 0;
+            patchVertices[5].Nx = 0.5f;
+            patchVertices[5].Ny = 0.5f;
+            patchVertices[5].Nz = 0;
+            patchVertices[5].U = 1;
+            patchVertices[5].V = 0.5f;
 
-			patchVertices[ 6 ].X = -500;
-			patchVertices[ 6 ].Y = 0;
-			patchVertices[ 6 ].Z = 500;
-			patchVertices[ 6 ].Nx = -0.5f;
-			patchVertices[ 6 ].Ny = 0.5f;
-			patchVertices[ 6 ].Nz = 0;
-			patchVertices[ 6 ].U = 0;
-			patchVertices[ 6 ].V = 1;
+            patchVertices[6].X = -500;
+            patchVertices[6].Y = 0;
+            patchVertices[6].Z = 500;
+            patchVertices[6].Nx = -0.5f;
+            patchVertices[6].Ny = 0.5f;
+            patchVertices[6].Nz = 0;
+            patchVertices[6].U = 0;
+            patchVertices[6].V = 1;
 
-			patchVertices[ 7 ].X = 0;
-			patchVertices[ 7 ].Y = 500;
-			patchVertices[ 7 ].Z = 500;
-			patchVertices[ 7 ].Nx = 0;
-			patchVertices[ 7 ].Ny = 0.5f;
-			patchVertices[ 7 ].Nz = 0;
-			patchVertices[ 7 ].U = 0.5f;
-			patchVertices[ 7 ].V = 1;
+            patchVertices[7].X = 0;
+            patchVertices[7].Y = 500;
+            patchVertices[7].Z = 500;
+            patchVertices[7].Nx = 0;
+            patchVertices[7].Ny = 0.5f;
+            patchVertices[7].Nz = 0;
+            patchVertices[7].U = 0.5f;
+            patchVertices[7].V = 1;
 
-			patchVertices[ 8 ].X = 500;
-			patchVertices[ 8 ].Y = 200;
-			patchVertices[ 8 ].Z = 800;
-			patchVertices[ 8 ].Nx = 0.5f;
-			patchVertices[ 8 ].Ny = 0.5f;
-			patchVertices[ 8 ].Nz = 0;
-			patchVertices[ 8 ].U = 1;
-			patchVertices[ 8 ].V = 1;
-			// specify a vertex format declaration for our patch: 3 floats for position, 3 floats for normal, 2 floats for UV
-			this.patchDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
-			this.patchDeclaration.AddElement( 0, 0, VertexElementType.Float3, VertexElementSemantic.Position );
-			this.patchDeclaration.AddElement( 0, 12, VertexElementType.Float3, VertexElementSemantic.Normal );
-			this.patchDeclaration.AddElement( 0, 24, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0 );
+            patchVertices[8].X = 500;
+            patchVertices[8].Y = 200;
+            patchVertices[8].Z = 800;
+            patchVertices[8].Nx = 0.5f;
+            patchVertices[8].Ny = 0.5f;
+            patchVertices[8].Nz = 0;
+            patchVertices[8].U = 1;
+            patchVertices[8].V = 1;
+            // specify a vertex format declaration for our patch: 3 floats for position, 3 floats for normal, 2 floats for UV
+            this.patchDeclaration = HardwareBufferManager.Instance.CreateVertexDeclaration();
+            this.patchDeclaration.AddElement(0, 0, VertexElementType.Float3, VertexElementSemantic.Position);
+            this.patchDeclaration.AddElement(0, 12, VertexElementType.Float3, VertexElementSemantic.Normal);
+            this.patchDeclaration.AddElement(0, 24, VertexElementType.Float2, VertexElementSemantic.TexCoords, 0);
 
-			// create a patch mesh using vertices and declaration
-			this.patch = MeshManager.Instance.CreateBezierPatch( "patch", ResourceGroupManager.DefaultResourceGroupName,
-			                                                     patchVertices,
-			                                                     this.patchDeclaration, 3, 3, 5, 5, VisibleSide.Both,
-			                                                     BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true,
-			                                                     true );
+            // create a patch mesh using vertices and declaration
+            this.patch = MeshManager.Instance.CreateBezierPatch("patch", ResourceGroupManager.DefaultResourceGroupName,
+                                                                 patchVertices,
+                                                                 this.patchDeclaration, 3, 3, 5, 5, VisibleSide.Both,
+                                                                 BufferUsage.StaticWriteOnly, BufferUsage.DynamicWriteOnly, true,
+                                                                 true);
 
-			// Start patch at 0 detail
-			this.patch.Subdivision = 0;
+            // Start patch at 0 detail
+            this.patch.Subdivision = 0;
 
-			// Create entity based on patch
-			this.patchEntity = SceneManager.CreateEntity( "Entity1", "patch" );
-			var material =
-				(Material)MaterialManager.Instance.Create( "TextMat", ResourceGroupManager.DefaultResourceGroupName, null );
-			material.GetTechnique( 0 ).GetPass( 0 ).CreateTextureUnitState( "BumpyMetal.jpg" );
+            // Create entity based on patch
+            this.patchEntity = SceneManager.CreateEntity("Entity1", "patch");
+            var material =
+                (Material)MaterialManager.Instance.Create("TextMat", ResourceGroupManager.DefaultResourceGroupName, null);
+            material.GetTechnique(0).GetPass(0).CreateTextureUnitState("BumpyMetal.jpg");
 
-			this.patchEntity.MaterialName = "TextMat";
-			this.patchPass = material.GetTechnique( 0 ).GetPass( 0 );
+            this.patchEntity.MaterialName = "TextMat";
+            this.patchPass = material.GetTechnique(0).GetPass(0);
 
-			// Attach the entity to the root of the scene
-			SceneManager.RootSceneNode.AttachObject( this.patchEntity );
+            // Attach the entity to the root of the scene
+            SceneManager.RootSceneNode.AttachObject(this.patchEntity);
 
-			// save the main pass of the material so we can toggle wireframe on it
-			if ( material != null )
-			{
-				this.patchPass = material.GetTechnique( 0 ).GetPass( 0 );
+            // save the main pass of the material so we can toggle wireframe on it
+            if (material != null)
+            {
+                this.patchPass = material.GetTechnique(0).GetPass(0);
 
-				// use an orbit style camera
-				CameraManager.setStyle( CameraStyle.Orbit );
-				CameraManager.SetYawPitchDist( 0, 0, 250 );
+                // use an orbit style camera
+                CameraManager.setStyle(CameraStyle.Orbit);
+                CameraManager.SetYawPitchDist(0, 0, 250);
 
-				TrayManager.ShowCursor();
+                TrayManager.ShowCursor();
 
-				// create slider to adjust detail and checkbox to toggle wireframe
-				Slider slider = TrayManager.CreateThickSlider( TrayLocation.TopLeft, "Detail", "Detail", 120, 44, 0, 1, 6 );
-				CheckBox box = TrayManager.CreateCheckBox( TrayLocation.TopLeft, "Wireframe", "Wireframe", 120 );
-				slider.SliderMoved += new SliderMovedHandler( slider_SliderMoved );
-				box.CheckChanged += new CheckChangedHandler( box_CheckChanged );
-			}
-		}
+                // create slider to adjust detail and checkbox to toggle wireframe
+                Slider slider = TrayManager.CreateThickSlider(TrayLocation.TopLeft, "Detail", "Detail", 120, 44, 0, 1, 6);
+                CheckBox box = TrayManager.CreateCheckBox(TrayLocation.TopLeft, "Wireframe", "Wireframe", 120);
+                slider.SliderMoved += new SliderMovedHandler(slider_SliderMoved);
+                box.CheckChanged += new CheckChangedHandler(box_CheckChanged);
+            }
+        }
 
-		private void box_CheckChanged( CheckBox sender )
-		{
-			this.patchPass.PolygonMode = ( sender.IsChecked ? PolygonMode.Wireframe : PolygonMode.Solid );
-		}
+        private void box_CheckChanged(CheckBox sender)
+        {
+            this.patchPass.PolygonMode = (sender.IsChecked ? PolygonMode.Wireframe : PolygonMode.Solid);
+        }
 
-		private void slider_SliderMoved( object sender, Slider slider )
-		{
-			this.patch.Subdivision = slider.Value;
-		}
+        private void slider_SliderMoved(object sender, Slider slider)
+        {
+            this.patch.Subdivision = slider.Value;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void CleanupContent()
-		{
-			this.patchPass.PolygonMode = PolygonMode.Solid;
-			MeshManager.Instance.Remove( this.patch.Handle );
-		}
-	}
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override void CleanupContent()
+        {
+            this.patchPass.PolygonMode = PolygonMode.Solid;
+            MeshManager.Instance.Remove(this.patch.Handle);
+        }
+    }
 }

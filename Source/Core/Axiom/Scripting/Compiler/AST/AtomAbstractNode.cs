@@ -44,92 +44,92 @@ using System.Globalization;
 
 namespace Axiom.Scripting.Compiler.AST
 {
-	/// <summary>
-	///  This is an abstract node which cannot be broken down further
-	/// </summary>
-	public class AtomAbstractNode : AbstractNode
-	{
-		#region Fields and Properties
+    /// <summary>
+    ///  This is an abstract node which cannot be broken down further
+    /// </summary>
+    public class AtomAbstractNode : AbstractNode
+    {
+        #region Fields and Properties
 
-		private readonly CultureInfo _culture = new CultureInfo( "en-US" );
+        private readonly CultureInfo _culture = new CultureInfo("en-US");
 
-		private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite |
-		                                   NumberStyles.AllowTrailingWhite | NumberStyles.AllowDecimalPoint;
+        private NumberStyles _parseStyle = NumberStyles.AllowLeadingSign | NumberStyles.AllowLeadingWhite |
+                                           NumberStyles.AllowTrailingWhite | NumberStyles.AllowDecimalPoint;
 
 
-		private bool _parsed = false;
-		private string _value;
+        private bool _parsed = false;
+        private string _value;
 
-		public uint Id;
+        public uint Id;
 
-		private bool _isNumber = false;
+        private bool _isNumber = false;
 
-		public bool IsNumber
-		{
-			get
-			{
-				if ( !this._parsed )
-				{
-					_parse();
-				}
-				return this._isNumber;
-			}
-		}
+        public bool IsNumber
+        {
+            get
+            {
+                if (!this._parsed)
+                {
+                    _parse();
+                }
+                return this._isNumber;
+            }
+        }
 
-		private float _number;
+        private float _number;
 
-		public float Number
-		{
-			get
-			{
-				if ( !this._parsed )
-				{
-					_parse();
-				}
-				return this._number;
-			}
-		}
+        public float Number
+        {
+            get
+            {
+                if (!this._parsed)
+                {
+                    _parse();
+                }
+                return this._number;
+            }
+        }
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		public AtomAbstractNode( AbstractNode parent )
-			: base( parent )
-		{
-		}
+        public AtomAbstractNode(AbstractNode parent)
+            : base(parent)
+        {
+        }
 
-		private void _parse()
-		{
-			this._isNumber = float.TryParse( this._value, this._parseStyle, this._culture, out this._number );
-			this._parsed = true;
-		}
+        private void _parse()
+        {
+            this._isNumber = float.TryParse(this._value, this._parseStyle, this._culture, out this._number);
+            this._parsed = true;
+        }
 
-		#region AbstractNode Implementation
+        #region AbstractNode Implementation
 
-		/// <see cref="AbstractNode.Clone"/>
-		public override AbstractNode Clone()
-		{
-			var node = new AtomAbstractNode( Parent );
-			node.File = File;
-			node.Line = Line;
-			node.Id = this.Id;
-			node._value = Value;
-			return node;
-		}
+        /// <see cref="AbstractNode.Clone"/>
+        public override AbstractNode Clone()
+        {
+            var node = new AtomAbstractNode(Parent);
+            node.File = File;
+            node.Line = Line;
+            node.Id = this.Id;
+            node._value = Value;
+            return node;
+        }
 
-		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return this._value;
-			}
+        /// <see cref="AbstractNode.Value"/>
+        public override string Value
+        {
+            get
+            {
+                return this._value;
+            }
 
-			set
-			{
-				this._value = value;
-			}
-		}
+            set
+            {
+                this._value = value;
+            }
+        }
 
-		#endregion AbstractNode Implementation
-	}
+        #endregion AbstractNode Implementation
+    }
 }

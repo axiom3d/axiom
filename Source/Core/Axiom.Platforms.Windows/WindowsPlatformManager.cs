@@ -47,23 +47,23 @@ using Axiom.Input;
 
 namespace Axiom.Platforms.Windows
 {
-	/// <summary>
-	///	Platform management specialization for Microsoft Windows (r) platform.
-	/// </summary>
-	[Export( typeof ( IPlatformManager ) )]
-	public class WindowsPlatformManager : IPlatformManager
-	{
-		public WindowsPlatformManager()
-		{
-			LogManager.Instance.Write( "Windows Platform Manager Loaded." );
-		}
+    /// <summary>
+    ///	Platform management specialization for Microsoft Windows (r) platform.
+    /// </summary>
+    //[Export( typeof ( IPlatformManager ) )]
+    public class WindowsPlatformManager : IPlatformManager
+    {
+        public WindowsPlatformManager()
+        {
+            LogManager.Instance.Write("Windows Platform Manager Loaded.");
+        }
 
-		/// <summary>
-		///     Called when the engine is being shutdown.
-		/// </summary>
-		public void Dispose()
-		{
-			LogManager.Instance.Write( "Win32 Platform Manager Shutdown." );
-		}
-	}
+        /// <summary>
+        ///     Called when the engine is being shutdown.
+        /// </summary>
+        public void Dispose()
+        {
+            LogManager.Instance.Write("Win32 Platform Manager Shutdown.");
+        }
+    }
 }

@@ -45,31 +45,31 @@ using Axiom.Graphics;
 
 namespace Axiom.Graphics
 {
-	public class RenderQueueInvocation
-	{
-		#region Fields and Properties
+    public class RenderQueueInvocation
+    {
+        #region Fields and Properties
 
-		public static readonly string Shadows = "SHADOWS";
-		public string Name;
-		public uint RenderQueueGroupID;
+        public static readonly string Shadows = "SHADOWS";
+        public string Name;
+        public uint RenderQueueGroupID;
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		public RenderQueueInvocation()
-		{
-		}
+        public RenderQueueInvocation()
+        {
+        }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region Methods
+        #region Methods
 
-		internal void Invoke( RenderQueueGroup queueGroup, SceneManager sceneManager )
-		{
-			throw new NotImplementedException();
-		}
+        internal void Invoke(RenderQueueGroup queueGroup, SceneManager sceneManager)
+        {
+            throw new NotImplementedException();
+        }
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

@@ -40,6 +40,7 @@ using System.Text;
 
 using Axiom.Core;
 using Axiom.Graphics;
+using BufferUsage = Axiom.Graphics.BufferUsage;
 
 using OpenGL = OpenTK.Graphics.ES20.GL;
 using OpenGLOES = OpenTK.Graphics.ES20.GL.Oes;

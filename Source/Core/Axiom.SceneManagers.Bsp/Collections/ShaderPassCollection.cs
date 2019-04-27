@@ -46,27 +46,27 @@ using System.Collections.Generic;
 
 namespace Axiom.SceneManagers.Bsp.Collections
 {
-	/// <summary>
-	/// Summary description for ShaderPassCollection.
-	/// </summary>
-	public class ShaderPassCollection : List<ShaderPass>
-	{
-		#region Constructors
+    /// <summary>
+    /// Summary description for ShaderPassCollection.
+    /// </summary>
+    public class ShaderPassCollection : List<ShaderPass>
+    {
+        #region Constructors
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public ShaderPassCollection()
-			: base()
-		{
-		}
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public ShaderPassCollection()
+            : base()
+        {
+        }
 
-		/// <summary>
-		///		Constructor that takes a parent object to, and calls the base class constructor to 
-		/// </summary>
-		/// <param name="entity"></param>
-		//public AnimationCollection(P parent) : base(parent) {}
+        /// <summary>
+        ///		Constructor that takes a parent object to, and calls the base class constructor to 
+        /// </summary>
+        /// <param name="entity"></param>
+        //public AnimationCollection(P parent) : base(parent) {}
 
-		#endregion
-	}
+        #endregion
+    }
 }

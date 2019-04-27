@@ -42,10 +42,10 @@ using Axiom.Collections;
 
 namespace Axiom.Graphics.Collections
 {
-	/// <summary>
-	/// Represents a collection of <see cref="RenderTarget">RenderTargets</see> that are sorted by name.
-	/// </summary>
-	public class RenderTargetCollection : AxiomCollection<RenderTarget>
-	{
-	}
+    /// <summary>
+    /// Represents a collection of <see cref="RenderTarget">RenderTargets</see> that are sorted by name.
+    /// </summary>
+    public class RenderTargetCollection : AxiomCollection<RenderTarget>
+    {
+    }
 }

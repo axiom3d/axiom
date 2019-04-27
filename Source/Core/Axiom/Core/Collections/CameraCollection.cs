@@ -42,14 +42,14 @@ using Axiom.Collections;
 
 namespace Axiom.Collections
 {
-	/// <summary>
-	/// Represents a collection of <see cref="Camera">Cameras</see> that are sorted by name.
-	/// </summary>
-	public class CameraCollection : AxiomCollection<Camera>
-	{
-		public override void Add( Camera item )
-		{
-			base.Add( item.Name, item );
-		}
-	}
+    /// <summary>
+    /// Represents a collection of <see cref="Camera">Cameras</see> that are sorted by name.
+    /// </summary>
+    public class CameraCollection : AxiomCollection<Camera>
+    {
+        public override void Add(Camera item)
+        {
+            base.Add(item.Name, item);
+        }
+    }
 }

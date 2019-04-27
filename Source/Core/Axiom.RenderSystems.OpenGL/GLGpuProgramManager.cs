@@ -47,93 +47,93 @@ using Axiom.Collections;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	/// <summary>
-	/// 	Summary description for GLGpuProgramManager.
-	/// </summary>
-	public class GLGpuProgramManager : GpuProgramManager
-	{
-		protected Hashtable factories = new Hashtable();
+    /// <summary>
+    /// 	Summary description for GLGpuProgramManager.
+    /// </summary>
+    public class GLGpuProgramManager : GpuProgramManager
+    {
+        protected Hashtable factories = new Hashtable();
 
-		public GLGpuProgramManager()
-			: base()
-		{
-		}
+        public GLGpuProgramManager()
+            : base()
+        {
+        }
 
-		/// <summary>
-		///    Create the specified type of GpuProgram.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="type"></param>
-		/// <returns></returns>
-		protected override Resource _create( string name, ulong handle, string group, bool isManual,
-		                                     IManualResourceLoader loader, NameValuePairList createParams )
-		{
-			if ( createParams == null ||
-			     ( createParams.ContainsKey( "syntax" ) == false || createParams.ContainsKey( "type" ) == false ) )
-			{
-				throw new Exception( "You must supply 'syntax' and 'type' parameters" );
-			}
+        /// <summary>
+        ///    Create the specified type of GpuProgram.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        protected override Resource _create(string name, ulong handle, string group, bool isManual,
+                                             IManualResourceLoader loader, NameValuePairList createParams)
+        {
+            if (createParams == null ||
+                 (createParams.ContainsKey("syntax") == false || createParams.ContainsKey("type") == false))
+            {
+                throw new Exception("You must supply 'syntax' and 'type' parameters");
+            }
 
-			string syntaxCode = createParams[ "syntax" ];
-			string type = createParams[ "type" ];
+            string syntaxCode = createParams["syntax"];
+            string type = createParams["type"];
 
-			// if there is none, this syntax code must not be supported
-			// just return the base GL program since it won't be doing anything anyway
-			if ( this.factories[ syntaxCode ] == null )
-			{
-				return new GLGpuProgram( this, name, handle, group, isManual, loader );
-			}
+            // if there is none, this syntax code must not be supported
+            // just return the base GL program since it won't be doing anything anyway
+            if (this.factories[syntaxCode] == null)
+            {
+                return new GLGpuProgram(this, name, handle, group, isManual, loader);
+            }
 
-			GpuProgramType gpt;
-			if ( type == "vertex_program" )
-			{
-				gpt = GpuProgramType.Vertex;
-			}
-			else
-			{
-				gpt = GpuProgramType.Fragment;
-			}
+            GpuProgramType gpt;
+            if (type == "vertex_program")
+            {
+                gpt = GpuProgramType.Vertex;
+            }
+            else
+            {
+                gpt = GpuProgramType.Fragment;
+            }
 
-			return ( (IOpenGLGpuProgramFactory)this.factories[ syntaxCode ] ).Create( this, name, handle, group, isManual, loader,
-			                                                                          gpt,
-			                                                                          syntaxCode );
-		}
+            return ((IOpenGLGpuProgramFactory)this.factories[syntaxCode]).Create(this, name, handle, group, isManual, loader,
+                                                                                      gpt,
+                                                                                      syntaxCode);
+        }
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual,
-		                                     IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
-		{
-			// if there is none, this syntax code must not be supported
-			// just return the base GL program since it won't be doing anything anyway
-			if ( this.factories[ syntaxCode ] == null )
-			{
-				return new GLGpuProgram( this, name, handle, group, isManual, loader );
-			}
+        protected override Resource _create(string name, ulong handle, string group, bool isManual,
+                                             IManualResourceLoader loader, GpuProgramType type, string syntaxCode)
+        {
+            // if there is none, this syntax code must not be supported
+            // just return the base GL program since it won't be doing anything anyway
+            if (this.factories[syntaxCode] == null)
+            {
+                return new GLGpuProgram(this, name, handle, group, isManual, loader);
+            }
 
-			// get a reference to the factory for this syntax code
-			var factory = (IOpenGLGpuProgramFactory)this.factories[ syntaxCode ];
+            // get a reference to the factory for this syntax code
+            var factory = (IOpenGLGpuProgramFactory)this.factories[syntaxCode];
 
-			// create the gpu program
-			return factory.Create( this, name, handle, group, isManual, loader, type, syntaxCode );
-		}
+            // create the gpu program
+            return factory.Create(this, name, handle, group, isManual, loader, type, syntaxCode);
+        }
 
-		/// <summary>
-		///    Returns a specialized version of GpuProgramParameters.
-		/// </summary>
-		/// <returns></returns>
-		public override GpuProgramParameters CreateParameters()
-		{
-			return new GpuProgramParameters();
-		}
+        /// <summary>
+        ///    Returns a specialized version of GpuProgramParameters.
+        /// </summary>
+        /// <returns></returns>
+        public override GpuProgramParameters CreateParameters()
+        {
+            return new GpuProgramParameters();
+        }
 
-		/// <summary>
-		///     Registers a factory to handles requests for the creation of low level
-		///     gpu porgrams based on the syntax code.
-		/// </summary>
-		/// <param name="factory"></param>
-		public void RegisterProgramFactory( string syntaxCode, IOpenGLGpuProgramFactory factory )
-		{
-			// store this factory for the specified syntax code
-			this.factories[ syntaxCode ] = factory;
-		}
-	}
+        /// <summary>
+        ///     Registers a factory to handles requests for the creation of low level
+        ///     gpu porgrams based on the syntax code.
+        /// </summary>
+        /// <param name="factory"></param>
+        public void RegisterProgramFactory(string syntaxCode, IOpenGLGpuProgramFactory factory)
+        {
+            // store this factory for the specified syntax code
+            this.factories[syntaxCode] = factory;
+        }
+    }
 }

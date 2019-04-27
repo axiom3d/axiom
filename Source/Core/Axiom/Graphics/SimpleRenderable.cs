@@ -48,341 +48,341 @@ using Axiom.Core.Collections;
 
 namespace Axiom.Graphics
 {
-	/// <summary>
-	/// Summary description for SimpleRenderable.
-	/// </summary>
-	public abstract class SimpleRenderable : MovableObject, IRenderable
-	{
-		#region Fields
+    /// <summary>
+    /// Summary description for SimpleRenderable.
+    /// </summary>
+    public abstract class SimpleRenderable : MovableObject, IRenderable
+    {
+        #region Fields
 
-		protected RenderOperation renderOperation = new RenderOperation();
-		protected Matrix4 worldTransform = Matrix4.Identity;
-		protected AxisAlignedBox box;
-		protected string materialName;
-		protected Material material;
-		protected SceneManager sceneMgr;
-		protected Camera camera;
-		protected static long nextAutoGenName;
+        protected RenderOperation renderOperation = new RenderOperation();
+        protected Matrix4 worldTransform = Matrix4.Identity;
+        protected AxisAlignedBox box;
+        protected string materialName;
+        protected Material material;
+        protected SceneManager sceneMgr;
+        protected Camera camera;
+        protected static long nextAutoGenName;
 
-		protected VertexData vertexData;
-		protected IndexData indexData;
+        protected VertexData vertexData;
+        protected IndexData indexData;
 
-		/// <summary>
-		///    Empty light list to use when there is no parent for this renderable.
-		/// </summary>
-		protected LightList dummyLightList = new LightList();
+        /// <summary>
+        ///    Empty light list to use when there is no parent for this renderable.
+        /// </summary>
+        protected LightList dummyLightList = new LightList();
 
-		protected List<Vector4> customParams = new List<Vector4>();
+        protected List<Vector4> customParams = new List<Vector4>();
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public SimpleRenderable()
-			: this( "SimpleRenderable" + nextAutoGenName++ )
-		{
-		}
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public SimpleRenderable()
+            : this("SimpleRenderable" + nextAutoGenName++)
+        {
+        }
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public SimpleRenderable( string name )
-			: base( name )
-		{
-			this.materialName = "BaseWhite";
-			this.material = (Material)MaterialManager.Instance[ "BaseWhite" ];
-			name = "SimpleRenderable" + nextAutoGenName++;
-			this.material.Load();
-		}
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public SimpleRenderable(string name)
+            : base(name)
+        {
+            this.materialName = "BaseWhite";
+            this.material = (Material)MaterialManager.Instance["BaseWhite"];
+            name = "SimpleRenderable" + nextAutoGenName++;
+            this.material.Load();
+        }
 
-		private void LoadDefaultMaterial()
-		{
-			this.materialName = "BaseWhite";
-			this.material = (Material)MaterialManager.Instance[ "BaseWhite" ];
-			this.material.Load();
-		}
+        private void LoadDefaultMaterial()
+        {
+            this.materialName = "BaseWhite";
+            this.material = (Material)MaterialManager.Instance["BaseWhite"];
+            this.material.Load();
+        }
 
-		#endregion Constructor
+        #endregion Constructor
 
-		#region Implementation of MovableObject
+        #region Implementation of MovableObject
 
-		/// <summary>
-		///
-		/// </summary>
-		public override AxisAlignedBox BoundingBox
-		{
-			get
-			{
-				return (AxisAlignedBox)this.box.Clone();
-			}
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        public override AxisAlignedBox BoundingBox
+        {
+            get
+            {
+                return (AxisAlignedBox)this.box.Clone();
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="camera"></param>
-		public override void NotifyCurrentCamera( Camera camera )
-		{
-			this.camera = camera;
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="camera"></param>
+        public override void NotifyCurrentCamera(Camera camera)
+        {
+            this.camera = camera;
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="queue"></param>
-		public override void UpdateRenderQueue( RenderQueue queue )
-		{
-			// add ourself to the render queue
-			queue.AddRenderable( this, RenderQueueGroup );
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="queue"></param>
+        public override void UpdateRenderQueue(RenderQueue queue)
+        {
+            // add ourself to the render queue
+            queue.AddRenderable(this, RenderQueueGroup);
+        }
 
-		#endregion Implementation of MovableObject
+        #endregion Implementation of MovableObject
 
-		#region IRenderable Members
+        #region IRenderable Members
 
-		public bool CastsShadows
-		{
-			get
-			{
-				return CastShadows;
-			}
-		}
+        public bool CastsShadows
+        {
+            get
+            {
+                return CastShadows;
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		public virtual Material Material
-		{
-			get
-			{
-				return this.material;
-			}
-			set
-			{
-				this.material = value;
-				if ( this.material != null )
-				{
-					this.materialName = this.material.Name;
-				}
-			}
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        public virtual Material Material
+        {
+            get
+            {
+                return this.material;
+            }
+            set
+            {
+                this.material = value;
+                if (this.material != null)
+                {
+                    this.materialName = this.material.Name;
+                }
+            }
+        }
 
-		public virtual Technique Technique
-		{
-			get
-			{
-				return this.material.GetBestTechnique();
-			}
-		}
+        public virtual Technique Technique
+        {
+            get
+            {
+                return this.material.GetBestTechnique();
+            }
+        }
 
-		public virtual RenderOperation RenderOperation
-		{
-			get
-			{
-				return this.renderOperation;
-			}
-		}
+        public virtual RenderOperation RenderOperation
+        {
+            get
+            {
+                return this.renderOperation;
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="matrices"></param>
-		public virtual void GetWorldTransforms( Matrix4[] matrices )
-		{
-			matrices[ 0 ] = this.worldTransform*parentNode.FullTransform;
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="matrices"></param>
+        public virtual void GetWorldTransforms(Matrix4[] matrices)
+        {
+            matrices[0] = this.worldTransform * parentNode.FullTransform;
+        }
 
-		public bool NormalizeNormals
-		{
-			get
-			{
-				return false;
-			}
-		}
+        public bool NormalizeNormals
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		public ushort NumWorldTransforms
-		{
-			get
-			{
-				return 1;
-			}
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        public ushort NumWorldTransforms
+        {
+            get
+            {
+                return 1;
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		public virtual bool UseIdentityProjection
-		{
-			get
-			{
-				return false;
-			}
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        public virtual bool UseIdentityProjection
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		public virtual bool UseIdentityView
-		{
-			get
-			{
-				return false;
-			}
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        public virtual bool UseIdentityView
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		public virtual bool PolygonModeOverrideable
-		{
-			get
-			{
-				return true;
-			}
-		}
+        public virtual bool PolygonModeOverrideable
+        {
+            get
+            {
+                return true;
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="camera"></param>
-		/// <returns></returns>
-		public abstract Real GetSquaredViewDepth( Camera camera );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="camera"></param>
+        /// <returns></returns>
+        public abstract Real GetSquaredViewDepth(Camera camera);
 
-		/// <summary>
-		///
-		/// </summary>
-		public virtual Quaternion WorldOrientation
-		{
-			get
-			{
-				return parentNode.DerivedOrientation;
-			}
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        public virtual Quaternion WorldOrientation
+        {
+            get
+            {
+                return parentNode.DerivedOrientation;
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		public virtual Vector3 WorldPosition
-		{
-			get
-			{
-				return parentNode.DerivedPosition;
-			}
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        public virtual Vector3 WorldPosition
+        {
+            get
+            {
+                return parentNode.DerivedPosition;
+            }
+        }
 
-		public LightList Lights
-		{
-			get
-			{
-				return QueryLights();
-			}
-		}
+        public LightList Lights
+        {
+            get
+            {
+                return QueryLights();
+            }
+        }
 
-		public Vector4 GetCustomParameter( int index )
-		{
-			if ( this.customParams[ index ] == null )
-			{
-				throw new Exception( "A parameter was not found at the given index" );
-			}
-			else
-			{
-				return (Vector4)this.customParams[ index ];
-			}
-		}
+        public Vector4 GetCustomParameter(int index)
+        {
+            if (this.customParams[index] == null)
+            {
+                throw new Exception("A parameter was not found at the given index");
+            }
+            else
+            {
+                return (Vector4)this.customParams[index];
+            }
+        }
 
-		public void SetCustomParameter( int index, Vector4 val )
-		{
-			while ( this.customParams.Count <= index )
-			{
-				this.customParams.Add( Vector4.Zero );
-			}
-			this.customParams[ index ] = val;
-		}
+        public void SetCustomParameter(int index, Vector4 val)
+        {
+            while (this.customParams.Count <= index)
+            {
+                this.customParams.Add(Vector4.Zero);
+            }
+            this.customParams[index] = val;
+        }
 
-		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
-		{
-			if ( this.customParams.Count > entry.Data && this.customParams[ entry.Data ] != null )
-			{
-				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)this.customParams[ entry.Data ] );
-			}
-		}
+        public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams)
+        {
+            if (this.customParams.Count > entry.Data && this.customParams[entry.Data] != null)
+            {
+                gpuParams.SetConstant(entry.PhysicalIndex, (Vector4)this.customParams[entry.Data]);
+            }
+        }
 
-		#endregion IRenderable Members
+        #endregion IRenderable Members
 
-		#region IDisposable Implementation
+        #region IDisposable Implementation
 
-		/// <summary>
-		/// Class level dispose method
-		/// </summary>
-		/// <remarks>
-		/// When implementing this method in an inherited class the following template should be used;
-		/// protected override void dispose( bool disposeManagedResources )
-		/// {
-		/// 	if ( !isDisposed )
-		/// 	{
-		/// 		if ( disposeManagedResources )
-		/// 		{
-		/// 			// Dispose managed resources.
-		/// 		}
-		///
-		/// 		// There are no unmanaged resources to release, but
-		/// 		// if we add them, they need to be released here.
-		/// 	}
-		///
-		/// 	// If it is available, make the call to the
-		/// 	// base class's Dispose(Boolean) method
-		/// 	base.dispose( disposeManagedResources );
-		/// }
-		/// </remarks>
-		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-					if ( this.renderOperation != null )
-					{
-						if ( !this.renderOperation.IsDisposed )
-						{
-							this.renderOperation.Dispose();
-						}
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // Dispose managed resources.
+                    if (this.renderOperation != null)
+                    {
+                        if (!this.renderOperation.IsDisposed)
+                        {
+                            this.renderOperation.Dispose();
+                        }
 
-						this.renderOperation = null;
-					}
+                        this.renderOperation = null;
+                    }
 
-					if ( this.indexData != null )
-					{
-						if ( !this.indexData.IsDisposed )
-						{
-							this.indexData.Dispose();
-						}
+                    if (this.indexData != null)
+                    {
+                        if (!this.indexData.IsDisposed)
+                        {
+                            this.indexData.Dispose();
+                        }
 
-						this.indexData = null;
-					}
+                        this.indexData = null;
+                    }
 
-					if ( this.vertexData != null )
-					{
-						if ( !this.vertexData.IsDisposed )
-						{
-							this.vertexData.Dispose();
-						}
+                    if (this.vertexData != null)
+                    {
+                        if (!this.vertexData.IsDisposed)
+                        {
+                            this.vertexData.Dispose();
+                        }
 
-						this.vertexData = null;
-					}
-				}
+                        this.vertexData = null;
+                    }
+                }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-			base.dispose( disposeManagedResources );
-		}
+            base.dispose(disposeManagedResources);
+        }
 
-		#endregion IDisposable Implementation
-	}
+        #endregion IDisposable Implementation
+    }
 }

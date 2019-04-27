@@ -22,21 +22,21 @@
 
 #endregion License
 
-using System.ComponentModel.Composition;
+using System.Composition;
 using Axiom.Core;
 
 namespace Axiom.Samples.BezierPatch
 {
-	[Export( typeof ( IPlugin ) )]
-	public class Plugin : SamplePlugin
-	{
-		private BezierSample sample;
+    [Export(typeof(IPlugin))]
+    public class Plugin : SamplePlugin
+    {
+        private BezierSample sample;
 
-		public override void Initialize()
-		{
-			this.sample = new BezierSample();
-			Name = this.sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this.sample );
-		}
-	}
+        public override void Initialize()
+        {
+            this.sample = new BezierSample();
+            Name = this.sample.Metadata["Title"] + " Sample";
+            AddSample(this.sample);
+        }
+    }
 }

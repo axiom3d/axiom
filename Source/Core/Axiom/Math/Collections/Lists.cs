@@ -51,17 +51,17 @@ using System.Diagnostics;
 
 namespace Axiom.Math.Collections
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public class PlaneList : List<Plane>
-	{
-	}
+    /// <summary>
+    /// 
+    /// </summary>
+    public class PlaneList : List<Plane>
+    {
+    }
 
-	/// <summary>
-	/// 
-	/// </summary>
-	public class PlaneBoundedVolumeList : List<PlaneBoundedVolume>
-	{
-	}
+    /// <summary>
+    /// 
+    /// </summary>
+    public class PlaneBoundedVolumeList : List<PlaneBoundedVolume>
+    {
+    }
 }

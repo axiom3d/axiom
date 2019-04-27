@@ -48,184 +48,184 @@ using ResourceHandle = System.UInt64;
 
 namespace Axiom.RenderSystems.OpenGL.Nvidia
 {
-	/// <summary>
-	///     Base class for handling nVidia specific extensions for supporting
-	///     GeForceFX level gpu programs
-	/// </summary>
-	/// <remarks>
-	///     Subclasses must implement BindParameters since there are differences
-	///     in how parameters are passed to NV vertex and fragment programs.
-	/// </remarks>
-	public abstract class NV3xGpuProgram : GLGpuProgram
-	{
-		#region Constructor
+    /// <summary>
+    ///     Base class for handling nVidia specific extensions for supporting
+    ///     GeForceFX level gpu programs
+    /// </summary>
+    /// <remarks>
+    ///     Subclasses must implement BindParameters since there are differences
+    ///     in how parameters are passed to NV vertex and fragment programs.
+    /// </remarks>
+    public abstract class NV3xGpuProgram : GLGpuProgram
+    {
+        #region Constructor
 
-		public NV3xGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
-		                       IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader )
-		{
-			throw new AxiomException( "This needs upgrading" );
-			// generate the program and store the unique name
-			Gl.glGenProgramsNV( 1, out programId );
+        public NV3xGpuProgram(ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+                               IManualResourceLoader loader)
+            : base(parent, name, handle, group, isManual, loader)
+        {
+            throw new AxiomException("This needs upgrading");
+            // generate the program and store the unique name
+            Gl.glGenProgramsNV(1, out programId);
 
-			// find the GL enum for the type of program this is
-			programType = ( Type == GpuProgramType.Vertex ) ? Gl.GL_VERTEX_PROGRAM_NV : Gl.GL_FRAGMENT_PROGRAM_NV;
-		}
+            // find the GL enum for the type of program this is
+            programType = (Type == GpuProgramType.Vertex) ? Gl.GL_VERTEX_PROGRAM_NV : Gl.GL_FRAGMENT_PROGRAM_NV;
+        }
 
-		#endregion Constructor
+        #endregion Constructor
 
-		#region GpuProgram Members
+        #region GpuProgram Members
 
-		/// <summary>
-		///     Loads NV3x level assembler programs into the hardware.
-		/// </summary>
-		protected override void LoadFromSource()
-		{
-			// bind this program before loading
-			Gl.glBindProgramNV( programType, programId );
+        /// <summary>
+        ///     Loads NV3x level assembler programs into the hardware.
+        /// </summary>
+        protected override void LoadFromSource()
+        {
+            // bind this program before loading
+            Gl.glBindProgramNV(programType, programId);
 
-			// load the ASM source into an NV program
-			Gl.glLoadProgramNV( programType, programId, Source.Length, System.Text.Encoding.ASCII.GetBytes( Source ) );
-			// TAO 2.0
-			//Gl.glLoadProgramNV( programType, programId, source.Length, source );
+            // load the ASM source into an NV program
+            Gl.glLoadProgramNV(programType, programId, Source.Length, System.Text.Encoding.ASCII.GetBytes(Source));
+            // TAO 2.0
+            //Gl.glLoadProgramNV( programType, programId, source.Length, source );
 
-			// get the error string from the NV program loader
-			string error = Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_NV ); // TAO 2.0
-			//string error = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_NV ) );
+            // get the error string from the NV program loader
+            string error = Gl.glGetString(Gl.GL_PROGRAM_ERROR_STRING_NV); // TAO 2.0
+                                                                          //string error = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_PROGRAM_ERROR_STRING_NV ) );
 
-			// if there was an error, report it
-			if ( error != null && error.Length > 0 )
-			{
-				int pos;
+            // if there was an error, report it
+            if (error != null && error.Length > 0)
+            {
+                int pos;
 
-				// get the position of the error
-				Gl.glGetIntegerv( Gl.GL_PROGRAM_ERROR_POSITION_ARB, out pos );
+                // get the position of the error
+                Gl.glGetIntegerv(Gl.GL_PROGRAM_ERROR_POSITION_ARB, out pos);
 
-				throw new Exception( string.Format( "Error on line {0} in program '{1}'\nError: {2}", pos, Name, error ) );
-			}
-		}
+                throw new Exception(string.Format("Error on line {0} in program '{1}'\nError: {2}", pos, Name, error));
+            }
+        }
 
-		/// <summary>
-		///     Overridden to delete the NV program.
-		/// </summary>
-		public override void Unload()
-		{
-			base.Unload();
+        /// <summary>
+        ///     Overridden to delete the NV program.
+        /// </summary>
+        public override void Unload()
+        {
+            base.Unload();
 
-			// delete this NV program
-			Gl.glDeleteProgramsNV( 1, ref programId );
-		}
+            // delete this NV program
+            Gl.glDeleteProgramsNV(1, ref programId);
+        }
 
-		#endregion GpuProgram Members
+        #endregion GpuProgram Members
 
-		#region GLGpuProgram Members
+        #region GLGpuProgram Members
 
-		/// <summary>
-		///     Binds an NV program.
-		/// </summary>
-		public override void Bind()
-		{
-			// enable this program type
-			Gl.glEnable( programType );
+        /// <summary>
+        ///     Binds an NV program.
+        /// </summary>
+        public override void Bind()
+        {
+            // enable this program type
+            Gl.glEnable(programType);
 
-			// bind the program to the context
-			Gl.glBindProgramNV( programType, programId );
-		}
+            // bind the program to the context
+            Gl.glBindProgramNV(programType, programId);
+        }
 
-		/// <summary>
-		///     Unbinds an NV program.
-		/// </summary>
-		public override void Unbind()
-		{
-			// disable this program type
-			Gl.glDisable( programType );
-		}
+        /// <summary>
+        ///     Unbinds an NV program.
+        /// </summary>
+        public override void Unbind()
+        {
+            // disable this program type
+            Gl.glDisable(programType);
+        }
 
-		#endregion GLGpuProgram Members
-	}
+        #endregion GLGpuProgram Members
+    }
 
-	/// <summary>
-	///     GeForceFX class vertex program.
-	/// </summary>
-	public class VP30GpuProgram : NV3xGpuProgram
-	{
-		#region Constructor
+    /// <summary>
+    ///     GeForceFX class vertex program.
+    /// </summary>
+    public class VP30GpuProgram : NV3xGpuProgram
+    {
+        #region Constructor
 
-		public VP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
-		                       IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader )
-		{
-			throw new AxiomException( "This needs upgrading" );
-		}
+        public VP30GpuProgram(ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+                               IManualResourceLoader loader)
+            : base(parent, name, handle, group, isManual, loader)
+        {
+            throw new AxiomException("This needs upgrading");
+        }
 
-		#endregion Constructor
+        #endregion Constructor
 
-		#region GpuProgram Members
+        #region GpuProgram Members
 
-		/// <summary>
-		///     Binds params by index to the vp30 program.
-		/// </summary>
-		/// <param name="parms"></param>
-		public override void BindProgramParameters( GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
-		{
-			//TODO
-			//if ( parms.HasFloatConstants )
-			//{
-			//    for ( int index = 0; index < parms.FloatConstantCount; index++ )
-			//    {
-			//        using (var entry = parms.GetFloatPointer( index ))
-			//        {
-			//            // send the params 4 at a time
-			//            throw new AxiomException( "Update this!" );
-			//            Gl.glProgramParameter4fvNV( programType, index, entry.Pointer.Pin() );
-			//            entry.Pointer.UnPin();
-			//        }
-			//    }
-			//}
-		}
+        /// <summary>
+        ///     Binds params by index to the vp30 program.
+        /// </summary>
+        /// <param name="parms"></param>
+        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
+        {
+            //TODO
+            //if ( parms.HasFloatConstants )
+            //{
+            //    for ( int index = 0; index < parms.FloatConstantCount; index++ )
+            //    {
+            //        using (var entry = parms.GetFloatPointer( index ))
+            //        {
+            //            // send the params 4 at a time
+            //            throw new AxiomException( "Update this!" );
+            //            Gl.glProgramParameter4fvNV( programType, index, entry.Pointer.Pin() );
+            //            entry.Pointer.UnPin();
+            //        }
+            //    }
+            //}
+        }
 
-		/// <summary>
-		///     Overriden to return parms set to transpose matrices.
-		/// </summary>
-		/// <returns></returns>
-		public override GpuProgramParameters CreateParameters()
-		{
-			GpuProgramParameters parms = base.CreateParameters();
+        /// <summary>
+        ///     Overriden to return parms set to transpose matrices.
+        /// </summary>
+        /// <returns></returns>
+        public override GpuProgramParameters CreateParameters()
+        {
+            GpuProgramParameters parms = base.CreateParameters();
 
-			parms.TransposeMatrices = true;
+            parms.TransposeMatrices = true;
 
-			return parms;
-		}
+            return parms;
+        }
 
-		#endregion GpuProgram Members
-	}
+        #endregion GpuProgram Members
+    }
 
-	/// <summary>
-	///     GeForceFX class fragment program.
-	/// </summary>
-	public class FP30GpuProgram : NV3xGpuProgram
-	{
-		#region Constructor
+    /// <summary>
+    ///     GeForceFX class fragment program.
+    /// </summary>
+    public class FP30GpuProgram : NV3xGpuProgram
+    {
+        #region Constructor
 
-		public FP30GpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
-		                       IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader )
-		{
-			throw new AxiomException( "This needs upgrading" );
-		}
+        public FP30GpuProgram(ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+                               IManualResourceLoader loader)
+            : base(parent, name, handle, group, isManual, loader)
+        {
+            throw new AxiomException("This needs upgrading");
+        }
 
-		#endregion Constructor
+        #endregion Constructor
 
-		#region GpuProgram members
+        #region GpuProgram members
 
-		/// <summary>
-		///     Binds named parameters to fp30 programs.
-		/// </summary>
-		/// <param name="parms"></param>
-		public override void BindProgramParameters( GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
-		{
-			throw new NotImplementedException();
-			/*
+        /// <summary>
+        ///     Binds named parameters to fp30 programs.
+        /// </summary>
+        /// <param name="parms"></param>
+        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
+        {
+            throw new NotImplementedException();
+            /*
 			if ( parms.HasFloatConstants )
 			{
 				for ( int index = 0; index < parms.FloatConstantCount; index++ )
@@ -247,35 +247,35 @@ namespace Axiom.RenderSystems.OpenGL.Nvidia
 				}
 			}
              */
-		}
+        }
 
-		#endregion GpuProgram members
-	}
+        #endregion GpuProgram members
+    }
 
-	/// <summary>
-	///     Factory class that handles requested for GeForceFX program implementations.
-	/// </summary>
-	public class NV3xGpuProgramFactory : IOpenGLGpuProgramFactory
-	{
-		#region IOpenGLGpuProgramFactory Members
+    /// <summary>
+    ///     Factory class that handles requested for GeForceFX program implementations.
+    /// </summary>
+    public class NV3xGpuProgramFactory : IOpenGLGpuProgramFactory
+    {
+        #region IOpenGLGpuProgramFactory Members
 
-		public GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
-		                            IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
-		{
-			GLGpuProgram ret;
-			if ( type == GpuProgramType.Vertex )
-			{
-				ret = new VP30GpuProgram( parent, name, handle, group, isManual, loader );
-			}
-			else
-			{
-				ret = new FP30GpuProgram( parent, name, handle, group, isManual, loader );
-			}
-			ret.Type = type;
-			ret.SyntaxCode = syntaxCode;
-			return ret;
-		}
+        public GLGpuProgram Create(ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+                                    IManualResourceLoader loader, GpuProgramType type, string syntaxCode)
+        {
+            GLGpuProgram ret;
+            if (type == GpuProgramType.Vertex)
+            {
+                ret = new VP30GpuProgram(parent, name, handle, group, isManual, loader);
+            }
+            else
+            {
+                ret = new FP30GpuProgram(parent, name, handle, group, isManual, loader);
+            }
+            ret.Type = type;
+            ret.SyntaxCode = syntaxCode;
+            return ret;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

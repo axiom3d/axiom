@@ -39,32 +39,32 @@ using Axiom.Core;
 
 namespace Axiom.Components.Paging
 {
-	/// <summary>
-	/// Factory class for SimplePageContentCollection
-	/// </summary>
-	public class SimplePageContentCollectionFactory : DisposableObject, IPageContentCollectionFactory
-	{
-		[OgreVersion( 1, 7, 2 )] public static string FACTORY_NAME = "Simple";
+    /// <summary>
+    /// Factory class for SimplePageContentCollection
+    /// </summary>
+    public class SimplePageContentCollectionFactory : DisposableObject, IPageContentCollectionFactory
+    {
+        [OgreVersion(1, 7, 2)] public static string FACTORY_NAME = "Simple";
 
-		public string Name
-		{
-			[OgreVersion( 1, 7, 2 )]
-			get
-			{
-				return FACTORY_NAME;
-			}
-		}
+        public string Name
+        {
+            [OgreVersion(1, 7, 2)]
+            get
+            {
+                return FACTORY_NAME;
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public PageContentCollection CreateInstance()
-		{
-			return new SimplePageContentCollection( this );
-		}
+        [OgreVersion(1, 7, 2)]
+        public PageContentCollection CreateInstance()
+        {
+            return new SimplePageContentCollection(this);
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public void DestroyInstance( ref PageContentCollection c )
-		{
-			c.SafeDispose();
-		}
-	};
+        [OgreVersion(1, 7, 2)]
+        public void DestroyInstance(ref PageContentCollection c)
+        {
+            c.SafeDispose();
+        }
+    };
 }

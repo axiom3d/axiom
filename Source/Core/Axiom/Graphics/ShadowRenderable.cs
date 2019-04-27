@@ -48,299 +48,299 @@ using Axiom.Core.Collections;
 
 namespace Axiom.Graphics
 {
-	/// <summary>
-	///		Class which represents the renderable aspects of a set of shadow volume faces.
-	/// </summary>
-	/// <remarks>
-	///		Note that for casters comprised of more than one set of vertex buffers (e.g. SubMeshes each
-	///		using their own geometry), it will take more than one <see cref="ShadowRenderable"/> to render the
-	///		shadow volume. Therefore for shadow caster geometry, it is best to stick to one set of
-	///		vertex buffers (not necessarily one buffer, but the positions for the entire geometry
-	///		should come from one buffer if possible)
-	/// </remarks>
-	public abstract class ShadowRenderable : DisposableObject, IRenderable
-	{
-		#region Fields and Properties
+    /// <summary>
+    ///		Class which represents the renderable aspects of a set of shadow volume faces.
+    /// </summary>
+    /// <remarks>
+    ///		Note that for casters comprised of more than one set of vertex buffers (e.g. SubMeshes each
+    ///		using their own geometry), it will take more than one <see cref="ShadowRenderable"/> to render the
+    ///		shadow volume. Therefore for shadow caster geometry, it is best to stick to one set of
+    ///		vertex buffers (not necessarily one buffer, but the positions for the entire geometry
+    ///		should come from one buffer if possible)
+    /// </remarks>
+    public abstract class ShadowRenderable : DisposableObject, IRenderable
+    {
+        #region Fields and Properties
 
-		protected Material material;
+        protected Material material;
 
-		/// <summary>
-		///		Used only if IsLightCapSeparate == true.
-		/// </summary>
-		protected ShadowRenderable lightCap;
+        /// <summary>
+        ///		Used only if IsLightCapSeparate == true.
+        /// </summary>
+        protected ShadowRenderable lightCap;
 
-		protected LightList dummyLightList = new LightList();
-		protected List<Vector4> customParams = new List<Vector4>();
+        protected LightList dummyLightList = new LightList();
+        protected List<Vector4> customParams = new List<Vector4>();
 
-		/// <summary>
-		///		Does this renderable require a separate light cap?
-		/// </summary>
-		/// <remarks>
-		///		If possible, the light cap (when required) should be contained in the
-		///		usual geometry of the shadow renderable. However, if for some reason
-		///		the normal depth function (less than) could cause artefacts, then a
-		///		separate light cap with a depth function of 'always fail' can be used
-		///		instead. The primary example of this is when there are floating point
-		///		inaccuracies caused by calculating the shadow geometry separately from
-		///		the real geometry.
-		/// </remarks>
-		public bool IsLightCapSeperate
-		{
-			get
-			{
-				return this.lightCap != null;
-			}
-		}
+        /// <summary>
+        ///		Does this renderable require a separate light cap?
+        /// </summary>
+        /// <remarks>
+        ///		If possible, the light cap (when required) should be contained in the
+        ///		usual geometry of the shadow renderable. However, if for some reason
+        ///		the normal depth function (less than) could cause artefacts, then a
+        ///		separate light cap with a depth function of 'always fail' can be used
+        ///		instead. The primary example of this is when there are floating point
+        ///		inaccuracies caused by calculating the shadow geometry separately from
+        ///		the real geometry.
+        /// </remarks>
+        public bool IsLightCapSeperate
+        {
+            get
+            {
+                return this.lightCap != null;
+            }
+        }
 
-		/// <summary>
-		///		Get the light cap version of this renderable.
-		/// </summary>
-		public ShadowRenderable LightCapRenderable
-		{
-			get
-			{
-				return this.lightCap;
-			}
-		}
+        /// <summary>
+        ///		Get the light cap version of this renderable.
+        /// </summary>
+        public ShadowRenderable LightCapRenderable
+        {
+            get
+            {
+                return this.lightCap;
+            }
+        }
 
-		/// <summary>
-		///		Should this ShadowRenderable be treated as visible?
-		/// </summary>
-		public virtual bool IsVisible
-		{
-			get
-			{
-				return true;
-			}
-		}
+        /// <summary>
+        ///		Should this ShadowRenderable be treated as visible?
+        /// </summary>
+        public virtual bool IsVisible
+        {
+            get
+            {
+                return true;
+            }
+        }
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		protected ShadowRenderable()
-		{
-			this.renderOperation = new RenderOperation();
-			this.renderOperation.useIndices = true;
-			this.renderOperation.operationType = OperationType.TriangleList;
-		}
+        protected ShadowRenderable()
+        {
+            this.renderOperation = new RenderOperation();
+            this.renderOperation.useIndices = true;
+            this.renderOperation.operationType = OperationType.TriangleList;
+        }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		///		Gets the internal render operation for setup.
-		/// </summary>
-		/// <returns></returns>
-		public RenderOperation GetRenderOperationForUpdate()
-		{
-			return this.renderOperation;
-		}
+        /// <summary>
+        ///		Gets the internal render operation for setup.
+        /// </summary>
+        /// <returns></returns>
+        public RenderOperation GetRenderOperationForUpdate()
+        {
+            return this.renderOperation;
+        }
 
-		#endregion Methods
+        #endregion Methods
 
-		#region IRenderable Members
+        #region IRenderable Members
 
-		public bool CastsShadows
-		{
-			get
-			{
-				return false;
-			}
-		}
+        public bool CastsShadows
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		/// <summary>
-		///		Gets/Sets the material to use for this shadow renderable.
-		/// </summary>
-		/// <remarks>
-		///		Should be set by the caller before adding to a render queue.
-		/// </remarks>
-		public Material Material
-		{
-			get
-			{
-				return this.material;
-			}
-			set
-			{
-				this.material = value;
-			}
-		}
+        /// <summary>
+        ///		Gets/Sets the material to use for this shadow renderable.
+        /// </summary>
+        /// <remarks>
+        ///		Should be set by the caller before adding to a render queue.
+        /// </remarks>
+        public Material Material
+        {
+            get
+            {
+                return this.material;
+            }
+            set
+            {
+                this.material = value;
+            }
+        }
 
-		public Technique Technique
-		{
-			get
-			{
-				return Material.GetBestTechnique();
-			}
-		}
+        public Technique Technique
+        {
+            get
+            {
+                return Material.GetBestTechnique();
+            }
+        }
 
-		protected RenderOperation renderOperation;
+        protected RenderOperation renderOperation;
 
-		/// <summary>
-		///		Gets the render operation for this shadow renderable.
-		/// </summary>
-		/// <param name="value"></param>
-		public RenderOperation RenderOperation
-		{
-			get
-			{
-				return this.renderOperation;
-			}
-		}
+        /// <summary>
+        ///		Gets the render operation for this shadow renderable.
+        /// </summary>
+        /// <param name="value"></param>
+        public RenderOperation RenderOperation
+        {
+            get
+            {
+                return this.renderOperation;
+            }
+        }
 
-		public abstract void GetWorldTransforms( Axiom.Math.Matrix4[] matrices );
+        public abstract void GetWorldTransforms(Axiom.Math.Matrix4[] matrices);
 
-		public LightList Lights
-		{
-			get
-			{
-				return this.dummyLightList;
-			}
-		}
+        public LightList Lights
+        {
+            get
+            {
+                return this.dummyLightList;
+            }
+        }
 
-		public bool NormalizeNormals
-		{
-			get
-			{
-				return false;
-			}
-		}
+        public bool NormalizeNormals
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		public virtual ushort NumWorldTransforms
-		{
-			get
-			{
-				return 1;
-			}
-		}
+        public virtual ushort NumWorldTransforms
+        {
+            get
+            {
+                return 1;
+            }
+        }
 
-		public virtual bool UseIdentityProjection
-		{
-			get
-			{
-				return false;
-			}
-		}
+        public virtual bool UseIdentityProjection
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		public virtual bool UseIdentityView
-		{
-			get
-			{
-				return false;
-			}
-		}
+        public virtual bool UseIdentityView
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		public virtual bool PolygonModeOverrideable
-		{
-			get
-			{
-				return true;
-			}
-		}
+        public virtual bool PolygonModeOverrideable
+        {
+            get
+            {
+                return true;
+            }
+        }
 
-		public abstract Axiom.Math.Quaternion WorldOrientation { get; }
+        public abstract Axiom.Math.Quaternion WorldOrientation { get; }
 
-		public abstract Axiom.Math.Vector3 WorldPosition { get; }
+        public abstract Axiom.Math.Vector3 WorldPosition { get; }
 
-		public virtual Real GetSquaredViewDepth( Camera camera )
-		{
-			return 0;
-		}
+        public virtual Real GetSquaredViewDepth(Camera camera)
+        {
+            return 0;
+        }
 
-		public Vector4 GetCustomParameter( int index )
-		{
-			if ( this.customParams[ index ] == null )
-			{
-				throw new Exception( "A parameter was not found at the given index" );
-			}
-			else
-			{
-				return (Vector4)this.customParams[ index ];
-			}
-		}
+        public Vector4 GetCustomParameter(int index)
+        {
+            if (this.customParams[index] == null)
+            {
+                throw new Exception("A parameter was not found at the given index");
+            }
+            else
+            {
+                return (Vector4)this.customParams[index];
+            }
+        }
 
-		public void SetCustomParameter( int index, Vector4 val )
-		{
-			while ( this.customParams.Count <= index )
-			{
-				this.customParams.Add( Vector4.Zero );
-			}
-			this.customParams[ index ] = val;
-		}
+        public void SetCustomParameter(int index, Vector4 val)
+        {
+            while (this.customParams.Count <= index)
+            {
+                this.customParams.Add(Vector4.Zero);
+            }
+            this.customParams[index] = val;
+        }
 
-		public void UpdateCustomGpuParameter( GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams )
-		{
-			if ( this.customParams[ entry.Data ] != null )
-			{
-				gpuParams.SetConstant( entry.PhysicalIndex, (Vector4)this.customParams[ entry.Data ] );
-			}
-		}
+        public void UpdateCustomGpuParameter(GpuProgramParameters.AutoConstantEntry entry, GpuProgramParameters gpuParams)
+        {
+            if (this.customParams[entry.Data] != null)
+            {
+                gpuParams.SetConstant(entry.PhysicalIndex, (Vector4)this.customParams[entry.Data]);
+            }
+        }
 
-		#endregion IRenderable Members
+        #endregion IRenderable Members
 
-		#region IDisposable Implementation
+        #region IDisposable Implementation
 
-		/// <summary>
-		/// Class level dispose method
-		/// </summary>
-		/// <remarks>
-		/// When implementing this method in an inherited class the following template should be used;
-		/// protected override void dispose( bool disposeManagedResources )
-		/// {
-		/// 	if ( !isDisposed )
-		/// 	{
-		/// 		if ( disposeManagedResources )
-		/// 		{
-		/// 			// Dispose managed resources.
-		/// 		}
-		///
-		/// 		// There are no unmanaged resources to release, but
-		/// 		// if we add them, they need to be released here.
-		/// 	}
-		///
-		/// 	// If it is available, make the call to the
-		/// 	// base class's Dispose(Boolean) method
-		/// 	base.dispose( disposeManagedResources );
-		/// }
-		/// </remarks>
-		/// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-					if ( this.renderOperation != null )
-					{
-						if ( !this.renderOperation.IsDisposed )
-						{
-							this.renderOperation.Dispose();
-						}
+        /// <summary>
+        /// Class level dispose method
+        /// </summary>
+        /// <remarks>
+        /// When implementing this method in an inherited class the following template should be used;
+        /// protected override void dispose( bool disposeManagedResources )
+        /// {
+        /// 	if ( !isDisposed )
+        /// 	{
+        /// 		if ( disposeManagedResources )
+        /// 		{
+        /// 			// Dispose managed resources.
+        /// 		}
+        ///
+        /// 		// There are no unmanaged resources to release, but
+        /// 		// if we add them, they need to be released here.
+        /// 	}
+        ///
+        /// 	// If it is available, make the call to the
+        /// 	// base class's Dispose(Boolean) method
+        /// 	base.dispose( disposeManagedResources );
+        /// }
+        /// </remarks>
+        /// <param name="disposeManagedResources">True if Unmanaged resources should be released.</param>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // Dispose managed resources.
+                    if (this.renderOperation != null)
+                    {
+                        if (!this.renderOperation.IsDisposed)
+                        {
+                            this.renderOperation.Dispose();
+                        }
 
-						this.renderOperation = null;
-					}
+                        this.renderOperation = null;
+                    }
 
-					if ( this.material != null )
-					{
-						if ( !this.material.IsDisposed )
-						{
-							this.material.Dispose();
-						}
+                    if (this.material != null)
+                    {
+                        if (!this.material.IsDisposed)
+                        {
+                            this.material.Dispose();
+                        }
 
-						this.material = null;
-					}
-				}
+                        this.material = null;
+                    }
+                }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-			base.dispose( disposeManagedResources );
-		}
+            base.dispose(disposeManagedResources);
+        }
 
-		#endregion IDisposable Implementation
-	}
+        #endregion IDisposable Implementation
+    }
 }

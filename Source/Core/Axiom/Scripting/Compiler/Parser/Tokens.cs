@@ -46,21 +46,21 @@ using System.Text;
 
 namespace Axiom.Scripting.Compiler.Parser
 {
-	/// <summary>
-	/// These codes represent token IDs which are numerical translations of
-	/// specific lexemes. Specific compilers using the lexer can register their
-	/// own token IDs which are given precedence over these built-in ones
-	/// </summary>
-	public enum Tokens
-	{
-		LeftBrace = 0, // {
-		RightBrace, // }
-		Colon, // :
-		Variable, // $...
-		Word, // *
-		Quote, // "*"
-		Newline, // \n
-		Unknown,
-		End
-	}
+    /// <summary>
+    /// These codes represent token IDs which are numerical translations of
+    /// specific lexemes. Specific compilers using the lexer can register their
+    /// own token IDs which are given precedence over these built-in ones
+    /// </summary>
+    public enum Tokens
+    {
+        LeftBrace = 0, // {
+        RightBrace, // }
+        Colon, // :
+        Variable, // $...
+        Word, // *
+        Quote, // "*"
+        Newline, // \n
+        Unknown,
+        End
+    }
 }

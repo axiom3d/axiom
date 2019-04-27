@@ -8,17 +8,17 @@ using Axiom.Input;
 
 namespace Axiom.Platforms.Linux
 {
-	[Export( typeof ( IPlatformManager ) )]
-	public class LinuxPlatformManager : IPlatformManager
-	{
-		public LinuxPlatformManager()
-		{
-			LogManager.Instance.Write( "Linux Platform Manager Loaded." );
-		}
+    //[Export( typeof ( IPlatformManager ) )]
+    public class LinuxPlatformManager : IPlatformManager
+    {
+        public LinuxPlatformManager()
+        {
+            LogManager.Instance.Write("Linux Platform Manager Loaded.");
+        }
 
-		public void Dispose()
-		{
-			LogManager.Instance.Write( "Linux Platform Manager Shutdown." );
-		}
-	}
+        public void Dispose()
+        {
+            LogManager.Instance.Write("Linux Platform Manager Shutdown.");
+        }
+    }
 }

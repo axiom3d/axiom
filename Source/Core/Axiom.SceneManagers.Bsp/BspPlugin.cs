@@ -37,28 +37,27 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.ComponentModel.Composition;
+using System.Composition;
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.Bsp
 {
-	[Export( typeof ( IPlugin ) )]
-	public class BspPlugin : IPlugin
-	{
-		public void Initialize()
-		{
-			this._bspSMFactory = new BspSceneManagerFactory();
-			Root.Instance.AddSceneManagerFactory( this._bspSMFactory );
-		}
+    [Export(typeof(IPlugin))]
+    public class BspPlugin : IPlugin
+    {
+        public void Initialize()
+        {
+            this._bspSMFactory = new BspSceneManagerFactory();
+            Root.Instance.AddSceneManagerFactory(this._bspSMFactory);
+        }
 
-		public void Shutdown()
-		{
-			Root.Instance.RemoveSceneManagerFactory( this._bspSMFactory );
-		}
+        public void Shutdown()
+        {
+            Root.Instance.RemoveSceneManagerFactory(this._bspSMFactory);
+        }
 
-		private BspSceneManagerFactory _bspSMFactory;
-	}
+        private BspSceneManagerFactory _bspSMFactory;
+    }
 }

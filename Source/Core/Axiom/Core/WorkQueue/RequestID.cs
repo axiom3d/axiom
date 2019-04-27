@@ -37,54 +37,54 @@
 
 namespace Axiom.Core
 {
-	/// <summary>
-	/// Numeric identifier for a workqueue request
-	/// </summary>
-	public struct RequestID
-	{
-		private readonly uint mValue;
+    /// <summary>
+    /// Numeric identifier for a workqueue request
+    /// </summary>
+    public struct RequestID
+    {
+        private readonly uint mValue;
 
-		public uint Value
-		{
-			get
-			{
-				return this.mValue;
-			}
-		}
+        public uint Value
+        {
+            get
+            {
+                return this.mValue;
+            }
+        }
 
-		public RequestID( uint reqId )
-		{
-			this.mValue = reqId;
-		}
+        public RequestID(uint reqId)
+        {
+            this.mValue = reqId;
+        }
 
-		public static bool operator ==( RequestID lr, RequestID rr )
-		{
-			return lr.Value == rr.Value;
-		}
+        public static bool operator ==(RequestID lr, RequestID rr)
+        {
+            return lr.Value == rr.Value;
+        }
 
-		public static bool operator !=( RequestID lr, RequestID rr )
-		{
-			return !( lr == rr );
-		}
+        public static bool operator !=(RequestID lr, RequestID rr)
+        {
+            return !(lr == rr);
+        }
 
-		public static implicit operator RequestID( uint val )
-		{
-			return new RequestID( val );
-		}
+        public static implicit operator RequestID(uint val)
+        {
+            return new RequestID(val);
+        }
 
-		public override bool Equals( object obj )
-		{
-			if ( obj != null && obj is RequestID )
-			{
-				return this == (RequestID)obj;
-			}
+        public override bool Equals(object obj)
+        {
+            if (obj != null && obj is RequestID)
+            {
+                return this == (RequestID)obj;
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		public override string ToString()
-		{
-			return this.mValue.ToString();
-		}
-	};
+        public override string ToString()
+        {
+            return this.mValue.ToString();
+        }
+    };
 }

@@ -48,149 +48,149 @@ using IO = System.IO;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	public sealed class DefaultForm : Form
-	{
-		private readonly WindowClassStyle _classStyle;
-		private readonly WindowsExtendedStyle _dwStyleEx;
+    public sealed class DefaultForm : Form
+    {
+        private readonly WindowClassStyle _classStyle;
+        private readonly WindowsExtendedStyle _dwStyleEx;
 
-		#region RenderWindow
+        #region RenderWindow
 
-		private RenderWindow _renderWindow;
+        private RenderWindow _renderWindow;
 
-		/// <summary>
-		///	Get/Set the RenderWindow associated with this form.
-		/// </summary>
-		public RenderWindow RenderWindow
-		{
-			get
-			{
-				return this._renderWindow;
-			}
-			set
-			{
-				this._renderWindow = value;
-			}
-		}
+        /// <summary>
+        ///	Get/Set the RenderWindow associated with this form.
+        /// </summary>
+        public RenderWindow RenderWindow
+        {
+            get
+            {
+                return this._renderWindow;
+            }
+            set
+            {
+                this._renderWindow = value;
+            }
+        }
 
-		#endregion RenderWindow
+        #endregion RenderWindow
 
-		#region WindowStyles
+        #region WindowStyles
 
-		private WindowStyles _windowStyle;
+        private WindowStyles _windowStyle;
 
-		/// <summary>
-		/// Get/Set window styles
-		/// </summary>
-		public WindowStyles WindowStyles
-		{
-			get
-			{
-				return this._windowStyle;
-			}
+        /// <summary>
+        /// Get/Set window styles
+        /// </summary>
+        public WindowStyles WindowStyles
+        {
+            get
+            {
+                return this._windowStyle;
+            }
 
-			set
-			{
-				this._windowStyle = value;
-			}
-		}
+            set
+            {
+                this._windowStyle = value;
+            }
+        }
 
-		#endregion WindowStyles
+        #endregion WindowStyles
 
-		protected override CreateParams CreateParams
-		{
-			get
-			{
-				var cp = base.CreateParams;
-				cp.Style = (int)this._windowStyle;
-				cp.ExStyle = (int)this._dwStyleEx;
-				cp.ClassStyle = (int)this._classStyle;
-				return cp;
-			}
-		}
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                var cp = base.CreateParams;
+                cp.Style = (int)this._windowStyle;
+                cp.ExStyle = (int)this._dwStyleEx;
+                cp.ClassStyle = (int)this._classStyle;
+                return cp;
+            }
+        }
 
-		public DefaultForm( WindowClassStyle classStyle, WindowsExtendedStyle dwStyleEx, string title,
-							WindowStyles windowStyle, int left, int top, int winWidth, int winHeight, Control parentHWnd )
-		{
-			this._classStyle = classStyle;
-			this._dwStyleEx = dwStyleEx;
-			this._windowStyle = windowStyle;
-			this.Text = title;
+        public DefaultForm(WindowClassStyle classStyle, WindowsExtendedStyle dwStyleEx, string title,
+                            WindowStyles windowStyle, int left, int top, int winWidth, int winHeight, Control parentHWnd)
+        {
+            this._classStyle = classStyle;
+            this._dwStyleEx = dwStyleEx;
+            this._windowStyle = windowStyle;
+            this.Text = title;
 
-			SuspendLayout();
+            SuspendLayout();
 
-			BackColor = Color.Black;
-			Name = title;
-			Left = left;
-			Top = top;
-			Width = winWidth;
-			Height = winHeight;
-			if ( parentHWnd != null )
-			{
-				Parent = parentHWnd;
-			}
+            BackColor = Color.Black;
+            Name = title;
+            Left = left;
+            Top = top;
+            Width = winWidth;
+            Height = winHeight;
+            if (parentHWnd != null)
+            {
+                Parent = parentHWnd;
+            }
 
-			Load += _defaultFormLoad;
-			Deactivate += _defaultFormDeactivate;
-			Activated += _defaultFormActivated;
-			Closing += _defaultFormClose;
-			Resize += _defaultFormResize;
-			Cursor.Hide();
+            Load += _defaultFormLoad;
+            Deactivate += _defaultFormDeactivate;
+            Activated += _defaultFormActivated;
+            Closing += _defaultFormClose;
+            Resize += _defaultFormResize;
+            Cursor.Hide();
 
-			ResumeLayout( false );
-		}
+            ResumeLayout(false);
+        }
 
-		protected override void WndProc( ref Message m )
-		{
-			if ( !Win32MessageHandling.WndProc( this._renderWindow, ref m ) )
-			{
-				base.WndProc( ref m );
-			}
-		}
+        protected override void WndProc(ref Message m)
+        {
+            if (!Win32MessageHandling.WndProc(this._renderWindow, ref m))
+            {
+                base.WndProc(ref m);
+            }
+        }
 
-		public void _defaultFormDeactivate( object source, EventArgs e )
-		{
-			if ( this._renderWindow != null )
-			{
-				this._renderWindow.IsActive = false;
-			}
-		}
+        public void _defaultFormDeactivate(object source, EventArgs e)
+        {
+            if (this._renderWindow != null)
+            {
+                this._renderWindow.IsActive = false;
+            }
+        }
 
-		public void _defaultFormActivated( object source, EventArgs e )
-		{
-			if ( this._renderWindow != null )
-			{
-				this._renderWindow.IsActive = true;
-			}
-		}
+        public void _defaultFormActivated(object source, EventArgs e)
+        {
+            if (this._renderWindow != null)
+            {
+                this._renderWindow.IsActive = true;
+            }
+        }
 
-		public void _defaultFormClose( object source, System.ComponentModel.CancelEventArgs e )
-		{
-			// set the window to inactive
-			if ( this._renderWindow != null )
-			{
-				this._renderWindow.IsActive = false;
-			}
-		}
+        public void _defaultFormClose(object source, System.ComponentModel.CancelEventArgs e)
+        {
+            // set the window to inactive
+            if (this._renderWindow != null)
+            {
+                this._renderWindow.IsActive = false;
+            }
+        }
 
-		private void _defaultFormLoad( object sender, EventArgs e )
-		{
-			try
-			{
-				var strm = ResourceGroupManager.Instance.OpenResource( "AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName );
-				if ( strm != null )
-				{
-					Icon = new Icon( strm );
-				}
-			}
-			catch ( IO.FileNotFoundException )
-			{
-			}
-		}
+        private void _defaultFormLoad(object sender, EventArgs e)
+        {
+            try
+            {
+                var strm = ResourceGroupManager.Instance.OpenResource("AxiomIcon.ico", ResourceGroupManager.BootstrapResourceGroupName);
+                if (strm != null)
+                {
+                    Icon = new Icon(strm);
+                }
+            }
+            catch (IO.FileNotFoundException)
+            {
+            }
+        }
 
-		private void _defaultFormResize( object sender, EventArgs e )
-		{
-            if(Root.Instance != null)
-			    Root.Instance.SuspendRendering = WindowState == FormWindowState.Minimized;
-		}
-	};
+        private void _defaultFormResize(object sender, EventArgs e)
+        {
+            if (Root.Instance != null)
+                Root.Instance.SuspendRendering = WindowState == FormWindowState.Minimized;
+        }
+    };
 }

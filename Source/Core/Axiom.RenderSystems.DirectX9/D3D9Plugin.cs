@@ -37,7 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.ComponentModel.Composition;
+using System.Composition;
 using Axiom.Core;
 using Axiom.Graphics;
 
@@ -45,40 +45,40 @@ using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	/// <summary>
-	/// Summary description for Plugin.
-	/// </summary>
-	[Export( typeof ( IPlugin ) )]
-	public sealed class D3D9Plugin : IPlugin
-	{
-		#region Fields
+    /// <summary>
+    /// Summary description for Plugin.
+    /// </summary>
+    [Export(typeof(IPlugin))]
+    public sealed class D3D9Plugin : IPlugin
+    {
+        #region Fields
 
-		/// <summary>
-		/// Reference to the render system instance.
-		/// </summary>
-		private RenderSystem _renderSystem;
+        /// <summary>
+        /// Reference to the render system instance.
+        /// </summary>
+        private RenderSystem _renderSystem;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Implementation of IPlugin
+        #region Implementation of IPlugin
 
-		public void Initialize()
-		{
-			// Render system creation has been moved here ( like Ogre does in Install method )
-			// since the Plugin.ctor is called twice during startup.
-			this._renderSystem = new D3D9RenderSystem();
+        public void Initialize()
+        {
+            // Render system creation has been moved here ( like Ogre does in Install method )
+            // since the Plugin.ctor is called twice during startup.
+            this._renderSystem = new D3D9RenderSystem();
 
-			// add an instance of this plugin to the list of available RenderSystems
-            if(Root.Instance != null)
-			    Root.Instance.RenderSystems.Add( "DirectX9", this._renderSystem );
-		}
+            // add an instance of this plugin to the list of available RenderSystems
+            if (Root.Instance != null)
+                Root.Instance.RenderSystems.Add("DirectX9", this._renderSystem);
+        }
 
-		public void Shutdown()
-		{
-			this._renderSystem.SafeDispose();
-			this._renderSystem = null;
-		}
+        public void Shutdown()
+        {
+            this._renderSystem.SafeDispose();
+            this._renderSystem = null;
+        }
 
-		#endregion Implementation of IPlugin
-	};
+        #endregion Implementation of IPlugin
+    };
 }

@@ -46,21 +46,21 @@ using Axiom.Core;
 
 namespace Axiom.Graphics
 {
-	public class DefaultHardwareBufferManager : HardwareBufferManager
-	{
-		public DefaultHardwareBufferManager()
-			: base( new DefaultHardwareBufferManagerBase() )
-		{
-		}
+    public class DefaultHardwareBufferManager : HardwareBufferManager
+    {
+        public DefaultHardwareBufferManager()
+            : base(new DefaultHardwareBufferManagerBase())
+        {
+        }
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( disposeManagedResources )
-			{
-				_baseInstance.Dispose();
-				_baseInstance = null;
-			}
-			base.dispose( disposeManagedResources );
-		}
-	}
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (disposeManagedResources)
+            {
+                _baseInstance.Dispose();
+                _baseInstance = null;
+            }
+            base.dispose(disposeManagedResources);
+        }
+    }
 }

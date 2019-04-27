@@ -1,0 +1,823 @@
+2019-04-05 - borrillis
+Upgraded to .Net 4.7.2 and .Net Core 3.0-Preview
+
+**SNIP --  Missing changelog entries, need to get from history **
+2010.10.10 - borrillis
+Added Samples Browser
+
+2010.10.06 - bostich
+- modified Font to use FreeType for font generation.
+
+2010/03/03 - borrillis
+Updated TagPoint class to OGRE r9083
+
+Global Changes:
+	* Some code reorgonizations ( Grouping fields and thier properties together, etc )
+	* Started removing Weak Type collections with Generics
+	* Plugins updated top reflect core engine changes
+	  Exception to this is OpenGL, it's still under construction
+
+Namespace : Axiom.Animating
+Added AnimationStateSet
+Removed AnimationStateCollection
+Added Pose
+	* A pose is a linked set of vertex offsets applying to one set of vertex data;
+	* used in the Facial Animation Demo
+Added AttachmentPoint
+Added Animable and IAnimable
+	* Defines an object property which is animable, ie may be keyframed.
+	* Needs to be implemented using Generics
+Updated Animation
+	* Added NumericAnimationTracks property
+	* Added VertexAnimationTracks property
+Updated AnimationTrack
+	* Class is now abstract, use derived class for specific implementations
+	* Many properties and methods refactored into the subclasses implementations
+Added NodeAnimationTrack
+Added NumericAnimationTrack
+Added VertexAnimationTrack
+Updated AnimationState
+Updated Bone
+Updated KeyFrame
+Updated Skeleton
+Updated SkeletonInstance
+	* Added MasterSkeleton Property
+	* Added RemoveTagPointFromBone Method
+Updated TagPoint
+	* Added FullTransform Property - Gets the transform of the node including the parent entity and skeleton.
+Added VertexAnimationType Enumeration
+	* Types of vertex animations
+Added VertexDataBindChoice Enumeration
+	* Identify which vertex data we should be sending to the renderer
+Added VertexAnimationTargetMode Enumeration
+	* Do we do vertex animation in hardware or software?
+	
+** See the Demos for how to update your code for these changes
+	
+Namespace : Axiom.Core
+Updated AnimationState
+	* Removed CopyTo; duplicate of CopyFrom
+	* Added Copy Constructor
+	* Added Parent Property
+	* Removed FaceDirectionOfMotion property
+Updated Entity
+	* Updated for changes in AnimationState
+	* Replaced AnimationStateCollection references with AnimationStateSet 	
+	* Added support for Software and Hardware vertex blending
+Added GeometryBucket
+	* A GeometryBucket is a the lowest level bucket where geometry with 
+	  the same vertex & index format is stored. It also acts as the 
+	  renderable for Static Geometry.
+Added LODBucket
+	* A LODBucket is a collection of smaller buckets with the same LOD in Static Geometry.
+Added MaterialBucket
+	* A MaterialBucket is a collection of smaller Static Geometry buckets with the same 
+	  Material (and implicitly the same LOD).
+Added MeterManager and related classes
+	* For performance monitoring
+Updated Mesh
+	* Added support for LOD
+	* Added Method GetTrackHandle
+	* Added Method RemoveSubMesh
+	* Added Method HasAnimationState
+	* Added Method ContainsAnimation
+Updated MeshManager	
+	* Refactored some large methods
+	* Added some convience indexers
+Updatged MoveableObject
+	* added IAnimable implementation
+Updated Node
+	* Added Updated and Destroyed Events	
+Added ProgressiveMesh
+	* Class for handling multiple levels of detail for a Mesh
+Added Region
+	* The details of a topological region which is the highest level of partitioning for Static Geometry.
+Updated ResourceManager
+	* Added Convience properties for protected Collections
+	* Added Remove Method
+	* Added code to manually load resource if not in cache
+Updated Root
+	* Added FPS Smoothing
+	* Added CompositorManager
+	* Added FPS Limits
+	* Added rendering suspension
+	* Added Meters for performance monitoring
+Updated SceneManager
+	* Added properties for most protected collections
+	* Added more Shadowing features
+	* Updated for changes in StaticGeometry, RibbonTrails, Animation
+Updated SceneManagerEnumerator
+	* Added Indexer property
+Updated SceneNode
+	* Added Meters for performance monitoring
+Added StaticGeometry.cs
+	* Added OptimisedSubMeshGeometry
+		- Struct holding geometry optimised per SubMesh / LOD level, ready for copying to instances. 	
+	* Added SubMeshLodGeometryLink
+		- Saved link between SubMesh at a LOD and vertex/index data
+	* Added QueuedSubMesh
+		- Structure recording a queued submesh for the build
+	* Added QueuedGeometry
+		- Structure recording a queued geometry for low level builds
+	* Added StaticGeometry
+		- Pre-transforms and batches up meshes for efficient use as static geometry in a scene.
+Updated SubEntity
+	* Added support for Software and Hardware vertex blending
+Updated SubMesh
+	* Added Name property
+	* Added properties for most protected fields
+Updated Texture
+	* Added MipMap properties
+	* Now internally uses PixelBox
+	* Added Set accessors for properties
+Updated TextureManager
+	* Updated for changes in Texture
+Updated ViewPort
+	* Refactored for RenderSystem Changes
+	* Reorganized the code
+		
+Namespace : Axiom.Graphics
+Added AnyBuilder
+	* Abstract base class for classes that iterate over the triangles in a mesh
+Updated AutoParamsDataSource
+	* Added local reference to current Viewport for width + height
+	* Added Fog params
+	* Added Time param
+	* Updated ProjectionMatrix to use API independant projection matrix
+Added Compositor Framework
+	* makes it possible to apply postfilter effects, HDRI postprocessing, 
+	  and shadow effects to a Viewport 
+Updated EdgeData
+	* Added EdgeGroups property for Region
+Updated EdgeListBuilder
+	* Now derives from AnyBuilder
+Updated GPUProgram
+	* Added support for Morph Animation
+	* Added SamplerCount, but not really implemented yet. ( breaks fresnel ) 
+Updated GPUProgramManager
+	* Added SupportedSytaxes property
+Update GPUProgramParameters
+	* Minor Code Refactorings
+Updated HardwareBuffer
+	* ???
+Updated HardwareBufferManager
+	* Implemented ReleaseVertexBuffer
+Updated HardwareCaps
+	* Added properties for DeviceName and DriverVersion
+Added HardwarePixelBuffer
+	* The HardwarePixelbuffer abstracts an 1D, 2D or 3D quantity of pixels
+	  stored by the rendering API.
+Updated HardwareVertexBuffer
+	* Added UseCount property
+Updated HighLevelGPUProgramManager
+	* Added support for Unified programs
+Updated Material
+	* Added SupportedTechniques property
+	* Added Specular and Emissive convenience properties
+Updated MaterialManager
+	* Added support for Material Schemes
+Added IDerivedPlaneProvider
+Updated MoveablePlane
+	* Implements IDerivedPlaneProvider
+Updated Pass
+	* Added Color tracking
+	* Added Name property
+	* Added Program Usage for Shadow Casters/Recievers
+Updated RenderPriorityGroup, RenderQueue, RenderQueueGroup
+	* Added parameter for shadowCasterCannotBeReceivers
+Added RenderQueueInvocationSequence
+	* Not implemented
+Updated RenderSystem
+	* Updated for changes due to refactoring of RenderTarget, 
+	  RenderTexture, RenderWindow and Viewport
+	* Other minor changes
+Updated RenderTarget
+	* refactored of RenderTexture, RenderWindow and Viewport
+Updated RenderTexture
+	* refactored of RenderTarget, RenderWindow and Viewport
+	* Uses HardwarePixelBuffer internaly instead of Texture
+Updated RenderWindow
+	* refactored of RenderTexture, RenderTarget and Viewport
+Added RibbonTrail	
+	* Subclass of BillboardChain which automatically leaves a 
+	  trail behind one or more Node instances
+Updated Technique
+	* Illumination Pass Compilation can now be invoked manually.
+	* Exposed Specular and Emissive colors of passes
+Updated TempBlendedBufferInfo
+	* Added Tangent and Binormal buffers
+	* Added ExtractFrom method : extract info from the given VertexData
+Updated TextureUnitState
+	* minor changes, some new properties
+Added TriangleBuilder
+	* General utility class for collecting the set of all
+	  triangles in a mesh; used for picking
+Added UnifiedHighLevelGpuProgram
+	* Specialization of HighLevelGpuProgram which just delegates its implementation
+	  to one other high level program, allowing a single program definition
+	  to represent one supported program from a number of options
+Added HardwareAnimationData
+	* Struct used to hold hardware morph / pose vertex data
+Updated VertexData
+	* Updated to support HardwareAnimation
+
+Namespace : Axiom.Math	
+Updated AxisAlignedBox
+	* Added Size Property
+	* Added Test for Intersection with AABB
+	* Added set accessor for Center Property
+	* Added Equality and Inequality Operator overloads
+Updated Matrix3
+	* Minor change to Equals override
+Updated Matrix4
+	* Minor change to Equals override
+Updated Plane
+	* Minor change to Equals override
+Updated Quaternion
+	* Added Yaw, Pitch and Roll Properties
+	* Added EulerAngle functions
+Updated Ray
+	* Added Object overloads
+Modified Sphere	
+	* Added Object overloads
+Modified Vector2
+	* Added Object overloads
+Updated Vector3
+	* Modified Object Overloads
+	* Added ToNormalized function
+	* Added a variety of comparison functions
+
+Namespace : Axiom.Media
+Added PixelBox
+	* A primitive describing a volume (3D), image (2D) or line (1D) of pixels in memory.
+	* used to support PixelBuffers
+	
+Namespace : Axiom.ParticleSystems
+Added ParticleSystemRenderer
+Added ParticleSystemRendererFactory
+Added BillboardParticleRenderer
+Updated ParticleSystem
+	* Now derives from MovableObkect instead of BillboardSet
+Updated ParticleSystemManager
+Updated Particle
+	* No longer derived from Billboard
+	
+		
+Namespace : Axiom.Serialization
+Updated Serializer
+	* Added Write support
+Updated OgreSkeletonReader
+	* Subclasses Serializer instead of BinaryReader
+	* Supports AttachmentPoints [Multiverse extension]
+Updated Mesh Serialization
+	* Now supports v1.4 Mesh format
+	* Supports AttachmentPoints ]Multiverse extension]
+	* Supports writing Mesh files
+Updated Material Serializer
+	* Support for Pose animation
+	* Support for MorphAnimation
+	* Support for 'texture_alias' added
+	* Support for 'shadow_caster_vertex_program_ref' added
+	* Support for 'shadow_caster_fragment_program_ref' added
+	* Support for 'shadow_reciever_vertex_program_ref' added
+	* Support for 'shadow_reciever_fragment_program_ref' added
+	* Support for 'tex_border_color' added
+Updated MeshChunckID enumeration
+	* Added values to support Pose and Multiverse Extensions	
+
+11-11-2008 - Borrillis
+- Fixed project files so they build properly
+
+11-10-2008 - Borrillis
+- Added project files for VS 2005 and VS 2008 ( V9 and v10 )
+  No longer need Prebuild as both SharpDevelop and MonoDevelop understand at least one of these versions
+  Prebuild and thier scripts are left for now, will be removed later.
+  
+- Added check in PlatformManager to look in current assembly for IPlatformManager implementors
+  This allows for merging of assemblies using ILMerge
+
+01-30-2008 - Borrillis
+- Added missing VertexElementTypes Color_ARGB & Color_ABGR which was causng some mesh load problems with meshes created with oFusion
+- hobbiton merged to trunk
+
+10-23-2007 - Borrillis
+- hobbiton merged to trunk
+
+10-23-2007 - Borrillis
+- Fixed PagingLandscape to build and run properly
+- Corrected WorldOrientation/WorldPosition implementation in Node
+
+10-12-2007 - Borrillis
+- Fix for compile error on SDL/Mono
+- Corrected Alpha setting for RenderWindows in GL
+
+08-30-2007 - Borrillis
+- Fixed nAnt builds on mono/linux
+
+08-01-2007 - Borrillis
+hobbiton merged to trunk
+
+07-30-2007 - Borrillis
+- Updated Fix for Serializer.IsEOF [1710556]
+- Updated Build numbers
+
+03-12-2007 - Borrillis
+- Reverted GCHandle usage in SoftwareBufferManager.cs as it does not lock the buffer properly.
+- Fixed up the Axiom.prebuild to remove some extraneous references.
+- Updated ConfigDialog from crickhollow to fix some refresh bugs
+- Removed some extra comments.
+[ 1582151 ] VertexDeclaration.FindElementBySource returns empty list
+[ 1511228 ] SceneManager.CreateEntity bug
+
+01-02-2007 - Borrillis
+hobbiton merged to trunk
+
+12-29-2006 - Borrillis
+- Updated NAnt to 0.85 final release
+
+12-27-2006 - Borrillis
+[AxiomDemos]
+- Completed build system changes
+[YAT]
+- Completed build system changes
+[Chess]
+- Completed build system changes
+
+- Added CeGui Libs to Build System
+- Added CeGui build include
+- Fixed Chess and YAT builds for media
+- Move Chronos to Top level and started fitting it into the Build system
+
+
+12-22-2006 - Borrillis
+- Updated Prebuild and Nant scripts for AxiomDemos
+- Renamed Prebuild.xml to [project].prebuild for more clarity
+
+12-21-2006 - Borrillis
+- Fixups for build changes for Axiom Project only
+- Renamed Axiom3D folder to Axiom
+- Started moving AxiomDemos into new build system
+
+12-19-2006 - Borrillis
+- Rearranged Sources Directory, removed folder hiearchy and added a projects.html file for descriptions of the projects.
+- Added version numbers to Lib folder hierachy to support multiple versions in the BuildSystem
+  Updated all projects to build properly
+- Renamed Source to Projects for more clarity  
+
+12-17-2006 - c0d3g33k
+- Bringing build system and project layout changes over from the hobbiton_reloaded branch.  
+  Don't know if everything works, but demos seem to build and run fine.
+
+12-16-2006 - Borrillis
+[Axiom Chess]
+- Updated for latest Hobbiton
+- Added script files
+- Updated for latest CeGui
+
+- Updated Prebuild with custom build
+- Added Chronos World Editor Source
+
+12-15-2006 - Borrillis
+YAT Changes:
+- Minor Enhancements to Config Dialog
+- Reorgonized Media Files
+- Media is now copied to output directory
+- DevIL.dll is copied to output directory
+- Needs updated Prebuild to handle exclusions correctly
+[ hobbiton ] 
+- Fixed Resource Not Found error when loading auto window
+
+- Added Samples Project. MultipleRenderWindow Sample and any other Samples posted to the Wiki will go here.
+
+12-13-2006 - Borrillis
+- Fixed Node removal, was causing a stack overflow in Axiom Chess
+- Changed Resource Loading to return null if a resource was not found instead of throwing an Exception
+- Added null check for lighting pass in SceneManager
+- Added set on FragmentProgramName in Pass
+- Added some sanity checks in MaterialSerializer
+- Added Scale to Skeleton Reader
+- Fixed Compiler error in SdlTimer
+
+12-12-2006 - Borrillis
+- Modified Win32Timer and SDLTimer to use System.Diagnostics.Stopwatch instead of P/Invokes
+- Updated TechDemo to display 2 digits after the decimal for FPS.
+
+12-05-2006 - Borrillis
+- Fixed Materials for Water Demo
+- Fixed Materials for ParticleFX Demos
+- Minor math optimizations
+- Added new constructor to AxiomException to include original Exception
+- Merged Many changes from trunk
+- Added NameValuePairList
+- Added ResourceGroupManager
+- Split RenderPriorityGroup and RenderQueueGroup into own files
+- Updated ParticleSystems and Billboards
+- Added ParticleSystemRenderer and ParticleSystemRendererFactory
+- Added ParticleVisualData
+
+10-17-2006 - Borrillis
+-Added Physics code to related_projects
+
+9-28-2006 - jendave
+- rearranged Prebuild to support autotools
+
+9-27-2006 - jendave
+- Updated Prebuild
+
+9-26-2006 - Borrillis	
+- Added Chess sample application
+- Added support for building the documentation with Sandcastle.
+- Added SharpDevelop 2.x solution batch
+
+9-22-2006 - c0d3g33k
+Intermediate build system changes.  NOTE: These are transitory changes so don't reflect the permanent state of things.  Everything still works, but build files and build support files will continue to change and move around until the build revamp is complete.
+
+Current changes:
+
+- pull unused targets out of main build
+- pull framework support targets into an include file for eventual use by other builds.
+- modifications to main build file and demos build file.
+
+9-22-2006 - jendave
+- Updated build and prebuild files for all projects
+
+9-21-2006 - jendave
+- Updated Prebuild
+
+9-18-2006 - Borrillis
+- Released RC1
+- Updated build files
+- Fixed Compile error in OpenGL SDL Renderer from Configuration changes
+- Removed unused directory in Media
+- Updated build system for distributions
+
+9-16-2006 - Borrillis
+- Fixed most of the problems with the CubeMapping demo, more remain.
+- Updated Renderer Configuration handling
+- Seperated Demo code from Browser
+- Created commandline demo Browser
+- Added configuration screens to allow changing renderer and setting renderer properties
+
+9-15-2006 - c0deg33k
+Step 1 of build system revisions: extract dependencies definitions into a separate include file and colocate with the deps.  Tested and seems to work on both Windows and Linux.
+
+9-13-2006 - Borrillis
+- Removed GameObject.cs as it wasn't being used.
+
+9-7-2006 - Borrillis
+- Updated Overlays so YAT will run
+- Changed behavior of Material Manager on Add, instead of throwing Exception on duplicate names, returns the existing object.
+- Updated Prebuild to allow for Copy to Output Directory functionality
+- Updated Axiom Demos Prebuild.xml to take advantage of this functionality.
+
+9-6-2006 - Borrillis
+- Relocated MathLib into Core assembly.
+- Added MovableText
+- Renamed SceneObject to MovableObject and Associated Collections
+- Moved Axiom.MathLib into the Axiom project and changed the namespace to Axiom.Math
+- Renamed Axiom.Math.MathUtil to Axiom.Math.Utility
+- Moved TechDemo class into Axiom.Demos project
+- Removed TextureLayerCollection as it wasn't used.
+- Added batch file to build using Mono on Windows.
+- Updated Prebuild to custom built version that allows linked files in the project ( for GlobalAssemblyInfo.cs)
+- Updated AssemblyInfo for each project, located common assembly attributes into GlobalAssemblyInfo.cs
+
+9-5-2006 - Borrillis
+- Updates for TerrainSceneManager
+- Changed DXRenderer to log Error instead of throwing exception when a GPUProgram fails compilation
+- Added Shading Enum conversion from DX equivilent
+- D3DGPUProgramManager.Create() nows throws NotSupportedException if program type isn't supported instead of just returning null
+
+9-4-2006 - Borrillis
+- Fix Athene Mesh not having any material
+
+9-3-2006 - Borrillis
+- Fixed cg Programs on DirectX9 
+
+8-24-2006 - c0d3g33k
+- Updated Prebuild to 1.3.1 
+
+8-25-2006 - Borrillis
+- Applied Fix for Platforms/Win32/Win32InputReader.cs to aquire devices properly
+- Fixed D3DGpuProgram::LoadFromSource() was only checking for null string, not empty string.
+
+8-24-2006 - c0d3g33k
+- Added NAnt files and changes necessary for building and running under Mono on Linux (Mono 1.1.16.1)
+
+1-8-2005
+- Fixed OpenGL problem where ARB programs were being created by default, even through they were not supported.
+- Added StringConverter class for parsing back and forth between strings and other types (float, etc).
+- Fixed issue where float.ToString was being called in the particle system and non-US cultures were interpreting the values wrong.
+- Fixed bug in BillboardSet.UpdateBounds where sets with no active billboards would result in box extents with Infinite components. (aka. the "Space Pirates" disappearing box bug")
+
+1-6-2005
+- RenderWindow.SaveToFile renamed to Save and moved up to RenderTarget base class.
+- Save can now save to file, or to a Stream.
+- Added Image support for loading from a byte array, and for flipping image data.
+
+1-3-2005
+Some bug fixes: 
+   - fragment program version not being reported properly.
+   - make sure original exception gets logged when something bad happens.
+   - platform manager trying to dispose of a null input reader
+   - check singletons for null before calling Dispose.
+   - crash bug in Skeletal Animation under Direct3D.
+   - fixed old crash/strangeness bug in Particle Systems with high particle quotas.
+Bugs
+[ 951772 ] Assembly.LoadFile -> Assembly.LoadFrom for .Net 1.0 compat.
+[ 1090878 ] OverlayElement was parsing potential float values as ints.
+[ 1057409 ] Matrix3 == operator was incorrect.
+[ 1015883 ] Boned animation updates.
+
+Patches
+[ 1052922 ] Win32 event loop update.
+
+12-31-2004 *Significant commit*
+- FrameEventArgs.RequestShutdown removed; use Root.Instance.QueueEndRendering() from now on.  Root.OnFrameStarted/Ended no longer return bool.
+- Root.Setup removed; you must create an instance of Root using "new" to initialize the singleton.  See TechDemo.
+- Removed useless classes: Axiom.Scripting.AutoAttribute and Axiom.Scripting.State.
+- SceneManagerList renamed to SceneManagerEnumerator like Ogre.  Accessor removed and replaced with GetSceneManager/SetSceneManager.s
+- Root now controls instantiation of singleton instances, using a "deterministic instantiation" process.
+- Fixed issue with LogManager not actually writing message.
+- Made many fixes to ensure resources get destroyed (meshes, hardware buffers, gpu programs, etc) get disposed of on shutdown.
+- Overhauled the use of singletons across the board to be cleaner and more deterministic.
+- Fixed bug in ZebierPatch demo where the material was not being applied to the patch.
+- Mofidied all prior usage of Debug.WriteLine or Trace.WriteLine to use the LogManager.
+- *REFER TO TechDemo FOR ENGINE INIT CHANGES*
+
+12-29-2004
+- Added LogManager.
+- Fixed D3D crash in fullscreen mode.
+
+12-27-2004
+- Finished support for 1.30 meshes (minus submesh names at the moment).
+- Added 1.30 versions of existing meshes.
+- Fixed odd hang bug when dealing with a MemoryStream in image loading.
+- Fixed MAJOR GL bug with buffer overruns when dealing with shared vertex buffers.
+- Updated EdgeListBuilder to include all current Ogre updates.
+
+12-06-2004
+- Added support for 'receive_shadows' and 'transparency_casts_shadows' to Material and the .material parser.
+
+12-05-2004
+- Fixed W Buffer check in D3D to only apply for 16 bit color.
+- Updated RenderToTexture demo!  Shows off texture projection and oblique depth projection for acheiving reflection without advanced hardware features.
+- Added support for non power of 2 texture in OpenGL, which was long overdue as a TODO.  As a result, for anyone who ever noticed the Ogre tusks 
+  looked incorrect in GL can rejoice since this is now fixed.  
+
+12-04-2004
+- Shadow volumes are now extruded to infinity on hardware that supports it.
+- Added hardware acceleration of shadow volume extrusion using vertex programs.  Performance has increased for stencil shadows almost 2x in some cases.
+- Frustum, Camera, and Viewport classes are up to date with Ogre (as of 0.15.0).
+- Plane is now a struct instead of a class.
+- Assorted other modifications to the Math library.
+- Added oblique near plane projection (untested; will be modifying Render To Texture demo to utilize it).
+
+11-27-2004
+- Big Change: Viewports width/height are now range [0.0, 1.0], as opposed to [0.0, 100.0].  Any Camera.AddViewport calls need to be updated for this.
+- Texture Modulative shadows working, with only a slight artifact in GL at the moment, but still working.
+- Assorted D3D Render system updates.
+- Fix to FP30GPUProgram which didn't check for null named parameters before setting them.
+- Additive stencil shadows working.
+- Assorted fixes across the core code.
+- Fixed Material cloning once and for all.
+
+11-26-2004
+- Modulative stencil shadows fully working with all light types.
+- Initial port of Additive and Texture shadows by Bekas; still a work in progress.
+- GLSL support added for the OpenGL render system.
+- Bug fixed in Material.Clone, which causes issues anywhere material cloning was used (Tutorial1, creatings skyboxes, etc).  Skyboxes work again.
+
+11-19-2004
+- Default GPU params support.
+- Per entity custom GPU parameters.
+- New Class: MaterialSerializer.  Seperates all .program and .material parsing into its own class, and is now context based and more robust.
+- Material parsing updated to include several missing pass/technique/texture unit attributes.
+- Cel Shading demo updated to take advantage of default params and custom params.
+- Merged core changes required for BSP support.
+- Checked in update BSP scene manager.  Demo to follow soon once another kink gets worked out with shaders.
+
+11-3-2004
+- Merged in Axiom core changes made to support the latest and greatest BSP scene manager.
+- Added support for per-renderable custom GPU parameters.  Eliminates the need to define multiple materials for objects that only vary by a few params, which can now be set at runtime.
+
+10-30-2004
+- Updated MathLib with missing intersection tests, plus convenience methods on some of the math classes.
+- Modified Math intersection tests that returned the untyped Pair class to now return an IntersectResult struct.
+
+10-9-2004
+
+This unfortunately is going to involve some breaking changes, but these are things I have been putting off and wanted to do before putting the first real release out there, so that everything is in better shape going forward.
+
+Here are some details for the curious:
+- The folder structure and some of the implementation needed some reworking and tidying up, which involved some renaming and folder rearrangment.
+- The GL render system was modified to make it cross platform friendly. 
+- The demo browser is being totally redone to run in-engine rather than using an external configuration interface, for ease of running on various operating systems.
+- premake has been replaced with .Net PreBuild, to allow for generating project files on various platforms with ease.  It's a great tool, and the same assembly runs without recompilation on Windows and Linux/Mono.
+- All binary dependencies are pulled out of CVS.
+- Renamed Engine to Root like it should have been from the get go.
+- Redid folder structure to match the namespace layout.
+- Refactored GL render system to abstract all Win32 specific code into a Win32 window implementation, and now includes an SDL implementation.
+- Removed the need for app.config.
+- Axiom.Physics namespace removed.
+- Axiom.Exceptions namespace removed; existing exceptions moved to Axiom.Core.
+- GuiElements plugin removed, and the existing basic widgets are available in the core.  All current .overlay scripts will continue to work.  Axiom.Gui namespace is now Axiom.Overlays, and the Panel, BorderPanel, and TextArea widgets are under Axiom.Overlays.Elements.  This will be left as-is with no plans for future additions, in favor of using the much better C# port of CrazyEdsGUI.
+- Updated DX code to conform to changes in the DX9 Summer 2004 Update.
+- SceneObject.GameObject renamed to UserData and typed as object, to allow attaching any arbitrary object to a scene object.
+- GameObject removed; SceneObjects can now link to an untyped object reference to point to whatever makes sense for the application in question.
+- Axiom.Utility namespace removed.
+
+5-21-2004
+- Give the RenderSystem class a much needed cleanup.  All previous protected internal methods are now public like they should have been, so they can be accessible to plugins and such.
+- Fixed a bug in the DrawEmitter for systems attached to a node.  For anyone using this, it will be renamed to MagneticEmitter soon.
+- Added updated mesh files.
+
+4-19-2004 through 5-20-2004
+- Fixed nasty GL bug with VBO's which caused problems with some non-recent cards.
+<whole bunch of crap I never bothered to enter here because I'm lazy ;) >
+
+4-18-2004
+- Several bug fixes/optimizations in the shadow code.
+- Added robustness to pass hash code recalculation.
+- Added support for scene node auto tracking other scene nodes, the same way cameras can currently auto track nodes.  This allows you to set up objects that will "watch" other nodes and turn to follow them.  See SceneNode.SetAutoTracking.
+- Added checks for removed cameras to notify render targets that use them.
+- Optimized AnimationState.AddTime.
+
+4-16-2004
+- Modulative stencil shadows working in OpenGL for the first time.
+
+4-14-2004
+- Modulative stencil shadows working in D3D for the first time.
+
+4-10-2004
+**Important changes**
+- Refactored the SceneQuery interface to use interface based listeners rather that .Net events, which ended up making more sense in this scenario, which proved to be a cleaner and more flexible implementation.  Anyone using the RaySceneQuery will need to make modifications to use the new interface, which isn't a drastic change but is a breaking change.
+- Added the SphereRegionSceneQuery and a default implementation, which allows you to query for objects that intersect with a specified sphere.  They can be created via the scene managers CreateSphereRegionQuery method.  An example of its initial usage will be to find objects that fall within the attenuation range of point lights to determine potential shadow casters.
+
+4-8-2004
+- Playing catchup on shadow functionality.  VertexData and Mesh are up to date.
+- Fixed long outstanding bug with vertex bone assignments, which caused the infamous bug with the fish in the fresnel demo where a single vertex would be way off to the side of the fish.  Woohoo!
+- Added new Memory class for handling memory copying throughout the engine (and potentially other things down the road).
+
+4-7-2004
+Major patch from jkeiser
+- Fixes all initialization issues.  The DemoBrowser now works with running demos over and over.
+- Several memory leaks fixed now that all managers get disposed of properly.
+- Enhanced resource loading implementation now support proper factory based implementation, with a Zip and Folder implementation included (before this was hardcoded to support these but I never went back to fix it.
+
+Awesome changes overall!
+
+Major particle system updates submitted by Maarc!
+  - All Ogre Emitters and Affectors are completed and available.
+  - All core classes were updated to support additional functionality, such as modifying texture coords on Billboards (for rotation).
+  - Potential crash bug fixed in BillboardSet.GenVertices.
+  - Added Smoke demo now that the particle system supports all required functionality.
+
+Patch from Antiarc to allow gpu program definitions within material files like Ogre does.  Robot material modified to include one just to have a conbined material.  Thanks antiarc!
+
+Najak submissions
+  - Added smooth camera acceleration in the demos.
+  - Fixed several memory leaks.
+
+3-30-2004
+Big Commit
+- Hardware skinning now support.  
+- Skeletal animation demo updated to include more robots for stressing the new code.  Hardware skinning is used by default if vertex programs are available.
+- Software animation revamped to use blend weights and indices, replacing the old SoftwareBlendInfo struct.
+- Temporary buffer licensing in place for storing per frame post-blended vertex position, which is used for software animation, and will be used to generate shadow volumes for hardware skinned meshes.
+- Entities now have their own copy of a skeleton rather than then multiple entities using the same skeleton sharing a single skeleton instance
+- Various sparsly documented classes updated with XML docs (this is a continual work in progress).
+- Render to texture memory leak in D3D fix from najak.
+- Fixed issue with loading the free Ninja model (a multiple bone per vertex issue).
+
+Issues:
+- Startup/shutdown issues exist, but are being worked on by the community (namely jkeiser).
+- Fresnel crashes on some hardware configurations in OpenGL when VBO's are used.
+
+Still Todo:
+- Profile and optimize the latest skeletal animation updates.
+
+3-20-2004
+- Implemented TagPoint functionality, which allows you to attach objects to bones when using an entity that
+  has a skeleton.  An example would be attaching a gun to a player's hand, where the gun will move with the players
+  hand as it moves.
+- Continued refactoring work to support hardware skinning.
+- Using the default scene manager now until I fix a bug where billboards weren't always showing up in Octree scenes.
+
+3-17-2004
+- Fixed problem with duplicate keyframes in animations; allows the Ninja model to load without incident.
+
+3-14-2004
+- Fixed Cg version of Offset Mapping thanks to a patch from Steve Streeting.
+
+3-4-2004
+- Added SceneNode.CreateChildSceneNode (and overloads) to allow for creating scene nodes without having to do createChild with a cast.
+- Fixed nasty bug in hardware buffers causing stream source indexes to go above what some hardware can support.  Caused Dot3 and Offset to throw an
+  exception on lower end cards.
+- Modified all demos to use SceneNode.CreateChildSceneNode.
+- Added more overloads to Node.CreateChild.
+
+3-2-2004
+- Added default texture filtering options to TextureUnitState and MaterialManager.
+- Added texture filter toggling ('T') to the TechDemo class.  Right now, the effect is most noticable on the demos that have the box in it (Frustum, Physics, etc).
+- changed 'R' to toggle between the different render modes (wireframe, solid, points).
+
+3-1-2004
+- *Significant Change* - Project files no longer included, and can be auto-generated via the included premake batch files.
+- Frustum demo, shows a frustum visually and allows you to move it around and clip objects.
+- Started pulling out expliciy usage of loosely typed collection and using subclasses that will eventually get replaced with generic version in Whidbey.
+- Added another constructor to Vector2D (thanks metaphaze).
+- Added a few core methods required for the BSP Scene Manager to progress.
+- ATI Radeon 8500+ support for DX ps1.1 through ps1.4 pixel shaders!
+
+2-23-2004 (continued)
+- Fixed assert bug in RenderTarget.GetViewport().
+- Added new method: Camera.GetCameraToViewport(), which takes x and y viewports coords in the range[0,1] and returns a Ray that can be used in a RaySceneQuery for object picking.
+- Fixed potential particle emission bug.
+- Fixed render to texture issue with recent camera/frustum changes.
+- Added Camera.Orientation (can't believe that was never there before, heh).
+
+2-23-2004
+- Camera now inherits from Frustum.
+- Frustum is a renderable object.
+- Modified Node.Translate() to allow for using different transform spaces (local, world, parent).
+
+2-22-2004
+- Implemented normal normalization capability in the render systems.
+- Added explicit scissor test capability to the render systems.
+- Added secondary color support in GL now that Tao has all the extensions done.
+- BezierPatch demo and all supporting functionality added.
+- Fixed a bug where not all output was being flushed to the log file.
+
+2-15-2004
+- Completed heightmap terrain functionality in the OctreeSceneManager plugin.
+- Added Terrain demo.
+- Fixed bug in OpenGL where software buffers weren't being used during a ReadData calls on hardware buffers when a software buffer backup existed.
+- Fixed bug in Fresnel demo where toggling the debug overlay didn't work.
+- Updated demo descriptions shown during a mouse over in the demo browser.  Also updated a few of the images.
+- Fixed an error in the Plane constructor which flipped the sign bit on the distance value.
+
+2-9-2004
+- Updated controller documentation.
+- Animated textures!  Added fuctionality to support the anim_texture attribute for texture_unit blocks in .material files.
+
+2-6-2004
+- Fixed a long standing bug with Mesh LOD.  Functionality has now been re-enabled.
+
+2-1-2004
+
+Big update!
+
+New Features:
+- Shader support: Cg, DirectX HLSL, Assembler.  
+ Current profiles supported are 
+	Direct3D: ps1.1, ps1.2, ps1.3, ps1.4, ps2.0, vs1.1, vs2.0
+	OpenGL: arbvp1, arbfp1, fp20(via Nvparse), vp30/fp30 (GeForceFX)
+
+	See http://www.ogre3d.org/docs/manual/manual_16.html#SEC25 for documentation on the .material file format.
+
+- Image loading with DevIL, now supporting .dds and .tga images.  Using Tao.DevIl library.
+- Volume and cube supported via .dds files, even in OpenGL.
+- Render to texture capability
+- Octree Scene Manager (beta)
+- Easier use of Axiom outside the built in render loop.
+
+New Dependencies:
+- DevIL (devil.dll, ilu.dll, ilut.dll).  Required for cross platform image loading and support for a wider range of image formats.
+- nvparse.dll - Dynamically linkable version of the nVidia Nvparse utility which converts DX8 pixel shaders
+  to register and texture combiner instructions that can run on GeForce3/4 hardware.  The .dll version was made
+  available by Tom Nuydens over at http://www.delphi3d.net
+
+New/Modified Demos:
+- Render To Texture: Simple example of rendering the scene contents into a texture and mapping the texture to a plane.
+- Cel Shading: Cartoon shading technique, requiring fragment program support.
+- Dot3 Bump Mapping: Shows the use of vertex/fragment programs to accomplish bump mapping.  Fixed function Dot3 bump mapping is also included as a fallback for hardware that doesn't support fragment programs.
+- Fresnel: Advanced fragment program used to create ultra realistic water, with reflection of objects above water as well as refraction of objects   below the water.
+- Tutorial 1: Now uses much easier, and also CLS compliant means of writing data to vertex buffers for custom geometry.
+
+Core Changes:
+- FrameStarted and FrameEnded event handlers no longer return boolean.  The FrameEventArgs structure now has a RequestShutdown property that can be set to true to cause the render loop to stop and for the engine to begin shutdown.
+- The 'v' texture coordinate has been flipped so that the origin is now in the top-left, this removes the need to flip textures and improves loading times as well as making compressed texture support feasible. 1.10 .mesh files will be converted on the fly automatically, but you should use OgreMeshUpgrade to fix it permanently and start using 1.20.
+- More stuff I'm sure, I only just recently started recording this log :).
+
+Bugs Fixed:
+- Taking screenshots now works in D3D.
+- Bug in skeletons with multiple blending weights fixed.
+- Texture loading in D3D should be more stable with a recent overhaul of the managed code.
+- Fixed problem with .zip files not resetting the stream position when returning uncompressed file data.
+
+Known Problems:
+- Even though the most widespread issue with the glDrawArrays exception in OpenGL on nVidia cards was
+  temporarily fixed via a modifications to one of the overlays, the problem still exists and has popped up
+  in at least one other place, namely the Fresnel demo.  Comment out the following line in GLRenderSystem.CheckCaps()
+  to prevent it from happening in the meantime:
+
+			if(GLHelper.SupportsExtension("GL_ARB_vertex_buffer_object")) {
+				caps.SetCap(Capabilities.VertexBuffer);
+			}
+  This should be resolved fairly soon.
+
+In the works:
+- Support for loading individual plugins, or scanning a directory via app.config entries.
+- Ability to run DX8 pixel shaders on Radeon 8500+ under OpenGL via the ATI_fragment_shader extension.
+- Terrain Demo: Shows the use of a simple heightmap with an extension to the Octree scene manager.

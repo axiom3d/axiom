@@ -46,79 +46,79 @@ using ResourceHandle = System.UInt64;
 
 namespace Axiom.RenderSystems.OpenGL.GLSL
 {
-	/// <summary>
-	///		Factory class for GLSL programs.
-	/// </summary>
-	public sealed class GLSLProgramFactory : HighLevelGpuProgramFactory
-	{
-		#region Fields
+    /// <summary>
+    ///		Factory class for GLSL programs.
+    /// </summary>
+    public sealed class GLSLProgramFactory : HighLevelGpuProgramFactory
+    {
+        #region Fields
 
-		/// <summary>
-		///     Language string.
-		/// </summary>
-		private static string languageName = "glsl";
+        /// <summary>
+        ///     Language string.
+        /// </summary>
+        private static string languageName = "glsl";
 
-		/// <summary>
-		///     Reference to the link program manager we create.
-		/// </summary>
-		private readonly GLSLLinkProgramManager glslLinkProgramMgr;
+        /// <summary>
+        ///     Reference to the link program manager we create.
+        /// </summary>
+        private readonly GLSLLinkProgramManager glslLinkProgramMgr;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		///     Default constructor.
-		/// </summary>
-		internal GLSLProgramFactory()
-		{
-			// instantiate the singleton
-			this.glslLinkProgramMgr = new GLSLLinkProgramManager();
-		}
+        /// <summary>
+        ///     Default constructor.
+        /// </summary>
+        internal GLSLProgramFactory()
+        {
+            // instantiate the singleton
+            this.glslLinkProgramMgr = new GLSLLinkProgramManager();
+        }
 
-		#endregion Constructor
+        #endregion Constructor
 
-		#region HighLevelGpuProgramFactory Implementation
+        #region HighLevelGpuProgramFactory Implementation
 
-		/// <summary>
-		///		Creates and returns a new GLSL program object.
-		/// </summary>
-		/// <param name="name">Name of the object.</param>
-		/// <param name="type">Type of the object.</param>
-		/// <returns>A newly created GLSL program object.</returns>
-		public override HighLevelGpuProgram CreateInstance( ResourceManager parent, string name, ResourceHandle handle,
-		                                                    string group, bool isManual, IManualResourceLoader loader )
-		{
-			return new GLSLProgram( parent, name, handle, group, isManual, loader );
-		}
+        /// <summary>
+        ///		Creates and returns a new GLSL program object.
+        /// </summary>
+        /// <param name="name">Name of the object.</param>
+        /// <param name="type">Type of the object.</param>
+        /// <returns>A newly created GLSL program object.</returns>
+        public override HighLevelGpuProgram CreateInstance(ResourceManager parent, string name, ResourceHandle handle,
+                                                            string group, bool isManual, IManualResourceLoader loader)
+        {
+            return new GLSLProgram(parent, name, handle, group, isManual, loader);
+        }
 
-		/// <summary>
-		///		Returns the language code for this high level program manager.
-		/// </summary>
-		public override string Language
-		{
-			get
-			{
-				return languageName;
-			}
-		}
+        /// <summary>
+        ///		Returns the language code for this high level program manager.
+        /// </summary>
+        public override string Language
+        {
+            get
+            {
+                return languageName;
+            }
+        }
 
-		#endregion HighLevelGpuProgramFactory Implementation
+        #endregion HighLevelGpuProgramFactory Implementation
 
-		#region IDisposable Implementation
+        #region IDisposable Implementation
 
-		/// <summary>
-		///     Called when the engine is shutting down.
-		/// </summary>
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( disposeManagedResources )
-			{
-				this.glslLinkProgramMgr.Dispose();
-			}
-			base.dispose( disposeManagedResources );
-		}
+        /// <summary>
+        ///     Called when the engine is shutting down.
+        /// </summary>
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (disposeManagedResources)
+            {
+                this.glslLinkProgramMgr.Dispose();
+            }
+            base.dispose(disposeManagedResources);
+        }
 
-		#endregion IDisposable Implementation
-	}
+        #endregion IDisposable Implementation
+    }
 }

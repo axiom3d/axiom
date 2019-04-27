@@ -37,30 +37,32 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System.ComponentModel.Composition;
+using System.Composition;
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Plugins.FreeImageCodecs
 {
-	[Export( typeof ( IPlugin ) )]
-	public class Plugin : IPlugin
-	{
-		/// <summary>
-		///    Called when the plugin is started.
-		/// </summary>
-		public void Initialize()
-		{
-			FreeImageCodec.Initialize();
-		}
+    [Export(typeof(IPlugin))]
+    public class Plugin : IPlugin
+    {
+        /// <summary>
+        ///    Called when the plugin is started.
+        /// </summary>
+        public void Initialize()
+        {
+            NativeLibraryLoader.CopyNativeDll("FreeImage", "FreeImage");
 
-		/// <summary>
-		///    Called when the plugin is stopped.
-		/// </summary>
-		public void Shutdown()
-		{
-			FreeImageCodec.Shutdown();
-		}
-	};
+            FreeImageCodec.Initialize();
+        }
+
+        /// <summary>
+        ///    Called when the plugin is stopped.
+        /// </summary>
+        public void Shutdown()
+        {
+            FreeImageCodec.Shutdown();
+        }
+    };
 }

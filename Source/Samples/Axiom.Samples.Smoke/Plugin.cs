@@ -22,24 +22,21 @@
 
 #endregion License
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Text;
+using System.Composition;
 using Axiom.Core;
 
 namespace Axiom.Samples.Smoke
 {
-	[Export( typeof ( IPlugin ) )]
-	public class Plugin : SamplePlugin
-	{
-		private SmokeSample sample;
+    [Export(typeof(IPlugin))]
+    public class Plugin : SamplePlugin
+    {
+        private SmokeSample sample;
 
-		public override void Initialize()
-		{
-			this.sample = new SmokeSample();
-			Name = this.sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this.sample );
-		}
-	}
+        public override void Initialize()
+        {
+            this.sample = new SmokeSample();
+            Name = this.sample.Metadata["Title"] + " Sample";
+            AddSample(this.sample);
+        }
+    }
 }

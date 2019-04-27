@@ -1,279 +1,655 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{82D00A5B-1943-4DDF-859A-7552F75CBF1F}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Axiom.Samples.Media</RootNamespace>
-    <AssemblyName>Axiom.Samples.Media</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <TargetFrameworkDefine>NET_20</TargetFrameworkDefine>
-    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v4.0' ">NET_40</TargetFrameworkDefine>
-    <TargetFrameworkDefine Condition=" '$(TargetFrameworkVersion)' == 'v5.0' ">NET_40</TargetFrameworkDefine>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <AssemblyTitle>Axiom.Samples.Media</AssemblyTitle>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
+    <Copyright>Copyright (c) 2019 Axiom Rendering Engine Project Team.</Copyright>
+    <Product>Axiom Rendering Engine Samples</Product>
+    <Company>Axiom Rendering Engine Project Team (http://axiom3d.net)</Company>
+    <AssemblyVersion>0.9.0.0</AssemblyVersion>
+    <FileVersion>0.9.0.0</FileVersion>
+    <Version>0.9.0</Version>
+    <Authors>Axiom Rendering Engine Project Team (http://axiom3d.net)</Authors>
+    <PackageProjectUrl>http://axiom3d.net</PackageProjectUrl>
+    <RepositoryUrl>http://github/axiom3d/axiom</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseUrl>http://axiom3d.net/wiki/index.php/license.txt</PackageLicenseUrl>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;$(TargetFrameworkDefine)</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>TRACE;$(TargetFrameworkDefine)</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
-    <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
-    <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
+
   <ItemGroup>
-    <None Include="Archives\AxiomCore.zip" />
-    <None Include="Archives\chiropteraDM.pk3" />
-    <None Include="Archives\chiropteraDM.zip" />
-    <None Include="Archives\cubemap.zip" />
-    <None Include="Archives\cubemapsJS.zip" />
-    <None Include="Archives\ogretestmap.zip" />
-    <None Include="Archives\SdkTrays.zip" />
-    <None Include="Archives\Sinbad.zip" />
-    <None Include="Archives\skybox.zip" />
-    <None Include="Materials\Aurora.material" />
-    <None Include="Materials\BumpyMetal.material" />
-    <None Include="Materials\CloudyNoonSkyBox.material">
+    <Content Include="media\Archives\AxiomCore.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Materials\CloudySkyBox.material" />
-    <None Include="Materials\EveningSkyBox.material" />
-    <None Include="Materials\Droplet.material" />
-    <None Include="Materials\Examples-DynTex.material" />
-    <None Include="Materials\Examples.program" />
-    <None Include="Materials\Flair2.material" />
-    <None Include="Materials\Flare.material" />
-    <None Include="Materials\FlarePointSprite.material" />
-    <None Include="Materials\MorningSkyBox.material" />
-    <None Include="Materials\Ocean.controls" />
-    <None Include="Materials\Ocean.material" />
-    <None Include="Materials\OgreHead.material" />
-    <None Include="Materials\Penguin.material" />
-    <None Include="Materials\Rockwall.material" />
-    <None Include="Materials\SceneCubeMap2.material" />
-    <None Include="Materials\SphereMappedRustySteel.material" />
-    <None Include="Materials\StormySkyBox.material" />
-    <None Include="Materials\TudorHouse.material">
+    </Content>
+    <Content Include="media\Archives\chiropteraDM.pk3">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Meshes\ogrehead.mesh" />
-    <None Include="Meshes\penguin.mesh" />
-    <None Include="Meshes\penguin.skeleton" />
-    <None Include="Meshes\sphere.mesh">
+    </Content>
+    <Content Include="media\Archives\chiropteraDM.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Meshes\tudorhouse.mesh">
+    </Content>
+    <Content Include="media\Archives\cubemap.zip">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Particles\Aureola.particle" />
-    <None Include="Particles\Fireworks.particle" />
-    <None Include="Particles\GreenyNimbus.particle" />
-    <None Include="Particles\PurpleFountain.particle" />
-    <None Include="Particles\Rain.particle" />
-    <None Include="Particles\smoke.particle" />
-    <None Include="Particles\Snow.particle" />
-    <None Include="Programs\AmbientOneTexture.glsl" />
-    <None Include="Programs\ASCIIFP.cg" />
-    <None Include="Programs\Bloom2_ps20.glsl" />
-    <None Include="Programs\Bloom2_ps20.hlsl" />
-    <None Include="Programs\Bloom_ps20.hlsl" />
-    <None Include="Programs\Bloom_vs11.hlsl" />
-    <None Include="Programs\Blur0_ps20.hlsl" />
-    <None Include="Programs\Blur0_vs.glsl" />
-    <None Include="Programs\Blur0_vs11.hlsl" />
-    <None Include="Programs\Blur1_ps20.hlsl" />
-    <None Include="Programs\Blur1_vs.glsl" />
-    <None Include="Programs\Blur1_vs11.hlsl" />
-    <None Include="Programs\BlurH_ps20.glsl" />
-    <None Include="Programs\BlurH_ps20.hlsl" />
-    <None Include="Programs\BlurV_ps20.glsl" />
-    <None Include="Programs\BlurV_ps20.hlsl" />
-    <None Include="Programs\Blur_ps.glsl" />
-    <None Include="Programs\Blur_vs.glsl" />
-    <None Include="Programs\Blur_vs11.hlsl" />
-    <None Include="Programs\BrightBloom2_ps20.glsl" />
-    <None Include="Programs\BrightBloom2_ps20.hlsl" />
-    <None Include="Programs\Combine_fp.cg" />
-    <None Include="Programs\Common.cg" />
-    <None Include="Programs\crowdVp.glsl" />
-    <None Include="Programs\DepthShadowmap.hlsl" />
-    <None Include="Programs\DepthShadowmapCasterFp.glsl" />
-    <None Include="Programs\DepthShadowmapCasterVp.glsl" />
-    <None Include="Programs\DepthShadowmapNormalMapReceiverFp.glsl" />
-    <None Include="Programs\DepthShadowmapNormalMapReceiverVp.glsl" />
-    <None Include="Programs\DepthShadowmapReceiverFp.glsl" />
-    <None Include="Programs\DepthShadowmapReceiverVp.glsl" />
-    <None Include="Programs\depthshadowobject.cg" />
-    <None Include="Programs\DitherFP.cg" />
-    <None Include="Programs\DOF_ps.cg" />
-    <None Include="Programs\Example_Basic.cg" />
-    <None Include="Programs\Example_Basic.hlsl" />
-    <None Include="Programs\Example_BumpMapping.cg" />
-    <None Include="Programs\Example_CelShading.cg" />
-    <None Include="Programs\Example_Fresnel.cg" />
-    <None Include="Programs\Example_Projection.cg" />
-    <None Include="Programs\GlassFP.cg" />
-    <None Include="Programs\Grass.cg" />
-    <None Include="Programs\GrayScale.cg" />
-    <None Include="Programs\HalftoneFP.cg" />
-    <None Include="Programs\hdr.cg" />
-    <None Include="Programs\hdr.hlsl" />
-    <None Include="Programs\hdrutils.hlsl" />
-    <None Include="Programs\hdr_bloom.glsl" />
-    <None Include="Programs\hdr_downscale2x2luminence.glsl" />
-    <None Include="Programs\hdr_downscale3x3.glsl" />
-    <None Include="Programs\hdr_downscale3x3brightpass.glsl" />
-    <None Include="Programs\hdr_finalToneMapping.glsl" />
-    <None Include="Programs\hdr_tonemap_util.glsl" />
-    <None Include="Programs\HeatVision.cg" />
-    <None Include="Programs\instancing.cg" />
-    <None Include="Programs\instancingVp.glsl" />
-    <None Include="Programs\InvertFP.cg" />
-    <None Include="Programs\isosurf.cg" />
-    <None Include="Programs\LaplaceFP.cg" />
-    <None Include="Programs\mrttestfp.hlsl" />
-    <None Include="Programs\mrttestfp_quad.glsl" />
-    <None Include="Programs\mrttestfp_scene.glsl" />
-    <None Include="Programs\NightVisionFP.cg" />
-    <None Include="Programs\Ocean2GLSL.frag" />
-    <None Include="Programs\Ocean2GLSL.vert" />
-    <None Include="Programs\Ocean2HLSL_Cg.frag" />
-    <None Include="Programs\Ocean2HLSL_Cg.vert" />
-    <None Include="Programs\oceanGLSL.frag" />
-    <None Include="Programs\oceanGLSL.vert" />
-    <None Include="Programs\oceanHLSL_Cg.frag" />
-    <None Include="Programs\oceanHLSL_Cg.vert" />
-    <None Include="Programs\OffsetMapping.cg" />
-    <None Include="Programs\OffsetMapping.hlsl" />
-    <None Include="Programs\OffsetMappingFp.glsl" />
-    <None Include="Programs\OffsetMappingVp.glsl" />
-    <None Include="Programs\OldMovieFP.cg" />
-    <None Include="Programs\OldTV.cg" />
-    <None Include="Programs\ParticleGS.cg" />
-    <None Include="Programs\PassthroughVP.glsl" />
-    <None Include="Programs\PosterizeFP.cg" />
-    <None Include="Programs\pssm.cg" />
-    <None Include="Programs\pssm.hlsl" />
-    <None Include="Programs\Radial_Blur_FP.cg" />
-    <None Include="Programs\Radial_Blur_FP.hlsl" />
-    <None Include="Programs\shadows.cg" />
-    <None Include="Programs\SharpenEdgesFP.cg" />
-    <None Include="Programs\skinningTwoWeightsShadowCasterVp.glsl" />
-    <None Include="Programs\skinningTwoWeightsVp.glsl" />
-    <None Include="Programs\StdQuad_vp.cg" />
-    <None Include="Programs\StdQuad_vp.glsl" />
-    <None Include="Programs\Swizzle.gp" />
-    <None Include="Programs\SwizzleGP.cg" />
-    <None Include="Programs\SwizzleGP.glsl" />
-    <None Include="Programs\TilingFP.cg" />
-    <None Include="Programs\varianceshadowcasterfp.cg" />
-    <None Include="Programs\varianceshadowcastervp.cg" />
-    <None Include="Programs\varianceshadowreceiverfp.cg" />
-    <None Include="Programs\varianceshadowreceivervp.cg" />
-    <None Include="Materials\smoke.material" />
-    <None Include="Textures\NoiseVolume.dds" />
-    <None Include="Textures\rockwall.tga" />
-    <None Include="Textures\rockwall_NH.tga" />
-    <None Include="Textures\waves2.dds" />
+    </Content>
+    <Content Include="media\Archives\cubemapsJS.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Archives\ogretestmap.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Archives\SdkTrays.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Archives\Sinbad.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Archives\skybox.zip">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\Aurora.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\BumpyMetal.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\CloudyNoonSkyBox.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\CloudySkyBox.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\EveningSkyBox.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\Droplet.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\Examples-DynTex.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\Examples.program">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\Flair2.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\Flare.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\FlarePointSprite.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\MorningSkyBox.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\Ocean.controls">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\Ocean.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\OgreHead.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\Penguin.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\Rockwall.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\SceneCubeMap2.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\SphereMappedRustySteel.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\StormySkyBox.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\TudorHouse.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Meshes\ogrehead.mesh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Meshes\penguin.mesh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Meshes\penguin.skeleton">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Meshes\sphere.mesh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Meshes\tudorhouse.mesh">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Particles\Aureola.particle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Particles\Fireworks.particle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Particles\GreenyNimbus.particle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Particles\PurpleFountain.particle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Particles\Rain.particle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Particles\smoke.particle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Particles\Snow.particle">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\AmbientOneTexture.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\ASCIIFP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Bloom2_ps20.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Bloom2_ps20.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Bloom_ps20.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Bloom_vs11.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Blur0_ps20.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Blur0_vs.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Blur0_vs11.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Blur1_ps20.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Blur1_vs.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Blur1_vs11.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\BlurH_ps20.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\BlurH_ps20.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\BlurV_ps20.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\BlurV_ps20.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Blur_ps.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Blur_vs.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Blur_vs11.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\BrightBloom2_ps20.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\BrightBloom2_ps20.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Combine_fp.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Common.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\crowdVp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\DepthShadowmap.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\DepthShadowmapCasterFp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\DepthShadowmapCasterVp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\DepthShadowmapNormalMapReceiverFp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\DepthShadowmapNormalMapReceiverVp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\DepthShadowmapReceiverFp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\DepthShadowmapReceiverVp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\depthshadowobject.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\DitherFP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\DOF_ps.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Example_Basic.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Example_Basic.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Example_BumpMapping.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Example_CelShading.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Example_Fresnel.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Example_Projection.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\GlassFP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Grass.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\GrayScale.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\HalftoneFP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\hdr.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\hdr.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\hdrutils.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\hdr_bloom.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\hdr_downscale2x2luminence.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\hdr_downscale3x3.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\hdr_downscale3x3brightpass.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\hdr_finalToneMapping.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\hdr_tonemap_util.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\HeatVision.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\instancing.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\instancingVp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\InvertFP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\isosurf.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\LaplaceFP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\mrttestfp.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\mrttestfp_quad.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\mrttestfp_scene.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\NightVisionFP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Ocean2GLSL.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Ocean2GLSL.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Ocean2HLSL_Cg.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Ocean2HLSL_Cg.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\oceanGLSL.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\oceanGLSL.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\oceanHLSL_Cg.frag">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\oceanHLSL_Cg.vert">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\OffsetMapping.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\OffsetMapping.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\OffsetMappingFp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\OffsetMappingVp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\OldMovieFP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\OldTV.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\ParticleGS.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\PassthroughVP.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\PosterizeFP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\pssm.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\pssm.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Radial_Blur_FP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Radial_Blur_FP.hlsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\shadows.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\SharpenEdgesFP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\skinningTwoWeightsShadowCasterVp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\skinningTwoWeightsVp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\StdQuad_vp.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\StdQuad_vp.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Swizzle.gp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\SwizzleGP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\SwizzleGP.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\TilingFP.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\varianceshadowcasterfp.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\varianceshadowcastervp.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\varianceshadowreceiverfp.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\varianceshadowreceivervp.cg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Materials\smoke.material">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\NoiseVolume.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\rockwall.tga">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\rockwall_NH.tga">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\waves2.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Archives\chiropteraDM.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\Example_FresnelPS.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Programs\OffsetMapping_specular.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\aureola.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\axiomlogo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\basic_droplet.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\BumpyMetal.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\flare.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\flaretrail.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\frost.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\fw12b.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\GreenSkin.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\penguin.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\RustySteel.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\smoke.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\smokecolors.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\spheremap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Textures\tusk.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_bezier.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_bsp.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_bump.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_camtrack.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_cel.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_char.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_comp.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_cubemap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_deferred.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_dyntex.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_error.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_facial.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_fresnel.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_grass.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_instancing.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_isosurf.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_lighting.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_ocean.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_particlegs.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_particles.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_picking.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_playpen.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_shadersystem.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_shadows.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_skelanim.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_skybox.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_skydome.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_skyplane.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_smoke.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_spheremap.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_terrain.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_texfx.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_trans.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_triangle.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_voltex.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="media\Thumbnails\thumb_water.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
+
   <ItemGroup>
-    <Content Include="Archives\chiropteraDM.txt" />
-    <Content Include="Programs\Example_FresnelPS.asm" />
-    <Content Include="Programs\OffsetMapping_specular.asm" />
-    <Content Include="Textures\aureola.png" />
-    <Content Include="Textures\axiomlogo.png" />
-    <Content Include="Textures\basic_droplet.png" />
-    <Content Include="Textures\BumpyMetal.jpg" />
-    <Content Include="Textures\flare.png" />
-    <Content Include="Textures\flaretrail.png" />
-    <Content Include="Textures\frost.png" />
-    <Content Include="Textures\fw12b.jpg" />
-    <Content Include="Textures\GreenSkin.jpg" />
-    <Content Include="Textures\penguin.jpg" />
-    <Content Include="Textures\RustySteel.jpg" />
-    <Content Include="Textures\smoke.png" />
-    <Content Include="Textures\smokecolors.png" />
-    <Content Include="Textures\spheremap.png" />
-    <Content Include="Textures\tusk.jpg" />
-    <Content Include="Thumbnails\thumb_bezier.png" />
-    <Content Include="Thumbnails\thumb_bsp.png" />
-    <Content Include="Thumbnails\thumb_bump.png" />
-    <Content Include="Thumbnails\thumb_camtrack.png" />
-    <Content Include="Thumbnails\thumb_cel.png" />
-    <Content Include="Thumbnails\thumb_char.png" />
-    <Content Include="Thumbnails\thumb_comp.png" />
-    <Content Include="Thumbnails\thumb_cubemap.png" />
-    <Content Include="Thumbnails\thumb_deferred.png" />
-    <Content Include="Thumbnails\thumb_dyntex.png" />
-    <Content Include="Thumbnails\thumb_error.png" />
-    <Content Include="Thumbnails\thumb_facial.png" />
-    <Content Include="Thumbnails\thumb_fresnel.png" />
-    <Content Include="Thumbnails\thumb_grass.png" />
-    <Content Include="Thumbnails\thumb_instancing.png" />
-    <Content Include="Thumbnails\thumb_isosurf.png" />
-    <Content Include="Thumbnails\thumb_lighting.png" />
-    <Content Include="Thumbnails\thumb_ocean.png" />
-    <Content Include="Thumbnails\thumb_particlegs.png" />
-    <Content Include="Thumbnails\thumb_particles.png" />
-    <Content Include="Thumbnails\thumb_picking.png" />
-    <Content Include="Thumbnails\thumb_playpen.png" />
-    <Content Include="Thumbnails\thumb_shadersystem.png" />
-    <Content Include="Thumbnails\thumb_shadows.png" />
-    <Content Include="Thumbnails\thumb_skelanim.png" />
-    <Content Include="Thumbnails\thumb_skybox.png" />
-    <Content Include="Thumbnails\thumb_skydome.png" />
-    <Content Include="Thumbnails\thumb_skyplane.png" />
-    <Content Include="Thumbnails\thumb_smoke.png" />
-    <Content Include="Thumbnails\thumb_spheremap.png" />
-    <Content Include="Thumbnails\thumb_terrain.png" />
-    <Content Include="Thumbnails\thumb_texfx.png" />
-    <Content Include="Thumbnails\thumb_trans.png" />
-    <Content Include="Thumbnails\thumb_triangle.png" />
-    <Content Include="Thumbnails\thumb_voltex.png" />
-    <Content Include="Thumbnails\thumb_water.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Icons\Archives\" />
+    <None Update="media\Icons\AxiomIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="media\Textures\clouds.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="media\Textures\dirt_grayrocky_diffusespecular.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="media\Textures\dirt_grayrocky_normalheight.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="media\Textures\grass_green-01_diffusespecular.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="media\Textures\grass_green-01_normalheight.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="media\Textures\growth_weirdfungus-03_diffusespecular.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="media\Textures\growth_weirdfungus-03_normalheight.dds">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="media\Textures\terrain.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Target Name="Build" />
   <Target Name="Rebuild" />
   <Target Name="Clean" />
   <Target Name="GetNativeManifest" />
-  <Target Name="GetCopyToOutputDirectoryItems" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

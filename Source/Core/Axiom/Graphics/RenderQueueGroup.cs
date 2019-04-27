@@ -50,239 +50,239 @@ using Axiom.Graphics.Collections;
 
 namespace Axiom.Graphics
 {
-	/// <summary>
-	///		A grouping level underneath RenderQueue which groups renderables
-	///		to be issued at coarsely the same time to the renderer.	
-	/// </summary>
-	/// <remarks>
-	///		Each instance of this class itself hold RenderPriorityGroup instances, 
-	///		which are the groupings of renderables by priority for fine control
-	///		of ordering (not required for most instances).
-	/// </remarks>
-	public class RenderQueueGroup
-	{
-		#region Fields
+    /// <summary>
+    ///		A grouping level underneath RenderQueue which groups renderables
+    ///		to be issued at coarsely the same time to the renderer.	
+    /// </summary>
+    /// <remarks>
+    ///		Each instance of this class itself hold RenderPriorityGroup instances, 
+    ///		which are the groupings of renderables by priority for fine control
+    ///		of ordering (not required for most instances).
+    /// </remarks>
+    public class RenderQueueGroup
+    {
+        #region Fields
 
-		/// <summary>
-		///		Render queue that this queue group belongs to.
-		/// </summary>
-		protected RenderQueue parent;
+        /// <summary>
+        ///		Render queue that this queue group belongs to.
+        /// </summary>
+        protected RenderQueue parent;
 
-		/// <summary>
-		///		Should passes be split by their lighting stage?
-		/// </summary>
-		protected bool splitPassesByLightingType;
+        /// <summary>
+        ///		Should passes be split by their lighting stage?
+        /// </summary>
+        protected bool splitPassesByLightingType;
 
-		protected bool splitNoShadowPasses;
-		protected bool shadowCastersCannotBeReceivers;
+        protected bool splitNoShadowPasses;
+        protected bool shadowCastersCannotBeReceivers;
 
-		/// <summary>
-		///		List of priority groups.
-		/// </summary>
-		private readonly RenderPriorityGroupList priorityGroups = new RenderPriorityGroupList();
+        /// <summary>
+        ///		List of priority groups.
+        /// </summary>
+        private readonly RenderPriorityGroupList priorityGroups = new RenderPriorityGroupList();
 
-		/// <summary>
-		///		Are shadows enabled for this group?
-		/// </summary>
-		protected bool shadowsEnabled;
+        /// <summary>
+        ///		Are shadows enabled for this group?
+        /// </summary>
+        protected bool shadowsEnabled;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		/// <param name="parent">Render queue that owns this group.</param>
-		/// <param name="splitPassesByLightingType">Split passes based on lighting stage?</param>
-		/// <param name="splitNoShadowPasses"></param>
-		/// <param name="shadowCastersCannotBeReceivers"></param>
-		public RenderQueueGroup( RenderQueue parent, bool splitPassesByLightingType, bool splitNoShadowPasses,
-		                         bool shadowCastersCannotBeReceivers )
-		{
-			// shadows enabled by default
-			this.shadowsEnabled = true;
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        /// <param name="parent">Render queue that owns this group.</param>
+        /// <param name="splitPassesByLightingType">Split passes based on lighting stage?</param>
+        /// <param name="splitNoShadowPasses"></param>
+        /// <param name="shadowCastersCannotBeReceivers"></param>
+        public RenderQueueGroup(RenderQueue parent, bool splitPassesByLightingType, bool splitNoShadowPasses,
+                                 bool shadowCastersCannotBeReceivers)
+        {
+            // shadows enabled by default
+            this.shadowsEnabled = true;
 
-			this.splitPassesByLightingType = splitPassesByLightingType;
-			this.splitNoShadowPasses = splitNoShadowPasses;
-			this.shadowCastersCannotBeReceivers = shadowCastersCannotBeReceivers;
-			this.parent = parent;
-		}
+            this.splitPassesByLightingType = splitPassesByLightingType;
+            this.splitNoShadowPasses = splitNoShadowPasses;
+            this.shadowCastersCannotBeReceivers = shadowCastersCannotBeReceivers;
+            this.parent = parent;
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		/// </summary>
-		public void AddRenderable( IRenderable item, Technique technique, ushort priority )
-		{
-			RenderPriorityGroup group = null;
+        /// <summary>
+        /// </summary>
+        public void AddRenderable(IRenderable item, Technique technique, ushort priority)
+        {
+            RenderPriorityGroup group = null;
 
-			// see if there is a current queue group for this group id
-			if ( !PriorityGroups.ContainsKey( priority ) )
-			{
-				// create a new queue group for this group id
-				group = new RenderPriorityGroup( this, this.splitPassesByLightingType, this.splitNoShadowPasses,
-				                                 this.splitPassesByLightingType );
+            // see if there is a current queue group for this group id
+            if (!PriorityGroups.ContainsKey(priority))
+            {
+                // create a new queue group for this group id
+                group = new RenderPriorityGroup(this, this.splitPassesByLightingType, this.splitNoShadowPasses,
+                                                 this.splitPassesByLightingType);
 
-				// add the new group to cached render group
-				PriorityGroups.Add( priority, group );
-			}
-			else
-			{
-				// retreive the existing queue group
-				group = PriorityGroups[ priority ];
-			}
+                // add the new group to cached render group
+                PriorityGroups.Add(priority, group);
+            }
+            else
+            {
+                // retreive the existing queue group
+                group = PriorityGroups[priority];
+            }
 
-			// add the renderable to the appropriate group
-			group.AddRenderable( item, technique );
-		}
+            // add the renderable to the appropriate group
+            group.AddRenderable(item, technique);
+        }
 
-		/// <summary>
-		///		Clears all the priority groups within this group.
-		/// </summary>
-		public void Clear()
-		{
-			Clear( false );
-		}
+        /// <summary>
+        ///		Clears all the priority groups within this group.
+        /// </summary>
+        public void Clear()
+        {
+            Clear(false);
+        }
 
-		/// <summary>
-		///	Clears all the priority groups within this group.
-		/// </summary>
-		public void Clear( bool dispose )
-		{
-			// loop through each priority group and clear it's items.  We don't wanna clear the group
-			// list because it probably won't change frame by frame.
-			foreach ( var group in PriorityGroups.Values )
-			{
-				// clear the RenderPriorityGroup
-				group.Clear();
-			}
-			if ( dispose )
-			{
-				PriorityGroups.Clear();
-			}
-		}
+        /// <summary>
+        ///	Clears all the priority groups within this group.
+        /// </summary>
+        public void Clear(bool dispose)
+        {
+            // loop through each priority group and clear it's items.  We don't wanna clear the group
+            // list because it probably won't change frame by frame.
+            foreach (var group in PriorityGroups.Values)
+            {
+                // clear the RenderPriorityGroup
+                group.Clear();
+            }
+            if (dispose)
+            {
+                PriorityGroups.Clear();
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		///    Gets the number of priority groups within this queue group.
-		/// </summary>
-		public int NumPriorityGroups
-		{
-			get
-			{
-				return PriorityGroups.Count;
-			}
-		}
+        /// <summary>
+        ///    Gets the number of priority groups within this queue group.
+        /// </summary>
+        public int NumPriorityGroups
+        {
+            get
+            {
+                return PriorityGroups.Count;
+            }
+        }
 
-		/// <summary>
-		/// List of priority groups.
-		/// </summary>
-		public RenderPriorityGroupList PriorityGroups
-		{
-			get
-			{
-				return this.priorityGroups;
-			}
-		}
+        /// <summary>
+        /// List of priority groups.
+        /// </summary>
+        public RenderPriorityGroupList PriorityGroups
+        {
+            get
+            {
+                return this.priorityGroups;
+            }
+        }
 
-		/// <summary>
-		///		Indicate whether a given queue group will be doing any shadow setup.
-		/// </summary>
-		/// <remarks>
-		///		This method allows you to inform the queue about a queue group, and to 
-		///		indicate whether this group will require shadow processing of any sort.
-		///		In order to preserve rendering order, Axiom/Ogre has to treat queue groups
-		///		as very separate elements of the scene, and this can result in it
-		///		having to duplicate shadow setup for each group. Therefore, if you
-		///		know that a group which you are using will never need shadows, you
-		///		should preregister the group using this method in order to improve
-		///		the performance.
-		/// </remarks>
-		public bool ShadowsEnabled
-		{
-			get
-			{
-				return this.shadowsEnabled;
-			}
-			set
-			{
-				this.shadowsEnabled = value;
-			}
-		}
+        /// <summary>
+        ///		Indicate whether a given queue group will be doing any shadow setup.
+        /// </summary>
+        /// <remarks>
+        ///		This method allows you to inform the queue about a queue group, and to 
+        ///		indicate whether this group will require shadow processing of any sort.
+        ///		In order to preserve rendering order, Axiom/Ogre has to treat queue groups
+        ///		as very separate elements of the scene, and this can result in it
+        ///		having to duplicate shadow setup for each group. Therefore, if you
+        ///		know that a group which you are using will never need shadows, you
+        ///		should preregister the group using this method in order to improve
+        ///		the performance.
+        /// </remarks>
+        public bool ShadowsEnabled
+        {
+            get
+            {
+                return this.shadowsEnabled;
+            }
+            set
+            {
+                this.shadowsEnabled = value;
+            }
+        }
 
-		/// <summary>
-		///		Gets/Sets whether or not the queue will split passes by their lighting type,
-		///		ie ambient, per-light and decal. 
-		/// </summary>
-		public bool SplitPassesByLightingType
-		{
-			get
-			{
-				return this.splitPassesByLightingType;
-			}
-			set
-			{
-				this.splitPassesByLightingType = value;
+        /// <summary>
+        ///		Gets/Sets whether or not the queue will split passes by their lighting type,
+        ///		ie ambient, per-light and decal. 
+        /// </summary>
+        public bool SplitPassesByLightingType
+        {
+            get
+            {
+                return this.splitPassesByLightingType;
+            }
+            set
+            {
+                this.splitPassesByLightingType = value;
 
-				// set the value for all priority groups as well
-				foreach ( var item in PriorityGroups )
-				{
-					item.Value.SplitPassesByLightingType = this.splitPassesByLightingType;
-				}
-			}
-		}
+                // set the value for all priority groups as well
+                foreach (var item in PriorityGroups)
+                {
+                    item.Value.SplitPassesByLightingType = this.splitPassesByLightingType;
+                }
+            }
+        }
 
-		/// <summary>
-		///		Gets/Sets whether or not the queue will split passes which have shadow receive
-		///		turned off (in their parent material), which is needed when certain shadow
-		///		techniques are used.
-		/// </summary>
-		public bool SplitNoShadowPasses
-		{
-			get
-			{
-				return this.splitNoShadowPasses;
-			}
-			set
-			{
-				this.splitNoShadowPasses = value;
+        /// <summary>
+        ///		Gets/Sets whether or not the queue will split passes which have shadow receive
+        ///		turned off (in their parent material), which is needed when certain shadow
+        ///		techniques are used.
+        /// </summary>
+        public bool SplitNoShadowPasses
+        {
+            get
+            {
+                return this.splitNoShadowPasses;
+            }
+            set
+            {
+                this.splitNoShadowPasses = value;
 
-				// set the value for all priority groups as well
-				foreach ( var group in PriorityGroups.Values )
-				{
-					group.SplitNoShadowPasses = this.splitNoShadowPasses;
-				}
-			}
-		}
+                // set the value for all priority groups as well
+                foreach (var group in PriorityGroups.Values)
+                {
+                    group.SplitNoShadowPasses = this.splitNoShadowPasses;
+                }
+            }
+        }
 
-		/// <summary>
-		///		Gets/Sets whether or not the queue will disallow receivers when certain shadow
-		///		techniques are used.
-		/// </summary>
-		public bool ShadowCastersCannotBeReceivers
-		{
-			get
-			{
-				return this.shadowCastersCannotBeReceivers;
-			}
-			set
-			{
-				this.shadowCastersCannotBeReceivers = value;
+        /// <summary>
+        ///		Gets/Sets whether or not the queue will disallow receivers when certain shadow
+        ///		techniques are used.
+        /// </summary>
+        public bool ShadowCastersCannotBeReceivers
+        {
+            get
+            {
+                return this.shadowCastersCannotBeReceivers;
+            }
+            set
+            {
+                this.shadowCastersCannotBeReceivers = value;
 
-				// set the value for all priority groups as well
-				foreach ( var group in PriorityGroups.Values )
-				{
-					group.ShadowCastersCannotBeReceivers = this.shadowCastersCannotBeReceivers;
-				}
-			}
-		}
+                // set the value for all priority groups as well
+                foreach (var group in PriorityGroups.Values)
+                {
+                    group.ShadowCastersCannotBeReceivers = this.shadowCastersCannotBeReceivers;
+                }
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

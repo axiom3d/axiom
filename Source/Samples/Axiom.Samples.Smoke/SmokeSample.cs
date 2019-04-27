@@ -29,68 +29,68 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.Samples.Smoke
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public class SmokeSample : SdkSample
-	{
-		private SceneNode _pivot;
+    /// <summary>
+    /// 
+    /// </summary>
+    public class SmokeSample : SdkSample
+    {
+        private SceneNode _pivot;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected AnimationState animState;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected AnimationState animState;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public SmokeSample()
-		{
-			Metadata[ "Title" ] = "Smoke";
-			Metadata[ "Description" ] = "Demonstrates depth-sorting of particles in particle systems.";
-			Metadata[ "Thumbnail" ] = "thumb_smoke.png";
-			Metadata[ "Category" ] = "Effects";
-			Metadata[ "Help" ] = "Proof that Axiom is just the hottest thing. Bleh. So there. ^_^";
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public SmokeSample()
+        {
+            Metadata["Title"] = "Smoke";
+            Metadata["Description"] = "Demonstrates depth-sorting of particles in particle systems.";
+            Metadata["Thumbnail"] = "thumb_smoke.png";
+            Metadata["Category"] = "Effects";
+            Metadata["Help"] = "Proof that Axiom is just the hottest thing. Bleh. So there. ^_^";
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="evt"></param>
-		/// <returns></returns>
-		public override bool FrameRenderingQueued( FrameEventArgs evt )
-		{
-			this._pivot.Position = new Vector3( 0, Utility.Sin( Root.Timer.Milliseconds/150.0f )*10, 0 );
-			this._pivot.Yaw( (Real)( new Degree( (Real)( -evt.TimeSinceLastFrame*15f ) ) ) );
-			return base.FrameRenderingQueued( evt );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="evt"></param>
+        /// <returns></returns>
+        public override bool FrameRenderingQueued(FrameEventArgs evt)
+        {
+            this._pivot.Position = new Vector3(0, Utility.Sin(Root.Timer.Milliseconds / 150.0f) * 10, 0);
+            this._pivot.Yaw((Real)(new Degree((Real)(-evt.TimeSinceLastFrame * 15f))));
+            return base.FrameRenderingQueued(evt);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected override void SetupContent()
-		{
-			SceneManager.SetSkyBox( true, "Examples/EveningSkyBox", 5000 );
+        /// <summary>
+        /// 
+        /// </summary>
+        protected override void SetupContent()
+        {
+            SceneManager.SetSkyBox(true, "Examples/EveningSkyBox", 5000);
 
-			// dim orange ambient and two bright orange lights to match the skybox
-			SceneManager.AmbientLight = new ColorEx( 0.3f, 0.2f, 0.0f );
-			Light light = SceneManager.CreateLight( "Light1" );
-			light.Position = new Vector3( 2000, 1000, -1000 );
-			light.Diffuse = new ColorEx( 1.0f, 0.5f, 0.0f );
-			light = SceneManager.CreateLight( "Light2" );
-			light.Position = new Vector3( 2000, 1000, 1000 );
-			light.Diffuse = new ColorEx( 1.0f, 0.5f, 0.0f );
+            // dim orange ambient and two bright orange lights to match the skybox
+            SceneManager.AmbientLight = new ColorEx(0.3f, 0.2f, 0.0f);
+            Light light = SceneManager.CreateLight("Light1");
+            light.Position = new Vector3(2000, 1000, -1000);
+            light.Diffuse = new ColorEx(1.0f, 0.5f, 0.0f);
+            light = SceneManager.CreateLight("Light2");
+            light.Position = new Vector3(2000, 1000, 1000);
+            light.Diffuse = new ColorEx(1.0f, 0.5f, 0.0f);
 
-			this._pivot = SceneManager.RootSceneNode.CreateChildSceneNode(); // create a pivot node
+            this._pivot = SceneManager.RootSceneNode.CreateChildSceneNode(); // create a pivot node
 
-			// create a child node and attach ogre head and some smoke to it
-			SceneNode headNode = this._pivot.CreateChildSceneNode( new Vector3( 100, 0, 0 ) );
-			headNode.AttachObject( SceneManager.CreateEntity( "Head", "ogrehead.mesh" ) );
-			headNode.AttachObject( ParticleSystemManager.Instance.CreateSystem( "Smoke", "Examples/Smoke" ) );
+            // create a child node and attach ogre head and some smoke to it
+            SceneNode headNode = this._pivot.CreateChildSceneNode(new Vector3(100, 0, 0));
+            headNode.AttachObject(SceneManager.CreateEntity("Head", "ogrehead.mesh"));
+            headNode.AttachObject(ParticleSystemManager.Instance.CreateSystem("Smoke", "Examples/Smoke"));
 
-			Camera.Position = new Vector3( 0.0f, 30.0f, 350.0f );
+            Camera.Position = new Vector3(0.0f, 30.0f, 350.0f);
 
-			base.SetupContent();
-		}
-	}
+            base.SetupContent();
+        }
+    }
 }

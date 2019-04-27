@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2010 Axiom Project Team
+// Copyright (C) 2003-2009 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -29,13 +29,10 @@
 using System;
 using System.IO;
 using System.Text;
-
+using Axiom.Collections;
 using Axiom.Core;
 using Axiom.Fonts;
-
-using MbUnit.Framework;
-
-using TypeMock.ArrangeActAssert;
+using NUnit.Framework;
 
 #endregion
 
@@ -49,7 +46,7 @@ namespace Axiom.UnitTests.Fonts
     /// http://sourceforge.net/apps/trac/axiomengine/ticket/47,
     /// a problem with the font parsing.
     /// </remarks>
-    [ TestFixture ]
+    [TestFixture]
     public class FontManagerRegressionTests
     {
         private const string FontName = "StarWars";
@@ -58,67 +55,67 @@ namespace Axiom.UnitTests.Fonts
         private const int TrueTypeSize = 16;
         private const int TrueTypeResolution = 96;
 
-        private static readonly string Fontdef = string.Format( "{0}\n{{\n// Now this one I agree with ;)\n// A Star Wars font :)\ntype 		{1}\nsource 		{2}\nsize 		{3}\nresolution 	{4}\n}}", FontName, CorrectFontType.ToString().ToLower(), SourceName, TrueTypeSize, TrueTypeResolution );
+        private static readonly string Fontdef = string.Format("{0}\n{{\n// Now this one I agree with ;)\n// A Star Wars font :)\ntype 		{1}\nsource 		{2}\nsize 		{3}\nresolution 	{4}\n}}", FontName, CorrectFontType.ToString().ToLower(), SourceName, TrueTypeSize, TrueTypeResolution);
 
         /// <summary>
         /// Sets up each test.
         /// </summary>
-        [ SetUp ]
+        [SetUp]
         public void SetUp()
         {
-            ResourceGroupManager fakeResourceGroupManager = Isolate.Fake.Instance<ResourceGroupManager>( Members.ReturnRecursiveFakes );
-            Isolate.Swap.AllInstances<ResourceGroupManager>().With( fakeResourceGroupManager );
+            //ResourceGroupManager fakeResourceGroupManager = Isolate.Fake.Instance<ResourceGroupManager>( Members.ReturnRecursiveFakes );
+            //Isolate.Swap.AllInstances<ResourceGroupManager>().With( fakeResourceGroupManager );
         }
 
         /// <summary>
         /// Tears down each test.
         /// </summary>
-        [ TearDown ]
+        [TearDown]
         public void TearDown()
         {
-            Isolate.CleanUp();
+            //Isolate.CleanUp();
         }
 
         /// <summary>
         /// Verifies that a true type font definition file is parsed at all.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestParseTrueTypeFontDef()
         {
             FontManager fontManager = new FontManager();
 
-            Assert.AreEqual( 0, fontManager.Resources.Count, "The FontManager is initialized with fonts already loaded." );
+            Assert.AreEqual(0, fontManager.Resources.Count, "The FontManager is initialized with fonts already loaded.");
 
             Stream stream = GetFontDefinitonStream();
-            fontManager.ParseScript( stream, "Fonts", String.Empty );
+            fontManager.ParseScript(stream, "Fonts", String.Empty);
 
-            Assert.AreEqual( 1, fontManager.Resources.Count, "The FontManager did not parse a true type font definition file." );
+            Assert.AreEqual(1, fontManager.Resources.Count, "The FontManager did not parse a true type font definition file.");
         }
 
         /// <summary>
         /// Verifies that a true type font definition file is parsed correctly, assigning the correct properties.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestParseCorrectTrueTypeFontDef()
         {
             FontManager fontManager = new FontManager();
 
             Stream stream = GetFontDefinitonStream();
-            fontManager.ParseScript( stream, String.Empty, String.Empty );
-            Font parsedFont = (Font)fontManager[ FontName ];
+            fontManager.ParseScript(stream, String.Empty, String.Empty);
+            Font parsedFont = (Font)fontManager[FontName];
 
-            Assert.AreEqual( CorrectFontType, parsedFont.Type, String.Format( "The parsed font should be of type {0}.", CorrectFontType ) );
-            Assert.AreEqual( SourceName, parsedFont.Source, String.Format( "The parsed font should have the source {0}.", SourceName ) );
-            Assert.AreEqual( TrueTypeSize, parsedFont.TrueTypeSize, String.Format( "The parsed font should have the TrueTypeSize {0}.", TrueTypeSize ) );
-            Assert.AreEqual( TrueTypeResolution, parsedFont.TrueTypeResolution, String.Format( "The parsed font should have the TrueTypeResolution {0}.", TrueTypeResolution ) );
+            Assert.AreEqual(CorrectFontType, parsedFont.Type, String.Format("The parsed font should be of type {0}.", CorrectFontType));
+            Assert.AreEqual(SourceName, parsedFont.Source, String.Format("The parsed font should have the source {0}.", SourceName));
+            Assert.AreEqual(TrueTypeSize, parsedFont.TrueTypeSize, String.Format("The parsed font should have the TrueTypeSize {0}.", TrueTypeSize));
+            Assert.AreEqual(TrueTypeResolution, parsedFont.TrueTypeResolution, String.Format("The parsed font should have the TrueTypeResolution {0}.", TrueTypeResolution));
         }
 
         private static Stream GetFontDefinitonStream()
         {
             Stream stream = new MemoryStream();
             ASCIIEncoding encoding = new ASCIIEncoding();
-            byte[] byteData = encoding.GetBytes( Fontdef );
-            stream.Write( byteData, 0, byteData.Length );
+            byte[] byteData = encoding.GetBytes(Fontdef);
+            stream.Write(byteData, 0, byteData.Length);
             stream.Flush();
             stream.Position = 0;
             return stream;

@@ -42,183 +42,183 @@ using Axiom.Serialization;
 
 namespace Axiom.Components.Paging
 {
-	/// <summary>
-	///  Specialisation of PageContentCollection which just provides a simple list
-	///	 of PageContent instances. 
-	/// </summary>
-	/// <remarks>
-	/// @par
-	/// The data format for this in a file is:<br/>
-	/// <b>SimplePageContentCollectionData (Identifier 'SPCD')</b>\n
-	/// [Version 1]
-	/// <table>
-	/// <tr>
-	/// <td><b>Name</b></td>
-	/// <td><b>Type</b></td>
-	/// <td><b>Description</b></td>
-	/// </tr>
-	/// <tr>
-	/// <td>Nested contents</td>
-	/// <td>Nested chunk list</td>
-	/// <td>A sequence of nested PageContent chunks</td>
-	/// </tr>
-	/// </table>
-	/// </remarks>
-	public class SimplePageContentCollection : PageContentCollection
-	{
-		public static uint SUBCLASS_CHUNK_ID = StreamSerializer.MakeIdentifier( "SPCD" );
-		public static ushort SUBCLASS_CHUNK_VERSION = 1;
+    /// <summary>
+    ///  Specialisation of PageContentCollection which just provides a simple list
+    ///	 of PageContent instances. 
+    /// </summary>
+    /// <remarks>
+    /// @par
+    /// The data format for this in a file is:<br/>
+    /// <b>SimplePageContentCollectionData (Identifier 'SPCD')</b>\n
+    /// [Version 1]
+    /// <table>
+    /// <tr>
+    /// <td><b>Name</b></td>
+    /// <td><b>Type</b></td>
+    /// <td><b>Description</b></td>
+    /// </tr>
+    /// <tr>
+    /// <td>Nested contents</td>
+    /// <td>Nested chunk list</td>
+    /// <td>A sequence of nested PageContent chunks</td>
+    /// </tr>
+    /// </table>
+    /// </remarks>
+    public class SimplePageContentCollection : PageContentCollection
+    {
+        public static uint SUBCLASS_CHUNK_ID = StreamSerializer.MakeIdentifier("SPCD");
+        public static ushort SUBCLASS_CHUNK_VERSION = 1;
 
-		protected List<PageContent> mContentList;
+        protected List<PageContent> mContentList;
 
-		/// <summary>
-		/// Get const access to the list of content
-		/// </summary>
-		public List<PageContent> ContentList
-		{
-			[OgreVersion( 1, 7, 2 )]
-			get
-			{
-				return this.mContentList;
-			}
-		}
+        /// <summary>
+        /// Get const access to the list of content
+        /// </summary>
+        public List<PageContent> ContentList
+        {
+            [OgreVersion(1, 7, 2)]
+            get
+            {
+                return this.mContentList;
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public SimplePageContentCollection( SimplePageContentCollectionFactory creator )
-			: base( creator )
-		{
-		}
+        [OgreVersion(1, 7, 2)]
+        public SimplePageContentCollection(SimplePageContentCollectionFactory creator)
+            : base(creator)
+        {
+        }
 
-		[OgreVersion( 1, 7, 2, "~SimplePageContentCollection" )]
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					foreach ( var i in this.mContentList )
-					{
-						i.SafeDispose();
-					}
+        [OgreVersion(1, 7, 2, "~SimplePageContentCollection")]
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    foreach (var i in this.mContentList)
+                    {
+                        i.SafeDispose();
+                    }
 
-					this.mContentList.Clear();
-				}
-			}
+                    this.mContentList.Clear();
+                }
+            }
 
-			base.dispose( disposeManagedResources );
-		}
+            base.dispose(disposeManagedResources);
+        }
 
-		/// <summary>
-		/// Create a new PageContent within this collection.
-		/// </summary>
-		/// <param name="typeName">The name of the type of content  (see PageManager::getContentFactories)</param>
-		[OgreVersion( 1, 7, 2 )]
-		public virtual PageContent CreateContent( string typeName )
-		{
-			var c = Manager.CreateContent( typeName );
-			this.mContentList.Add( c );
-			return c;
-		}
+        /// <summary>
+        /// Create a new PageContent within this collection.
+        /// </summary>
+        /// <param name="typeName">The name of the type of content  (see PageManager::getContentFactories)</param>
+        [OgreVersion(1, 7, 2)]
+        public virtual PageContent CreateContent(string typeName)
+        {
+            var c = Manager.CreateContent(typeName);
+            this.mContentList.Add(c);
+            return c;
+        }
 
-		/// <summary>
-		/// Destroy a PageContent within this page.
-		/// This is equivalent to calling detachContent and 
-		/// PageManager::destroyContent.
-		/// </summary>
-		[OgreVersion( 1, 7, 2 )]
-		public virtual void DestroyContent( PageContent c )
-		{
-			if ( this.mContentList.Contains( c ) )
-			{
-				this.mContentList.Remove( c );
-			}
+        /// <summary>
+        /// Destroy a PageContent within this page.
+        /// This is equivalent to calling detachContent and 
+        /// PageManager::destroyContent.
+        /// </summary>
+        [OgreVersion(1, 7, 2)]
+        public virtual void DestroyContent(PageContent c)
+        {
+            if (this.mContentList.Contains(c))
+            {
+                this.mContentList.Remove(c);
+            }
 
-			Manager.DestroyContent( ref c );
-		}
+            Manager.DestroyContent(ref c);
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public override void Save( StreamSerializer stream )
-		{
-			stream.WriteChunkBegin( SUBCLASS_CHUNK_ID, SUBCLASS_CHUNK_VERSION );
+        [OgreVersion(1, 7, 2)]
+        public override void Save(StreamSerializer stream)
+        {
+            stream.WriteChunkBegin(SUBCLASS_CHUNK_ID, SUBCLASS_CHUNK_VERSION);
 
-			foreach ( var c in this.mContentList )
-			{
-				c.Save( stream );
-			}
+            foreach (var c in this.mContentList)
+            {
+                c.Save(stream);
+            }
 
-			stream.WriteChunkEnd( SUBCLASS_CHUNK_ID );
-		}
+            stream.WriteChunkEnd(SUBCLASS_CHUNK_ID);
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public override void FrameStart( Real timeSinceLastFrame )
-		{
-			foreach ( var c in this.mContentList )
-			{
-				c.FrameStart( timeSinceLastFrame );
-			}
-		}
+        [OgreVersion(1, 7, 2)]
+        public override void FrameStart(Real timeSinceLastFrame)
+        {
+            foreach (var c in this.mContentList)
+            {
+                c.FrameStart(timeSinceLastFrame);
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public override void FrameEnd( Real timeElapsed )
-		{
-			foreach ( var c in this.mContentList )
-			{
-				c.FrameEnd( timeElapsed );
-			}
-		}
+        [OgreVersion(1, 7, 2)]
+        public override void FrameEnd(Real timeElapsed)
+        {
+            foreach (var c in this.mContentList)
+            {
+                c.FrameEnd(timeElapsed);
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public override void NotifyCamera( Camera camera )
-		{
-			foreach ( var c in this.mContentList )
-			{
-				c.NotifyCamera( camera );
-			}
-		}
+        [OgreVersion(1, 7, 2)]
+        public override void NotifyCamera(Camera camera)
+        {
+            foreach (var c in this.mContentList)
+            {
+                c.NotifyCamera(camera);
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public override bool Prepare( StreamSerializer stream )
-		{
-			if ( stream.ReadChunkBegin( SUBCLASS_CHUNK_ID, SUBCLASS_CHUNK_VERSION, "SimplePageContentCollection" ) == null )
-			{
-				return false;
-			}
+        [OgreVersion(1, 7, 2)]
+        public override bool Prepare(StreamSerializer stream)
+        {
+            if (stream.ReadChunkBegin(SUBCLASS_CHUNK_ID, SUBCLASS_CHUNK_VERSION, "SimplePageContentCollection") == null)
+            {
+                return false;
+            }
 
-			bool ret = true;
-			foreach ( var i in this.mContentList )
-			{
-				ret &= i.Prepare( stream );
-			}
+            bool ret = true;
+            foreach (var i in this.mContentList)
+            {
+                ret &= i.Prepare(stream);
+            }
 
-			stream.ReadChunkEnd( SUBCLASS_CHUNK_ID );
-			return ret;
-		}
+            stream.ReadChunkEnd(SUBCLASS_CHUNK_ID);
+            return ret;
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public override void Load()
-		{
-			foreach ( var i in this.mContentList )
-			{
-				i.Load();
-			}
-		}
+        [OgreVersion(1, 7, 2)]
+        public override void Load()
+        {
+            foreach (var i in this.mContentList)
+            {
+                i.Load();
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public override void UnLoad()
-		{
-			foreach ( var i in this.mContentList )
-			{
-				i.UnLoad();
-			}
-		}
+        [OgreVersion(1, 7, 2)]
+        public override void UnLoad()
+        {
+            foreach (var i in this.mContentList)
+            {
+                i.UnLoad();
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public override void UnPrepare()
-		{
-			foreach ( var i in this.mContentList )
-			{
-				i.UnPrepare();
-			}
-		}
-	};
+        [OgreVersion(1, 7, 2)]
+        public override void UnPrepare()
+        {
+            foreach (var i in this.mContentList)
+            {
+                i.UnPrepare();
+            }
+        }
+    };
 }

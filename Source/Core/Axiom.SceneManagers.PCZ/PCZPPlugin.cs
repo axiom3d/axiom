@@ -37,36 +37,33 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Text;
+using System.Composition;
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.SceneManagers.PortalConnected
 {
-	[Export( typeof ( IPlugin ) )]
-	public class PCZPPlugin : IPlugin
-	{
-		public void Initialize()
-		{
-			this.PCZSMFactory = new PCZSceneManagerFactory();
-			this.lightFactory = new PCZLightFactory();
+    [Export(typeof(IPlugin))]
+    public class PCZPPlugin : IPlugin
+    {
+        public void Initialize()
+        {
+            this.PCZSMFactory = new PCZSceneManagerFactory();
+            this.lightFactory = new PCZLightFactory();
 
-			Root.Instance.AddSceneManagerFactory( this.PCZSMFactory );
-			Root.Instance.AddMovableObjectFactory( this.lightFactory, true );
-		}
+            Root.Instance.AddSceneManagerFactory(this.PCZSMFactory);
+            Root.Instance.AddMovableObjectFactory(this.lightFactory, true);
+        }
 
-		public void Shutdown()
-		{
-			Root.Instance.RemoveSceneManagerFactory( this.PCZSMFactory );
-			Root.Instance.RemoveMovableObjectFactory( this.lightFactory );
-		}
+        public void Shutdown()
+        {
+            Root.Instance.RemoveSceneManagerFactory(this.PCZSMFactory);
+            Root.Instance.RemoveMovableObjectFactory(this.lightFactory);
+        }
 
-		private PCZSceneManagerFactory PCZSMFactory;
+        private PCZSceneManagerFactory PCZSMFactory;
 
-		private PCZLightFactory lightFactory;
-	}
+        private PCZLightFactory lightFactory;
+    }
 }

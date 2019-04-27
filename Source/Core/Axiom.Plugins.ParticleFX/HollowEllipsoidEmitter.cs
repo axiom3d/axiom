@@ -48,233 +48,233 @@ using Axiom.Scripting;
 
 namespace Axiom.ParticleFX
 {
-	/// <summary>
-	/// Summary description for HollowEllipsidEmitter.
-	/// </summary>
-	public class HollowEllipsoidEmitter : AreaEmitter
-	{
-		#region Fields
+    /// <summary>
+    /// Summary description for HollowEllipsidEmitter.
+    /// </summary>
+    public class HollowEllipsoidEmitter : AreaEmitter
+    {
+        #region Fields
 
-		protected float innerX;
-		protected float innerY;
-		protected float innerZ;
+        protected float innerX;
+        protected float innerY;
+        protected float innerZ;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Properties
+        #region Properties
 
-		public float InnerX
-		{
-			get
-			{
-				return this.innerX;
-			}
-			set
-			{
-				Debug.Assert( value > 0.0f && value < 1.0f );
-				this.innerX = value;
-			}
-		}
+        public float InnerX
+        {
+            get
+            {
+                return this.innerX;
+            }
+            set
+            {
+                Debug.Assert(value > 0.0f && value < 1.0f);
+                this.innerX = value;
+            }
+        }
 
-		public float InnerY
-		{
-			get
-			{
-				return this.innerY;
-			}
-			set
-			{
-				Debug.Assert( value > 0.0f && value < 1.0f );
-				this.innerY = value;
-			}
-		}
+        public float InnerY
+        {
+            get
+            {
+                return this.innerY;
+            }
+            set
+            {
+                Debug.Assert(value > 0.0f && value < 1.0f);
+                this.innerY = value;
+            }
+        }
 
-		public float InnerZ
-		{
-			get
-			{
-				return this.innerZ;
-			}
-			set
-			{
-				Debug.Assert( value > 0.0f && value < 1.0f );
-				this.innerZ = value;
-			}
-		}
+        public float InnerZ
+        {
+            get
+            {
+                return this.innerZ;
+            }
+            set
+            {
+                Debug.Assert(value > 0.0f && value < 1.0f);
+                this.innerZ = value;
+            }
+        }
 
-		#endregion Properties
+        #endregion Properties
 
-		public HollowEllipsoidEmitter( ParticleSystem ps )
-			: base( ps )
-		{
-			InitDefaults( "HollowEllipsoid" );
-			this.innerX = 0.5f;
-			this.innerY = 0.5f;
-			this.innerZ = 0.5f;
-		}
+        public HollowEllipsoidEmitter(ParticleSystem ps)
+            : base(ps)
+        {
+            InitDefaults("HollowEllipsoid");
+            this.innerX = 0.5f;
+            this.innerY = 0.5f;
+            this.innerZ = 0.5f;
+        }
 
-		public override void InitParticle( Particle particle )
-		{
-			float alpha, beta, a, b, c, x, y, z;
+        public override void InitParticle(Particle particle)
+        {
+            float alpha, beta, a, b, c, x, y, z;
 
-			particle.ResetDimensions();
+            particle.ResetDimensions();
 
-			// create two random angles alpha and beta
-			// with these two angles, we are able to select any point on an
-			// ellipsoid's surface
-			Utility.RangeRandom( durationMin, durationMax );
+            // create two random angles alpha and beta
+            // with these two angles, we are able to select any point on an
+            // ellipsoid's surface
+            Utility.RangeRandom(durationMin, durationMax);
 
-			alpha = Utility.RangeRandom( 0, Utility.TWO_PI );
-			beta = Utility.RangeRandom( 0, Utility.PI );
+            alpha = Utility.RangeRandom(0, Utility.TWO_PI);
+            beta = Utility.RangeRandom(0, Utility.PI);
 
-			// create three random radius values that are bigger than the inner
-			// size, but smaller/equal than/to the outer size 1.0 (inner size is
-			// between 0 and 1)
-			a = Utility.RangeRandom( InnerX, 1.0f );
-			b = Utility.RangeRandom( InnerY, 1.0f );
-			c = Utility.RangeRandom( InnerZ, 1.0f );
+            // create three random radius values that are bigger than the inner
+            // size, but smaller/equal than/to the outer size 1.0 (inner size is
+            // between 0 and 1)
+            a = Utility.RangeRandom(InnerX, 1.0f);
+            b = Utility.RangeRandom(InnerY, 1.0f);
+            c = Utility.RangeRandom(InnerZ, 1.0f);
 
-			// with a,b,c we have defined a random ellipsoid between the inner
-			// ellipsoid and the outer sphere (radius 1.0)
-			// with alpha and beta we select on point on this random ellipsoid
-			// and calculate the 3D coordinates of this point
-			x = a*Utility.Cos( alpha )*Utility.Sin( beta );
-			y = b*Utility.Sin( alpha )*Utility.Sin( beta );
-			z = c*Utility.Cos( beta );
+            // with a,b,c we have defined a random ellipsoid between the inner
+            // ellipsoid and the outer sphere (radius 1.0)
+            // with alpha and beta we select on point on this random ellipsoid
+            // and calculate the 3D coordinates of this point
+            x = a * Utility.Cos(alpha) * Utility.Sin(beta);
+            y = b * Utility.Sin(alpha) * Utility.Sin(beta);
+            z = c * Utility.Cos(beta);
 
-			// scale the found point to the ellipsoid's size and move it
-			// relatively to the center of the emitter point
+            // scale the found point to the ellipsoid's size and move it
+            // relatively to the center of the emitter point
 
-			particle.Position = Position + x*xRange + y*yRange*z*zRange;
+            particle.Position = Position + x * xRange + y * yRange * z * zRange;
 
-			// Generate complex data by reference
-			GenerateEmissionColor( ref particle.Color );
-			GenerateEmissionDirection( ref particle.Direction );
-			GenerateEmissionVelocity( ref particle.Direction );
+            // Generate complex data by reference
+            GenerateEmissionColor(ref particle.Color);
+            GenerateEmissionDirection(ref particle.Direction);
+            GenerateEmissionVelocity(ref particle.Direction);
 
-			// Generate simpler data
-			particle.timeToLive = GenerateEmissionTTL();
-		}
+            // Generate simpler data
+            particle.timeToLive = GenerateEmissionTTL();
+        }
 
-		#region Command definition classes
+        #region Command definition classes
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "width", "Width of the hollow ellipsoidal emitter.", typeof ( ParticleEmitter ) )]
-		public class WidthCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				var emitter = target as HollowEllipsoidEmitter;
-				emitter.Width = StringConverter.ParseFloat( val );
-			}
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptableProperty("width", "Width of the hollow ellipsoidal emitter.", typeof(ParticleEmitter))]
+        public class WidthCommand : IPropertyCommand
+        {
+            public void Set(object target, string val)
+            {
+                var emitter = target as HollowEllipsoidEmitter;
+                emitter.Width = StringConverter.ParseFloat(val);
+            }
 
-			public string Get( object target )
-			{
-				var emitter = target as HollowEllipsoidEmitter;
-				return StringConverter.ToString( emitter.Width );
-			}
-		}
+            public string Get(object target)
+            {
+                var emitter = target as HollowEllipsoidEmitter;
+                return StringConverter.ToString(emitter.Width);
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "height", "Height of the hollow ellipsoidal emitter.", typeof ( ParticleEmitter ) )]
-		public class HeightCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				var emitter = target as HollowEllipsoidEmitter;
-				emitter.Height = StringConverter.ParseFloat( val );
-			}
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptableProperty("height", "Height of the hollow ellipsoidal emitter.", typeof(ParticleEmitter))]
+        public class HeightCommand : IPropertyCommand
+        {
+            public void Set(object target, string val)
+            {
+                var emitter = target as HollowEllipsoidEmitter;
+                emitter.Height = StringConverter.ParseFloat(val);
+            }
 
-			public string Get( object target )
-			{
-				var emitter = target as HollowEllipsoidEmitter;
-				return StringConverter.ToString( emitter.Height );
-			}
-		}
+            public string Get(object target)
+            {
+                var emitter = target as HollowEllipsoidEmitter;
+                return StringConverter.ToString(emitter.Height);
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "depth", "Depth of the hollow ellipsoidal emitter.", typeof ( ParticleEmitter ) )]
-		public class DepthCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				var emitter = target as HollowEllipsoidEmitter;
-				emitter.Depth = StringConverter.ParseFloat( val );
-			}
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptableProperty("depth", "Depth of the hollow ellipsoidal emitter.", typeof(ParticleEmitter))]
+        public class DepthCommand : IPropertyCommand
+        {
+            public void Set(object target, string val)
+            {
+                var emitter = target as HollowEllipsoidEmitter;
+                emitter.Depth = StringConverter.ParseFloat(val);
+            }
 
-			public string Get( object target )
-			{
-				var emitter = target as HollowEllipsoidEmitter;
-				return StringConverter.ToString( emitter.Depth );
-			}
-		}
+            public string Get(object target)
+            {
+                var emitter = target as HollowEllipsoidEmitter;
+                return StringConverter.ToString(emitter.Depth);
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "inner_width", "Parametric value describing the proportion of the shape which is hollow.",
-			typeof ( ParticleEmitter ) )]
-		public class InnerWidthCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				var emitter = target as HollowEllipsoidEmitter;
-				emitter.InnerX = StringConverter.ParseFloat( val );
-			}
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptableProperty("inner_width", "Parametric value describing the proportion of the shape which is hollow.",
+            typeof(ParticleEmitter))]
+        public class InnerWidthCommand : IPropertyCommand
+        {
+            public void Set(object target, string val)
+            {
+                var emitter = target as HollowEllipsoidEmitter;
+                emitter.InnerX = StringConverter.ParseFloat(val);
+            }
 
-			public string Get( object target )
-			{
-				var emitter = target as HollowEllipsoidEmitter;
-				return StringConverter.ToString( emitter.InnerX );
-			}
-		}
+            public string Get(object target)
+            {
+                var emitter = target as HollowEllipsoidEmitter;
+                return StringConverter.ToString(emitter.InnerX);
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "inner_height", "Parametric value describing the proportion of the shape which is hollow.",
-			typeof ( ParticleEmitter ) )]
-		public class InnerHeightCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				var emitter = target as HollowEllipsoidEmitter;
-				emitter.InnerY = StringConverter.ParseFloat( val );
-			}
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptableProperty("inner_height", "Parametric value describing the proportion of the shape which is hollow.",
+            typeof(ParticleEmitter))]
+        public class InnerHeightCommand : IPropertyCommand
+        {
+            public void Set(object target, string val)
+            {
+                var emitter = target as HollowEllipsoidEmitter;
+                emitter.InnerY = StringConverter.ParseFloat(val);
+            }
 
-			public string Get( object target )
-			{
-				var emitter = target as HollowEllipsoidEmitter;
-				return StringConverter.ToString( emitter.InnerY );
-			}
-		}
+            public string Get(object target)
+            {
+                var emitter = target as HollowEllipsoidEmitter;
+                return StringConverter.ToString(emitter.InnerY);
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "inner_depth", "Parametric value describing the proportion of the shape which is hollow.",
-			typeof ( ParticleEmitter ) )]
-		public class InnerDepthCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				var emitter = target as HollowEllipsoidEmitter;
-				emitter.InnerZ = StringConverter.ParseFloat( val );
-			}
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptableProperty("inner_depth", "Parametric value describing the proportion of the shape which is hollow.",
+            typeof(ParticleEmitter))]
+        public class InnerDepthCommand : IPropertyCommand
+        {
+            public void Set(object target, string val)
+            {
+                var emitter = target as HollowEllipsoidEmitter;
+                emitter.InnerZ = StringConverter.ParseFloat(val);
+            }
 
-			public string Get( object target )
-			{
-				var emitter = target as HollowEllipsoidEmitter;
-				return StringConverter.ToString( emitter.InnerZ );
-			}
-		}
+            public string Get(object target)
+            {
+                var emitter = target as HollowEllipsoidEmitter;
+                return StringConverter.ToString(emitter.InnerZ);
+            }
+        }
 
-		#endregion Command definition classes
-	}
+        #endregion Command definition classes
+    }
 }

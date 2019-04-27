@@ -29,89 +29,89 @@ using Axiom.Overlays.Elements;
 
 namespace Axiom.Samples
 {
-	/// <summary>
-	/// Basic label widget.
-	/// </summary>
-	public class Label : Widget
-	{
-		#region fields
+    /// <summary>
+    /// Basic label widget.
+    /// </summary>
+    public class Label : Widget
+    {
+        #region fields
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public OverlayElement textArea;
+        /// <summary>
+        /// 
+        /// </summary>
+        public OverlayElement textArea;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected bool isFitToTray;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected bool isFitToTray;
 
-		#endregion
+        #endregion
 
-		#region properties
+        #region properties
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public string Caption
-		{
-			get
-			{
-				return this.textArea.Text;
-			}
-			set
-			{
-				this.textArea.Text = value;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Caption
+        {
+            get
+            {
+                return this.textArea.Text;
+            }
+            set
+            {
+                this.textArea.Text = value;
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public bool IsFitToTray
-		{
-			get
-			{
-				return this.isFitToTray;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsFitToTray
+        {
+            get
+            {
+                return this.isFitToTray;
+            }
+        }
 
-		#endregion properties
+        #endregion properties
 
-		/// <summary>
-		/// Do not instantiate any widgets directly. Use SdkTrayManager.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="caption"></param>
-		/// <param name="width"></param>
-		public Label( String name, String caption, Real width )
-		{
-			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Label", "BorderPanel", name );
-			this.textArea = (TextArea)( (OverlayElementContainer)element ).Children[ Name + "/LabelCaption" ];
-			this.textArea.Text = caption;
-			Caption = caption;
-			if ( width <= 0 )
-			{
-				this.isFitToTray = true;
-			}
-			else
-			{
-				this.isFitToTray = false;
-				element.Width = width;
-			}
-		}
+        /// <summary>
+        /// Do not instantiate any widgets directly. Use SdkTrayManager.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="caption"></param>
+        /// <param name="width"></param>
+        public Label(String name, String caption, Real width)
+        {
+            element = OverlayManager.Instance.Elements.CreateElementFromTemplate("SdkTrays/Label", "BorderPanel", name);
+            this.textArea = (TextArea)((OverlayElementContainer)element).Children[Name + "/LabelCaption"];
+            this.textArea.Text = caption;
+            Caption = caption;
+            if (width <= 0)
+            {
+                this.isFitToTray = true;
+            }
+            else
+            {
+                this.isFitToTray = false;
+                element.Width = width;
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="cursorPos"></param>
-		public override void OnCursorPressed( Vector2 cursorPos )
-		{
-			if ( listener != null && IsCursorOver( element, cursorPos, 3 ) )
-			{
-				listener.LabelHit( this );
-			}
-			base.OnCursorPressed( cursorPos );
-		}
-	}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cursorPos"></param>
+        public override void OnCursorPressed(Vector2 cursorPos)
+        {
+            if (listener != null && IsCursorOver(element, cursorPos, 3))
+            {
+                listener.LabelHit(this);
+            }
+            base.OnCursorPressed(cursorPos);
+        }
+    }
 }

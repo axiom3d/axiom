@@ -48,243 +48,243 @@ using Axiom.Graphics.Collections;
 
 namespace Axiom.Graphics
 {
-	/// <summary>
-	///		This class defines the interface that must be implemented by shadow casters.
-	/// </summary>
-	public abstract class ShadowCaster : DisposableObject
-	{
-		#region Properties
+    /// <summary>
+    ///		This class defines the interface that must be implemented by shadow casters.
+    /// </summary>
+    public abstract class ShadowCaster : DisposableObject
+    {
+        #region Properties
 
-		/// <summary>
-		///		Gets/Sets whether or not this object currently casts a shadow.
-		/// </summary>
-		public abstract bool CastShadows { get; set; }
+        /// <summary>
+        ///		Gets/Sets whether or not this object currently casts a shadow.
+        /// </summary>
+        public abstract bool CastShadows { get; set; }
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		///		Gets the world space bounding box of the dark cap, as extruded using the light provided.
-		/// </summary>
-		/// <param name="light"></param>
-		/// <param name="dirLightExtrusionDist"></param>
-		/// <returns></returns>
-		public abstract AxisAlignedBox GetDarkCapBounds( Light light, float dirLightExtrusionDist );
+        /// <summary>
+        ///		Gets the world space bounding box of the dark cap, as extruded using the light provided.
+        /// </summary>
+        /// <param name="light"></param>
+        /// <param name="dirLightExtrusionDist"></param>
+        /// <returns></returns>
+        public abstract AxisAlignedBox GetDarkCapBounds(Light light, float dirLightExtrusionDist);
 
-		/// <summary>
-		///		Gets details of the edges which might be used to determine a silhouette.
-		/// </summary>
-		/// <remarks>Defaults to LOD index 0.</remarks>
-		public virtual EdgeData GetEdgeList()
-		{
-			return GetEdgeList( 0 );
-		}
+        /// <summary>
+        ///		Gets details of the edges which might be used to determine a silhouette.
+        /// </summary>
+        /// <remarks>Defaults to LOD index 0.</remarks>
+        public virtual EdgeData GetEdgeList()
+        {
+            return GetEdgeList(0);
+        }
 
-		/// <summary>
-		///		Gets details of the edges which might be used to determine a silhouette.
-		/// </summary>
-		public abstract EdgeData GetEdgeList( int lodIndex );
+        /// <summary>
+        ///		Gets details of the edges which might be used to determine a silhouette.
+        /// </summary>
+        public abstract EdgeData GetEdgeList(int lodIndex);
 
-		/// <summary>
-		///		Gets the world space bounding box of the light cap.
-		/// </summary>
-		/// <returns></returns>
-		public abstract AxisAlignedBox GetLightCapBounds();
+        /// <summary>
+        ///		Gets the world space bounding box of the light cap.
+        /// </summary>
+        /// <returns></returns>
+        public abstract AxisAlignedBox GetLightCapBounds();
 
-		/// <summary>
-		///		Get the world bounding box of the caster.
-		/// </summary>
-		/// <param name="derive"></param>
-		/// <returns></returns>
-		public abstract AxisAlignedBox GetWorldBoundingBox( bool derive );
+        /// <summary>
+        ///		Get the world bounding box of the caster.
+        /// </summary>
+        /// <param name="derive"></param>
+        /// <returns></returns>
+        public abstract AxisAlignedBox GetWorldBoundingBox(bool derive);
 
-		public AxisAlignedBox GetWorldBoundingBox()
-		{
-			return GetWorldBoundingBox( false );
-		}
+        public AxisAlignedBox GetWorldBoundingBox()
+        {
+            return GetWorldBoundingBox(false);
+        }
 
-		/// <summary>
-		///		Gets an iterator over the renderables required to render the shadow volume.
-		/// </summary>
-		/// <remarks>
-		///		Shadowable geometry should ideally be designed such that there is only one
-		///		ShadowRenderable required to render the the shadow; however this is not a necessary
-		///		limitation and it can be exceeded if required.
-		/// </remarks>
-		/// <param name="technique">The technique being used to generate the shadow.</param>
-		/// <param name="light">The light to generate the shadow from.</param>
-		/// <param name="indexBuffer">The index buffer to build the renderables into,
-		/// the current contents are assumed to be disposable.</param>
-		/// <param name="extrudeVertices">If true, this means this class should extrude
-		/// the vertices of the back of the volume in software. If false, it
-		/// will not be done (a vertex program is assumed).</param>
-		/// <param name="extrusionDistance"></param>
-		/// <param name="flags">Technique-specific flags, see <see cref="ShadowRenderableFlags"/></param>
-		/// <returns>An iterator that will allow iteration over all renderables for the full shadow volume.</returns>
-		public abstract IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-		                                                                 HardwareIndexBuffer indexBuffer, bool extrudeVertices,
-		                                                                 float extrusionDistance, int flags );
+        /// <summary>
+        ///		Gets an iterator over the renderables required to render the shadow volume.
+        /// </summary>
+        /// <remarks>
+        ///		Shadowable geometry should ideally be designed such that there is only one
+        ///		ShadowRenderable required to render the the shadow; however this is not a necessary
+        ///		limitation and it can be exceeded if required.
+        /// </remarks>
+        /// <param name="technique">The technique being used to generate the shadow.</param>
+        /// <param name="light">The light to generate the shadow from.</param>
+        /// <param name="indexBuffer">The index buffer to build the renderables into,
+        /// the current contents are assumed to be disposable.</param>
+        /// <param name="extrudeVertices">If true, this means this class should extrude
+        /// the vertices of the back of the volume in software. If false, it
+        /// will not be done (a vertex program is assumed).</param>
+        /// <param name="extrusionDistance"></param>
+        /// <param name="flags">Technique-specific flags, see <see cref="ShadowRenderableFlags"/></param>
+        /// <returns>An iterator that will allow iteration over all renderables for the full shadow volume.</returns>
+        public abstract IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light,
+                                                                         HardwareIndexBuffer indexBuffer, bool extrudeVertices,
+                                                                         float extrusionDistance, int flags);
 
-		public IEnumerator GetShadowVolumeRenderableEnumerator( ShadowTechnique technique, Light light,
-		                                                        HardwareIndexBuffer indexBuffer, float extrusionDistance,
-		                                                        bool extrudeVertices )
-		{
-			return GetShadowVolumeRenderableEnumerator( technique, light, indexBuffer, extrudeVertices, extrusionDistance, 0 );
-		}
+        public IEnumerator GetShadowVolumeRenderableEnumerator(ShadowTechnique technique, Light light,
+                                                                HardwareIndexBuffer indexBuffer, float extrusionDistance,
+                                                                bool extrudeVertices)
+        {
+            return GetShadowVolumeRenderableEnumerator(technique, light, indexBuffer, extrudeVertices, extrusionDistance, 0);
+        }
 
-		/// <summary>
-		///		Return the last calculated shadow renderables.
-		/// </summary>
-		/// <returns></returns>
-		public abstract IEnumerator GetLastShadowVolumeRenderableEnumerator();
+        /// <summary>
+        ///		Return the last calculated shadow renderables.
+        /// </summary>
+        /// <returns></returns>
+        public abstract IEnumerator GetLastShadowVolumeRenderableEnumerator();
 
-		/// <summary>
-		///		Utility method for extruding vertices based on a light.
-		/// </summary>
-		/// <remarks>
-		///		Unfortunately, because D3D cannot handle homogenous (4D) position
-		///		coordinates in the fixed-function pipeline (GL can, but we have to
-		///		be cross-API), when we extrude in software we cannot extrude to
-		///		infinity the way we do in the vertex program (by setting w to
-		///		0.0f). Therefore we extrude by a fixed distance, which may cause
-		///		some problems with larger scenes. Luckily better hardware (ie
-		///		vertex programs) can fix this.
-		/// </remarks>
-		/// <param name="vertexBuffer">The vertex buffer containing ONLY xyz position
-		/// values, which must be originalVertexCount * 2 * 3 floats long.</param>
-		/// <param name="originalVertexCount">The count of the original number of
-		/// vertices, ie the number in the mesh, not counting the doubling
-		/// which has already been done (by <see cref="VertexData.PrepareForShadowVolume"/>)
-		/// to provide the extruded area of the buffer.</param>
-		/// <param name="lightPosition"> 4D light position in object space, when w=0.0f this
-		/// represents a directional light</param>
-		/// <param name="extrudeDistance">The distance to extrude.</param>
-		public static void ExtrudeVertices( HardwareVertexBuffer vertexBuffer, int originalVertexCount, Vector4 lightPosition,
-		                                    float extrudeDistance )
-		{
+        /// <summary>
+        ///		Utility method for extruding vertices based on a light.
+        /// </summary>
+        /// <remarks>
+        ///		Unfortunately, because D3D cannot handle homogenous (4D) position
+        ///		coordinates in the fixed-function pipeline (GL can, but we have to
+        ///		be cross-API), when we extrude in software we cannot extrude to
+        ///		infinity the way we do in the vertex program (by setting w to
+        ///		0.0f). Therefore we extrude by a fixed distance, which may cause
+        ///		some problems with larger scenes. Luckily better hardware (ie
+        ///		vertex programs) can fix this.
+        /// </remarks>
+        /// <param name="vertexBuffer">The vertex buffer containing ONLY xyz position
+        /// values, which must be originalVertexCount * 2 * 3 floats long.</param>
+        /// <param name="originalVertexCount">The count of the original number of
+        /// vertices, ie the number in the mesh, not counting the doubling
+        /// which has already been done (by <see cref="VertexData.PrepareForShadowVolume"/>)
+        /// to provide the extruded area of the buffer.</param>
+        /// <param name="lightPosition"> 4D light position in object space, when w=0.0f this
+        /// represents a directional light</param>
+        /// <param name="extrudeDistance">The distance to extrude.</param>
+        public static void ExtrudeVertices(HardwareVertexBuffer vertexBuffer, int originalVertexCount, Vector4 lightPosition,
+                                            float extrudeDistance)
+        {
 #if !AXIOM_SAFE_ONLY
-			unsafe
+            unsafe
 #endif
-			{
-				Debug.Assert( vertexBuffer.VertexSize == sizeof ( float )*3, "Position buffer should contain only positions!" );
+            {
+                Debug.Assert(vertexBuffer.VertexSize == sizeof(float) * 3, "Position buffer should contain only positions!");
 
-				// Extrude the first area of the buffer into the second area
-				// Lock the entire buffer for writing, even though we'll only be
-				// updating the latter because you can't have 2 locks on the same
-				// buffer
-				var srcPtr = vertexBuffer.Lock( BufferLocking.Normal );
-				var destPtr = srcPtr + ( originalVertexCount*3*4 );
-				var pSrc = srcPtr.ToFloatPointer();
-				var pDest = destPtr.ToFloatPointer();
+                // Extrude the first area of the buffer into the second area
+                // Lock the entire buffer for writing, even though we'll only be
+                // updating the latter because you can't have 2 locks on the same
+                // buffer
+                var srcPtr = vertexBuffer.Lock(BufferLocking.Normal);
+                var destPtr = srcPtr + (originalVertexCount * 3 * 4);
+                var pSrc = srcPtr.ToFloatPointer();
+                var pDest = destPtr.ToFloatPointer();
 
-				int destCount = 0, srcCount = 0;
+                int destCount = 0, srcCount = 0;
 
-				// Assume directional light, extrusion is along light direction
-				var extrusionDir = new Vector3( -lightPosition.x, -lightPosition.y, -lightPosition.z );
-				extrusionDir.Normalize();
-				extrusionDir *= extrudeDistance;
+                // Assume directional light, extrusion is along light direction
+                var extrusionDir = new Vector3(-lightPosition.x, -lightPosition.y, -lightPosition.z);
+                extrusionDir.Normalize();
+                extrusionDir *= extrudeDistance;
 
-				for ( var vert = 0; vert < originalVertexCount; vert++ )
-				{
-					if ( lightPosition.w != 0.0f )
-					{
-						// Point light, adjust extrusionDir
-						extrusionDir.x = pSrc[ srcCount + 0 ] - lightPosition.x;
-						extrusionDir.y = pSrc[ srcCount + 1 ] - lightPosition.y;
-						extrusionDir.z = pSrc[ srcCount + 2 ] - lightPosition.z;
-						extrusionDir.Normalize();
-						extrusionDir *= extrudeDistance;
-					}
+                for (var vert = 0; vert < originalVertexCount; vert++)
+                {
+                    if (lightPosition.w != 0.0f)
+                    {
+                        // Point light, adjust extrusionDir
+                        extrusionDir.x = pSrc[srcCount + 0] - lightPosition.x;
+                        extrusionDir.y = pSrc[srcCount + 1] - lightPosition.y;
+                        extrusionDir.z = pSrc[srcCount + 2] - lightPosition.z;
+                        extrusionDir.Normalize();
+                        extrusionDir *= extrudeDistance;
+                    }
 
-					pDest[ destCount++ ] = pSrc[ srcCount++ ] + extrusionDir.x;
-					pDest[ destCount++ ] = pSrc[ srcCount++ ] + extrusionDir.y;
-					pDest[ destCount++ ] = pSrc[ srcCount++ ] + extrusionDir.z;
-				}
-			}
+                    pDest[destCount++] = pSrc[srcCount++] + extrusionDir.x;
+                    pDest[destCount++] = pSrc[srcCount++] + extrusionDir.y;
+                    pDest[destCount++] = pSrc[srcCount++] + extrusionDir.z;
+                }
+            }
 
-			vertexBuffer.Unlock();
-		}
+            vertexBuffer.Unlock();
+        }
 
-		/// <summary>
-		///		Tells the caster to perform the tasks necessary to update the
-		///		edge data's light listing. Can be overridden if the subclass needs
-		///		to do additional things.
-		/// </summary>
-		/// <param name="edgeData">The edge information to update.</param>
-		/// <param name="lightPosition">4D vector representing the light, a directional light has w=0.0.</param>
-		protected virtual void UpdateEdgeListLightFacing( EdgeData edgeData, Vector4 lightPosition )
-		{
-			edgeData.UpdateTriangleLightFacing( lightPosition );
-		}
+        /// <summary>
+        ///		Tells the caster to perform the tasks necessary to update the
+        ///		edge data's light listing. Can be overridden if the subclass needs
+        ///		to do additional things.
+        /// </summary>
+        /// <param name="edgeData">The edge information to update.</param>
+        /// <param name="lightPosition">4D vector representing the light, a directional light has w=0.0.</param>
+        protected virtual void UpdateEdgeListLightFacing(EdgeData edgeData, Vector4 lightPosition)
+        {
+            edgeData.UpdateTriangleLightFacing(lightPosition);
+        }
 
-		/// <summary>
-		///		Generates the indexes required to render a shadow volume into the
-		///		index buffer which is passed in, and updates shadow renderables to use it.
-		/// </summary>
-		/// <param name="edgeData">The edge information to use.</param>
-		/// <param name="indexBuffer">The buffer into which to write data into; current
-		///	contents are assumed to be discardable.</param>
-		/// <param name="light">The light, mainly for type info as silhouette calculations
-		/// should already have been done in <see cref="UpdateEdgeListLightFacing"/></param>
-		/// <param name="shadowRenderables">A list of shadow renderables which has
-		/// already been constructed but will need populating with details of
-		/// the index ranges to be used.</param>
-		/// <param name="flags">Additional controller flags, see <see cref="ShadowRenderableFlags"/>.</param>
-		protected virtual void GenerateShadowVolume( EdgeData edgeData, HardwareIndexBuffer indexBuffer, Light light,
-		                                             ShadowRenderableList shadowRenderables, int flags )
-		{
-			// Edge groups should be 1:1 with shadow renderables
-			Debug.Assert( edgeData.edgeGroups.Count == shadowRenderables.Count );
+        /// <summary>
+        ///		Generates the indexes required to render a shadow volume into the
+        ///		index buffer which is passed in, and updates shadow renderables to use it.
+        /// </summary>
+        /// <param name="edgeData">The edge information to use.</param>
+        /// <param name="indexBuffer">The buffer into which to write data into; current
+        ///	contents are assumed to be discardable.</param>
+        /// <param name="light">The light, mainly for type info as silhouette calculations
+        /// should already have been done in <see cref="UpdateEdgeListLightFacing"/></param>
+        /// <param name="shadowRenderables">A list of shadow renderables which has
+        /// already been constructed but will need populating with details of
+        /// the index ranges to be used.</param>
+        /// <param name="flags">Additional controller flags, see <see cref="ShadowRenderableFlags"/>.</param>
+        protected virtual void GenerateShadowVolume(EdgeData edgeData, HardwareIndexBuffer indexBuffer, Light light,
+                                                     ShadowRenderableList shadowRenderables, int flags)
+        {
+            // Edge groups should be 1:1 with shadow renderables
+            Debug.Assert(edgeData.edgeGroups.Count == shadowRenderables.Count);
 
-			var lightType = light.Type;
+            var lightType = light.Type;
 
-			var extrudeToInfinity = ( flags & (int)ShadowRenderableFlags.ExtrudeToInfinity ) > 0;
+            var extrudeToInfinity = (flags & (int)ShadowRenderableFlags.ExtrudeToInfinity) > 0;
 
-			// Lock index buffer for writing
-			var idxPtr = indexBuffer.Lock( BufferLocking.Discard );
+            // Lock index buffer for writing
+            var idxPtr = indexBuffer.Lock(BufferLocking.Discard);
 
-			var indexStart = 0;
+            var indexStart = 0;
 
 #if !AXIOM_SAFE_ONLY
-			unsafe
+            unsafe
 #endif
-			{
-				// TODO: Will currently cause an overflow for 32 bit indices, revisit
-				var pIdx = idxPtr.ToShortPointer();
-				var count = 0;
+            {
+                // TODO: Will currently cause an overflow for 32 bit indices, revisit
+                var pIdx = idxPtr.ToShortPointer();
+                var count = 0;
 
-				// Iterate over the groups and form renderables for each based on their
-				// lightFacing
-				for ( var groupCount = 0; groupCount < edgeData.edgeGroups.Count; groupCount++ )
-				{
-					var eg = (EdgeData.EdgeGroup)edgeData.edgeGroups[ groupCount ];
-					var si = (ShadowRenderable)shadowRenderables[ groupCount ];
+                // Iterate over the groups and form renderables for each based on their
+                // lightFacing
+                for (var groupCount = 0; groupCount < edgeData.edgeGroups.Count; groupCount++)
+                {
+                    var eg = (EdgeData.EdgeGroup)edgeData.edgeGroups[groupCount];
+                    var si = (ShadowRenderable)shadowRenderables[groupCount];
 
-					RenderOperation lightShadOp = null;
+                    RenderOperation lightShadOp = null;
 
-					// Initialize the index bounds for this shadow renderable
-					var shadOp = si.GetRenderOperationForUpdate();
-					shadOp.indexData.indexCount = 0;
-					shadOp.indexData.indexStart = indexStart;
+                    // Initialize the index bounds for this shadow renderable
+                    var shadOp = si.GetRenderOperationForUpdate();
+                    shadOp.indexData.indexCount = 0;
+                    shadOp.indexData.indexStart = indexStart;
 
-					// original number of verts (without extruded copy)
-					var originalVertexCount = eg.vertexData.vertexCount;
-					var firstDarkCapTri = true;
-					var darkCapStart = 0;
+                    // original number of verts (without extruded copy)
+                    var originalVertexCount = eg.vertexData.vertexCount;
+                    var firstDarkCapTri = true;
+                    var darkCapStart = 0;
 
-					for ( var edgeCount = 0; edgeCount < eg.edges.Count; edgeCount++ )
-					{
-						var edge = (EdgeData.Edge)eg.edges[ edgeCount ];
+                    for (var edgeCount = 0; edgeCount < eg.edges.Count; edgeCount++)
+                    {
+                        var edge = (EdgeData.Edge)eg.edges[edgeCount];
 
-						var t1 = (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 0 ] ];
-						var t2 = edge.isDegenerate
-						         	? (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 0 ] ]
-						         	: (EdgeData.Triangle)edgeData.triangles[ edge.triIndex[ 1 ] ];
+                        var t1 = (EdgeData.Triangle)edgeData.triangles[edge.triIndex[0]];
+                        var t2 = edge.isDegenerate
+                                     ? (EdgeData.Triangle)edgeData.triangles[edge.triIndex[0]]
+                                     : (EdgeData.Triangle)edgeData.triangles[edge.triIndex[1]];
 
-						if ( t1.lightFacing && ( edge.isDegenerate || !t2.lightFacing ) )
-						{
-							/* Silhouette edge, first tri facing the light
+                        if (t1.lightFacing && (edge.isDegenerate || !t2.lightFacing))
+                        {
+                            /* Silhouette edge, first tri facing the light
 															Also covers degenerate tris where only tri 1 is valid
 															Remember verts run anticlockwise along the edge from
 															tri 0 so to point shadow volume tris outward, light cap
@@ -301,204 +301,204 @@ namespace Axiom.Graphics
 															because 'far' verts are in the second half of the
 															buffer
 															*/
-							pIdx[ count++ ] = (short)edge.vertIndex[ 1 ];
-							pIdx[ count++ ] = (short)edge.vertIndex[ 0 ];
-							pIdx[ count++ ] = (short)( edge.vertIndex[ 0 ] + originalVertexCount );
-							shadOp.indexData.indexCount += 3;
+                            pIdx[count++] = (short)edge.vertIndex[1];
+                            pIdx[count++] = (short)edge.vertIndex[0];
+                            pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
+                            shadOp.indexData.indexCount += 3;
 
-							if ( !( lightType == LightType.Directional && extrudeToInfinity ) )
-							{
-								// additional tri to make quad
-								pIdx[ count++ ] = (short)( edge.vertIndex[ 0 ] + originalVertexCount );
-								pIdx[ count++ ] = (short)( edge.vertIndex[ 1 ] + originalVertexCount );
-								pIdx[ count++ ] = (short)edge.vertIndex[ 1 ];
-								shadOp.indexData.indexCount += 3;
-							}
+                            if (!(lightType == LightType.Directional && extrudeToInfinity))
+                            {
+                                // additional tri to make quad
+                                pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
+                                pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
+                                pIdx[count++] = (short)edge.vertIndex[1];
+                                shadOp.indexData.indexCount += 3;
+                            }
 
-							// Do dark cap tri
-							// Use McGuire et al method, a triangle fan covering all silhouette
-							// edges and one point (taken from the initial tri)
-							if ( ( flags & (int)ShadowRenderableFlags.IncludeDarkCap ) > 0 )
-							{
-								if ( firstDarkCapTri )
-								{
-									darkCapStart = edge.vertIndex[ 0 ] + originalVertexCount;
-									firstDarkCapTri = false;
-								}
-								else
-								{
-									pIdx[ count++ ] = (short)darkCapStart;
-									pIdx[ count++ ] = (short)( edge.vertIndex[ 1 ] + originalVertexCount );
-									pIdx[ count++ ] = (short)( edge.vertIndex[ 0 ] + originalVertexCount );
-									shadOp.indexData.indexCount += 3;
-								}
-							}
-						}
-						else if ( !t1.lightFacing && ( edge.isDegenerate || t2.lightFacing ) )
-						{
-							// Silhouette edge, second tri facing the light
-							// Note edge indexes inverse of when t1 is light facing
-							pIdx[ count++ ] = (short)edge.vertIndex[ 0 ];
-							pIdx[ count++ ] = (short)edge.vertIndex[ 1 ];
-							pIdx[ count++ ] = (short)( edge.vertIndex[ 1 ] + originalVertexCount );
-							shadOp.indexData.indexCount += 3;
+                            // Do dark cap tri
+                            // Use McGuire et al method, a triangle fan covering all silhouette
+                            // edges and one point (taken from the initial tri)
+                            if ((flags & (int)ShadowRenderableFlags.IncludeDarkCap) > 0)
+                            {
+                                if (firstDarkCapTri)
+                                {
+                                    darkCapStart = edge.vertIndex[0] + originalVertexCount;
+                                    firstDarkCapTri = false;
+                                }
+                                else
+                                {
+                                    pIdx[count++] = (short)darkCapStart;
+                                    pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
+                                    pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
+                                    shadOp.indexData.indexCount += 3;
+                                }
+                            }
+                        }
+                        else if (!t1.lightFacing && (edge.isDegenerate || t2.lightFacing))
+                        {
+                            // Silhouette edge, second tri facing the light
+                            // Note edge indexes inverse of when t1 is light facing
+                            pIdx[count++] = (short)edge.vertIndex[0];
+                            pIdx[count++] = (short)edge.vertIndex[1];
+                            pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
+                            shadOp.indexData.indexCount += 3;
 
-							if ( !( lightType == LightType.Directional && extrudeToInfinity ) )
-							{
-								// additional tri to make quad
-								pIdx[ count++ ] = (short)( edge.vertIndex[ 1 ] + originalVertexCount );
-								pIdx[ count++ ] = (short)( edge.vertIndex[ 0 ] + originalVertexCount );
-								pIdx[ count++ ] = (short)edge.vertIndex[ 0 ];
-								shadOp.indexData.indexCount += 3;
-							}
+                            if (!(lightType == LightType.Directional && extrudeToInfinity))
+                            {
+                                // additional tri to make quad
+                                pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
+                                pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
+                                pIdx[count++] = (short)edge.vertIndex[0];
+                                shadOp.indexData.indexCount += 3;
+                            }
 
-							// Do dark cap tri
-							// Use McGuire et al method, a triangle fan covering all silhouette
-							// edges and one point (taken from the initial tri)
-							if ( ( flags & (int)ShadowRenderableFlags.IncludeDarkCap ) > 0 )
-							{
-								if ( firstDarkCapTri )
-								{
-									darkCapStart = edge.vertIndex[ 1 ] + originalVertexCount;
-									firstDarkCapTri = false;
-								}
-								else
-								{
-									pIdx[ count++ ] = (short)darkCapStart;
-									pIdx[ count++ ] = (short)( edge.vertIndex[ 0 ] + originalVertexCount );
-									pIdx[ count++ ] = (short)( edge.vertIndex[ 1 ] + originalVertexCount );
-									shadOp.indexData.indexCount += 3;
-								}
-							}
-						}
-					}
+                            // Do dark cap tri
+                            // Use McGuire et al method, a triangle fan covering all silhouette
+                            // edges and one point (taken from the initial tri)
+                            if ((flags & (int)ShadowRenderableFlags.IncludeDarkCap) > 0)
+                            {
+                                if (firstDarkCapTri)
+                                {
+                                    darkCapStart = edge.vertIndex[1] + originalVertexCount;
+                                    firstDarkCapTri = false;
+                                }
+                                else
+                                {
+                                    pIdx[count++] = (short)darkCapStart;
+                                    pIdx[count++] = (short)(edge.vertIndex[0] + originalVertexCount);
+                                    pIdx[count++] = (short)(edge.vertIndex[1] + originalVertexCount);
+                                    shadOp.indexData.indexCount += 3;
+                                }
+                            }
+                        }
+                    }
 
-					// Do light cap
-					if ( ( flags & (int)ShadowRenderableFlags.IncludeLightCap ) > 0 )
-					{
-						ShadowRenderable lightCapRend = null;
+                    // Do light cap
+                    if ((flags & (int)ShadowRenderableFlags.IncludeLightCap) > 0)
+                    {
+                        ShadowRenderable lightCapRend = null;
 
-						if ( si.IsLightCapSeperate )
-						{
-							// separate light cap
-							lightCapRend = si.LightCapRenderable;
-							lightShadOp = lightCapRend.GetRenderOperationForUpdate();
-							lightShadOp.indexData.indexCount = 0;
-							// start indexes after the current total
-							// NB we don't update the total here since that's done below
-							lightShadOp.indexData.indexStart = indexStart + shadOp.indexData.indexCount;
-						}
+                        if (si.IsLightCapSeperate)
+                        {
+                            // separate light cap
+                            lightCapRend = si.LightCapRenderable;
+                            lightShadOp = lightCapRend.GetRenderOperationForUpdate();
+                            lightShadOp.indexData.indexCount = 0;
+                            // start indexes after the current total
+                            // NB we don't update the total here since that's done below
+                            lightShadOp.indexData.indexStart = indexStart + shadOp.indexData.indexCount;
+                        }
 
-						for ( var triCount = 0; triCount < edgeData.triangles.Count; triCount++ )
-						{
-							var t = (EdgeData.Triangle)edgeData.triangles[ triCount ];
+                        for (var triCount = 0; triCount < edgeData.triangles.Count; triCount++)
+                        {
+                            var t = (EdgeData.Triangle)edgeData.triangles[triCount];
 
-							// Light facing, and vertex set matches
-							if ( t.lightFacing && t.vertexSet == eg.vertexSet )
-							{
-								pIdx[ count++ ] = (short)t.vertIndex[ 0 ];
-								pIdx[ count++ ] = (short)t.vertIndex[ 1 ];
-								pIdx[ count++ ] = (short)t.vertIndex[ 2 ];
+                            // Light facing, and vertex set matches
+                            if (t.lightFacing && t.vertexSet == eg.vertexSet)
+                            {
+                                pIdx[count++] = (short)t.vertIndex[0];
+                                pIdx[count++] = (short)t.vertIndex[1];
+                                pIdx[count++] = (short)t.vertIndex[2];
 
-								if ( lightShadOp != null )
-								{
-									lightShadOp.indexData.indexCount += 3;
-								}
-								else
-								{
-									shadOp.indexData.indexCount += 3;
-								}
-							}
-						}
-					}
+                                if (lightShadOp != null)
+                                {
+                                    lightShadOp.indexData.indexCount += 3;
+                                }
+                                else
+                                {
+                                    shadOp.indexData.indexCount += 3;
+                                }
+                            }
+                        }
+                    }
 
-					// update next indexStart (all renderables sharing the buffer)
-					indexStart += shadOp.indexData.indexCount;
+                    // update next indexStart (all renderables sharing the buffer)
+                    indexStart += shadOp.indexData.indexCount;
 
-					// add on the light cap too
-					if ( lightShadOp != null )
-					{
-						indexStart += lightShadOp.indexData.indexCount;
-					}
-				}
-			}
+                    // add on the light cap too
+                    if (lightShadOp != null)
+                    {
+                        indexStart += lightShadOp.indexData.indexCount;
+                    }
+                }
+            }
 
-			// Unlock index buffer
-			indexBuffer.Unlock();
+            // Unlock index buffer
+            indexBuffer.Unlock();
 
-			Debug.Assert( indexStart <= indexBuffer.IndexCount, "Index buffer overrun while generating shadow volume!" );
-		}
+            Debug.Assert(indexStart <= indexBuffer.IndexCount, "Index buffer overrun while generating shadow volume!");
+        }
 
-		/// <summary>
-		///		Utility method for extruding a bounding box.
-		/// </summary>
-		/// <param name="box">Original bounding box, will be updated in-place.</param>
-		/// <param name="lightPosition">4D light position in object space, when w=0.0f this
-		/// represents a directional light</param>
-		/// <param name="extrudeDistance">The distance to extrude.</param>
-		protected virtual void ExtrudeBounds( AxisAlignedBox box, Vector4 lightPosition, float extrudeDistance )
-		{
-			var extrusionDir = Vector3.Zero;
+        /// <summary>
+        ///		Utility method for extruding a bounding box.
+        /// </summary>
+        /// <param name="box">Original bounding box, will be updated in-place.</param>
+        /// <param name="lightPosition">4D light position in object space, when w=0.0f this
+        /// represents a directional light</param>
+        /// <param name="extrudeDistance">The distance to extrude.</param>
+        protected virtual void ExtrudeBounds(AxisAlignedBox box, Vector4 lightPosition, float extrudeDistance)
+        {
+            var extrusionDir = Vector3.Zero;
 
-			if ( lightPosition.w == 0 )
-			{
-				extrusionDir.x = -lightPosition.x;
-				extrusionDir.y = -lightPosition.y;
-				extrusionDir.z = -lightPosition.z;
-				extrusionDir.Normalize();
-				extrusionDir *= extrudeDistance;
-				box.SetExtents( box.Minimum + extrusionDir, box.Maximum + extrusionDir );
-			}
-			else
-			{
-				var corners = box.Corners;
-				var vmin = new Vector3();
-				var vmax = new Vector3();
+            if (lightPosition.w == 0)
+            {
+                extrusionDir.x = -lightPosition.x;
+                extrusionDir.y = -lightPosition.y;
+                extrusionDir.z = -lightPosition.z;
+                extrusionDir.Normalize();
+                extrusionDir *= extrudeDistance;
+                box.SetExtents(box.Minimum + extrusionDir, box.Maximum + extrusionDir);
+            }
+            else
+            {
+                var corners = box.Corners;
+                var vmin = new Vector3();
+                var vmax = new Vector3();
 
-				for ( var i = 0; i < 8; i++ )
-				{
-					extrusionDir.x = corners[ i ].x - lightPosition.x;
-					extrusionDir.y = corners[ i ].y - lightPosition.y;
-					extrusionDir.z = corners[ i ].z - lightPosition.z;
-					extrusionDir.Normalize();
-					extrusionDir *= extrudeDistance;
-					var res = corners[ i ] + extrusionDir;
+                for (var i = 0; i < 8; i++)
+                {
+                    extrusionDir.x = corners[i].x - lightPosition.x;
+                    extrusionDir.y = corners[i].y - lightPosition.y;
+                    extrusionDir.z = corners[i].z - lightPosition.z;
+                    extrusionDir.Normalize();
+                    extrusionDir *= extrudeDistance;
+                    var res = corners[i] + extrusionDir;
 
-					if ( i == 0 )
-					{
-						vmin = res;
-						vmax = res;
-					}
-					else
-					{
-						vmin.Floor( res );
-						vmax.Ceil( res );
-					}
-				}
+                    if (i == 0)
+                    {
+                        vmin = res;
+                        vmax = res;
+                    }
+                    else
+                    {
+                        vmin.Floor(res);
+                        vmax.Ceil(res);
+                    }
+                }
 
-				box.SetExtents( vmin, vmax );
-			}
-		}
+                box.SetExtents(vmin, vmax);
+            }
+        }
 
-		/// <summary>
-		///		Helper method for calculating extrusion distance.
-		/// </summary>
-		/// <param name="objectPos"></param>
-		/// <param name="light"></param>
-		/// <returns></returns>
-		protected float GetExtrusionDistance( Vector3 objectPos, Light light )
-		{
-			var diff = objectPos - light.GetDerivedPosition();
-			return light.AttenuationRange - diff.Length;
-		}
+        /// <summary>
+        ///		Helper method for calculating extrusion distance.
+        /// </summary>
+        /// <param name="objectPos"></param>
+        /// <param name="light"></param>
+        /// <returns></returns>
+        protected float GetExtrusionDistance(Vector3 objectPos, Light light)
+        {
+            var diff = objectPos - light.GetDerivedPosition();
+            return light.AttenuationRange - diff.Length;
+        }
 
-		/// <summary>
-		///		Get the distance to extrude for a point/spot light.
-		/// </summary>
-		/// <param name="light"></param>
-		/// <returns></returns>
-		public abstract float GetPointExtrusionDistance( Light light );
+        /// <summary>
+        ///		Get the distance to extrude for a point/spot light.
+        /// </summary>
+        /// <param name="light"></param>
+        /// <returns></returns>
+        public abstract float GetPointExtrusionDistance(Light light);
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

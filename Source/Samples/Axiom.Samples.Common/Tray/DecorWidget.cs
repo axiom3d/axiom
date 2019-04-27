@@ -27,24 +27,24 @@ using Axiom.Overlays;
 
 namespace Axiom.Samples
 {
-	/// <summary>
-	/// Custom, decorative widget created from a template.
-	/// </summary>
-	public class DecorWidget : Widget
-	{
-		#region Construction
+    /// <summary>
+    /// Custom, decorative widget created from a template.
+    /// </summary>
+    public class DecorWidget : Widget
+    {
+        #region Construction
 
-		/// <summary>
-		/// Do not instantiate any widgets directly. Use SdkTrayManager.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="typeName"></param>
-		/// <param name="templateName"></param>
-		public DecorWidget( String name, String typeName, String templateName )
-		{
-			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( templateName, typeName, name );
-		}
+        /// <summary>
+        /// Do not instantiate any widgets directly. Use SdkTrayManager.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="typeName"></param>
+        /// <param name="templateName"></param>
+        public DecorWidget(String name, String typeName, String templateName)
+        {
+            element = OverlayManager.Instance.Elements.CreateElementFromTemplate(templateName, typeName, name);
+        }
 
-		#endregion construction
-	}
+        #endregion construction
+    }
 }

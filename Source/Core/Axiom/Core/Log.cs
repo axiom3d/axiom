@@ -54,132 +54,132 @@ using System.IO.IsolatedStorage;
 namespace Axiom.Core
 {
 
-	#region LogListenerEventArgs Class
+    #region LogListenerEventArgs Class
 
-	/// <summary>
-	/// 
-	/// </summary>
-	public class LogListenerEventArgs : EventArgs
-	{
-		/// <summary>
-		/// The message to be logged
-		/// </summary>
-		public string Message { get; private set; }
+    /// <summary>
+    /// 
+    /// </summary>
+    public class LogListenerEventArgs : EventArgs
+    {
+        /// <summary>
+        /// The message to be logged
+        /// </summary>
+        public string Message { get; private set; }
 
-		/// <summary>
-		/// The message level the log is using
-		/// </summary>
-		public LogMessageLevel Level { get; private set; }
+        /// <summary>
+        /// The message level the log is using
+        /// </summary>
+        public LogMessageLevel Level { get; private set; }
 
-		/// <summary>
-		/// If we are printing to the console or not
-		/// </summary>
-		public bool MaskDebug { get; private set; }
+        /// <summary>
+        /// If we are printing to the console or not
+        /// </summary>
+        public bool MaskDebug { get; private set; }
 
-		/// <summary>
-		/// the name of this log (so you can have several listeners for different logs, and identify them)
-		/// </summary>
-		public string LogName { get; private set; }
+        /// <summary>
+        /// the name of this log (so you can have several listeners for different logs, and identify them)
+        /// </summary>
+        public string LogName { get; private set; }
 
-		/// <summary>
-		/// This is called whenever the log recieves a message and is about to write it out
-		/// </summary>
-		/// <param name="message">The message to be logged</param>
-		/// <param name="lml">The message level the log is using</param>
-		/// <param name="maskDebug">If we are printing to the console or not</param>
-		/// <param name="logName">the name of this log (so you can have several listeners for different logs, and identify them)</param>
-		public LogListenerEventArgs( string message, LogMessageLevel lml, bool maskDebug, string logName )
-			: base()
-		{
-			Message = message;
-			Level = lml;
-			MaskDebug = maskDebug;
-			LogName = logName;
-		}
-	}
+        /// <summary>
+        /// This is called whenever the log recieves a message and is about to write it out
+        /// </summary>
+        /// <param name="message">The message to be logged</param>
+        /// <param name="lml">The message level the log is using</param>
+        /// <param name="maskDebug">If we are printing to the console or not</param>
+        /// <param name="logName">the name of this log (so you can have several listeners for different logs, and identify them)</param>
+        public LogListenerEventArgs(string message, LogMessageLevel lml, bool maskDebug, string logName)
+            : base()
+        {
+            Message = message;
+            Level = lml;
+            MaskDebug = maskDebug;
+            LogName = logName;
+        }
+    }
 
-	#endregion LogListenerEventArgs Class
+    #endregion LogListenerEventArgs Class
 
-	#region Log Class
+    #region Log Class
 
-	/// <summary>
-	///     Log class for writing debug/log data to files.
-	/// </summary>
-	public sealed class Log : DisposableObject
-	{
-		#region Fields
+    /// <summary>
+    ///     Log class for writing debug/log data to files.
+    /// </summary>
+    public sealed class Log : DisposableObject
+    {
+        #region Fields
 
 #if SILVERLIGHT
 		private IsolatedStorageFile file;
 #endif
 
 #if !NETFX_CORE
-		/// <summary>
-		///     File stream used for kepping the log file open.
-		/// </summary>
-		private readonly FileStream log;
-		/// <summary>
-		///     Writer used for writing to the log file.
-		/// </summary>
-		private readonly StreamWriter writer;
+        /// <summary>
+        ///     File stream used for kepping the log file open.
+        /// </summary>
+        private readonly FileStream log;
+        /// <summary>
+        ///     Writer used for writing to the log file.
+        /// </summary>
+        private readonly StreamWriter writer;
 #else
         private readonly IOutputStream log;
         private readonly DataWriter writer;
 #endif
 
-		/// <summary>
-		///     Level of detail for this log.
-		/// </summary>
-		private LoggingLevel logLevel;
+        /// <summary>
+        ///     Level of detail for this log.
+        /// </summary>
+        private LoggingLevel logLevel;
 
-		/// <summary>
-		///     Debug output enabled?
-		/// </summary>
-		private readonly bool debugOutput;
+        /// <summary>
+        ///     Debug output enabled?
+        /// </summary>
+        private readonly bool debugOutput;
 
-		/// <summary>
-		///     LogMessageLevel + LoggingLevel > LOG_THRESHOLD = message logged.
-		/// </summary>
-		private const int LogThreshold = 4;
+        /// <summary>
+        ///     LogMessageLevel + LoggingLevel > LOG_THRESHOLD = message logged.
+        /// </summary>
+        private const int LogThreshold = 4;
 
-		private readonly string mLogName;
+        private readonly string mLogName;
 
-		#endregion Fields
+        #endregion Fields
 
-		public event EventHandler<LogListenerEventArgs> MessageLogged;
+        public event EventHandler<LogListenerEventArgs> MessageLogged;
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///     Constructor.  Creates a log file that also logs debug output.
-		/// </summary>
-		/// <param name="fileName">Name of the log file to open.</param>
-		public Log( string fileName )
-			: this( fileName, true )
-		{
-		}
+        /// <summary>
+        ///     Constructor.  Creates a log file that also logs debug output.
+        /// </summary>
+        /// <param name="fileName">Name of the log file to open.</param>
+        public Log(string fileName)
+            : this(fileName, true)
+        {
+        }
 
-		/// <summary>
-		///     Constructor.
-		/// </summary>
-		/// <param name="fileName">Name of the log file to open.</param>
-		/// <param name="debugOutput">Write log messages to the debug output?</param>
-		public  Log( string fileName, bool debugOutput )
-			: base()
-		{
-			this.mLogName = fileName;
-			MessageLogged = null;
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <param name="fileName">Name of the log file to open.</param>
+        /// <param name="debugOutput">Write log messages to the debug output?</param>
+        public Log(string fileName, bool debugOutput)
+            : base()
+        {
+            this.mLogName = fileName;
+            MessageLogged = null;
 
-			this.debugOutput = debugOutput;
-			this.logLevel = LoggingLevel.Normal;
+            this.debugOutput = debugOutput;
+            this.logLevel = LoggingLevel.Normal;
 
-			if ( fileName != null )
-			{
-				try
-				{
-#if !( ANDROID )
+            if (fileName != null)
+            {
+                try
+                {
+#if !(ANDROID)
 
-					// create the log file, or open
+                    // create the log file, or open
 #if SILVERLIGHT
 					file = IsolatedStorageFile.GetUserStoreForApplication();
 					log = file.OpenFile(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
@@ -190,133 +190,133 @@ namespace Axiom.Core
                     this.writer = new DataWriter(log);
 
 #else
-					this.log = File.Open( fileName, FileMode.Create, FileAccess.Write, FileShare.Read );
+                    this.log = File.Open(fileName, FileMode.Create, FileAccess.Write, FileShare.Read);
 #endif
 
 #if !NETFX_CORE
-					// get a stream writer using the file stream
-					this.writer = new StreamWriter( this.log );
-					this.writer.AutoFlush = true; //always flush after write
+                    // get a stream writer using the file stream
+                    this.writer = new StreamWriter(this.log);
+                    this.writer.AutoFlush = true; //always flush after write
 #endif
 #endif
-				}
-				catch
-				{
-				}
-			}
-		}
+                }
+                catch
+                {
+                }
+            }
+        }
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		///     Gets/Sets the level of the detail for this log.
-		/// </summary>
-		/// <value></value>
-		public LoggingLevel LogDetail
-		{
-			get
-			{
-				return this.logLevel;
-			}
-			set
-			{
-				this.logLevel = value;
-			}
-		}
+        /// <summary>
+        ///     Gets/Sets the level of the detail for this log.
+        /// </summary>
+        /// <value></value>
+        public LoggingLevel LogDetail
+        {
+            get
+            {
+                return this.logLevel;
+            }
+            set
+            {
+                this.logLevel = value;
+            }
+        }
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		///     Write a message to the log.
-		/// </summary>
-		/// <remarks>
-		///     Message is written with a LogMessageLevel of Normal, and debug output is not written.
-		/// </remarks>
-		/// <param name="message">Message to write, which can include string formatting tokens.</param>
-		/// <param name="substitutions">
-		///     When message includes string formatting tokens, these are the values to
-		///     inject into the formatted string.
-		/// </param>
-		public void Write( string message, params object[] substitutions )
-		{
-			Write( LogMessageLevel.Normal, false, message, substitutions );
-		}
+        /// <summary>
+        ///     Write a message to the log.
+        /// </summary>
+        /// <remarks>
+        ///     Message is written with a LogMessageLevel of Normal, and debug output is not written.
+        /// </remarks>
+        /// <param name="message">Message to write, which can include string formatting tokens.</param>
+        /// <param name="substitutions">
+        ///     When message includes string formatting tokens, these are the values to
+        ///     inject into the formatted string.
+        /// </param>
+        public void Write(string message, params object[] substitutions)
+        {
+            Write(LogMessageLevel.Normal, false, message, substitutions);
+        }
 
-		/// <summary>
-		///     Write a message to the log.
-		/// </summary>
-		/// <remarks>
-		///     Message is written with a LogMessageLevel of Normal, and debug output is not written.
-		/// </remarks>
-		/// <param name="maskDebug">If true, debug output will not be written.</param>
-		/// <param name="message">Message to write, which can include string formatting tokens.</param>
-		/// <param name="substitutions">
-		///     When message includes string formatting tokens, these are the values to
-		///     inject into the formatted string.
-		/// </param>
-		public void Write( bool maskDebug, string message, params object[] substitutions )
-		{
-			Write( LogMessageLevel.Normal, maskDebug, message, substitutions );
-		}
+        /// <summary>
+        ///     Write a message to the log.
+        /// </summary>
+        /// <remarks>
+        ///     Message is written with a LogMessageLevel of Normal, and debug output is not written.
+        /// </remarks>
+        /// <param name="maskDebug">If true, debug output will not be written.</param>
+        /// <param name="message">Message to write, which can include string formatting tokens.</param>
+        /// <param name="substitutions">
+        ///     When message includes string formatting tokens, these are the values to
+        ///     inject into the formatted string.
+        /// </param>
+        public void Write(bool maskDebug, string message, params object[] substitutions)
+        {
+            Write(LogMessageLevel.Normal, maskDebug, message, substitutions);
+        }
 
-		/// <summary>
-		///     Write a message to the log.
-		/// </summary>
-		/// <param name="level">Importance of this logged message.</param>
-		/// <param name="maskDebug">If true, debug output will not be written.</param>
-		/// <param name="message">Message to write, which can include string formatting tokens.</param>
-		/// <param name="substitutions">
-		///     When message includes string formatting tokens, these are the values to
-		///     inject into the formatted string.
-		/// </param>
-		public void Write( LogMessageLevel level, bool maskDebug, string message, params object[] substitutions )
-		{
-			if ( IsDisposed )
-			{
-				return;
-			}
+        /// <summary>
+        ///     Write a message to the log.
+        /// </summary>
+        /// <param name="level">Importance of this logged message.</param>
+        /// <param name="maskDebug">If true, debug output will not be written.</param>
+        /// <param name="message">Message to write, which can include string formatting tokens.</param>
+        /// <param name="substitutions">
+        ///     When message includes string formatting tokens, these are the values to
+        ///     inject into the formatted string.
+        /// </param>
+        public void Write(LogMessageLevel level, bool maskDebug, string message, params object[] substitutions)
+        {
+            if (IsDisposed)
+            {
+                return;
+            }
 
-			if ( message == null )
-			{
-				throw new ArgumentNullException( "The log message cannot be null" );
-			}
-			if ( ( (int)this.logLevel + (int)level ) > LogThreshold )
-			{
-				return; //too verbose a message to write
-			}
+            if (message == null)
+            {
+                throw new ArgumentNullException("The log message cannot be null");
+            }
+            if (((int)this.logLevel + (int)level) > LogThreshold)
+            {
+                return; //too verbose a message to write
+            }
 
-			// construct the log message
-			if ( substitutions != null && substitutions.Length > 0 )
-			{
-				message = string.Format( message, substitutions );
-			}
+            // construct the log message
+            if (substitutions != null && substitutions.Length > 0)
+            {
+                message = string.Format(message, substitutions);
+            }
 
-			// write the the debug output if requested
-			if ( this.debugOutput && !maskDebug )
-			{
+            // write the the debug output if requested
+            if (this.debugOutput && !maskDebug)
+            {
 #if MONO
 				if(System.Diagnostics.Debugger.IsAttached)
 					System.Console.WriteLine( message );
 				else
 #endif
-				System.Diagnostics.Debug.WriteLine( message );
-			}
+                System.Diagnostics.Debug.WriteLine(message);
+            }
 
 #if !NETFX_CORE
-			if ( this.writer != null && this.writer.BaseStream != null )
-			{
-				// prepend the current time to the message
-				message = string.Format( "[{0}] {1}", DateTime.Now.ToString( "hh:mm:ss" ), message );
+            if (this.writer != null && this.writer.BaseStream != null)
+            {
+                // prepend the current time to the message
+                message = string.Format("[{0}] {1}", DateTime.Now.ToString("hh:mm:ss"), message);
 
-				// write the message and flush the buffer
-				lock ( this.writer )
-					this.writer.WriteLine( message );
-				//writer auto-flushes
-			}
+                // write the message and flush the buffer
+                lock (this.writer)
+                    this.writer.WriteLine(message);
+                //writer auto-flushes
+            }
 #else
             if ( null != this.writer )
             {
@@ -330,45 +330,45 @@ namespace Axiom.Core
             }
 #endif
 
-			FireMessageLogged( level, maskDebug, message );
-		}
+            FireMessageLogged(level, maskDebug, message);
+        }
 
-		private void FireMessageLogged( LogMessageLevel level, bool maskDebug, string message )
-		{
-			// Now fire the MessageLogged event
-			if ( MessageLogged != null )
-			{
-				var args = new LogListenerEventArgs( message, level, maskDebug, this.mLogName );
-				MessageLogged( this, args );
-			}
-		}
+        private void FireMessageLogged(LogMessageLevel level, bool maskDebug, string message)
+        {
+            // Now fire the MessageLogged event
+            if (MessageLogged != null)
+            {
+                var args = new LogListenerEventArgs(message, level, maskDebug, this.mLogName);
+                MessageLogged(this, args);
+            }
+        }
 
-		#endregion Methods
+        #endregion Methods
 
-		#region DisposableObject Members
+        #region DisposableObject Members
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-					try
-					{
-						if ( this.writer != null )
-						{
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // Dispose managed resources.
+                    try
+                    {
+                        if (this.writer != null)
+                        {
 #if !NETFX_CORE
-							this.writer.Close();
+                            this.writer.Close();
 #else
                             this.writer.SafeDispose();
 #endif
-						}
+                        }
 
-						if ( this.log != null )
-						{
+                        if (this.log != null)
+                        {
 #if !NETFX_CORE
-							this.log.Close();
+                            this.log.Close();
 #else
                             this.log.SafeDispose();
 #endif
@@ -380,21 +380,21 @@ namespace Axiom.Core
 				        if (file != null)
 					        file.SafeDispose();
 #endif
-					}
-					catch
-					{
-					}
-				}
+                    }
+                    catch
+                    {
+                    }
+                }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-			base.dispose( disposeManagedResources );
-		}
+            base.dispose(disposeManagedResources);
+        }
 
-		#endregion DisposableObject Members
-	}
+        #endregion DisposableObject Members
+    }
 
-	#endregion Log Class
+    #endregion Log Class
 }

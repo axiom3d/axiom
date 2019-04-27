@@ -50,65 +50,65 @@ using System.Windows;
 
 namespace Axiom.Core
 {
-	/// <summary>
-	///		Class which manages the platform settings required to run.
-	/// </summary>
-	public sealed class PlatformManager
-	{
-		/// <summary>
-		/// Gets if the operating system that this is running on is Windows (as opposed to a Unix-based one such as Linux or Mac OS X)
-		/// </summary>
-		/// <remarks>
-		/// The Windows version strings start with "Microsoft Windows" followed by CE, NT, or 98 and the version number,
-		/// however Microsoft Win32S is used with the 32-bit simulation layer on 16-bit systems so we should just check for the presence of Microsoft
-		/// Unix-based operating systems start with Unix
-		/// The Environment.OSVersion.Platform is 128 for Unix-based platforms (an additional enum value added that by the name Unix),
-		/// however under .NET 2.0 Unix is supposed to be 3 but may still be 128 under Mono
-		/// Additionally, GNU Portable .NET likely doesn't provide this same value, so just check for the presence of Windows in the string name
-		/// </remarks>
-		public static bool IsWindowsOS
-		{
-			get
-			{
+    /// <summary>
+    ///		Class which manages the platform settings required to run.
+    /// </summary>
+    public sealed class PlatformManager
+    {
+        /// <summary>
+        /// Gets if the operating system that this is running on is Windows (as opposed to a Unix-based one such as Linux or Mac OS X)
+        /// </summary>
+        /// <remarks>
+        /// The Windows version strings start with "Microsoft Windows" followed by CE, NT, or 98 and the version number,
+        /// however Microsoft Win32S is used with the 32-bit simulation layer on 16-bit systems so we should just check for the presence of Microsoft
+        /// Unix-based operating systems start with Unix
+        /// The Environment.OSVersion.Platform is 128 for Unix-based platforms (an additional enum value added that by the name Unix),
+        /// however under .NET 2.0 Unix is supposed to be 3 but may still be 128 under Mono
+        /// Additionally, GNU Portable .NET likely doesn't provide this same value, so just check for the presence of Windows in the string name
+        /// </remarks>
+        public static bool IsWindowsOS
+        {
+            get
+            {
 #if !NETFX_CORE
-				//return ((int)Environment.OSVersion.Platform) == 128;	//if is a unix-based operating system (running Mono), not sure if this will work for GNU Portable .NET
-				var os = Environment.OSVersion.ToString();
-				return os.IndexOf( "Microsoft" ) != -1;
+                //return ((int)Environment.OSVersion.Platform) == 128;	//if is a unix-based operating system (running Mono), not sure if this will work for GNU Portable .NET
+                var os = Environment.OSVersion.ToString();
+                return os.IndexOf("Microsoft") != -1;
 #else
 				return true;
 #endif
-			}
-		}
+            }
+        }
 
-		#region Singleton implementation
+        #region Singleton implementation
 
-		/// <summary>
-		///     Singleton instance of this class.
-		/// </summary>
-		private static IPlatformManager instance;
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static IPlatformManager instance;
 
-#if NET_40  && !( XBOX || XBOX360 || WINDOWS_PHONE )
+#if NET_40 && !(XBOX || XBOX360 || WINDOWS_PHONE)
 		[ImportMany(typeof(IPlatformManager))]
 		public IEnumerable<IPlatformManager> platforms { private get; set; }
 #endif
 
-		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
-		/// </summary>
-		internal PlatformManager()
-		{
-			// First look in current Executing assembly for a PlatformManager
-			if ( instance == null )
-			{
-				var platformMgr = new DynamicLoader();
-				var platforms = platformMgr.Find( typeof ( IPlatformManager ) );
-				if ( platforms.Count != 0 )
-				{
-					instance = platformMgr.Find( typeof ( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
-				}
-			}
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal PlatformManager()
+        {
+            // First look in current Executing assembly for a PlatformManager
+            if (instance == null)
+            {
+                var platformMgr = new DynamicLoader();
+                var platforms = platformMgr.Find(typeof(IPlatformManager));
+                if (platforms.Count != 0)
+                {
+                    instance = platformMgr.Find(typeof(IPlatformManager))[0].CreateInstance<IPlatformManager>();
+                }
+            }
 
-#if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE )
+#if NET_40 && !(XBOX || XBOX360 || WINDOWS_PHONE)
 			if (instance == null)
 			{
 				this.SatisfyImports(".");
@@ -120,100 +120,100 @@ namespace Axiom.Core
 			}
 #endif
 
-#if !( SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || NETFX_CORE)
-			// Then look in loaded assemblies
-			if ( instance == null )
-			{
-				var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-				for ( var index = 0; index < assemblies.Length && instance == null; index++ )
-				{
-					//TODO: NRSC Added: Deal with Dynamic Assemblies not having a Location
-					//if (assemblies[index].IsDynamic)
-					//    continue;
-					try
-					{
-						var platformMgr = new DynamicLoader( assemblies[ index ] );
-						var platforms = platformMgr.Find( typeof ( IPlatformManager ) );
-						if ( platforms.Count != 0 )
-						{
-							instance = platformMgr.Find( typeof ( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
-						}
-					}
-					catch ( Exception )
-					{
-						System.Diagnostics.Debug.WriteLine( String.Format( "Failed to load assembly: {0}.", assemblies[ index ].FullName ) );
-					}
-				}
-			}
+#if !(SILVERLIGHT || WINDOWS_PHONE || XBOX || XBOX360 || NETFX_CORE)
+            // Then look in loaded assemblies
+            if (instance == null)
+            {
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                for (var index = 0; index < assemblies.Length && instance == null; index++)
+                {
+                    //TODO: NRSC Added: Deal with Dynamic Assemblies not having a Location
+                    //if (assemblies[index].IsDynamic)
+                    //    continue;
+                    try
+                    {
+                        var platformMgr = new DynamicLoader(assemblies[index]);
+                        var platforms = platformMgr.Find(typeof(IPlatformManager));
+                        if (platforms.Count != 0)
+                        {
+                            instance = platformMgr.Find(typeof(IPlatformManager))[0].CreateInstance<IPlatformManager>();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        System.Diagnostics.Debug.WriteLine(String.Format("Failed to load assembly: {0}.", assemblies[index].FullName));
+                    }
+                }
+            }
 
-			// Then look in external assemblies
-			if ( instance == null )
-			{
-				// find and load a platform manager assembly
-				var cwd = Assembly.GetExecutingAssembly().CodeBase;
-				var uri = new Uri( cwd );
-				if ( uri.IsFile )
-					cwd = Path.GetDirectoryName(uri.LocalPath);
-				var files = Directory.GetFiles( cwd, "Axiom.Platforms.*.dll" ).ToArray();
-				var file = "";
+            // Then look in external assemblies
+            if (instance == null)
+            {
+                // find and load a platform manager assembly
+                var cwd = Assembly.GetExecutingAssembly().CodeBase;
+                var uri = new Uri(cwd);
+                if (uri.IsFile)
+                    cwd = Path.GetDirectoryName(uri.LocalPath);
+                var files = Directory.GetFiles(cwd, "Axiom.Platforms.*.dll").ToArray();
+                var file = "";
 
-				// make sure there is 1 platform manager available
-				if ( files.Length == 0 )
-				{
-					throw new PluginException( "A PlatformManager was not found in the execution path, and is required." );
-				}
-				else
-				{
-					var isWindows = IsWindowsOS;
-					var platform = IsWindowsOS ? "Windows" : "Linux";
+                // make sure there is 1 platform manager available
+                if (files.Length == 0)
+                {
+                    throw new PluginException("A PlatformManager was not found in the execution path, and is required.");
+                }
+                else
+                {
+                    var isWindows = IsWindowsOS;
+                    var platform = IsWindowsOS ? "Windows" : "Linux";
 
-					if ( files.Length == 1 )
-					{
-						file = files[ 0 ];
-					}
-					else
-					{
-						for ( var i = 0; i < files.Length; i++ )
-						{
-							if ( ( files[ i ].IndexOf( platform ) != -1 ) == true )
-							{
-								file = files[ i ];
-							}
-						}
-					}
+                    if (files.Length == 1)
+                    {
+                        file = files[0];
+                    }
+                    else
+                    {
+                        for (var i = 0; i < files.Length; i++)
+                        {
+                            if ((files[i].IndexOf(platform) != -1) == true)
+                            {
+                                file = files[i];
+                            }
+                        }
+                    }
 
-					System.Diagnostics.Debug.WriteLine( String.Format( "Selected the PlatformManager contained in {0}.", file ) );
-				}
+                    System.Diagnostics.Debug.WriteLine(String.Format("Selected the PlatformManager contained in {0}.", file));
+                }
 
-				var path = Path.Combine( System.IO.Directory.GetCurrentDirectory(), file );
+                var path = Path.Combine(System.IO.Directory.GetCurrentDirectory(), file);
 
-				var platformMgr = new DynamicLoader( path );
-				var platforms = platformMgr.Find( typeof ( IPlatformManager ) );
-				if ( platforms.Count != 0 )
-				{
-					instance = platformMgr.Find( typeof ( IPlatformManager ) )[ 0 ].CreateInstance<IPlatformManager>();
-				}
-			}
+                var platformMgr = new DynamicLoader(path);
+                var platforms = platformMgr.Find(typeof(IPlatformManager));
+                if (platforms.Count != 0)
+                {
+                    instance = platformMgr.Find(typeof(IPlatformManager))[0].CreateInstance<IPlatformManager>();
+                }
+            }
 #endif
 
-			// All else fails, yell loudly
-			if ( instance == null )
-			{
-				throw new PluginException( "The available Platform assembly did not contain any subclasses of PlatformManager, which is required." );
-			}
-		}
+            // All else fails, yell loudly
+            if (instance == null)
+            {
+                throw new PluginException("The available Platform assembly did not contain any subclasses of PlatformManager, which is required.");
+            }
+        }
 
-		/// <summary>
-		///     Gets the singleton instance of this class.
-		/// </summary>
-		public static IPlatformManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static IPlatformManager Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
 
-		#endregion Singleton implementation
-	}
+        #endregion Singleton implementation
+    }
 }

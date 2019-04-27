@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2010 Axiom Project Team
+// Copyright (C) 2003-2009 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -28,10 +28,8 @@
 
 using Axiom.Core;
 using Axiom.SceneManagers.PortalConnected;
-
-using MbUnit.Framework;
-
-using TypeMock.ArrangeActAssert;
+using FakeItEasy;
+using NUnit.Framework;
 
 #endregion
 
@@ -45,81 +43,71 @@ namespace Axiom.UnitTests.SceneManagers.PortalConnected
     /// https://sourceforge.net/apps/trac/axiomengine/ticket/69,
     /// a problem with node removal functionality.
     /// </remarks>
-    [ TestFixture ]
+    [TestFixture]
     public class OctreeNodeRegressionTests
     {
-        private SceneManager fakeSceneManager;
+        private readonly SceneManager sceneManager = A.Fake<PCZSceneManager>();
         private const string Name = "testName";
 
         /// <summary>
         /// Sets up each test.
         /// </summary>
-        [ SetUp ]
+        [SetUp]
         public void SetUp()
         {
-            this.fakeSceneManager = Isolate.Fake.Instance<PCZSceneManager>();
-            Isolate.WhenCalled( () => this.fakeSceneManager.CreateSceneNode( Name ) ).WillReturn( new PCZSceneNode( this.fakeSceneManager, Name ) );
-        }
-
-        /// <summary>
-        /// Tears down each test.
-        /// </summary>
-        [ TearDown ]
-        public void TearDown()
-        {
-            Isolate.CleanUp();
+            A.CallTo(() => sceneManager.CreateSceneNode(Name)).Returns(A.Fake<PCZSceneNode>());
         }
 
         /// <summary>
         /// Verifies that a new child node can be created after a node with the same name has been removed by reference.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestRecreationOfChildNodeAfterRemovalByReference()
         {
-            Node node = new PCZSceneNode( this.fakeSceneManager );
-            Node childNode = node.CreateChild( Name );
+            Node node = new PCZSceneNode(this.sceneManager);
+            Node childNode = node.CreateChild(Name);
 
-            node.RemoveChild( childNode );
-            node.CreateChild( Name );
+            node.RemoveChild(childNode);
+            node.CreateChild(Name);
         }
 
         /// <summary>
         /// Verifies that a new child node can be created after a node with the same name has been removed by name.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestRecreationOfChildNodeAfterRemovalByName()
         {
-            Node node = new PCZSceneNode( this.fakeSceneManager );
-            node.CreateChild( Name );
+            Node node = new PCZSceneNode(this.sceneManager);
+            node.CreateChild(Name);
 
-            node.RemoveChild( Name );
-            node.CreateChild( Name );
+            node.RemoveChild(Name);
+            node.CreateChild(Name);
         }
 
         /// <summary>
         /// Verifies that a new child node can be added after a node with the same name has been removed by reference.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestReaddingOfChildNodeAfterRemovalByReference()
         {
-            Node node = new PCZSceneNode( this.fakeSceneManager );
-            Node childNode = node.CreateChild( Name );
+            Node node = new PCZSceneNode(this.sceneManager);
+            Node childNode = node.CreateChild(Name);
 
-            node.RemoveChild( childNode );
-            node.AddChild( childNode );
+            node.RemoveChild(childNode);
+            node.AddChild(childNode);
         }
 
         /// <summary>
         /// Verifies that a new child node can be added after a node with the same name has been removed by name.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestReaddingOfChildNodeAfterRemovalByName()
         {
-            Node node = new PCZSceneNode( this.fakeSceneManager );
-            Node childNode = node.CreateChild( Name );
+            Node node = new PCZSceneNode(this.sceneManager);
+            Node childNode = node.CreateChild(Name);
 
-            node.RemoveChild( Name );
-            node.AddChild( childNode );
+            node.RemoveChild(Name);
+            node.AddChild(childNode);
         }
     }
 }

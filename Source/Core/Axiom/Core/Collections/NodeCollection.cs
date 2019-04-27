@@ -43,34 +43,34 @@ using Axiom.Collections;
 
 namespace Axiom.Core.Collections
 {
-	/// <summary>
-	///	Represents a collection of <see cref="Node">Nodes</see> that are sorted by name.
-	/// </summary>
-#if !( XBOX || XBOX360 )
-	[Serializable]
+    /// <summary>
+    ///	Represents a collection of <see cref="Node">Nodes</see> that are sorted by name.
+    /// </summary>
+#if !(XBOX || XBOX360)
+    [Serializable]
 #endif
-	public class NodeCollection : AxiomCollection<Node>
-	{
-		#region Instance Methods
+    public class NodeCollection : AxiomCollection<Node>
+    {
+        #region Instance Methods
 
-		/// <summary>
-		///	Adds a <see cref="Node"/> to the collection and uses its name automatically as key.
-		/// </summary>
-		/// <param name="item">A <see cref="Node"/> to add to the collection.</param>
-		public override void Add( Node item )
-		{
-			Add( item.Name, item );
-		}
+        /// <summary>
+        ///	Adds a <see cref="Node"/> to the collection and uses its name automatically as key.
+        /// </summary>
+        /// <param name="item">A <see cref="Node"/> to add to the collection.</param>
+        public override void Add(Node item)
+        {
+            Add(item.Name, item);
+        }
 
-		/// <summary>
-		/// Removes the specified <see cref="Node"/>.
-		/// </summary>
-		/// <param name="item">The <see cref="Node"/> to remove.</param>
-		public void Remove( Node item )
-		{
-			base.Remove( item.Name );
-		}
+        /// <summary>
+        /// Removes the specified <see cref="Node"/>.
+        /// </summary>
+        /// <param name="item">The <see cref="Node"/> to remove.</param>
+        public void Remove(Node item)
+        {
+            base.Remove(item.Name);
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

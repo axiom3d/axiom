@@ -42,31 +42,31 @@ using Axiom.Core;
 
 namespace Axiom.Collections
 {
-	/// <summary>
-	/// Represents a collection of names and values.
-	/// </summary>
-	public class NameValuePairList : Dictionary<string, string>
-	{
-		#region Constructors
+    /// <summary>
+    /// Represents a collection of names and values.
+    /// </summary>
+    public class NameValuePairList : Dictionary<string, string>
+    {
+        #region Constructors
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="NameValuePairList"/> class.
-		/// </summary>
-		public NameValuePairList()
-			: base( new CaseInsensitiveStringComparer() )
-		{
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NameValuePairList"/> class.
+        /// </summary>
+        public NameValuePairList()
+            : base(new CaseInsensitiveStringComparer())
+        {
+        }
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="NameValuePairList"/> class that contains elements copied from
-		/// the specified <see cref="NameValuePairList"/> and uses the default equality comparer for the key type.
-		/// </summary>
-		/// <param name="parameters">The <see cref="NameValuePairList"/> whose elements are copied to the new <see cref="NameValuePairList"/>.</param>
-		public NameValuePairList( NameValuePairList parameters )
-			: base( parameters as IDictionary<string, string> )
-		{
-		}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NameValuePairList"/> class that contains elements copied from
+        /// the specified <see cref="NameValuePairList"/> and uses the default equality comparer for the key type.
+        /// </summary>
+        /// <param name="parameters">The <see cref="NameValuePairList"/> whose elements are copied to the new <see cref="NameValuePairList"/>.</param>
+        public NameValuePairList(NameValuePairList parameters)
+            : base(parameters as IDictionary<string, string>)
+        {
+        }
 
-		#endregion Constructors
-	}
+        #endregion Constructors
+    }
 }

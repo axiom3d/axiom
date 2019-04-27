@@ -48,37 +48,37 @@ using System.Reflection;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	/// <summary>
-	/// Summary description for Plugin.
-	/// </summary>
-	[Export( typeof ( IPlugin ) )]
-	public sealed class Plugin : IPlugin
-	{
-		#region Implementation of IPlugin
+    /// <summary>
+    /// Summary description for Plugin.
+    /// </summary>
+    //[Export( typeof ( IPlugin ) )]
+    public sealed class Plugin : IPlugin
+    {
+        #region Implementation of IPlugin
 
-		/// <summary>
-		///     Reference to the render system instance.
-		/// </summary>
-		private GLRenderSystem _renderSystem;
+        /// <summary>
+        ///     Reference to the render system instance.
+        /// </summary>
+        private GLRenderSystem _renderSystem;
 
-		public void Initialize()
-		{
+        public void Initialize()
+        {
 #if OPENGL_OTK
 			Contract.Requires( PlatformManager.Instance.GetType().Name == "OpenTKPlatformManager", "PlatformManager", "OpenGL OpenTK Renderer requires OpenTK Platform Manager." );
 #endif
-			Contract.Requires( Root.Instance.RenderSystems.ContainsKey( "OpenGL" ) == false, "OpenGL",
-			                   "An instance of the OpenGL renderer is already loaded." );
+            Contract.Requires(Root.Instance.RenderSystems.ContainsKey("OpenGL") == false, "OpenGL",
+                               "An instance of the OpenGL renderer is already loaded.");
 
-			this._renderSystem = new GLRenderSystem();
-			// add an instance of this plugin to the list of available RenderSystems
-			Root.Instance.RenderSystems.Add( "OpenGL", this._renderSystem );
-		}
+            this._renderSystem = new GLRenderSystem();
+            // add an instance of this plugin to the list of available RenderSystems
+            Root.Instance.RenderSystems.Add("OpenGL", this._renderSystem);
+        }
 
-		public void Shutdown()
-		{
-			this._renderSystem.Shutdown();
-		}
+        public void Shutdown()
+        {
+            this._renderSystem.Shutdown();
+        }
 
-		#endregion Implementation of IPlugin
-	}
+        #endregion Implementation of IPlugin
+    }
 }

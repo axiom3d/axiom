@@ -33,23 +33,23 @@
 
 #region Namespace Declarations
 
-using System.ComponentModel.Composition;
+using System.Composition;
 using Axiom.Core;
 
 #endregion Namespace Declarations
 
 namespace Axiom.Samples.ParticleFX
 {
-	[Export( typeof ( IPlugin ) )]
-	public class Plugin : SamplePlugin
-	{
-		private ParticleFXSample _sample;
+    [Export(typeof(IPlugin))]
+    public class Plugin : SamplePlugin
+    {
+        private ParticleFXSample _sample;
 
-		public override void Initialize()
-		{
-			this._sample = new ParticleFXSample();
-			Name = this._sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this._sample );
-		}
-	};
+        public override void Initialize()
+        {
+            this._sample = new ParticleFXSample();
+            Name = this._sample.Metadata["Title"] + " Sample";
+            AddSample(this._sample);
+        }
+    };
 }

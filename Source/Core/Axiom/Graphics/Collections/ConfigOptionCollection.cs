@@ -42,28 +42,28 @@ using Axiom.Configuration;
 
 namespace Axiom.Graphics.Collections
 {
-	/// <summary>
-	///   Represents a collection of <see cref="ConfigOption">ConfigOptions</see> that are sorted by key.
-	/// </summary>
-	public class ConfigOptionCollection : AxiomCollection<ConfigOption>
-	{
-		#region Instance Methods
+    /// <summary>
+    ///   Represents a collection of <see cref="ConfigOption">ConfigOptions</see> that are sorted by key.
+    /// </summary>
+    public class ConfigOptionCollection : AxiomCollection<ConfigOption>
+    {
+        #region Instance Methods
 
-		public override void Add( ConfigOption item )
-		{
-			base.Add( item.Name, item );
-		}
+        public override void Add(ConfigOption item)
+        {
+            base.Add(item.Name, item);
+        }
 
-		/// <summary>
-		///   Adds a <see cref="ConfigOption" /> with the specified key to the collection.
-		/// </summary>
-		/// <param name="key"> The key. </param>
-		/// <param name="item"> A <see cref="ConfigOption" /> . </param>
-		public void Add( ushort key, ConfigOption item )
-		{
-			Add( key.ToString(), item );
-		}
+        /// <summary>
+        ///   Adds a <see cref="ConfigOption" /> with the specified key to the collection.
+        /// </summary>
+        /// <param name="key"> The key. </param>
+        /// <param name="item"> A <see cref="ConfigOption" /> . </param>
+        public void Add(ushort key, ConfigOption item)
+        {
+            Add(key.ToString(), item);
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

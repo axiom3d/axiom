@@ -43,77 +43,77 @@ using System.Threading;
 
 namespace Axiom.Core
 {
-	/// <summary>
-	/// Implementation of a general purpose request / response style background work queue.
-	/// </summary>
-	/// <remarks>
-	/// This default implementation of a work queue starts a thread pool and 
-	/// provides queues to process requests.
-	/// </remarks>
-	public class DefaultWorkQueue : DefaultWorkQueueBase
-	{
-		protected int numThreadsRegisteredWithRS;
+    /// <summary>
+    /// Implementation of a general purpose request / response style background work queue.
+    /// </summary>
+    /// <remarks>
+    /// This default implementation of a work queue starts a thread pool and 
+    /// provides queues to process requests.
+    /// </remarks>
+    public class DefaultWorkQueue : DefaultWorkQueueBase
+    {
+        protected int numThreadsRegisteredWithRS;
 
-		/// <summary>
-		/// Synchroniser token to wait / notify on thread init
-		/// </summary>
-		protected static readonly object initSync = new object();
+        /// <summary>
+        /// Synchroniser token to wait / notify on thread init
+        /// </summary>
+        protected static readonly object initSync = new object();
 
 #if AXIOM_THREAD_SUPPORT
 		protected List<Thread> workers;
 #endif
 
-		[OgreVersion( 1, 7, 2 )]
+        [OgreVersion(1, 7, 2)]
 #if NET_40
 		public DefaultWorkQueue( string name = "" )
 #else
-		public DefaultWorkQueue()
-			: this( string.Empty )
-		{
-		}
+        public DefaultWorkQueue()
+            : this(string.Empty)
+        {
+        }
 
 
-		public DefaultWorkQueue( string name )
+        public DefaultWorkQueue(string name)
 #endif
-			: base( name )
-		{
-		}
+            : base(name)
+        {
+        }
 
-		[OgreVersion( 1, 7, 2, "~DefaultWorkQueue" )]
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					Shutdown();
-				}
-			}
+        [OgreVersion(1, 7, 2, "~DefaultWorkQueue")]
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    Shutdown();
+                }
+            }
 
-			base.dispose( disposeManagedResources );
-		}
+            base.dispose(disposeManagedResources);
+        }
 
-		/// <see cref="Axiom.Core.WorkQueue.Startup(bool)"/>
+        /// <see cref="Axiom.Core.WorkQueue.Startup(bool)"/>
 #if NET_40
 		public override void Startup( bool forceRestart = true )
 #else
-		public override void Startup( bool forceRestart )
+        public override void Startup(bool forceRestart)
 #endif
-		{
-			if ( isRunning )
-			{
-				if ( forceRestart )
-				{
-					Shutdown();
-				}
-				else
-				{
-					return;
-				}
-			}
+        {
+            if (isRunning)
+            {
+                if (forceRestart)
+                {
+                    Shutdown();
+                }
+                else
+                {
+                    return;
+                }
+            }
 
-			shuttingDown = false;
-			LogManager.Instance.Write( "DefaultWorkQueue('{0}') initialising on thread {1}.", name, GetThreadName() );
+            shuttingDown = false;
+            LogManager.Instance.Write("DefaultWorkQueue('{0}') initialising on thread {1}.", name, GetThreadName());
 
 #if AXIOM_THREAD_SUPPORT
 			if ( workerRenderSystemAccess )
@@ -141,36 +141,36 @@ namespace Axiom.Core
 			}
 #endif
 
-			isRunning = true;
-		}
+            isRunning = true;
+        }
 
-		/// <summary>
-		/// Notify that a thread has registered itself with the render system
-		/// </summary>
-		protected virtual void NotifyThreadRegistered()
-		{
-			lock ( initSync )
-			{
-				++this.numThreadsRegisteredWithRS;
+        /// <summary>
+        /// Notify that a thread has registered itself with the render system
+        /// </summary>
+        protected virtual void NotifyThreadRegistered()
+        {
+            lock (initSync)
+            {
+                ++this.numThreadsRegisteredWithRS;
 
 #if AXIOM_THREAD_SUPPORT
 				// wake up main thread
 				Monitor.PulseAll( initSync );
 #endif
-			}
-		}
+            }
+        }
 
-		/// <see cref="Axiom.Core.WorkQueue.Shutdown"/>
-		public override void Shutdown()
-		{
-			if ( !isRunning )
-			{
-				return;
-			}
+        /// <see cref="Axiom.Core.WorkQueue.Shutdown"/>
+        public override void Shutdown()
+        {
+            if (!isRunning)
+            {
+                return;
+            }
 
-			LogManager.Instance.Write( "DefaultWorkQueue('{0}') shutting down on thread {1}.", name, GetThreadName() );
-			shuttingDown = true;
-			AbortAllRequests();
+            LogManager.Instance.Write("DefaultWorkQueue('{0}') shutting down on thread {1}.", name, GetThreadName());
+            shuttingDown = true;
+            AbortAllRequests();
 #if AXIOM_THREAD_SUPPORT
 			lock ( requestMutex )
 				Monitor.PulseAll( requestMutex );
@@ -181,25 +181,25 @@ namespace Axiom.Core
 
 			workers.Clear();
 #endif
-			isRunning = false;
-		}
+            isRunning = false;
+        }
 
-		/// <see cref="DefaultWorkQueueBase.NotifyWorkers"/>
-		[OgreVersion( 1, 7, 2 )]
-		protected override void NotifyWorkers()
-		{
+        /// <see cref="DefaultWorkQueueBase.NotifyWorkers"/>
+        [OgreVersion(1, 7, 2)]
+        protected override void NotifyWorkers()
+        {
 #if AXIOM_THREAD_SUPPORT
 			// wake up waiting thread
 			Monitor.Pulse( requestMutex );
 #endif
-		}
+        }
 
-		/// <summary>
-		/// To be called by a separate thread; will return immediately if there
-		/// are items in the queue, or suspend the thread until new items are added	otherwise.
-		/// </summary>
-		protected virtual void WaitForNextRequest()
-		{
+        /// <summary>
+        /// To be called by a separate thread; will return immediately if there
+        /// are items in the queue, or suspend the thread until new items are added	otherwise.
+        /// </summary>
+        protected virtual void WaitForNextRequest()
+        {
 #if AXIOM_THREAD_SUPPORT
 			// Lock; note that OGRE_THREAD_WAIT will free the lock
 			lock ( requestMutex )
@@ -215,15 +215,15 @@ namespace Axiom.Core
 			// re-acquired, but we won't use it. It's safe to try processing and fail
 			// if another thread has got in first and grabbed the request
 #endif
-		}
+        }
 
-		/// <summary>
-		/// Main function for each thread spawned.
-		/// </summary>
-		[OgreVersion( 1, 7, 2 )]
-		internal override void ThreadMain()
-		{
-			// default worker thread
+        /// <summary>
+        /// Main function for each thread spawned.
+        /// </summary>
+        [OgreVersion(1, 7, 2)]
+        internal override void ThreadMain()
+        {
+            // default worker thread
 #if AXIOM_THREAD_SUPPORT
 			LogManager.Instance.Write( "DefaultWorkQueue('{0}').ThreadMain - thread {1} starting.",
 				this.Name,
@@ -249,6 +249,6 @@ namespace Axiom.Core
 				GetThreadName()
 				);
 #endif
-		}
-	};
+        }
+    };
 }

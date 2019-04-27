@@ -46,64 +46,64 @@ using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	/// <summary>
-	/// Renderbuffer surface.  Needs FBO extension.
-	/// </summary>
-	internal class GLRenderBuffer : GLHardwarePixelBuffer
-	{
-		#region Fields and Properties
+    /// <summary>
+    /// Renderbuffer surface.  Needs FBO extension.
+    /// </summary>
+    internal class GLRenderBuffer : GLHardwarePixelBuffer
+    {
+        #region Fields and Properties
 
-		/// <summary>
-		/// In case this is a  render buffer
-		/// </summary>
-		private int _renderBufferId;
+        /// <summary>
+        /// In case this is a  render buffer
+        /// </summary>
+        private int _renderBufferId;
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		public GLRenderBuffer( int format, int width, int height, int fsaa )
-			: base( width, height, 1, GLPixelUtil.GetClosestPixelFormat( format ), BufferUsage.WriteOnly )
-		{
-			GLFormat = format;
-			/// Generate renderbuffer
-			Gl.glGenRenderbuffersEXT( 1, out this._renderBufferId );
-			/// Bind it to FBO
-			Gl.glBindRenderbufferEXT( Gl.GL_RENDERBUFFER_EXT, this._renderBufferId );
+        public GLRenderBuffer(int format, int width, int height, int fsaa)
+            : base(width, height, 1, GLPixelUtil.GetClosestPixelFormat(format), BufferUsage.WriteOnly)
+        {
+            GLFormat = format;
+            /// Generate renderbuffer
+            Gl.glGenRenderbuffersEXT(1, out this._renderBufferId);
+            /// Bind it to FBO
+            Gl.glBindRenderbufferEXT(Gl.GL_RENDERBUFFER_EXT, this._renderBufferId);
 
-			/// Allocate storage for depth buffer
-			Gl.glRenderbufferStorageEXT( Gl.GL_RENDERBUFFER_EXT, format, width, height );
-		}
+            /// Allocate storage for depth buffer
+            Gl.glRenderbufferStorageEXT(Gl.GL_RENDERBUFFER_EXT, format, width, height);
+        }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region GLHardwarePixelBuffer Implementation
+        #region GLHardwarePixelBuffer Implementation
 
-		public override void BindToFramebuffer( int attachment, int zOffset )
-		{
-			Debug.Assert( zOffset < Depth );
-			Gl.glFramebufferRenderbufferEXT( Gl.GL_FRAMEBUFFER_EXT, attachment, Gl.GL_RENDERBUFFER_EXT, this._renderBufferId );
-		}
+        public override void BindToFramebuffer(int attachment, int zOffset)
+        {
+            Debug.Assert(zOffset < Depth);
+            Gl.glFramebufferRenderbufferEXT(Gl.GL_FRAMEBUFFER_EXT, attachment, Gl.GL_RENDERBUFFER_EXT, this._renderBufferId);
+        }
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-				}
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // Dispose managed resources.
+                }
 
-				Gl.glDeleteRenderbuffersEXT( 1, ref this._renderBufferId );
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
+                Gl.glDeleteRenderbuffersEXT(1, ref this._renderBufferId);
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose(disposeManagedResources);
+        }
 
-		#endregion GLHardwarePixelBuffer Implementation
-	}
+        #endregion GLHardwarePixelBuffer Implementation
+    }
 }

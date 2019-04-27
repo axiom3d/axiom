@@ -47,157 +47,157 @@ using Axiom.Scripting;
 
 namespace Axiom.ParticleFX
 {
-	/// <summary>
-	/// Summary description for RotationAffector.
-	/// </summary>
-	public class RotationAffector : ParticleAffector
-	{
-		#region Fields
+    /// <summary>
+    /// Summary description for RotationAffector.
+    /// </summary>
+    public class RotationAffector : ParticleAffector
+    {
+        #region Fields
 
-		/// <summary>
-		///		Initial rotation speed of particles (range start).
-		/// </summary>
-		private float rotationSpeedRangeStart;
+        /// <summary>
+        ///		Initial rotation speed of particles (range start).
+        /// </summary>
+        private float rotationSpeedRangeStart;
 
-		/// <summary>
-		///		Initial rotation speed of particles (range end).
-		/// </summary>
-		private float rotationSpeedRangeEnd;
+        /// <summary>
+        ///		Initial rotation speed of particles (range end).
+        /// </summary>
+        private float rotationSpeedRangeEnd;
 
-		/// <summary>
-		///		Initial rotation angle of particles (range start).
-		/// </summary>
-		private float rotationRangeStart;
+        /// <summary>
+        ///		Initial rotation angle of particles (range start).
+        /// </summary>
+        private float rotationRangeStart;
 
-		/// <summary>
-		///		Initial rotation angle of particles (range end)
-		/// </summary>
-		private float rotationRangeEnd;
+        /// <summary>
+        ///		Initial rotation angle of particles (range end)
+        /// </summary>
+        private float rotationRangeEnd;
 
-		#endregion Fields
+        #endregion Fields
 
-		public RotationAffector( ParticleSystem psys )
-			: base( psys )
-		{
-			type = "Rotator";
-			this.rotationSpeedRangeStart = 0;
-			this.rotationSpeedRangeEnd = 0;
-			this.rotationRangeStart = 0;
-			this.rotationRangeEnd = 0;
-		}
+        public RotationAffector(ParticleSystem psys)
+            : base(psys)
+        {
+            type = "Rotator";
+            this.rotationSpeedRangeStart = 0;
+            this.rotationSpeedRangeEnd = 0;
+            this.rotationRangeStart = 0;
+            this.rotationRangeEnd = 0;
+        }
 
-		public override void InitParticle( ref Particle particle )
-		{
-			particle.Rotation = this.rotationRangeStart +
-			                    ( Utility.UnitRandom()*( this.rotationRangeEnd - this.rotationRangeStart ) );
-			particle.RotationSpeed = this.rotationSpeedRangeStart +
-			                         ( Utility.UnitRandom()*( this.rotationSpeedRangeEnd - this.rotationSpeedRangeStart ) );
-		}
+        public override void InitParticle(ref Particle particle)
+        {
+            particle.Rotation = this.rotationRangeStart +
+                                (Utility.UnitRandom() * (this.rotationRangeEnd - this.rotationRangeStart));
+            particle.RotationSpeed = this.rotationSpeedRangeStart +
+                                     (Utility.UnitRandom() * (this.rotationSpeedRangeEnd - this.rotationSpeedRangeStart));
+        }
 
-		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
-		{
-			float ds;
+        public override void AffectParticles(ParticleSystem system, Real timeElapsed)
+        {
+            float ds;
 
-			// Rotation adjustments by time
-			ds = timeElapsed;
+            // Rotation adjustments by time
+            ds = timeElapsed;
 
-			float newRotation;
+            float newRotation;
 
-			// loop through the particles
-			for ( int i = 0; i < system.Particles.Count; i++ )
-			{
-				var p = (Particle)system.Particles[ i ];
+            // loop through the particles
+            for (int i = 0; i < system.Particles.Count; i++)
+            {
+                var p = (Particle)system.Particles[i];
 
-				newRotation = p.Rotation + ( ds*p.RotationSpeed );
-				p.Rotation = newRotation;
-			}
-		}
+                newRotation = p.Rotation + (ds * p.RotationSpeed);
+                p.Rotation = newRotation;
+            }
+        }
 
-		#region Command definition classes
+        #region Command definition classes
 
-		[ScriptableProperty( "rotation_speed_range_start", "Start range of particle rotation speed.",
-			typeof ( ParticleAffector ) )]
-		public class RotationSpeedRangeStartCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
+        [ScriptableProperty("rotation_speed_range_start", "Start range of particle rotation speed.",
+            typeof(ParticleAffector))]
+        public class RotationSpeedRangeStartCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-			public string Get( object target )
-			{
-				var affector = target as RotationAffector;
-				return StringConverter.ToString( affector.rotationSpeedRangeStart );
-			}
+            public string Get(object target)
+            {
+                var affector = target as RotationAffector;
+                return StringConverter.ToString(affector.rotationSpeedRangeStart);
+            }
 
-			public void Set( object target, string val )
-			{
-				var affector = target as RotationAffector;
-				affector.rotationSpeedRangeStart = StringConverter.ParseFloat( val );
-			}
+            public void Set(object target, string val)
+            {
+                var affector = target as RotationAffector;
+                affector.rotationSpeedRangeStart = StringConverter.ParseFloat(val);
+            }
 
-			#endregion IPropertyCommand Members
-		}
+            #endregion IPropertyCommand Members
+        }
 
-		[ScriptableProperty( "rotation_speed_range_end", "End range of particle rotation speed.", typeof ( ParticleAffector )
-			)]
-		public class RotationSpeedRangeEndCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
+        [ScriptableProperty("rotation_speed_range_end", "End range of particle rotation speed.", typeof(ParticleAffector)
+            )]
+        public class RotationSpeedRangeEndCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-			public string Get( object target )
-			{
-				var affector = target as RotationAffector;
-				return StringConverter.ToString( affector.rotationSpeedRangeEnd );
-			}
+            public string Get(object target)
+            {
+                var affector = target as RotationAffector;
+                return StringConverter.ToString(affector.rotationSpeedRangeEnd);
+            }
 
-			public void Set( object target, string val )
-			{
-				var affector = target as RotationAffector;
-				affector.rotationSpeedRangeEnd = StringConverter.ParseFloat( val );
-			}
+            public void Set(object target, string val)
+            {
+                var affector = target as RotationAffector;
+                affector.rotationSpeedRangeEnd = StringConverter.ParseFloat(val);
+            }
 
-			#endregion IPropertyCommand Members
-		}
+            #endregion IPropertyCommand Members
+        }
 
-		[ScriptableProperty( "rotation_range_start", "Start range of particle rotation.", typeof ( ParticleAffector ) )]
-		public class RotationRangeStartCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
+        [ScriptableProperty("rotation_range_start", "Start range of particle rotation.", typeof(ParticleAffector))]
+        public class RotationRangeStartCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-			public string Get( object target )
-			{
-				var affector = target as RotationAffector;
-				return StringConverter.ToString( affector.rotationRangeStart );
-			}
+            public string Get(object target)
+            {
+                var affector = target as RotationAffector;
+                return StringConverter.ToString(affector.rotationRangeStart);
+            }
 
-			public void Set( object target, string val )
-			{
-				var affector = target as RotationAffector;
-				affector.rotationRangeStart = StringConverter.ParseFloat( val );
-			}
+            public void Set(object target, string val)
+            {
+                var affector = target as RotationAffector;
+                affector.rotationRangeStart = StringConverter.ParseFloat(val);
+            }
 
-			#endregion IPropertyCommand Members
-		}
+            #endregion IPropertyCommand Members
+        }
 
 
-		[ScriptableProperty( "rotation_range_end", "End range of particle rotation.", typeof ( ParticleAffector ) )]
-		public class RotationRangeEndCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
+        [ScriptableProperty("rotation_range_end", "End range of particle rotation.", typeof(ParticleAffector))]
+        public class RotationRangeEndCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-			public string Get( object target )
-			{
-				var affector = target as RotationAffector;
-				return StringConverter.ToString( affector.rotationRangeEnd );
-			}
+            public string Get(object target)
+            {
+                var affector = target as RotationAffector;
+                return StringConverter.ToString(affector.rotationRangeEnd);
+            }
 
-			public void Set( object target, string val )
-			{
-				var affector = target as RotationAffector;
-				affector.rotationRangeEnd = StringConverter.ParseFloat( val );
-			}
+            public void Set(object target, string val)
+            {
+                var affector = target as RotationAffector;
+                affector.rotationRangeEnd = StringConverter.ParseFloat(val);
+            }
 
-			#endregion IPropertyCommand Members
-		}
+            #endregion IPropertyCommand Members
+        }
 
-		#endregion Command definition classes
-	}
+        #endregion Command definition classes
+    }
 }

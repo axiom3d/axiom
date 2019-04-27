@@ -5,56 +5,56 @@ using System.Text;
 
 namespace Axiom.Samples.Ocean
 {
-	public enum ShaderType
-	{
-		GpuVertex,
-		GpuFragment,
-		MatSpecular,
-		MatDiffuse,
-		MatAmbient,
-		MatShininess,
-		MatEmissive
-	}
+    public enum ShaderType
+    {
+        GpuVertex,
+        GpuFragment,
+        MatSpecular,
+        MatDiffuse,
+        MatAmbient,
+        MatShininess,
+        MatEmissive
+    }
 
-	public struct ShaderControl
-	{
-		public string Name;
-		public string ParamName;
-		public ShaderType Type;
-		public float MinVal;
-		public float MaxVal;
-		public int PhysicalIndex;
-		public int ElementIndex;
+    public struct ShaderControl
+    {
+        public string Name;
+        public string ParamName;
+        public ShaderType Type;
+        public float MinVal;
+        public float MaxVal;
+        public int PhysicalIndex;
+        public int ElementIndex;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public float Range
-		{
-			get
-			{
-				return this.MaxVal - this.MinVal;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public float Range
+        {
+            get
+            {
+                return this.MaxVal - this.MinVal;
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="val"></param>
-		/// <returns></returns>
-		public float ConvertParamToScrollPosition( float val )
-		{
-			return val - this.MinVal;
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public float ConvertParamToScrollPosition(float val)
+        {
+            return val - this.MinVal;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="val"></param>
-		/// <returns></returns>
-		public float ConvertScrollPositionToParam( float val )
-		{
-			return val + this.MinVal;
-		}
-	}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public float ConvertScrollPositionToParam(float val)
+        {
+            return val + this.MinVal;
+        }
+    }
 }

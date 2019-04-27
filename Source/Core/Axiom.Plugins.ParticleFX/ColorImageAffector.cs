@@ -48,143 +48,143 @@ using Axiom.Scripting;
 
 namespace Axiom.ParticleFX
 {
-	/// <summary>
-	/// Summary description for ColorFaderAffector.
-	/// </summary>
-	public class ColorImageAffector : ParticleAffector
-	{
-		protected Image colorImage;
-		protected String colorImageName;
-		protected bool colorImageLoaded;
+    /// <summary>
+    /// Summary description for ColorFaderAffector.
+    /// </summary>
+    public class ColorImageAffector : ParticleAffector
+    {
+        protected Image colorImage;
+        protected String colorImageName;
+        protected bool colorImageLoaded;
 
-		private const float div_255 = 1.0f/255.0f;
+        private const float div_255 = 1.0f / 255.0f;
 
-		public ColorImageAffector( ParticleSystem psys )
-			: base( psys )
-		{
-			type = "ColourImage";
-		}
+        public ColorImageAffector(ParticleSystem psys)
+            : base(psys)
+        {
+            type = "ColourImage";
+        }
 
-		public String ColorImageName
-		{
-			get
-			{
-				return this.colorImageName;
-			}
-			set
-			{
-				this.colorImageName = value;
-			}
-		}
+        public String ColorImageName
+        {
+            get
+            {
+                return this.colorImageName;
+            }
+            set
+            {
+                this.colorImageName = value;
+            }
+        }
 
-		/// <see cref="ParticleAffector.InitParticle"/>
-		public override void InitParticle( ref Particle particle )
-		{
-			if ( !this.colorImageLoaded )
-			{
-				loadImage();
-			}
+        /// <see cref="ParticleAffector.InitParticle"/>
+        public override void InitParticle(ref Particle particle)
+        {
+            if (!this.colorImageLoaded)
+            {
+                loadImage();
+            }
 
-			particle.Color = this.colorImage.GetColorAt( 0, 0, 0 );
-		}
+            particle.Color = this.colorImage.GetColorAt(0, 0, 0);
+        }
 
-		/// <see cref="ParticleAffector.AffectParticles"/>
-		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
-		{
-			if ( !this.colorImageLoaded )
-			{
-				loadImage();
-			}
+        /// <see cref="ParticleAffector.AffectParticles"/>
+        public override void AffectParticles(ParticleSystem system, Real timeElapsed)
+        {
+            if (!this.colorImageLoaded)
+            {
+                loadImage();
+            }
 
-			int width = this.colorImage.Width - 1;
-			float height = this.colorImage.Height - 1;
+            int width = this.colorImage.Width - 1;
+            float height = this.colorImage.Height - 1;
 
-			// loop through the particles
-			for ( int i = 0; i < system.Particles.Count; i++ )
-			{
-				var p = (Particle)system.Particles[ i ];
+            // loop through the particles
+            for (int i = 0; i < system.Particles.Count; i++)
+            {
+                var p = (Particle)system.Particles[i];
 
-				// life_time, float_index, index and position are CONST in OGRE, but errors here
+                // life_time, float_index, index and position are CONST in OGRE, but errors here
 
-				// We do not have the concept of a total time to live!
-				float life_time = p.totalTimeToLive;
-				float particle_time = 1.0f - ( p.timeToLive/life_time );
+                // We do not have the concept of a total time to live!
+                float life_time = p.totalTimeToLive;
+                float particle_time = 1.0f - (p.timeToLive / life_time);
 
-				if ( particle_time > 1.0f )
-				{
-					particle_time = 1.0f;
-				}
-				if ( particle_time < 0.0f )
-				{
-					particle_time = 0.0f;
-				}
+                if (particle_time > 1.0f)
+                {
+                    particle_time = 1.0f;
+                }
+                if (particle_time < 0.0f)
+                {
+                    particle_time = 0.0f;
+                }
 
-				float float_index = particle_time*width;
-				var index = (int)float_index;
-				int position = index*4;
+                float float_index = particle_time * width;
+                var index = (int)float_index;
+                int position = index * 4;
 
-				if ( index <= 0 )
-				{
-					p.Color = this.colorImage.GetColorAt( 0, 0, 0 );
-				}
-				else if ( index >= width )
-				{
-					p.Color = this.colorImage.GetColorAt( width, 0, 0 );
-				}
-				else
-				{
-					// fract, to_color and from_color are CONST in OGRE, but errors here
-					float fract = float_index - (float)index;
-					float toColor = fract;
-					float fromColor = ( 1 - toColor );
+                if (index <= 0)
+                {
+                    p.Color = this.colorImage.GetColorAt(0, 0, 0);
+                }
+                else if (index >= width)
+                {
+                    p.Color = this.colorImage.GetColorAt(width, 0, 0);
+                }
+                else
+                {
+                    // fract, to_color and from_color are CONST in OGRE, but errors here
+                    float fract = float_index - (float)index;
+                    float toColor = fract;
+                    float fromColor = (1 - toColor);
 
-					ColorEx from = this.colorImage.GetColorAt( index, 0, 0 ), to = this.colorImage.GetColorAt( index + 1, 0, 0 );
+                    ColorEx from = this.colorImage.GetColorAt(index, 0, 0), to = this.colorImage.GetColorAt(index + 1, 0, 0);
 
-					p.Color.r = ( from.r*fromColor ) + ( to.r*toColor );
-					p.Color.g = ( from.g*fromColor ) + ( to.g*toColor );
-					p.Color.b = ( from.b*fromColor ) + ( to.b*toColor );
-					p.Color.a = ( from.a*fromColor ) + ( to.a*toColor );
-				}
-			}
-		}
+                    p.Color.r = (from.r * fromColor) + (to.r * toColor);
+                    p.Color.g = (from.g * fromColor) + (to.g * toColor);
+                    p.Color.b = (from.b * fromColor) + (to.b * toColor);
+                    p.Color.a = (from.a * fromColor) + (to.a * toColor);
+                }
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		private void loadImage()
-		{
-			this.colorImage = Image.FromFile( this.colorImageName, parent.ResourceGroupName );
+        [OgreVersion(1, 7, 2)]
+        private void loadImage()
+        {
+            this.colorImage = Image.FromFile(this.colorImageName, parent.ResourceGroupName);
 
-			var format = this.colorImage.Format;
+            var format = this.colorImage.Format;
 
-			if ( !PixelUtil.IsAccessible( format ) )
-			{
-				throw new AxiomException( "Error: Image is not accessible (rgba) image." );
-			}
+            if (!PixelUtil.IsAccessible(format))
+            {
+                throw new AxiomException("Error: Image is not accessible (rgba) image.");
+            }
 
-			this.colorImageLoaded = true;
-		}
+            this.colorImageLoaded = true;
+        }
 
-		#region Command definition classes
+        #region Command definition classes
 
-		[ScriptableProperty( "image", "Image for color alterations.", typeof ( ParticleAffector ) )]
-		public class ImageCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
+        [ScriptableProperty("image", "Image for color alterations.", typeof(ParticleAffector))]
+        public class ImageCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-			public string Get( object target )
-			{
-				var affector = target as ColorImageAffector;
-				return affector.ColorImageName;
-			}
+            public string Get(object target)
+            {
+                var affector = target as ColorImageAffector;
+                return affector.ColorImageName;
+            }
 
-			public void Set( object target, string val )
-			{
-				var affector = target as ColorImageAffector;
-				affector.ColorImageName = val;
-			}
+            public void Set(object target, string val)
+            {
+                var affector = target as ColorImageAffector;
+                affector.ColorImageName = val;
+            }
 
-			#endregion IPropertyCommand Members
-		}
+            #endregion IPropertyCommand Members
+        }
 
-		#endregion Command definition classes
-	}
+        #endregion Command definition classes
+    }
 }

@@ -1,9 +1,9 @@
 ﻿namespace Axiom.Core
 {
-	public enum ShadeOptions
-	{
-		Flat,
-		Gouraud,
-		Phong
-	}
+    public enum ShadeOptions
+    {
+        Flat,
+        Gouraud,
+        Phong
+    }
 }

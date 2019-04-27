@@ -37,10 +37,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Text;
+using System.Composition;
 using Axiom.Core;
 using Axiom.SceneManagers.PortalConnected;
 
@@ -48,25 +45,25 @@ using Axiom.SceneManagers.PortalConnected;
 
 namespace OctreeZone
 {
-	[Export( typeof ( IPlugin ) )]
-	public class OctreeZonePlugin : IPlugin
-	{
-		public void Initialize()
-		{
-			this.mTerrainZoneFactory = new TerrainZoneFactory( "ZoneType_Terrain" );
-			this.mOctreeZoneFactory = new OctreeZoneFactory( "ZoneType_Octree" );
+    [Export(typeof(IPlugin))]
+    public class OctreeZonePlugin : IPlugin
+    {
+        public void Initialize()
+        {
+            this.mTerrainZoneFactory = new TerrainZoneFactory("ZoneType_Terrain");
+            this.mOctreeZoneFactory = new OctreeZoneFactory("ZoneType_Octree");
 
-			PCZoneFactoryManager.Instance.RegisterPCZoneFactory( this.mTerrainZoneFactory );
-			PCZoneFactoryManager.Instance.RegisterPCZoneFactory( this.mOctreeZoneFactory );
-		}
+            PCZoneFactoryManager.Instance.RegisterPCZoneFactory(this.mTerrainZoneFactory);
+            PCZoneFactoryManager.Instance.RegisterPCZoneFactory(this.mOctreeZoneFactory);
+        }
 
-		public void Shutdown()
-		{
-			PCZoneFactoryManager.Instance.UnregisterPCZoneFactory( this.mOctreeZoneFactory );
-			PCZoneFactoryManager.Instance.UnregisterPCZoneFactory( this.mTerrainZoneFactory );
-		}
+        public void Shutdown()
+        {
+            PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(this.mOctreeZoneFactory);
+            PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(this.mTerrainZoneFactory);
+        }
 
-		private OctreeZoneFactory mOctreeZoneFactory;
-		private TerrainZoneFactory mTerrainZoneFactory;
-	}
+        private OctreeZoneFactory mOctreeZoneFactory;
+        private TerrainZoneFactory mTerrainZoneFactory;
+    }
 }

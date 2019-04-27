@@ -45,88 +45,88 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.Core
 {
-	public static class IntPtrExtension
-	{
-		public static IntPtr Offset( this IntPtr p, int offset )
-		{
+    public static class IntPtrExtension
+    {
+        public static IntPtr Offset(this IntPtr p, int offset)
+        {
 #if !NET40
-			return new IntPtr( p.ToInt64() + offset );
+            return new IntPtr(p.ToInt64() + offset);
 #else
 			return p + offset;
 #endif
-		}
-	};
+        }
+    };
 
-	/// <summary>
-	///	Utility class for dealing with memory.
-	/// </summary>
-	public static class Memory
-	{
-		#region Copy Method
+    /// <summary>
+    ///	Utility class for dealing with memory.
+    /// </summary>
+    public static class Memory
+    {
+        #region Copy Method
 
-		/// <summary>
-		///	Method for copying data from one IntPtr to another.
-		/// </summary>
-		/// <param name="src">Source pointer.</param>
-		/// <param name="dest">Destination pointer.</param>
-		/// <param name="length">Length of data (in bytes) to copy.</param>
-		public static void Copy( BufferBase src, BufferBase dest, int length )
-		{
-			Copy( src, dest, 0, 0, length );
-		}
+        /// <summary>
+        ///	Method for copying data from one IntPtr to another.
+        /// </summary>
+        /// <param name="src">Source pointer.</param>
+        /// <param name="dest">Destination pointer.</param>
+        /// <param name="length">Length of data (in bytes) to copy.</param>
+        public static void Copy(BufferBase src, BufferBase dest, int length)
+        {
+            Copy(src, dest, 0, 0, length);
+        }
 
-		/// <summary>
-		///	Method for copying data from one IntPtr to another.
-		/// </summary>
-		/// <param name="src">Source pointer.</param>
-		/// <param name="dest">Destination pointer.</param>
-		/// <param name="srcOffset">Offset at which to copy from the source pointer.</param>
-		/// <param name="destOffset">Offset at which to begin copying to the destination pointer.</param>
-		/// <param name="length">Length of data (in bytes) to copy.</param>
-		public static void Copy( BufferBase src, BufferBase dest, int srcOffset, int destOffset, int length )
-		{
-			Contract.RequiresNotNull( dest, "dest" );
-			dest.Copy( src, srcOffset, destOffset, length );
-		}
+        /// <summary>
+        ///	Method for copying data from one IntPtr to another.
+        /// </summary>
+        /// <param name="src">Source pointer.</param>
+        /// <param name="dest">Destination pointer.</param>
+        /// <param name="srcOffset">Offset at which to copy from the source pointer.</param>
+        /// <param name="destOffset">Offset at which to begin copying to the destination pointer.</param>
+        /// <param name="length">Length of data (in bytes) to copy.</param>
+        public static void Copy(BufferBase src, BufferBase dest, int srcOffset, int destOffset, int length)
+        {
+            Contract.RequiresNotNull(dest, "dest");
+            dest.Copy(src, srcOffset, destOffset, length);
+        }
 
-		#endregion Copy Method
+        #endregion Copy Method
 
-		/// <summary>
-		/// Sets buffers to a specified value
-		/// </summary>
-		/// <remarks>
-		/// Sets the first length values of dest to the value "c".
-		/// Make sure that the destination buffer has enough room for at least length characters.
-		/// </remarks>
-		/// <param name="dest">Destination pointer.</param>
-		/// <param name="c">Value to set.</param>
-		/// <param name="length">Number of bytes to set.</param>
-		public static void Set( BufferBase dest, byte c, int length )
-		{
+        /// <summary>
+        /// Sets buffers to a specified value
+        /// </summary>
+        /// <remarks>
+        /// Sets the first length values of dest to the value "c".
+        /// Make sure that the destination buffer has enough room for at least length characters.
+        /// </remarks>
+        /// <param name="dest">Destination pointer.</param>
+        /// <param name="c">Value to set.</param>
+        /// <param name="length">Number of bytes to set.</param>
+        public static void Set(BufferBase dest, byte c, int length)
+        {
 #if !AXIOM_SAFE_ONLY
-			unsafe
+            unsafe
 #endif
-			{
-				var ptr = dest.ToBytePointer();
+            {
+                var ptr = dest.ToBytePointer();
 
-				for ( var i = 0; i < length; i++ )
-				{
-					ptr[ i ] = c;
-				}
-			}
-		}
+                for (var i = 0; i < length; i++)
+                {
+                    ptr[i] = c;
+                }
+            }
+        }
 
-		public static int SizeOf( Type type )
-		{
-			return type.Size();
-		}
+        public static int SizeOf(Type type)
+        {
+            return type.Size();
+        }
 
-		public static int SizeOf( object obj )
-		{
-			return obj.GetType().Size();
-		}
+        public static int SizeOf(object obj)
+        {
+            return obj.GetType().Size();
+        }
 
-		#region Pinned Object Access
+        #region Pinned Object Access
 
 #if AXIOM_SAFE_ONLY
 		private static readonly Dictionary<object, ManagedBuffer> _pinnedReferences = new Dictionary<object, ManagedBuffer>();
@@ -143,40 +143,40 @@ namespace Axiom.Core
 			return handle;
 		}
 #else
-		private static readonly Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
+        private static readonly Dictionary<object, GCHandle> _pinnedReferences = new Dictionary<object, GCHandle>();
 
-		public static BufferBase PinObject( object obj )
-		{
-			GCHandle handle;
-			if ( !_pinnedReferences.TryGetValue( obj, out handle ) )
-			{
-				handle = GCHandle.Alloc( obj, GCHandleType.Pinned );
-				_pinnedReferences.Add( obj, handle );
-			}
+        public static BufferBase PinObject(object obj)
+        {
+            GCHandle handle;
+            if (!_pinnedReferences.TryGetValue(obj, out handle))
+            {
+                handle = GCHandle.Alloc(obj, GCHandleType.Pinned);
+                _pinnedReferences.Add(obj, handle);
+            }
 
-			int length = obj is byte[] ?( (byte[])obj ).Length : 0;
-			return new UnsafeBuffer( handle.AddrOfPinnedObject(), length );
-		}
+            int length = (obj is byte[]) ? ((byte[])obj).Length : 0;
+            return new UnsafeBuffer(handle.AddrOfPinnedObject(), length);
+        }
 #endif
 
-		public static void UnpinObject( object obj )
-		{
-			if ( _pinnedReferences.ContainsKey( obj ) )
-			{
-				var handle = _pinnedReferences[ obj ];
+        public static void UnpinObject(object obj)
+        {
+            if (_pinnedReferences.ContainsKey(obj))
+            {
+                var handle = _pinnedReferences[obj];
 #if AXIOM_SAFE_ONLY
 				handle.Dispose();
 #else
-				handle.Free();
+                handle.Free();
 #endif
-				_pinnedReferences.Remove( obj );
-			}
-			else
-			{
-				LogManager.Instance.Write( "MemoryManager : Attempted to unpin memory that wasn't pinned." );
-			}
-		}
+                _pinnedReferences.Remove(obj);
+            }
+            else
+            {
+                LogManager.Instance.Write("MemoryManager : Attempted to unpin memory that wasn't pinned.");
+            }
+        }
 
-		#endregion Pinned Object Access
-	};
+        #endregion Pinned Object Access
+    };
 }

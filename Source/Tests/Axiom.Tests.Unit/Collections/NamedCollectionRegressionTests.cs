@@ -31,7 +31,7 @@ using System;
 using Axiom.Collections;
 using Axiom.Core;
 
-using MbUnit.Framework;
+using NUnit.Framework;
 
 #endregion
 
@@ -40,49 +40,48 @@ namespace Axiom.UnitTests.Collections
     /// <summary>
     /// Regression tests for the <see cref="NamedCollection{T}"/> class.
     /// </summary>
-    [ TestFixture ]
+    [TestFixture]
     public class NamedCollectionRegressionTests
     {
         /// <summary>
         /// Verifies that the collection does not throw an exception when told to remove an invalid item by key
         /// but instead simply returns false.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestRemoveInvalidKey()
         {
             StubCollection testedCollection = new StubCollection();
 
-            bool foundAndRemoved = testedCollection.Remove( "InvalidKey" );
+            bool foundAndRemoved = testedCollection.Remove("InvalidKey");
 
-            Assert.IsFalse( foundAndRemoved, "The Remove(key) method returned true although an invalid key was passed." );
+            Assert.IsFalse(foundAndRemoved, "The Remove(key) method returned true although an invalid key was passed.");
         }
 
         /// <summary>
         /// Verifies that the collection does not throw an exception when told to remove an invalid item by reference
         /// but instead simply returns false.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestRemoveInvalidItem()
         {
             StubCollection testedCollection = new StubCollection();
 
-            bool foundAndRemoved = testedCollection.Remove( new TestObject() );
+            bool foundAndRemoved = testedCollection.Remove(new TestObject());
 
-            Assert.IsFalse( foundAndRemoved, "The Remove(item) method returned true although an invalid item was passed." );
+            Assert.IsFalse(foundAndRemoved, "The Remove(item) method returned true although an invalid item was passed.");
         }
 
         /// <summary>
         /// Verifies that the collection does throw an ArgumentOutOfRangeException when told to remove an item specifying an invalid index.
         /// </summary>
-        [ Test ]
-        [ ExpectedArgumentOutOfRangeException ]
+        [Test]
         public void TestRemoveInvalidIndex()
         {
             StubCollection testedCollection = new StubCollection();
 
-            testedCollection.RemoveAt( 0 );
+            Assert.Throws<ArgumentOutOfRangeException>(() => testedCollection.RemoveAt(0));
 
-            Assert.Fail( "The RemoveAt(index) did not throw an Exception although an invalid index was passed." );
+            //Assert.Fail( "The RemoveAt(index) did not throw an Exception although an invalid index was passed." );
         }
 
         private class StubCollection : NamedCollection<TestObject>

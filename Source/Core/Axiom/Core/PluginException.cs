@@ -43,14 +43,14 @@ using System;
 
 namespace Axiom.Core
 {
-	/// <summary>
-	/// Summary description for PluginException.
-	/// </summary>
-	public class PluginException : AxiomException
-	{
-		public PluginException( string message, params object[] args )
-			: base( string.Format( message, args ) )
-		{
-		}
-	}
+    /// <summary>
+    /// Summary description for PluginException.
+    /// </summary>
+    public class PluginException : AxiomException
+    {
+        public PluginException(string message, params object[] args)
+            : base(string.Format(message, args))
+        {
+        }
+    }
 }

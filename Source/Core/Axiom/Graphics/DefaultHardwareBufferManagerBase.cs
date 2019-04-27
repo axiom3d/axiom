@@ -46,51 +46,51 @@ using Axiom.Core;
 
 namespace Axiom.Graphics
 {
-	/// <summary>
-	/// Specialization of HardwareBufferManagerBase to emulate hardware buffers.
-	/// </summary>
-	/// <remarks>
-	/// You might want to instantiate this class if you want to utilize
-	/// classes like MeshSerializer without having initialized the 
-	/// rendering system (which is required to create a 'real' hardware
-	/// buffer manager.
-	/// </remarks>
-	public class DefaultHardwareBufferManagerBase : HardwareBufferManagerBase
-	{
-		public DefaultHardwareBufferManagerBase()
-		{
-		}
+    /// <summary>
+    /// Specialization of HardwareBufferManagerBase to emulate hardware buffers.
+    /// </summary>
+    /// <remarks>
+    /// You might want to instantiate this class if you want to utilize
+    /// classes like MeshSerializer without having initialized the 
+    /// rendering system (which is required to create a 'real' hardware
+    /// buffer manager.
+    /// </remarks>
+    public class DefaultHardwareBufferManagerBase : HardwareBufferManagerBase
+    {
+        public DefaultHardwareBufferManagerBase()
+        {
+        }
 
-		~DefaultHardwareBufferManagerBase()
-		{
-		}
+        ~DefaultHardwareBufferManagerBase()
+        {
+        }
 
-		/// Creates a vertex buffer
-		public override HardwareVertexBuffer CreateVertexBuffer( VertexDeclaration vertexDeclaration, int numVerts,
-		                                                         BufferUsage usage, bool useShadowBuffer )
-		{
-			var vb = new DefaultHardwareVertexBuffer( this, vertexDeclaration, numVerts, usage );
-			return vb;
-		}
+        /// Creates a vertex buffer
+        public override HardwareVertexBuffer CreateVertexBuffer(VertexDeclaration vertexDeclaration, int numVerts,
+                                                                 BufferUsage usage, bool useShadowBuffer)
+        {
+            var vb = new DefaultHardwareVertexBuffer(this, vertexDeclaration, numVerts, usage);
+            return vb;
+        }
 
-		/// Create a hardware vertex buffer
-		public override HardwareIndexBuffer CreateIndexBuffer( IndexType itype, int numIndices, BufferUsage usage,
-		                                                       bool useShadowBuffer )
-		{
-			var ib = new DefaultHardwareIndexBuffer( itype, numIndices, usage );
-			return ib;
-		}
+        /// Create a hardware vertex buffer
+        public override HardwareIndexBuffer CreateIndexBuffer(IndexType itype, int numIndices, BufferUsage usage,
+                                                               bool useShadowBuffer)
+        {
+            var ib = new DefaultHardwareIndexBuffer(itype, numIndices, usage);
+            return ib;
+        }
 
-		/// Create a hardware vertex buffer
-		//RenderToVertexBuffer createRenderToVertexBuffer();
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( disposeManagedResources )
-			{
-				//DisposeAllDeclarations();
-				//DisposeAllBindings();
-			}
-			base.dispose( disposeManagedResources );
-		}
-	};
+        /// Create a hardware vertex buffer
+        //RenderToVertexBuffer createRenderToVertexBuffer();
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (disposeManagedResources)
+            {
+                //DisposeAllDeclarations();
+                //DisposeAllBindings();
+            }
+            base.dispose(disposeManagedResources);
+        }
+    };
 }

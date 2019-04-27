@@ -29,185 +29,185 @@ using Axiom.Overlays.Elements;
 
 namespace Axiom.Samples
 {
-	/// <summary>
-	/// Basic Button 
-	/// </summary>
-	public class Button : Widget
-	{
-		#region fields
+    /// <summary>
+    /// Basic Button 
+    /// </summary>
+    public class Button : Widget
+    {
+        #region fields
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected ButtonState buttonState;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected ButtonState buttonState;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected BorderPanel BorderPanel;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected BorderPanel BorderPanel;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected TextArea TextArea;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected TextArea TextArea;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected bool isFitToContents;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected bool isFitToContents;
 
-		#endregion
+        #endregion
 
-		#region properties
+        #region properties
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public ButtonState State
-		{
-			get
-			{
-				return this.buttonState;
-			}
-			protected set
-			{
-				if ( value == ButtonState.Over )
-				{
-					this.BorderPanel.BorderMaterialName = "SdkTrays/Button/Over";
-					this.BorderPanel.MaterialName = "SdkTrays/Button/Over";
-				}
-				else if ( value == ButtonState.Up )
-				{
-					this.BorderPanel.BorderMaterialName = "SdkTrays/Button/Up";
-					this.BorderPanel.MaterialName = "SdkTrays/Button/Up";
-				}
-				else
-				{
-					this.BorderPanel.BorderMaterialName = "SdkTrays/Button/Down";
-					this.BorderPanel.MaterialName = "SdkTrays/Button/Down";
-				}
+        /// <summary>
+        /// 
+        /// </summary>
+        public ButtonState State
+        {
+            get
+            {
+                return this.buttonState;
+            }
+            protected set
+            {
+                if (value == ButtonState.Over)
+                {
+                    this.BorderPanel.BorderMaterialName = "SdkTrays/Button/Over";
+                    this.BorderPanel.MaterialName = "SdkTrays/Button/Over";
+                }
+                else if (value == ButtonState.Up)
+                {
+                    this.BorderPanel.BorderMaterialName = "SdkTrays/Button/Up";
+                    this.BorderPanel.MaterialName = "SdkTrays/Button/Up";
+                }
+                else
+                {
+                    this.BorderPanel.BorderMaterialName = "SdkTrays/Button/Down";
+                    this.BorderPanel.MaterialName = "SdkTrays/Button/Down";
+                }
 
-				this.buttonState = value;
-			}
-		}
+                this.buttonState = value;
+            }
+        }
 
-		/// <summary>
-		/// Text of this Button
-		/// </summary>
-		public string Caption
-		{
-			get
-			{
-				return this.TextArea.Text;
-			}
-			set
-			{
-				this.TextArea.Text = value;
-				if ( this.isFitToContents )
-				{
-					element.Width = GetCaptionWidth( Caption, this.TextArea ) + element.Height - 12;
-				}
-			}
-		}
+        /// <summary>
+        /// Text of this Button
+        /// </summary>
+        public string Caption
+        {
+            get
+            {
+                return this.TextArea.Text;
+            }
+            set
+            {
+                this.TextArea.Text = value;
+                if (this.isFitToContents)
+                {
+                    element.Width = GetCaptionWidth(Caption, this.TextArea) + element.Height - 12;
+                }
+            }
+        }
 
-		#endregion properties
+        #endregion properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		/// <summary>
-		/// Creates a new instance of <see cref="Button" />
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="caption"></param>
-		/// <param name="width"></param>
-		/// <remarks>
-		/// Do not instantiate any widgets directly. Use SdkTrayManager.
-		/// </remarks>
-		public Button( String name, String caption, Real width )
-		{
-			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Button", "BorderPanel", name );
-			this.BorderPanel = (BorderPanel)element;
-			this.TextArea = (TextArea)this.BorderPanel.Children[ this.BorderPanel.Name + "/ButtonCaption" ];
-			this.TextArea.Top = -( this.TextArea.CharHeight/2 ); //
-			if ( width > 0 )
-			{
-				element.Width = width;
-				this.isFitToContents = false;
-			}
-			else
-			{
-				this.isFitToContents = true;
-			}
+        /// <summary>
+        /// Creates a new instance of <see cref="Button" />
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="caption"></param>
+        /// <param name="width"></param>
+        /// <remarks>
+        /// Do not instantiate any widgets directly. Use SdkTrayManager.
+        /// </remarks>
+        public Button(String name, String caption, Real width)
+        {
+            element = OverlayManager.Instance.Elements.CreateElementFromTemplate("SdkTrays/Button", "BorderPanel", name);
+            this.BorderPanel = (BorderPanel)element;
+            this.TextArea = (TextArea)this.BorderPanel.Children[this.BorderPanel.Name + "/ButtonCaption"];
+            this.TextArea.Top = -(this.TextArea.CharHeight / 2); //
+            if (width > 0)
+            {
+                element.Width = width;
+                this.isFitToContents = false;
+            }
+            else
+            {
+                this.isFitToContents = true;
+            }
 
-			Caption = caption;
-			State = ButtonState.Up;
-		}
+            Caption = caption;
+            State = ButtonState.Up;
+        }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="cursorPos"></param>
-		public override void OnCursorPressed( Vector2 cursorPos )
-		{
-			if ( IsCursorOver( element, cursorPos, 4 ) )
-			{
-				State = ButtonState.Down;
-				base.OnCursorPressed( cursorPos );
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cursorPos"></param>
+        public override void OnCursorPressed(Vector2 cursorPos)
+        {
+            if (IsCursorOver(element, cursorPos, 4))
+            {
+                State = ButtonState.Down;
+                base.OnCursorPressed(cursorPos);
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="cursorPos"></param>
-		public override void OnCursorReleased( Vector2 cursorPos )
-		{
-			if ( State == ButtonState.Down )
-			{
-				State = ButtonState.Over;
-				if ( listener != null )
-				{
-					listener.OnButtonHit( this, this );
-				}
-			}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cursorPos"></param>
+        public override void OnCursorReleased(Vector2 cursorPos)
+        {
+            if (State == ButtonState.Down)
+            {
+                State = ButtonState.Over;
+                if (listener != null)
+                {
+                    listener.OnButtonHit(this, this);
+                }
+            }
 
-			base.OnCursorReleased( cursorPos );
-		}
+            base.OnCursorReleased(cursorPos);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="cursorPos"></param>
-		public override void OnCursorMoved( Vector2 cursorPos )
-		{
-			if ( IsCursorOver( element, cursorPos, 4 ) )
-			{
-				if ( State == ButtonState.Up )
-				{
-					State = ButtonState.Over;
-				}
-			}
-			else
-			{
-				if ( State != ButtonState.Up )
-				{
-					State = ButtonState.Up;
-				}
-			}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cursorPos"></param>
+        public override void OnCursorMoved(Vector2 cursorPos)
+        {
+            if (IsCursorOver(element, cursorPos, 4))
+            {
+                if (State == ButtonState.Up)
+                {
+                    State = ButtonState.Over;
+                }
+            }
+            else
+            {
+                if (State != ButtonState.Up)
+                {
+                    State = ButtonState.Up;
+                }
+            }
 
-			base.OnCursorMoved( cursorPos );
-		}
+            base.OnCursorMoved(cursorPos);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public override void OnLostFocus()
-		{
-			State = ButtonState.Up; // reset button if cursor was lost
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void OnLostFocus()
+        {
+            State = ButtonState.Up; // reset button if cursor was lost
 
-			base.OnLostFocus();
-		}
-	}
+            base.OnLostFocus();
+        }
+    }
 }

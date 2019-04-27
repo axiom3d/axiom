@@ -43,16 +43,16 @@ using System;
 
 namespace Axiom.Controllers
 {
-	/// <summary>
-	///		Interface describing the required methods of a Controller Function.
-	/// </summary>
-	public interface IControllerFunction<T>
-	{
-		/// <summary>
-		///		Called by a controller every frame to have this function run and return on the supplied
-		///		source value and return the result.
-		/// </summary>
-		/// <param name="sourceValue"></param>
-		T Execute( T sourceValue );
-	}
+    /// <summary>
+    ///		Interface describing the required methods of a Controller Function.
+    /// </summary>
+    public interface IControllerFunction<T>
+    {
+        /// <summary>
+        ///		Called by a controller every frame to have this function run and return on the supplied
+        ///		source value and return the result.
+        /// </summary>
+        /// <param name="sourceValue"></param>
+        T Execute(T sourceValue);
+    }
 }

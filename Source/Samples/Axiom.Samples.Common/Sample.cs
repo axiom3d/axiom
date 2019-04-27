@@ -31,25 +31,25 @@ using SIS = SharpInputSystem;
 
 namespace Axiom.Samples
 {
-	/// <summary>
-	/// Base class responsible for everything specific to one sample.
-	/// Designed to be subclassed for each sample.
-	/// </summary>
-	public class Sample
-	{
-		/// <summary>
-		/// Utility comparison structure for sorting samples using SampleSet.
-		/// </summary>
-		private class SampleComparer : IComparer
-		{
-			public int Compare( Sample x, Sample y )
-			{
-				string titleX;
-				string titleY;
+    /// <summary>
+    /// Base class responsible for everything specific to one sample.
+    /// Designed to be subclassed for each sample.
+    /// </summary>
+    public class Sample
+    {
+        /// <summary>
+        /// Utility comparison structure for sorting samples using SampleSet.
+        /// </summary>
+        private class SampleComparer : IComparer
+        {
+            public int Compare(Sample x, Sample y)
+            {
+                string titleX;
+                string titleY;
 
-				x.Metadata.TryGetValue( "Title", out titleX );
-				y.Metadata.TryGetValue( "Title", out titleY );
-				/*
+                x.Metadata.TryGetValue("Title", out titleX);
+                y.Metadata.TryGetValue("Title", out titleY);
+                /*
 				Ogre::NameValuePairList::iterator aTitle = a->getInfo().find("Title");
 				Ogre::NameValuePairList::iterator bTitle = b->getInfo().find("Title");
 				
@@ -57,399 +57,399 @@ namespace Axiom.Samples
 					return aTitle->second.compare(bTitle->second) < 0;
 				else return false;
 				*/
-				return 0;
-			}
+                return 0;
+            }
 
-			#region IComparer Members
+            #region IComparer Members
 
-			public int Compare( object x, object y )
-			{
-				if ( x == null && y == null )
-				{
-					return 0;
-				}
-				if ( x == null )
-				{
-					return -1;
-				}
-				if ( y == null )
-				{
-					return 1;
-				}
+            public int Compare(object x, object y)
+            {
+                if (x == null && y == null)
+                {
+                    return 0;
+                }
+                if (x == null)
+                {
+                    return -1;
+                }
+                if (y == null)
+                {
+                    return 1;
+                }
 
-				if ( x is Sample && y is Sample )
-				{
-					return Compare( x as Sample, y as Sample );
-				}
-				return 0;
-			}
+                if (x is Sample && y is Sample)
+                {
+                    return Compare(x as Sample, y as Sample);
+                }
+                return 0;
+            }
 
-			#endregion
-		}
+            #endregion
+        }
 
-		#region Fields and Properties
+        #region Fields and Properties
 
-		/// <summary>
-		/// Axiom root object
-		/// </summary>
-		protected Root Root;
+        /// <summary>
+        /// Axiom root object
+        /// </summary>
+        protected Root Root;
 
-		/// <summary>
-		/// context render window
-		/// </summary>
-		protected RenderWindow Window;
+        /// <summary>
+        /// context render window
+        /// </summary>
+        protected RenderWindow Window;
 
-		/// <summary>
-		/// context keyboard device
-		/// </summary>
-		protected SIS.Keyboard Keyboard;
+        /// <summary>
+        /// context keyboard device
+        /// </summary>
+        protected SIS.Keyboard Keyboard;
 
-		/// <summary>
-		/// context mouse device
-		/// </summary>
-		protected SIS.Mouse Mouse;
+        /// <summary>
+        /// context mouse device
+        /// </summary>
+        protected SIS.Mouse Mouse;
 
-		/// <summary>
-		/// whether or not resources have been loaded
-		/// </summary>
-		protected bool ResourcesLoaded;
+        /// <summary>
+        /// whether or not resources have been loaded
+        /// </summary>
+        protected bool ResourcesLoaded;
 
-		/// <summary>
-		/// whether or not scene was created
-		/// </summary>
-		protected bool ContentSetup;
+        /// <summary>
+        /// whether or not scene was created
+        /// </summary>
+        protected bool ContentSetup;
 
-		#region Metadata Property
+        #region Metadata Property
 
-		protected readonly NameValuePairList _metadata = new NameValuePairList();
+        protected readonly NameValuePairList _metadata = new NameValuePairList();
 
-		/// <summary>
-		///  Retrieves custom sample info.
-		/// </summary>
-		public NameValuePairList Metadata
-		{
-			get
-			{
-				return this._metadata;
-			}
-		}
+        /// <summary>
+        ///  Retrieves custom sample info.
+        /// </summary>
+        public NameValuePairList Metadata
+        {
+            get
+            {
+                return this._metadata;
+            }
+        }
 
-		#endregion Metadata Property
+        #endregion Metadata Property
 
-		#region RequiredRenderSystem Property
+        #region RequiredRenderSystem Property
 
-		/// <summary>
-		/// If this sample requires a specific render system to run, this method will be used to return its name.
-		/// </summary>
-		public virtual string RequiredRenderSystem
-		{
-			get
-			{
-				return string.Empty;
-			}
-		}
+        /// <summary>
+        /// If this sample requires a specific render system to run, this method will be used to return its name.
+        /// </summary>
+        public virtual string RequiredRenderSystem
+        {
+            get
+            {
+                return string.Empty;
+            }
+        }
 
-		#endregion RequiredRenderSystem Property
+        #endregion RequiredRenderSystem Property
 
-		#region RequiredPlugins Property
+        #region RequiredPlugins Property
 
-		/// <summary>
-		/// If this sample requires specific plugins to run, this method will be used to return their names.
-		/// </summary>
-		public virtual IList<string> RequiredPlugins
-		{
-			get
-			{
-				return new List<string>();
-			}
-		}
+        /// <summary>
+        /// If this sample requires specific plugins to run, this method will be used to return their names.
+        /// </summary>
+        public virtual IList<string> RequiredPlugins
+        {
+            get
+            {
+                return new List<string>();
+            }
+        }
 
-		#endregion RequiredPlugins Property
+        #endregion RequiredPlugins Property
 
-		#region SceneManager Property
+        #region SceneManager Property
 
-		private SceneManager _sceneManager; // scene manager for this sample
+        private SceneManager _sceneManager; // scene manager for this sample
 
-		/// <summary>
-		/// <see cref="Axiom.Core.SceneManager"/> for this sample
-		/// </summary>
-		public SceneManager SceneManager
-		{
-			get
-			{
-				return this._sceneManager;
-			}
-			protected set
-			{
-				this._sceneManager = value;
-			}
-		}
+        /// <summary>
+        /// <see cref="Axiom.Core.SceneManager"/> for this sample
+        /// </summary>
+        public SceneManager SceneManager
+        {
+            get
+            {
+                return this._sceneManager;
+            }
+            protected set
+            {
+                this._sceneManager = value;
+            }
+        }
 
-		#endregion SceneManager Property
+        #endregion SceneManager Property
 
-		#region IsDone Property
+        #region IsDone Property
 
-		private bool _done; // flag to mark the end of the sample
+        private bool _done; // flag to mark the end of the sample
 
-		/// <summary>
-		/// Has the sample ended
-		/// </summary>
-		public bool IsDone
-		{
-			get
-			{
-				return this._done;
-			}
-			protected set
-			{
-				this._done = value;
-			}
-		}
+        /// <summary>
+        /// Has the sample ended
+        /// </summary>
+        public bool IsDone
+        {
+            get
+            {
+                return this._done;
+            }
+            protected set
+            {
+                this._done = value;
+            }
+        }
 
-		#endregion IsDone Property
+        #endregion IsDone Property
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public Sample()
-		{
-			this.Root = Root.Instance;
-			this.Window = null;
-			this._sceneManager = null;
-			this._done = true;
-			this.ResourcesLoaded = false;
-			this.ContentSetup = false;
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public Sample()
+        {
+            this.Root = Root.Instance;
+            this.Window = null;
+            this._sceneManager = null;
+            this._done = true;
+            this.ResourcesLoaded = false;
+            this.ContentSetup = false;
+        }
 
-		/// <summary>
-		/// Tests to see if target machine meets any special requirements of this sample. Signal a failure by throwing an exception.
-		/// </summary>
-		/// <param name="capabilities"></param>
-		public virtual void TestCapabilities( RenderSystemCapabilities capabilities )
-		{
-		}
+        /// <summary>
+        /// Tests to see if target machine meets any special requirements of this sample. Signal a failure by throwing an exception.
+        /// </summary>
+        /// <param name="capabilities"></param>
+        public virtual void TestCapabilities(RenderSystemCapabilities capabilities)
+        {
+        }
 
-		/// <summary>
-		/// Sets up a sample. Used by the SampleContext class. Do not call directly.
-		/// </summary>
-		/// <param name="window"></param>
-		/// <param name="keyboard"></param>
-		/// <param name="mouse"></param>
-		protected internal virtual void Setup( RenderWindow window, SIS.Keyboard keyboard, SIS.Mouse mouse )
-		{
-			this.Window = window;
-			this.Keyboard = keyboard;
-			this.Mouse = mouse;
+        /// <summary>
+        /// Sets up a sample. Used by the SampleContext class. Do not call directly.
+        /// </summary>
+        /// <param name="window"></param>
+        /// <param name="keyboard"></param>
+        /// <param name="mouse"></param>
+        protected internal virtual void Setup(RenderWindow window, SIS.Keyboard keyboard, SIS.Mouse mouse)
+        {
+            this.Window = window;
+            this.Keyboard = keyboard;
+            this.Mouse = mouse;
 
-			LocateResources();
-			CreateSceneManager();
-			SetupView();
-			LoadResources();
-			this.ResourcesLoaded = true;
-			SetupContent();
-			this.ContentSetup = true;
+            LocateResources();
+            CreateSceneManager();
+            SetupView();
+            LoadResources();
+            this.ResourcesLoaded = true;
+            SetupContent();
+            this.ContentSetup = true;
 
-			this._done = false;
-		}
+            this._done = false;
+        }
 
-		/// <summary>
-		/// Shuts down a sample. Used by the SampleContext class. Do not call directly.
-		/// </summary>
-		public virtual void Shutdown()
-		{
-			if ( this._sceneManager != null )
-			{
-				this._sceneManager.ClearScene();
-			}
+        /// <summary>
+        /// Shuts down a sample. Used by the SampleContext class. Do not call directly.
+        /// </summary>
+        public virtual void Shutdown()
+        {
+            if (this._sceneManager != null)
+            {
+                this._sceneManager.ClearScene();
+            }
 
-			if ( this.ContentSetup )
-			{
-				CleanupContent();
-			}
-			this.ContentSetup = false;
+            if (this.ContentSetup)
+            {
+                CleanupContent();
+            }
+            this.ContentSetup = false;
 
-			if ( this.ResourcesLoaded )
-			{
-				UnloadResources();
-			}
-			this.ResourcesLoaded = false;
+            if (this.ResourcesLoaded)
+            {
+                UnloadResources();
+            }
+            this.ResourcesLoaded = false;
 
-			if ( this._sceneManager != null )
-			{
-				this.Root.DestroySceneManager( this._sceneManager );
-			}
-			this._sceneManager = null;
+            if (this._sceneManager != null)
+            {
+                this.Root.DestroySceneManager(this._sceneManager);
+            }
+            this._sceneManager = null;
 
-			this._done = true;
-		}
+            this._done = true;
+        }
 
-		/*-----------------------------------------------------------------------------
+        /*-----------------------------------------------------------------------------
 		| Actions to perform when the context stops sending frame listener events
 		| and input device events to this sample.
 		-----------------------------------------------------------------------------*/
 
-		public virtual void Paused()
-		{
-		}
+        public virtual void Paused()
+        {
+        }
 
-		/*-----------------------------------------------------------------------------
+        /*-----------------------------------------------------------------------------
 		| Actions to perform when the context continues sending frame listener
 		| events and input device events to this sample.
 		-----------------------------------------------------------------------------*/
 
-		public virtual void Unpaused()
-		{
-		}
+        public virtual void Unpaused()
+        {
+        }
 
-		/*-----------------------------------------------------------------------------
+        /*-----------------------------------------------------------------------------
 		| Saves the sample state. Optional. Used during reconfiguration.
 		-----------------------------------------------------------------------------*/
 
-		public virtual void SaveState( NameValuePairList state )
-		{
-		}
+        public virtual void SaveState(NameValuePairList state)
+        {
+        }
 
-		/*-----------------------------------------------------------------------------
+        /*-----------------------------------------------------------------------------
 		| Restores the sample state. Optional. Used during reconfiguration.
 		-----------------------------------------------------------------------------*/
 
-		public virtual void RestoreState( NameValuePairList state )
-		{
-		}
+        public virtual void RestoreState(NameValuePairList state)
+        {
+        }
 
-		// callback interface copied from various listeners to be used by SampleContext
+        // callback interface copied from various listeners to be used by SampleContext
 
-		public virtual bool FrameStarted( FrameEventArgs evt )
-		{
-			return false;
-		}
+        public virtual bool FrameStarted(FrameEventArgs evt)
+        {
+            return false;
+        }
 
-		public virtual bool FrameRenderingQueued( FrameEventArgs evt )
-		{
-			return false;
-		}
+        public virtual bool FrameRenderingQueued(FrameEventArgs evt)
+        {
+            return false;
+        }
 
-		public virtual bool FrameEnded( FrameEventArgs evt )
-		{
-			return false;
-		}
+        public virtual bool FrameEnded(FrameEventArgs evt)
+        {
+            return false;
+        }
 
-		public virtual void WindowMoved( RenderWindow rw )
-		{
-		}
+        public virtual void WindowMoved(RenderWindow rw)
+        {
+        }
 
-		public virtual void WindowResized( RenderWindow rw )
-		{
-		}
+        public virtual void WindowResized(RenderWindow rw)
+        {
+        }
 
-		public virtual bool WindowClosing( RenderWindow rw )
-		{
-			return true;
-		}
+        public virtual bool WindowClosing(RenderWindow rw)
+        {
+            return true;
+        }
 
-		public virtual void WindowClosed( RenderWindow rw )
-		{
-		}
+        public virtual void WindowClosed(RenderWindow rw)
+        {
+        }
 
-		public virtual void WindowFocusChange( RenderWindow rw )
-		{
-		}
+        public virtual void WindowFocusChange(RenderWindow rw)
+        {
+        }
 
-		public virtual bool KeyPressed( SIS.KeyEventArgs evt )
-		{
-			return true;
-		}
+        public virtual bool KeyPressed(SIS.KeyEventArgs evt)
+        {
+            return true;
+        }
 
-		public virtual bool KeyReleased( SIS.KeyEventArgs evt )
-		{
-			return true;
-		}
+        public virtual bool KeyReleased(SIS.KeyEventArgs evt)
+        {
+            return true;
+        }
 
-		public virtual bool MouseMoved( SIS.MouseEventArgs evt )
-		{
-			return true;
-		}
+        public virtual bool MouseMoved(SIS.MouseEventArgs evt)
+        {
+            return true;
+        }
 
-		public virtual bool MousePressed( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
-		{
-			return true;
-		}
+        public virtual bool MousePressed(SIS.MouseEventArgs evt, SIS.MouseButtonID id)
+        {
+            return true;
+        }
 
-		public virtual bool MouseReleased( SIS.MouseEventArgs evt, SIS.MouseButtonID id )
-		{
-			return true;
-		}
+        public virtual bool MouseReleased(SIS.MouseEventArgs evt, SIS.MouseButtonID id)
+        {
+            return true;
+        }
 
 
-		/*-----------------------------------------------------------------------------
+        /*-----------------------------------------------------------------------------
 		| Finds sample-specific resources. No such effort is made for most samples,
 		| but this is useful for special samples with large, exclusive resources.
 		-----------------------------------------------------------------------------*/
 
-		protected virtual void LocateResources()
-		{
-		}
+        protected virtual void LocateResources()
+        {
+        }
 
-		/*-----------------------------------------------------------------------------
+        /*-----------------------------------------------------------------------------
 		| Loads sample-specific resources. No such effort is made for most samples,
 		| but this is useful for special samples with large, exclusive resources.
 		-----------------------------------------------------------------------------*/
 
-		protected virtual void LoadResources()
-		{
-		}
+        protected virtual void LoadResources()
+        {
+        }
 
-		/*-----------------------------------------------------------------------------
+        /*-----------------------------------------------------------------------------
 		| Creates a scene manager for the sample. A generic one is the default,
 		| but many samples require a special kind of scene manager.
 		-----------------------------------------------------------------------------*/
 
-		protected virtual void CreateSceneManager()
-		{
-			this._sceneManager = Root.Instance.CreateSceneManager( "DefaultSceneManager" );
-		}
+        protected virtual void CreateSceneManager()
+        {
+            this._sceneManager = Root.Instance.CreateSceneManager("DefaultSceneManager");
+        }
 
-		/*-----------------------------------------------------------------------------
+        /*-----------------------------------------------------------------------------
 		| Sets up viewport layout and camera.
 		-----------------------------------------------------------------------------*/
 
-		protected virtual void SetupView()
-		{
-		}
+        protected virtual void SetupView()
+        {
+        }
 
-		/*-----------------------------------------------------------------------------
+        /*-----------------------------------------------------------------------------
 		| Sets up the scene (and anything else you want for the sample).
 		-----------------------------------------------------------------------------*/
 
-		protected virtual void SetupContent()
-		{
-		}
+        protected virtual void SetupContent()
+        {
+        }
 
-		/*-----------------------------------------------------------------------------
+        /*-----------------------------------------------------------------------------
 		| Cleans up the scene (and anything else you used).
 		-----------------------------------------------------------------------------*/
 
-		protected virtual void CleanupContent()
-		{
-		}
+        protected virtual void CleanupContent()
+        {
+        }
 
-		/*-----------------------------------------------------------------------------
+        /*-----------------------------------------------------------------------------
 		| Unloads sample-specific resources. My method here is simple and good
 		| enough for most small samples, but your needs may vary.
 		-----------------------------------------------------------------------------*/
 
-		protected virtual void UnloadResources()
-		{
-			foreach ( ResourceManager manager in ResourceGroupManager.Instance.ResourceManagers.Values )
-			{
-				//manager.UnloadUnreferencedResources();
-			}
-		}
-	};
+        protected virtual void UnloadResources()
+        {
+            foreach (ResourceManager manager in ResourceGroupManager.Instance.ResourceManagers.Values)
+            {
+                //manager.UnloadUnreferencedResources();
+            }
+        }
+    };
 
-	public class SampleSet : List<Sample>
-	{
-	}
+    public class SampleSet : List<Sample>
+    {
+    }
 }

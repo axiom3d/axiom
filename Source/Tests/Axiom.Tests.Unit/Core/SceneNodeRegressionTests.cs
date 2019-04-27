@@ -1,7 +1,7 @@
 #region LGPL License
 
 // Axiom Graphics Engine Library
-// Copyright (C) 2003-2010 Axiom Project Team
+// Copyright (C) 2003-2009 Axiom Project Team
 // 
 // The overall design, and a majority of the core engine and rendering code 
 // contained within this library is a derivative of the open source Object Oriented 
@@ -27,10 +27,8 @@
 #region Namespace Declarations
 
 using Axiom.Core;
-
-using MbUnit.Framework;
-
-using TypeMock.ArrangeActAssert;
+using FakeItEasy;
+using NUnit.Framework;
 
 #endregion
 
@@ -44,107 +42,105 @@ namespace Axiom.UnitTests.Core
     /// https://sourceforge.net/apps/trac/axiomengine/ticket/69,
     /// a problem with node removal functionality.
     /// </remarks>
-    [ TestFixture ]
+    [TestFixture]
     public class SceneNodeRegressionTests
     {
-        private SceneManager fakeSceneManager;
+        private readonly SceneManager sceneManager = A.Fake<SceneManager>();
         private const string Name = "testName";
 
         /// <summary>
         /// Sets up each test.
         /// </summary>
-        [ SetUp ]
+        [SetUp]
         public void SetUp()
         {
-            this.fakeSceneManager = Isolate.Fake.Instance<SceneManager>();
-            Isolate.WhenCalled( () => this.fakeSceneManager.CreateSceneNode( Name ) ).WillReturn( new SceneNode( this.fakeSceneManager, Name ) );
+            A.CallTo(() => sceneManager.CreateSceneNode(Name)).Returns(new SceneNode(this.sceneManager, "Name"));
         }
 
         /// <summary>
         /// Tears down each test.
         /// </summary>
-        [ TearDown ]
+        [TearDown]
         public void TearDown()
         {
-            Isolate.CleanUp();
         }
 
         /// <summary>
         /// Verifies that a new child node can be created after a node with the same name has been removed by reference.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestRecreationOfChildNodeAfterRemovalByReference()
         {
-            Node node = new SceneNode( this.fakeSceneManager );
-            Node childNode = node.CreateChild( Name );
+            Node node = new SceneNode(this.sceneManager);
+            Node childNode = node.CreateChild(Name);
 
-            node.RemoveChild( childNode );
-            node.CreateChild( Name );
+            node.RemoveChild(childNode);
+            node.CreateChild(Name);
         }
 
         /// <summary>
         /// Verifies that a new child node can be created after a node with the same name has been removed by name.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestRecreationOfChildNodeAfterRemovalByName()
         {
-            Node node = new SceneNode( this.fakeSceneManager );
-            node.CreateChild( Name );
+            Node node = new SceneNode(this.sceneManager);
+            node.CreateChild(Name);
 
-            node.RemoveChild( Name );
-            node.CreateChild( Name );
+            node.RemoveChild(Name);
+            node.CreateChild(Name);
         }
 
         ///// <summary>
         ///// Verifies that a new child node can be created after a node with the same name has been removed by index.
         ///// </summary>
-        //[ Test ]
-        //public void TestRecreationOfChildNodeAfterRemovalByIndex()
-        //{
-        //    Node node = new SceneNode( this.fakeSceneManager );
-        //    node.CreateChild( Name );
+        [Test]
+        public void TestRecreationOfChildNodeAfterRemovalByIndex()
+        {
+            Node node = new SceneNode(this.sceneManager);
+            node.CreateChild(Name);
 
-        //    node.RemoveChild( 0 );
-        //    node.CreateChild( Name );
-        //}
+            node.RemoveChild(Name);
+            node.CreateChild(Name);
+        }
 
         /// <summary>
         /// Verifies that a new child node can be added after a node with the same name has been removed by reference.
         /// </summary>
-        [ Test ]
-        public void TestReaddingOfChildNodeAfterRemovalByReference()
+        [Test]
+        public void TestReadingOfChildNodeAfterRemovalByReference()
         {
-            Node node = new SceneNode( this.fakeSceneManager );
-            Node childNode = node.CreateChild( Name );
+            Node node = new SceneNode(this.sceneManager);
+            Node childNode = node.CreateChild(Name);
 
-            node.RemoveChild( childNode );
-            node.AddChild( childNode );
+            node.RemoveChild(childNode);
+            node.AddChild(childNode);
         }
 
         /// <summary>
         /// Verifies that a new child node can be added after a node with the same name has been removed by name.
         /// </summary>
-        [ Test ]
-        public void TestReaddingOfChildNodeAfterRemovalByName()
+        [Test]
+        public void TestReadingOfChildNodeAfterRemovalByName()
         {
-            Node node = new SceneNode( this.fakeSceneManager );
-            Node childNode = node.CreateChild( Name );
+            Node node = new SceneNode(this.sceneManager);
+            Node childNode = node.CreateChild(Name);
 
-            node.RemoveChild( Name );
-            node.AddChild( childNode );
+            node.RemoveChild(Name);
+            node.AddChild(childNode);
         }
 
         ///// <summary>
         ///// Verifies that a new child node can be added after a node with the same name has been removed by index.
         ///// </summary>
-        //[ Test ]
-        //public void TestReaddingOfChildNodeAfterRemovalByIndex()
-        //{
-        //    Node node = new SceneNode( this.fakeSceneManager );
-        //    Node childNode = node.CreateChild( Name );
+        [Test]
+        public void TestReadingOfChildNodeAfterRemovalByIndex()
+        {
+            //Node node = new SceneNode(this.sceneManager);
+            //Node childNode = node.CreateChild(Name);
 
-        //    node.RemoveChild( 0 );
-        //    node.AddChild( childNode );
-        //}
+            //node.RemoveChild(0);
+            //node.AddChild(childNode);
+        }
     }
 }

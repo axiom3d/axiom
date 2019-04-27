@@ -51,32 +51,32 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.ParticleFX.Factories
 {
-	/// <summary>
-	/// 	Summary description for PointEmitterFactory.
-	/// </summary>
-	public class PointEmitterFactory : ParticleEmitterFactory
-	{
-		#region Methods
+    /// <summary>
+    /// 	Summary description for PointEmitterFactory.
+    /// </summary>
+    public class PointEmitterFactory : ParticleEmitterFactory
+    {
+        #region Methods
 
-		public override ParticleEmitter Create( ParticleSystem ps )
-		{
-			var emitter = new PointEmitter( ps );
-			emitterList.Add( emitter );
-			return emitter;
-		}
+        public override ParticleEmitter Create(ParticleSystem ps)
+        {
+            var emitter = new PointEmitter(ps);
+            emitterList.Add(emitter);
+            return emitter;
+        }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		public override string Name
-		{
-			get
-			{
-				return "Point";
-			}
-		}
+        public override string Name
+        {
+            get
+            {
+                return "Point";
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

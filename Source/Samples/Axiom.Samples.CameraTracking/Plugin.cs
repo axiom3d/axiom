@@ -22,21 +22,21 @@
 
 #endregion License
 
-using System.ComponentModel.Composition;
+using System.Composition;
 using Axiom.Core;
 
 namespace Axiom.Samples.CameraTrack
 {
-	[Export( typeof ( IPlugin ) )]
-	public class Plugin : SamplePlugin
-	{
-		private CameraTrackingSample sample;
+    [Export(typeof(IPlugin))]
+    public class Plugin : SamplePlugin
+    {
+        private CameraTrackingSample sample;
 
-		public override void Initialize()
-		{
-			this.sample = new CameraTrackingSample();
-			Name = this.sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this.sample );
-		}
-	}
+        public override void Initialize()
+        {
+            this.sample = new CameraTrackingSample();
+            Name = this.sample.Metadata["Title"] + " Sample";
+            AddSample(this.sample);
+        }
+    }
 }

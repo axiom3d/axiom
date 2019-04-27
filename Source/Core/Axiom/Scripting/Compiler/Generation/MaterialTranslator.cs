@@ -49,291 +49,291 @@ using Axiom.Scripting.Compiler.AST;
 
 namespace Axiom.Scripting.Compiler
 {
-	public partial class ScriptCompiler
-	{
-		public class MaterialTranslator : Translator
-		{
-			protected Material _material;
+    public partial class ScriptCompiler
+    {
+        public class MaterialTranslator : Translator
+        {
+            protected Material _material;
 
-			protected Dictionary<string, string> _textureAliases = new Dictionary<string, string>();
+            protected Dictionary<string, string> _textureAliases = new Dictionary<string, string>();
 
-			public MaterialTranslator()
-				: base()
-			{
-			}
+            public MaterialTranslator()
+                : base()
+            {
+            }
 
-			#region Translator Implementation
+            #region Translator Implementation
 
-			/// <see cref="Translator.CheckFor"/>
-			public override bool CheckFor( Keywords nodeId, Keywords parentId )
-			{
-				return nodeId == Keywords.ID_MATERIAL;
-			}
+            /// <see cref="Translator.CheckFor"/>
+            public override bool CheckFor(Keywords nodeId, Keywords parentId)
+            {
+                return nodeId == Keywords.ID_MATERIAL;
+            }
 
-			/// <see cref="Translator.Translate"/>
-			public override void Translate( ScriptCompiler compiler, AbstractNode node )
-			{
-				var obj = (ObjectAbstractNode)node;
-				if ( obj != null )
-				{
-					if ( string.IsNullOrEmpty( obj.Name ) )
-					{
-						compiler.AddError( CompileErrorCode.ObjectNameExpected, obj.File, obj.Line );
-					}
-				}
-				else
-				{
-					compiler.AddError( CompileErrorCode.ObjectNameExpected, node.File, node.Line );
-					return;
-				}
+            /// <see cref="Translator.Translate"/>
+            public override void Translate(ScriptCompiler compiler, AbstractNode node)
+            {
+                var obj = (ObjectAbstractNode)node;
+                if (obj != null)
+                {
+                    if (string.IsNullOrEmpty(obj.Name))
+                    {
+                        compiler.AddError(CompileErrorCode.ObjectNameExpected, obj.File, obj.Line);
+                    }
+                }
+                else
+                {
+                    compiler.AddError(CompileErrorCode.ObjectNameExpected, node.File, node.Line);
+                    return;
+                }
 
-				// Create a material with the given name
-				object mat;
-				ScriptCompilerEvent evt = new CreateMaterialScriptCompilerEvent( node.File, obj.Name, compiler.ResourceGroup );
-				var processed = compiler._fireEvent( ref evt, out mat );
+                // Create a material with the given name
+                object mat;
+                ScriptCompilerEvent evt = new CreateMaterialScriptCompilerEvent(node.File, obj.Name, compiler.ResourceGroup);
+                var processed = compiler._fireEvent(ref evt, out mat);
 
-				if ( !processed )
-				{
-					//TODO
-					// The original translated implementation of this code block was simply the following:
-					// _material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
-					// but sometimes it generates an exception due to a duplicate resource.
-					// In order to avoid the above mentioned exception, the implementation was changed, but
-					// it need to be checked when ResourceManager._add will be updated to the latest version
+                if (!processed)
+                {
+                    //TODO
+                    // The original translated implementation of this code block was simply the following:
+                    // _material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
+                    // but sometimes it generates an exception due to a duplicate resource.
+                    // In order to avoid the above mentioned exception, the implementation was changed, but
+                    // it need to be checked when ResourceManager._add will be updated to the latest version
 
-					var checkForExistingMat = (Material)MaterialManager.Instance.GetByName( obj.Name );
+                    var checkForExistingMat = (Material)MaterialManager.Instance.GetByName(obj.Name);
 
-					if ( checkForExistingMat == null )
-					{
-						this._material = (Material)MaterialManager.Instance.Create( obj.Name, compiler.ResourceGroup );
-					}
-					else
-					{
-						this._material = checkForExistingMat;
-					}
-				}
-				else
-				{
-					this._material = (Material)mat;
+                    if (checkForExistingMat == null)
+                    {
+                        this._material = (Material)MaterialManager.Instance.Create(obj.Name, compiler.ResourceGroup);
+                    }
+                    else
+                    {
+                        this._material = checkForExistingMat;
+                    }
+                }
+                else
+                {
+                    this._material = (Material)mat;
 
-					if ( this._material == null )
-					{
-						compiler.AddError( CompileErrorCode.ObjectAllocationError, obj.File, obj.Line,
-						                   "failed to find or create material \"" + obj.Name + "\"" );
-					}
-				}
+                    if (this._material == null)
+                    {
+                        compiler.AddError(CompileErrorCode.ObjectAllocationError, obj.File, obj.Line,
+                                           "failed to find or create material \"" + obj.Name + "\"");
+                    }
+                }
 
-				this._material.RemoveAllTechniques();
-				obj.Context = this._material;
-				this._material.Origin = obj.File;
+                this._material.RemoveAllTechniques();
+                obj.Context = this._material;
+                this._material.Origin = obj.File;
 
-				foreach ( var i in obj.Children )
-				{
-					if ( i is PropertyAbstractNode )
-					{
-						var prop = (PropertyAbstractNode)i;
+                foreach (var i in obj.Children)
+                {
+                    if (i is PropertyAbstractNode)
+                    {
+                        var prop = (PropertyAbstractNode)i;
 
-						switch ( (Keywords)prop.Id )
-						{
-								#region ID_LOD_VALUES
+                        switch ((Keywords)prop.Id)
+                        {
+                            #region ID_LOD_VALUES
 
-							case Keywords.ID_LOD_VALUES:
-							{
-								var lods = new LodValueList();
-								foreach ( var j in prop.Values )
-								{
-									Real v = 0;
-									if ( getReal( j, out v ) )
-									{
-										lods.Add( v );
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-										                   "lod_values expects only numbers as arguments" );
-									}
-								}
-								this._material.SetLodLevels( lods );
-							}
-								break;
+                            case Keywords.ID_LOD_VALUES:
+                                {
+                                    var lods = new LodValueList();
+                                    foreach (var j in prop.Values)
+                                    {
+                                        Real v = 0;
+                                        if (getReal(j, out v))
+                                        {
+                                            lods.Add(v);
+                                        }
+                                        else
+                                        {
+                                            compiler.AddError(CompileErrorCode.NumberExpected, prop.File, prop.Line,
+                                                               "lod_values expects only numbers as arguments");
+                                        }
+                                    }
+                                    this._material.SetLodLevels(lods);
+                                }
+                                break;
 
-								#endregion ID_LOD_VALUES
+                            #endregion ID_LOD_VALUES
 
-								#region ID_LOD_DISTANCES
+                            #region ID_LOD_DISTANCES
 
-							case Keywords.ID_LOD_DISTANCES:
-							{
-								// Set strategy to distance strategy
-								LodStrategy strategy = DistanceLodStrategy.Instance;
-								this._material.LodStrategy = strategy;
+                            case Keywords.ID_LOD_DISTANCES:
+                                {
+                                    // Set strategy to distance strategy
+                                    LodStrategy strategy = DistanceLodStrategy.Instance;
+                                    this._material.LodStrategy = strategy;
 
-								// Real in lod distances
-								var lods = new LodValueList();
-								foreach ( var j in prop.Values )
-								{
-									Real v = 0;
-									if ( getReal( j, out v ) )
-									{
-										lods.Add( v );
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line,
-										                   "lod_values expects only numbers as arguments" );
-									}
-								}
-								this._material.SetLodLevels( lods );
-							}
-								break;
+                                    // Real in lod distances
+                                    var lods = new LodValueList();
+                                    foreach (var j in prop.Values)
+                                    {
+                                        Real v = 0;
+                                        if (getReal(j, out v))
+                                        {
+                                            lods.Add(v);
+                                        }
+                                        else
+                                        {
+                                            compiler.AddError(CompileErrorCode.NumberExpected, prop.File, prop.Line,
+                                                               "lod_values expects only numbers as arguments");
+                                        }
+                                    }
+                                    this._material.SetLodLevels(lods);
+                                }
+                                break;
 
-								#endregion ID_LOD_DISTANCES
+                            #endregion ID_LOD_DISTANCES
 
-								#region ID_LOD_STRATEGY
+                            #region ID_LOD_STRATEGY
 
-							case Keywords.ID_LOD_STRATEGY:
-								if ( prop.Values.Count == 0 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-								}
-								else if ( prop.Values.Count > 1 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "lod_strategy only supports 1 argument" );
-								}
-								else
-								{
-									var strategyName = string.Empty;
-									var result = getString( prop.Values[ 0 ], out strategyName );
-									if ( result )
-									{
-										var strategy = LodStrategyManager.Instance.GetStrategy( strategyName );
+                            case Keywords.ID_LOD_STRATEGY:
+                                if (prop.Values.Count == 0)
+                                {
+                                    compiler.AddError(CompileErrorCode.StringExpected, prop.File, prop.Line);
+                                }
+                                else if (prop.Values.Count > 1)
+                                {
+                                    compiler.AddError(CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+                                                       "lod_strategy only supports 1 argument");
+                                }
+                                else
+                                {
+                                    var strategyName = string.Empty;
+                                    var result = getString(prop.Values[0], out strategyName);
+                                    if (result)
+                                    {
+                                        var strategy = LodStrategyManager.Instance.GetStrategy(strategyName);
 
-										result = strategy != null;
+                                        result = strategy != null;
 
-										if ( result )
-										{
-											this._material.LodStrategy = strategy;
-										}
-									}
+                                        if (result)
+                                        {
+                                            this._material.LodStrategy = strategy;
+                                        }
+                                    }
 
-									if ( !result )
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "lod_strategy argument must be a valid lod strategy" );
-									}
-								}
-								break;
+                                    if (!result)
+                                    {
+                                        compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+                                                           "lod_strategy argument must be a valid lod strategy");
+                                    }
+                                }
+                                break;
 
-								#endregion ID_LOD_STRATEGY
+                            #endregion ID_LOD_STRATEGY
 
-								#region ID_RECEIVE_SHADOWS
+                            #region ID_RECEIVE_SHADOWS
 
-							case Keywords.ID_RECEIVE_SHADOWS:
-								if ( prop.Values.Count == 0 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-								}
-								else if ( prop.Values.Count > 1 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "receive_shadows only supports 1 argument" );
-								}
-								else
-								{
-									var val = true;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
-									{
-										this._material.ReceiveShadows = val;
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "receive_shadows argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
-									}
-								}
-								break;
+                            case Keywords.ID_RECEIVE_SHADOWS:
+                                if (prop.Values.Count == 0)
+                                {
+                                    compiler.AddError(CompileErrorCode.StringExpected, prop.File, prop.Line);
+                                }
+                                else if (prop.Values.Count > 1)
+                                {
+                                    compiler.AddError(CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+                                                       "receive_shadows only supports 1 argument");
+                                }
+                                else
+                                {
+                                    var val = true;
+                                    if (getBoolean(prop.Values[0], out val))
+                                    {
+                                        this._material.ReceiveShadows = val;
+                                    }
+                                    else
+                                    {
+                                        compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+                                                           "receive_shadows argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"");
+                                    }
+                                }
+                                break;
 
-								#endregion ID_RECEIVE_SHADOWS
+                            #endregion ID_RECEIVE_SHADOWS
 
-								#region ID_TRANSPARENCY_CASTS_SHADOWS
+                            #region ID_TRANSPARENCY_CASTS_SHADOWS
 
-							case Keywords.ID_TRANSPARENCY_CASTS_SHADOWS:
-								if ( prop.Values.Count == 0 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-								}
-								else if ( prop.Values.Count > 1 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
-									                   "transparency_casts_shadows only supports 1 argument" );
-								}
-								else
-								{
-									var val = true;
-									if ( getBoolean( prop.Values[ 0 ], out val ) )
-									{
-										this._material.TransparencyCastsShadows = val;
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "transparency_casts_shadows argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"" );
-									}
-								}
-								break;
+                            case Keywords.ID_TRANSPARENCY_CASTS_SHADOWS:
+                                if (prop.Values.Count == 0)
+                                {
+                                    compiler.AddError(CompileErrorCode.StringExpected, prop.File, prop.Line);
+                                }
+                                else if (prop.Values.Count > 1)
+                                {
+                                    compiler.AddError(CompileErrorCode.FewerParametersExpected, prop.File, prop.Line,
+                                                       "transparency_casts_shadows only supports 1 argument");
+                                }
+                                else
+                                {
+                                    var val = true;
+                                    if (getBoolean(prop.Values[0], out val))
+                                    {
+                                        this._material.TransparencyCastsShadows = val;
+                                    }
+                                    else
+                                    {
+                                        compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+                                                           "transparency_casts_shadows argument must be \"true\", \"false\", \"yes\", \"no\", \"on\", or \"off\"");
+                                    }
+                                }
+                                break;
 
-								#endregion ID_TRANSPARENCY_CASTS_SHADOWS
+                            #endregion ID_TRANSPARENCY_CASTS_SHADOWS
 
-								#region ID_SET_TEXTURE_ALIAS
+                            #region ID_SET_TEXTURE_ALIAS
 
-							case Keywords.ID_SET_TEXTURE_ALIAS:
-								if ( prop.Values.Count == 0 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-								}
-								else if ( prop.Values.Count > 3 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
-								}
-								else
-								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 ), i1 = getNodeAt( prop.Values, 1 );
-									String name, value;
-									if ( getString( i0, out name ) && getString( i1, out value ) )
-									{
-										this._textureAliases.Add( name, value );
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line,
-										                   "set_texture_alias must have 2 string argument" );
-									}
-								}
-								break;
+                            case Keywords.ID_SET_TEXTURE_ALIAS:
+                                if (prop.Values.Count == 0)
+                                {
+                                    compiler.AddError(CompileErrorCode.StringExpected, prop.File, prop.Line);
+                                }
+                                else if (prop.Values.Count > 3)
+                                {
+                                    compiler.AddError(CompileErrorCode.FewerParametersExpected, prop.File, prop.Line);
+                                }
+                                else
+                                {
+                                    AbstractNode i0 = getNodeAt(prop.Values, 0), i1 = getNodeAt(prop.Values, 1);
+                                    String name, value;
+                                    if (getString(i0, out name) && getString(i1, out value))
+                                    {
+                                        this._textureAliases.Add(name, value);
+                                    }
+                                    else
+                                    {
+                                        compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line,
+                                                           "set_texture_alias must have 2 string argument");
+                                    }
+                                }
+                                break;
 
-								#endregion ID_SET_TEXTURE_ALIAS
+                            #endregion ID_SET_TEXTURE_ALIAS
 
-							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-								                   "token \"" + prop.Name + "\" is not recognized" );
-								break;
-						} //end of switch statement
-					}
-					else if ( i is ObjectAbstractNode )
-					{
-						processNode( compiler, i );
-					}
-				}
+                            default:
+                                compiler.AddError(CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
+                                                   "token \"" + prop.Name + "\" is not recognized");
+                                break;
+                        } //end of switch statement
+                    }
+                    else if (i is ObjectAbstractNode)
+                    {
+                        processNode(compiler, i);
+                    }
+                }
 
-				// Apply the texture aliases
-				ScriptCompilerEvent locEvt = new PreApplyTextureAliasesScriptCompilerEvent( this._material, ref this._textureAliases );
-				compiler._fireEvent( ref locEvt );
+                // Apply the texture aliases
+                ScriptCompilerEvent locEvt = new PreApplyTextureAliasesScriptCompilerEvent(this._material, ref this._textureAliases);
+                compiler._fireEvent(ref locEvt);
 
-				this._material.ApplyTextureAliases( this._textureAliases );
-				this._textureAliases.Clear();
-			}
+                this._material.ApplyTextureAliases(this._textureAliases);
+                this._textureAliases.Clear();
+            }
 
-			#endregion Translator Implementation
-		}
-	}
+            #endregion Translator Implementation
+        }
+    }
 }

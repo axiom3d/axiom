@@ -33,8 +33,8 @@
 
 namespace Axiom.Core
 {
-	internal interface ICopyable<T>
-	{
-		void CopyTo( T dest );
-	}
+    internal interface ICopyable<T>
+    {
+        void CopyTo(T dest);
+    }
 }

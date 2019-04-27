@@ -44,21 +44,21 @@ using Axiom.Math;
 
 namespace Axiom.Controllers.Canned
 {
-	public class PassthroughControllerFunction : BaseControllerFunction
-	{
-		public PassthroughControllerFunction()
-			: base( false )
-		{
-		}
+    public class PassthroughControllerFunction : BaseControllerFunction
+    {
+        public PassthroughControllerFunction()
+            : base(false)
+        {
+        }
 
-		public PassthroughControllerFunction( bool deltaInput )
-			: base( deltaInput )
-		{
-		}
+        public PassthroughControllerFunction(bool deltaInput)
+            : base(deltaInput)
+        {
+        }
 
-		public override Real Execute( Real source )
-		{
-			return AdjustInput( source );
-		}
-	}
+        public override Real Execute(Real source)
+        {
+            return AdjustInput(source);
+        }
+    }
 }

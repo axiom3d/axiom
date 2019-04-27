@@ -32,398 +32,398 @@ using WidgetList = System.Collections.Generic.List<Axiom.Samples.Widget>;
 
 namespace Axiom.Samples
 {
-	/// <summary>
-	/// Abstract base class for all widgets.
-	/// </summary>
-	public class Widget
-	{
-		#region fields
+    /// <summary>
+    /// Abstract base class for all widgets.
+    /// </summary>
+    public class Widget
+    {
+        #region fields
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected OverlayElement element;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected OverlayElement element;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected TrayLocation trayLoc;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected TrayLocation trayLoc;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected ISdkTrayListener listener;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected ISdkTrayListener listener;
 
-		#endregion fields
+        #endregion fields
 
-		#region properties
+        #region properties
 
-		/// <summary>
-		/// Gets or sets the tray location where this widget is assigned to
-		/// </summary>
-		public TrayLocation AssigendTray
-		{
-			set
-			{
-				this.trayLoc = value;
-			}
-			get
-			{
-				return this.trayLoc;
-			}
-		}
+        /// <summary>
+        /// Gets or sets the tray location where this widget is assigned to
+        /// </summary>
+        public TrayLocation AssigendTray
+        {
+            set
+            {
+                this.trayLoc = value;
+            }
+            get
+            {
+                return this.trayLoc;
+            }
+        }
 
-		/// <summary>
-		/// Gets or sets the assigned trayListener where this widget is assigned to
-		/// </summary>
-		public ISdkTrayListener AssignedTrayListener
-		{
-			get
-			{
-				return this.listener;
-			}
-			set
-			{
-				this.listener = value;
-			}
-		}
+        /// <summary>
+        /// Gets or sets the assigned trayListener where this widget is assigned to
+        /// </summary>
+        public ISdkTrayListener AssignedTrayListener
+        {
+            get
+            {
+                return this.listener;
+            }
+            set
+            {
+                this.listener = value;
+            }
+        }
 
-		/// <summary>
-		/// Gets the underlying overlay element
-		/// </summary>
-		public OverlayElement OverlayElement
-		{
-			get
-			{
-				return this.element;
-			}
-		}
+        /// <summary>
+        /// Gets the underlying overlay element
+        /// </summary>
+        public OverlayElement OverlayElement
+        {
+            get
+            {
+                return this.element;
+            }
+        }
 
-		/// <summary>
-		/// Gets the name of this widget.
-		/// </summary>
-		public string Name
-		{
-			get
-			{
-				return this.element.Name;
-			}
-		}
+        /// <summary>
+        /// Gets the name of this widget.
+        /// </summary>
+        public string Name
+        {
+            get
+            {
+                return this.element.Name;
+            }
+        }
 
-		/// <summary>
-		/// Gets the current tray location of this widget
-		/// </summary>
-		public TrayLocation TrayLocation
-		{
-			get
-			{
-				return this.trayLoc;
-			}
-		}
+        /// <summary>
+        /// Gets the current tray location of this widget
+        /// </summary>
+        public TrayLocation TrayLocation
+        {
+            get
+            {
+                return this.trayLoc;
+            }
+        }
 
-		/// <summary>
-		/// Gets this widget is visible or not
-		/// </summary>
-		public bool IsVisible
-		{
-			get
-			{
-				return this.element.IsVisible;
-			}
-		}
+        /// <summary>
+        /// Gets this widget is visible or not
+        /// </summary>
+        public bool IsVisible
+        {
+            get
+            {
+                return this.element.IsVisible;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region construction
+        #region construction
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public Widget()
-		{
-			this.trayLoc = TrayLocation.None;
-			this.element = null;
-			this.listener = null;
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public Widget()
+        {
+            this.trayLoc = TrayLocation.None;
+            this.element = null;
+            this.listener = null;
+        }
 
-		#endregion construction
+        #endregion construction
 
-		#region static helper methods
+        #region static helper methods
 
-		/// <summary>
-		/// Static utility method to recursively delete an overlay element plus<para></para>
-		/// all of its children from the system.
-		/// </summary>
-		/// <param name="element"></param>
-		public static void NukeOverlayElement( OverlayElement element )
-		{
-			var container = element as OverlayElementContainer;
-			if ( container != null )
-			{
-				var toDelete = new List<OverlayElement>();
-				foreach ( OverlayElement child in container.Children.Values )
-				{
-					toDelete.Add( child );
-				}
+        /// <summary>
+        /// Static utility method to recursively delete an overlay element plus<para></para>
+        /// all of its children from the system.
+        /// </summary>
+        /// <param name="element"></param>
+        public static void NukeOverlayElement(OverlayElement element)
+        {
+            var container = element as OverlayElementContainer;
+            if (container != null)
+            {
+                var toDelete = new List<OverlayElement>();
+                foreach (OverlayElement child in container.Children.Values)
+                {
+                    toDelete.Add(child);
+                }
 
-				for ( int i = 0; i < toDelete.Count; i++ )
-				{
-					NukeOverlayElement( toDelete[ i ] );
-				}
-			}
-			if ( element != null )
-			{
-				OverlayElementContainer parent = element.Parent;
-				if ( parent != null )
-				{
-					parent.RemoveChild( element.Name );
-				}
-				OverlayManager.Instance.Elements.DestroyElement( element.Name );
-			}
-		}
+                for (int i = 0; i < toDelete.Count; i++)
+                {
+                    NukeOverlayElement(toDelete[i]);
+                }
+            }
+            if (element != null)
+            {
+                OverlayElementContainer parent = element.Parent;
+                if (parent != null)
+                {
+                    parent.RemoveChild(element.Name);
+                }
+                OverlayManager.Instance.Elements.DestroyElement(element.Name);
+            }
+        }
 
-		/// <summary>
-		/// Static utility method to check if the cursor is over an overlay element.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <param name="cursorPos"></param>
-		/// <returns></returns>
-		public static bool IsCursorOver( OverlayElement element, Vector2 cursorPos )
-		{
-			return IsCursorOver( element, cursorPos, 0 );
-		}
+        /// <summary>
+        /// Static utility method to check if the cursor is over an overlay element.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="cursorPos"></param>
+        /// <returns></returns>
+        public static bool IsCursorOver(OverlayElement element, Vector2 cursorPos)
+        {
+            return IsCursorOver(element, cursorPos, 0);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="element"></param>
-		/// <param name="cursorPos"></param>
-		/// <param name="voidBorder"></param>
-		/// <returns></returns>
-		public static bool IsCursorOver( OverlayElement element, Vector2 cursorPos, Real voidBorder )
-		{
-			OverlayManager om = OverlayManager.Instance;
-			var l = (int)( element.DerivedLeft*om.ViewportWidth );
-			var t = (int)( element.DerivedTop*om.ViewportHeight );
-			int r = l + (int)element.Width;
-			int b = t + (int)element.Height;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="cursorPos"></param>
+        /// <param name="voidBorder"></param>
+        /// <returns></returns>
+        public static bool IsCursorOver(OverlayElement element, Vector2 cursorPos, Real voidBorder)
+        {
+            OverlayManager om = OverlayManager.Instance;
+            var l = (int)(element.DerivedLeft * om.ViewportWidth);
+            var t = (int)(element.DerivedTop * om.ViewportHeight);
+            int r = l + (int)element.Width;
+            int b = t + (int)element.Height;
 
-			return ( cursorPos.x >= l + voidBorder && cursorPos.x <= r - voidBorder && cursorPos.y >= t + voidBorder &&
-			         cursorPos.y <= b - voidBorder );
-		}
+            return (cursorPos.x >= l + voidBorder && cursorPos.x <= r - voidBorder && cursorPos.y >= t + voidBorder &&
+                     cursorPos.y <= b - voidBorder);
+        }
 
-		/// <summary>
-		/// Static utility method used to get the cursor's offset from the center<para></para>
-		/// of an overlay element in pixels.
-		/// </summary>
-		/// <param name="element"></param>
-		/// <param name="cursorPos"></param>
-		/// <returns></returns>
-		public static Vector2 CursorOffset( OverlayElement element, Vector2 cursorPos )
-		{
-			OverlayManager om = OverlayManager.Instance;
-			return new Vector2( cursorPos.x - ( element.DerivedLeft*om.ViewportWidth + element.Width/2 ),
-			                    cursorPos.y - ( element.DerivedTop*om.ViewportHeight + element.Height/2 ) );
-		}
+        /// <summary>
+        /// Static utility method used to get the cursor's offset from the center<para></para>
+        /// of an overlay element in pixels.
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="cursorPos"></param>
+        /// <returns></returns>
+        public static Vector2 CursorOffset(OverlayElement element, Vector2 cursorPos)
+        {
+            OverlayManager om = OverlayManager.Instance;
+            return new Vector2(cursorPos.x - (element.DerivedLeft * om.ViewportWidth + element.Width / 2),
+                                cursorPos.y - (element.DerivedTop * om.ViewportHeight + element.Height / 2));
+        }
 
-		/// <summary>
-		/// Static utility method used to get the width of a caption in a text area.
-		/// </summary>
-		/// <param name="caption"></param>
-		/// <param name="area"></param>
-		/// <returns></returns>
-		public static Real GetCaptionWidth( String caption, TextArea area )
-		{
-			var font = (Font)FontManager.Instance.GetByName( area.FontName );
-			String current = caption;
-			Real lineWidth = 0;
+        /// <summary>
+        /// Static utility method used to get the width of a caption in a text area.
+        /// </summary>
+        /// <param name="caption"></param>
+        /// <param name="area"></param>
+        /// <returns></returns>
+        public static Real GetCaptionWidth(String caption, TextArea area)
+        {
+            var font = (Font)FontManager.Instance.GetByName(area.FontName);
+            String current = caption;
+            Real lineWidth = 0;
 
-			for ( int i = 0; i < current.Length; i++ )
-			{
-				// be sure to provide a line width in the text area
-				if ( current[ i ] == ' ' )
-				{
-					if ( area.SpaceWidth != 0 )
-					{
-						lineWidth += area.SpaceWidth;
-					}
-					else
-					{
-						lineWidth += font.GetGlyphAspectRatio( ' ' )*area.CharHeight;
-					}
-				}
-				else if ( current[ i ] == '\n' )
-				{
-					break;
-				}
-					// use glyph information to calculate line width
-				else
-				{
-					lineWidth += font.GetGlyphAspectRatio( current[ i ] )*area.CharHeight;
-				}
-			}
+            for (int i = 0; i < current.Length; i++)
+            {
+                // be sure to provide a line width in the text area
+                if (current[i] == ' ')
+                {
+                    if (area.SpaceWidth != 0)
+                    {
+                        lineWidth += area.SpaceWidth;
+                    }
+                    else
+                    {
+                        lineWidth += font.GetGlyphAspectRatio(' ') * area.CharHeight;
+                    }
+                }
+                else if (current[i] == '\n')
+                {
+                    break;
+                }
+                // use glyph information to calculate line width
+                else
+                {
+                    lineWidth += font.GetGlyphAspectRatio(current[i]) * area.CharHeight;
+                }
+            }
 
-			return lineWidth;
-		}
+            return lineWidth;
+        }
 
-		/// <summary>
-		/// Static utility method to cut off a string to fit in a text area.
-		/// </summary>
-		/// <param name="caption"></param>
-		/// <param name="area"></param>
-		/// <param name="maxWidth"></param>
-		public static void FitCaptionToArea( String caption, TextArea area, Real maxWidth )
-		{
-			var f = (Font)FontManager.Instance.GetByName( area.FontName );
-			String s = caption;
+        /// <summary>
+        /// Static utility method to cut off a string to fit in a text area.
+        /// </summary>
+        /// <param name="caption"></param>
+        /// <param name="area"></param>
+        /// <param name="maxWidth"></param>
+        public static void FitCaptionToArea(String caption, TextArea area, Real maxWidth)
+        {
+            var f = (Font)FontManager.Instance.GetByName(area.FontName);
+            String s = caption;
 
-			int nl = s.IndexOf( '\n' );
-			if ( nl != -1 )
-			{
-				s = s.Substring( 0, nl );
-			}
+            int nl = s.IndexOf('\n');
+            if (nl != -1)
+            {
+                s = s.Substring(0, nl);
+            }
 
-			Real width = 0;
+            Real width = 0;
 
-			for ( int i = 0; i < s.Length; i++ )
-			{
-				if ( s[ i ] == ' ' && area.SpaceWidth != 0 )
-				{
-					width += area.SpaceWidth;
-				}
-				else
-				{
-					width += f.GetGlyphAspectRatio( s[ i ] )*area.CharHeight;
-				}
-				if ( width > maxWidth )
-				{
-					s = s.Substring( 0, i );
-					break;
-				}
-			}
+            for (int i = 0; i < s.Length; i++)
+            {
+                if (s[i] == ' ' && area.SpaceWidth != 0)
+                {
+                    width += area.SpaceWidth;
+                }
+                else
+                {
+                    width += f.GetGlyphAspectRatio(s[i]) * area.CharHeight;
+                }
+                if (width > maxWidth)
+                {
+                    s = s.Substring(0, i);
+                    break;
+                }
+            }
 
-			area.Text = s;
-		}
+            area.Text = s;
+        }
 
-		#endregion static helper methods
+        #endregion static helper methods
 
-		#region methods
+        #region methods
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public void Cleanup()
-		{
-			if ( this.element != null )
-			{
-				NukeOverlayElement( this.element );
-			}
-			this.element = null;
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Cleanup()
+        {
+            if (this.element != null)
+            {
+                NukeOverlayElement(this.element);
+            }
+            this.element = null;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public void Hide()
-		{
-			this.element.Hide();
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Hide()
+        {
+            this.element.Hide();
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public void Show()
-		{
-			this.element.Show();
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Show()
+        {
+            this.element.Show();
+        }
 
-		#endregion
+        #endregion
 
-		#region events
+        #region events
 
-		/// <summary>
-		/// Occurs when the cursor pointer is moved over the widget.
-		/// </summary>
-		public event CursorMovedHandler CursorMoved;
+        /// <summary>
+        /// Occurs when the cursor pointer is moved over the widget.
+        /// </summary>
+        public event CursorMovedHandler CursorMoved;
 
-		/// <summary>
-		/// Occurs when the cursor pointer is over the widget and a mouse button is pressed.
-		/// </summary>
-		public event CursorPressedHandler CursorPressed;
+        /// <summary>
+        /// Occurs when the cursor pointer is over the widget and a mouse button is pressed.
+        /// </summary>
+        public event CursorPressedHandler CursorPressed;
 
-		/// <summary>
-		/// Occurs when the cursor pointer is over the widget and a mouse button is released.
-		/// </summary>
-		public event CursorReleasedHandler CursorReleased;
+        /// <summary>
+        /// Occurs when the cursor pointer is over the widget and a mouse button is released.
+        /// </summary>
+        public event CursorReleasedHandler CursorReleased;
 
-		/// <summary>
-		/// Occours when the widget loses focus.
-		/// </summary>
-		public event LostFocusHandler LostFocus;
+        /// <summary>
+        /// Occours when the widget loses focus.
+        /// </summary>
+        public event LostFocusHandler LostFocus;
 
-		/// <summary>
-		/// Raises the CursorMoved event.
-		/// </summary>
-		/// <param name="cursorPos">current cursor position</param>
-		public virtual void OnCursorMoved( Vector2 cursorPos )
-		{
-			// Make a temporary copy of the event to avoid possibility of
-			// a race condition if the last subscriber unsubscribes
-			// immediately after the null check and before the event is raised.
-			CursorMovedHandler handler = CursorMoved;
-			if ( handler != null )
-			{
-				handler( cursorPos );
-			}
-		}
+        /// <summary>
+        /// Raises the CursorMoved event.
+        /// </summary>
+        /// <param name="cursorPos">current cursor position</param>
+        public virtual void OnCursorMoved(Vector2 cursorPos)
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            CursorMovedHandler handler = CursorMoved;
+            if (handler != null)
+            {
+                handler(cursorPos);
+            }
+        }
 
-		/// <summary>
-		/// Raises the CursorPressed event.
-		/// </summary>
-		/// <param name="cursorPos">current cursor position</param>
-		public virtual void OnCursorPressed( Vector2 cursorPos )
-		{
-			// Make a temporary copy of the event to avoid possibility of
-			// a race condition if the last subscriber unsubscribes
-			// immediately after the null check and before the event is raised.
-			CursorPressedHandler handler = CursorPressed;
-			if ( handler != null )
-			{
-				handler( this, cursorPos );
-			}
-		}
+        /// <summary>
+        /// Raises the CursorPressed event.
+        /// </summary>
+        /// <param name="cursorPos">current cursor position</param>
+        public virtual void OnCursorPressed(Vector2 cursorPos)
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            CursorPressedHandler handler = CursorPressed;
+            if (handler != null)
+            {
+                handler(this, cursorPos);
+            }
+        }
 
-		/// <summary>
-		/// Raises the CursorReleased event.
-		/// </summary>
-		/// <param name="cursorPos">current cursor position</param>
-		public virtual void OnCursorReleased( Vector2 cursorPos )
-		{
-			// Make a temporary copy of the event to avoid possibility of
-			// a race condition if the last subscriber unsubscribes
-			// immediately after the null check and before the event is raised.
-			CursorReleasedHandler handler = CursorReleased;
-			if ( handler != null )
-			{
-				handler( cursorPos );
-			}
-		}
+        /// <summary>
+        /// Raises the CursorReleased event.
+        /// </summary>
+        /// <param name="cursorPos">current cursor position</param>
+        public virtual void OnCursorReleased(Vector2 cursorPos)
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            CursorReleasedHandler handler = CursorReleased;
+            if (handler != null)
+            {
+                handler(cursorPos);
+            }
+        }
 
-		/// <summary>
-		/// Raises raises the LostFocus event.
-		/// </summary>
-		public virtual void OnLostFocus()
-		{
-			// Make a temporary copy of the event to avoid possibility of
-			// a race condition if the last subscriber unsubscribes
-			// immediately after the null check and before the event is raised.
-			LostFocusHandler handler = LostFocus;
-			if ( handler != null )
-			{
-				handler();
-			}
-		}
+        /// <summary>
+        /// Raises raises the LostFocus event.
+        /// </summary>
+        public virtual void OnLostFocus()
+        {
+            // Make a temporary copy of the event to avoid possibility of
+            // a race condition if the last subscriber unsubscribes
+            // immediately after the null check and before the event is raised.
+            LostFocusHandler handler = LostFocus;
+            if (handler != null)
+            {
+                handler();
+            }
+        }
 
-		#endregion events
-	}
+        #endregion events
+    }
 }

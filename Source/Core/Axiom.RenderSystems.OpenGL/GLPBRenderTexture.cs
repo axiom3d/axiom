@@ -46,69 +46,66 @@ using Axiom.Media;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	internal class GLPBRenderTexture : GLRenderTexture
-	{
-		#region Fields and Properties
+    internal class GLPBRenderTexture : GLRenderTexture
+    {
+        #region Fields and Properties
 
-		protected GLPBRTTManager manager;
-		protected PixelComponentType pbFormat;
+        protected GLPBRTTManager manager;
+        protected PixelComponentType pbFormat;
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		public GLPBRenderTexture( GLPBRTTManager manager, string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
-			: base( name, target, writeGamma, fsaa )
-		{
-			this.manager = manager;
+        public GLPBRenderTexture(GLPBRTTManager manager, string name, GLSurfaceDesc target, bool writeGamma, int fsaa)
+            : base(name, target, writeGamma, fsaa)
+        {
+            this.manager = manager;
 
-			this.pbFormat = PixelUtil.GetComponentType( target.Buffer.Format );
-			manager.RequestPBuffer( this.pbFormat, Width, Height );
-		}
+            this.pbFormat = PixelUtil.GetComponentType(target.Buffer.Format);
+            manager.RequestPBuffer(this.pbFormat, Width, Height);
+        }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region GLRenderTexture Implementation
+        #region GLRenderTexture Implementation
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					this.manager.ReleasePBuffer( this.pbFormat );
-				}
-			}
-			base.dispose( disposeManagedResources );
-		}
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    this.manager.ReleasePBuffer(this.pbFormat);
+                }
+            }
+            base.dispose(disposeManagedResources);
+        }
 
-		#endregion GLRenderTexture Implementation
+        #endregion GLRenderTexture Implementation
 
-		#region Methods
+        #region Methods
 
-		public override object this[ string attribute ]
-		{
-			get
-			{
-				switch ( attribute.ToUpper() )
-				{
-					case "TARGET":
-						var target = new GLSurfaceDesc();
-						target.Buffer = (GLHardwarePixelBuffer)pixelBuffer;
-						target.ZOffset = zOffset;
-						return target;
-						break;
-					case "GLCONTEXT":
-						// Get PBuffer for our internal format
-						return this.manager.GetContextFor( this.pbFormat, Width, Height );
-						break;
-					default:
-						return base[ attribute ];
-						break;
-				}
-			}
-		}
+        public override object this[string attribute]
+        {
+            get
+            {
+                switch (attribute.ToUpper())
+                {
+                    case "TARGET":
+                        var target = new GLSurfaceDesc();
+                        target.Buffer = (GLHardwarePixelBuffer)pixelBuffer;
+                        target.ZOffset = zOffset;
+                        return target;
+                    case "GLCONTEXT":
+                        // Get PBuffer for our internal format
+                        return this.manager.GetContextFor(this.pbFormat, Width, Height);
+                    default:
+                        return base[attribute];
+                }
+            }
+        }
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

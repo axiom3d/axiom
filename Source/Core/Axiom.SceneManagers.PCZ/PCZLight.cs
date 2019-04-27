@@ -46,188 +46,187 @@ using Axiom.Math;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
-	public class PCZLight : Light
-	{
-		/** flag indicating if any of the zones in the affectedZonesList is
+    public class PCZLight : Light
+    {
+        /** flag indicating if any of the zones in the affectedZonesList is
 		*   visible in the current frame
 		*/
-		private bool affectsVisibleZone;
+        private bool affectsVisibleZone;
 
-		/** List of PCZones which are affected by the light
+        /** List of PCZones which are affected by the light
 		*/
-		private readonly List<PCZone> affectedZonesList = new List<PCZone>();
+        private readonly List<PCZone> affectedZonesList = new List<PCZone>();
 
-		// flag recording if light has moved, therefore affected list needs updating
-		private bool needsUpdate;
-
-
-		public PCZLight()
-			: this( "" )
-		{
-		}
-
-		public PCZLight( string name )
-			: base( name )
-		{
-			this.needsUpdate = true; // need to update the first time, regardless of attachment or movement
-		}
+        // flag recording if light has moved, therefore affected list needs updating
+        private bool needsUpdate;
 
 
-		~PCZLight()
-		{
-			this.affectedZonesList.Clear();
-		}
+        public PCZLight()
+            : this("")
+        {
+        }
 
-		//-----------------------------------------------------------------------
-		/** Clear the affectedZonesList
-		*/
+        public PCZLight(string name)
+            : base(name)
+        {
+            this.needsUpdate = true; // need to update the first time, regardless of attachment or movement
+        }
 
-		public void ClearAffectedZones()
-		{
-			this.affectedZonesList.Clear();
-		}
 
-		//-----------------------------------------------------------------------
-		/** Add a zone to the zones affected list
+        ~PCZLight()
+        {
+            this.affectedZonesList.Clear();
+        }
+
+        //-----------------------------------------------------------------------
+        /** Clear the affectedZonesList
 		*/
 
-		public void AddZoneToAffectedZonesList( PCZone zone )
-		{
-			this.affectedZonesList.Add( zone );
-		}
+        public void ClearAffectedZones()
+        {
+            this.affectedZonesList.Clear();
+        }
 
-		/** check if a zone is in the list of zones affected by the light */
+        //-----------------------------------------------------------------------
+        /** Add a zone to the zones affected list
+		*/
 
-		public bool AffectsZone( PCZone zone )
-		{
-			return this.affectedZonesList.Contains( zone );
-		}
+        public void AddZoneToAffectedZonesList(PCZone zone)
+        {
+            this.affectedZonesList.Add(zone);
+        }
 
-		public void UpdateZones( PCZone defaultZone, ulong frameCount )
-		{
-			//update the zones this light affects
-			PCZone homeZone;
-			this.affectedZonesList.Clear();
-			this.affectsVisibleZone = false;
-			var sn = (PCZSceneNode)( ParentSceneNode );
-			if ( null != sn )
-			{
-				// start with the zone the light is in
-				homeZone = sn.HomeZone;
-				if ( null != homeZone )
-				{
-					this.affectedZonesList.Add( homeZone );
-					if ( homeZone.LastVisibleFrame == frameCount )
-					{
-						this.affectsVisibleZone = true;
-					}
-				}
-				else
-				{
-					// error - scene node has no homezone!
-					// just say it affects the default zone and leave it at that.
-					this.affectedZonesList.Add( defaultZone );
-					if ( defaultZone.LastVisibleFrame == frameCount )
-					{
-						this.affectsVisibleZone = true;
-					}
-					return;
-				}
-			}
-			else
-			{
-				// ERROR! not connected to a scene node,
-				// just say it affects the default zone and leave it at that.
-				this.affectedZonesList.Add( defaultZone );
-				if ( defaultZone.LastVisibleFrame == frameCount )
-				{
-					this.affectsVisibleZone = true;
-				}
-				return;
-			}
+        /** check if a zone is in the list of zones affected by the light */
 
-			// now check visibility of each portal in the home zone.  If visible to
-			// the light then add the target zone of the portal to the list of
-			// affected zones and recurse into the target zone
-			var portalFrustum = new PCZFrustum();
-			Vector3 v = GetDerivedPosition();
-			portalFrustum.SetOrigin( v );
-			homeZone.CheckLightAgainstPortals( this, frameCount, portalFrustum, null );
-		}
+        public bool AffectsZone(PCZone zone)
+        {
+            return this.affectedZonesList.Contains(zone);
+        }
 
-		//-----------------------------------------------------------------------
-		public void RemoveZoneFromAffectedZonesList( PCZone zone )
-		{
-			if ( this.affectedZonesList.Contains( zone ) )
-			{
-				this.affectedZonesList.Remove( zone );
-			}
-		}
+        public void UpdateZones(PCZone defaultZone, ulong frameCount)
+        {
+            //update the zones this light affects
+            PCZone homeZone;
+            this.affectedZonesList.Clear();
+            this.affectsVisibleZone = false;
+            var sn = (PCZSceneNode)(ParentSceneNode);
+            if (null != sn)
+            {
+                // start with the zone the light is in
+                homeZone = sn.HomeZone;
+                if (null != homeZone)
+                {
+                    this.affectedZonesList.Add(homeZone);
+                    if (homeZone.LastVisibleFrame == frameCount)
+                    {
+                        this.affectsVisibleZone = true;
+                    }
+                }
+                else
+                {
+                    // error - scene node has no homezone!
+                    // just say it affects the default zone and leave it at that.
+                    this.affectedZonesList.Add(defaultZone);
+                    if (defaultZone.LastVisibleFrame == frameCount)
+                    {
+                        this.affectsVisibleZone = true;
+                    }
+                    return;
+                }
+            }
+            else
+            {
+                // ERROR! not connected to a scene node,
+                // just say it affects the default zone and leave it at that.
+                this.affectedZonesList.Add(defaultZone);
+                if (defaultZone.LastVisibleFrame == frameCount)
+                {
+                    this.affectsVisibleZone = true;
+                }
+                return;
+            }
 
-		//-----------------------------------------------------------------------
-		public void NotifyMoved()
-		{
-			//TODO: Check implementation of this
-			//_notifyMoved();   // inform ogre Light of movement
-			localTransformDirty = true;
-			this.needsUpdate = true; // set need update flag
-		}
+            // now check visibility of each portal in the home zone.  If visible to
+            // the light then add the target zone of the portal to the list of
+            // affected zones and recurse into the target zone
+            var portalFrustum = new PCZFrustum();
+            Vector3 v = GetDerivedPosition();
+            portalFrustum.SetOrigin(v);
+            homeZone.CheckLightAgainstPortals(this, frameCount, portalFrustum, null);
+        }
 
-		//-----------------------------------------------------------------------
+        //-----------------------------------------------------------------------
+        public void RemoveZoneFromAffectedZonesList(PCZone zone)
+        {
+            if (this.affectedZonesList.Contains(zone))
+            {
+                this.affectedZonesList.Remove(zone);
+            }
+        }
 
-		public bool NeedsUpdate
-		{
-			get
-			{
-				if ( this.needsUpdate ) // if this light has moved, return true immediately
-				{
-					return true;
-				}
+        //-----------------------------------------------------------------------
+        public void NotifyMoved()
+        {
+            //TODO: Check implementation of this
+            //_notifyMoved();   // inform ogre Light of movement
+            localTransformDirty = true;
+            this.needsUpdate = true; // set need update flag
+        }
 
-				// if any zones affected by this light have updated portals, then this light needs updating too
-				foreach ( PCZone zone in this.affectedZonesList )
-				{
-					if ( zone.PortalsUpdated )
-					{
-						return true; // return immediately to prevent further iterating
-					}
-				}
+        //-----------------------------------------------------------------------
 
-				return false; // light hasnt moved, and no zones have updated portals. no light update.
-			}
+        public bool NeedsUpdate
+        {
+            get
+            {
+                if (this.needsUpdate) // if this light has moved, return true immediately
+                {
+                    return true;
+                }
 
-			set
-			{
-				this.needsUpdate = value;
-			}
-		}
+                // if any zones affected by this light have updated portals, then this light needs updating too
+                foreach (PCZone zone in this.affectedZonesList)
+                {
+                    if (zone.PortalsUpdated)
+                    {
+                        return true; // return immediately to prevent further iterating
+                    }
+                }
 
-		public bool AffectsVisibleZone
-		{
-			get
-			{
-				return this.affectsVisibleZone;
-			}
-			set
-			{
-				this.affectsVisibleZone = value;
-			}
-		}
-	}
+                return false; // light hasnt moved, and no zones have updated portals. no light update.
+            }
 
-	public class PCZLightFactory : LightFactory
-	{
-		public new const string TypeName = "PCZLight";
+            set
+            {
+                this.needsUpdate = value;
+            }
+        }
 
-		public PCZLightFactory()
-		{
-			base.Type = PCZLightFactory.TypeName;
-			base.TypeFlag = (uint)SceneQueryTypeMask.Light;
-		}
+        public bool AffectsVisibleZone
+        {
+            get
+            {
+                return this.affectsVisibleZone;
+            }
+            set
+            {
+                this.affectsVisibleZone = value;
+            }
+        }
+    }
 
-		protected override MovableObject _createInstance( string name, NamedParameterList para )
-		{
-			return new PCZLight( name );
-		}
-	}
+    public class PCZLightFactory : LightFactory
+    {
+        public new const string TypeName = "PCZLight";
+
+        public PCZLightFactory()
+        {
+            base.TypeFlag = (uint)SceneQueryTypeMask.Light;
+        }
+
+        protected override MovableObject _createInstance(string name, NamedParameterList para)
+        {
+            return new PCZLight(name);
+        }
+    }
 }

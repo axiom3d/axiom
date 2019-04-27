@@ -43,50 +43,50 @@ using System;
 
 namespace Axiom.Plugins.SystemDrawingCodecs
 {
-	/// <summary>
-	/// Provides loading mechanism for filetypes vis <see cref="SDImageCodec"/>
-	/// </summary>
-	public class SDImageLoader : SDImageCodec
-	{
-		private string extension;
+    /// <summary>
+    /// Provides loading mechanism for filetypes vis <see cref="SDImageCodec"/>
+    /// </summary>
+    public class SDImageLoader : SDImageCodec
+    {
+        private string extension;
 
-		/// <summary>
-		/// The file extension
-		/// </summary>
-		public string Extension
-		{
-			get
-			{
-				return this.extension;
-			}
-			set
-			{
-				this.extension = value;
-			}
-		}
+        /// <summary>
+        /// The file extension
+        /// </summary>
+        public string Extension
+        {
+            get
+            {
+                return this.extension;
+            }
+            set
+            {
+                this.extension = value;
+            }
+        }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="extension">the file extension that this will load.</param>
-		public SDImageLoader( string extension )
-		{
-			this.extension = extension;
-		}
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="extension">the file extension that this will load.</param>
+        public SDImageLoader(string extension)
+        {
+            this.extension = extension;
+        }
 
-		#region SDImageCodec Implementation
+        #region SDImageCodec Implementation
 
-		/// <summary>
-		/// Gets the type of data that this codec is meant to handle, typically a file extension.
-		/// </summary>
-		public override String Type
-		{
-			get
-			{
-				return this.extension;
-			}
-		}
+        /// <summary>
+        /// Gets the type of data that this codec is meant to handle, typically a file extension.
+        /// </summary>
+        public override String Type
+        {
+            get
+            {
+                return this.extension;
+            }
+        }
 
-		#endregion SDImageCodec Implementation
-	};
+        #endregion SDImageCodec Implementation
+    };
 }

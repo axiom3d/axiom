@@ -47,48 +47,48 @@ using Tao.OpenGl;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	/// <summary>
-	/// Base class for GL Render Textures.
-	/// </summary>
-	internal class GLRenderTexture : RenderTexture
-	{
-		#region Fields and Properties
+    /// <summary>
+    /// Base class for GL Render Textures.
+    /// </summary>
+    internal class GLRenderTexture : RenderTexture
+    {
+        #region Fields and Properties
 
-		protected bool HwGamma;
-		protected int Fsaa;
+        protected bool HwGamma;
+        protected int Fsaa;
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		public GLRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
-			: base( target.Buffer, target.ZOffset )
-		{
-			this.name = name;
-			this.HwGamma = writeGamma;
-			this.Fsaa = fsaa;
-		}
+        public GLRenderTexture(string name, GLSurfaceDesc target, bool writeGamma, int fsaa)
+            : base(target.Buffer, target.ZOffset)
+        {
+            this.name = name;
+            this.HwGamma = writeGamma;
+            this.Fsaa = fsaa;
+        }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region RenderTexture Implementation
+        #region RenderTexture Implementation
 
-		#region Properties
+        #region Properties
 
-		public override bool RequiresTextureFlipping
-		{
-			get
-			{
-				return true;
-			}
-		}
+        public override bool RequiresTextureFlipping
+        {
+            get
+            {
+                return true;
+            }
+        }
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Methods
+        #region Methods
 
-		#endregion Methods
+        #endregion Methods
 
-		#endregion RenderTexture Implementation
-	}
+        #endregion RenderTexture Implementation
+    }
 }

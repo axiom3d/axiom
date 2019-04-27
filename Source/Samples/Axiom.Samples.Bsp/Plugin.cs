@@ -22,22 +22,21 @@
 
 #endregion License
 
-using System;
-using System.ComponentModel.Composition;
+using System.Composition;
 using Axiom.Core;
 
 namespace Axiom.Samples.Bsp
 {
-	[Export( typeof ( IPlugin ) )]
-	public class Plugin : SamplePlugin
-	{
-		private BSPSample sample;
+    [Export(typeof(IPlugin))]
+    public class Plugin : SamplePlugin
+    {
+        private BSPSample sample;
 
-		public override void Initialize()
-		{
-			this.sample = new BSPSample();
-			Name = this.sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this.sample );
-		}
-	}
+        public override void Initialize()
+        {
+            this.sample = new BSPSample();
+            Name = this.sample.Metadata["Title"] + " Sample";
+            AddSample(this.sample);
+        }
+    }
 }

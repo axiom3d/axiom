@@ -49,24 +49,24 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.ParticleFX.Factories
 {
-	/// <summary>
-	/// Summary description for ColorInterpolatorAffectorFactory.
-	/// </summary>
-	public class ColorInterpolatorAffectorFactory : ParticleAffectorFactory
-	{
-		public override string Name
-		{
-			get
-			{
-				return "ColourInterpolator";
-			}
-		}
+    /// <summary>
+    /// Summary description for ColorInterpolatorAffectorFactory.
+    /// </summary>
+    public class ColorInterpolatorAffectorFactory : ParticleAffectorFactory
+    {
+        public override string Name
+        {
+            get
+            {
+                return "ColourInterpolator";
+            }
+        }
 
-		public override ParticleAffector CreateAffector( ParticleSystem psys )
-		{
-			ParticleAffector p = new ColorInterpolatorAffector( psys );
-			affectorList.Add( p );
-			return p;
-		}
-	}
+        public override ParticleAffector CreateAffector(ParticleSystem psys)
+        {
+            ParticleAffector p = new ColorInterpolatorAffector(psys);
+            affectorList.Add(p);
+            return p;
+        }
+    }
 }

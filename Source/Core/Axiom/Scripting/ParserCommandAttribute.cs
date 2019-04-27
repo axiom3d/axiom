@@ -45,35 +45,35 @@ using System.Text;
 
 namespace Axiom.Scripting
 {
-	/// <summary>
-	///		Custom attribute to mark methods as handling the parsing for a material script attribute.
-	/// </summary>
-	[AttributeUsage( AttributeTargets.Method, AllowMultiple = true )]
-	public sealed class ParserCommandAttribute : Attribute
-	{
-		private readonly string attributeName;
-		private readonly string parserType;
+    /// <summary>
+    ///		Custom attribute to mark methods as handling the parsing for a material script attribute.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
+    public sealed class ParserCommandAttribute : Attribute
+    {
+        private readonly string attributeName;
+        private readonly string parserType;
 
-		public ParserCommandAttribute( string name, string parserType )
-		{
-			this.attributeName = name;
-			this.parserType = parserType;
-		}
+        public ParserCommandAttribute(string name, string parserType)
+        {
+            this.attributeName = name;
+            this.parserType = parserType;
+        }
 
-		public string Name
-		{
-			get
-			{
-				return this.attributeName;
-			}
-		}
+        public string Name
+        {
+            get
+            {
+                return this.attributeName;
+            }
+        }
 
-		public string ParserType
-		{
-			get
-			{
-				return this.parserType;
-			}
-		}
-	}
+        public string ParserType
+        {
+            get
+            {
+                return this.parserType;
+            }
+        }
+    }
 }

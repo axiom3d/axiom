@@ -29,251 +29,251 @@ using Axiom.Overlays.Elements;
 
 namespace Axiom.Samples
 {
-	public delegate void CheckChangedHandler( CheckBox box );
+    public delegate void CheckChangedHandler(CheckBox box);
 
-	/// <summary>
-	/// Basic check box widget.
-	/// </summary>
-	public class CheckBox : Widget
-	{
-		#region events
+    /// <summary>
+    /// Basic check box widget.
+    /// </summary>
+    public class CheckBox : Widget
+    {
+        #region events
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public event CheckChangedHandler CheckChanged;
+        /// <summary>
+        /// 
+        /// </summary>
+        public event CheckChangedHandler CheckChanged;
 
-		#endregion
+        #endregion
 
-		#region fields
+        #region fields
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected TextArea textArea;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected TextArea textArea;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected BorderPanel square;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected BorderPanel square;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected OverlayElement x;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected OverlayElement x;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected bool isFitToContents;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected bool isFitToContents;
 
-		/// <summary>
-		/// 
-		/// </summary>
-		protected new bool IsCursorOver;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected new bool IsCursorOver;
 
-		#endregion fields
+        #endregion fields
 
-		#region construction
+        #region construction
 
-		/// <summary>
-		/// Do not instantiate any widgets directly. Use SdkTrayManager.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="caption"></param>
-		/// <param name="width"></param>
-		public CheckBox( String name, String caption, Real width )
-		{
-			this.IsCursorOver = false;
-			this.isFitToContents = width <= 0;
-			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/CheckBox", "BorderPanel", name );
-			var c = (OverlayElementContainer)element;
-			this.textArea = (TextArea)c.Children[ Name + "/CheckBoxCaption" ];
-			this.square = (BorderPanel)c.Children[ Name + "/CheckBoxSquare" ];
-			this.x = this.square.Children[ this.square.Name + "/CheckBoxX" ];
-			this.x.Hide();
-			element.Width = width;
-			Caption = caption;
-		}
+        /// <summary>
+        /// Do not instantiate any widgets directly. Use SdkTrayManager.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="caption"></param>
+        /// <param name="width"></param>
+        public CheckBox(String name, String caption, Real width)
+        {
+            this.IsCursorOver = false;
+            this.isFitToContents = width <= 0;
+            element = OverlayManager.Instance.Elements.CreateElementFromTemplate("SdkTrays/CheckBox", "BorderPanel", name);
+            var c = (OverlayElementContainer)element;
+            this.textArea = (TextArea)c.Children[Name + "/CheckBoxCaption"];
+            this.square = (BorderPanel)c.Children[Name + "/CheckBoxSquare"];
+            this.x = this.square.Children[this.square.Name + "/CheckBoxX"];
+            this.x.Hide();
+            element.Width = width;
+            Caption = caption;
+        }
 
-		#endregion
+        #endregion
 
-		#region properties
+        #region properties
 
-		/// <summary>
-		/// Gets or sets the caption
-		/// </summary>
-		public string Caption
-		{
-			get
-			{
-				return this.textArea.Text;
-			}
-			set
-			{
-				this.textArea.Text = value;
-				if ( this.isFitToContents )
-				{
-					element.Width = GetCaptionWidth( value, this.textArea ) + this.square.Width + 23;
-				}
-			}
-		}
+        /// <summary>
+        /// Gets or sets the caption
+        /// </summary>
+        public string Caption
+        {
+            get
+            {
+                return this.textArea.Text;
+            }
+            set
+            {
+                this.textArea.Text = value;
+                if (this.isFitToContents)
+                {
+                    element.Width = GetCaptionWidth(value, this.textArea) + this.square.Width + 23;
+                }
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public bool IsChecked
-		{
-			get
-			{
-				return this.x.IsVisible;
-			}
-			set
-			{
-				SetChecked( value, true );
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsChecked
+        {
+            get
+            {
+                return this.x.IsVisible;
+            }
+            set
+            {
+                SetChecked(value, true);
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region methods
+        #region methods
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="check"></param>
-		/// <param name="notifyListener"></param>
-		public void SetChecked( bool check, bool notifyListener )
-		{
-			if ( check )
-			{
-				this.x.Show();
-			}
-			else
-			{
-				this.x.Hide();
-			}
-			if ( listener != null && notifyListener )
-			{
-				listener.CheckboxToggled( this );
-			}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="check"></param>
+        /// <param name="notifyListener"></param>
+        public void SetChecked(bool check, bool notifyListener)
+        {
+            if (check)
+            {
+                this.x.Show();
+            }
+            else
+            {
+                this.x.Hide();
+            }
+            if (listener != null && notifyListener)
+            {
+                listener.CheckboxToggled(this);
+            }
 
-			OnCheckChanged( this );
-		}
+            OnCheckChanged(this);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public void Check()
-		{
-			Check( true );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Check()
+        {
+            Check(true);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="notifyListener"></param>
-		public void Check( bool notifyListener )
-		{
-			SetChecked( true, notifyListener );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="notifyListener"></param>
+        public void Check(bool notifyListener)
+        {
+            SetChecked(true, notifyListener);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public void Uncheck()
-		{
-			Uncheck( true );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Uncheck()
+        {
+            Uncheck(true);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="notifyListener"></param>
-		public void Uncheck( bool notifyListener )
-		{
-			SetChecked( false, notifyListener );
-			OnCheckChanged( this );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="notifyListener"></param>
+        public void Uncheck(bool notifyListener)
+        {
+            SetChecked(false, notifyListener);
+            OnCheckChanged(this);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public void Toggle()
-		{
-			Toggle( true );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public void Toggle()
+        {
+            Toggle(true);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="notifyListener"></param>
-		public void Toggle( bool notifyListener )
-		{
-			SetChecked( !IsChecked, notifyListener );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="notifyListener"></param>
+        public void Toggle(bool notifyListener)
+        {
+            SetChecked(!IsChecked, notifyListener);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="cursorPos"></param>
-		public override void OnCursorPressed( Vector2 cursorPos )
-		{
-			if ( this.IsCursorOver )
-			{
-				Toggle();
-				base.OnCursorPressed( cursorPos );
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cursorPos"></param>
+        public override void OnCursorPressed(Vector2 cursorPos)
+        {
+            if (this.IsCursorOver)
+            {
+                Toggle();
+                base.OnCursorPressed(cursorPos);
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="cursorPos"></param>
-		public override void OnCursorMoved( Vector2 cursorPos )
-		{
-			if ( IsCursorOver( this.square, cursorPos, 5 ) )
-			{
-				if ( !this.IsCursorOver )
-				{
-					this.IsCursorOver = true;
-					this.square.MaterialName = "SdkTrays/MiniTextBox/Over";
-					this.square.BorderMaterialName = "SdkTrays/MiniTextBox/Over";
-				}
-			}
-			else
-			{
-				if ( this.IsCursorOver )
-				{
-					this.IsCursorOver = false;
-					this.square.MaterialName = "SdkTrays/MiniTextBox";
-					this.square.BorderMaterialName = "SdkTrays/MiniTextBox";
-				}
-			}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cursorPos"></param>
+        public override void OnCursorMoved(Vector2 cursorPos)
+        {
+            if (IsCursorOver(this.square, cursorPos, 5))
+            {
+                if (!this.IsCursorOver)
+                {
+                    this.IsCursorOver = true;
+                    this.square.MaterialName = "SdkTrays/MiniTextBox/Over";
+                    this.square.BorderMaterialName = "SdkTrays/MiniTextBox/Over";
+                }
+            }
+            else
+            {
+                if (this.IsCursorOver)
+                {
+                    this.IsCursorOver = false;
+                    this.square.MaterialName = "SdkTrays/MiniTextBox";
+                    this.square.BorderMaterialName = "SdkTrays/MiniTextBox";
+                }
+            }
 
-			base.OnCursorMoved( cursorPos );
-		}
+            base.OnCursorMoved(cursorPos);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public override void OnLostFocus()
-		{
-			this.square.MaterialName = "SdkTrays/MiniTextBox";
-			this.square.BorderMaterialName = "SdkTrays/MiniTextBox";
-			this.IsCursorOver = false;
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void OnLostFocus()
+        {
+            this.square.MaterialName = "SdkTrays/MiniTextBox";
+            this.square.BorderMaterialName = "SdkTrays/MiniTextBox";
+            this.IsCursorOver = false;
 
-			base.OnLostFocus();
-		}
+            base.OnLostFocus();
+        }
 
-		public void OnCheckChanged( CheckBox sender )
-		{
-			if ( CheckChanged != null )
-			{
-				CheckChanged( sender );
-			}
-		}
+        public void OnCheckChanged(CheckBox sender)
+        {
+            if (CheckChanged != null)
+            {
+                CheckChanged(sender);
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }
