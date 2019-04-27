@@ -43,46 +43,46 @@ using System;
 
 namespace Axiom.Scripting.Compiler.AST
 {
-	/// <summary>
-	/// This abstract node represents an import statement
-	/// </summary>
-	internal class ImportAbstractNode : AbstractNode
-	{
-		public String Source;
+    /// <summary>
+    /// This abstract node represents an import statement
+    /// </summary>
+    internal class ImportAbstractNode : AbstractNode
+    {
+        public String Source;
 
-		public string Target;
+        public string Target;
 
-		public ImportAbstractNode()
-			: base( null )
-		{
-		}
+        public ImportAbstractNode()
+            : base(null)
+        {
+        }
 
-		#region AbstractNode Implementation
+        #region AbstractNode Implementation
 
-		/// <see cref="AbstractNode.Clone"/>
-		public override AbstractNode Clone()
-		{
-			var node = new ImportAbstractNode();
-			node.File = File;
-			node.Line = Line;
-			node.Target = this.Target;
-			node.Source = this.Source;
-			return node;
-		}
+        /// <see cref="AbstractNode.Clone"/>
+        public override AbstractNode Clone()
+        {
+            var node = new ImportAbstractNode();
+            node.File = File;
+            node.Line = Line;
+            node.Target = this.Target;
+            node.Source = this.Source;
+            return node;
+        }
 
-		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return this.Target;
-			}
-			set
-			{
-				this.Target = value;
-			}
-		}
+        /// <see cref="AbstractNode.Value"/>
+        public override string Value
+        {
+            get
+            {
+                return this.Target;
+            }
+            set
+            {
+                this.Target = value;
+            }
+        }
 
-		#endregion AbstractNode Implementation
-	}
+        #endregion AbstractNode Implementation
+    }
 }

@@ -43,24 +43,24 @@ using System;
 
 namespace Axiom.ParticleSystems
 {
-	/// <summary>
-	/// Abstract class containing any additional data required to be associated
-	/// with a particle to perform the required rendering. 
-	/// </summary>
-	/// <remarks>
-	/// Because you can specialise the way that particles are renderered by supplying
-	/// custom ParticleSystemRenderer classes, you might well need some additional 
-	/// data for your custom rendering routine which is not held on the default particle
-	/// class. If that's the case, then you should define a subclass of this class, 
-	/// and construct it when asked in your custom ParticleSystemRenderer class.
-	/// </remarks>
-	public abstract class ParticleVisualData
-	{
-		/// <summary>
-		/// Default Constructor
-		/// </summary>
-		public ParticleVisualData()
-		{
-		}
-	};
+    /// <summary>
+    /// Abstract class containing any additional data required to be associated
+    /// with a particle to perform the required rendering. 
+    /// </summary>
+    /// <remarks>
+    /// Because you can specialise the way that particles are renderered by supplying
+    /// custom ParticleSystemRenderer classes, you might well need some additional 
+    /// data for your custom rendering routine which is not held on the default particle
+    /// class. If that's the case, then you should define a subclass of this class, 
+    /// and construct it when asked in your custom ParticleSystemRenderer class.
+    /// </remarks>
+    public abstract class ParticleVisualData
+    {
+        /// <summary>
+        /// Default Constructor
+        /// </summary>
+        public ParticleVisualData()
+        {
+        }
+    };
 }

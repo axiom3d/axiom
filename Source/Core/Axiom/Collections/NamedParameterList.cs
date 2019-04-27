@@ -41,10 +41,10 @@ using System.Collections.Generic;
 
 namespace Axiom.Collections
 {
-	/// <summary>
-	/// Represents a collection of names and parameters.
-	/// </summary>
-	public class NamedParameterList : Dictionary<string, object>
-	{
-	}
+    /// <summary>
+    /// Represents a collection of names and parameters.
+    /// </summary>
+    public class NamedParameterList : Dictionary<string, object>
+    {
+    }
 }

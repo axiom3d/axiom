@@ -40,56 +40,56 @@ using Axiom.Core;
 
 namespace Axiom.Graphics
 {
-	public partial class GpuProgramParameters
-	{
-		/// <summary>
-		/// Find a constant definition for a named parameter.
-		/// <remarks>
-		/// This method returns null if the named parameter did not exist, unlike
-		/// <see cref="GetConstantDefinition" /> which is more strict; unless you set the 
-		/// last parameter to true.
-		/// </remarks>
-		/// </summary>
-		/// <param name="name">The name to look up</param>
-		/// <param name="throwExceptionIfNotFound"> If set to true, failure to find an entry
-		/// will throw an exception.</param>
-		[OgreVersion( 1, 7, 2790 )]
+    public partial class GpuProgramParameters
+    {
+        /// <summary>
+        /// Find a constant definition for a named parameter.
+        /// <remarks>
+        /// This method returns null if the named parameter did not exist, unlike
+        /// <see cref="GetConstantDefinition" /> which is more strict; unless you set the 
+        /// last parameter to true.
+        /// </remarks>
+        /// </summary>
+        /// <param name="name">The name to look up</param>
+        /// <param name="throwExceptionIfNotFound"> If set to true, failure to find an entry
+        /// will throw an exception.</param>
+        [OgreVersion(1, 7, 2790)]
 #if NET_40
 		public GpuConstantDefinition FindNamedConstantDefinition( string name, bool throwExceptionIfNotFound = false )
 #else
-		public GpuConstantDefinition FindNamedConstantDefinition( string name, bool throwExceptionIfNotFound )
+        public GpuConstantDefinition FindNamedConstantDefinition(string name, bool throwExceptionIfNotFound)
 #endif
-		{
-			if ( this._namedConstants == null )
-			{
-				if ( throwExceptionIfNotFound )
-				{
-					throw new AxiomException( "Named constants have not been initialized, perhaps a compile error." );
-				}
+        {
+            if (this._namedConstants == null)
+            {
+                if (throwExceptionIfNotFound)
+                {
+                    throw new AxiomException("Named constants have not been initialized, perhaps a compile error.");
+                }
 
-				return null;
-			}
+                return null;
+            }
 
-			GpuConstantDefinition def;
-			if ( !this._namedConstants.Map.TryGetValue( name.ToLower(), out def ) )
-			{
-				if ( throwExceptionIfNotFound )
-				{
-					throw new AxiomException( "Parameter called {0} does not exist. ", name );
-				}
+            GpuConstantDefinition def;
+            if (!this._namedConstants.Map.TryGetValue(name.ToLower(), out def))
+            {
+                if (throwExceptionIfNotFound)
+                {
+                    throw new AxiomException("Parameter called {0} does not exist. ", name);
+                }
 
-				return null;
-			}
+                return null;
+            }
 
-			return def;
-		}
+            return def;
+        }
 
 #if !NET_40
-		/// <see cref="FindNamedConstantDefinition(string, bool)"/>
-		public GpuConstantDefinition FindNamedConstantDefinition( string name )
-		{
-			return FindNamedConstantDefinition( name, false );
-		}
+        /// <see cref="FindNamedConstantDefinition(string, bool)"/>
+        public GpuConstantDefinition FindNamedConstantDefinition(string name)
+        {
+            return FindNamedConstantDefinition(name, false);
+        }
 #endif
-	};
+    };
 }

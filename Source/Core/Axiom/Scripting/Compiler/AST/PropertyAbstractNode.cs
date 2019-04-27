@@ -44,59 +44,59 @@ using System.Collections.Generic;
 
 namespace Axiom.Scripting.Compiler.AST
 {
-	/// <summary>
-	/// This abstract node represents a script property
-	/// </summary>
-	public class PropertyAbstractNode : AbstractNode
-	{
-		#region Fields and Properties
+    /// <summary>
+    /// This abstract node represents a script property
+    /// </summary>
+    public class PropertyAbstractNode : AbstractNode
+    {
+        #region Fields and Properties
 
-		public String Name;
+        public String Name;
 
-		public uint Id;
+        public uint Id;
 
-		public IList<AbstractNode> Values = new List<AbstractNode>();
+        public IList<AbstractNode> Values = new List<AbstractNode>();
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		public PropertyAbstractNode( AbstractNode parent )
-			: base( parent )
-		{
-			this.Id = 0;
-		}
+        public PropertyAbstractNode(AbstractNode parent)
+            : base(parent)
+        {
+            this.Id = 0;
+        }
 
-		#region AbstractNode Implementation
+        #region AbstractNode Implementation
 
-		/// <see cref="AbstractNode.Clone"/>
-		public override AbstractNode Clone()
-		{
-			var node = new PropertyAbstractNode( Parent );
-			node.File = File;
-			node.Line = Line;
-			node.Name = this.Name;
-			node.Id = this.Id;
-			foreach ( var an in this.Values )
-			{
-				var newNode = (AbstractNode)( an.Clone() );
-				newNode.Parent = node;
-				node.Values.Add( newNode );
-			}
-			return node;
-		}
+        /// <see cref="AbstractNode.Clone"/>
+        public override AbstractNode Clone()
+        {
+            var node = new PropertyAbstractNode(Parent);
+            node.File = File;
+            node.Line = Line;
+            node.Name = this.Name;
+            node.Id = this.Id;
+            foreach (var an in this.Values)
+            {
+                var newNode = (AbstractNode)(an.Clone());
+                newNode.Parent = node;
+                node.Values.Add(newNode);
+            }
+            return node;
+        }
 
-		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return this.Name;
-			}
-			set
-			{
-				this.Name = value;
-			}
-		}
+        /// <see cref="AbstractNode.Value"/>
+        public override string Value
+        {
+            get
+            {
+                return this.Name;
+            }
+            set
+            {
+                this.Name = value;
+            }
+        }
 
-		#endregion AbstractNode Implementation
-	}
+        #endregion AbstractNode Implementation
+    }
 }

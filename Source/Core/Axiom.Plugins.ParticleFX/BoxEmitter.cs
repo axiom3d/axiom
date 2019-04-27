@@ -47,95 +47,95 @@ using Axiom.Scripting;
 
 namespace Axiom.ParticleFX
 {
-	/// <summary>
-	/// Summary description for BoxEmitter.
-	/// </summary>
-	public class BoxEmitter : AreaEmitter
-	{
-		public BoxEmitter( ParticleSystem ps )
-			: base( ps )
-		{
-			InitDefaults( "Box" );
-		}
+    /// <summary>
+    /// Summary description for BoxEmitter.
+    /// </summary>
+    public class BoxEmitter : AreaEmitter
+    {
+        public BoxEmitter(ParticleSystem ps)
+            : base(ps)
+        {
+            InitDefaults("Box");
+        }
 
-		public override void InitParticle( Particle particle )
-		{
-			Vector3 xOff, yOff, zOff;
+        public override void InitParticle(Particle particle)
+        {
+            Vector3 xOff, yOff, zOff;
 
-			xOff = Utility.SymmetricRandom()*xRange;
-			yOff = Utility.SymmetricRandom()*yRange;
-			zOff = Utility.SymmetricRandom()*zRange;
+            xOff = Utility.SymmetricRandom() * xRange;
+            yOff = Utility.SymmetricRandom() * yRange;
+            zOff = Utility.SymmetricRandom() * zRange;
 
-			particle.Position = Position + xOff + yOff + zOff;
+            particle.Position = Position + xOff + yOff + zOff;
 
-			// Generate complex data by reference
-			GenerateEmissionColor( ref particle.Color );
-			GenerateEmissionDirection( ref particle.Direction );
-			GenerateEmissionVelocity( ref particle.Direction );
+            // Generate complex data by reference
+            GenerateEmissionColor(ref particle.Color);
+            GenerateEmissionDirection(ref particle.Direction);
+            GenerateEmissionVelocity(ref particle.Direction);
 
-			// Generate simpler data
-			particle.timeToLive = particle.totalTimeToLive = GenerateEmissionTTL();
-		}
+            // Generate simpler data
+            particle.timeToLive = particle.totalTimeToLive = GenerateEmissionTTL();
+        }
 
-		#region Command definition classes
+        #region Command definition classes
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "width", "Width of the box emitter.", typeof ( ParticleEmitter ) )]
-		public class WidthCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				var emitter = target as BoxEmitter;
-				emitter.Width = StringConverter.ParseFloat( val );
-			}
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptableProperty("width", "Width of the box emitter.", typeof(ParticleEmitter))]
+        public class WidthCommand : IPropertyCommand
+        {
+            public void Set(object target, string val)
+            {
+                var emitter = target as BoxEmitter;
+                emitter.Width = StringConverter.ParseFloat(val);
+            }
 
-			public string Get( object target )
-			{
-				var emitter = target as BoxEmitter;
-				return StringConverter.ToString( emitter.Width );
-			}
-		}
+            public string Get(object target)
+            {
+                var emitter = target as BoxEmitter;
+                return StringConverter.ToString(emitter.Width);
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "height", "Height of the box emitter.", typeof ( ParticleEmitter ) )]
-		public class HeightCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				var emitter = target as BoxEmitter;
-				emitter.Height = StringConverter.ParseFloat( val );
-			}
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptableProperty("height", "Height of the box emitter.", typeof(ParticleEmitter))]
+        public class HeightCommand : IPropertyCommand
+        {
+            public void Set(object target, string val)
+            {
+                var emitter = target as BoxEmitter;
+                emitter.Height = StringConverter.ParseFloat(val);
+            }
 
-			public string Get( object target )
-			{
-				var emitter = target as BoxEmitter;
-				return StringConverter.ToString( emitter.Height );
-			}
-		}
+            public string Get(object target)
+            {
+                var emitter = target as BoxEmitter;
+                return StringConverter.ToString(emitter.Height);
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "depth", "Depth of the box emitter.", typeof ( ParticleEmitter ) )]
-		public class DepthCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				var emitter = target as BoxEmitter;
-				emitter.Depth = StringConverter.ParseFloat( val );
-			}
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptableProperty("depth", "Depth of the box emitter.", typeof(ParticleEmitter))]
+        public class DepthCommand : IPropertyCommand
+        {
+            public void Set(object target, string val)
+            {
+                var emitter = target as BoxEmitter;
+                emitter.Depth = StringConverter.ParseFloat(val);
+            }
 
-			public string Get( object target )
-			{
-				var emitter = target as BoxEmitter;
-				return StringConverter.ToString( emitter.Depth );
-			}
-		}
+            public string Get(object target)
+            {
+                var emitter = target as BoxEmitter;
+                return StringConverter.ToString(emitter.Depth);
+            }
+        }
 
-		#endregion Command definition classes
-	}
+        #endregion Command definition classes
+    }
 }

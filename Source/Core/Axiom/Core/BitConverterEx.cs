@@ -1,8 +1,8 @@
 ﻿using System;
 
-	#region LGPL License
+#region LGPL License
 
-	/*
+/*
 Axiom Graphics Engine Library
 Copyright © 2003-2011 Axiom Project Team
 
@@ -26,18 +26,18 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-	#endregion LGPL License
+#endregion LGPL License
 
-	#region SVN Version Information
+#region SVN Version Information
 
-	// <file>
-	//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
-	//     <id value="$Id$"/>
-	// </file>
+// <file>
+//     <license see="http://axiom3d.net/wiki/index.php/license.txt"/>
+//     <id value="$Id$"/>
+// </file>
 
-	#endregion SVN Version Information
+#endregion SVN Version Information
 
-	#region Namespace Declarations
+#region Namespace Declarations
 
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -46,59 +46,59 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.Core
 {
-	public static class BitConverterEx
-	{
-		public static byte[] GetBytes<T>( T value )
-		{
-			int size;
-			byte[] buffer;
-			BufferBase dst;
-			if ( !typeof ( T ).IsArray )
-			{
-				size = Memory.SizeOf( typeof ( T ) );
-				buffer = new byte[size];
-				using ( dst = BufferBase.Wrap( buffer ) )
-				{
-					Marshal.StructureToPtr( value, dst.Pin(), true );
-					dst.UnPin();
-				}
-			}
-			else
-			{
-				size = Memory.SizeOf( typeof ( T ).GetElementType() )*
-					   (int)typeof ( T ).GetProperty( "Length" ).GetValue( value, null );
-				buffer = new byte[ size ];
-				using ( dst = BufferBase.Wrap( buffer ) )
-				{
-					using ( var src = BufferBase.Wrap( value as Array, size ) )
-						Memory.Copy( src, dst, size );
-				}
-			}
+    public static class BitConverterEx
+    {
+        public static byte[] GetBytes<T>(T value)
+        {
+            int size;
+            byte[] buffer;
+            BufferBase dst;
+            if (!typeof(T).IsArray)
+            {
+                size = Memory.SizeOf(typeof(T));
+                buffer = new byte[size];
+                using (dst = BufferBase.Wrap(buffer))
+                {
+                    Marshal.StructureToPtr(value, dst.Pin(), true);
+                    dst.UnPin();
+                }
+            }
+            else
+            {
+                size = Memory.SizeOf(typeof(T).GetElementType()) *
+                       (int)typeof(T).GetProperty("Length").GetValue(value, null);
+                buffer = new byte[size];
+                using (dst = BufferBase.Wrap(buffer))
+                {
+                    using (var src = BufferBase.Wrap(value as Array, size))
+                        Memory.Copy(src, dst, size);
+                }
+            }
 
-			return buffer;
-		}
+            return buffer;
+        }
 
-		public static T SetBytes<T>( byte[] buffer )
-		{
-			var size = Memory.SizeOf( typeof ( T ) );
-			T retStruct;
-			using ( var src = BufferBase.Wrap( buffer ) )
-			{
-				retStruct = src.Pin().PtrToStructure<T>();
-				src.UnPin();
-			}
-			return retStruct;
-		}
+        public static T SetBytes<T>(byte[] buffer)
+        {
+            var size = Memory.SizeOf(typeof(T));
+            T retStruct;
+            using (var src = BufferBase.Wrap(buffer))
+            {
+                retStruct = src.Pin().PtrToStructure<T>();
+                src.UnPin();
+            }
+            return retStruct;
+        }
 
-		public static void SetBytes<T>( byte[] buffer, out T[] dest )
-		{
-			var size = buffer.Length / Memory.SizeOf( typeof( T ) );
-			dest = new T[ size ];
-			using ( var src = BufferBase.Wrap( buffer ) )
-			{
-				using ( var dst = BufferBase.Wrap( dest, buffer.Length ) )
-					Memory.Copy( src, dst, buffer.Length );
-			}
-		}
-	};
+        public static void SetBytes<T>(byte[] buffer, out T[] dest)
+        {
+            var size = buffer.Length / Memory.SizeOf(typeof(T));
+            dest = new T[size];
+            using (var src = BufferBase.Wrap(buffer))
+            {
+                using (var dst = BufferBase.Wrap(dest, buffer.Length))
+                    Memory.Copy(src, dst, buffer.Length);
+            }
+        }
+    };
 }

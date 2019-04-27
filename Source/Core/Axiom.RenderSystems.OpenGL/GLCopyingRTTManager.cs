@@ -49,48 +49,48 @@ using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	internal class GLCopyingRTTManager : GLRTTManager
-	{
-		#region Construction and Destruction
+    internal class GLCopyingRTTManager : GLRTTManager
+    {
+        #region Construction and Destruction
 
-		internal GLCopyingRTTManager( BaseGLSupport glSupport )
-			: base( glSupport )
-		{
-		}
+        internal GLCopyingRTTManager(BaseGLSupport glSupport)
+            : base(glSupport)
+        {
+        }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region GLRTTManager Implementation
+        #region GLRTTManager Implementation
 
-		public override RenderTexture CreateRenderTexture( string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
-		{
-			return new GLCopyingRenderTexture( this, name, target, writeGamma, fsaa );
-		}
+        public override RenderTexture CreateRenderTexture(string name, GLSurfaceDesc target, bool writeGamma, int fsaa)
+        {
+            return new GLCopyingRenderTexture(this, name, target, writeGamma, fsaa);
+        }
 
-		public override bool CheckFormat( PixelFormat format )
-		{
-			return true;
-		}
+        public override bool CheckFormat(PixelFormat format)
+        {
+            return true;
+        }
 
-		public override void Bind( RenderTarget target )
-		{
-			// nothing to do here
-		}
+        public override void Bind(RenderTarget target)
+        {
+            // nothing to do here
+        }
 
-		public override void Unbind( RenderTarget target )
-		{
-			// copy on unbind
-			object attr = target["target"];
-			if ( attr != null )
-			{
-				var surface = (GLSurfaceDesc)attr;
-				if ( surface.Buffer != null )
-				{
-					( (GLTextureBuffer)surface.Buffer ).CopyFromFrameBuffer( surface.ZOffset );
-				}
-			}
-		}
+        public override void Unbind(RenderTarget target)
+        {
+            // copy on unbind
+            object attr = target["target"];
+            if (attr != null)
+            {
+                var surface = (GLSurfaceDesc)attr;
+                if (surface.Buffer != null)
+                {
+                    ((GLTextureBuffer)surface.Buffer).CopyFromFrameBuffer(surface.ZOffset);
+                }
+            }
+        }
 
-		#endregion GLRTTManager Implementation
-	}
+        #endregion GLRTTManager Implementation
+    }
 }

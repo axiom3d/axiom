@@ -44,10 +44,10 @@ using Axiom.Core;
 
 namespace Axiom.Core
 {
-	/// <summary>
-	/// Summary description for IPlatformManager.
-	/// </summary>
-	public interface IPlatformManager : IDisposable
-	{
-	}
+    /// <summary>
+    /// Summary description for IPlatformManager.
+    /// </summary>
+    public interface IPlatformManager : IDisposable
+    {
+    }
 }

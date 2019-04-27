@@ -40,34 +40,34 @@ namespace Axiom.UnitTests.Core
     /// <summary>
     /// Regression tests for the <see cref="SceneNode"/> class.
     /// </summary>
-    [ TestFixture ]
+    [TestFixture]
     internal class SceneNodeTests
     {
         /// <summary>
         /// Verifies that the destruction of a scene node via the interface of its parent does in fact also
         /// remove that child node from the <see cref="SceneManager"/> scene graph.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestChildSceneNodeDestruction()
         {
-            SceneManager sceneManager = new StubSceneManager( "Manager under test" );
-            SceneNode node = sceneManager.CreateSceneNode( "testNode" );
-            SceneNode childNode = node.CreateChildSceneNode( "childNode" );
+            SceneManager sceneManager = new StubSceneManager("Manager under test");
+            SceneNode node = sceneManager.CreateSceneNode("testNode");
+            SceneNode childNode = node.CreateChildSceneNode("childNode");
 
-            Assert.IsTrue( ManagerContainsNode( sceneManager, childNode ), "A child node was created but not added to the scene graph." );
+            Assert.IsTrue(ManagerContainsNode(sceneManager, childNode), "A child node was created but not added to the scene graph.");
 
-            node.RemoveAndDestroyChild( childNode );
+            node.RemoveAndDestroyChild(childNode);
 
-            Assert.IsFalse( ManagerContainsNode( sceneManager, childNode ), "A child node was destroyed but not removed from the scene graph." );
+            Assert.IsFalse(ManagerContainsNode(sceneManager, childNode), "A child node was destroyed but not removed from the scene graph.");
         }
 
-        private static bool ManagerContainsNode( SceneManager sceneManager, SceneNode childNode )
+        private static bool ManagerContainsNode(SceneManager sceneManager, SceneNode childNode)
         {
             bool managerContainsChild = false;
 
-            foreach ( SceneNode sceneNode in sceneManager.SceneNodes )
+            foreach (SceneNode sceneNode in sceneManager.SceneNodes)
             {
-                if ( sceneNode.Equals( childNode ) )
+                if (sceneNode.Equals(childNode))
                 {
                     managerContainsChild = true;
                 }
@@ -77,8 +77,8 @@ namespace Axiom.UnitTests.Core
 
         private class StubSceneManager : SceneManager
         {
-            public StubSceneManager( string name )
-                : base( name )
+            public StubSceneManager(string name)
+                : base(name)
             {
             }
 

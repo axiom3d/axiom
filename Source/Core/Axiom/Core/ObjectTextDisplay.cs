@@ -47,172 +47,172 @@ using Axiom.Overlays;
 
 namespace Axiom.Core
 {
-	/// <summary>
-	/// Attaches a label to a <see cref="MovableObject"/>
-	/// </summary>
-	public class ObjectTextDisplay
-	{
-		#region Fields and Properties
+    /// <summary>
+    /// Attaches a label to a <see cref="MovableObject"/>
+    /// </summary>
+    public class ObjectTextDisplay
+    {
+        #region Fields and Properties
 
-		protected MovableObject parent;
-		protected Camera camera;
-		protected Overlay parentOverlay;
-		protected OverlayElement parentText;
-		protected OverlayElementContainer parentContainer;
+        protected MovableObject parent;
+        protected Camera camera;
+        protected Overlay parentOverlay;
+        protected OverlayElement parentText;
+        protected OverlayElementContainer parentContainer;
 
-		protected bool enabled;
+        protected bool enabled;
 
-		public bool IsEnabled
-		{
-			get
-			{
-				return this.enabled;
-			}
-			set
-			{
-				this.enabled = value;
-				if ( value )
-				{
-					this.parentOverlay.Show();
-				}
-				else
-				{
-					this.parentOverlay.Hide();
-				}
-			}
-		}
+        public bool IsEnabled
+        {
+            get
+            {
+                return this.enabled;
+            }
+            set
+            {
+                this.enabled = value;
+                if (value)
+                {
+                    this.parentOverlay.Show();
+                }
+                else
+                {
+                    this.parentOverlay.Hide();
+                }
+            }
+        }
 
-		protected string text;
+        protected string text;
 
-		public string Text
-		{
-			get
-			{
-				return this.text;
-			}
-			set
-			{
-				this.text = value;
-				this.parentText.Text = this.text;
-			}
-		}
+        public string Text
+        {
+            get
+            {
+                return this.text;
+            }
+            set
+            {
+                this.text = value;
+                this.parentText.Text = this.text;
+            }
+        }
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		public ObjectTextDisplay( MovableObject p, Camera c, string shapeName )
-		{
-			this.parent = p;
-			this.camera = c;
-			this.enabled = false;
-			this.text = "";
+        public ObjectTextDisplay(MovableObject p, Camera c, string shapeName)
+        {
+            this.parent = p;
+            this.camera = c;
+            this.enabled = false;
+            this.text = "";
 
-			// create an overlay that we can use for later
+            // create an overlay that we can use for later
 
-			// = Ogre.OverlayManager.getSingleton().create("shapeName");
-			this.parentOverlay = (Overlay)OverlayManager.Instance.Create( "shapeName" );
+            // = Ogre.OverlayManager.getSingleton().create("shapeName");
+            this.parentOverlay = (Overlay)OverlayManager.Instance.Create("shapeName");
 
-			// (Ogre.OverlayContainer)(Ogre.OverlayManager.getSingleton().createOverlayElement("Panel", "container1"));
-			this.parentContainer =
-				(OverlayElementContainer)( OverlayElementManager.Instance.CreateElement( "Panel", "container1", false ) );
+            // (Ogre.OverlayContainer)(Ogre.OverlayManager.getSingleton().createOverlayElement("Panel", "container1"));
+            this.parentContainer =
+                (OverlayElementContainer)(OverlayElementManager.Instance.CreateElement("Panel", "container1", false));
 
-			//parentOverlay.add2D(parentContainer);
-			this.parentOverlay.AddElement( this.parentContainer );
+            //parentOverlay.add2D(parentContainer);
+            this.parentOverlay.AddElement(this.parentContainer);
 
-			//parentText = Ogre.OverlayManager.getSingleton().createOverlayElement("TextArea", "shapeNameText");
-			this.parentText = OverlayElementManager.Instance.CreateElement( "TextArea", shapeName, false );
+            //parentText = Ogre.OverlayManager.getSingleton().createOverlayElement("TextArea", "shapeNameText");
+            this.parentText = OverlayElementManager.Instance.CreateElement("TextArea", shapeName, false);
 
-			this.parentText.SetDimensions( 1.0f, 1.0f );
+            this.parentText.SetDimensions(1.0f, 1.0f);
 
-			//parentText.setMetricsMode(Ogre.GMM_PIXELS);
-			this.parentText.MetricsMode = MetricsMode.Pixels;
-
-
-			this.parentText.SetPosition( 1.0f, 1.0f );
+            //parentText.setMetricsMode(Ogre.GMM_PIXELS);
+            this.parentText.MetricsMode = MetricsMode.Pixels;
 
 
-			this.parentText.SetParam( "font_name", "Arial" );
-			this.parentText.SetParam( "char_height", "25" );
-			this.parentText.SetParam( "horz_align", "center" );
-			this.parentText.Color = new ColorEx( 1.0f, 1.0f, 1.0f );
-			//parentText.setColour(Ogre.ColourValue(1.0, 1.0, 1.0));
+            this.parentText.SetPosition(1.0f, 1.0f);
 
 
-			this.parentContainer.AddChild( this.parentText );
-
-			this.parentOverlay.Show();
-		}
-
-		#endregion Construction and Destruction
-
-		public void Update()
-		{
-			if ( !this.enabled )
-			{
-				return;
-			}
-
-			// get the projection of the object's AABB into screen space
-			var bbox = this.parent.GetWorldBoundingBox( true );
-			//new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
+            this.parentText.SetParam("font_name", "Arial");
+            this.parentText.SetParam("char_height", "25");
+            this.parentText.SetParam("horz_align", "center");
+            this.parentText.Color = new ColorEx(1.0f, 1.0f, 1.0f);
+            //parentText.setColour(Ogre.ColourValue(1.0, 1.0, 1.0));
 
 
-			//Ogre.Matrix4 mat = camera.getViewMatrix();
-			var mat = this.camera.ViewMatrix;
-			//const Ogre.Vector3 corners = bbox.getAllCorners();
-			var corners = bbox.Corners;
+            this.parentContainer.AddChild(this.parentText);
+
+            this.parentOverlay.Show();
+        }
+
+        #endregion Construction and Destruction
+
+        public void Update()
+        {
+            if (!this.enabled)
+            {
+                return;
+            }
+
+            // get the projection of the object's AABB into screen space
+            var bbox = this.parent.GetWorldBoundingBox(true);
+            //new AxisAlignedBox(parent.BoundingBox.Minimum, parent.BoundingBox.Maximum);// GetWorldBoundingBox(true));
 
 
-			var min_x = 1.0f;
-			var max_x = 0.0f;
-			var min_y = 1.0f;
-			var max_y = 0.0f;
+            //Ogre.Matrix4 mat = camera.getViewMatrix();
+            var mat = this.camera.ViewMatrix;
+            //const Ogre.Vector3 corners = bbox.getAllCorners();
+            var corners = bbox.Corners;
 
-			// expand the screen-space bounding-box so that it completely encloses
-			// the object's AABB
-			for ( var i = 0; i < 8; i++ )
-			{
-				var corner = corners[ i ];
 
-				// multiply the AABB corner vertex by the view matrix to
-				// get a camera-space vertex
-				//corner = multiply(mat,corner);
-				corner = mat*corner;
+            var min_x = 1.0f;
+            var max_x = 0.0f;
+            var min_y = 1.0f;
+            var max_y = 0.0f;
 
-				// make 2D relative/normalized coords from the view-space vertex
-				// by dividing out the Z (depth) factor -- this is an approximation
-				float x = corner.x/corner.z + 0.5f;
-				float y = corner.y/corner.z + 0.5f;
+            // expand the screen-space bounding-box so that it completely encloses
+            // the object's AABB
+            for (var i = 0; i < 8; i++)
+            {
+                var corner = corners[i];
 
-				if ( x < min_x )
-				{
-					min_x = x;
-				}
+                // multiply the AABB corner vertex by the view matrix to
+                // get a camera-space vertex
+                //corner = multiply(mat,corner);
+                corner = mat * corner;
 
-				if ( x > max_x )
-				{
-					max_x = x;
-				}
+                // make 2D relative/normalized coords from the view-space vertex
+                // by dividing out the Z (depth) factor -- this is an approximation
+                float x = corner.x / corner.z + 0.5f;
+                float y = corner.y / corner.z + 0.5f;
 
-				if ( y < min_y )
-				{
-					min_y = y;
-				}
+                if (x < min_x)
+                {
+                    min_x = x;
+                }
 
-				if ( y > max_y )
-				{
-					max_y = y;
-				}
-			}
+                if (x > max_x)
+                {
+                    max_x = x;
+                }
 
-			// we now have relative screen-space coords for the object's bounding box; here
-			// we need to center the text above the BB on the top edge. The line that defines
-			// this top edge is (min_x, min_y) to (max_x, min_y)
+                if (y < min_y)
+                {
+                    min_y = y;
+                }
 
-			//parentContainer->setPosition(min_x, min_y);
-			this.parentContainer.SetPosition( 1 - max_x, min_y ); // Edited by alberts: This code works for me
-			this.parentContainer.SetDimensions( max_x - min_x, 0.1f ); // 0.1, just "because"
-		}
-	}
+                if (y > max_y)
+                {
+                    max_y = y;
+                }
+            }
+
+            // we now have relative screen-space coords for the object's bounding box; here
+            // we need to center the text above the BB on the top edge. The line that defines
+            // this top edge is (min_x, min_y) to (max_x, min_y)
+
+            //parentContainer->setPosition(min_x, min_y);
+            this.parentContainer.SetPosition(1 - max_x, min_y); // Edited by alberts: This code works for me
+            this.parentContainer.SetDimensions(max_x - min_x, 0.1f); // 0.1, just "because"
+        }
+    }
 }

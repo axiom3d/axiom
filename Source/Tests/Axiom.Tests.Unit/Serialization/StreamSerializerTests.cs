@@ -59,44 +59,44 @@ namespace Axiom.Engine.Tests.Serialization
             {
                 Stream stream = new MemoryStream(buffer); // arch.Create(fileName, true));
 
-                using ( StreamSerializer serializer = new StreamSerializer( stream ) )
+                using (StreamSerializer serializer = new StreamSerializer(stream))
                 {
-                    serializer.WriteChunkBegin( chunkID );
+                    serializer.WriteChunkBegin(chunkID);
 
-                    serializer.Write( aTestVector );
-                    serializer.Write( aTestString );
-                    serializer.Write( aTestValue );
-                    serializer.Write( aTestArray );
-                    serializer.WriteChunkEnd( chunkID );
+                    serializer.Write(aTestVector);
+                    serializer.Write(aTestString);
+                    serializer.Write(aTestValue);
+                    serializer.Write(aTestArray);
+                    serializer.WriteChunkEnd(chunkID);
                 }
             }
 
             // read it back
             {
 
-                Stream stream = new MemoryStream( buffer ); //arch.Open(fileName);
+                Stream stream = new MemoryStream(buffer); //arch.Open(fileName);
 
-                using ( StreamSerializer serializer = new StreamSerializer( stream ) )
+                using (StreamSerializer serializer = new StreamSerializer(stream))
                 {
                     Chunk c = serializer.ReadChunkBegin();
-                    Assert.AreEqual( chunkID, c.id );
-                    Assert.AreEqual( sizeof( float ) * 3 + sizeof( int ) + aTestString.Length + 4 + sizeof( int ) * aTestArray.Length + sizeof( int ), (int)c.length );
+                    Assert.AreEqual(chunkID, c.id);
+                    Assert.AreEqual(sizeof(float) * 3 + sizeof(int) + aTestString.Length + 4 + sizeof(int) * aTestArray.Length + sizeof(int), (int)c.length);
 
                     Vector3 inVector;
                     String inString;
                     int inValue;
                     int[] inArray;
 
-                    serializer.Read( out inVector );
-                    serializer.Read( out inString );
-                    serializer.Read( out inValue );
-                    serializer.Read( out inArray );
-                    serializer.ReadChunkEnd( chunkID );
+                    serializer.Read(out inVector);
+                    serializer.Read(out inString);
+                    serializer.Read(out inValue);
+                    serializer.Read(out inArray);
+                    serializer.ReadChunkEnd(chunkID);
 
-                    Assert.AreEqual( aTestVector, inVector );
-                    Assert.AreEqual( aTestString, inString );
-                    Assert.AreEqual( aTestValue, inValue );
-                    Assert.AreEqual( aTestArray, inArray );
+                    Assert.AreEqual(aTestVector, inVector);
+                    Assert.AreEqual(aTestString, inString);
+                    Assert.AreEqual(aTestValue, inValue);
+                    Assert.AreEqual(aTestArray, inArray);
                 }
             }
         }

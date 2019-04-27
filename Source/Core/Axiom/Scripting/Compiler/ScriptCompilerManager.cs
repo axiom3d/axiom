@@ -48,269 +48,269 @@ using Axiom.Utilities;
 
 namespace Axiom.Scripting.Compiler
 {
-	/// <summary>
-	/// Manages threaded compilation of scripts. This script loader forwards
-	/// scripts compilations to a specific compiler instance.
-	/// </summary>
-	public partial class ScriptCompilerManager : Singleton<ScriptCompilerManager>, IScriptLoader
-	{
-		#region Fields and Properties
+    /// <summary>
+    /// Manages threaded compilation of scripts. This script loader forwards
+    /// scripts compilations to a specific compiler instance.
+    /// </summary>
+    public partial class ScriptCompilerManager : Singleton<ScriptCompilerManager>, IScriptLoader
+    {
+        #region Fields and Properties
 
-		private readonly List<string> _scriptPatterns = new List<string>();
+        private readonly List<string> _scriptPatterns = new List<string>();
 
-		private readonly ScriptCompiler _compiler;
+        private readonly ScriptCompiler _compiler;
 
-		private readonly List<ScriptTranslatorManager> _translatorManagers = new List<ScriptTranslatorManager>();
-		private readonly ScriptTranslatorManager _builtinTranslatorManager;
+        private readonly List<ScriptTranslatorManager> _translatorManagers = new List<ScriptTranslatorManager>();
+        private readonly ScriptTranslatorManager _builtinTranslatorManager;
 
-		public IList<ScriptTranslatorManager> TranslatorManagers
-		{
-			get
-			{
-				return this._translatorManagers;
-			}
-		}
+        public IList<ScriptTranslatorManager> TranslatorManagers
+        {
+            get
+            {
+                return this._translatorManagers;
+            }
+        }
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		public ScriptCompilerManager()
-			: base()
-		{
+        public ScriptCompilerManager()
+            : base()
+        {
 #if AXIOM_USENEWCOMPILERS
 			this._scriptPatterns.Add( "*.program" );
 			this._scriptPatterns.Add( "*.material" );
 			this._scriptPatterns.Add( "*.particle" );
 			this._scriptPatterns.Add( "*.compositor" );
 #endif
-			this._scriptPatterns.Add( "*.os" );
+            this._scriptPatterns.Add("*.os");
 
-			ResourceGroupManager.Instance.RegisterScriptLoader( this );
+            ResourceGroupManager.Instance.RegisterScriptLoader(this);
 
-			this._compiler = new ScriptCompiler();
+            this._compiler = new ScriptCompiler();
 
-			this._builtinTranslatorManager = new BuiltinScriptTranslatorManager();
-			this._translatorManagers.Add( this._builtinTranslatorManager );
-		}
+            this._builtinTranslatorManager = new BuiltinScriptTranslatorManager();
+            this._translatorManagers.Add(this._builtinTranslatorManager);
+        }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		/// Retrieves a ScriptTranslator from the supported managers
-		/// </summary>
-		/// <param name="node"></param>
-		/// <returns></returns>
-		public ScriptCompiler.Translator GetTranslator( AbstractNode node )
-		{
-			ScriptCompiler.Translator translator = null;
+        /// <summary>
+        /// Retrieves a ScriptTranslator from the supported managers
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns></returns>
+        public ScriptCompiler.Translator GetTranslator(AbstractNode node)
+        {
+            ScriptCompiler.Translator translator = null;
 
-			// Start looking from the back
-			if ( this._translatorManagers.Count > 0 )
-			{
-				for ( var i = this._translatorManagers.Count - 1; i >= 0; i-- )
-				{
-					translator = this._translatorManagers[ i ].GetTranslator( node );
-					if ( translator != null )
-					{
-						break;
-					}
-				}
-			}
+            // Start looking from the back
+            if (this._translatorManagers.Count > 0)
+            {
+                for (var i = this._translatorManagers.Count - 1; i >= 0; i--)
+                {
+                    translator = this._translatorManagers[i].GetTranslator(node);
+                    if (translator != null)
+                    {
+                        break;
+                    }
+                }
+            }
 
-			return translator;
-		}
+            return translator;
+        }
 
-		#endregion Methods
+        #endregion Methods
 
-		#region IScriptLoader Implementation
+        #region IScriptLoader Implementation
 
-		/// <summary>
-		/// A list of patterns loaded by this compiler manager
-		/// </summary>
-		public List<string> ScriptPatterns
-		{
-			get
-			{
-				return this._scriptPatterns;
-			}
-		}
+        /// <summary>
+        /// A list of patterns loaded by this compiler manager
+        /// </summary>
+        public List<string> ScriptPatterns
+        {
+            get
+            {
+                return this._scriptPatterns;
+            }
+        }
 
-		public void ParseScript( System.IO.Stream stream, string groupName, string fileName )
-		{
-			// Set the listener on the compiler before we continue
-			_unsetCompilerEvents(); // Double tap
-			_setCompilerEvents();
+        public void ParseScript(System.IO.Stream stream, string groupName, string fileName)
+        {
+            // Set the listener on the compiler before we continue
+            _unsetCompilerEvents(); // Double tap
+            _setCompilerEvents();
 
-			var rdr = new System.IO.StreamReader( stream );
-			var script = rdr.ReadToEnd();
-			this._compiler.Compile( script, fileName, groupName );
+            var rdr = new System.IO.StreamReader(stream);
+            var script = rdr.ReadToEnd();
+            this._compiler.Compile(script, fileName, groupName);
 
-			// Unset events in order to avoid that compiler's events will be called twice next time
-			_unsetCompilerEvents();
-		}
+            // Unset events in order to avoid that compiler's events will be called twice next time
+            _unsetCompilerEvents();
+        }
 
-		/// <summary>
-		/// Set events of this manager's compiler
-		/// </summary>
-		private void _setCompilerEvents()
-		{
-			Contract.RequiresNotNull( this._compiler, "_compiler" );
+        /// <summary>
+        /// Set events of this manager's compiler
+        /// </summary>
+        private void _setCompilerEvents()
+        {
+            Contract.RequiresNotNull(this._compiler, "_compiler");
 
-			if ( OnImportFile != null )
-			{
-				this._compiler.OnImportFile += OnImportFile;
-			}
+            if (OnImportFile != null)
+            {
+                this._compiler.OnImportFile += OnImportFile;
+            }
 
-			if ( OnPreConversion != null )
-			{
-				this._compiler.OnPreConversion += OnPreConversion;
-			}
+            if (OnPreConversion != null)
+            {
+                this._compiler.OnPreConversion += OnPreConversion;
+            }
 
-			if ( OnPostConversion != null )
-			{
-				this._compiler.OnPostConversion += OnPostConversion;
-			}
+            if (OnPostConversion != null)
+            {
+                this._compiler.OnPostConversion += OnPostConversion;
+            }
 
-			if ( OnCompileError != null )
-			{
-				this._compiler.OnCompileError += OnCompileError;
-			}
+            if (OnCompileError != null)
+            {
+                this._compiler.OnCompileError += OnCompileError;
+            }
 
-			if ( OnCompilerEvent != null )
-			{
-				this._compiler.OnCompilerEvent += OnCompilerEvent;
-			}
-		}
+            if (OnCompilerEvent != null)
+            {
+                this._compiler.OnCompilerEvent += OnCompilerEvent;
+            }
+        }
 
-		/// <summary>
-		/// Unset events of this manager's compiler
-		/// </summary>
-		private void _unsetCompilerEvents()
-		{
-			Contract.RequiresNotNull( this._compiler, "_compiler" );
+        /// <summary>
+        /// Unset events of this manager's compiler
+        /// </summary>
+        private void _unsetCompilerEvents()
+        {
+            Contract.RequiresNotNull(this._compiler, "_compiler");
 
-			if ( OnImportFile != null )
-			{
-				this._compiler.OnImportFile -= OnImportFile;
-			}
+            if (OnImportFile != null)
+            {
+                this._compiler.OnImportFile -= OnImportFile;
+            }
 
-			if ( OnPreConversion != null )
-			{
-				this._compiler.OnPreConversion -= OnPreConversion;
-			}
+            if (OnPreConversion != null)
+            {
+                this._compiler.OnPreConversion -= OnPreConversion;
+            }
 
-			if ( OnPostConversion != null )
-			{
-				this._compiler.OnPostConversion -= OnPostConversion;
-			}
+            if (OnPostConversion != null)
+            {
+                this._compiler.OnPostConversion -= OnPostConversion;
+            }
 
-			if ( OnCompileError != null )
-			{
-				this._compiler.OnCompileError -= OnCompileError;
-			}
+            if (OnCompileError != null)
+            {
+                this._compiler.OnCompileError -= OnCompileError;
+            }
 
-			if ( OnCompilerEvent != null )
-			{
-				this._compiler.OnCompilerEvent -= OnCompilerEvent;
-			}
-		}
+            if (OnCompilerEvent != null)
+            {
+                this._compiler.OnCompilerEvent -= OnCompilerEvent;
+            }
+        }
 
-		public Real LoadingOrder
-		{
-			get
-			{
-				// Load relatively early, before most script loaders run
-				return 90.0f;
-			}
-		}
+        public Real LoadingOrder
+        {
+            get
+            {
+                // Load relatively early, before most script loaders run
+                return 90.0f;
+            }
+        }
 
-		#endregion IScriptLoader Implementation
-	}
+        #endregion IScriptLoader Implementation
+    }
 
-	/// <summary>
-	/// The ScriptTranslatorManager manages the lifetime and access to
-	/// script translators. You register these managers with the
-	/// ScriptCompilerManager tied to specific object types.
-	/// Each manager may manage multiple types.
-	/// </summary>
-	public abstract class ScriptTranslatorManager
-	{
-		protected List<ScriptCompiler.Translator> _translators = new List<ScriptCompiler.Translator>();
+    /// <summary>
+    /// The ScriptTranslatorManager manages the lifetime and access to
+    /// script translators. You register these managers with the
+    /// ScriptCompilerManager tied to specific object types.
+    /// Each manager may manage multiple types.
+    /// </summary>
+    public abstract class ScriptTranslatorManager
+    {
+        protected List<ScriptCompiler.Translator> _translators = new List<ScriptCompiler.Translator>();
 
-		/// <summary>
-		/// Returns the number of translators being managed
-		/// </summary>
-		public int TranslatorsCount
-		{
-			get
-			{
-				return this._translators.Count;
-			}
-		}
+        /// <summary>
+        /// Returns the number of translators being managed
+        /// </summary>
+        public int TranslatorsCount
+        {
+            get
+            {
+                return this._translators.Count;
+            }
+        }
 
-		/// <summary>
-		/// Returns a manager for the given object abstract node, or null if it is not supported
-		/// </summary>
-		/// <param name="node"></param>
-		/// <returns>Returns a manager for the given object abstract node, or null if it is not supported</returns>
-		public ScriptCompiler.Translator GetTranslator( AbstractNode node )
-		{
-			if ( node is ObjectAbstractNode )
-			{
-				var obj = (ObjectAbstractNode)node;
-				var parent = obj.Parent != null ? (ObjectAbstractNode)obj.Parent : null;
-				var parentId = parent != null ? (Keywords)parent.Id : Keywords.ID_ZERO;
+        /// <summary>
+        /// Returns a manager for the given object abstract node, or null if it is not supported
+        /// </summary>
+        /// <param name="node"></param>
+        /// <returns>Returns a manager for the given object abstract node, or null if it is not supported</returns>
+        public ScriptCompiler.Translator GetTranslator(AbstractNode node)
+        {
+            if (node is ObjectAbstractNode)
+            {
+                var obj = (ObjectAbstractNode)node;
+                var parent = obj.Parent != null ? (ObjectAbstractNode)obj.Parent : null;
+                var parentId = parent != null ? (Keywords)parent.Id : Keywords.ID_ZERO;
 
-				foreach ( var currentTranslator in this._translators )
-				{
-					if ( currentTranslator.CheckFor( (Keywords)obj.Id, parentId ) )
-					{
-						return currentTranslator;
-					}
-				}
-			}
+                foreach (var currentTranslator in this._translators)
+                {
+                    if (currentTranslator.CheckFor((Keywords)obj.Id, parentId))
+                    {
+                        return currentTranslator;
+                    }
+                }
+            }
 
-			return null;
-		}
-	}
+            return null;
+        }
+    }
 
-	/// <summary>
-	/// This class manages the builtin translators
-	/// </summary>
-	public class BuiltinScriptTranslatorManager : ScriptTranslatorManager
-	{
-		public BuiltinScriptTranslatorManager()
-			: base()
-		{
-			_translators.Add( new ScriptCompiler.MaterialTranslator() );
-			_translators.Add( new ScriptCompiler.TechniqueTranslator() );
-			_translators.Add( new ScriptCompiler.PassTranslator() );
-			_translators.Add( new ScriptCompiler.TextureUnitTranslator() );
+    /// <summary>
+    /// This class manages the builtin translators
+    /// </summary>
+    public class BuiltinScriptTranslatorManager : ScriptTranslatorManager
+    {
+        public BuiltinScriptTranslatorManager()
+            : base()
+        {
+            _translators.Add(new ScriptCompiler.MaterialTranslator());
+            _translators.Add(new ScriptCompiler.TechniqueTranslator());
+            _translators.Add(new ScriptCompiler.PassTranslator());
+            _translators.Add(new ScriptCompiler.TextureUnitTranslator());
 
-			//TODO uncomment following file when ExternalTextureSourceManager is being implemented
-			//_translators.Add( new ScriptCompiler.TextureSourceTranslator() );
-			_translators.Add( new ScriptCompiler.GpuProgramTranslator() );
-			_translators.Add( new ScriptCompiler.SharedParametersTranslator() );
+            //TODO uncomment following file when ExternalTextureSourceManager is being implemented
+            //_translators.Add( new ScriptCompiler.TextureSourceTranslator() );
+            _translators.Add(new ScriptCompiler.GpuProgramTranslator());
+            _translators.Add(new ScriptCompiler.SharedParametersTranslator());
 
-			/**************************************************************************
+            /**************************************************************************
 			* Particle System section
 			*************************************************************************/
-			_translators.Add( new ScriptCompiler.ParticleSystemTranslator() );
-			_translators.Add( new ScriptCompiler.ParticleEmitterTranslator() );
-			_translators.Add( new ScriptCompiler.ParticleAffectorTranslator() );
+            _translators.Add(new ScriptCompiler.ParticleSystemTranslator());
+            _translators.Add(new ScriptCompiler.ParticleEmitterTranslator());
+            _translators.Add(new ScriptCompiler.ParticleAffectorTranslator());
 
-			/**************************************************************************
+            /**************************************************************************
 			* Compositor section
 			*************************************************************************/
-			_translators.Add( new ScriptCompiler.CompositorTranslator() );
-			_translators.Add( new ScriptCompiler.CompositionTechniqueTranslator() );
-			_translators.Add( new ScriptCompiler.CompositionTargetPassTranslator() );
-			_translators.Add( new ScriptCompiler.CompositionPassTranslator() );
-			_translators.Add( new ScriptCompiler.CompositionPassClearTranslator() );
-			_translators.Add( new ScriptCompiler.CompositionPassStencilTranslator() );
-		}
-	}
+            _translators.Add(new ScriptCompiler.CompositorTranslator());
+            _translators.Add(new ScriptCompiler.CompositionTechniqueTranslator());
+            _translators.Add(new ScriptCompiler.CompositionTargetPassTranslator());
+            _translators.Add(new ScriptCompiler.CompositionPassTranslator());
+            _translators.Add(new ScriptCompiler.CompositionPassClearTranslator());
+            _translators.Add(new ScriptCompiler.CompositionPassStencilTranslator());
+        }
+    }
 }

@@ -47,44 +47,44 @@ using Axiom.Scripting;
 
 namespace Axiom.ParticleFX
 {
-	/// <summary>
-	/// 	Summary description for PointEmitter.
-	/// </summary>
-	public class PointEmitter : ParticleEmitter
-	{
-		#region Constructors
+    /// <summary>
+    /// 	Summary description for PointEmitter.
+    /// </summary>
+    public class PointEmitter : ParticleEmitter
+    {
+        #region Constructors
 
-		public PointEmitter( ParticleSystem ps )
-			: base( ps )
-		{
-			Type = "Point";
-		}
+        public PointEmitter(ParticleSystem ps)
+            : base(ps)
+        {
+            Type = "Point";
+        }
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Methods
+        #region Methods
 
-		public override ushort GetEmissionCount( float timeElapsed )
-		{
-			// use basic constant emission
-			return GenerateConstantEmissionCount( timeElapsed );
-		}
+        public override ushort GetEmissionCount(float timeElapsed)
+        {
+            // use basic constant emission
+            return GenerateConstantEmissionCount(timeElapsed);
+        }
 
-		public override void InitParticle( Particle particle )
-		{
-			base.InitParticle( particle );
+        public override void InitParticle(Particle particle)
+        {
+            base.InitParticle(particle);
 
-			// point emitter emits starting from its own position
-			particle.Position = Position;
+            // point emitter emits starting from its own position
+            particle.Position = Position;
 
-			GenerateEmissionColor( ref particle.Color );
-			GenerateEmissionDirection( ref particle.Direction );
-			GenerateEmissionVelocity( ref particle.Direction );
+            GenerateEmissionColor(ref particle.Color);
+            GenerateEmissionDirection(ref particle.Direction);
+            GenerateEmissionVelocity(ref particle.Direction);
 
-			// generate time to live
-			particle.timeToLive = particle.totalTimeToLive = GenerateEmissionTTL();
-		}
+            // generate time to live
+            particle.timeToLive = particle.totalTimeToLive = GenerateEmissionTTL();
+        }
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

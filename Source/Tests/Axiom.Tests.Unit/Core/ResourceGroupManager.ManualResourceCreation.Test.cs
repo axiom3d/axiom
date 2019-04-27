@@ -43,10 +43,10 @@ namespace Axiom.UnitTests.Core
         [Test]
         public void CreateResource()
         {
-            new Root( "AxiomTests.log" );
-            ResourceGroupManager.Instance.AddResourceLocation( ".", "Folder" );
-            Stream io = ResourceGroupManager.Instance.CreateResource( "CreateResource.Test", ResourceGroupManager.DefaultResourceGroupName, true, "." );
-            Assert.IsNotNull( io );
+            new Root("AxiomTests.log");
+            ResourceGroupManager.Instance.AddResourceLocation(".", "Folder");
+            Stream io = ResourceGroupManager.Instance.CreateResource("CreateResource.Test", ResourceGroupManager.DefaultResourceGroupName, true, ".");
+            Assert.IsNotNull(io);
             io.Close();
         }
     }

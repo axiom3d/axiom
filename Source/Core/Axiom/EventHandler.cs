@@ -2,5 +2,5 @@
 
 namespace Axiom
 {
-	public delegate TReturn EventHandler<TArgs, TReturn>( object sender, TArgs e ) where TArgs : EventArgs;
+    public delegate TReturn EventHandler<TArgs, TReturn>(object sender, TArgs e) where TArgs : EventArgs;
 }

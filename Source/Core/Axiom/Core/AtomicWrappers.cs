@@ -40,59 +40,59 @@ using System.Reflection;
 
 namespace Axiom.Core
 {
-	public class AtomicScalar<T>
-	{
-		#region Fields
+    public class AtomicScalar<T>
+    {
+        #region Fields
 
-		private readonly int _size;
-		private const string ERROR_MESSAGE = "Only 16, 32, and 64 bit scalars supported in win32.";
+        private readonly int _size;
+        private const string ERROR_MESSAGE = "Only 16, 32, and 64 bit scalars supported in win32.";
 
 #if WINDOWS_PHONE
         private static readonly object _mutex = new object();
 #endif
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Properties
+        #region Properties
 
-		public T Value { get; set; }
+        public T Value { get; set; }
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Constructors
+        #region Constructors
 
-		public AtomicScalar()
-		{
-			var type = typeof( T );
-			this._size = type.IsEnum ? 4 : Memory.SizeOf( type );
-		}
+        public AtomicScalar()
+        {
+            var type = typeof(T);
+            this._size = type.IsEnum ? 4 : Memory.SizeOf(type);
+        }
 
-		public AtomicScalar( T initial )
-			: this()
-		{
-			Value = initial;
-		}
+        public AtomicScalar(T initial)
+            : this()
+        {
+            Value = initial;
+        }
 
-		public AtomicScalar( AtomicScalar<T> cousin )
-			: this()
-		{
-			Value = cousin.Value;
-		}
+        public AtomicScalar(AtomicScalar<T> cousin)
+            : this()
+        {
+            Value = cousin.Value;
+        }
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Methods
+        #region Methods
 
-		public bool Cas( T old, T nu )
-		{
-			if ( this._size == 2 || this._size == 4 || this._size == 8 )
-			{
-				var f = Convert.ToInt64( Value );
-				var o = Convert.ToInt64( old );
-				var n = Convert.ToInt64( nu );
+        public bool Cas(T old, T nu)
+        {
+            if (this._size == 2 || this._size == 4 || this._size == 8)
+            {
+                var f = Convert.ToInt64(Value);
+                var o = Convert.ToInt64(old);
+                var n = Convert.ToInt64(nu);
 
 #if !WINDOWS_PHONE
-				var result = System.Threading.Interlocked.CompareExchange( ref f, o, n ).Equals( o );
+                var result = System.Threading.Interlocked.CompareExchange(ref f, o, n).Equals(o);
 #else
                 bool result = false;
                 lock ( _mutex )
@@ -104,94 +104,94 @@ namespace Axiom.Core
                     result = oldValue.Equals( o );
                 }
 #endif
-				Value = _changeType( f );
+                Value = _changeType(f);
 
-				return result;
-			}
-			else
-			{
-				throw new AxiomException( ERROR_MESSAGE );
-			}
-		}
+                return result;
+            }
+            else
+            {
+                throw new AxiomException(ERROR_MESSAGE);
+            }
+        }
 
-		[AxiomHelper( 0, 9 )]
-		private static T _changeType( object value )
-		{
-			var type = typeof ( T );
+        [AxiomHelper(0, 9)]
+        private static T _changeType(object value)
+        {
+            var type = typeof(T);
 
-			if ( !type.IsEnum )
-			{
-				return (T)Convert.ChangeType( value, type, null );
-			}
-			else
-			{
-				var fields = type.GetFields();
-				var idx = ( (int)Convert.ChangeType( value, typeof ( int ), null ) ) + 1;
-				if ( fields.Length > 0 && idx < fields.Length )
-				{
-					try
-					{
-						var s = fields[ idx ].Name;
-						return (T)Enum.Parse( type, s, false );
-					}
-					catch
-					{
-						return default( T );
-					}
-				}
-				else
-				{
-					return default( T );
-				}
-			}
-		}
+            if (!type.IsEnum)
+            {
+                return (T)Convert.ChangeType(value, type, null);
+            }
+            else
+            {
+                var fields = type.GetFields();
+                var idx = ((int)Convert.ChangeType(value, typeof(int), null)) + 1;
+                if (fields.Length > 0 && idx < fields.Length)
+                {
+                    try
+                    {
+                        var s = fields[idx].Name;
+                        return (T)Enum.Parse(type, s, false);
+                    }
+                    catch
+                    {
+                        return default(T);
+                    }
+                }
+                else
+                {
+                    return default(T);
+                }
+            }
+        }
 
-		#endregion Methods
+        #endregion Methods
 
-		#region Operator overloads
+        #region Operator overloads
 
-		public static AtomicScalar<T> operator ++( AtomicScalar<T> value )
-		{
-			if ( value._size == 2 || value._size == 4 || value._size == 8 )
-			{
-				var v = Convert.ToInt64( value.Value );
+        public static AtomicScalar<T> operator ++(AtomicScalar<T> value)
+        {
+            if (value._size == 2 || value._size == 4 || value._size == 8)
+            {
+                var v = Convert.ToInt64(value.Value);
 #if !WINDOWS_PHONE
-				System.Threading.Interlocked.Increment( ref v );
+                System.Threading.Interlocked.Increment(ref v);
 #else
                 lock ( _mutex )
                 {
                     v++;
                 }
 #endif
-				return new AtomicScalar<T>( _changeType( v ) );
-			}
-			else
-			{
-				throw new AxiomException( ERROR_MESSAGE );
-			}
-		}
+                return new AtomicScalar<T>(_changeType(v));
+            }
+            else
+            {
+                throw new AxiomException(ERROR_MESSAGE);
+            }
+        }
 
-		public static AtomicScalar<T> operator --( AtomicScalar<T> value )
-		{
-			if ( value._size == 2 || value._size == 4 || value._size == 8 )
-			{
-				var v = Convert.ToInt64( value.Value );
+        public static AtomicScalar<T> operator --(AtomicScalar<T> value)
+        {
+            if (value._size == 2 || value._size == 4 || value._size == 8)
+            {
+                var v = Convert.ToInt64(value.Value);
 #if !WINDOWS_PHONE
-				System.Threading.Interlocked.Decrement( ref v );
+                System.Threading.Interlocked.Decrement(ref v);
 #else
                 lock ( _mutex )
                 {
                     v--;
                 }
 #endif
-				return new AtomicScalar<T>( _changeType( v ) );
-			}
-			else
-			{
-				throw new AxiomException( ERROR_MESSAGE );
-			}
-		}
+                return new AtomicScalar<T>(_changeType(v));
+            }
+            else
+            {
+                throw new AxiomException(ERROR_MESSAGE);
+            }
+        }
 
-		#endregion Operator overloads
-	};
+        #endregion Operator overloads
+    };
 }

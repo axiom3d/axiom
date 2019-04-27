@@ -37,31 +37,31 @@
 
 namespace Axiom.Components.Paging
 {
-	public struct PageID
-	{
-		private readonly uint mValue;
+    public struct PageID
+    {
+        private readonly uint mValue;
 
-		public uint Value
-		{
-			get
-			{
-				return this.mValue;
-			}
-		}
+        public uint Value
+        {
+            get
+            {
+                return this.mValue;
+            }
+        }
 
-		public PageID( uint pageId )
-		{
-			this.mValue = pageId;
-		}
+        public PageID(uint pageId)
+        {
+            this.mValue = pageId;
+        }
 
-		public static implicit operator PageID( uint val )
-		{
-			return new PageID( val );
-		}
+        public static implicit operator PageID(uint val)
+        {
+            return new PageID(val);
+        }
 
-		public override string ToString()
-		{
-			return this.mValue.ToString();
-		}
-	};
+        public override string ToString()
+        {
+            return this.mValue.ToString();
+        }
+    };
 }

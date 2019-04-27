@@ -48,186 +48,186 @@ using System.Runtime.InteropServices;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	/// <summary>
-	/// Summary description for GLTextureManager.
-	/// </summary>
-	public class GLTextureManager : TextureManager
-	{
-		private readonly BaseGLSupport _glSupport;
-		private int _warningTextureId;
+    /// <summary>
+    /// Summary description for GLTextureManager.
+    /// </summary>
+    public class GLTextureManager : TextureManager
+    {
+        private readonly BaseGLSupport _glSupport;
+        private int _warningTextureId;
 
-		public int WarningTextureId
-		{
-			get
-			{
-				return this._warningTextureId;
-			}
-		}
+        public int WarningTextureId
+        {
+            get
+            {
+                return this._warningTextureId;
+            }
+        }
 
-		internal GLTextureManager( BaseGLSupport glSupport )
-			: base()
-		{
-			this._glSupport = glSupport;
-			Is32Bit = true;
+        internal GLTextureManager(BaseGLSupport glSupport)
+            : base()
+        {
+            this._glSupport = glSupport;
+            Is32Bit = true;
 
-			ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
-			_createWarningTexture();
-		}
+            ResourceGroupManager.Instance.RegisterResourceManager(ResourceType, this);
+            _createWarningTexture();
+        }
 
-		protected override Resource _create( string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams )
-		{
-			return new GLTexture( this, name, handle, group, isManual, loader, this._glSupport );
-		}
+        protected override Resource _create(string name, ulong handle, string group, bool isManual, IManualResourceLoader loader, Axiom.Collections.NameValuePairList createParams)
+        {
+            return new GLTexture(this, name, handle, group, isManual, loader, this._glSupport);
+        }
 
-		private void _createWarningTexture()
-		{
-			// Generate warning texture
-			int width = 8;
-			int height = 8;
-			var data = new uint[width*height]; // 0xXXRRGGBB
-			// Yellow/black stripes
-			for ( int y = 0; y < height; ++y )
-			{
-				for ( int x = 0; x < width; ++x )
-				{
-					data[ y*width + x ] = ( ( ( x + y )%8 ) < 4 ) ? (uint)0x000000 : (uint)0xFFFF00;
-				}
-			}
+        private void _createWarningTexture()
+        {
+            // Generate warning texture
+            int width = 8;
+            int height = 8;
+            var data = new uint[width * height]; // 0xXXRRGGBB
+                                                 // Yellow/black stripes
+            for (int y = 0; y < height; ++y)
+            {
+                for (int x = 0; x < width; ++x)
+                {
+                    data[y * width + x] = (((x + y) % 8) < 4) ? (uint)0x000000 : (uint)0xFFFF00;
+                }
+            }
 
-			// Create GL resource
-			Gl.glGenTextures( 1, out this._warningTextureId );
-			Gl.glBindTexture( Gl.GL_TEXTURE_2D, this._warningTextureId );
-			Gl.glTexParameteri( Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAX_LEVEL, 0 );
-			Gl.glTexImage2D( Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB8, width, height, 0, Gl.GL_BGRA, Gl.GL_UNSIGNED_INT_8_8_8_8_REV, data );
-		}
+            // Create GL resource
+            Gl.glGenTextures(1, out this._warningTextureId);
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, this._warningTextureId);
+            Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAX_LEVEL, 0);
+            Gl.glTexImage2D(Gl.GL_TEXTURE_2D, 0, Gl.GL_RGB8, width, height, 0, Gl.GL_BGRA, Gl.GL_UNSIGNED_INT_8_8_8_8_REV, data);
+        }
 
-		public override PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
-		{
-			// Adjust requested parameters to capabilities
-			RenderSystemCapabilities caps = Root.Instance.RenderSystem.Capabilities;
+        public override PixelFormat GetNativeFormat(TextureType ttype, PixelFormat format, TextureUsage usage)
+        {
+            // Adjust requested parameters to capabilities
+            RenderSystemCapabilities caps = Root.Instance.RenderSystem.Capabilities;
 
-			// Check compressed texture support
-			// if a compressed format not supported, revert to PF_A8R8G8B8
-			if ( PixelUtil.IsCompressed( format ) && !caps.HasCapability( Capabilities.TextureCompressionDXT ) )
-			{
-				return PixelFormat.A8R8G8B8;
-			}
-			// if floating point textures not supported, revert to PF_A8R8G8B8
-			if ( PixelUtil.IsFloatingPoint( format ) && !caps.HasCapability( Capabilities.TextureFloat ) )
-			{
-				return PixelFormat.A8R8G8B8;
-			}
+            // Check compressed texture support
+            // if a compressed format not supported, revert to PF_A8R8G8B8
+            if (PixelUtil.IsCompressed(format) && !caps.HasCapability(Capabilities.TextureCompressionDXT))
+            {
+                return PixelFormat.A8R8G8B8;
+            }
+            // if floating point textures not supported, revert to PF_A8R8G8B8
+            if (PixelUtil.IsFloatingPoint(format) && !caps.HasCapability(Capabilities.TextureFloat))
+            {
+                return PixelFormat.A8R8G8B8;
+            }
 
-			// Check if this is a valid rendertarget format
-			if ( ( usage & TextureUsage.RenderTarget ) != 0 )
-			{
-				/// Get closest supported alternative
-				/// If mFormat is supported it's returned
-				return GLRTTManager.Instance.GetSupportedAlternative( format );
-			}
+            // Check if this is a valid rendertarget format
+            if ((usage & TextureUsage.RenderTarget) != 0)
+            {
+                /// Get closest supported alternative
+                /// If mFormat is supported it's returned
+                return GLRTTManager.Instance.GetSupportedAlternative(format);
+            }
 
-			// Supported
-			return format;
-		}
+            // Supported
+            return format;
+        }
 
-		/// <see cref="Axiom.Core.TextureManager.IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>
+        /// <see cref="Axiom.Core.TextureManager.IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>
 #if NET_40
 		public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage, bool preciseFormatOnly = false )
 #else
-		public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage,
-														   bool preciseFormatOnly )
+        public override bool IsHardwareFilteringSupported(TextureType ttype, PixelFormat format, TextureUsage usage,
+                                                           bool preciseFormatOnly)
 #endif
-		{
-			if ( format == PixelFormat.Unknown )
-			{
-				return false;
-			}
+        {
+            if (format == PixelFormat.Unknown)
+            {
+                return false;
+            }
 
-			// Check natively format
-			PixelFormat nativeFormat = GetNativeFormat( ttype, format, usage );
-			if ( preciseFormatOnly && format != nativeFormat )
-			{
-				return false;
-			}
+            // Check natively format
+            PixelFormat nativeFormat = GetNativeFormat(ttype, format, usage);
+            if (preciseFormatOnly && format != nativeFormat)
+            {
+                return false;
+            }
 
-			// Assume non-floating point is supported always
-			if ( !PixelUtil.IsFloatingPoint( nativeFormat ) )
-			{
-				return true;
-			}
+            // Assume non-floating point is supported always
+            if (!PixelUtil.IsFloatingPoint(nativeFormat))
+            {
+                return true;
+            }
 
-			// Hack: there are no elegant GL API to detects texture filtering supported,
-			// just hard code for cards based on vendor specifications.
+            // Hack: there are no elegant GL API to detects texture filtering supported,
+            // just hard code for cards based on vendor specifications.
 
-			// TODO: Add cards that 16 bits floating point flitering supported by
-			// hardware below
-			String[] sFloat16SupportedCards = {
+            // TODO: Add cards that 16 bits floating point flitering supported by
+            // hardware below
+            String[] sFloat16SupportedCards = {
 												// GeForce 8 Series
 												"*GeForce*8800*", // GeForce 7 Series
 												"*GeForce*7950*", "*GeForce*7900*", "*GeForce*7800*", "*GeForce*7600*",
-												"*GeForce*7500*", "*GeForce*7300*", // GeForce 6 Series
+                                                "*GeForce*7500*", "*GeForce*7300*", // GeForce 6 Series
 												"*GeForce*6800*", "*GeForce*6700*", "*GeForce*6600*", "*GeForce*6500*",
-												"*GeForce*6200*", "" // Empty string means end of list
+                                                "*GeForce*6200*", "" // Empty string means end of list
 											  };
 
-			// TODO: Add cards that 32 bits floating point flitering supported by
-			// hardware below
-			String[] sFloat32SupportedCards = {
+            // TODO: Add cards that 32 bits floating point flitering supported by
+            // hardware below
+            String[] sFloat32SupportedCards = {
 												// GeForce 8 Series
 												"*GeForce*8800*", "" // Empty string means end of list
 											  };
 
-			PixelComponentType pct = PixelUtil.GetComponentType( nativeFormat );
-			String[] supportedCards;
-			switch ( pct )
-			{
-				case PixelComponentType.Float16:
-					supportedCards = sFloat16SupportedCards;
-					break;
-				case PixelComponentType.Float32:
-					supportedCards = sFloat32SupportedCards;
-					break;
-				default:
-					return false;
-			}
-			String pcRenderer = Gl.glGetString( Gl.GL_RENDERER ); // TAO 2.0
-			//String pcRenderer = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_RENDERER ) );
+            PixelComponentType pct = PixelUtil.GetComponentType(nativeFormat);
+            String[] supportedCards;
+            switch (pct)
+            {
+                case PixelComponentType.Float16:
+                    supportedCards = sFloat16SupportedCards;
+                    break;
+                case PixelComponentType.Float32:
+                    supportedCards = sFloat32SupportedCards;
+                    break;
+                default:
+                    return false;
+            }
+            String pcRenderer = Gl.glGetString(Gl.GL_RENDERER); // TAO 2.0
+                                                                //String pcRenderer = Marshal.PtrToStringAnsi( Gl.glGetString( Gl.GL_RENDERER ) );
 
-			foreach ( String str in supportedCards )
-			{
-				if ( str == pcRenderer )
-				{
-					return true;
-				}
-			}
+            foreach (String str in supportedCards)
+            {
+                if (str == pcRenderer)
+                {
+                    return true;
+                }
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
-				}
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    ResourceGroupManager.Instance.UnregisterResourceManager(ResourceType);
+                }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-				try
-				{
-					Gl.glDeleteTextures( 1, ref this._warningTextureId );
-				}
-				catch ( AccessViolationException ave )
-				{
-					LogManager.Instance.Write( "Error Deleting Texture[{0}].", this._warningTextureId );
-				}
-			}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+                try
+                {
+                    Gl.glDeleteTextures(1, ref this._warningTextureId);
+                }
+                catch (AccessViolationException ave)
+                {
+                    LogManager.Instance.Write("Error Deleting Texture[{0}].", this._warningTextureId);
+                }
+            }
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
-	};
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose(disposeManagedResources);
+        }
+    };
 }

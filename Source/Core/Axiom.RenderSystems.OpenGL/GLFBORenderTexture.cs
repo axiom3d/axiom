@@ -49,66 +49,66 @@ using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	internal class GLFBORenderTexture : GLRenderTexture
-	{
-		#region Fields and Properties
+    internal class GLFBORenderTexture : GLRenderTexture
+    {
+        #region Fields and Properties
 
-		private readonly GLFrameBufferObject _fbo;
+        private readonly GLFrameBufferObject _fbo;
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		public GLFBORenderTexture( GLFBORTTManager manager, string name, GLSurfaceDesc target, bool writeGamma, int fsaa )
-			: base( name, target, writeGamma, fsaa )
-		{
-			this._fbo = new GLFrameBufferObject( manager );
+        public GLFBORenderTexture(GLFBORTTManager manager, string name, GLSurfaceDesc target, bool writeGamma, int fsaa)
+            : base(name, target, writeGamma, fsaa)
+        {
+            this._fbo = new GLFrameBufferObject(manager);
 
-			// Bind target to surface 0 and initialise
-			this._fbo.BindSurface( 0, target );
+            // Bind target to surface 0 and initialise
+            this._fbo.BindSurface(0, target);
 
-			// Get attributes
-			width = this._fbo.Width;
-			height = this._fbo.Height;
-		}
+            // Get attributes
+            width = this._fbo.Width;
+            height = this._fbo.Height;
+        }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region GLRenderTexture Implementation
+        #region GLRenderTexture Implementation
 
-		public override object this[ string attribute ]
-		{
-			get
-			{
-				switch ( attribute.ToLower() )
-				{
-					case "fbo":
-						return this._fbo;
-					default:
-						return null;
-				}
-			}
-		}
+        public override object this[string attribute]
+        {
+            get
+            {
+                switch (attribute.ToLower())
+                {
+                    case "fbo":
+                        return this._fbo;
+                    default:
+                        return null;
+                }
+            }
+        }
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// Dispose managed resources.
-					this._fbo.Dispose();
-				}
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // Dispose managed resources.
+                    this._fbo.Dispose();
+                }
 
-				// There are no unmanaged resources to release, but
-				// if we add them, they need to be released here.
-			}
+                // There are no unmanaged resources to release, but
+                // if we add them, they need to be released here.
+            }
 
-			// If it is available, make the call to the
-			// base class's Dispose(Boolean) method
-			base.dispose( disposeManagedResources );
-		}
+            // If it is available, make the call to the
+            // base class's Dispose(Boolean) method
+            base.dispose(disposeManagedResources);
+        }
 
-		#endregion GLRenderTexture Implementation
-	}
+        #endregion GLRenderTexture Implementation
+    }
 }

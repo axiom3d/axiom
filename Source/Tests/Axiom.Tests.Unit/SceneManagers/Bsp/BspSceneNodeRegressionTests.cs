@@ -43,7 +43,7 @@ namespace Axiom.UnitTests.SceneManagers.Bsp
     /// https://sourceforge.net/apps/trac/axiomengine/ticket/69,
     /// a problem with node removal functionality.
     /// </remarks>
-    [ TestFixture ]
+    [TestFixture]
     public class OctreeNodeRegressionTests
     {
         private readonly SceneManager sceneManager = A.Fake<BspSceneManager>();
@@ -61,53 +61,53 @@ namespace Axiom.UnitTests.SceneManagers.Bsp
         /// <summary>
         /// Verifies that a new child node can be created after a node with the same name has been removed by reference.
         /// </summary>
-        [Test ]
+        [Test]
         public void TestRecreationOfChildNodeAfterRemovalByReference()
         {
-            Node node = new BspSceneNode( this.sceneManager );
-            Node childNode = node.CreateChild( Name );
+            Node node = new BspSceneNode(this.sceneManager);
+            Node childNode = node.CreateChild(Name);
 
-            node.RemoveChild( childNode );
-            node.CreateChild( Name );
+            node.RemoveChild(childNode);
+            node.CreateChild(Name);
         }
 
         /// <summary>
         /// Verifies that a new child node can be created after a node with the same name has been removed by name.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestRecreationOfChildNodeAfterRemovalByName()
         {
             Node node = new BspSceneNode(this.sceneManager);
-            node.CreateChild( Name );
+            node.CreateChild(Name);
 
-            node.RemoveChild( Name );
-            node.CreateChild( Name );
+            node.RemoveChild(Name);
+            node.CreateChild(Name);
         }
 
         /// <summary>
         /// Verifies that a new child node can be added after a node with the same name has been removed by reference.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestReaddingOfChildNodeAfterRemovalByReference()
         {
             Node node = new BspSceneNode(this.sceneManager);
-            Node childNode = node.CreateChild( Name );
+            Node childNode = node.CreateChild(Name);
 
-            node.RemoveChild( childNode );
-            node.AddChild( childNode );
+            node.RemoveChild(childNode);
+            node.AddChild(childNode);
         }
 
         /// <summary>
         /// Verifies that a new child node can be added after a node with the same name has been removed by name.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestReaddingOfChildNodeAfterRemovalByName()
         {
             Node node = new BspSceneNode(this.sceneManager);
-            Node childNode = node.CreateChild( Name );
+            Node childNode = node.CreateChild(Name);
 
-            node.RemoveChild( Name );
-            node.AddChild( childNode );
+            node.RemoveChild(Name);
+            node.AddChild(childNode);
         }
     }
 }

@@ -51,811 +51,811 @@ using Axiom.Core.Collections;
 
 namespace Axiom.SceneManagers.Octree
 {
-	/// <summary>
-	/// Summary description for OctreeSceneManager.
-	/// </summary>
-	public class OctreeSceneManager : SceneManager
-	{
-		#region Member Variables
+    /// <summary>
+    /// Summary description for OctreeSceneManager.
+    /// </summary>
+    public class OctreeSceneManager : SceneManager
+    {
+        #region Member Variables
 
-		protected List<WireBoundingBox> boxList = new List<WireBoundingBox>();
-		protected List<ColorEx> colorList = new List<ColorEx>();
-		//NOTE: "visible" was a Nodelist...could be a custom collection
-		protected List<OctreeNode> visible = new List<OctreeNode>();
-		protected static long white = 0xFFFFFFFF;
+        protected List<WireBoundingBox> boxList = new List<WireBoundingBox>();
+        protected List<ColorEx> colorList = new List<ColorEx>();
+        //NOTE: "visible" was a Nodelist...could be a custom collection
+        protected List<OctreeNode> visible = new List<OctreeNode>();
+        protected static long white = 0xFFFFFFFF;
 
-		protected short[] indexes = {
-		                            	0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4
-		                            };
+        protected short[] indexes = {
+                                        0, 1, 1, 2, 2, 3, 3, 0, 0, 6, 6, 5, 5, 1, 3, 7, 7, 4, 4, 2, 6, 7, 5, 4
+                                    };
 
-		protected long[] colors = {
-		                          	white, white, white, white, white, white, white, white
-		                          };
+        protected long[] colors = {
+                                      white, white, white, white, white, white, white, white
+                                  };
 
-		protected float[] corners;
-		protected Matrix4 scaleFactor;
-		protected int intersect = 0;
-		protected int maxDepth;
-		protected bool cullCamera;
-		protected float worldSize;
-		protected int numObjects;
-		protected bool looseOctree;
-		//protected bool showBoxes;
-		protected Octree octree;
+        protected float[] corners;
+        protected Matrix4 scaleFactor;
+        protected int intersect = 0;
+        protected int maxDepth;
+        protected bool cullCamera;
+        protected float worldSize;
+        protected int numObjects;
+        protected bool looseOctree;
+        //protected bool showBoxes;
+        protected Octree octree;
 
-		public enum Intersection
-		{
-			Outside,
-			Inside,
-			Intersect
-		}
+        public enum Intersection
+        {
+            Outside,
+            Inside,
+            Intersect
+        }
 
-		#endregion Member Variables
+        #endregion Member Variables
 
-		#region Properties
+        #region Properties
 
-		public long White
-		{
-			get
-			{
-				return white;
-			}
-		}
+        public long White
+        {
+            get
+            {
+                return white;
+            }
+        }
 
-		public override string TypeName
-		{
-			get
-			{
-				return "OctreeSceneManager";
-			}
-		}
+        public override string TypeName
+        {
+            get
+            {
+                return "OctreeSceneManager";
+            }
+        }
 
-		#endregion Properties
+        #endregion Properties
 
-		public OctreeSceneManager( string name )
-			: base( name )
-		{
-			var Min = new Vector3( -500f, -500f, -500f );
-			var Max = new Vector3( 500f, 500f, 500f );
-			int depth = 5;
+        public OctreeSceneManager(string name)
+            : base(name)
+        {
+            var Min = new Vector3(-500f, -500f, -500f);
+            var Max = new Vector3(500f, 500f, 500f);
+            int depth = 5;
 
-			var box = new AxisAlignedBox( Min, Max );
+            var box = new AxisAlignedBox(Min, Max);
 
-			Init( box, depth );
-		}
+            Init(box, depth);
+        }
 
-		public OctreeSceneManager( string name, AxisAlignedBox box, int max_depth )
-			: base( name )
-		{
-			Init( box, max_depth );
-		}
+        public OctreeSceneManager(string name, AxisAlignedBox box, int max_depth)
+            : base(name)
+        {
+            Init(box, max_depth);
+        }
 
-		public Intersection Intersect( AxisAlignedBox box1, AxisAlignedBox box2 )
-		{
-			this.intersect++;
-			Vector3[] outside = box1.Corners;
-			Vector3[] inside = box2.Corners;
+        public Intersection Intersect(AxisAlignedBox box1, AxisAlignedBox box2)
+        {
+            this.intersect++;
+            Vector3[] outside = box1.Corners;
+            Vector3[] inside = box2.Corners;
 
-			if ( inside[ 4 ].x < outside[ 0 ].x || inside[ 4 ].y < outside[ 0 ].y || inside[ 4 ].z < outside[ 0 ].z ||
-			     inside[ 0 ].x > outside[ 4 ].x || inside[ 0 ].y > outside[ 4 ].y || inside[ 0 ].z > outside[ 4 ].z )
-			{
-				return Intersection.Outside;
-			}
+            if (inside[4].x < outside[0].x || inside[4].y < outside[0].y || inside[4].z < outside[0].z ||
+                 inside[0].x > outside[4].x || inside[0].y > outside[4].y || inside[0].z > outside[4].z)
+            {
+                return Intersection.Outside;
+            }
 
-			if ( inside[ 0 ].x > outside[ 0 ].x && inside[ 0 ].y > outside[ 0 ].y && inside[ 0 ].z > outside[ 0 ].z &&
-			     inside[ 4 ].x < outside[ 4 ].x && inside[ 4 ].y < outside[ 4 ].y && inside[ 4 ].z < outside[ 4 ].z )
-			{
-				return Intersection.Inside;
-			}
-			else
-			{
-				return Intersection.Intersect;
-			}
-		}
+            if (inside[0].x > outside[0].x && inside[0].y > outside[0].y && inside[0].z > outside[0].z &&
+                 inside[4].x < outside[4].x && inside[4].y < outside[4].y && inside[4].z < outside[4].z)
+            {
+                return Intersection.Inside;
+            }
+            else
+            {
+                return Intersection.Intersect;
+            }
+        }
 
-		public Intersection Intersect( Sphere sphere, AxisAlignedBox box )
-		{
-			this.intersect++;
-			float Radius = sphere.Radius;
-			Vector3 Center = sphere.Center;
-			Vector3[] Corners = box.Corners;
-			float s = 0;
-			float d = 0;
-			int i;
-			bool Partial;
+        public Intersection Intersect(Sphere sphere, AxisAlignedBox box)
+        {
+            this.intersect++;
+            float Radius = sphere.Radius;
+            Vector3 Center = sphere.Center;
+            Vector3[] Corners = box.Corners;
+            float s = 0;
+            float d = 0;
+            int i;
+            bool Partial;
 
-			Radius *= Radius;
+            Radius *= Radius;
 
-			Vector3 MinDistance = ( Corners[ 0 ] - Center );
-			Vector3 MaxDistance = ( Corners[ 4 ] - Center );
+            Vector3 MinDistance = (Corners[0] - Center);
+            Vector3 MaxDistance = (Corners[4] - Center);
 
-			if ( ( MinDistance.LengthSquared < Radius ) && ( MaxDistance.LengthSquared < Radius ) )
-			{
-				return Intersection.Inside;
-			}
+            if ((MinDistance.LengthSquared < Radius) && (MaxDistance.LengthSquared < Radius))
+            {
+                return Intersection.Inside;
+            }
 
-			//find the square of the distance
-			//from the sphere to the box
-			for ( i = 0; i < 3; i++ )
-			{
-				if ( Center[ i ] < Corners[ 0 ][ i ] )
-				{
-					s = Center[ i ] - Corners[ 0 ][ i ];
-					d += s*s;
-				}
+            //find the square of the distance
+            //from the sphere to the box
+            for (i = 0; i < 3; i++)
+            {
+                if (Center[i] < Corners[0][i])
+                {
+                    s = Center[i] - Corners[0][i];
+                    d += s * s;
+                }
 
-				else if ( Center[ i ] > Corners[ 4 ][ i ] )
-				{
-					s = Center[ i ] - Corners[ 4 ][ i ];
-					d += s*s;
-				}
-			}
+                else if (Center[i] > Corners[4][i])
+                {
+                    s = Center[i] - Corners[4][i];
+                    d += s * s;
+                }
+            }
 
-			Partial = ( d <= Radius );
+            Partial = (d <= Radius);
 
-			if ( !Partial )
-			{
-				return Intersection.Outside;
-			}
-			else
-			{
-				return Intersection.Intersect;
-			}
-		}
+            if (!Partial)
+            {
+                return Intersection.Outside;
+            }
+            else
+            {
+                return Intersection.Intersect;
+            }
+        }
 
-		public void Init( AxisAlignedBox box, int depth )
-		{
-			rootSceneNode = new OctreeNode( this, "SceneRoot" );
-			rootSceneNode.SetAsRootNode();
-			defaultRootNode = rootSceneNode;
+        public void Init(AxisAlignedBox box, int depth)
+        {
+            rootSceneNode = new OctreeNode(this, "SceneRoot");
+            rootSceneNode.SetAsRootNode();
+            defaultRootNode = rootSceneNode;
 
-			this.maxDepth = depth;
+            this.maxDepth = depth;
 
-			this.octree = new Octree( null );
+            this.octree = new Octree(null);
 
-			this.octree.Box = box;
+            this.octree.Box = box;
 
-			Vector3 Min = box.Minimum;
-			Vector3 Max = box.Maximum;
+            Vector3 Min = box.Minimum;
+            Vector3 Max = box.Maximum;
 
-			this.octree.HalfSize = ( Max - Min )/2;
+            this.octree.HalfSize = (Max - Min) / 2;
 
-			this.numObjects = 0;
+            this.numObjects = 0;
 
-			var scalar = new Vector3( 1.5f, 1.5f, 1.5f );
+            var scalar = new Vector3(1.5f, 1.5f, 1.5f);
 
-			this.scaleFactor.Scale = scalar;
-		}
+            this.scaleFactor.Scale = scalar;
+        }
 
-		public override SceneNode CreateSceneNode()
-		{
-			var node = new OctreeNode( this );
-			sceneNodeList.Add( node );
-			return node;
-		}
+        public override SceneNode CreateSceneNode()
+        {
+            var node = new OctreeNode(this);
+            sceneNodeList.Add(node);
+            return node;
+        }
 
-		public override SceneNode CreateSceneNode( string name )
-		{
-			var node = new OctreeNode( this, name );
-			sceneNodeList.Add( node );
-			return node;
-		}
+        public override SceneNode CreateSceneNode(string name)
+        {
+            var node = new OctreeNode(this, name);
+            sceneNodeList.Add(node);
+            return node;
+        }
 
-		public override Camera CreateCamera( string name )
-		{
-			Camera cam = new OctreeCamera( name, this );
-			cameraList.Add( name, cam );
-			return cam;
-		}
+        public override Camera CreateCamera(string name)
+        {
+            Camera cam = new OctreeCamera(name, this);
+            cameraList.Add(name, cam);
+            return cam;
+        }
 
-		protected override void UpdateSceneGraph( Camera cam )
-		{
-			base.UpdateSceneGraph( cam );
-		}
+        protected override void UpdateSceneGraph(Camera cam)
+        {
+            base.UpdateSceneGraph(cam);
+        }
 
-		public override void FindVisibleObjects( Camera cam, bool onlyShadowCasters )
-		{
-			GetRenderQueue().Clear();
-			this.boxList.Clear();
-			this.visible.Clear();
+        public override void FindVisibleObjects(Camera cam, bool onlyShadowCasters)
+        {
+            GetRenderQueue().Clear();
+            this.boxList.Clear();
+            this.visible.Clear();
 
-			if ( this.cullCamera )
-			{
-				Camera c = cameraList[ "CullCamera" ];
+            if (this.cullCamera)
+            {
+                Camera c = cameraList["CullCamera"];
 
-				if ( c != null )
-				{
-					cameraInProgress = cameraList[ "CullCamera" ];
-				}
-			}
+                if (c != null)
+                {
+                    cameraInProgress = cameraList["CullCamera"];
+                }
+            }
 
-			this.numObjects = 0;
+            this.numObjects = 0;
 
-			//walk the octree, adding all visible Octreenodes nodes to the render queue.
-			WalkOctree( (OctreeCamera)cam, GetRenderQueue(), this.octree, false );
+            //walk the octree, adding all visible Octreenodes nodes to the render queue.
+            WalkOctree((OctreeCamera)cam, GetRenderQueue(), this.octree, false);
 
-			// Show the octree boxes & cull camera if required
-			if ( ShowBoundingBoxes || this.cullCamera )
-			{
-				if ( ShowBoundingBoxes )
-				{
-					for ( int i = 0; i < this.boxList.Count; i++ )
-					{
-						var box = (WireBoundingBox)this.boxList[ i ];
+            // Show the octree boxes & cull camera if required
+            if (ShowBoundingBoxes || this.cullCamera)
+            {
+                if (ShowBoundingBoxes)
+                {
+                    for (int i = 0; i < this.boxList.Count; i++)
+                    {
+                        var box = (WireBoundingBox)this.boxList[i];
 
-						GetRenderQueue().AddRenderable( box );
-					}
-				}
+                        GetRenderQueue().AddRenderable(box);
+                    }
+                }
 
-				if ( this.cullCamera )
-				{
-					var c = (OctreeCamera)GetCamera( "CullCamera" );
+                if (this.cullCamera)
+                {
+                    var c = (OctreeCamera)GetCamera("CullCamera");
 
-					if ( c != null )
-					{
-						GetRenderQueue().AddRenderable( c );
-					}
-				}
-			}
-		}
+                    if (c != null)
+                    {
+                        GetRenderQueue().AddRenderable(c);
+                    }
+                }
+            }
+        }
 
-		/** Alerts each unculled object, notifying it that it will be drawn.
+        /** Alerts each unculled object, notifying it that it will be drawn.
 		* Useful for doing calculations only on nodes that will be drawn, prior
 		* to drawing them...
 		*/
 
-		public void AlertVisibleObjects()
-		{
-			int i;
+        public void AlertVisibleObjects()
+        {
+            int i;
 
-			for ( i = 0; i < this.visible.Count; i++ )
-			{
-				var node = (OctreeNode)this.visible[ i ];
-				//TODO: looks like something is missing here
-			}
-		}
+            for (i = 0; i < this.visible.Count; i++)
+            {
+                var node = (OctreeNode)this.visible[i];
+                //TODO: looks like something is missing here
+            }
+        }
 
-		///** Walks through the octree, adding any visible objects to the render queue.
-		//@remarks
-		//If any octant in the octree if completely within the the view frustum,
-		//all subchildren are automatically added with no visibility tests.
-		//*/
-		//public void WalkOctree( OctreeCamera camera, RenderQueue queue, Octree octant, bool foundVisible )
-		//{
-		//    //return immediately if nothing is in the node.
-		//    if ( octant.NumNodes == 0 )
-		//    {
-		//        return;
-		//    }
-		//    Visibility v = Visibility.None;
-		//    if ( foundVisible )
-		//    {
-		//        v = Visibility.Full;
-		//    }
-		//    else if ( octant == octree )
-		//    {
-		//        v = Visibility.Partial;
-		//    }
-		//    else
-		//    {
-		//        AxisAlignedBox box = octant.CullBounds;
-		//        v = camera.GetVisibility( box );
-		//    }
-		//    // if the octant is visible, or if it's the root node...
-		//    if ( v != Visibility.None )
-		//    {
-		//        if ( this.ShowBoundingBoxes )
-		//        {
-		//            boxList.Add( octant.WireBoundingBox );
-		//        }
-		//        bool vis = true;
-		//        for ( int i = 0; i < octant.NodeList.Count; i++ )
-		//        {
-		//            OctreeNode node = (OctreeNode)octant.NodeList.Values[ i ];
-		//            // if this octree is partially visible, manually cull all
-		//            // scene nodes attached directly to this level.
-		//            if ( v == Visibility.Partial )
-		//            {
-		//                vis = camera.IsObjectVisible( node.WorldAABB );
-		//            }
-		//            if ( vis )
-		//            {
-		//                numObjects++;
-		//                node.AddToRenderQueue( camera, queue );
-		//                visible.Add( node );
-		//                if ( DisplayNodes )
-		//                {
-		//                    GetRenderQueue().AddRenderable( node );
-		//                }
-		//                // check if the scene manager or this node wants the bounding box shown.
-		//                if ( node.ShowBoundingBox || this.ShowBoundingBoxes )
-		//                {
-		//                    node.AddBoundingBoxToQueue( queue );
-		//                }
-		//            }
-		//        }
-		//        if ( octant.Children[ 0, 0, 0 ] != null )
-		//            WalkOctree( camera, queue, octant.Children[ 0, 0, 0 ], ( v == Visibility.Full ) );
-		//        if ( octant.Children[ 1, 0, 0 ] != null )
-		//            WalkOctree( camera, queue, octant.Children[ 1, 0, 0 ], ( v == Visibility.Full ) );
-		//        if ( octant.Children[ 0, 1, 0 ] != null )
-		//            WalkOctree( camera, queue, octant.Children[ 0, 1, 0 ], ( v == Visibility.Full ) );
-		//        if ( octant.Children[ 1, 1, 0 ] != null )
-		//            WalkOctree( camera, queue, octant.Children[ 1, 1, 0 ], ( v == Visibility.Full ) );
-		//        if ( octant.Children[ 0, 0, 1 ] != null )
-		//            WalkOctree( camera, queue, octant.Children[ 0, 0, 1 ], ( v == Visibility.Full ) );
-		//        if ( octant.Children[ 1, 0, 1 ] != null )
-		//            WalkOctree( camera, queue, octant.Children[ 1, 0, 1 ], ( v == Visibility.Full ) );
-		//        if ( octant.Children[ 0, 1, 1 ] != null )
-		//            WalkOctree( camera, queue, octant.Children[ 0, 1, 1 ], ( v == Visibility.Full ) );
-		//        if ( octant.Children[ 1, 1, 1 ] != null )
-		//            WalkOctree( camera, queue, octant.Children[ 1, 1, 1 ], ( v == Visibility.Full ) );
-		//    }
-		//}
-		private struct WalkQueueObject
-		{
-			public readonly bool FoundVisible;
-			public readonly Octree Octant;
+        ///** Walks through the octree, adding any visible objects to the render queue.
+        //@remarks
+        //If any octant in the octree if completely within the the view frustum,
+        //all subchildren are automatically added with no visibility tests.
+        //*/
+        //public void WalkOctree( OctreeCamera camera, RenderQueue queue, Octree octant, bool foundVisible )
+        //{
+        //    //return immediately if nothing is in the node.
+        //    if ( octant.NumNodes == 0 )
+        //    {
+        //        return;
+        //    }
+        //    Visibility v = Visibility.None;
+        //    if ( foundVisible )
+        //    {
+        //        v = Visibility.Full;
+        //    }
+        //    else if ( octant == octree )
+        //    {
+        //        v = Visibility.Partial;
+        //    }
+        //    else
+        //    {
+        //        AxisAlignedBox box = octant.CullBounds;
+        //        v = camera.GetVisibility( box );
+        //    }
+        //    // if the octant is visible, or if it's the root node...
+        //    if ( v != Visibility.None )
+        //    {
+        //        if ( this.ShowBoundingBoxes )
+        //        {
+        //            boxList.Add( octant.WireBoundingBox );
+        //        }
+        //        bool vis = true;
+        //        for ( int i = 0; i < octant.NodeList.Count; i++ )
+        //        {
+        //            OctreeNode node = (OctreeNode)octant.NodeList.Values[ i ];
+        //            // if this octree is partially visible, manually cull all
+        //            // scene nodes attached directly to this level.
+        //            if ( v == Visibility.Partial )
+        //            {
+        //                vis = camera.IsObjectVisible( node.WorldAABB );
+        //            }
+        //            if ( vis )
+        //            {
+        //                numObjects++;
+        //                node.AddToRenderQueue( camera, queue );
+        //                visible.Add( node );
+        //                if ( DisplayNodes )
+        //                {
+        //                    GetRenderQueue().AddRenderable( node );
+        //                }
+        //                // check if the scene manager or this node wants the bounding box shown.
+        //                if ( node.ShowBoundingBox || this.ShowBoundingBoxes )
+        //                {
+        //                    node.AddBoundingBoxToQueue( queue );
+        //                }
+        //            }
+        //        }
+        //        if ( octant.Children[ 0, 0, 0 ] != null )
+        //            WalkOctree( camera, queue, octant.Children[ 0, 0, 0 ], ( v == Visibility.Full ) );
+        //        if ( octant.Children[ 1, 0, 0 ] != null )
+        //            WalkOctree( camera, queue, octant.Children[ 1, 0, 0 ], ( v == Visibility.Full ) );
+        //        if ( octant.Children[ 0, 1, 0 ] != null )
+        //            WalkOctree( camera, queue, octant.Children[ 0, 1, 0 ], ( v == Visibility.Full ) );
+        //        if ( octant.Children[ 1, 1, 0 ] != null )
+        //            WalkOctree( camera, queue, octant.Children[ 1, 1, 0 ], ( v == Visibility.Full ) );
+        //        if ( octant.Children[ 0, 0, 1 ] != null )
+        //            WalkOctree( camera, queue, octant.Children[ 0, 0, 1 ], ( v == Visibility.Full ) );
+        //        if ( octant.Children[ 1, 0, 1 ] != null )
+        //            WalkOctree( camera, queue, octant.Children[ 1, 0, 1 ], ( v == Visibility.Full ) );
+        //        if ( octant.Children[ 0, 1, 1 ] != null )
+        //            WalkOctree( camera, queue, octant.Children[ 0, 1, 1 ], ( v == Visibility.Full ) );
+        //        if ( octant.Children[ 1, 1, 1 ] != null )
+        //            WalkOctree( camera, queue, octant.Children[ 1, 1, 1 ], ( v == Visibility.Full ) );
+        //    }
+        //}
+        private struct WalkQueueObject
+        {
+            public readonly bool FoundVisible;
+            public readonly Octree Octant;
 
-			public WalkQueueObject( Octree octant, bool foundVisible )
-			{
-				this.FoundVisible = foundVisible;
-				this.Octant = octant;
-			}
-		}
+            public WalkQueueObject(Octree octant, bool foundVisible)
+            {
+                this.FoundVisible = foundVisible;
+                this.Octant = octant;
+            }
+        }
 
-		/** Walks through the octree, adding any visible objects to the render queue.
+        /** Walks through the octree, adding any visible objects to the render queue.
 		@remarks
 		If any octant in the octree if completely within the the view frustum,
 		all subchildren are automatically added with no visibility tests.
 		*/
 
-		public void WalkOctree( OctreeCamera camera, RenderQueue queue, Octree octant, bool foundVisible )
-		{
-			var q = new Queue<WalkQueueObject>();
-			var temp = new WalkQueueObject( octant, foundVisible );
+        public void WalkOctree(OctreeCamera camera, RenderQueue queue, Octree octant, bool foundVisible)
+        {
+            var q = new Queue<WalkQueueObject>();
+            var temp = new WalkQueueObject(octant, foundVisible);
 
-			q.Enqueue( temp );
+            q.Enqueue(temp);
 
-			while ( q.Count > 0 )
-			{
-				temp = q.Dequeue();
+            while (q.Count > 0)
+            {
+                temp = q.Dequeue();
 
-				//return immediately if nothing is in the node.
-				if ( temp.Octant.NumNodes == 0 )
-				{
-					continue;
-				}
+                //return immediately if nothing is in the node.
+                if (temp.Octant.NumNodes == 0)
+                {
+                    continue;
+                }
 
-				Visibility v = Visibility.None;
+                Visibility v = Visibility.None;
 
-				if ( temp.FoundVisible )
-				{
-					v = Visibility.Full;
-				}
-				else if ( temp.Octant == this.octree )
-				{
-					v = Visibility.Partial;
-				}
-				else
-				{
-					AxisAlignedBox box = temp.Octant.CullBounds;
-					v = camera.GetVisibility( box );
-				}
+                if (temp.FoundVisible)
+                {
+                    v = Visibility.Full;
+                }
+                else if (temp.Octant == this.octree)
+                {
+                    v = Visibility.Partial;
+                }
+                else
+                {
+                    AxisAlignedBox box = temp.Octant.CullBounds;
+                    v = camera.GetVisibility(box);
+                }
 
 
-				// if the octant is visible, or if it's the root node...
-				if ( v != Visibility.None )
-				{
-					if ( ShowBoundingBoxes )
-					{
-						this.boxList.Add( temp.Octant.WireBoundingBox );
-					}
+                // if the octant is visible, or if it's the root node...
+                if (v != Visibility.None)
+                {
+                    if (ShowBoundingBoxes)
+                    {
+                        this.boxList.Add(temp.Octant.WireBoundingBox);
+                    }
 
-					bool vis = true;
+                    bool vis = true;
 
-					foreach ( OctreeNode node in temp.Octant.NodeList.Values )
-					{
-						// if this octree is partially visible, manually cull all
-						// scene nodes attached directly to this level.
+                    foreach (OctreeNode node in temp.Octant.NodeList.Values)
+                    {
+                        // if this octree is partially visible, manually cull all
+                        // scene nodes attached directly to this level.
 
-						if ( v == Visibility.Partial )
-						{
-							vis = camera.IsObjectVisible( node.WorldAABB );
-						}
+                        if (v == Visibility.Partial)
+                        {
+                            vis = camera.IsObjectVisible(node.WorldAABB);
+                        }
 
-						if ( vis )
-						{
-							this.numObjects++;
-							node.AddToRenderQueue( camera, queue );
+                        if (vis)
+                        {
+                            this.numObjects++;
+                            node.AddToRenderQueue(camera, queue);
 
-							this.visible.Add( node );
+                            this.visible.Add(node);
 
-							if ( DisplayNodes )
-							{
-								GetRenderQueue().AddRenderable( node.GetDebugRenderable() );
-							}
+                            if (DisplayNodes)
+                            {
+                                GetRenderQueue().AddRenderable(node.GetDebugRenderable());
+                            }
 
-							// check if the scene manager or this node wants the bounding box shown.
-							if ( node.ShowBoundingBox || ShowBoundingBoxes )
-							{
-								node.AddBoundingBoxToQueue( queue );
-							}
-						}
-					}
+                            // check if the scene manager or this node wants the bounding box shown.
+                            if (node.ShowBoundingBox || ShowBoundingBoxes)
+                            {
+                                node.AddBoundingBoxToQueue(queue);
+                            }
+                        }
+                    }
 
-					if ( temp.Octant.Children[ 0, 0, 0 ] != null )
-					{
-						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 0, 0, 0 ], v == Visibility.Full ) );
-						//WalkOctree( camera, queue, octant.Children[ 0, 0, 0 ], ( v == Visibility.Full ) );
-						//continue;
-					}
+                    if (temp.Octant.Children[0, 0, 0] != null)
+                    {
+                        q.Enqueue(new WalkQueueObject(temp.Octant.Children[0, 0, 0], v == Visibility.Full));
+                        //WalkOctree( camera, queue, octant.Children[ 0, 0, 0 ], ( v == Visibility.Full ) );
+                        //continue;
+                    }
 
-					if ( temp.Octant.Children[ 1, 0, 0 ] != null )
-					{
-						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 1, 0, 0 ], v == Visibility.Full ) );
-						//WalkOctree( camera, queue, octant.Children[ 1, 0, 0 ], ( v == Visibility.Full ) );
-						//continue;
-					}
+                    if (temp.Octant.Children[1, 0, 0] != null)
+                    {
+                        q.Enqueue(new WalkQueueObject(temp.Octant.Children[1, 0, 0], v == Visibility.Full));
+                        //WalkOctree( camera, queue, octant.Children[ 1, 0, 0 ], ( v == Visibility.Full ) );
+                        //continue;
+                    }
 
-					if ( temp.Octant.Children[ 0, 1, 0 ] != null )
-					{
-						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 0, 1, 0 ], v == Visibility.Full ) );
-						//WalkOctree( camera, queue, octant.Children[ 0, 1, 0 ], ( v == Visibility.Full ) );
-						//continue;
-					}
+                    if (temp.Octant.Children[0, 1, 0] != null)
+                    {
+                        q.Enqueue(new WalkQueueObject(temp.Octant.Children[0, 1, 0], v == Visibility.Full));
+                        //WalkOctree( camera, queue, octant.Children[ 0, 1, 0 ], ( v == Visibility.Full ) );
+                        //continue;
+                    }
 
-					if ( temp.Octant.Children[ 1, 1, 0 ] != null )
-					{
-						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 1, 1, 0 ], v == Visibility.Full ) );
-						//WalkOctree( camera, queue, octant.Children[ 1, 1, 0 ], ( v == Visibility.Full ) );
-						//continue;
-					}
+                    if (temp.Octant.Children[1, 1, 0] != null)
+                    {
+                        q.Enqueue(new WalkQueueObject(temp.Octant.Children[1, 1, 0], v == Visibility.Full));
+                        //WalkOctree( camera, queue, octant.Children[ 1, 1, 0 ], ( v == Visibility.Full ) );
+                        //continue;
+                    }
 
-					if ( temp.Octant.Children[ 0, 0, 1 ] != null )
-					{
-						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 0, 0, 1 ], v == Visibility.Full ) );
-						//WalkOctree( camera, queue, octant.Children[ 0, 0, 1 ], ( v == Visibility.Full ) );
-						//continue;
-					}
+                    if (temp.Octant.Children[0, 0, 1] != null)
+                    {
+                        q.Enqueue(new WalkQueueObject(temp.Octant.Children[0, 0, 1], v == Visibility.Full));
+                        //WalkOctree( camera, queue, octant.Children[ 0, 0, 1 ], ( v == Visibility.Full ) );
+                        //continue;
+                    }
 
-					if ( temp.Octant.Children[ 1, 0, 1 ] != null )
-					{
-						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 1, 0, 1 ], v == Visibility.Full ) );
-						//WalkOctree( camera, queue, octant.Children[ 1, 0, 1 ], ( v == Visibility.Full ) );
-						//continue;
-					}
+                    if (temp.Octant.Children[1, 0, 1] != null)
+                    {
+                        q.Enqueue(new WalkQueueObject(temp.Octant.Children[1, 0, 1], v == Visibility.Full));
+                        //WalkOctree( camera, queue, octant.Children[ 1, 0, 1 ], ( v == Visibility.Full ) );
+                        //continue;
+                    }
 
-					if ( temp.Octant.Children[ 0, 1, 1 ] != null )
-					{
-						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 0, 1, 1 ], v == Visibility.Full ) );
-						//WalkOctree( camera, queue, octant.Children[ 0, 1, 1 ], ( v == Visibility.Full ) );
-						//continue;
-					}
+                    if (temp.Octant.Children[0, 1, 1] != null)
+                    {
+                        q.Enqueue(new WalkQueueObject(temp.Octant.Children[0, 1, 1], v == Visibility.Full));
+                        //WalkOctree( camera, queue, octant.Children[ 0, 1, 1 ], ( v == Visibility.Full ) );
+                        //continue;
+                    }
 
-					if ( temp.Octant.Children[ 1, 1, 1 ] != null )
-					{
-						q.Enqueue( new WalkQueueObject( temp.Octant.Children[ 1, 1, 1 ], v == Visibility.Full ) );
-						//WalkOctree( camera, queue, octant.Children[ 1, 1, 1 ], ( v == Visibility.Full ) );
-						//continue;
-					}
-				}
-			}
-		}
+                    if (temp.Octant.Children[1, 1, 1] != null)
+                    {
+                        q.Enqueue(new WalkQueueObject(temp.Octant.Children[1, 1, 1], v == Visibility.Full));
+                        //WalkOctree( camera, queue, octant.Children[ 1, 1, 1 ], ( v == Visibility.Full ) );
+                        //continue;
+                    }
+                }
+            }
+        }
 
-		/** Checks the given OctreeNode, and determines if it needs to be moved
+        /** Checks the given OctreeNode, and determines if it needs to be moved
 		* to a different octant.
 		*/
 
-		public void UpdateOctreeNode( OctreeNode node )
-		{
-			AxisAlignedBox box = node.WorldAABB;
+        public void UpdateOctreeNode(OctreeNode node)
+        {
+            AxisAlignedBox box = node.WorldAABB;
 
-			if ( box.IsNull )
-			{
-				return;
-			}
+            if (box.IsNull)
+            {
+                return;
+            }
 
-			if ( node.Octant == null )
-			{
-				//if outside the octree, force into the root node.
-				if ( !node.IsInBox( this.octree.Box ) )
-				{
-					this.octree.AddNode( node );
-				}
-				else
-				{
-					AddOctreeNode( node, this.octree );
-				}
-				return;
-			}
+            if (node.Octant == null)
+            {
+                //if outside the octree, force into the root node.
+                if (!node.IsInBox(this.octree.Box))
+                {
+                    this.octree.AddNode(node);
+                }
+                else
+                {
+                    AddOctreeNode(node, this.octree);
+                }
+                return;
+            }
 
-			if ( !node.IsInBox( node.Octant.Box ) )
-			{
-				RemoveOctreeNode( node );
+            if (!node.IsInBox(node.Octant.Box))
+            {
+                RemoveOctreeNode(node);
 
-				//if outside the octree, force into the root node.
-				if ( !node.IsInBox( this.octree.Box ) )
-				{
-					this.octree.AddNode( node );
-				}
-				else
-				{
-					AddOctreeNode( node, this.octree );
-				}
-			}
-		}
+                //if outside the octree, force into the root node.
+                if (!node.IsInBox(this.octree.Box))
+                {
+                    this.octree.AddNode(node);
+                }
+                else
+                {
+                    AddOctreeNode(node, this.octree);
+                }
+            }
+        }
 
-		/*public void RemoveOctreeNode(OctreeNode node, Octree tree, int depth)
+        /*public void RemoveOctreeNode(OctreeNode node, Octree tree, int depth)
 		{
 
 		}*/
 
-		/** Only removes the node from the octree.  It leaves the octree, even if it's empty.
+        /** Only removes the node from the octree.  It leaves the octree, even if it's empty.
 		*/
 
-		public void RemoveOctreeNode( OctreeNode node )
-		{
-			Octree tree = node.Octant;
+        public void RemoveOctreeNode(OctreeNode node)
+        {
+            Octree tree = node.Octant;
 
-			if ( tree != null )
-			{
-				tree.RemoveNode( node );
-			}
-		}
+            if (tree != null)
+            {
+                tree.RemoveNode(node);
+            }
+        }
 
-		public override void DestroySceneNode( string name )
-		{
-			var node = (OctreeNode)GetSceneNode( name );
+        public override void DestroySceneNode(string name)
+        {
+            var node = (OctreeNode)GetSceneNode(name);
 
-			if ( node != null )
-			{
-				RemoveOctreeNode( node );
-			}
+            if (node != null)
+            {
+                RemoveOctreeNode(node);
+            }
 
-			base.DestroySceneNode( node );
-		}
+            base.DestroySceneNode(node);
+        }
 
-		public void AddOctreeNode( OctreeNode node, Octree octant )
-		{
-			AddOctreeNode( node, octant, 0 );
-		}
+        public void AddOctreeNode(OctreeNode node, Octree octant)
+        {
+            AddOctreeNode(node, octant, 0);
+        }
 
-		public void AddOctreeNode( OctreeNode node, Octree octant, int depth )
-		{
-			AxisAlignedBox box = node.WorldAABB;
+        public void AddOctreeNode(OctreeNode node, Octree octant, int depth)
+        {
+            AxisAlignedBox box = node.WorldAABB;
 
-			//if the octree is twice as big as the scene node,
-			//we will add it to a child.
-			if ( ( depth < this.maxDepth ) && octant.IsTwiceSize( box ) )
-			{
-				int x, y, z;
+            //if the octree is twice as big as the scene node,
+            //we will add it to a child.
+            if ((depth < this.maxDepth) && octant.IsTwiceSize(box))
+            {
+                int x, y, z;
 
-				octant.GetChildIndexes( box, out x, out y, out z );
+                octant.GetChildIndexes(box, out x, out y, out z);
 
-				if ( octant.Children[ x, y, z ] == null )
-				{
-					octant.Children[ x, y, z ] = new Octree( octant );
+                if (octant.Children[x, y, z] == null)
+                {
+                    octant.Children[x, y, z] = new Octree(octant);
 
-					Vector3[] corners = octant.Box.Corners;
+                    Vector3[] corners = octant.Box.Corners;
 
-					Vector3 min, max;
+                    Vector3 min, max;
 
-					if ( x == 0 )
-					{
-						min.x = corners[ 0 ].x;
-						max.x = ( corners[ 0 ].x + corners[ 4 ].x )/2;
-					}
-					else
-					{
-						min.x = ( corners[ 0 ].x + corners[ 4 ].x )/2;
-						max.x = corners[ 4 ].x;
-					}
+                    if (x == 0)
+                    {
+                        min.x = corners[0].x;
+                        max.x = (corners[0].x + corners[4].x) / 2;
+                    }
+                    else
+                    {
+                        min.x = (corners[0].x + corners[4].x) / 2;
+                        max.x = corners[4].x;
+                    }
 
-					if ( y == 0 )
-					{
-						min.y = corners[ 0 ].y;
-						max.y = ( corners[ 0 ].y + corners[ 4 ].y )/2;
-					}
+                    if (y == 0)
+                    {
+                        min.y = corners[0].y;
+                        max.y = (corners[0].y + corners[4].y) / 2;
+                    }
 
-					else
-					{
-						min.y = ( corners[ 0 ].y + corners[ 4 ].y )/2;
-						max.y = corners[ 4 ].y;
-					}
+                    else
+                    {
+                        min.y = (corners[0].y + corners[4].y) / 2;
+                        max.y = corners[4].y;
+                    }
 
-					if ( z == 0 )
-					{
-						min.z = corners[ 0 ].z;
-						max.z = ( corners[ 0 ].z + corners[ 4 ].z )/2;
-					}
+                    if (z == 0)
+                    {
+                        min.z = corners[0].z;
+                        max.z = (corners[0].z + corners[4].z) / 2;
+                    }
 
-					else
-					{
-						min.z = ( corners[ 0 ].z + corners[ 4 ].z )/2;
-						max.z = corners[ 4 ].z;
-					}
+                    else
+                    {
+                        min.z = (corners[0].z + corners[4].z) / 2;
+                        max.z = corners[4].z;
+                    }
 
-					octant.Children[ x, y, z ].Box.SetExtents( min, max );
-					octant.Children[ x, y, z ].HalfSize = ( max - min )/2;
-				}
+                    octant.Children[x, y, z].Box.SetExtents(min, max);
+                    octant.Children[x, y, z].HalfSize = (max - min) / 2;
+                }
 
-				AddOctreeNode( node, octant.Children[ x, y, z ], ++depth );
-			}
-			else
-			{
-				octant.AddNode( node );
-			}
-		}
+                AddOctreeNode(node, octant.Children[x, y, z], ++depth);
+            }
+            else
+            {
+                octant.AddNode(node);
+            }
+        }
 
-		/*public void AddOctreeNode(OctreeNode node, Octree octree)
+        /*public void AddOctreeNode(OctreeNode node, Octree octree)
 		{
 
 
 		}*/
 
-		/** Resizes the octree to the given size */
+        /** Resizes the octree to the given size */
 
-		public void Resize( AxisAlignedBox box )
-		{
-			var nodes = new NodeCollection();
+        public void Resize(AxisAlignedBox box)
+        {
+            var nodes = new NodeCollection();
 
-			FindNodes( this.octree.Box, base.sceneNodeList, null, true, this.octree );
+            FindNodes(this.octree.Box, base.sceneNodeList, null, true, this.octree);
 
-			this.octree = new Octree( null );
-			this.octree.Box = box;
+            this.octree = new Octree(null);
+            this.octree.Box = box;
 
-			foreach ( OctreeNode node in nodes.Values )
-			{
-				node.Octant = null;
-				UpdateOctreeNode( node );
-			}
-		}
+            foreach (OctreeNode node in nodes.Values)
+            {
+                node.Octant = null;
+                UpdateOctreeNode(node);
+            }
+        }
 
-		public void FindNodes( AxisAlignedBox box, SceneNodeCollection sceneNodeList, SceneNode exclude, bool full,
-		                       Octree octant )
-		{
-			var localList = new List<OctreeNode>();
-			if ( octant == null )
-			{
-				octant = this.octree;
-			}
+        public void FindNodes(AxisAlignedBox box, SceneNodeCollection sceneNodeList, SceneNode exclude, bool full,
+                               Octree octant)
+        {
+            var localList = new List<OctreeNode>();
+            if (octant == null)
+            {
+                octant = this.octree;
+            }
 
-			if ( !full )
-			{
-				AxisAlignedBox obox = octant.CullBounds;
+            if (!full)
+            {
+                AxisAlignedBox obox = octant.CullBounds;
 
-				Intersection isect = Intersect( box, obox );
+                Intersection isect = Intersect(box, obox);
 
-				if ( isect == Intersection.Outside )
-				{
-					return;
-				}
+                if (isect == Intersection.Outside)
+                {
+                    return;
+                }
 
-				full = ( isect == Intersection.Inside );
-			}
+                full = (isect == Intersection.Inside);
+            }
 
-			foreach ( OctreeNode node in octant.NodeList.Values )
-			{
-				if ( node != exclude )
-				{
-					if ( full )
-					{
-						localList.Add( node );
-					}
-					else
-					{
-						Intersection nsect = Intersect( box, node.WorldAABB );
+            foreach (OctreeNode node in octant.NodeList.Values)
+            {
+                if (node != exclude)
+                {
+                    if (full)
+                    {
+                        localList.Add(node);
+                    }
+                    else
+                    {
+                        Intersection nsect = Intersect(box, node.WorldAABB);
 
-						if ( nsect != Intersection.Outside )
-						{
-							localList.Add( node );
-						}
-					}
-				}
-			}
+                        if (nsect != Intersection.Outside)
+                        {
+                            localList.Add(node);
+                        }
+                    }
+                }
+            }
 
-			if ( octant.Children[ 0, 0, 0 ] != null )
-			{
-				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 0, 0, 0 ] );
-			}
+            if (octant.Children[0, 0, 0] != null)
+            {
+                FindNodes(box, sceneNodeList, exclude, full, octant.Children[0, 0, 0]);
+            }
 
-			if ( octant.Children[ 1, 0, 0 ] != null )
-			{
-				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 1, 0, 0 ] );
-			}
+            if (octant.Children[1, 0, 0] != null)
+            {
+                FindNodes(box, sceneNodeList, exclude, full, octant.Children[1, 0, 0]);
+            }
 
-			if ( octant.Children[ 0, 1, 0 ] != null )
-			{
-				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 0, 1, 0 ] );
-			}
+            if (octant.Children[0, 1, 0] != null)
+            {
+                FindNodes(box, sceneNodeList, exclude, full, octant.Children[0, 1, 0]);
+            }
 
-			if ( octant.Children[ 1, 1, 0 ] != null )
-			{
-				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 1, 1, 0 ] );
-			}
+            if (octant.Children[1, 1, 0] != null)
+            {
+                FindNodes(box, sceneNodeList, exclude, full, octant.Children[1, 1, 0]);
+            }
 
-			if ( octant.Children[ 0, 0, 1 ] != null )
-			{
-				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 0, 0, 1 ] );
-			}
+            if (octant.Children[0, 0, 1] != null)
+            {
+                FindNodes(box, sceneNodeList, exclude, full, octant.Children[0, 0, 1]);
+            }
 
-			if ( octant.Children[ 1, 0, 1 ] != null )
-			{
-				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 1, 0, 1 ] );
-			}
+            if (octant.Children[1, 0, 1] != null)
+            {
+                FindNodes(box, sceneNodeList, exclude, full, octant.Children[1, 0, 1]);
+            }
 
-			if ( octant.Children[ 0, 1, 1 ] != null )
-			{
-				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 0, 1, 1 ] );
-			}
+            if (octant.Children[0, 1, 1] != null)
+            {
+                FindNodes(box, sceneNodeList, exclude, full, octant.Children[0, 1, 1]);
+            }
 
-			if ( octant.Children[ 1, 1, 1 ] != null )
-			{
-				FindNodes( box, sceneNodeList, exclude, full, octant.Children[ 1, 1, 1 ] );
-			}
-		}
+            if (octant.Children[1, 1, 1] != null)
+            {
+                FindNodes(box, sceneNodeList, exclude, full, octant.Children[1, 1, 1]);
+            }
+        }
 
-		public void FindNodes( Sphere sphere, SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant )
-		{
-			//TODO: Implement
-		}
+        public void FindNodes(Sphere sphere, SceneNodeCollection sceneNodeList, SceneNode exclude, bool full, Octree octant)
+        {
+            //TODO: Implement
+        }
 
-		public bool SetOption( string key, object val )
-		{
-			bool ret = false;
-			switch ( key )
-			{
-				case "Size":
-					Resize( (AxisAlignedBox)val );
-					ret = true;
-					break;
-				case "Depth":
-					this.maxDepth = (int)val;
-					Resize( this.octree.Box );
-					ret = true;
-					break;
-				case "ShowOctree":
-					ShowBoundingBoxes = (bool)val;
-					ret = true;
-					break;
-				case "CullCamera":
-					this.cullCamera = (bool)val;
-					ret = true;
-					break;
-			}
+        public bool SetOption(string key, object val)
+        {
+            bool ret = false;
+            switch (key)
+            {
+                case "Size":
+                    Resize((AxisAlignedBox)val);
+                    ret = true;
+                    break;
+                case "Depth":
+                    this.maxDepth = (int)val;
+                    Resize(this.octree.Box);
+                    ret = true;
+                    break;
+                case "ShowOctree":
+                    ShowBoundingBoxes = (bool)val;
+                    ret = true;
+                    break;
+                case "CullCamera":
+                    this.cullCamera = (bool)val;
+                    ret = true;
+                    break;
+            }
 
-			return ret;
-		}
+            return ret;
+        }
 
-		public bool GetOption()
-		{
-			return true; //TODO: Implement
-		}
-	}
+        public bool GetOption()
+        {
+            return true; //TODO: Implement
+        }
+    }
 
-	internal class OctreeSceneManagerFactory : SceneManagerFactory
-	{
-		public OctreeSceneManagerFactory()
-		{
-		}
+    internal class OctreeSceneManagerFactory : SceneManagerFactory
+    {
+        public OctreeSceneManagerFactory()
+        {
+        }
 
-		protected override void InitMetaData()
-		{
-			metaData.typeName = "OctreeSceneManager";
-			metaData.description = "Scene manager organising the scene on the basis of an octree.";
-			metaData.sceneTypeMask = SceneType.Generic;
-			metaData.worldGeometrySupported = false;
-		}
+        protected override void InitMetaData()
+        {
+            metaData.typeName = "OctreeSceneManager";
+            metaData.description = "Scene manager organising the scene on the basis of an octree.";
+            metaData.sceneTypeMask = SceneType.Generic;
+            metaData.worldGeometrySupported = false;
+        }
 
-		public override SceneManager CreateInstance( string name )
-		{
-			return new OctreeSceneManager( name );
-		}
+        public override SceneManager CreateInstance(string name)
+        {
+            return new OctreeSceneManager(name);
+        }
 
-		public override void DestroyInstance( SceneManager instance )
-		{
-			instance.ClearScene();
-		}
-	}
+        public override void DestroyInstance(SceneManager instance)
+        {
+            instance.ClearScene();
+        }
+    }
 }

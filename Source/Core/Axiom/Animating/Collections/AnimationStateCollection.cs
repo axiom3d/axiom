@@ -43,29 +43,29 @@ using Axiom.Collections;
 
 namespace Axiom.Animating.Collections
 {
-	/// <summary>
-	///Represents a collection of <see cref="AnimationState">AnimationStates</see> that are sorted by name.
-	/// </summary>
-	public class AnimationStateCollection : AxiomCollection<AnimationState>
-	{
-		#region Instance Methods
+    /// <summary>
+    ///Represents a collection of <see cref="AnimationState">AnimationStates</see> that are sorted by name.
+    /// </summary>
+    public class AnimationStateCollection : AxiomCollection<AnimationState>
+    {
+        #region Instance Methods
 
-		/// <summary>
-		/// Clones this instance.
-		/// </summary>
-		/// <returns></returns>
-		public AnimationStateCollection Clone()
-		{
-			var newCol = new AnimationStateCollection();
+        /// <summary>
+        /// Clones this instance.
+        /// </summary>
+        /// <returns></returns>
+        public AnimationStateCollection Clone()
+        {
+            var newCol = new AnimationStateCollection();
 
-			foreach ( var entry in this )
-			{
-				newCol.Add( entry.Name, entry );
-			}
+            foreach (var entry in this)
+            {
+                newCol.Add(entry.Name, entry);
+            }
 
-			return newCol;
-		}
+            return newCol;
+        }
 
-		#endregion
-	};
+        #endregion
+    };
 }

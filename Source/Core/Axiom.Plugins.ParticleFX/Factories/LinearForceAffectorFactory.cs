@@ -49,25 +49,25 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.ParticleFX.Factories
 {
-	/// <summary>
-	/// Summary description for LinearForceAffectorFactory.
-	/// </summary>
-	public class LinearForceAffectorFactory : ParticleAffectorFactory
-	{
-		public override string Name
-		{
-			get
-			{
-				return "LinearForce";
-			}
-		}
+    /// <summary>
+    /// Summary description for LinearForceAffectorFactory.
+    /// </summary>
+    public class LinearForceAffectorFactory : ParticleAffectorFactory
+    {
+        public override string Name
+        {
+            get
+            {
+                return "LinearForce";
+            }
+        }
 
-		public override ParticleAffector CreateAffector( ParticleSystem psys )
-		{
-			ParticleAffector p = new LinearForceAffector( psys );
-			affectorList.Add( p );
+        public override ParticleAffector CreateAffector(ParticleSystem psys)
+        {
+            ParticleAffector p = new LinearForceAffector(psys);
+            affectorList.Add(p);
 
-			return p;
-		}
-	}
+            return p;
+        }
+    }
 }

@@ -45,7 +45,7 @@ namespace Axiom.UnitTests.Serialization
         [Test]
         public void Vector3GetBytes()
         {
-            Vector3 data = new Vector3( 2.0f,1.0f, 3.0f);
+            Vector3 data = new Vector3(2.0f, 1.0f, 3.0f);
 
             byte[] expected = new byte[]
                               {
@@ -53,7 +53,7 @@ namespace Axiom.UnitTests.Serialization
                               };
             byte[] actual = BitConverterEx.GetBytes(data);
 
-            Assert.AreEqual( expected, actual );
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -109,11 +109,11 @@ namespace Axiom.UnitTests.Serialization
 
             byte[] expected = new byte[]
                               {
-                                  0, 0, 128, 63, 222, 222, 94, 63, 184, 184, 56, 63, 136, 135, 7, 63 
+                                  0, 0, 128, 63, 222, 222, 94, 63, 184, 184, 56, 63, 136, 135, 7, 63
                               };
             byte[] actual = BitConverterEx.GetBytes(data);
 
-         Assert.AreEqual(expected, actual);
+            Assert.AreEqual(expected, actual);
         }
 
         [Test]
@@ -123,7 +123,7 @@ namespace Axiom.UnitTests.Serialization
 
             byte[] data = new byte[]
                               {
-                                  0, 0, 128, 63, 222, 222, 94, 63, 184, 184, 56, 63, 136, 135, 7, 63 
+                                  0, 0, 128, 63, 222, 222, 94, 63, 184, 184, 56, 63, 136, 135, 7, 63
                               };
             ColorEx actual = BitConverterEx.SetBytes<ColorEx>(data);
 

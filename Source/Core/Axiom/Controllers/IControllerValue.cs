@@ -43,12 +43,12 @@ using System;
 
 namespace Axiom.Controllers
 {
-	/// <summary>
-	///		Classes that will be controlled by any type of Controller should implement
-	///		this interface to define how the controller will modifiy it's local data.
-	/// </summary>
-	public interface IControllerValue<T>
-	{
-		T Value { get; set; }
-	}
+    /// <summary>
+    ///		Classes that will be controlled by any type of Controller should implement
+    ///		this interface to define how the controller will modifiy it's local data.
+    /// </summary>
+    public interface IControllerValue<T>
+    {
+        T Value { get; set; }
+    }
 }

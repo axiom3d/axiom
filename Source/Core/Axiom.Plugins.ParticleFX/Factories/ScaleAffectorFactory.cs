@@ -49,24 +49,24 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.ParticleFX.Factories
 {
-	/// <summary>
-	/// Summary description for ScaleAffectorFactory.
-	/// </summary>
-	public class ScaleAffectorFactory : ParticleAffectorFactory
-	{
-		public override string Name
-		{
-			get
-			{
-				return "Scaler";
-			}
-		}
+    /// <summary>
+    /// Summary description for ScaleAffectorFactory.
+    /// </summary>
+    public class ScaleAffectorFactory : ParticleAffectorFactory
+    {
+        public override string Name
+        {
+            get
+            {
+                return "Scaler";
+            }
+        }
 
-		public override ParticleAffector CreateAffector( ParticleSystem psys )
-		{
-			ParticleAffector p = new ScaleAffector( psys );
-			affectorList.Add( p );
-			return p;
-		}
-	}
+        public override ParticleAffector CreateAffector(ParticleSystem psys)
+        {
+            ParticleAffector p = new ScaleAffector(psys);
+            affectorList.Add(p);
+            return p;
+        }
+    }
 }

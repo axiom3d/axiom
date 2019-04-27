@@ -46,58 +46,58 @@ using Axiom.Graphics;
 
 namespace Axiom.FileSystem
 {
-	public class Watcher
-	{
-		#region Fields and Properties
+    public class Watcher
+    {
+        #region Fields and Properties
 
-#if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IOS || SILVERLIGHT || NETFX_CORE)
-		private readonly FileSystemWatcher _monitor;
+#if !(XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IOS || SILVERLIGHT || NETFX_CORE)
+        private readonly FileSystemWatcher _monitor;
 #endif
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		public Watcher( string path, bool recurse )
+        public Watcher(string path, bool recurse)
         {
-#if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IOS || SILVERLIGHT || NETFX_CORE)
-			// Initialize FileSystemWatcher
-			this._monitor = new FileSystemWatcher();
-			this._monitor.Path = path;
-			// Watch for changes in LastAccess and LastWrite times, and the renaming of files or directories.
-			this._monitor.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-			// Watch all files.
-			this._monitor.Filter = "*.*";
-			this._monitor.IncludeSubdirectories = recurse;
+#if !(XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IOS || SILVERLIGHT || NETFX_CORE)
+            // Initialize FileSystemWatcher
+            this._monitor = new FileSystemWatcher();
+            this._monitor.Path = path;
+            // Watch for changes in LastAccess and LastWrite times, and the renaming of files or directories.
+            this._monitor.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            // Watch all files.
+            this._monitor.Filter = "*.*";
+            this._monitor.IncludeSubdirectories = recurse;
 
-			// Add event handlers.
-			this._monitor.Changed += new FileSystemEventHandler( OnChanged );
-			this._monitor.Created += new FileSystemEventHandler( OnChanged );
-			this._monitor.Deleted += new FileSystemEventHandler( OnChanged );
-			this._monitor.Renamed += new RenamedEventHandler( OnRenamed );
+            // Add event handlers.
+            this._monitor.Changed += new FileSystemEventHandler(OnChanged);
+            this._monitor.Created += new FileSystemEventHandler(OnChanged);
+            this._monitor.Deleted += new FileSystemEventHandler(OnChanged);
+            this._monitor.Renamed += new RenamedEventHandler(OnRenamed);
 
-			// Begin watching.
-			this._monitor.EnableRaisingEvents = true;
-			LogManager.Instance.Write( "File monitor created for {0}.", path );
+            // Begin watching.
+            this._monitor.EnableRaisingEvents = true;
+            LogManager.Instance.Write("File monitor created for {0}.", path);
 #endif
         }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region Methods
+        #region Methods
 
-#if !( XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IOS || SILVERLIGHT || NETFX_CORE)
-		private static void OnChanged( object source, FileSystemEventArgs e )
-		{
-			// Specify what is done when a file is changed, created, or deleted.
-			LogManager.Instance.Write( "File: " + e.FullPath + " " + e.ChangeType );
-		}
+#if !(XBOX || XBOX360 || WINDOWS_PHONE || ANDROID || IOS || SILVERLIGHT || NETFX_CORE)
+        private static void OnChanged(object source, FileSystemEventArgs e)
+        {
+            // Specify what is done when a file is changed, created, or deleted.
+            LogManager.Instance.Write("File: " + e.FullPath + " " + e.ChangeType);
+        }
 
-		private static void OnRenamed( object source, RenamedEventArgs e )
-		{
-			// Specify what is done when a file is renamed.
-			LogManager.Instance.Write( "File: {0} renamed to {1}", e.OldFullPath, e.FullPath );
-		}
+        private static void OnRenamed(object source, RenamedEventArgs e)
+        {
+            // Specify what is done when a file is renamed.
+            LogManager.Instance.Write("File: {0} renamed to {1}", e.OldFullPath, e.FullPath);
+        }
 #endif
 
         #endregion Methods

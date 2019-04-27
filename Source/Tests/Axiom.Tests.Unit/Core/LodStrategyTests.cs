@@ -45,7 +45,7 @@ namespace Axiom.UnitTests.Core
         {
 
             public LodStategyAscending()
-                : base( "LodStrategyAscending" )
+                : base("LodStrategyAscending")
             {
             }
 
@@ -57,32 +57,32 @@ namespace Axiom.UnitTests.Core
                 }
             }
 
-            public override Axiom.Math.Real TransformBias( Axiom.Math.Real factor )
+            public override Axiom.Math.Real TransformBias(Axiom.Math.Real factor)
             {
                 throw new NotImplementedException();
             }
 
-            public override ushort GetIndex( Axiom.Math.Real value, MeshLodUsageList meshLodUsageList )
+            public override ushort GetIndex(Axiom.Math.Real value, MeshLodUsageList meshLodUsageList)
             {
                 throw new NotImplementedException();
             }
 
-            public override ushort GetIndex( Axiom.Math.Real value, LodValueList materialLodValueList )
+            public override ushort GetIndex(Axiom.Math.Real value, LodValueList materialLodValueList)
             {
-                return GetIndexAscending( value, materialLodValueList );
+                return GetIndexAscending(value, materialLodValueList);
             }
 
-            public override void Sort( MeshLodUsageList meshLodUsageList )
-            {
-                throw new NotImplementedException();
-            }
-
-            public override bool IsSorted( LodValueList values )
+            public override void Sort(MeshLodUsageList meshLodUsageList)
             {
                 throw new NotImplementedException();
             }
 
-            protected override Axiom.Math.Real getValue( MovableObject movableObject, Camera camera )
+            public override bool IsSorted(LodValueList values)
+            {
+                throw new NotImplementedException();
+            }
+
+            protected override Axiom.Math.Real getValue(MovableObject movableObject, Camera camera)
             {
                 throw new NotImplementedException();
             }
@@ -92,7 +92,7 @@ namespace Axiom.UnitTests.Core
         {
 
             public LodStategyDescending()
-                : base( "LodStategyDescending" )
+                : base("LodStategyDescending")
             {
             }
 
@@ -104,32 +104,32 @@ namespace Axiom.UnitTests.Core
                 }
             }
 
-            public override Axiom.Math.Real TransformBias( Axiom.Math.Real factor )
+            public override Axiom.Math.Real TransformBias(Axiom.Math.Real factor)
             {
                 throw new NotImplementedException();
             }
 
-            public override ushort GetIndex( Axiom.Math.Real value, MeshLodUsageList meshLodUsageList )
+            public override ushort GetIndex(Axiom.Math.Real value, MeshLodUsageList meshLodUsageList)
             {
                 throw new NotImplementedException();
             }
 
-            public override ushort GetIndex( Axiom.Math.Real value, LodValueList materialLodValueList )
+            public override ushort GetIndex(Axiom.Math.Real value, LodValueList materialLodValueList)
             {
-                return GetIndexDescending( value, materialLodValueList );
+                return GetIndexDescending(value, materialLodValueList);
             }
 
-            public override void Sort( MeshLodUsageList meshLodUsageList )
-            {
-                throw new NotImplementedException();
-            }
-
-            public override bool IsSorted( LodValueList values )
+            public override void Sort(MeshLodUsageList meshLodUsageList)
             {
                 throw new NotImplementedException();
             }
 
-            protected override Axiom.Math.Real getValue( MovableObject movableObject, Camera camera )
+            public override bool IsSorted(LodValueList values)
+            {
+                throw new NotImplementedException();
+            }
+
+            protected override Axiom.Math.Real getValue(MovableObject movableObject, Camera camera)
             {
                 throw new NotImplementedException();
             }
@@ -144,10 +144,10 @@ namespace Axiom.UnitTests.Core
                                        };
             var lodStrategy = new LodStategyAscending();
 
-            for ( int expected = 0; expected < materialLodUsageList.Count; expected++)
+            for (int expected = 0; expected < materialLodUsageList.Count; expected++)
             {
-                int actual = lodStrategy.GetIndex( 0.5 + expected, materialLodUsageList );
-                Assert.AreEqual( expected, actual );
+                int actual = lodStrategy.GetIndex(0.5 + expected, materialLodUsageList);
+                Assert.AreEqual(expected, actual);
             }
         }
 
@@ -160,12 +160,12 @@ namespace Axiom.UnitTests.Core
                                        };
             var lodStrategy = new LodStategyDescending();
 
-            for ( int expected = 0; expected < materialLodUsageList.Count; expected++ )
+            for (int expected = 0; expected < materialLodUsageList.Count; expected++)
             {
-                int actual = lodStrategy.GetIndex( 3.0f - expected, materialLodUsageList );
-                Assert.AreEqual( expected, actual );
+                int actual = lodStrategy.GetIndex(3.0f - expected, materialLodUsageList);
+                Assert.AreEqual(expected, actual);
             }
         }
-    
+
     }
 }

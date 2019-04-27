@@ -43,41 +43,41 @@ using Axiom.Collections;
 
 namespace Axiom.Collections
 {
-	/// <summary>
-	/// Represents a collection of <see cref="MovableObject">MovableObjects</see> that are sorted by name.
-	/// </summary>
-	public class MovableObjectCollection : AxiomCollection<MovableObject>
-	{
-		public override void Add( MovableObject item )
-		{
-			base.Add( item.Name, item );
-		}
+    /// <summary>
+    /// Represents a collection of <see cref="MovableObject">MovableObjects</see> that are sorted by name.
+    /// </summary>
+    public class MovableObjectCollection : AxiomCollection<MovableObject>
+    {
+        public override void Add(MovableObject item)
+        {
+            base.Add(item.Name, item);
+        }
 
-		public new void Add( string key, MovableObject item )
-		{
-			base.Add( key, item );
-			item.ObjectRenamed += ObjectRenamed;
-		}
+        public new void Add(string key, MovableObject item)
+        {
+            base.Add(key, item);
+            item.ObjectRenamed += ObjectRenamed;
+        }
 
-		public new void Remove( string key )
-		{
-			this[ key ].ObjectRenamed -= ObjectRenamed;
-			base.Remove( key );
-		}
+        public new void Remove(string key)
+        {
+            this[key].ObjectRenamed -= ObjectRenamed;
+            base.Remove(key);
+        }
 
-		private void ObjectRenamed( MovableObject obj, string oldName )
-		{
-			// do not use overridden Add methods otherwise
-			// the event handler will be attached again.
-			base.Remove( oldName );
-			base.Add( obj.Name, obj );
-		}
-	}
+        private void ObjectRenamed(MovableObject obj, string oldName)
+        {
+            // do not use overridden Add methods otherwise
+            // the event handler will be attached again.
+            base.Remove(oldName);
+            base.Add(obj.Name, obj);
+        }
+    }
 
-	/// <summary>
-	/// Represents a collection of <see cref="MovableObjectFactory">MovableObjectFactorys</see> accessable by name.
-	/// </summary>
-	public class MovableObjectFactoryMap : Dictionary<string, MovableObjectFactory>
-	{
-	}
+    /// <summary>
+    /// Represents a collection of <see cref="MovableObjectFactory">MovableObjectFactorys</see> accessable by name.
+    /// </summary>
+    public class MovableObjectFactoryMap : Dictionary<string, MovableObjectFactory>
+    {
+    }
 }

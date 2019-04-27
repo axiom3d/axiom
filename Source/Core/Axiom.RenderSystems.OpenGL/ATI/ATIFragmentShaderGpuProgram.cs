@@ -48,112 +48,112 @@ using ResourceHandle = System.UInt64;
 
 namespace Axiom.RenderSystems.OpenGL.ATI
 {
-	/// <summary>
-	/// Summary description for ATIFragmentShaderGpuProgram.
-	/// </summary>
-	public class ATIFragmentShaderGpuProgram : GLGpuProgram
-	{
-		public ATIFragmentShaderGpuProgram( ResourceManager parent, string name, ResourceHandle handle, string group,
-		                                    bool isManual, IManualResourceLoader loader )
-			: base( parent, name, handle, group, isManual, loader )
-		{
-			throw new AxiomException( "This needs upgrading" );
-			programType = Gl.GL_FRAGMENT_SHADER_ATI;
-			programId = Gl.glGenFragmentShadersATI( 1 );
-		}
+    /// <summary>
+    /// Summary description for ATIFragmentShaderGpuProgram.
+    /// </summary>
+    public class ATIFragmentShaderGpuProgram : GLGpuProgram
+    {
+        public ATIFragmentShaderGpuProgram(ResourceManager parent, string name, ResourceHandle handle, string group,
+                                            bool isManual, IManualResourceLoader loader)
+            : base(parent, name, handle, group, isManual, loader)
+        {
+            throw new AxiomException("This needs upgrading");
+            programType = Gl.GL_FRAGMENT_SHADER_ATI;
+            programId = Gl.glGenFragmentShadersATI(1);
+        }
 
-		#region Implementation of GpuProgram
+        #region Implementation of GpuProgram
 
-		protected override void LoadFromSource()
-		{
-			var assembler = new PixelShader();
+        protected override void LoadFromSource()
+        {
+            var assembler = new PixelShader();
 
-			//bool testError = assembler.RunTests();
+            //bool testError = assembler.RunTests();
 
-			bool error = !assembler.Compile( Source );
+            bool error = !assembler.Compile(Source);
 
-			if ( !error )
-			{
-				Gl.glBindFragmentShaderATI( programId );
-				Gl.glBeginFragmentShaderATI();
+            if (!error)
+            {
+                Gl.glBindFragmentShaderATI(programId);
+                Gl.glBeginFragmentShaderATI();
 
-				// Compile and issue shader commands
-				error = !assembler.BindAllMachineInstToFragmentShader();
+                // Compile and issue shader commands
+                error = !assembler.BindAllMachineInstToFragmentShader();
 
-				Gl.glEndFragmentShaderATI();
-			}
-			else
-			{
-			}
-		}
+                Gl.glEndFragmentShaderATI();
+            }
+            else
+            {
+            }
+        }
 
-		public override void Unload()
-		{
-			base.Unload();
+        public override void Unload()
+        {
+            base.Unload();
 
-			// delete the fragment shader for good
-			Gl.glDeleteFragmentShaderATI( programId );
-		}
+            // delete the fragment shader for good
+            Gl.glDeleteFragmentShaderATI(programId);
+        }
 
-		#endregion Implementation of GpuProgram
+        #endregion Implementation of GpuProgram
 
-		#region Implementation of GLGpuProgram
+        #region Implementation of GLGpuProgram
 
-		public override void Bind()
-		{
-			Gl.glEnable( programType );
-			Gl.glBindFragmentShaderATI( programId );
-		}
+        public override void Bind()
+        {
+            Gl.glEnable(programType);
+            Gl.glBindFragmentShaderATI(programId);
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public override void BindProgramParameters( GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask )
-		{
-			// only supports float constants
-			var floatStruct = parms.FloatLogicalBufferStruct;
+        [OgreVersion(1, 7, 2)]
+        public override void BindProgramParameters(GpuProgramParameters parms, GpuProgramParameters.GpuParamVariability mask)
+        {
+            // only supports float constants
+            var floatStruct = parms.FloatLogicalBufferStruct;
 
-			foreach ( var i in floatStruct.Map )
-			{
-				if ( ( i.Value.Variability & mask ) != 0 )
-				{
-					var logicalIndex = i.Key;
-					var pFloat = parms.GetFloatPointer( i.Value.PhysicalIndex ).Pointer;
-					// Iterate over the params, set in 4-float chunks (low-level)
-					for ( var j = 0; j < i.Value.CurrentSize; j += 4 )
-					{
-						Gl.glSetFragmentShaderConstantATI( Gl.GL_CON_0_ATI + logicalIndex, pFloat.Pin() );
-						pFloat.UnPin();
-						pFloat += 4;
-						++logicalIndex;
-					}
-				}
-			}
-		}
+            foreach (var i in floatStruct.Map)
+            {
+                if ((i.Value.Variability & mask) != 0)
+                {
+                    var logicalIndex = i.Key;
+                    var pFloat = parms.GetFloatPointer(i.Value.PhysicalIndex).Pointer;
+                    // Iterate over the params, set in 4-float chunks (low-level)
+                    for (var j = 0; j < i.Value.CurrentSize; j += 4)
+                    {
+                        Gl.glSetFragmentShaderConstantATI(Gl.GL_CON_0_ATI + logicalIndex, pFloat.Pin());
+                        pFloat.UnPin();
+                        pFloat += 4;
+                        ++logicalIndex;
+                    }
+                }
+            }
+        }
 
-		public override void Unbind()
-		{
-			Gl.glDisable( programType );
-		}
+        public override void Unbind()
+        {
+            Gl.glDisable(programType);
+        }
 
-		#endregion Implementation of GLGpuProgram
-	}
+        #endregion Implementation of GLGpuProgram
+    }
 
-	/// <summary>
-	/// 
-	/// </summary>
-	public class ATIFragmentShaderFactory : IOpenGLGpuProgramFactory
-	{
-		#region IOpenGLGpuProgramFactory Members
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ATIFragmentShaderFactory : IOpenGLGpuProgramFactory
+    {
+        #region IOpenGLGpuProgramFactory Members
 
-		public GLGpuProgram Create( ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
-		                            IManualResourceLoader loader, GpuProgramType type, string syntaxCode )
-		{
-			// creates and returns a new ATI fragment shader implementation
-			GLGpuProgram ret = new ATIFragmentShaderGpuProgram( parent, name, handle, group, isManual, loader );
-			ret.Type = type;
-			ret.SyntaxCode = syntaxCode;
-			return ret;
-		}
+        public GLGpuProgram Create(ResourceManager parent, string name, ResourceHandle handle, string group, bool isManual,
+                                    IManualResourceLoader loader, GpuProgramType type, string syntaxCode)
+        {
+            // creates and returns a new ATI fragment shader implementation
+            GLGpuProgram ret = new ATIFragmentShaderGpuProgram(parent, name, handle, group, isManual, loader);
+            ret.Type = type;
+            ret.SyntaxCode = syntaxCode;
+            return ret;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

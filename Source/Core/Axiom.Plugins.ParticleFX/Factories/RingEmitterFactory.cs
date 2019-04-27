@@ -51,24 +51,24 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.ParticleFX.Factories
 {
-	/// <summary>
-	/// Summary description for RingEmitterFactory.
-	/// </summary>
-	public class RingEmitterFactory : ParticleEmitterFactory
-	{
-		public override string Name
-		{
-			get
-			{
-				return "Ring";
-			}
-		}
+    /// <summary>
+    /// Summary description for RingEmitterFactory.
+    /// </summary>
+    public class RingEmitterFactory : ParticleEmitterFactory
+    {
+        public override string Name
+        {
+            get
+            {
+                return "Ring";
+            }
+        }
 
-		public override ParticleEmitter Create( ParticleSystem ps )
-		{
-			ParticleEmitter emitter = new RingEmitter( ps );
-			emitterList.Add( emitter );
-			return emitter;
-		}
-	}
+        public override ParticleEmitter Create(ParticleSystem ps)
+        {
+            ParticleEmitter emitter = new RingEmitter(ps);
+            emitterList.Add(emitter);
+            return emitter;
+        }
+    }
 }

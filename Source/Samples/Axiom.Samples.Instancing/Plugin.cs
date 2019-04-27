@@ -27,16 +27,16 @@ using Axiom.Core;
 
 namespace Axiom.Samples.Instancing
 {
-	[Export( typeof ( IPlugin ) )]
-	public class Plugin : SamplePlugin
-	{
-		private InstancingSample sample;
+    [Export(typeof(IPlugin))]
+    public class Plugin : SamplePlugin
+    {
+        private InstancingSample sample;
 
-		public override void Initialize()
-		{
-			this.sample = new InstancingSample();
-			Name = this.sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this.sample );
-		}
-	}
+        public override void Initialize()
+        {
+            this.sample = new InstancingSample();
+            Name = this.sample.Metadata["Title"] + " Sample";
+            AddSample(this.sample);
+        }
+    }
 }

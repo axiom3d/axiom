@@ -44,12 +44,12 @@ using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	/// <summary>
-	/// GL surface descriptor. Points to a 2D surface that can be rendered to. 
-	/// </summary>
-	internal struct GLSurfaceDesc
-	{
-		public GLHardwarePixelBuffer Buffer;
-		public int ZOffset;
-	}
+    /// <summary>
+    /// GL surface descriptor. Points to a 2D surface that can be rendered to. 
+    /// </summary>
+    internal struct GLSurfaceDesc
+    {
+        public GLHardwarePixelBuffer Buffer;
+        public int ZOffset;
+    }
 }

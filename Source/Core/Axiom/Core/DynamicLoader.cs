@@ -27,7 +27,7 @@ namespace Axiom.Core
         /// <summary>
         /// Creates a loader instance for the specified assembly file
         /// </summary>
-        public DynamicLoader( string assemblyFilename )
+        public DynamicLoader(string assemblyFilename)
             : this()
         {
             this._assemblyFilename = assemblyFilename;
@@ -36,7 +36,7 @@ namespace Axiom.Core
         /// <summary>
         /// Creates a loader instance for the specified assembly
         /// </summary>
-        public DynamicLoader( Assembly assembly )
+        public DynamicLoader(Assembly assembly)
             : this()
         {
             this._assembly = assembly;
@@ -48,21 +48,21 @@ namespace Axiom.Core
 
         public Assembly GetAssembly()
         {
-            if ( this._assembly == null )
+            if (this._assembly == null)
             {
-                lock ( _mutex )
+                lock (_mutex)
                 {
-                    if ( String.IsNullOrEmpty( this._assemblyFilename ) )
+                    if (String.IsNullOrEmpty(this._assemblyFilename))
                     {
                         this._assembly = Assembly.GetExecutingAssembly();
                     }
                     else
                     {
-                        Debug.WriteLine( String.Format( "Loading {0}", this._assemblyFilename ) );
+                        Debug.WriteLine(String.Format("Loading {0}", this._assemblyFilename));
 #if SILVERLIGHT
 						_assembly = Assembly.Load(_assemblyFilename);
 #else
-                        this._assembly = Assembly.LoadFrom( this._assemblyFilename );
+                        this._assembly = Assembly.LoadFrom(this._assemblyFilename);
 #endif
                     }
                 }
@@ -70,7 +70,7 @@ namespace Axiom.Core
             return this._assembly;
         }
 
-        public IList<ObjectCreator> Find( Type baseType )
+        public IList<ObjectCreator> Find(Type baseType)
         {
             var types = new List<ObjectCreator>();
             Assembly assembly;
@@ -81,13 +81,13 @@ namespace Axiom.Core
                 assembly = GetAssembly();
                 assemblyTypes = assembly.GetTypes();
 
-                foreach ( var type in assemblyTypes )
+                foreach (var type in assemblyTypes)
                 {
 #if !(XBOX || XBOX360)
-                    if ( ( baseType.IsInterface && type.GetInterface( baseType.FullName, false ) != null ) ||
-                         ( !baseType.IsInterface && type.BaseType == baseType ) )
+                    if ((baseType.IsInterface && type.GetInterface(baseType.FullName, false) != null) ||
+                         (!baseType.IsInterface && type.BaseType == baseType))
                     {
-                        types.Add( new ObjectCreator( assembly, type ) );
+                        types.Add(new ObjectCreator(assembly, type));
                     }
 #else
 					for ( int i = 0; i < type.GetInterfaces().GetLength( 0 ); i++ )
@@ -103,24 +103,24 @@ namespace Axiom.Core
             }
 
 #if !(XBOX || XBOX360)
-            catch ( ReflectionTypeLoadException ex )
+            catch (ReflectionTypeLoadException ex)
             {
-                LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
-                LogManager.Instance.Write( "Loader Exceptions:" );
-                foreach ( var lex in ex.LoaderExceptions )
+                LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
+                LogManager.Instance.Write("Loader Exceptions:");
+                foreach (var lex in ex.LoaderExceptions)
                 {
-                    LogManager.Instance.Write( LogManager.BuildExceptionString( lex ) );
+                    LogManager.Instance.Write(LogManager.BuildExceptionString(lex));
                 }
             }
-            catch ( BadImageFormatException ex )
+            catch (BadImageFormatException ex)
             {
-                LogManager.Instance.Write( LogMessageLevel.Trivial, true, ex.Message );
+                LogManager.Instance.Write(LogMessageLevel.Trivial, true, ex.Message);
             }
 #endif
-            catch ( Exception ex )
+            catch (Exception ex)
             {
-                LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
-                LogManager.Instance.Write( "Loader Exceptions:" );
+                LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
+                LogManager.Instance.Write("Loader Exceptions:");
             }
 
             return types;

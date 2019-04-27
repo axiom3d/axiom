@@ -40,7 +40,7 @@ namespace Axiom.UnitTests.Core
     [TestFixture]
     public class ChainedEventTests
     {
-        protected class TestEventArgs: EventArgs
+        protected class TestEventArgs : EventArgs
         {
             public bool Continue;
         }
@@ -61,13 +61,13 @@ namespace Axiom.UnitTests.Core
             // Act
 
             // Assert
-            Assert.DoesNotThrow( () =>
-                                 {
-                                     eventUnderTest.Fire( this, new TestEventArgs()
-                                                                {
-                                                                    Continue = true
-                                                                }, ( args ) => args.Continue == true );
-                                 } );
+            Assert.DoesNotThrow(() =>
+                                {
+                                    eventUnderTest.Fire(this, new TestEventArgs()
+                                    {
+                                        Continue = true
+                                    }, (args) => args.Continue == true);
+                                });
         }
 
         [Test]
@@ -81,41 +81,41 @@ namespace Axiom.UnitTests.Core
             // Act
 
             // Assert
-            Assert.DoesNotThrow( () =>
-                                 {
-                                     eventUnderTest.Fire( this, new TestEventArgs()
-                                                                {
-                                                                    Continue = true
-                                                                }, ( args ) => args.Continue == true );
-                                 } );
+            Assert.DoesNotThrow(() =>
+                                {
+                                    eventUnderTest.Fire(this, new TestEventArgs()
+                                    {
+                                        Continue = true
+                                    }, (args) => args.Continue == true);
+                                });
         }
 
         [Test]
         public void FireEventWithMultipleHandlersTest()
         {
             // Arrange
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              args.Continue = true;
                                          };
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              args.Continue = true;
                                          };
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              args.Continue = true;
                                          };
 
             var argsUnderTest = new TestEventArgs()
-                                {
-                                    Continue = true
-                                };
+            {
+                Continue = true
+            };
             // Act
-            eventUnderTest.Fire( this, argsUnderTest, ( args ) => args.Continue == true );
+            eventUnderTest.Fire(this, argsUnderTest, (args) => args.Continue == true);
 
             // Assert
-            Assert.IsTrue( argsUnderTest.Continue );
+            Assert.IsTrue(argsUnderTest.Continue);
         }
 
         [Test]
@@ -123,17 +123,17 @@ namespace Axiom.UnitTests.Core
         {
             string lastEventHandler = String.Empty;
             // Arrange
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              lastEventHandler = "EventHandlerOne";
                                              args.Continue = false;
                                          };
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              lastEventHandler = "EventHandlerTwo";
                                              args.Continue = true;
                                          };
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              lastEventHandler = "EventHandlerThree";
                                              args.Continue = true;
@@ -144,10 +144,10 @@ namespace Axiom.UnitTests.Core
                 Continue = true
             };
             // Act
-            eventUnderTest.Fire( this, argsUnderTest, ( args ) => args.Continue == true );
+            eventUnderTest.Fire(this, argsUnderTest, (args) => args.Continue == true);
 
             // Assert
-            Assert.IsTrue( argsUnderTest.Continue == false && lastEventHandler == "EventHandlerOne", "{0} returned {1}", lastEventHandler, argsUnderTest.Continue );
+            Assert.IsTrue(argsUnderTest.Continue == false && lastEventHandler == "EventHandlerOne", "{0} returned {1}", lastEventHandler, argsUnderTest.Continue);
         }
 
         [Test]
@@ -155,17 +155,17 @@ namespace Axiom.UnitTests.Core
         {
             string lastEventHandler = String.Empty;
             // Arrange
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              lastEventHandler = "EventHandlerOne";
                                              args.Continue = true;
                                          };
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              lastEventHandler = "EventHandlerTwo";
                                              args.Continue = false;
                                          };
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              lastEventHandler = "EventHandlerThree";
                                              args.Continue = true;
@@ -176,10 +176,10 @@ namespace Axiom.UnitTests.Core
                 Continue = true
             };
             // Act
-            eventUnderTest.Fire( this, argsUnderTest, ( args ) => args.Continue == true );
+            eventUnderTest.Fire(this, argsUnderTest, (args) => args.Continue == true);
 
             // Assert
-            Assert.IsTrue( argsUnderTest.Continue == false && lastEventHandler == "EventHandlerTwo", "{0} returned {1}", lastEventHandler, argsUnderTest.Continue );
+            Assert.IsTrue(argsUnderTest.Continue == false && lastEventHandler == "EventHandlerTwo", "{0} returned {1}", lastEventHandler, argsUnderTest.Continue);
         }
 
         [Test]
@@ -187,36 +187,36 @@ namespace Axiom.UnitTests.Core
         {
             string lastEventHandler = String.Empty;
             // Arrange
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              lastEventHandler = "EventHandlerOne";
                                              args.Continue = true;
                                          };
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              lastEventHandler = "EventHandlerTwo";
                                              args.Continue = true;
                                          };
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              lastEventHandler = "EventHandlerThree";
                                              args.Continue = false;
                                          };
-            eventUnderTest.EventSinks += ( sender, args ) =>
+            eventUnderTest.EventSinks += (sender, args) =>
                                          {
                                              lastEventHandler = "EventHandlerFour";
                                              args.Continue = true;
                                          };
 
             var argsUnderTest = new TestEventArgs()
-                                {
-                                    Continue = true
-                                };
+            {
+                Continue = true
+            };
             // Act
-            eventUnderTest.Fire( this, argsUnderTest, ( args ) => args.Continue == true );
+            eventUnderTest.Fire(this, argsUnderTest, (args) => args.Continue == true);
 
             // Assert
-            Assert.IsTrue( argsUnderTest.Continue == false && lastEventHandler == "EventHandlerThree", "{0} returned {1}", lastEventHandler, argsUnderTest.Continue );
+            Assert.IsTrue(argsUnderTest.Continue == false && lastEventHandler == "EventHandlerThree", "{0} returned {1}", lastEventHandler, argsUnderTest.Continue);
         }
     }
 }

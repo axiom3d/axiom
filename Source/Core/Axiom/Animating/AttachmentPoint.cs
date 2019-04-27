@@ -55,51 +55,51 @@ using Axiom.Collections;
 
 namespace Axiom.Animating
 {
-	public class AttachmentPoint
-	{
-		private readonly string name;
-		private readonly string parentBone;
-		private readonly Quaternion orientation;
-		private readonly Vector3 position;
+    public class AttachmentPoint
+    {
+        private readonly string name;
+        private readonly string parentBone;
+        private readonly Quaternion orientation;
+        private readonly Vector3 position;
 
-		public AttachmentPoint( string name, string parentBone, Quaternion orientation, Vector3 position )
-		{
-			this.name = name;
-			this.parentBone = parentBone;
-			this.orientation = orientation;
-			this.position = position;
-		}
+        public AttachmentPoint(string name, string parentBone, Quaternion orientation, Vector3 position)
+        {
+            this.name = name;
+            this.parentBone = parentBone;
+            this.orientation = orientation;
+            this.position = position;
+        }
 
-		public string Name
-		{
-			get
-			{
-				return this.name;
-			}
-		}
+        public string Name
+        {
+            get
+            {
+                return this.name;
+            }
+        }
 
-		public string ParentBone
-		{
-			get
-			{
-				return this.parentBone;
-			}
-		}
+        public string ParentBone
+        {
+            get
+            {
+                return this.parentBone;
+            }
+        }
 
-		public Quaternion Orientation
-		{
-			get
-			{
-				return this.orientation;
-			}
-		}
+        public Quaternion Orientation
+        {
+            get
+            {
+                return this.orientation;
+            }
+        }
 
-		public Vector3 Position
-		{
-			get
-			{
-				return this.position;
-			}
-		}
-	}
+        public Vector3 Position
+        {
+            get
+            {
+                return this.position;
+            }
+        }
+    }
 }

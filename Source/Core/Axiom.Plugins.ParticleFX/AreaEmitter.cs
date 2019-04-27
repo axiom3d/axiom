@@ -47,126 +47,126 @@ using Axiom.Scripting;
 
 namespace Axiom.ParticleFX
 {
-	/// <summary>
-	/// Summary description for AreaEmitter.
-	/// </summary>
-	public abstract class AreaEmitter : ParticleEmitter
-	{
-		#region Fields
+    /// <summary>
+    /// Summary description for AreaEmitter.
+    /// </summary>
+    public abstract class AreaEmitter : ParticleEmitter
+    {
+        #region Fields
 
-		protected Vector3 size = Vector3.Zero;
-		protected Vector3 xRange;
-		protected Vector3 yRange;
-		protected Vector3 zRange;
+        protected Vector3 size = Vector3.Zero;
+        protected Vector3 xRange;
+        protected Vector3 yRange;
+        protected Vector3 zRange;
 
-		#endregion Fields
+        #endregion Fields
 
-		public AreaEmitter( ParticleSystem ps )
-			: base( ps )
-		{
-		}
+        public AreaEmitter(ParticleSystem ps)
+            : base(ps)
+        {
+        }
 
-		#region Properties
+        #region Properties
 
-		public override Axiom.Math.Vector3 Direction
-		{
-			get
-			{
-				return base.Direction;
-			}
-			set
-			{
-				base.Direction = value;
+        public override Axiom.Math.Vector3 Direction
+        {
+            get
+            {
+                return base.Direction;
+            }
+            set
+            {
+                base.Direction = value;
 
-				// update the ranges
-				GenerateAreaAxes();
-			}
-		}
+                // update the ranges
+                GenerateAreaAxes();
+            }
+        }
 
-		public Vector3 Size
-		{
-			get
-			{
-				return this.size;
-			}
-			set
-			{
-				this.size = value;
-				GenerateAreaAxes();
-			}
-		}
+        public Vector3 Size
+        {
+            get
+            {
+                return this.size;
+            }
+            set
+            {
+                this.size = value;
+                GenerateAreaAxes();
+            }
+        }
 
-		public new float Width
-		{
-			get
-			{
-				return this.size.x;
-			}
-			set
-			{
-				this.size.x = value;
-				GenerateAreaAxes();
-			}
-		}
+        public new float Width
+        {
+            get
+            {
+                return this.size.x;
+            }
+            set
+            {
+                this.size.x = value;
+                GenerateAreaAxes();
+            }
+        }
 
-		public new float Height
-		{
-			get
-			{
-				return this.size.y;
-			}
-			set
-			{
-				this.size.y = value;
-				GenerateAreaAxes();
-			}
-		}
+        public new float Height
+        {
+            get
+            {
+                return this.size.y;
+            }
+            set
+            {
+                this.size.y = value;
+                GenerateAreaAxes();
+            }
+        }
 
-		public float Depth
-		{
-			get
-			{
-				return this.size.z;
-			}
-			set
-			{
-				this.size.z = value;
-				GenerateAreaAxes();
-			}
-		}
+        public float Depth
+        {
+            get
+            {
+                return this.size.z;
+            }
+            set
+            {
+                this.size.z = value;
+                GenerateAreaAxes();
+            }
+        }
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Methods
+        #region Methods
 
-		protected void GenerateAreaAxes()
-		{
-			Vector3 left = up.Cross( Direction );
+        protected void GenerateAreaAxes()
+        {
+            Vector3 left = up.Cross(Direction);
 
-			this.xRange = left*( this.size.x*0.5f );
-			this.yRange = up*( this.size.y*0.5f );
-			this.zRange = Direction*( this.size.z*0.5f );
-		}
+            this.xRange = left * (this.size.x * 0.5f);
+            this.yRange = up * (this.size.y * 0.5f);
+            this.zRange = Direction * (this.size.z * 0.5f);
+        }
 
-		protected void InitDefaults( string type )
-		{
-			// TODO: Revisit this
-			Direction = Vector3.UnitZ;
-			up = Vector3.UnitZ;
-			Size = new Vector3( 50, 50, 0 );
-			this.type = type;
-		}
+        protected void InitDefaults(string type)
+        {
+            // TODO: Revisit this
+            Direction = Vector3.UnitZ;
+            up = Vector3.UnitZ;
+            Size = new Vector3(50, 50, 0);
+            this.type = type;
+        }
 
-		#endregion Methods
+        #endregion Methods
 
-		#region Implementation of ParticleEmitter
+        #region Implementation of ParticleEmitter
 
-		public override ushort GetEmissionCount( float timeElapsed )
-		{
-			// use basic constant emission
-			return GenerateConstantEmissionCount( timeElapsed );
-		}
+        public override ushort GetEmissionCount(float timeElapsed)
+        {
+            // use basic constant emission
+            return GenerateConstantEmissionCount(timeElapsed);
+        }
 
-		#endregion Implementation of ParticleEmitter
-	}
+        #endregion Implementation of ParticleEmitter
+    }
 }

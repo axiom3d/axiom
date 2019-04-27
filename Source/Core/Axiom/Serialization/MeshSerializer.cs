@@ -47,150 +47,150 @@ using Axiom.Core;
 
 namespace Axiom.Serialization
 {
-	/// <summary>
-	///		Class for serialising mesh data to/from an OGRE .mesh file.
-	/// </summary>
-	/// <remarks>
-	///		This class allows exporters to write OGRE .mesh files easily, and allows the
-	///		OGRE engine to import .mesh files into instatiated OGRE Meshes.
-	///		<p/>
-	///		It's important to realize that this exporter uses OGRE terminology. In this context,
-	///		'Mesh' means a top-level mesh structure which can actually contain many SubMeshes, each
-	///		of which has only one Material. Modelling packages may refer to these differently, for
-	///		example in Milkshape, it says 'Model' instead of 'Mesh' and 'Mesh' instead of 'SubMesh',
-	///		but the theory is the same.
-	/// </remarks>
-	public sealed class MeshSerializer : Serializer
-	{
-		#region Fields
+    /// <summary>
+    ///		Class for serialising mesh data to/from an OGRE .mesh file.
+    /// </summary>
+    /// <remarks>
+    ///		This class allows exporters to write OGRE .mesh files easily, and allows the
+    ///		OGRE engine to import .mesh files into instatiated OGRE Meshes.
+    ///		<p/>
+    ///		It's important to realize that this exporter uses OGRE terminology. In this context,
+    ///		'Mesh' means a top-level mesh structure which can actually contain many SubMeshes, each
+    ///		of which has only one Material. Modelling packages may refer to these differently, for
+    ///		example in Milkshape, it says 'Model' instead of 'Mesh' and 'Mesh' instead of 'SubMesh',
+    ///		but the theory is the same.
+    /// </remarks>
+    public sealed class MeshSerializer : Serializer
+    {
+        #region Fields
 
-		/// <summary>
-		///		Lookup table holding the various mesh serializer versions.
-		/// </summary>
-		private readonly AxiomCollection<MeshSerializerImpl> implementations = new AxiomCollection<MeshSerializerImpl>();
+        /// <summary>
+        ///		Lookup table holding the various mesh serializer versions.
+        /// </summary>
+        private readonly AxiomCollection<MeshSerializerImpl> implementations = new AxiomCollection<MeshSerializerImpl>();
 
-		/// <summary>
-		///		Current version string.
-		/// </summary>
-		private static string currentVersion = "[MeshSerializer_v1.41]";
+        /// <summary>
+        ///		Current version string.
+        /// </summary>
+        private static string currentVersion = "[MeshSerializer_v1.41]";
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		///		Default constructor.
-		/// </summary>
-		public MeshSerializer()
-		{
-			// add the supported .mesh versions
-			this.implementations.Add( "[MeshSerializer_v1.10]", new MeshSerializerImplv11() );
-			this.implementations.Add( "[MeshSerializer_v1.20]", new MeshSerializerImplv12() );
-			this.implementations.Add( "[MeshSerializer_v1.30]", new MeshSerializerImplv13() );
-			this.implementations.Add( "[MeshSerializer_v1.40]", new MeshSerializerImplv14() );
-			this.implementations.Add( currentVersion, new MeshSerializerImpl() );
-		}
+        /// <summary>
+        ///		Default constructor.
+        /// </summary>
+        public MeshSerializer()
+        {
+            // add the supported .mesh versions
+            this.implementations.Add("[MeshSerializer_v1.10]", new MeshSerializerImplv11());
+            this.implementations.Add("[MeshSerializer_v1.20]", new MeshSerializerImplv12());
+            this.implementations.Add("[MeshSerializer_v1.30]", new MeshSerializerImplv13());
+            this.implementations.Add("[MeshSerializer_v1.40]", new MeshSerializerImplv14());
+            this.implementations.Add(currentVersion, new MeshSerializerImpl());
+        }
 
-		#endregion Constructor
+        #endregion Constructor
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		///		Exports a mesh to the file specified.
-		/// </summary>
-		/// <param name="mesh">Reference to the mesh to export.</param>
-		/// <param name="fileName">The destination filename.</param>
-		public void ExportMesh( Mesh mesh, string fileName )
-		{
-			// call implementation
-			var serializer = (MeshSerializerImpl)this.implementations[ currentVersion ];
-			serializer.ExportMesh( mesh, fileName );
-		}
+        /// <summary>
+        ///		Exports a mesh to the file specified.
+        /// </summary>
+        /// <param name="mesh">Reference to the mesh to export.</param>
+        /// <param name="fileName">The destination filename.</param>
+        public void ExportMesh(Mesh mesh, string fileName)
+        {
+            // call implementation
+            var serializer = (MeshSerializerImpl)this.implementations[currentVersion];
+            serializer.ExportMesh(mesh, fileName);
+        }
 
-		/// <summary>
-		///		Imports mesh data from a .mesh file.
-		/// </summary>
-		/// <param name="stream">The stream holding the .mesh data. Must be initialised (pos at the start of the buffer).</param>
-		/// <param name="mesh">Reference to the Mesh object which will receive the data. Should be blank already.</param>
-		public void ImportMesh( Stream stream, Mesh mesh )
-		{
-			var reader = new BinaryReader( stream );
+        /// <summary>
+        ///		Imports mesh data from a .mesh file.
+        /// </summary>
+        /// <param name="stream">The stream holding the .mesh data. Must be initialised (pos at the start of the buffer).</param>
+        /// <param name="mesh">Reference to the Mesh object which will receive the data. Should be blank already.</param>
+        public void ImportMesh(Stream stream, Mesh mesh)
+        {
+            var reader = new BinaryReader(stream);
 
-			// read the header ID
-			var headerID = ReadUShort( reader );
+            // read the header ID
+            var headerID = ReadUShort(reader);
 
-			if ( headerID != (ushort)MeshChunkID.Header )
-			{
-				throw new AxiomException( "File header not found." );
-			}
+            if (headerID != (ushort)MeshChunkID.Header)
+            {
+                throw new AxiomException("File header not found.");
+            }
 
-			// read version
-			var fileVersion = ReadString( reader );
+            // read version
+            var fileVersion = ReadString(reader);
 
-			// set jump back to the start of the reader
-			Seek( reader, 0, SeekOrigin.Begin );
+            // set jump back to the start of the reader
+            Seek(reader, 0, SeekOrigin.Begin);
 
-			// barf if there specified version is not supported
-			if ( !this.implementations.ContainsKey( fileVersion ) )
-			{
-				throw new AxiomException( "Cannot find serializer implementation for version '{0}'.", fileVersion );
-			}
+            // barf if there specified version is not supported
+            if (!this.implementations.ContainsKey(fileVersion))
+            {
+                throw new AxiomException("Cannot find serializer implementation for version '{0}'.", fileVersion);
+            }
 
-			LogManager.Instance.Write( "Mesh: Loading '{0}'...", mesh.Name );
+            LogManager.Instance.Write("Mesh: Loading '{0}'...", mesh.Name);
 
-			// call implementation
-			var serializer = (MeshSerializerImpl)this.implementations[ fileVersion ];
-			serializer.ImportMesh( stream, mesh );
+            // call implementation
+            var serializer = (MeshSerializerImpl)this.implementations[fileVersion];
+            serializer.ImportMesh(stream, mesh);
 
-			// warn on old version of mesh
-			if ( fileVersion != currentVersion )
-			{
-				LogManager.Instance.Write(
-					"WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.",
-					mesh.Name, fileVersion );
-			}
-		}
+            // warn on old version of mesh
+            if (fileVersion != currentVersion)
+            {
+                LogManager.Instance.Write(
+                    "WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.",
+                    mesh.Name, fileVersion);
+            }
+        }
 
-		public DependencyInfo GetDependencyInfo( Stream stream, Mesh mesh )
-		{
-			var reader = new BinaryReader( stream );
+        public DependencyInfo GetDependencyInfo(Stream stream, Mesh mesh)
+        {
+            var reader = new BinaryReader(stream);
 
-			// read the header ID
-			var headerID = ReadUShort( reader );
+            // read the header ID
+            var headerID = ReadUShort(reader);
 
-			if ( headerID != (ushort)MeshChunkID.Header )
-			{
-				throw new AxiomException( "File header not found." );
-			}
+            if (headerID != (ushort)MeshChunkID.Header)
+            {
+                throw new AxiomException("File header not found.");
+            }
 
-			// read version
-			var fileVersion = ReadString( reader );
+            // read version
+            var fileVersion = ReadString(reader);
 
-			// set jump back to the start of the reader
-			Seek( reader, 0, SeekOrigin.Begin );
+            // set jump back to the start of the reader
+            Seek(reader, 0, SeekOrigin.Begin);
 
-			// barf if there specified version is not supported
-			if ( !this.implementations.ContainsKey( fileVersion ) )
-			{
-				throw new AxiomException( "Cannot find serializer implementation for version '{0}'.", fileVersion );
-			}
+            // barf if there specified version is not supported
+            if (!this.implementations.ContainsKey(fileVersion))
+            {
+                throw new AxiomException("Cannot find serializer implementation for version '{0}'.", fileVersion);
+            }
 
-			LogManager.Instance.Write( "Mesh: Fetching dependency info '{0}'...", mesh.Name );
+            LogManager.Instance.Write("Mesh: Fetching dependency info '{0}'...", mesh.Name);
 
-			// call implementation
-			var serializer = (MeshSerializerImpl)this.implementations[ fileVersion ];
-			var rv = serializer.GetDependencyInfo( stream, mesh );
+            // call implementation
+            var serializer = (MeshSerializerImpl)this.implementations[fileVersion];
+            var rv = serializer.GetDependencyInfo(stream, mesh);
 
-			// warn on old version of mesh
-			if ( fileVersion != currentVersion )
-			{
-				LogManager.Instance.Write(
-					"WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.",
-					mesh.Name, fileVersion );
-			}
-			return rv;
-		}
+            // warn on old version of mesh
+            if (fileVersion != currentVersion)
+            {
+                LogManager.Instance.Write(
+                    "WARNING: {0} is an older format ({1}); you should upgrade it as soon as possible using the OgreMeshUpdate tool.",
+                    mesh.Name, fileVersion);
+            }
+            return rv;
+        }
 
-		#endregion Methods
-	};
+        #endregion Methods
+    };
 }

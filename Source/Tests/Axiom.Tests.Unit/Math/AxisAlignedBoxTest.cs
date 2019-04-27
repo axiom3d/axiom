@@ -44,7 +44,7 @@ namespace Axiom.Engine.Tests.Math
         [Test]
         public void TestMergePoint()
         {
-            AxisAlignedBox actual = new AxisAlignedBox( new Vector3(0,0,0), new Vector3(50,50,50));
+            AxisAlignedBox actual = new AxisAlignedBox(new Vector3(0, 0, 0), new Vector3(50, 50, 50));
             AxisAlignedBox expected = new AxisAlignedBox(new Vector3(0, 0, 0), new Vector3(150, 150, 150));
 
             Vector3 point = new Vector3(150, 150, 150);
@@ -73,12 +73,12 @@ namespace Axiom.Engine.Tests.Math
 
             AxisAlignedBox actual;
 
-            for ( int index = 0; index < boxA.Length; index++ )
+            for (int index = 0; index < boxA.Length; index++)
             {
-                actual = boxA[ index ];
-                actual.Merge( boxB[ index ] );
+                actual = boxA[index];
+                actual.Merge(boxB[index]);
 
-                Assert.AreEqual( expected[ index ], actual );
+                Assert.AreEqual(expected[index], actual);
             }
         }
 

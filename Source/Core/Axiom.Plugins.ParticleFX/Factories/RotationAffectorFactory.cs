@@ -49,24 +49,24 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.ParticleFX.Factories
 {
-	/// <summary>
-	/// Summary description for RotationAffectorFactory.
-	/// </summary>
-	public class RotationAffectorFactory : ParticleAffectorFactory
-	{
-		public override string Name
-		{
-			get
-			{
-				return "Rotator";
-			}
-		}
+    /// <summary>
+    /// Summary description for RotationAffectorFactory.
+    /// </summary>
+    public class RotationAffectorFactory : ParticleAffectorFactory
+    {
+        public override string Name
+        {
+            get
+            {
+                return "Rotator";
+            }
+        }
 
-		public override ParticleAffector CreateAffector( ParticleSystem psys )
-		{
-			ParticleAffector p = new RotationAffector( psys );
-			affectorList.Add( p );
-			return p;
-		}
-	}
+        public override ParticleAffector CreateAffector(ParticleSystem psys)
+        {
+            ParticleAffector p = new RotationAffector(psys);
+            affectorList.Add(p);
+            return p;
+        }
+    }
 }

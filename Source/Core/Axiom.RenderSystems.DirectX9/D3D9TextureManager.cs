@@ -43,99 +43,99 @@ using D3D9 = SharpDX.Direct3D9;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	public class D3D9TextureManager : TextureManager
-	{
-		[OgreVersion( 1, 7, 2 )]
-		public D3D9TextureManager()
-			: base()
-		{
-			// register with group manager
-			ResourceGroupManager.Instance.RegisterResourceManager( ResourceType, this );
-		}
+    public class D3D9TextureManager : TextureManager
+    {
+        [OgreVersion(1, 7, 2)]
+        public D3D9TextureManager()
+            : base()
+        {
+            // register with group manager
+            ResourceGroupManager.Instance.RegisterResourceManager(ResourceType, this);
+        }
 
-		[OgreVersion( 1, 7, 2, "~D3D9TextureManager" )]
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					// unregister with group manager
-					ResourceGroupManager.Instance.UnregisterResourceManager( ResourceType );
-				}
-			}
+        [OgreVersion(1, 7, 2, "~D3D9TextureManager")]
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    // unregister with group manager
+                    ResourceGroupManager.Instance.UnregisterResourceManager(ResourceType);
+                }
+            }
 
-			base.dispose( disposeManagedResources );
-		}
+            base.dispose(disposeManagedResources);
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		protected override Resource _create( string name, ulong handle, string group, bool isManual,
-		                                     IManualResourceLoader loader, NameValuePairList createParams )
-		{
-			return new D3D9Texture( this, name, handle, group, isManual, loader );
-		}
+        [OgreVersion(1, 7, 2)]
+        protected override Resource _create(string name, ulong handle, string group, bool isManual,
+                                             IManualResourceLoader loader, NameValuePairList createParams)
+        {
+            return new D3D9Texture(this, name, handle, group, isManual, loader);
+        }
 
-		// This ends up just discarding the format passed in; the C# methods don't let you supply
-		// a "recommended" format.  Ah well.
-		[OgreVersion( 1, 7, 2 )]
-		public override Axiom.Media.PixelFormat GetNativeFormat( TextureType ttype, PixelFormat format, TextureUsage usage )
-		{
-			// Basic filtering
-			var d3dPF = D3D9Helper.ConvertEnum( D3D9Helper.GetClosestSupported( format ) );
+        // This ends up just discarding the format passed in; the C# methods don't let you supply
+        // a "recommended" format.  Ah well.
+        [OgreVersion(1, 7, 2)]
+        public override Axiom.Media.PixelFormat GetNativeFormat(TextureType ttype, PixelFormat format, TextureUsage usage)
+        {
+            // Basic filtering
+            var d3dPF = D3D9Helper.ConvertEnum(D3D9Helper.GetClosestSupported(format));
 
-			// Calculate usage
-			var d3dusage = D3D9.Usage.None;
-			var pool = D3D9.Pool.Managed;
-			if ( ( usage & TextureUsage.RenderTarget ) != 0 )
-			{
-				d3dusage |= D3D9.Usage.RenderTarget;
-				pool = D3D9.Pool.Default;
-			}
-			if ( ( usage & TextureUsage.Dynamic ) != 0 )
-			{
-				d3dusage |= D3D9.Usage.Dynamic;
-				pool = D3D9.Pool.Default;
-			}
+            // Calculate usage
+            var d3dusage = D3D9.Usage.None;
+            var pool = D3D9.Pool.Managed;
+            if ((usage & TextureUsage.RenderTarget) != 0)
+            {
+                d3dusage |= D3D9.Usage.RenderTarget;
+                pool = D3D9.Pool.Default;
+            }
+            if ((usage & TextureUsage.Dynamic) != 0)
+            {
+                d3dusage |= D3D9.Usage.Dynamic;
+                pool = D3D9.Pool.Default;
+            }
 
-			var curDevice = D3D9RenderSystem.ActiveD3D9Device;
+            var curDevice = D3D9RenderSystem.ActiveD3D9Device;
 
-			// Use D3DX to adjust pixel format
-			switch ( ttype )
-			{
-				case TextureType.OneD:
-				case TextureType.TwoD:
-					var tReqs = D3D9.Texture.CheckRequirements( curDevice, 0, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ), pool );
-					d3dPF = tReqs.Format;
-					break;
+            // Use D3DX to adjust pixel format
+            switch (ttype)
+            {
+                case TextureType.OneD:
+                case TextureType.TwoD:
+                    var tReqs = D3D9.Texture.CheckRequirements(curDevice, 0, 0, 0, d3dusage, D3D9Helper.ConvertEnum(format), pool);
+                    d3dPF = tReqs.Format;
+                    break;
 
-				case TextureType.ThreeD:
-					var volReqs = D3D9.VolumeTexture.CheckRequirements( curDevice, 0, 0, 0, 0, d3dusage,
-					                                                    D3D9Helper.ConvertEnum( format ), pool );
-					d3dPF = volReqs.Format;
-					break;
+                case TextureType.ThreeD:
+                    var volReqs = D3D9.VolumeTexture.CheckRequirements(curDevice, 0, 0, 0, 0, d3dusage,
+                                                                        D3D9Helper.ConvertEnum(format), pool);
+                    d3dPF = volReqs.Format;
+                    break;
 
-				case TextureType.CubeMap:
-					var cubeReqs = D3D9.CubeTexture.CheckRequirements( curDevice, 0, 0, d3dusage, D3D9Helper.ConvertEnum( format ),
-					                                                   pool );
-					d3dPF = cubeReqs.Format;
-					break;
-			}
+                case TextureType.CubeMap:
+                    var cubeReqs = D3D9.CubeTexture.CheckRequirements(curDevice, 0, 0, d3dusage, D3D9Helper.ConvertEnum(format),
+                                                                       pool);
+                    d3dPF = cubeReqs.Format;
+                    break;
+            }
 
-			return D3D9Helper.ConvertEnum( d3dPF );
-		}
+            return D3D9Helper.ConvertEnum(d3dPF);
+        }
 
-		/// <see cref="Axiom.Core.TextureManager.IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>
-		[OgreVersion( 1, 7, 2 )]
-		public override bool IsHardwareFilteringSupported( TextureType ttype, PixelFormat format, TextureUsage usage,
-		                                                   bool preciseFormatOnly )
-		{
-			if ( !preciseFormatOnly )
-			{
-				format = GetNativeFormat( ttype, format, usage );
-			}
+        /// <see cref="Axiom.Core.TextureManager.IsHardwareFilteringSupported(TextureType, PixelFormat, TextureUsage, bool)"/>
+        [OgreVersion(1, 7, 2)]
+        public override bool IsHardwareFilteringSupported(TextureType ttype, PixelFormat format, TextureUsage usage,
+                                                           bool preciseFormatOnly)
+        {
+            if (!preciseFormatOnly)
+            {
+                format = GetNativeFormat(ttype, format, usage);
+            }
 
             var rs = D3D9RenderSystem.Instance;
-			return rs.CheckTextureFilteringSupported( ttype, format, usage );
-		}
-	};
+            return rs.CheckTextureFilteringSupported(ttype, format, usage);
+        }
+    };
 }

@@ -44,25 +44,25 @@ using Axiom.Core;
 
 namespace Axiom.Plugins.FreeImageCodecs
 {
-	[Export( typeof ( IPlugin ) )]
-	public class Plugin : IPlugin
-	{
-		/// <summary>
-		///    Called when the plugin is started.
-		/// </summary>
-		public void Initialize()
-		{
-            NativeLibraryLoader.CopyNativeDll("FreeImage","FreeImage");
+    [Export(typeof(IPlugin))]
+    public class Plugin : IPlugin
+    {
+        /// <summary>
+        ///    Called when the plugin is started.
+        /// </summary>
+        public void Initialize()
+        {
+            NativeLibraryLoader.CopyNativeDll("FreeImage", "FreeImage");
 
-			FreeImageCodec.Initialize();
-		}
+            FreeImageCodec.Initialize();
+        }
 
-		/// <summary>
-		///    Called when the plugin is stopped.
-		/// </summary>
-		public void Shutdown()
-		{
-			FreeImageCodec.Shutdown();
-		}
-	};
+        /// <summary>
+        ///    Called when the plugin is stopped.
+        /// </summary>
+        public void Shutdown()
+        {
+            FreeImageCodec.Shutdown();
+        }
+    };
 }

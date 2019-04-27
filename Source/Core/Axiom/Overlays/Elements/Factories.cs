@@ -44,72 +44,72 @@ using Axiom.Core;
 
 namespace Axiom.Overlays.Elements
 {
-	/// <summary>
-	/// 	Summary description for BorderPanelFactory.
-	/// </summary>
-	public class BorderPanelFactory : IOverlayElementFactory
-	{
-		#region IOverlayElementFactory Members
+    /// <summary>
+    /// 	Summary description for BorderPanelFactory.
+    /// </summary>
+    public class BorderPanelFactory : IOverlayElementFactory
+    {
+        #region IOverlayElementFactory Members
 
-		public OverlayElement Create( string name )
-		{
-			return new BorderPanel( name );
-		}
+        public OverlayElement Create(string name)
+        {
+            return new BorderPanel(name);
+        }
 
-		public string Type
-		{
-			get
-			{
-				return "BorderPanel";
-			}
-		}
+        public string Type
+        {
+            get
+            {
+                return "BorderPanel";
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 
-	/// <summary>
-	/// 	Summary description for PanelFactory.
-	/// </summary>
-	public class PanelFactory : IOverlayElementFactory
-	{
-		#region IOverlayElementFactory Members
+    /// <summary>
+    /// 	Summary description for PanelFactory.
+    /// </summary>
+    public class PanelFactory : IOverlayElementFactory
+    {
+        #region IOverlayElementFactory Members
 
-		public OverlayElement Create( string name )
-		{
-			return new Panel( name );
-		}
+        public OverlayElement Create(string name)
+        {
+            return new Panel(name);
+        }
 
-		public string Type
-		{
-			get
-			{
-				return "Panel";
-			}
-		}
+        public string Type
+        {
+            get
+            {
+                return "Panel";
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 
-	/// <summary>
-	/// 	Summary description for TextAreaFactory.
-	/// </summary>
-	public class TextAreaFactory : IOverlayElementFactory
-	{
-		#region IOverlayElementFactory Members
+    /// <summary>
+    /// 	Summary description for TextAreaFactory.
+    /// </summary>
+    public class TextAreaFactory : IOverlayElementFactory
+    {
+        #region IOverlayElementFactory Members
 
-		public OverlayElement Create( string name )
-		{
-			return new TextArea( name );
-		}
+        public OverlayElement Create(string name)
+        {
+            return new TextArea(name);
+        }
 
-		public string Type
-		{
-			get
-			{
-				return "TextArea";
-			}
-		}
+        public string Type
+        {
+            get
+            {
+                return "TextArea";
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

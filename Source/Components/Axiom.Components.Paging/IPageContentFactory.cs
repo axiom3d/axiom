@@ -37,19 +37,19 @@
 
 namespace Axiom.Components.Paging
 {
-	/// <summary>
-	/// Define the interface to a factory class that will create subclasses
-	/// of PageContent. 
-	/// </summary>
-	public interface IPageContentFactory
-	{
-		[OgreVersion( 1, 7, 2 )]
-		string Name { get; }
+    /// <summary>
+    /// Define the interface to a factory class that will create subclasses
+    /// of PageContent. 
+    /// </summary>
+    public interface IPageContentFactory
+    {
+        [OgreVersion(1, 7, 2)]
+        string Name { get; }
 
-		[OgreVersion( 1, 7, 2 )]
-		PageContent CreateInstance();
+        [OgreVersion(1, 7, 2)]
+        PageContent CreateInstance();
 
-		[OgreVersion( 1, 7, 2 )]
-		void DestroyInstance( ref PageContent content );
-	};
+        [OgreVersion(1, 7, 2)]
+        void DestroyInstance(ref PageContent content);
+    };
 }

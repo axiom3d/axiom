@@ -41,16 +41,16 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 namespace Axiom.Configuration
 {
-	/// <summary>
-	/// Summary description for Config.
-	/// </summary>
-	public class Config
-	{
-		public const int MaxTextureCoordSets = 6;
-		public const int MaxTextureLayers = 8;
-		public const int MaxBlendWeights = 4;
-		public const int MaxSimultaneousLights = 8;
-		public const int MaxMultipleRenderTargets = 8;
+    /// <summary>
+    /// Summary description for Config.
+    /// </summary>
+    public class Config
+    {
+        public const int MaxTextureCoordSets = 6;
+        public const int MaxTextureLayers = 8;
+        public const int MaxBlendWeights = 4;
+        public const int MaxSimultaneousLights = 8;
+        public const int MaxMultipleRenderTargets = 8;
 
 #if AXIOM_THREAD_SUPPORT
 		/// <summary>
@@ -83,8 +83,8 @@ namespace Axiom.Configuration
 		public static readonly int AxiomThreadLevel = 2;
 #endif
 
-		public Config()
-		{
-		}
-	}
+        public Config()
+        {
+        }
+    }
 }

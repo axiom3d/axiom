@@ -44,20 +44,20 @@ using Axiom.Core;
 
 namespace Axiom.SceneManagers.Bsp
 {
-	[Export( typeof ( IPlugin ) )]
-	public class BspPlugin : IPlugin
-	{
-		public void Initialize()
-		{
-			this._bspSMFactory = new BspSceneManagerFactory();
-			Root.Instance.AddSceneManagerFactory( this._bspSMFactory );
-		}
+    [Export(typeof(IPlugin))]
+    public class BspPlugin : IPlugin
+    {
+        public void Initialize()
+        {
+            this._bspSMFactory = new BspSceneManagerFactory();
+            Root.Instance.AddSceneManagerFactory(this._bspSMFactory);
+        }
 
-		public void Shutdown()
-		{
-			Root.Instance.RemoveSceneManagerFactory( this._bspSMFactory );
-		}
+        public void Shutdown()
+        {
+            Root.Instance.RemoveSceneManagerFactory(this._bspSMFactory);
+        }
 
-		private BspSceneManagerFactory _bspSMFactory;
-	}
+        private BspSceneManagerFactory _bspSMFactory;
+    }
 }

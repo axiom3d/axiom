@@ -1,51 +1,51 @@
 ﻿namespace Axiom.Components.RTShaderSystem
 {
-	internal class FFPTransformFactory : SubRenderStateFactory
-	{
-		public override string Type
-		{
-			get
-			{
-				return FFPTransform.FFPType;
-			}
-		}
+    internal class FFPTransformFactory : SubRenderStateFactory
+    {
+        public override string Type
+        {
+            get
+            {
+                return FFPTransform.FFPType;
+            }
+        }
 
-		public override SubRenderState CreateInstance( Scripting.Compiler.ScriptCompiler compiler,
-		                                               Scripting.Compiler.AST.PropertyAbstractNode prop,
-		                                               Graphics.Pass pass, ScriptTranslator stranslator )
-		{
-			if ( prop.Name == "transform_stage" )
-			{
-				if ( prop.Values.Count == 1 )
-				{
-					string modelType;
+        public override SubRenderState CreateInstance(Scripting.Compiler.ScriptCompiler compiler,
+                                                       Scripting.Compiler.AST.PropertyAbstractNode prop,
+                                                       Graphics.Pass pass, ScriptTranslator stranslator)
+        {
+            if (prop.Name == "transform_stage")
+            {
+                if (prop.Values.Count == 1)
+                {
+                    string modelType;
 
-					if ( !SGScriptTranslator.GetString( prop.Values[ 0 ], out modelType ) )
-					{
-						//compiler.AddError(...);
-						return null;
-					}
-					if ( modelType == "ffp" )
-					{
-						return CreateOrRetrieveInstance( stranslator );
-					}
-				}
-			}
+                    if (!SGScriptTranslator.GetString(prop.Values[0], out modelType))
+                    {
+                        //compiler.AddError(...);
+                        return null;
+                    }
+                    if (modelType == "ffp")
+                    {
+                        return CreateOrRetrieveInstance(stranslator);
+                    }
+                }
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		public override void WriteInstance( Serialization.MaterialSerializer ser, SubRenderState subRenderState,
-		                                    Graphics.Pass srcPass, Graphics.Pass dstPass )
-		{
-			//TODO
-			//ser.WriteAttribute(4, "transform_stage");
-			//ser.WriteValue("ffp");
-		}
+        public override void WriteInstance(Serialization.MaterialSerializer ser, SubRenderState subRenderState,
+                                            Graphics.Pass srcPass, Graphics.Pass dstPass)
+        {
+            //TODO
+            //ser.WriteAttribute(4, "transform_stage");
+            //ser.WriteValue("ffp");
+        }
 
-		protected override SubRenderState CreateInstanceImpl()
-		{
-			return new FFPTransform();
-		}
-	}
+        protected override SubRenderState CreateInstanceImpl()
+        {
+            return new FFPTransform();
+        }
+    }
 }

@@ -51,24 +51,24 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.ParticleFX.Factories
 {
-	/// <summary>
-	/// Summary description for HollowEllipsoidEmitterFactory.
-	/// </summary>
-	public class HollowEllipsoidEmitterFactory : ParticleEmitterFactory
-	{
-		public override string Name
-		{
-			get
-			{
-				return "HollowEllipsoid";
-			}
-		}
+    /// <summary>
+    /// Summary description for HollowEllipsoidEmitterFactory.
+    /// </summary>
+    public class HollowEllipsoidEmitterFactory : ParticleEmitterFactory
+    {
+        public override string Name
+        {
+            get
+            {
+                return "HollowEllipsoid";
+            }
+        }
 
-		public override ParticleEmitter Create( ParticleSystem ps )
-		{
-			ParticleEmitter emitter = new HollowEllipsoidEmitter( ps );
-			emitterList.Add( emitter );
-			return emitter;
-		}
-	}
+        public override ParticleEmitter Create(ParticleSystem ps)
+        {
+            ParticleEmitter emitter = new HollowEllipsoidEmitter(ps);
+            emitterList.Add(emitter);
+            return emitter;
+        }
+    }
 }

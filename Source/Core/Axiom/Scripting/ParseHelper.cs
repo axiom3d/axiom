@@ -48,126 +48,126 @@ using Axiom.Math;
 
 namespace Axiom.Scripting
 {
-	/// <summary>
-	/// 	Class contining helper methods for parsing text files.
-	/// </summary>
-	public class ParseHelper
-	{
-		#region Methods
+    /// <summary>
+    /// 	Class contining helper methods for parsing text files.
+    /// </summary>
+    public class ParseHelper
+    {
+        #region Methods
 
-		/// <summary>
-		///    Helper method for taking a string array and returning a single concatenated
-		///    string composed of the range of specified elements.
-		/// </summary>
-		/// <param name="items"></param>
-		/// <param name="start"></param>
-		/// <param name="end"></param>
-		public static string Combine( string[] items, int start, int end )
-		{
-			var sb = new StringBuilder();
+        /// <summary>
+        ///    Helper method for taking a string array and returning a single concatenated
+        ///    string composed of the range of specified elements.
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        public static string Combine(string[] items, int start, int end)
+        {
+            var sb = new StringBuilder();
 
-			for ( var i = start; i < end; i++ )
-			{
-				sb.AppendFormat( System.Globalization.CultureInfo.CurrentCulture, "{0} ", items[ i ] );
-			}
+            for (var i = start; i < end; i++)
+            {
+                sb.AppendFormat(System.Globalization.CultureInfo.CurrentCulture, "{0} ", items[i]);
+            }
 
-			return sb.ToString( 0, sb.Length - 1 );
-		}
+            return sb.ToString(0, sb.Length - 1);
+        }
 
-		/// <summary>
-		///		Helper method to log a formatted error when encountering problems with parsing
-		///		an attribute.
-		/// </summary>
-		public static void LogParserError( string attribute, string context, string reason )
-		{
-			var error = string.Format( "Bad {0} attribute in block '{1}'. Reason: {2}", attribute, context, reason );
+        /// <summary>
+        ///		Helper method to log a formatted error when encountering problems with parsing
+        ///		an attribute.
+        /// </summary>
+        public static void LogParserError(string attribute, string context, string reason)
+        {
+            var error = string.Format("Bad {0} attribute in block '{1}'. Reason: {2}", attribute, context, reason);
 
-			LogManager.Instance.Write( error );
-		}
+            LogManager.Instance.Write(error);
+        }
 
-		/// <summary>
-		///		Helper method to nip/tuck the string before parsing it.  This includes trimming spaces from the beginning
-		///		and end of the string, as well as removing excess spaces in between values.
-		/// </summary>
-		/// <param name="reader"></param>
-		/// <returns></returns>
-		public static string ReadLine( TextReader reader )
-		{
-			var line = reader.ReadLine();
+        /// <summary>
+        ///		Helper method to nip/tuck the string before parsing it.  This includes trimming spaces from the beginning
+        ///		and end of the string, as well as removing excess spaces in between values.
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
+        public static string ReadLine(TextReader reader)
+        {
+            var line = reader.ReadLine();
 
-			if ( line != null )
-			{
-				line = line.Replace( "\t", " " );
-				line = line.Trim();
+            if (line != null)
+            {
+                line = line.Replace("\t", " ");
+                line = line.Trim();
 
-				// ignore blank lines, lines without spaces, or comments
-				if ( line.Length == 0 || line.IndexOf( ' ' ) == -1 || line.StartsWith( "//" ) )
-				{
-					return line;
-				}
+                // ignore blank lines, lines without spaces, or comments
+                if (line.Length == 0 || line.IndexOf(' ') == -1 || line.StartsWith("//"))
+                {
+                    return line;
+                }
 
-				var sb = new StringBuilder();
+                var sb = new StringBuilder();
 
-				var values = line.Split( ' ' );
+                var values = line.Split(' ');
 
-				// reduce big space gaps between values down to a single space
-				for ( var i = 0; i < values.Length; i++ )
-				{
-					var val = values[ i ];
+                // reduce big space gaps between values down to a single space
+                for (var i = 0; i < values.Length; i++)
+                {
+                    var val = values[i];
 
-					if ( val.Length != 0 )
-					{
-						sb.Append( val + " " );
-					}
-				}
+                    if (val.Length != 0)
+                    {
+                        sb.Append(val + " ");
+                    }
+                }
 
-				line = sb.ToString();
-				line = line.TrimEnd();
-			} // if
+                line = sb.ToString();
+                line = line.TrimEnd();
+            } // if
 
-			return line;
-		}
+            return line;
+        }
 
-		/// <summary>
-		///		Helper method to remove the first item from a string array and return a new array 1 element smaller
-		///		starting at the second element of the original array.  This helpe to seperate the params from the command
-		///		in the various script files.
-		/// </summary>
-		/// <returns></returns>
-		public static string[] GetParams( string[] all )
-		{
-			// create a seperate parm list that has the command removed
-			var parms = new string[all.Length - 1];
-			Array.Copy( all, 1, parms, 0, parms.Length );
+        /// <summary>
+        ///		Helper method to remove the first item from a string array and return a new array 1 element smaller
+        ///		starting at the second element of the original array.  This helpe to seperate the params from the command
+        ///		in the various script files.
+        /// </summary>
+        /// <returns></returns>
+        public static string[] GetParams(string[] all)
+        {
+            // create a seperate parm list that has the command removed
+            var parms = new string[all.Length - 1];
+            Array.Copy(all, 1, parms, 0, parms.Length);
 
-			return parms;
-		}
+            return parms;
+        }
 
-		/// <summary>
-		///    Advances in the stream until it hits the next {.
-		/// </summary>
-		public static void SkipToNextOpenBrace( TextReader reader )
-		{
-			var line = "";
-			while ( line != null && line != "{" )
-			{
-				line = ReadLine( reader );
-			}
-		}
+        /// <summary>
+        ///    Advances in the stream until it hits the next {.
+        /// </summary>
+        public static void SkipToNextOpenBrace(TextReader reader)
+        {
+            var line = "";
+            while (line != null && line != "{")
+            {
+                line = ReadLine(reader);
+            }
+        }
 
-		/// <summary>
-		///    Advances in the stream until it hits the next }.
-		/// </summary>
-		/// <param name="reader"></param>
-		public static void SkipToNextCloseBrace( TextReader reader )
-		{
-			var line = "";
-			while ( line != null && line != "}" )
-			{
-				line = ReadLine( reader );
-			}
-		}
+        /// <summary>
+        ///    Advances in the stream until it hits the next }.
+        /// </summary>
+        /// <param name="reader"></param>
+        public static void SkipToNextCloseBrace(TextReader reader)
+        {
+            var line = "";
+            while (line != null && line != "}")
+            {
+                line = ReadLine(reader);
+            }
+        }
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

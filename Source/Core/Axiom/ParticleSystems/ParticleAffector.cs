@@ -47,172 +47,172 @@ using Axiom.Scripting;
 
 namespace Axiom.ParticleSystems
 {
-	/// <summary>
-	///		Abstract class defining the interface to be implemented by particle affectors.
-	/// </summary>
-	/// <remarks>
-	///		Particle affectors modify particles in a particle system over their lifetime. They can be
-	///		grouped into types, e.g. 'vector force' affectors, 'fader' affectors etc; each type will
-	///		modify particles in a different way, using different parameters.
-	///		<para/>
-	///		Because there are so many types of affectors you could use, the engine chooses not to dictate
-	///		the available types. It comes with some in-built, but allows plugins or applications to extend the affector types available.
-	///		This is done by subclassing ParticleAffector to have the appropriate emission behavior you want,
-	///		and also creating a subclass of ParticleAffectorFactory which is responsible for creating instances
-	///		of your new affector type. You register this factory with the ParticleSystemManager using
-	///		AddAffectorFactory, and from then on affectors of this type can be created either from code or through
-	///		.particle scripts by naming the type.
-	///		<para/>
-	///		This same approach is used for ParticleEmitters (which are the source of particles in a system).
-	///		This means that the engine is particularly flexible when it comes to creating particle system effects,
-	///		with literally infinite combinations of affector and affector types, and parameters within those
-	///		types.
-	/// </remarks>
-	public abstract class ParticleAffector
-	{
-		#region Fields
+    /// <summary>
+    ///		Abstract class defining the interface to be implemented by particle affectors.
+    /// </summary>
+    /// <remarks>
+    ///		Particle affectors modify particles in a particle system over their lifetime. They can be
+    ///		grouped into types, e.g. 'vector force' affectors, 'fader' affectors etc; each type will
+    ///		modify particles in a different way, using different parameters.
+    ///		<para/>
+    ///		Because there are so many types of affectors you could use, the engine chooses not to dictate
+    ///		the available types. It comes with some in-built, but allows plugins or applications to extend the affector types available.
+    ///		This is done by subclassing ParticleAffector to have the appropriate emission behavior you want,
+    ///		and also creating a subclass of ParticleAffectorFactory which is responsible for creating instances
+    ///		of your new affector type. You register this factory with the ParticleSystemManager using
+    ///		AddAffectorFactory, and from then on affectors of this type can be created either from code or through
+    ///		.particle scripts by naming the type.
+    ///		<para/>
+    ///		This same approach is used for ParticleEmitters (which are the source of particles in a system).
+    ///		This means that the engine is particularly flexible when it comes to creating particle system effects,
+    ///		with literally infinite combinations of affector and affector types, and parameters within those
+    ///		types.
+    /// </remarks>
+    public abstract class ParticleAffector
+    {
+        #region Fields
 
-		/// <summary>Name of the affector type.  Must be initialized by subclasses.</summary>
-		protected string type;
+        /// <summary>Name of the affector type.  Must be initialized by subclasses.</summary>
+        protected string type;
 
-		protected AxiomCollection<IPropertyCommand> commandTable = new AxiomCollection<IPropertyCommand>();
-		protected ParticleSystem parent;
+        protected AxiomCollection<IPropertyCommand> commandTable = new AxiomCollection<IPropertyCommand>();
+        protected ParticleSystem parent;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///		Default constructor
-		/// </summary>
-		public ParticleAffector( ParticleSystem parent )
-		{
-			this.parent = parent;
-			RegisterCommands();
-		}
+        /// <summary>
+        ///		Default constructor
+        /// </summary>
+        public ParticleAffector(ParticleSystem parent)
+        {
+            this.parent = parent;
+            RegisterCommands();
+        }
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		///		Gets the type name of this affector.
-		/// </summary>
-		public string Type
-		{
-			get
-			{
-				return this.type;
-			}
-			set
-			{
-				this.type = value;
-			}
-		}
+        /// <summary>
+        ///		Gets the type name of this affector.
+        /// </summary>
+        public string Type
+        {
+            get
+            {
+                return this.type;
+            }
+            set
+            {
+                this.type = value;
+            }
+        }
 
-		#endregion Properties
+        #endregion Properties
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		///		Method called to allow the affector to 'do it's stuff' on all active particles in the system.
-		/// </summary>
-		/// <remarks>
-		///		This is where the affector gets the chance to apply it's effects to the particles of a system.
-		///		The affector is expected to apply it's effect to some or all of the particles in the system
-		///		passed to it, depending on the affector's approach.
-		/// </remarks>
-		/// <param name="system">Reference to a ParticleSystem to affect.</param>
-		/// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
-		public abstract void AffectParticles( ParticleSystem system, Real timeElapsed );
+        /// <summary>
+        ///		Method called to allow the affector to 'do it's stuff' on all active particles in the system.
+        /// </summary>
+        /// <remarks>
+        ///		This is where the affector gets the chance to apply it's effects to the particles of a system.
+        ///		The affector is expected to apply it's effect to some or all of the particles in the system
+        ///		passed to it, depending on the affector's approach.
+        /// </remarks>
+        /// <param name="system">Reference to a ParticleSystem to affect.</param>
+        /// <param name="timeElapsed">The number of seconds which have elapsed since the last call.</param>
+        public abstract void AffectParticles(ParticleSystem system, Real timeElapsed);
 
-		public virtual void CopyTo( ParticleAffector affector )
-		{
-			// loop through all registered commands and copy from this instance to the target instance
-			foreach ( var key in this.commandTable.Keys )
-			{
-				// get the value of the param from this instance
-				var val = ( (IPropertyCommand)this.commandTable[ key ] ).Get( this );
+        public virtual void CopyTo(ParticleAffector affector)
+        {
+            // loop through all registered commands and copy from this instance to the target instance
+            foreach (var key in this.commandTable.Keys)
+            {
+                // get the value of the param from this instance
+                var val = ((IPropertyCommand)this.commandTable[key]).Get(this);
 
-				// set the param on the target instance
-				affector.SetParam( key, val );
-			}
-		}
+                // set the param on the target instance
+                affector.SetParam(key, val);
+            }
+        }
 
-		/// <summary>
-		///		Method called to allow the affector to 'do it's stuff' on all active particles in the system.
-		/// </summary>
-		/// <remarks>
-		///		This is where the affector gets the chance to apply it's effects to the particles of a system.
-		///		The affector is expected to apply it's effect to some or all of the particles in the system
-		///		passed to it, depending on the affector's approach.
-		/// </remarks>
-		/// <param name="particle">Reference to a ParticleSystem to affect.</param>
-		public virtual void InitParticle( ref Particle particle )
-		{
-			// do nothing by default
-		}
+        /// <summary>
+        ///		Method called to allow the affector to 'do it's stuff' on all active particles in the system.
+        /// </summary>
+        /// <remarks>
+        ///		This is where the affector gets the chance to apply it's effects to the particles of a system.
+        ///		The affector is expected to apply it's effect to some or all of the particles in the system
+        ///		passed to it, depending on the affector's approach.
+        /// </remarks>
+        /// <param name="particle">Reference to a ParticleSystem to affect.</param>
+        public virtual void InitParticle(ref Particle particle)
+        {
+            // do nothing by default
+        }
 
-		#endregion Methods
+        #endregion Methods
 
-		#region Script parser methods
+        #region Script parser methods
 
-		/// <summary>
-		///
-		/// </summary>
-		public bool SetParam( string name, string val )
-		{
-			if ( this.commandTable.ContainsKey( name ) )
-			{
-				var command = (IPropertyCommand)this.commandTable[ name ];
+        /// <summary>
+        ///
+        /// </summary>
+        public bool SetParam(string name, string val)
+        {
+            if (this.commandTable.ContainsKey(name))
+            {
+                var command = (IPropertyCommand)this.commandTable[name];
 
-				command.Set( this, val );
+                command.Set(this, val);
 
-				return true;
-			}
+                return true;
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		/// <summary>
-		///		Registers all attribute names with their respective parser.
-		/// </summary>
-		/// <remarks>
-		///		Methods meant to serve as attribute parsers should use a method attribute to
-		/// </remarks>
-		protected void RegisterCommands()
-		{
-			var baseType = GetType();
+        /// <summary>
+        ///		Registers all attribute names with their respective parser.
+        /// </summary>
+        /// <remarks>
+        ///		Methods meant to serve as attribute parsers should use a method attribute to
+        /// </remarks>
+        protected void RegisterCommands()
+        {
+            var baseType = GetType();
 
-			do
-			{
-				var types = baseType.GetNestedTypes( BindingFlags.NonPublic | BindingFlags.Public );
+            do
+            {
+                var types = baseType.GetNestedTypes(BindingFlags.NonPublic | BindingFlags.Public);
 
-				// loop through all methods and look for ones marked with attributes
-				for ( var i = 0; i < types.Length; i++ )
-				{
-					// get the current method in the loop
-					var type = types[ i ];
+                // loop through all methods and look for ones marked with attributes
+                for (var i = 0; i < types.Length; i++)
+                {
+                    // get the current method in the loop
+                    var type = types[i];
 
-					// get as many command attributes as there are on this type
-					var commandAtts =
-						(ScriptablePropertyAttribute[])type.GetCustomAttributes( typeof ( ScriptablePropertyAttribute ), true );
+                    // get as many command attributes as there are on this type
+                    var commandAtts =
+                        (ScriptablePropertyAttribute[])type.GetCustomAttributes(typeof(ScriptablePropertyAttribute), true);
 
-					// loop through each one we found and register its command
-					for ( var j = 0; j < commandAtts.Length; j++ )
-					{
-						var commandAtt = commandAtts[ j ];
+                    // loop through each one we found and register its command
+                    for (var j = 0; j < commandAtts.Length; j++)
+                    {
+                        var commandAtt = commandAtts[j];
 
-						this.commandTable.Add( commandAtt.ScriptPropertyName, (IPropertyCommand)Activator.CreateInstance( type ) );
-					} // for
-				} // for
+                        this.commandTable.Add(commandAtt.ScriptPropertyName, (IPropertyCommand)Activator.CreateInstance(type));
+                    } // for
+                } // for
 
-				// get the base type of the current type
-				baseType = baseType.BaseType;
-			}
-			while ( baseType != typeof ( object ) );
-		}
+                // get the base type of the current type
+                baseType = baseType.BaseType;
+            }
+            while (baseType != typeof(object));
+        }
 
-		#endregion Script parser methods
-	}
+        #endregion Script parser methods
+    }
 }

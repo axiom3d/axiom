@@ -4,40 +4,40 @@ using Math = Axiom.Math;
 
 namespace Axiom.Samples.MousePicking
 {
-	public class SelectionRectangle : ManualObject
-	{
-		/// <summary>
-		/// There are two ways to create your own mesh within Axiom.
-		/// The first way is to subclass the SimpleRenderable object and provide it with the vertex and index buffers directly.
-		/// This is the most direct way to create one, but it's also the most cryptic.
-		/// The Generating A Mesh code snippet shows an example of this. To make things easier, 
-		/// Axiom provides a much nicer interface called ManualObject, 
-		/// which allows you to use some simple functions to define a mesh instead of writing raw data to the buffer objects.
-		/// Instead of dropping the position, color, and so on into a buffer, you simply call the "position" and "colour" functions.
-		/// In this tutorial we need to create a white rectangle to display when we are dragging the mouse to select objects. 
-		/// There really isn't a class in Axiom we could use to display a 2D rectangle.
-		/// We will have to come up with a way of doing it on our own. 
-		/// We could use an Overlay and resize it to display the selection rectangle, but 
-		/// the problem with doing it this way is that the image you use for the selection rectangle could
-		/// get stretched out of shape and look awkward. Instead, we will generate a very 
-		/// simple 2D mesh to act as our selection rectangle.
-		/// </summary>
-		/// <param name="name"></param>
-		public SelectionRectangle( string name )
-			: base( name )
-		{
-			/*
+    public class SelectionRectangle : ManualObject
+    {
+        /// <summary>
+        /// There are two ways to create your own mesh within Axiom.
+        /// The first way is to subclass the SimpleRenderable object and provide it with the vertex and index buffers directly.
+        /// This is the most direct way to create one, but it's also the most cryptic.
+        /// The Generating A Mesh code snippet shows an example of this. To make things easier, 
+        /// Axiom provides a much nicer interface called ManualObject, 
+        /// which allows you to use some simple functions to define a mesh instead of writing raw data to the buffer objects.
+        /// Instead of dropping the position, color, and so on into a buffer, you simply call the "position" and "colour" functions.
+        /// In this tutorial we need to create a white rectangle to display when we are dragging the mouse to select objects. 
+        /// There really isn't a class in Axiom we could use to display a 2D rectangle.
+        /// We will have to come up with a way of doing it on our own. 
+        /// We could use an Overlay and resize it to display the selection rectangle, but 
+        /// the problem with doing it this way is that the image you use for the selection rectangle could
+        /// get stretched out of shape and look awkward. Instead, we will generate a very 
+        /// simple 2D mesh to act as our selection rectangle.
+        /// </summary>
+        /// <param name="name"></param>
+        public SelectionRectangle(string name)
+            : base(name)
+        {
+            /*
 			 * When we create the selection rectangle, we have to create it such that it will render in 2D.
 			 * We also have to be sure that it will render when Ogre's Overlays render so that it sits on top of all other 
 			 * objects on screen. 
 			 * 
 			 * Doing this is actually very easy.
 			 */
-			RenderQueueGroup = RenderQueueGroupID.Overlay;
-			UseIdentityProjection = true;
-			UseIdentityView = true;
-			QueryFlags = 0;
-			/*
+            RenderQueueGroup = RenderQueueGroupID.Overlay;
+            UseIdentityProjection = true;
+            UseIdentityView = true;
+            QueryFlags = 0;
+            /*
 			 * The first function sets the render queue for the object to be the Overlay queue. 
 			 * The next two functions sets the projection and view matrices to be the identity.
 			 * Projection and view matrices are used by many rendering systems (such as OpenGL and DirectX) to define where 
@@ -51,20 +51,20 @@ namespace Axiom.Samples.MousePicking
 			 * we will set the query flags for the object to be 0, which will prevent prevent the selection rectangle 
 			 * from being included in the query results.
 			 */
-		}
+        }
 
-		/// <summary>
-		/// Sets the corners of the SelectionRectangle.  Every parameter should be in the
-		/// range [0, 1] representing a percentage of the screen the SelectionRectangle
-		/// should take up.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="top"></param>
-		/// <param name="right"></param>
-		/// <param name="bottom"></param>
-		public void SetCorners( float left, float top, float right, float bottom )
-		{
-			/*
+        /// <summary>
+        /// Sets the corners of the SelectionRectangle.  Every parameter should be in the
+        /// range [0, 1] representing a percentage of the screen the SelectionRectangle
+        /// should take up.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="top"></param>
+        /// <param name="right"></param>
+        /// <param name="bottom"></param>
+        public void SetCorners(float left, float top, float right, float bottom)
+        {
+            /*
 			 * Now that the object is set up, we need to actually build the rectangle. 
 			 * We have one small snag before we get started. 
 			 * We are going to be calling this function with mouse locations. 
@@ -75,12 +75,12 @@ namespace Axiom.Samples.MousePicking
 			 * In our new coordinate system, the top of the screen is +1, the bottom is -1. Thankfully,
 			 * a few quick conversions will take care of this problem.
 			 */
-			left = left*2 - 1;
-			right = right*2 - 1;
-			top = 1 - top*2;
-			bottom = 1 - bottom*2;
+            left = left * 2 - 1;
+            right = right * 2 - 1;
+            top = 1 - top * 2;
+            bottom = 1 - bottom * 2;
 
-			/*
+            /*
 			 * Now the positions are in the new coordinate system. 
 			 * Next we need to actually build the object. To do this, we first call the begin method. 
 			 * It takes in two parameters, the name of the material to use for this section of the object,
@@ -92,16 +92,16 @@ namespace Axiom.Samples.MousePicking
 			 * So to create our rectangle, we will define 5 points (the first and the last point are the same to connect the entire 
 			 * rectangle)
 			 */
-			Clear();
-			Begin( "", Axiom.Graphics.OperationType.LineStrip );
-			Position( left, top, -1 );
-			Position( right, top, -1 );
-			Position( right, bottom, -1 );
-			Position( left, bottom, -1 );
-			Position( left, top, -1 );
-			End();
+            Clear();
+            Begin("", Axiom.Graphics.OperationType.LineStrip);
+            Position(left, top, -1);
+            Position(right, top, -1);
+            Position(right, bottom, -1);
+            Position(left, bottom, -1);
+            Position(left, top, -1);
+            End();
 
-			/*
+            /*
 			 * Note that since we will be calling this many times, we have added the clear call at the beginning 
 			 * to remove the previous rectangle before redrawing it. 
 			 * When defining a manual object, you may call begin/end multiple times to create multiple sub-meshes
@@ -115,17 +115,17 @@ namespace Axiom.Samples.MousePicking
 			 * it will disappear on us when we look away. To fix this we will set the bounding box of the object to be infinite,
 			 * so that the camera will always be inside of it:
 			 */
-			BoundingBox.IsInfinite = true;
-		}
+            BoundingBox.IsInfinite = true;
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="topLeft"></param>
-		/// <param name="bottomRight"></param>
-		public void SetCorners( Math.Vector2 topLeft, Math.Vector2 bottomRight )
-		{
-			SetCorners( topLeft.x, topLeft.y, bottomRight.x, bottomRight.y );
-		}
-	}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="topLeft"></param>
+        /// <param name="bottomRight"></param>
+        public void SetCorners(Math.Vector2 topLeft, Math.Vector2 bottomRight)
+        {
+            SetCorners(topLeft.x, topLeft.y, bottomRight.x, bottomRight.y);
+        }
+    }
 }

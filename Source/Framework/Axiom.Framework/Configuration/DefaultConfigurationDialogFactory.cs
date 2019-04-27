@@ -26,19 +26,19 @@ using Axiom.Core;
 
 namespace Axiom.Framework.Configuration
 {
-	internal class DefaultConfigurationDialogFactory : ConfigurationDialogFactory
-	{
-		#region Overrides of ConfigurationDialogFactory
+    internal class DefaultConfigurationDialogFactory : ConfigurationDialogFactory
+    {
+        #region Overrides of ConfigurationDialogFactory
 
-		/// <summary>
-		/// Create an instance of the ConfigurationDialog
-		/// </summary>
-		/// <returns></returns>
-		public override IConfigurationDialog CreateConfigurationDialog( Root engine, ResourceGroupManager resourceManager )
-		{
-			return null;
-		}
+        /// <summary>
+        /// Create an instance of the ConfigurationDialog
+        /// </summary>
+        /// <returns></returns>
+        public override IConfigurationDialog CreateConfigurationDialog(Root engine, ResourceGroupManager resourceManager)
+        {
+            return null;
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

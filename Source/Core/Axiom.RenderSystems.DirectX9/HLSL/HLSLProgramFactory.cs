@@ -40,34 +40,34 @@ using Axiom.Graphics;
 
 namespace Axiom.RenderSystems.DirectX9.HLSL
 {
-	/// <summary>
-	/// Summary description for HLSLProgramFactory.
-	/// </summary>
-	public class D3D9HLSLProgramFactory : HighLevelGpuProgramFactory
-	{
-		private string language = "hlsl";
+    /// <summary>
+    /// Summary description for HLSLProgramFactory.
+    /// </summary>
+    public class D3D9HLSLProgramFactory : HighLevelGpuProgramFactory
+    {
+        private string language = "hlsl";
 
-		#region HighLevelGpuProgramFactory Implementation
+        #region HighLevelGpuProgramFactory Implementation
 
-		/// <summary>
-		/// Gets the high level language that this factory handles requests for.
-		/// </summary>
-		[OgreVersion( 1, 7, 2 )]
-		public override string Language
-		{
-			get
-			{
-				return this.language;
-			}
-		}
+        /// <summary>
+        /// Gets the high level language that this factory handles requests for.
+        /// </summary>
+        [OgreVersion(1, 7, 2)]
+        public override string Language
+        {
+            get
+            {
+                return this.language;
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public override HighLevelGpuProgram CreateInstance( ResourceManager creator, string name, ulong handle, string group,
-		                                                    bool isManual, IManualResourceLoader loader )
-		{
-			return new D3D9HLSLProgram( creator, name, handle, group, isManual, loader );
-		}
+        [OgreVersion(1, 7, 2)]
+        public override HighLevelGpuProgram CreateInstance(ResourceManager creator, string name, ulong handle, string group,
+                                                            bool isManual, IManualResourceLoader loader)
+        {
+            return new D3D9HLSLProgram(creator, name, handle, group, isManual, loader);
+        }
 
-		#endregion HighLevelGpuProgramFactory Implementation
-	};
+        #endregion HighLevelGpuProgramFactory Implementation
+    };
 }

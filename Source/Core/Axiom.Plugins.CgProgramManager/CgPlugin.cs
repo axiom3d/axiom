@@ -46,31 +46,31 @@ using Axiom.Graphics;
 
 namespace Axiom.CgPrograms
 {
-	/// <summary>
-	///    Main plugin class.
-	/// </summary>
-	[Export( typeof ( IPlugin ) )]
-	public class CgPlugin : IPlugin
-	{
-		private CgProgramFactory factory;
+    /// <summary>
+    ///    Main plugin class.
+    /// </summary>
+    [Export(typeof(IPlugin))]
+    public class CgPlugin : IPlugin
+    {
+        private CgProgramFactory factory;
 
-		/// <summary>
-		///    Called when the plugin is started.
-		/// </summary>
-		public void Initialize()
-		{
-			// register our Cg Program Factory
-			this.factory = new CgProgramFactory();
+        /// <summary>
+        ///    Called when the plugin is started.
+        /// </summary>
+        public void Initialize()
+        {
+            // register our Cg Program Factory
+            this.factory = new CgProgramFactory();
 
-			HighLevelGpuProgramManager.Instance.AddFactory( this.factory );
-		}
+            HighLevelGpuProgramManager.Instance.AddFactory(this.factory);
+        }
 
-		/// <summary>
-		///    Called when the plugin is stopped.
-		/// </summary>
-		public void Shutdown()
-		{
-			//factory.Dispose();
-		}
-	}
+        /// <summary>
+        ///    Called when the plugin is stopped.
+        /// </summary>
+        public void Shutdown()
+        {
+            //factory.Dispose();
+        }
+    }
 }

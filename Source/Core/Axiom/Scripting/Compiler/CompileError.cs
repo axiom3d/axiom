@@ -46,57 +46,57 @@ using System.Text;
 
 namespace Axiom.Scripting.Compiler
 {
-	public partial class ScriptCompiler
-	{
-		/// <summary>
-		/// 
-		/// </summary>
-		public enum CompileErrorCode
-		{
-			[ScriptEnum( "Unknown error" )] UnknownError = 0,
+    public partial class ScriptCompiler
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        public enum CompileErrorCode
+        {
+            [ScriptEnum("Unknown error")] UnknownError = 0,
 
-			[ScriptEnum( "String expected" )] StringExpected,
+            [ScriptEnum("String expected")] StringExpected,
 
-			[ScriptEnum( "Number expected" )] NumberExpected,
+            [ScriptEnum("Number expected")] NumberExpected,
 
-			[ScriptEnum( "Fewer parameters expected" )] FewerParametersExpected,
+            [ScriptEnum("Fewer parameters expected")] FewerParametersExpected,
 
-			[ScriptEnum( "Variable expected" )] VariableExpected,
+            [ScriptEnum("Variable expected")] VariableExpected,
 
-			[ScriptEnum( "Undefined variable" )] UndefinedVariable,
+            [ScriptEnum("Undefined variable")] UndefinedVariable,
 
-			[ScriptEnum( "Object name expected" )] ObjectNameExpected,
+            [ScriptEnum("Object name expected")] ObjectNameExpected,
 
-			[ScriptEnum( "Object allocation error" )] ObjectAllocationError,
+            [ScriptEnum("Object allocation error")] ObjectAllocationError,
 
-			[ScriptEnum( "Invalid parameters" )] InvalidParameters,
+            [ScriptEnum("Invalid parameters")] InvalidParameters,
 
-			[ScriptEnum( "Duplicate override" )] DuplicateOverride,
+            [ScriptEnum("Duplicate override")] DuplicateOverride,
 
-			[ScriptEnum( "Unexpected token" )] UnexpectedToken,
+            [ScriptEnum("Unexpected token")] UnexpectedToken,
 
-			[ScriptEnum( "Object base not found" )] ObjectBaseNotFound,
+            [ScriptEnum("Object base not found")] ObjectBaseNotFound,
 
-			[ScriptEnum( "Unsupported by RenderSystem" )] UnsupportedByRenderSystem,
+            [ScriptEnum("Unsupported by RenderSystem")] UnsupportedByRenderSystem,
 
-			[ScriptEnum( "Reference to a non existing object" )] ReferenceToaNonExistingObject
-		}
+            [ScriptEnum("Reference to a non existing object")] ReferenceToaNonExistingObject
+        }
 
-		public struct CompileError
-		{
-			public CompileError( CompileErrorCode code, string file, uint line, string msg )
-				: this()
-			{
-				Code = code;
-				File = file;
-				Line = line;
-				Message = msg;
-			}
+        public struct CompileError
+        {
+            public CompileError(CompileErrorCode code, string file, uint line, string msg)
+                : this()
+            {
+                Code = code;
+                File = file;
+                Line = line;
+                Message = msg;
+            }
 
-			public string File { get; private set; }
-			public string Message { get; private set; }
-			public uint Line { get; private set; }
-			public CompileErrorCode Code { get; private set; }
-		}
-	}
+            public string File { get; private set; }
+            public string Message { get; private set; }
+            public uint Line { get; private set; }
+            public CompileErrorCode Code { get; private set; }
+        }
+    }
 }

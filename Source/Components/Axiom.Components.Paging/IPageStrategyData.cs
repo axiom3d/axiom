@@ -39,22 +39,22 @@ using Axiom.Serialization;
 
 namespace Axiom.Components.Paging
 {
-	/// <summary>
-	/// interface representing the data held against the PagedWorldSection
-	/// which is specifically used by the PageStrategy.
-	/// </summary>
-	public interface IPageStrategyData
-	{
-		/// <summary>
-		/// Load this data from a stream (returns true if successful)
-		/// </summary>
-		[OgreVersion( 1, 7, 2 )]
-		bool Load( StreamSerializer stream );
+    /// <summary>
+    /// interface representing the data held against the PagedWorldSection
+    /// which is specifically used by the PageStrategy.
+    /// </summary>
+    public interface IPageStrategyData
+    {
+        /// <summary>
+        /// Load this data from a stream (returns true if successful)
+        /// </summary>
+        [OgreVersion(1, 7, 2)]
+        bool Load(StreamSerializer stream);
 
-		/// <summary>
-		/// Save this data to a stream
-		/// </summary>
-		[OgreVersion( 1, 7, 2 )]
-		void Save( StreamSerializer stream );
-	}
+        /// <summary>
+        /// Save this data to a stream
+        /// </summary>
+        [OgreVersion(1, 7, 2)]
+        void Save(StreamSerializer stream);
+    }
 }

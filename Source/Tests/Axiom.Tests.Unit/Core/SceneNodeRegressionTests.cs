@@ -42,7 +42,7 @@ namespace Axiom.UnitTests.Core
     /// https://sourceforge.net/apps/trac/axiomengine/ticket/69,
     /// a problem with node removal functionality.
     /// </remarks>
-    [ TestFixture ]
+    [TestFixture]
     public class SceneNodeRegressionTests
     {
         private readonly SceneManager sceneManager = A.Fake<SceneManager>();
@@ -51,16 +51,16 @@ namespace Axiom.UnitTests.Core
         /// <summary>
         /// Sets up each test.
         /// </summary>
-        [ SetUp ]
+        [SetUp]
         public void SetUp()
         {
-            A.CallTo( () => sceneManager.CreateSceneNode( Name ) ).Returns( new SceneNode(this.sceneManager, "Name") );
+            A.CallTo(() => sceneManager.CreateSceneNode(Name)).Returns(new SceneNode(this.sceneManager, "Name"));
         }
 
         /// <summary>
         /// Tears down each test.
         /// </summary>
-        [ TearDown ]
+        [TearDown]
         public void TearDown()
         {
         }
@@ -68,27 +68,27 @@ namespace Axiom.UnitTests.Core
         /// <summary>
         /// Verifies that a new child node can be created after a node with the same name has been removed by reference.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestRecreationOfChildNodeAfterRemovalByReference()
         {
-            Node node = new SceneNode( this.sceneManager );
-            Node childNode = node.CreateChild( Name );
+            Node node = new SceneNode(this.sceneManager);
+            Node childNode = node.CreateChild(Name);
 
-            node.RemoveChild( childNode );
-            node.CreateChild( Name );
+            node.RemoveChild(childNode);
+            node.CreateChild(Name);
         }
 
         /// <summary>
         /// Verifies that a new child node can be created after a node with the same name has been removed by name.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestRecreationOfChildNodeAfterRemovalByName()
         {
-            Node node = new SceneNode( this.sceneManager );
-            node.CreateChild( Name );
+            Node node = new SceneNode(this.sceneManager);
+            node.CreateChild(Name);
 
-            node.RemoveChild( Name );
-            node.CreateChild( Name );
+            node.RemoveChild(Name);
+            node.CreateChild(Name);
         }
 
         ///// <summary>
@@ -107,27 +107,27 @@ namespace Axiom.UnitTests.Core
         /// <summary>
         /// Verifies that a new child node can be added after a node with the same name has been removed by reference.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestReadingOfChildNodeAfterRemovalByReference()
         {
-            Node node = new SceneNode( this.sceneManager );
-            Node childNode = node.CreateChild( Name );
+            Node node = new SceneNode(this.sceneManager);
+            Node childNode = node.CreateChild(Name);
 
-            node.RemoveChild( childNode );
-            node.AddChild( childNode );
+            node.RemoveChild(childNode);
+            node.AddChild(childNode);
         }
 
         /// <summary>
         /// Verifies that a new child node can be added after a node with the same name has been removed by name.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestReadingOfChildNodeAfterRemovalByName()
         {
-            Node node = new SceneNode( this.sceneManager );
-            Node childNode = node.CreateChild( Name );
+            Node node = new SceneNode(this.sceneManager);
+            Node childNode = node.CreateChild(Name);
 
-            node.RemoveChild( Name );
-            node.AddChild( childNode );
+            node.RemoveChild(Name);
+            node.AddChild(childNode);
         }
 
         ///// <summary>

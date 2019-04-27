@@ -48,42 +48,42 @@ using System.ComponentModel;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	internal class WindowMessageHandling
-	{
-		#region Fields and Properties
+    internal class WindowMessageHandling
+    {
+        #region Fields and Properties
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		public WindowMessageHandling()
-		{
-		}
+        public WindowMessageHandling()
+        {
+        }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region Methods
+        #region Methods
 
-		private static bool firstTime = true;
+        private static bool firstTime = true;
 
-		public static void MessagePump()
-		{
-			foreach ( var renderWindow in WindowEventMonitor.Instance.Windows )
-			{
-				var window = renderWindow[ "nativewindow" ];
-				if ( null != window && window is INativeWindow )
-				{
-					( (INativeWindow)window ).ProcessEvents();
-					if ( firstTime )
-					{
-						( (INativeWindow)window ).Closing +=
-							( sender, args ) => WindowEventMonitor.Instance.WindowClosed( renderWindow );
-					}
-				}
-			}
-			firstTime = false;
-		}
+        public static void MessagePump()
+        {
+            foreach (var renderWindow in WindowEventMonitor.Instance.Windows)
+            {
+                var window = renderWindow["nativewindow"];
+                if (null != window && window is INativeWindow)
+                {
+                    ((INativeWindow)window).ProcessEvents();
+                    if (firstTime)
+                    {
+                        ((INativeWindow)window).Closing +=
+                            (sender, args) => WindowEventMonitor.Instance.WindowClosed(renderWindow);
+                    }
+                }
+            }
+            firstTime = false;
+        }
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

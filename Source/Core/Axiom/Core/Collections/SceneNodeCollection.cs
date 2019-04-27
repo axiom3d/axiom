@@ -42,14 +42,14 @@ using Axiom.Collections;
 
 namespace Axiom.Collections
 {
-	/// <summary>
-	/// Represents a collection of <see cref="SceneNode">SceneNodes</see> that are sorted by name.
-	/// </summary>
-	public class SceneNodeCollection : AxiomCollection<SceneNode>
-	{
-		public override void Add( SceneNode item )
-		{
-			base.Add( item.Name, item );
-		}
-	}
+    /// <summary>
+    /// Represents a collection of <see cref="SceneNode">SceneNodes</see> that are sorted by name.
+    /// </summary>
+    public class SceneNodeCollection : AxiomCollection<SceneNode>
+    {
+        public override void Add(SceneNode item)
+        {
+            base.Add(item.Name, item);
+        }
+    }
 }

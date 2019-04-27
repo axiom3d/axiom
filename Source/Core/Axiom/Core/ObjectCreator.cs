@@ -46,80 +46,80 @@ using System.Reflection;
 
 namespace Axiom.Core
 {
-	/// <summary>
-	/// Used by configuration classes to store assembly/class names and instantiate
-	/// objects from them.
-	/// </summary>
-	public class ObjectCreator
-	{
-		private readonly Assembly _assembly;
-		private readonly Type _type;
+    /// <summary>
+    /// Used by configuration classes to store assembly/class names and instantiate
+    /// objects from them.
+    /// </summary>
+    public class ObjectCreator
+    {
+        private readonly Assembly _assembly;
+        private readonly Type _type;
 
-		public Type CreatedType
-		{
-			get
-			{
-				return this._type;
-			}
-		}
+        public Type CreatedType
+        {
+            get
+            {
+                return this._type;
+            }
+        }
 
-		public ObjectCreator( Type type )
-			: this( type.Assembly, type )
-		{
-		}
+        public ObjectCreator(Type type)
+            : this(type.Assembly, type)
+        {
+        }
 
-		public ObjectCreator( Assembly assembly, Type type )
-		{
-			this._assembly = assembly;
-			this._type = type;
-		}
+        public ObjectCreator(Assembly assembly, Type type)
+        {
+            this._assembly = assembly;
+            this._type = type;
+        }
 
-		public ObjectCreator( string assemblyName, string className )
-		{
-			var assemblyFile = Path.Combine( System.IO.Directory.GetCurrentDirectory(), assemblyName );
-			try
-			{
+        public ObjectCreator(string assemblyName, string className)
+        {
+            var assemblyFile = Path.Combine(System.IO.Directory.GetCurrentDirectory(), assemblyName);
+            try
+            {
 #if SILVERLIGHT || NETFX_CORE
 				_assembly = Assembly.Load(assemblyFile);
 #else
-				this._assembly = Assembly.LoadFrom( assemblyFile );
+                this._assembly = Assembly.LoadFrom(assemblyFile);
 #endif
-			}
-			catch ( Exception )
-			{
-				this._assembly = Assembly.GetExecutingAssembly();
-			}
+            }
+            catch (Exception)
+            {
+                this._assembly = Assembly.GetExecutingAssembly();
+            }
 
-			this._type = this._assembly.GetType( className );
-		}
+            this._type = this._assembly.GetType(className);
+        }
 
-		public ObjectCreator( string className )
-		{
-			this._assembly = Assembly.GetExecutingAssembly();
-			this._type = this._assembly.GetType( className );
-		}
+        public ObjectCreator(string className)
+        {
+            this._assembly = Assembly.GetExecutingAssembly();
+            this._type = this._assembly.GetType(className);
+        }
 
-		public string GetAssemblyTitle()
-		{
+        public string GetAssemblyTitle()
+        {
 #if NETFX_CORE
             var title = (from attr in this._assembly.CustomAttributes where attr.AttributeType == typeof(AssemblyTitleAttribute) select attr).FirstOrDefault().;
 #else
-			var title = Attribute.GetCustomAttribute( this._assembly, typeof ( AssemblyTitleAttribute ) );
-			if ( title == null )
-			{
-				return this._assembly.GetName().Name;
-			}
-			return ( (AssemblyTitleAttribute)title ).Title;
+            var title = Attribute.GetCustomAttribute(this._assembly, typeof(AssemblyTitleAttribute));
+            if (title == null)
+            {
+                return this._assembly.GetName().Name;
+            }
+            return ((AssemblyTitleAttribute)title).Title;
 #endif
-		}
+        }
 
-		public T CreateInstance<T>() where T : class
-		{
-			var type = this._type;
-			var assembly = this._assembly;
-#if !( XBOX || XBOX360 )
-			// Check interfaces or Base type for casting purposes
-			if ( type.GetInterface( typeof ( T ).Name, false ) != null || type.BaseType.Name == typeof ( T ).Name )
+        public T CreateInstance<T>() where T : class
+        {
+            var type = this._type;
+            var assembly = this._assembly;
+#if !(XBOX || XBOX360)
+            // Check interfaces or Base type for casting purposes
+            if (type.GetInterface(typeof(T).Name, false) != null || type.BaseType.Name == typeof(T).Name)
 #else
 			bool typeFound = false;
 			for (int i = 0; i < type.GetInterfaces().GetLength(0); i++)
@@ -133,18 +133,18 @@ namespace Axiom.Core
 
 			if ( typeFound )
 #endif
-			{
-				try
-				{
-					return (T)Activator.CreateInstance( type );
-				}
-				catch ( Exception e )
-				{
-					LogManager.Instance.Write( "Failed to create instance of {0} of type {0} from assembly {1}", typeof ( T ).Name, type, assembly.FullName );
-					LogManager.Instance.Write( LogManager.BuildExceptionString( e ) );
-				}
-			}
-			return null;
-		}
-	}
+            {
+                try
+                {
+                    return (T)Activator.CreateInstance(type);
+                }
+                catch (Exception e)
+                {
+                    LogManager.Instance.Write("Failed to create instance of {0} of type {0} from assembly {1}", typeof(T).Name, type, assembly.FullName);
+                    LogManager.Instance.Write(LogManager.BuildExceptionString(e));
+                }
+            }
+            return null;
+        }
+    }
 }

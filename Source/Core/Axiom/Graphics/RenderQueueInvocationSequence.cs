@@ -43,7 +43,7 @@ using System;
 
 namespace Axiom.Graphics
 {
-	public class RenderQueueInvocationSequence
-	{
-	}
+    public class RenderQueueInvocationSequence
+    {
+    }
 }

@@ -58,798 +58,798 @@ using System.Security.Permissions;
 
 namespace Axiom.Math
 {
-	/// <summary>
-	/// a floating point number abstraction allows the use of either a single-precision or double-precision floating point number
-	/// </summary>
-	/// <remarks>
-	/// Use the AXIOM_REAL_AS_DOUBLE condition compilation argument to use a double-precision value or
-	/// AXIOM_REAL_AS_SINGLE to use a single-precision value.
-	/// </remarks>
-	[StructLayout( LayoutKind.Sequential )]
-#if !( XBOX || XBOX360 || NETFX_CORE )
-	[Serializable]
-	public struct Real : ISerializable, IComparable<Real>, IConvertible, IXmlSerializable
+    /// <summary>
+    /// a floating point number abstraction allows the use of either a single-precision or double-precision floating point number
+    /// </summary>
+    /// <remarks>
+    /// Use the AXIOM_REAL_AS_DOUBLE condition compilation argument to use a double-precision value or
+    /// AXIOM_REAL_AS_SINGLE to use a single-precision value.
+    /// </remarks>
+    [StructLayout(LayoutKind.Sequential)]
+#if !(XBOX || XBOX360 || NETFX_CORE)
+    [Serializable]
+    public struct Real : ISerializable, IComparable<Real>, IConvertible, IXmlSerializable
 #elif NETFX_CORE
 	public struct Real : IComparable<Real>
 #else
 	public struct Real : IComparable<Real>, IConvertible
 #endif
-	{
-		#region Fields
+    {
+        #region Fields
 
-		/// <summary>
-		///		Culture info to use for parsing numeric data.
-		/// </summary>
-		private static readonly CultureInfo englishCulture = new CultureInfo( "en-US" );
+        /// <summary>
+        ///		Culture info to use for parsing numeric data.
+        /// </summary>
+        private static readonly CultureInfo englishCulture = new CultureInfo("en-US");
 
-		/// <summary>Internal storage for value</summary>
-		private Numeric _value;
+        /// <summary>Internal storage for value</summary>
+        private Numeric _value;
 
-		public static Numeric Tolerance = 0.0001f;
+        public static Numeric Tolerance = 0.0001f;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Static Interface
+        #region Static Interface
 
-		/// <summary>The value 0</summary>
-		public static readonly Real Zero = new Real( 0 );
+        /// <summary>The value 0</summary>
+        public static readonly Real Zero = new Real(0);
 
-		/// <summary>The value 1</summary>
-		public static readonly Real One = new Real( 1 );
+        /// <summary>The value 1</summary>
+        public static readonly Real One = new Real(1);
 
-		/// <summary>The value of Positive Infinity</summary>
-		public static readonly Real PositiveInfinity = Numeric.PositiveInfinity;
+        /// <summary>The value of Positive Infinity</summary>
+        public static readonly Real PositiveInfinity = Numeric.PositiveInfinity;
 
-		/// <summary>The value of Negative Infinity</summary>
-		public static readonly Real NegativeInfinity = Numeric.NegativeInfinity;
+        /// <summary>The value of Negative Infinity</summary>
+        public static readonly Real NegativeInfinity = Numeric.NegativeInfinity;
 
-		/// <summary>Represents not a number</summary>
-		public static readonly Real NaN = Numeric.NaN;
+        /// <summary>Represents not a number</summary>
+        public static readonly Real NaN = Numeric.NaN;
 
-		/// <summary>The value of Epsilon</summary>
-		public static readonly Real Epsilon = Numeric.Epsilon;
+        /// <summary>The value of Epsilon</summary>
+        public static readonly Real Epsilon = Numeric.Epsilon;
 
-		/// <summary>The maximum possible value</summary>
-		public static readonly Real MaxValue = Numeric.MaxValue;
+        /// <summary>The maximum possible value</summary>
+        public static readonly Real MaxValue = Numeric.MaxValue;
 
-		/// <summary>The minimum possible value</summary>
-		public static readonly Real MinValue = Numeric.MinValue;
+        /// <summary>The minimum possible value</summary>
+        public static readonly Real MinValue = Numeric.MinValue;
 
-		/// <summary>
-		/// Returns a value indicating whether the specified number evaluates to positive infinity
-		/// </summary>
-		/// <param name="number">a floating point number</param>
-		/// <returns>a boolean</returns>
-		public static bool IsPositiveInfinity( Real number )
-		{
-			return Numeric.IsPositiveInfinity( (Numeric)number );
-		}
+        /// <summary>
+        /// Returns a value indicating whether the specified number evaluates to positive infinity
+        /// </summary>
+        /// <param name="number">a floating point number</param>
+        /// <returns>a boolean</returns>
+        public static bool IsPositiveInfinity(Real number)
+        {
+            return Numeric.IsPositiveInfinity((Numeric)number);
+        }
 
-		/// <summary>
-		/// Returns a value indicating whether the specified number evaluates to negative infinity
-		/// </summary>
-		/// <param name="number">a floating point number</param>
-		/// <returns>a boolean</returns>
-		public static bool IsNegativeInfinity( Real number )
-		{
-			return Numeric.IsNegativeInfinity( (Numeric)number );
-		}
+        /// <summary>
+        /// Returns a value indicating whether the specified number evaluates to negative infinity
+        /// </summary>
+        /// <param name="number">a floating point number</param>
+        /// <returns>a boolean</returns>
+        public static bool IsNegativeInfinity(Real number)
+        {
+            return Numeric.IsNegativeInfinity((Numeric)number);
+        }
 
-		/// <summary>
-		/// Returns a value indicating whether the specified number evaluates to negative infinity
-		/// </summary>
-		/// <param name="number">a floating point number</param>
-		/// <returns>a boolean</returns>
-		public static bool IsInfinity( Real number )
-		{
-			return Numeric.IsInfinity( (Numeric)number );
-		}
+        /// <summary>
+        /// Returns a value indicating whether the specified number evaluates to negative infinity
+        /// </summary>
+        /// <param name="number">a floating point number</param>
+        /// <returns>a boolean</returns>
+        public static bool IsInfinity(Real number)
+        {
+            return Numeric.IsInfinity((Numeric)number);
+        }
 
-		/// <summary>
-		/// Returns a value indicating whether the specified number evaluates to not a number
-		/// </summary>
-		/// <param name="number">a floating point number</param>
-		/// <returns>a boolean</returns>
-		public static bool IsNaN( Real number )
-		{
-			return Numeric.IsNaN( (Numeric)number );
-		}
+        /// <summary>
+        /// Returns a value indicating whether the specified number evaluates to not a number
+        /// </summary>
+        /// <param name="number">a floating point number</param>
+        /// <returns>a boolean</returns>
+        public static bool IsNaN(Real number)
+        {
+            return Numeric.IsNaN((Numeric)number);
+        }
 
-		/// <overloads>
-		/// <summary>
-		/// converts a string representation of a number in a specified style and culture-specific format
-		/// to its floating point number equivilent
-		/// </summary>
-		/// <param name="value">a floating point number</param>
-		/// <exception cref="System.ArgumentException"  />
-		/// <exception cref="System.FormatException" />
-		/// <exception cref="System.ArgumentNullException" />
-		/// <returns>a Real</returns>
-		/// </overloads>
-		public static Real Parse( string value )
-		{
-			return new Real( Numeric.Parse( value, englishCulture ) );
-		}
+        /// <overloads>
+        /// <summary>
+        /// converts a string representation of a number in a specified style and culture-specific format
+        /// to its floating point number equivilent
+        /// </summary>
+        /// <param name="value">a floating point number</param>
+        /// <exception cref="System.ArgumentException"  />
+        /// <exception cref="System.FormatException" />
+        /// <exception cref="System.ArgumentNullException" />
+        /// <returns>a Real</returns>
+        /// </overloads>
+        public static Real Parse(string value)
+        {
+            return new Real(Numeric.Parse(value, englishCulture));
+        }
 
-		/// <param name="value"></param>
-		/// <param name="provider"></param>
-		public static Real Parse( string value, IFormatProvider provider )
-		{
-			return new Real( Numeric.Parse( value, provider ) );
-		}
+        /// <param name="value"></param>
+        /// <param name="provider"></param>
+        public static Real Parse(string value, IFormatProvider provider)
+        {
+            return new Real(Numeric.Parse(value, provider));
+        }
 
-		/// <param name="value"></param>
-		/// <param name="style"></param>
-		/// <param name="provider"></param>
-		public static Real Parse( string value, System.Globalization.NumberStyles style, IFormatProvider provider )
-		{
-			return new Real( Numeric.Parse( value, style, provider ) );
-		}
+        /// <param name="value"></param>
+        /// <param name="style"></param>
+        /// <param name="provider"></param>
+        public static Real Parse(string value, System.Globalization.NumberStyles style, IFormatProvider provider)
+        {
+            return new Real(Numeric.Parse(value, style, provider));
+        }
 
-		/// <param name="value">a floating point number</param>
-		/// <param name="style"></param>
-		public static Real Parse( string value, System.Globalization.NumberStyles style )
-		{
-			return new Real( Numeric.Parse( value, style ) );
-		}
+        /// <param name="value">a floating point number</param>
+        /// <param name="style"></param>
+        public static Real Parse(string value, System.Globalization.NumberStyles style)
+        {
+            return new Real(Numeric.Parse(value, style));
+        }
 
-		#endregion Static Interface
+        #endregion Static Interface
 
-		#region Constructors
+        #region Constructors
 
-		/// <overloads>
-		/// <summary>
-		/// initializes a Real with a specified value
-		/// </summary>
-		/// </overloads>
-		/// <param name="value">an integer representation of the value to convert</param>
-		public Real( int value )
-		{
-			this._value = value;
-		}
+        /// <overloads>
+        /// <summary>
+        /// initializes a Real with a specified value
+        /// </summary>
+        /// </overloads>
+        /// <param name="value">an integer representation of the value to convert</param>
+        public Real(int value)
+        {
+            this._value = value;
+        }
 
-		/// <param name="value">a long representation of the value to convert</param>
-		public Real( long value )
-		{
-			this._value = value;
-		}
+        /// <param name="value">a long representation of the value to convert</param>
+        public Real(long value)
+        {
+            this._value = value;
+        }
 
-		/// <param name="value">a float representation of the value to convert</param>
-		public Real( float value )
-		{
-			this._value = value;
-		}
+        /// <param name="value">a float representation of the value to convert</param>
+        public Real(float value)
+        {
+            this._value = value;
+        }
 
-		/// <param name="value">a double representation of the value to convert</param>
-		public Real( double value )
-		{
-			this._value = (Numeric)value;
-		}
+        /// <param name="value">a double representation of the value to convert</param>
+        public Real(double value)
+        {
+            this._value = (Numeric)value;
+        }
 
-		/// <param name="value">a decimal representation of the value to convert</param>
-		public Real( decimal value )
-		{
-			this._value = (Numeric)value;
-		}
+        /// <param name="value">a decimal representation of the value to convert</param>
+        public Real(decimal value)
+        {
+            this._value = (Numeric)value;
+        }
 
-		/// <param name="value">a string representation of the value to convert</param>
-		public Real( string value )
-		{
-			this._value = Numeric.Parse( value );
-		}
+        /// <param name="value">a string representation of the value to convert</param>
+        public Real(string value)
+        {
+            this._value = Numeric.Parse(value);
+        }
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Conversion Operators
+        #region Conversion Operators
 
-		// Conversion Grid
-		//
-		//-------------------------------------------
-		//|        | Int32 | Real | Single | Double |
-		//-------------------------------------------
-		//| Int32  |   X   |   I  |    X   |    X   |
-		//-------------------------------------------
-		//| Real   |   E   |      |    I   |    I   |
-		//-------------------------------------------
-		//| Single |   X   |   I  |    X   |    X   |
-		//-------------------------------------------
-		//| Double |   X   |   I  |    X   |    X   |
-		//-------------------------------------------
+        // Conversion Grid
+        //
+        //-------------------------------------------
+        //|        | Int32 | Real | Single | Double |
+        //-------------------------------------------
+        //| Int32  |   X   |   I  |    X   |    X   |
+        //-------------------------------------------
+        //| Real   |   E   |      |    I   |    I   |
+        //-------------------------------------------
+        //| Single |   X   |   I  |    X   |    X   |
+        //-------------------------------------------
+        //| Double |   X   |   I  |    X   |    X   |
+        //-------------------------------------------
 
-		#region Int Conversions
+        #region Int Conversions
 
-		/// <summary>
-		/// Implicit conversion from int to Real
-		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public static implicit operator Real( int value )
-		{
-			Real retval;
-			retval._value = value;
-			return retval;
-		}
+        /// <summary>
+        /// Implicit conversion from int to Real
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static implicit operator Real(int value)
+        {
+            Real retval;
+            retval._value = value;
+            return retval;
+        }
 
-		/// <summary>
-		/// Explicit conversion from Real to int
-		/// </summary>
-		/// <param name="real"></param>
-		/// <returns></returns>
-		public static explicit operator int( Real real )
-		{
-			return (int)real._value;
-		}
+        /// <summary>
+        /// Explicit conversion from Real to int
+        /// </summary>
+        /// <param name="real"></param>
+        /// <returns></returns>
+        public static explicit operator int(Real real)
+        {
+            return (int)real._value;
+        }
 
-		#endregion Int Conversions
+        #endregion Int Conversions
 
-		#region Long Conversions
+        #region Long Conversions
 
-		/// <summary>
-		/// Implicit conversion from int to Real
-		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public static implicit operator Real( long value )
-		{
-			Real retval;
-			retval._value = value;
-			return retval;
-		}
+        /// <summary>
+        /// Implicit conversion from int to Real
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static implicit operator Real(long value)
+        {
+            Real retval;
+            retval._value = value;
+            return retval;
+        }
 
-		/// <summary>
-		/// Explicit conversion from Real to int
-		/// </summary>
-		/// <param name="real"></param>
-		/// <returns></returns>
-		public static explicit operator long( Real real )
-		{
-			return (long)real._value;
-		}
+        /// <summary>
+        /// Explicit conversion from Real to int
+        /// </summary>
+        /// <param name="real"></param>
+        /// <returns></returns>
+        public static explicit operator long(Real real)
+        {
+            return (long)real._value;
+        }
 
-		#endregion Long Conversions
+        #endregion Long Conversions
 
-		#region Float Conversions
+        #region Float Conversions
 
-		/// <summary>
-		/// Implicit conversion from float to Real
-		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public static implicit operator Real( float value )
-		{
-			Real retval;
-			retval._value = value;
-			return retval;
-		}
+        /// <summary>
+        /// Implicit conversion from float to Real
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static implicit operator Real(float value)
+        {
+            Real retval;
+            retval._value = value;
+            return retval;
+        }
 
-		/// <summary>
-		/// Implicit conversion from Real to float
-		/// </summary>
-		/// <param name="real"></param>
-		/// <returns></returns>
-		public static implicit operator float( Real real )
-		{
-			return (float)real._value;
-		}
+        /// <summary>
+        /// Implicit conversion from Real to float
+        /// </summary>
+        /// <param name="real"></param>
+        /// <returns></returns>
+        public static implicit operator float(Real real)
+        {
+            return (float)real._value;
+        }
 
-		#endregion Float Conversions
+        #endregion Float Conversions
 
-		#region Double Conversions
+        #region Double Conversions
 
-		/// <summary>
-		/// Implicit conversion from double to Real
-		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public static implicit operator Real( double value )
-		{
-			Real retval;
-			retval._value = (Numeric)value;
-			return retval;
-		}
+        /// <summary>
+        /// Implicit conversion from double to Real
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static implicit operator Real(double value)
+        {
+            Real retval;
+            retval._value = (Numeric)value;
+            return retval;
+        }
 
-		/// <summary>
-		/// Explicit conversion from Real to double
-		/// </summary>
-		/// <param name="real"></param>
-		/// <returns></returns>
-		public static implicit operator double( Real real )
-		{
-			return real._value;
-		}
+        /// <summary>
+        /// Explicit conversion from Real to double
+        /// </summary>
+        /// <param name="real"></param>
+        /// <returns></returns>
+        public static implicit operator double(Real real)
+        {
+            return real._value;
+        }
 
-		#endregion Double Conversions
+        #endregion Double Conversions
 
-		#region Decimal Conversions
+        #region Decimal Conversions
 
-		/// <summary>
-		/// Implicit conversion from decimal to Real
-		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public static implicit operator Real( decimal value )
-		{
-			Real retval;
-			retval._value = (Numeric)value;
-			return retval;
-		}
+        /// <summary>
+        /// Implicit conversion from decimal to Real
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static implicit operator Real(decimal value)
+        {
+            Real retval;
+            retval._value = (Numeric)value;
+            return retval;
+        }
 
-		/// <summary>
-		/// Explicit conversion from Real to decimal
-		/// </summary>
-		/// <param name="real"></param>
-		/// <returns></returns>
-		public static explicit operator decimal( Real real )
-		{
-			return (decimal)real._value;
-		}
+        /// <summary>
+        /// Explicit conversion from Real to decimal
+        /// </summary>
+        /// <param name="real"></param>
+        /// <returns></returns>
+        public static explicit operator decimal(Real real)
+        {
+            return (decimal)real._value;
+        }
 
-		#endregion Decimal Conversions
+        #endregion Decimal Conversions
 
-		#region String Conversions
+        #region String Conversions
 
-		/// <summary>
-		/// Implicit conversion from string to Real
-		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public static implicit operator Real( string value )
-		{
-			Real retval;
-			retval._value = Numeric.Parse( value );
-			return retval;
-		}
+        /// <summary>
+        /// Implicit conversion from string to Real
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static implicit operator Real(string value)
+        {
+            Real retval;
+            retval._value = Numeric.Parse(value);
+            return retval;
+        }
 
-		/// <summary>
-		/// Explicit conversion from Real to string
-		/// </summary>
-		/// <param name="real"></param>
-		/// <returns></returns>
-		public static explicit operator string( Real real )
-		{
-			return real.ToString();
-		}
+        /// <summary>
+        /// Explicit conversion from Real to string
+        /// </summary>
+        /// <param name="real"></param>
+        /// <returns></returns>
+        public static explicit operator string(Real real)
+        {
+            return real.ToString();
+        }
 
-		#endregion String Conversions
+        #endregion String Conversions
 
-		#endregion Conversion Operators
+        #endregion Conversion Operators
 
-		#region Operator Overrides
+        #region Operator Overrides
 
 #if !MONO
 
-		#region Logical Operators
+        #region Logical Operators
 
-		#region Equality Operators
+        #region Equality Operators
 
-		/// <summary>
-		/// Used to test equality between two Reals
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		/// <remarks>The == operator uses the static Tolerance value to determine equality</remarks>
-		public static bool operator ==( Real left, Real right )
-		{
-			return ( Utility.Abs( right._value - left._value ) <= Tolerance );
-		}
+        /// <summary>
+        /// Used to test equality between two Reals
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        /// <remarks>The == operator uses the static Tolerance value to determine equality</remarks>
+        public static bool operator ==(Real left, Real right)
+        {
+            return (Utility.Abs(right._value - left._value) <= Tolerance);
+        }
 
-		/// <summary>
-		/// Used to test inequality between two Reals
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		/// <remarks>The == operator uses the static Tolerance value to determine equality </remarks>
-		public static bool operator !=( Real left, Real right )
-		{
-			return ( Utility.Abs( right._value - left._value ) >= Tolerance );
-		}
+        /// <summary>
+        /// Used to test inequality between two Reals
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        /// <remarks>The == operator uses the static Tolerance value to determine equality </remarks>
+        public static bool operator !=(Real left, Real right)
+        {
+            return (Utility.Abs(right._value - left._value) >= Tolerance);
+        }
 
-		#endregion Equality Operators
+        #endregion Equality Operators
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static bool operator >( Real left, Real right )
-		{
-			return ( left._value > right._value );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator >(Real left, Real right)
+        {
+            return (left._value > right._value);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static bool operator <( Real left, Real right )
-		{
-			return ( left._value < right._value );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator <(Real left, Real right)
+        {
+            return (left._value < right._value);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static bool operator >=( Real left, Real right )
-		{
-			return ( left._value >= right._value );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator >=(Real left, Real right)
+        {
+            return (left._value >= right._value);
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static bool operator <=( Real left, Real right )
-		{
-			return ( left._value <= right._value );
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static bool operator <=(Real left, Real right)
+        {
+            return (left._value <= right._value);
+        }
 
-		#endregion Logical Operators
-
-#endif
-
-		#region Arithmatic Operators
-
-		/// <summary>
-		///		Used when a Real is added to another Real.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static Real operator +( Real left, Real right )
-		{
-			return left._value + right._value;
-		}
-
-		/// <summary>
-		///		Used to subtract a Real from another Real.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static Real operator -( Real left, Real right )
-		{
-			return left._value - right._value;
-		}
-
-		/// <summary>
-		///		Used when a Real is multiplied by a Real.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static Real operator *( Real left, Real right )
-		{
-			return left._value*right._value;
-		}
-
-		/// <summary>
-		///     Used when a Real is divided by a Real
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static Real operator /( Real left, Real right )
-		{
-			return left._value/right._value;
-		}
-
-		/// <summary>
-		///		Used to negate the elements of a Real.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <returns></returns>
-		public static Real operator -( Real left )
-		{
-			return -left._value;
-		}
-
-		#endregion Arithmatic Operators
-
-		#region CLSCompliant Methods
-
-		#region Arithmatic Operations
-
-		/// <summary>
-		///		Used when a Real is added to another Real.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static Real Add( Real left, Real right )
-		{
-			return left + right;
-		}
-
-		/// <summary>
-		///		Used to subtract a Real from another Real.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static Real Subtract( Real left, Real right )
-		{
-			return left - right;
-		}
-
-		/// <summary>
-		///		Used when a Real is multiplied by a Real.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static Real Multiply( Real left, Real right )
-		{
-			return left*right;
-		}
-
-		/// <summary>
-		/// Used when a Real is divided by a Real.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
-		/// <returns></returns>
-		public static Real Divide( Real left, Real right )
-		{
-			return left/right;
-		}
-
-		/// <summary>
-		///		Used to negate the elements of a Real.
-		/// </summary>
-		/// <param name="left"></param>
-		/// <returns></returns>
-		public static Real Negate( Real left )
-		{
-			return -left;
-		}
-
-		#endregion Arithmatic Operations
-
-		#endregion CLSCompliant Methods
-
-		#endregion Operator Overrides
-
-		#region Methods
-
-		/// <summary>
-		/// Returns the samllest integer less than or equal to the current value
-		/// </summary>
-		/// <returns></returns>
-		public Real Floor()
-		{
-			return System.Math.Floor( this._value );
-		}
-
-		/// <summary>
-		/// Returns the samllest integer greater than or equal to the current value
-		/// </summary>
-		/// <returns></returns>
-		public Real Ceiling()
-		{
-			return System.Math.Ceiling( this._value );
-		}
-
-		#endregion Methods
-
-		#region System.Object Overrides
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <returns></returns>
-		public override string ToString()
-		{
-			return this._value.ToString( englishCulture );
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns></returns>
-		public override bool Equals( object obj )
-		{
-			return ( obj is Real && this == (Real)obj );
-		}
-
-		/// <summary>
-		/// </summary>
-		public bool Equals( Real obj )
-		{
-			return Equals( obj, Tolerance );
-		}
-
-		/// <summary>
-		/// </summary>
-		public bool Equals( Real obj, Real tolerance )
-		{
-			return ( Utility.Abs( obj - this ) <= tolerance );
-		}
-
-		/// <summary>
-		/// </summary>
-		public override int GetHashCode()
-		{
-			return this._value.GetHashCode();
-		}
-
-		#endregion System.Object Overrides
-
-#if !( XBOX || XBOX360 || NETFX_CORE )
-
-		#region ISerializable Implementation
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="info"></param>
-		/// <param name="context"></param>
-		private Real( SerializationInfo info, StreamingContext context )
-		{
-			this._value = (Numeric)info.GetValue( "value", typeof ( Numeric ) );
-		}
-
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="info"></param>
-		/// <param name="context"></param>
-		[SecurityPermission( SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter )]
-		public void GetObjectData( SerializationInfo info, StreamingContext context )
-		{
-			info.AddValue( "value", this._value );
-		}
-
-		#endregion ISerializable Implementation
+        #endregion Logical Operators
 
 #endif
 
-		#region IComparable<Real> Members
+        #region Arithmatic Operators
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="other"></param>
-		/// <returns></returns>
-		public int CompareTo( Real other )
-		{
-			return this._value.CompareTo( other._value );
-		}
+        /// <summary>
+        ///		Used when a Real is added to another Real.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Real operator +(Real left, Real right)
+        {
+            return left._value + right._value;
+        }
 
-		#endregion
+        /// <summary>
+        ///		Used to subtract a Real from another Real.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Real operator -(Real left, Real right)
+        {
+            return left._value - right._value;
+        }
+
+        /// <summary>
+        ///		Used when a Real is multiplied by a Real.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Real operator *(Real left, Real right)
+        {
+            return left._value * right._value;
+        }
+
+        /// <summary>
+        ///     Used when a Real is divided by a Real
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Real operator /(Real left, Real right)
+        {
+            return left._value / right._value;
+        }
+
+        /// <summary>
+        ///		Used to negate the elements of a Real.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <returns></returns>
+        public static Real operator -(Real left)
+        {
+            return -left._value;
+        }
+
+        #endregion Arithmatic Operators
+
+        #region CLSCompliant Methods
+
+        #region Arithmatic Operations
+
+        /// <summary>
+        ///		Used when a Real is added to another Real.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Real Add(Real left, Real right)
+        {
+            return left + right;
+        }
+
+        /// <summary>
+        ///		Used to subtract a Real from another Real.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Real Subtract(Real left, Real right)
+        {
+            return left - right;
+        }
+
+        /// <summary>
+        ///		Used when a Real is multiplied by a Real.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Real Multiply(Real left, Real right)
+        {
+            return left * right;
+        }
+
+        /// <summary>
+        /// Used when a Real is divided by a Real.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <param name="right"></param>
+        /// <returns></returns>
+        public static Real Divide(Real left, Real right)
+        {
+            return left / right;
+        }
+
+        /// <summary>
+        ///		Used to negate the elements of a Real.
+        /// </summary>
+        /// <param name="left"></param>
+        /// <returns></returns>
+        public static Real Negate(Real left)
+        {
+            return -left;
+        }
+
+        #endregion Arithmatic Operations
+
+        #endregion CLSCompliant Methods
+
+        #endregion Operator Overrides
+
+        #region Methods
+
+        /// <summary>
+        /// Returns the samllest integer less than or equal to the current value
+        /// </summary>
+        /// <returns></returns>
+        public Real Floor()
+        {
+            return System.Math.Floor(this._value);
+        }
+
+        /// <summary>
+        /// Returns the samllest integer greater than or equal to the current value
+        /// </summary>
+        /// <returns></returns>
+        public Real Ceiling()
+        {
+            return System.Math.Ceiling(this._value);
+        }
+
+        #endregion Methods
+
+        #region System.Object Overrides
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return this._value.ToString(englishCulture);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            return (obj is Real && this == (Real)obj);
+        }
+
+        /// <summary>
+        /// </summary>
+        public bool Equals(Real obj)
+        {
+            return Equals(obj, Tolerance);
+        }
+
+        /// <summary>
+        /// </summary>
+        public bool Equals(Real obj, Real tolerance)
+        {
+            return (Utility.Abs(obj - this) <= tolerance);
+        }
+
+        /// <summary>
+        /// </summary>
+        public override int GetHashCode()
+        {
+            return this._value.GetHashCode();
+        }
+
+        #endregion System.Object Overrides
+
+#if !(XBOX || XBOX360 || NETFX_CORE)
+
+        #region ISerializable Implementation
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        private Real(SerializationInfo info, StreamingContext context)
+        {
+            this._value = (Numeric)info.GetValue("value", typeof(Numeric));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("value", this._value);
+        }
+
+        #endregion ISerializable Implementation
+
+#endif
+
+        #region IComparable<Real> Members
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public int CompareTo(Real other)
+        {
+            return this._value.CompareTo(other._value);
+        }
+
+        #endregion
 
 #if !(NETFX_CORE)
 
-		#region IConvertible Members
+        #region IConvertible Members
 
-		public TypeCode GetTypeCode()
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public TypeCode GetTypeCode()
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public bool ToBoolean( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public bool ToBoolean(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public byte ToByte( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public byte ToByte(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public char ToChar( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public char ToChar(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public DateTime ToDateTime( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public DateTime ToDateTime(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public decimal ToDecimal( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public decimal ToDecimal(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public double ToDouble( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public double ToDouble(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public short ToInt16( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public short ToInt16(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public int ToInt32( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public int ToInt32(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public long ToInt64( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public long ToInt64(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public sbyte ToSByte( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public sbyte ToSByte(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public float ToSingle( IFormatProvider provider )
-		{
-			return (float)this;
-		}
+        public float ToSingle(IFormatProvider provider)
+        {
+            return (float)this;
+        }
 
-		public string ToString( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public string ToString(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public object ToType( Type conversionType, IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public object ToType(Type conversionType, IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public ushort ToUInt16( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public ushort ToUInt16(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public uint ToUInt32( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public uint ToUInt32(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		public ulong ToUInt64( IFormatProvider provider )
-		{
-			throw new Exception( "The method or operation is not implemented." );
-		}
+        public ulong ToUInt64(IFormatProvider provider)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
 
-		#endregion
+        #endregion
 #endif
 
-		public static int Size
-		{
-			get
-			{
-				// The Real datatype is actually one of these under the covers
-				return sizeof ( Numeric );
-			}
-		}
+        public static int Size
+        {
+            get
+            {
+                // The Real datatype is actually one of these under the covers
+                return sizeof(Numeric);
+            }
+        }
 
-		public static explicit operator ulong( Real real )
-		{
-			return (ulong)real._value;
-		}
+        public static explicit operator ulong(Real real)
+        {
+            return (ulong)real._value;
+        }
 
-		public static explicit operator uint( Real real )
-		{
-			return (uint)real._value;
-		}
+        public static explicit operator uint(Real real)
+        {
+            return (uint)real._value;
+        }
 
-		public static explicit operator byte( Real real )
-		{
-			return (byte)real._value;
-		}
+        public static explicit operator byte(Real real)
+        {
+            return (byte)real._value;
+        }
 
-		public static bool TryParse( string s, out Real result )
-		{
-			bool b;
-#if !( XBOX || XBOX360 )
-			Numeric retval;
-			b = Numeric.TryParse( s, out retval );
-			result = (Real)retval;
+        public static bool TryParse(string s, out Real result)
+        {
+            bool b;
+#if !(XBOX || XBOX360)
+            Numeric retval;
+            b = Numeric.TryParse(s, out retval);
+            result = (Real)retval;
 #else
 			try
 			{
@@ -862,53 +862,53 @@ namespace Axiom.Math
 				b = false; 
 			}
 #endif
-			return b;
-		}
+            return b;
+        }
 
-		public static float[] ToFloatArray( Real[] real )
-		{
-			var floatArray = new float[real.Length];
-			for ( var myIndex = 0; myIndex < real.Length; myIndex++ )
-			{
-				floatArray[ myIndex ] = real[ myIndex ];
-			}
-			return floatArray;
-		}
+        public static float[] ToFloatArray(Real[] real)
+        {
+            var floatArray = new float[real.Length];
+            for (var myIndex = 0; myIndex < real.Length; myIndex++)
+            {
+                floatArray[myIndex] = real[myIndex];
+            }
+            return floatArray;
+        }
 
-		#region IXmlSerializable Members
+        #region IXmlSerializable Members
 
-		//public System.Xml.Schema.XmlSchema GetSchema()
-		//{
-		//    throw new NotImplementedException();
-		//}
+        //public System.Xml.Schema.XmlSchema GetSchema()
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-		//public void ReadXml(System.Xml.XmlReader reader)
-		//{
-		//    throw new NotImplementedException();
-		//}
+        //public void ReadXml(System.Xml.XmlReader reader)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-		//public void WriteXml(System.Xml.XmlWriter writer)
-		//{
-		//    throw new NotImplementedException();
-		//}
+        //public void WriteXml(System.Xml.XmlWriter writer)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-		public void WriteXml( XmlWriter writer )
-		{
-			writer.WriteString( this._value.ToString( CultureInfo.InvariantCulture ) );
-		}
+        public void WriteXml(XmlWriter writer)
+        {
+            writer.WriteString(this._value.ToString(CultureInfo.InvariantCulture));
+        }
 
-		public void ReadXml( XmlReader reader )
-		{
-#if AXIOM_REAL_AS_SINGLE || !( AXIOM_REAL_AS_DOUBLE )
-			try
-			{
-				var v = reader.ReadElementContentAsString();
-				this._value = float.Parse( v, CultureInfo.InvariantCulture );
-			}
-			catch ( Exception e )
-			{
-				Console.WriteLine( e.Message );
-			}
+        public void ReadXml(XmlReader reader)
+        {
+#if AXIOM_REAL_AS_SINGLE || !(AXIOM_REAL_AS_DOUBLE)
+            try
+            {
+                var v = reader.ReadElementContentAsString();
+                this._value = float.Parse(v, CultureInfo.InvariantCulture);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
 #else
 			try
 			{
@@ -920,13 +920,13 @@ namespace Axiom.Math
 				Console.WriteLine( e.Message );
 			}
 #endif
-		}
+        }
 
-		public XmlSchema GetSchema()
-		{
-			return ( null );
-		}
+        public XmlSchema GetSchema()
+        {
+            return (null);
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

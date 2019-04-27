@@ -51,11 +51,11 @@ namespace Axiom.UnitTests.Graphics
             GpuProgramParameters parameters = new GpuProgramParameters();
             //var floatLogical = new GpuLogicalBufferStruct();
             //parameters._setLogicalIndexes( floatLogical, new GpuLogicalBufferStruct() );
-            parameters.SetConstant( 0, expected[ 0 ] );
+            parameters.SetConstant(0, expected[0]);
 
-            Assert.IsTrue( parameters.GetFloatConstant( 0 ) != 0 );
-            actual = parameters.GetFloatConstant( 0 );
-            Assert.AreEqual( expected[0], actual );
+            Assert.IsTrue(parameters.GetFloatConstant(0) != 0);
+            actual = parameters.GetFloatConstant(0);
+            Assert.AreEqual(expected[0], actual);
         }
 
         [Test]
@@ -67,7 +67,7 @@ namespace Axiom.UnitTests.Graphics
             GpuProgramParameters parameters = new GpuProgramParameters();
             //var floatLogical = new GpuLogicalBufferStruct();
             //parameters._setLogicalIndexes( floatLogical, new GpuLogicalBufferStruct() );
-            parameters.SetConstant( 0, expected[ 0 ], expected[ 1 ], expected[ 2 ], expected[ 3 ] );
+            parameters.SetConstant(0, expected[0], expected[1], expected[2], expected[3]);
 
             for (int i = 0; i < 4; i++)
             {
@@ -89,7 +89,7 @@ namespace Axiom.UnitTests.Graphics
             GpuProgramParameters parameters = new GpuProgramParameters();
             //var floatLogical = new GpuLogicalBufferStruct();
             //parameters._setLogicalIndexes( floatLogical, new GpuLogicalBufferStruct() );
-            parameters.SetConstant( 0, expected );
+            parameters.SetConstant(0, expected);
 
             for (int i = 0; i < 4; i++)
             {
@@ -112,7 +112,7 @@ namespace Axiom.UnitTests.Graphics
             GpuProgramParameters parameters = new GpuProgramParameters();
             //var floatLogical = new GpuLogicalBufferStruct();
             //parameters._setLogicalIndexes( floatLogical, new GpuLogicalBufferStruct() );
-            parameters.SetConstant( 0, new Vector3( expected[ 0 ], expected[ 1 ], expected[ 2 ] ) );
+            parameters.SetConstant(0, new Vector3(expected[0], expected[1], expected[2]));
 
             for (int i = 0; i < 3; i++)
             {
@@ -134,7 +134,7 @@ namespace Axiom.UnitTests.Graphics
             GpuProgramParameters parameters = new GpuProgramParameters();
             //var floatLogical = new GpuLogicalBufferStruct();
             //parameters._setLogicalIndexes( floatLogical, new GpuLogicalBufferStruct() );
-            parameters.SetConstant( 0, new Vector4( expected[ 0 ], expected[ 1 ], expected[ 2 ], expected[ 3 ] ) );
+            parameters.SetConstant(0, new Vector4(expected[0], expected[1], expected[2], expected[3]));
 
             for (int i = 0; i < 4; i++)
             {
@@ -160,20 +160,20 @@ namespace Axiom.UnitTests.Graphics
             GpuProgramParameters parameters = new GpuProgramParameters();
             //var floatLogical = new GpuLogicalBufferStruct();
             //parameters._setLogicalIndexes( floatLogical, new GpuLogicalBufferStruct() );
-            parameters.SetConstant( 0, new Matrix4( expected[ 0 ],  expected[ 1 ],  expected[ 2 ],  expected[ 3 ],
-                                                    expected[ 4 ],  expected[ 5 ],  expected[ 6 ],  expected[ 7 ],
-                                                    expected[ 8 ],  expected[ 9 ],  expected[ 10 ], expected[ 11 ],
-                                                    expected[ 12 ], expected[ 13 ], expected[ 14 ], expected[ 15 ] ) );
+            parameters.SetConstant(0, new Matrix4(expected[0], expected[1], expected[2], expected[3],
+                                                    expected[4], expected[5], expected[6], expected[7],
+                                                    expected[8], expected[9], expected[10], expected[11],
+                                                    expected[12], expected[13], expected[14], expected[15]));
 
             for (int i = 0; i < 4; i++)
             {
                 float fcEntry = parameters.GetFloatConstant(i);
                 Assert.IsTrue(fcEntry != 0);
 
-                actual[ i * 4] = fcEntry;
+                actual[i * 4] = fcEntry;
             }
 
-            Assert.AreEqual( expected, actual );
+            Assert.AreEqual(expected, actual);
         }
     }
 }

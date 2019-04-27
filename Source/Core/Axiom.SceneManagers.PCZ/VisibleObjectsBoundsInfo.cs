@@ -46,48 +46,48 @@ using Axiom.Math;
 
 namespace Axiom.Core
 {
-	/** Structure collecting together information about the visible objects
+    /** Structure collecting together information about the visible objects
 	that have been discovered in a scene.
 	*/
 
-	public struct VisibleObjectsBoundsInfo
-	{
-		/// The axis-aligned bounds of the visible objects
-		public AxisAlignedBox aabb;
+    public struct VisibleObjectsBoundsInfo
+    {
+        /// The axis-aligned bounds of the visible objects
+        public AxisAlignedBox aabb;
 
-		/// The axis-aligned bounds of the visible shadow receiver objects
-		public AxisAlignedBox receiverAabb;
+        /// The axis-aligned bounds of the visible shadow receiver objects
+        public AxisAlignedBox receiverAabb;
 
-		/// The closest a visible object is to the camera
-		public Real minDistance;
+        /// The closest a visible object is to the camera
+        public Real minDistance;
 
-		/// The farthest a visible objects is from the camera
-		public Real maxDistance;
+        /// The farthest a visible objects is from the camera
+        public Real maxDistance;
 
-		public void Reset()
-		{
-			this.aabb.IsNull = true;
-			this.receiverAabb.IsNull = true;
-			this.minDistance = float.NegativeInfinity;
-			this.maxDistance = 0;
-		}
+        public void Reset()
+        {
+            this.aabb.IsNull = true;
+            this.receiverAabb.IsNull = true;
+            this.minDistance = float.NegativeInfinity;
+            this.maxDistance = 0;
+        }
 
-		public void Merge( AxisAlignedBox boxBounds, Sphere sphereBounds, Camera cam )
-		{
-			Merge( boxBounds, sphereBounds, cam, true );
-		}
+        public void Merge(AxisAlignedBox boxBounds, Sphere sphereBounds, Camera cam)
+        {
+            Merge(boxBounds, sphereBounds, cam, true);
+        }
 
-		public void Merge( AxisAlignedBox boxBounds, Sphere sphereBounds, Camera cam, bool receiver )
-		{
-			this.aabb.Merge( boxBounds );
-			if ( receiver )
-			{
-				this.receiverAabb.Merge( boxBounds );
-			}
-			Real camDistToCenter = ( cam.DerivedPosition - sphereBounds.Center ).Length;
-			this.minDistance = System.Math.Min( this.minDistance,
-			                                    System.Math.Max( (Real)0, camDistToCenter - sphereBounds.Radius ) );
-			this.maxDistance = System.Math.Max( this.maxDistance, camDistToCenter + sphereBounds.Radius );
-		}
-	}
+        public void Merge(AxisAlignedBox boxBounds, Sphere sphereBounds, Camera cam, bool receiver)
+        {
+            this.aabb.Merge(boxBounds);
+            if (receiver)
+            {
+                this.receiverAabb.Merge(boxBounds);
+            }
+            Real camDistToCenter = (cam.DerivedPosition - sphereBounds.Center).Length;
+            this.minDistance = System.Math.Min(this.minDistance,
+                                                System.Math.Max((Real)0, camDistToCenter - sphereBounds.Radius));
+            this.maxDistance = System.Math.Max(this.maxDistance, camDistToCenter + sphereBounds.Radius);
+        }
+    }
 }

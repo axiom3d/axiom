@@ -47,141 +47,141 @@ using Axiom.Scripting;
 
 namespace Axiom.ParticleFX
 {
-	public enum ForceApplication
-	{
-		[ScriptEnum( "average" )] Average,
+    public enum ForceApplication
+    {
+        [ScriptEnum("average")] Average,
 
-		[ScriptEnum( "add" )] Add
-	}
+        [ScriptEnum("add")] Add
+    }
 
-	/// <summary>
-	/// Summary description for LinearForceAffector.
-	/// </summary>
-	public class LinearForceAffector : ParticleAffector
-	{
-		protected ForceApplication forceApp = ForceApplication.Add;
-		protected Vector3 forceVector = Vector3.Zero;
+    /// <summary>
+    /// Summary description for LinearForceAffector.
+    /// </summary>
+    public class LinearForceAffector : ParticleAffector
+    {
+        protected ForceApplication forceApp = ForceApplication.Add;
+        protected Vector3 forceVector = Vector3.Zero;
 
-		public LinearForceAffector( ParticleSystem psys )
-			: base( psys )
-		{
-			// HACK: See if there is better way to do this
-			type = "LinearForce";
-		}
+        public LinearForceAffector(ParticleSystem psys)
+            : base(psys)
+        {
+            // HACK: See if there is better way to do this
+            type = "LinearForce";
+        }
 
-		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
-		{
-			Vector3 scaledVector = Vector3.Zero;
+        public override void AffectParticles(ParticleSystem system, Real timeElapsed)
+        {
+            Vector3 scaledVector = Vector3.Zero;
 
-			if ( this.forceApp == ForceApplication.Add )
-			{
-				// scale force by time
-				scaledVector = this.forceVector*timeElapsed;
-			}
+            if (this.forceApp == ForceApplication.Add)
+            {
+                // scale force by time
+                scaledVector = this.forceVector * timeElapsed;
+            }
 
-			// affect each particle
-			for ( int i = 0; i < system.Particles.Count; i++ )
-			{
-				var p = (Particle)system.Particles[ i ];
+            // affect each particle
+            for (int i = 0; i < system.Particles.Count; i++)
+            {
+                var p = (Particle)system.Particles[i];
 
-				if ( this.forceApp == ForceApplication.Add )
-				{
-					p.Direction += scaledVector;
-				}
-				else
-				{
-					// Average
-					p.Direction = ( p.Direction + this.forceVector )/2;
-				}
-			}
-		}
+                if (this.forceApp == ForceApplication.Add)
+                {
+                    p.Direction += scaledVector;
+                }
+                else
+                {
+                    // Average
+                    p.Direction = (p.Direction + this.forceVector) / 2;
+                }
+            }
+        }
 
-		public Vector3 Force
-		{
-			get
-			{
-				return this.forceVector;
-			}
-			set
-			{
-				this.forceVector = value;
-			}
-		}
+        public Vector3 Force
+        {
+            get
+            {
+                return this.forceVector;
+            }
+            set
+            {
+                this.forceVector = value;
+            }
+        }
 
-		public ForceApplication ForceApplication
-		{
-			get
-			{
-				return this.forceApp;
-			}
-			set
-			{
-				this.forceApp = value;
-			}
-		}
+        public ForceApplication ForceApplication
+        {
+            get
+            {
+                return this.forceApp;
+            }
+            set
+            {
+                this.forceApp = value;
+            }
+        }
 
-		#region Command definition classes
+        #region Command definition classes
 
-		[ScriptableProperty( "force_vector", "Direction of force to apply to this particle.", typeof ( ParticleAffector ) )]
-		public class ForceVectorCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
+        [ScriptableProperty("force_vector", "Direction of force to apply to this particle.", typeof(ParticleAffector))]
+        public class ForceVectorCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-			public string Get( object target )
-			{
-				var affector = target as LinearForceAffector;
+            public string Get(object target)
+            {
+                var affector = target as LinearForceAffector;
 
-				Vector3 vec = affector.Force;
+                Vector3 vec = affector.Force;
 
-				// TODO: Common way for vector string rep, maybe modify ToString
-				return string.Format( "{0}, {1}, {2}", vec.x, vec.y, vec.z );
-			}
+                // TODO: Common way for vector string rep, maybe modify ToString
+                return string.Format("{0}, {1}, {2}", vec.x, vec.y, vec.z);
+            }
 
-			public void Set( object target, string val )
-			{
-				var affector = target as LinearForceAffector;
+            public void Set(object target, string val)
+            {
+                var affector = target as LinearForceAffector;
 
-				affector.Force = StringConverter.ParseVector3( val );
-			}
+                affector.Force = StringConverter.ParseVector3(val);
+            }
 
-			#endregion IPropertyCommand Members
-		}
+            #endregion IPropertyCommand Members
+        }
 
-		[ScriptableProperty( "force_application", "Type of force to apply to this particle.", typeof ( ParticleAffector ) )]
-		public class ForceApplicationCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
+        [ScriptableProperty("force_application", "Type of force to apply to this particle.", typeof(ParticleAffector))]
+        public class ForceApplicationCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-			public string Get( object target )
-			{
-				var affector = target as LinearForceAffector;
+            public string Get(object target)
+            {
+                var affector = target as LinearForceAffector;
 
-				// TODO: Reverse lookup the enum attribute
-				return affector.ForceApplication.ToString().ToLower();
-			}
+                // TODO: Reverse lookup the enum attribute
+                return affector.ForceApplication.ToString().ToLower();
+            }
 
-			public void Set( object target, string val )
-			{
-				var affector = target as LinearForceAffector;
+            public void Set(object target, string val)
+            {
+                var affector = target as LinearForceAffector;
 
-				// lookup the real enum equivalent to the script value
-				object enumVal = ScriptEnumAttribute.Lookup( val, typeof ( ForceApplication ) );
+                // lookup the real enum equivalent to the script value
+                object enumVal = ScriptEnumAttribute.Lookup(val, typeof(ForceApplication));
 
-				// if a value was found, assign it
-				if ( enumVal != null )
-				{
-					affector.ForceApplication = ( (ForceApplication)enumVal );
-				}
-				else
-				{
-					ParseHelper.LogParserError( val, affector.Type, "Invalid enum value" );
-					;
-				}
-			}
+                // if a value was found, assign it
+                if (enumVal != null)
+                {
+                    affector.ForceApplication = ((ForceApplication)enumVal);
+                }
+                else
+                {
+                    ParseHelper.LogParserError(val, affector.Type, "Invalid enum value");
+                    ;
+                }
+            }
 
-			#endregion IPropertyCommand Members
-		}
+            #endregion IPropertyCommand Members
+        }
 
-		#endregion Command definition classes
-	}
+        #endregion Command definition classes
+    }
 }

@@ -45,27 +45,27 @@ using Axiom.Scripting.Compiler.AST;
 
 namespace Axiom.Scripting.Compiler
 {
-	public partial class ScriptCompiler
-	{
-		public class TextureSourceTranslator : Translator
-		{
-			public TextureSourceTranslator()
-				: base()
-			{
-			}
+    public partial class ScriptCompiler
+    {
+        public class TextureSourceTranslator : Translator
+        {
+            public TextureSourceTranslator()
+                : base()
+            {
+            }
 
-			#region Translator Implementation
+            #region Translator Implementation
 
-			/// <see cref="Translator.CheckFor"/>
-			public override bool CheckFor( Keywords nodeId, Keywords parentId )
-			{
-				return nodeId == Keywords.ID_TEXTURE_SOURCE && parentId == Keywords.ID_TEXTURE_UNIT;
-			}
+            /// <see cref="Translator.CheckFor"/>
+            public override bool CheckFor(Keywords nodeId, Keywords parentId)
+            {
+                return nodeId == Keywords.ID_TEXTURE_SOURCE && parentId == Keywords.ID_TEXTURE_UNIT;
+            }
 
-			/// <see cref="Translator.Translate"/>
-			public override void Translate( ScriptCompiler compiler, AbstractNode node )
-			{
-				throw new NotImplementedException();
+            /// <see cref="Translator.Translate"/>
+            public override void Translate(ScriptCompiler compiler, AbstractNode node)
+            {
+                throw new NotImplementedException();
 #if UNREACHABLE_CODE
 				ObjectAbstractNode obj = (ObjectAbstractNode)node;
 
@@ -144,9 +144,9 @@ namespace Axiom.Scripting.Compiler
 					//TODO: ExternalTextureSourceManager::getSingleton().getCurrentPlugIn()->createDefinedTexture(material->getName(), material->getGroup());
 				}
 #endif
-			}
+            }
 
-			#endregion Translator Implementation
-		}
-	}
+            #endregion Translator Implementation
+        }
+    }
 }

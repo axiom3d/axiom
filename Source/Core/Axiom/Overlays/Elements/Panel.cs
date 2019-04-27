@@ -58,134 +58,134 @@ using Axiom.Graphics;
 
 namespace Axiom.Overlays.Elements
 {
-	/// <summary>
-	/// 	GuiElement representing a flat, single-material (or transparent) panel which can contain other elements.
-	/// </summary>
-	/// <remarks>
-	/// 	This class subclasses OverlayElementContainer because it can contain other elements. Like other
-	/// 	containers, if hidden it's contents are also hidden, if moved it's contents also move etc. 
-	/// 	The panel itself is a 2D rectangle which is either completely transparent, or is rendered 
-	/// 	with a single material. The texture(s) on the panel can be tiled depending on your requirements.
-	/// 	<p/>
-	/// 	This component is suitable for backgrounds and grouping other elements. Note that because
-	/// 	it has a single repeating material it cannot have a discrete border (unless the texture has one and
-	/// 	the texture is tiled only once). For a bordered panel, see it's subclass BorderPanel.
-	/// 	<p/>
-	/// 	Note that the material can have all the usual effects applied to it like multiple texture
-	/// 	layers, scrolling / animated textures etc. For multiple texture layers, you have to set 
-	/// 	the tiling level for each layer.
-	/// </remarks>
-	public class Panel : OverlayElementContainer
-	{
-		#region Member variables
+    /// <summary>
+    /// 	GuiElement representing a flat, single-material (or transparent) panel which can contain other elements.
+    /// </summary>
+    /// <remarks>
+    /// 	This class subclasses OverlayElementContainer because it can contain other elements. Like other
+    /// 	containers, if hidden it's contents are also hidden, if moved it's contents also move etc. 
+    /// 	The panel itself is a 2D rectangle which is either completely transparent, or is rendered 
+    /// 	with a single material. The texture(s) on the panel can be tiled depending on your requirements.
+    /// 	<p/>
+    /// 	This component is suitable for backgrounds and grouping other elements. Note that because
+    /// 	it has a single repeating material it cannot have a discrete border (unless the texture has one and
+    /// 	the texture is tiled only once). For a bordered panel, see it's subclass BorderPanel.
+    /// 	<p/>
+    /// 	Note that the material can have all the usual effects applied to it like multiple texture
+    /// 	layers, scrolling / animated textures etc. For multiple texture layers, you have to set 
+    /// 	the tiling level for each layer.
+    /// </remarks>
+    public class Panel : OverlayElementContainer
+    {
+        #region Member variables
 
-		protected float[] tileX = new float[Config.MaxTextureLayers];
-		protected float[] tileY = new float[Config.MaxTextureLayers];
-		protected bool isTransparent;
-		protected int numTexCoordsInBuffer;
-		protected Vector2 topLeft, bottomRight;
+        protected float[] tileX = new float[Config.MaxTextureLayers];
+        protected float[] tileY = new float[Config.MaxTextureLayers];
+        protected bool isTransparent;
+        protected int numTexCoordsInBuffer;
+        protected Vector2 topLeft, bottomRight;
 
-		// source bindings for vertex buffers
-		private const int POSITION = 0;
-		private const int TEXTURE_COORDS = 1;
+        // source bindings for vertex buffers
+        private const int POSITION = 0;
+        private const int TEXTURE_COORDS = 1;
 
-		#endregion
+        #endregion
 
-		#region Constructors
+        #region Constructors
 
-		internal Panel( string name )
-			: base( name )
-		{
-			//this.IsTransparent = false; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to false, left here for clarity
-			// initialize the default tiling to 1 for all layers
-			for ( var i = 0; i < Config.MaxTextureLayers; i++ )
-			{
-				this.tileX[ i ] = 1.0f;
-				this.tileY[ i ] = 1.0f;
-			}
+        internal Panel(string name)
+            : base(name)
+        {
+            //this.IsTransparent = false; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to false, left here for clarity
+            // initialize the default tiling to 1 for all layers
+            for (var i = 0; i < Config.MaxTextureLayers; i++)
+            {
+                this.tileX[i] = 1.0f;
+                this.tileY[i] = 1.0f;
+            }
 
-			// Defer creation of texcoord buffer until we know how big it needs to be
-			//this.numTexCoordsInBuffer = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0, left here for clarity
-			this.topLeft = new Vector2( 0.0f, 0.0f );
-			this.bottomRight = new Vector2( 1.0f, 1.0f );
-		}
+            // Defer creation of texcoord buffer until we know how big it needs to be
+            //this.numTexCoordsInBuffer = 0; //[FXCop Optimization : Do not initialize unnecessarily], Defaults to 0, left here for clarity
+            this.topLeft = new Vector2(0.0f, 0.0f);
+            this.bottomRight = new Vector2(1.0f, 1.0f);
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public override void Initialize()
-		{
-			var init = !isInitialized;
-			base.Initialize();
-			if ( init )
-			{
-				// setup the vertex data
-				renderOperation.vertexData = new VertexData();
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void Initialize()
+        {
+            var init = !isInitialized;
+            base.Initialize();
+            if (init)
+            {
+                // setup the vertex data
+                renderOperation.vertexData = new VertexData();
 
-				// Vertex declaration: 1 position, add texcoords later depending on #layers
-				// Create as separate buffers so we can lock & discard separately
-				var decl = renderOperation.vertexData.vertexDeclaration;
-				decl.AddElement( POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position );
-				renderOperation.vertexData.vertexStart = 0;
-				renderOperation.vertexData.vertexCount = 4;
+                // Vertex declaration: 1 position, add texcoords later depending on #layers
+                // Create as separate buffers so we can lock & discard separately
+                var decl = renderOperation.vertexData.vertexDeclaration;
+                decl.AddElement(POSITION, 0, VertexElementType.Float3, VertexElementSemantic.Position);
+                renderOperation.vertexData.vertexStart = 0;
+                renderOperation.vertexData.vertexCount = 4;
 
-				// create the first vertex buffer, mostly static except during resizing
-				var buffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( POSITION ),
-				                                                                renderOperation.vertexData.vertexCount,
-				                                                                BufferUsage.StaticWriteOnly );
+                // create the first vertex buffer, mostly static except during resizing
+                var buffer = HardwareBufferManager.Instance.CreateVertexBuffer(decl.Clone(POSITION),
+                                                                                renderOperation.vertexData.vertexCount,
+                                                                                BufferUsage.StaticWriteOnly);
 
-				// bind the vertex buffer
-				renderOperation.vertexData.vertexBufferBinding.SetBinding( POSITION, buffer );
+                // bind the vertex buffer
+                renderOperation.vertexData.vertexBufferBinding.SetBinding(POSITION, buffer);
 
-				// no indices, and issue as a tri strip
-				renderOperation.useIndices = false;
-				renderOperation.operationType = OperationType.TriangleStrip;
-				isInitialized = true;
-			}
-		}
+                // no indices, and issue as a tri strip
+                renderOperation.useIndices = false;
+                renderOperation.operationType = OperationType.TriangleStrip;
+                isInitialized = true;
+            }
+        }
 
-		/// <summary>
-		/// </summary>
-		public void SetTiling( float x, float y, int layer )
-		{
-			Debug.Assert( layer < Config.MaxTextureLayers, "layer < Config.MaxTextureLayers" );
-			Debug.Assert( x != 0 && y != 0, "tileX != 0 && tileY != 0" );
+        /// <summary>
+        /// </summary>
+        public void SetTiling(float x, float y, int layer)
+        {
+            Debug.Assert(layer < Config.MaxTextureLayers, "layer < Config.MaxTextureLayers");
+            Debug.Assert(x != 0 && y != 0, "tileX != 0 && tileY != 0");
 
-			this.tileX[ layer ] = x;
-			this.tileY[ layer ] = y;
+            this.tileX[layer] = x;
+            this.tileY[layer] = y;
 
-			isGeomUVsOutOfDate = true;
-		}
+            isGeomUVsOutOfDate = true;
+        }
 
-		public float GetTileX( int layer )
-		{
-			return this.tileX[ layer ];
-		}
+        public float GetTileX(int layer)
+        {
+            return this.tileX[layer];
+        }
 
-		public float GetTileY( int layer )
-		{
-			return this.tileY[ layer ];
-		}
+        public float GetTileY(int layer)
+        {
+            return this.tileY[layer];
+        }
 
-		/// <summary>
-		///    Internal method for setting up geometry, called by GuiElement.Update
-		/// </summary>
-		protected override void UpdatePositionGeometry()
-		{
-			/*
+        /// <summary>
+        ///    Internal method for setting up geometry, called by GuiElement.Update
+        /// </summary>
+        protected override void UpdatePositionGeometry()
+        {
+            /*
 				0-----2
 				|    /|
 				|  /  |
 				|/    |
 				1-----3
 			*/
-			float left, right, top, bottom;
+            float left, right, top, bottom;
 
-			/* Convert positions into -1, 1 coordinate space (homogenous clip space).
+            /* Convert positions into -1, 1 coordinate space (homogenous clip space).
 				- Left / right is simple range conversion
 				- Top / bottom also need inverting since y is upside down - this means
 				  that top will end up greater than bottom and when computing texture
@@ -193,352 +193,352 @@ namespace Axiom.Overlays.Elements
 				  1.0 to get the actual correct value).
 			*/
 
-			left = DerivedLeft*2 - 1;
-			right = left + ( width*2 );
-			top = -( ( DerivedTop*2 ) - 1 );
-			bottom = top - ( height*2 );
+            left = DerivedLeft * 2 - 1;
+            right = left + (width * 2);
+            top = -((DerivedTop * 2) - 1);
+            bottom = top - (height * 2);
 
-			// get a reference to the position buffer
-			var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( POSITION );
+            // get a reference to the position buffer
+            var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer(POSITION);
 
-			// lock the buffer
-			var data = buffer.Lock( BufferLocking.Discard );
-			var index = 0;
+            // lock the buffer
+            var data = buffer.Lock(BufferLocking.Discard);
+            var index = 0;
 
-			// Use the furthest away depth value, since materials should have depth-check off
-			// This initialised the depth buffer for any 3D objects in front
-			float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
+            // Use the furthest away depth value, since materials should have depth-check off
+            // This initialised the depth buffer for any 3D objects in front
+            float zValue = Root.Instance.RenderSystem.MaximumDepthInputValue;
 #if !AXIOM_SAFE_ONLY
-			unsafe
+            unsafe
 #endif
-			{
-				var posPtr = data.ToFloatPointer();
+            {
+                var posPtr = data.ToFloatPointer();
 
-				posPtr[ index++ ] = left;
-				posPtr[ index++ ] = top;
-				posPtr[ index++ ] = zValue;
+                posPtr[index++] = left;
+                posPtr[index++] = top;
+                posPtr[index++] = zValue;
 
-				posPtr[ index++ ] = left;
-				posPtr[ index++ ] = bottom;
-				posPtr[ index++ ] = zValue;
+                posPtr[index++] = left;
+                posPtr[index++] = bottom;
+                posPtr[index++] = zValue;
 
-				posPtr[ index++ ] = right;
-				posPtr[ index++ ] = top;
-				posPtr[ index++ ] = zValue;
+                posPtr[index++] = right;
+                posPtr[index++] = top;
+                posPtr[index++] = zValue;
 
-				posPtr[ index++ ] = right;
-				posPtr[ index++ ] = bottom;
-				posPtr[ index ] = zValue;
-			}
+                posPtr[index++] = right;
+                posPtr[index++] = bottom;
+                posPtr[index] = zValue;
+            }
 
-			// unlock the position buffer
-			buffer.Unlock();
-		}
+            // unlock the position buffer
+            buffer.Unlock();
+        }
 
-		public override void UpdateRenderQueue( RenderQueue queue )
-		{
-			if ( isVisible )
-			{
-				// only add this panel to the render queue if it is not transparent
-				// that would mean the panel should be a virtual container of sorts,
-				// and the children would still be rendered
-				if ( !this.isTransparent && material != null )
-				{
-					base.UpdateRenderQueue( queue, false );
-				}
+        public override void UpdateRenderQueue(RenderQueue queue)
+        {
+            if (isVisible)
+            {
+                // only add this panel to the render queue if it is not transparent
+                // that would mean the panel should be a virtual container of sorts,
+                // and the children would still be rendered
+                if (!this.isTransparent && material != null)
+                {
+                    base.UpdateRenderQueue(queue, false);
+                }
 
-				foreach ( var child in children.Values )
-				{
-					child.UpdateRenderQueue( queue );
-				}
-			}
-		}
+                foreach (var child in children.Values)
+                {
+                    child.UpdateRenderQueue(queue);
+                }
+            }
+        }
 
 
-		/// <summary>
-		///    Called to update the texture coords when layers change.
-		/// </summary>
-		protected override void UpdateTextureGeometry()
-		{
-			if ( material != null && isInitialized )
-			{
-				var numLayers = material.GetTechnique( 0 ).GetPass( 0 ).TextureUnitStatesCount;
+        /// <summary>
+        ///    Called to update the texture coords when layers change.
+        /// </summary>
+        protected override void UpdateTextureGeometry()
+        {
+            if (material != null && isInitialized)
+            {
+                var numLayers = material.GetTechnique(0).GetPass(0).TextureUnitStatesCount;
 
-				var decl = renderOperation.vertexData.vertexDeclaration;
+                var decl = renderOperation.vertexData.vertexDeclaration;
 
-				// if the required layers is less than the current amount of tex coord buffers, remove
-				// the extraneous buffers
-				if ( this.numTexCoordsInBuffer > numLayers )
-				{
-					for ( var i = this.numTexCoordsInBuffer; i > numLayers; --i )
-					{
-						decl.RemoveElement( VertexElementSemantic.TexCoords, i );
-					}
-				}
-				else if ( this.numTexCoordsInBuffer < numLayers )
-				{
-					// we need to add more buffers
-					var offset = VertexElement.GetTypeSize( VertexElementType.Float2 )*this.numTexCoordsInBuffer;
+                // if the required layers is less than the current amount of tex coord buffers, remove
+                // the extraneous buffers
+                if (this.numTexCoordsInBuffer > numLayers)
+                {
+                    for (var i = this.numTexCoordsInBuffer; i > numLayers; --i)
+                    {
+                        decl.RemoveElement(VertexElementSemantic.TexCoords, i);
+                    }
+                }
+                else if (this.numTexCoordsInBuffer < numLayers)
+                {
+                    // we need to add more buffers
+                    var offset = VertexElement.GetTypeSize(VertexElementType.Float2) * this.numTexCoordsInBuffer;
 
-					for ( var i = this.numTexCoordsInBuffer; i < numLayers; ++i )
-					{
-						decl.AddElement( TEXTURE_COORDS, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i );
-						offset += VertexElement.GetTypeSize( VertexElementType.Float2 );
-					} // for
-				} // if
+                    for (var i = this.numTexCoordsInBuffer; i < numLayers; ++i)
+                    {
+                        decl.AddElement(TEXTURE_COORDS, offset, VertexElementType.Float2, VertexElementSemantic.TexCoords, i);
+                        offset += VertexElement.GetTypeSize(VertexElementType.Float2);
+                    } // for
+                } // if
 
-				// if the number of layers changed at all, we'll need to reallocate buffer
-				if ( this.numTexCoordsInBuffer != numLayers )
-				{
-					var newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer( decl.Clone( TEXTURE_COORDS ),
-					                                                                   renderOperation.vertexData.vertexCount,
-					                                                                   BufferUsage.StaticWriteOnly );
+                // if the number of layers changed at all, we'll need to reallocate buffer
+                if (this.numTexCoordsInBuffer != numLayers)
+                {
+                    var newBuffer = HardwareBufferManager.Instance.CreateVertexBuffer(decl.Clone(TEXTURE_COORDS),
+                                                                                       renderOperation.vertexData.vertexCount,
+                                                                                       BufferUsage.StaticWriteOnly);
 
-					// Bind buffer, note this will unbind the old one and destroy the buffer it had
-					renderOperation.vertexData.vertexBufferBinding.SetBinding( TEXTURE_COORDS, newBuffer );
+                    // Bind buffer, note this will unbind the old one and destroy the buffer it had
+                    renderOperation.vertexData.vertexBufferBinding.SetBinding(TEXTURE_COORDS, newBuffer);
 
-					// record the current number of tex layers now
-					this.numTexCoordsInBuffer = numLayers;
-				} // if
+                    // record the current number of tex layers now
+                    this.numTexCoordsInBuffer = numLayers;
+                } // if
 
-				if ( this.numTexCoordsInBuffer != 0 )
-				{
-					// get the tex coord buffer
-					var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer( TEXTURE_COORDS );
-					var data = buffer.Lock( BufferLocking.Discard );
+                if (this.numTexCoordsInBuffer != 0)
+                {
+                    // get the tex coord buffer
+                    var buffer = renderOperation.vertexData.vertexBufferBinding.GetBuffer(TEXTURE_COORDS);
+                    var data = buffer.Lock(BufferLocking.Discard);
 
 #if !AXIOM_SAFE_ONLY
-					unsafe
+                    unsafe
 #endif
-					{
-						var texPtr = data.ToFloatPointer();
-						var texIndex = 0;
+                    {
+                        var texPtr = data.ToFloatPointer();
+                        var texIndex = 0;
 
-						var uvSize = VertexElement.GetTypeSize( VertexElementType.Float2 )/sizeof ( float );
-						var vertexSize = decl.GetVertexSize( TEXTURE_COORDS )/sizeof ( float );
+                        var uvSize = VertexElement.GetTypeSize(VertexElementType.Float2) / sizeof(float);
+                        var vertexSize = decl.GetVertexSize(TEXTURE_COORDS) / sizeof(float);
 
-						for ( var i = 0; i < numLayers; i++ )
-						{
-							// Calc upper tex coords
-							float upperX = this.bottomRight.x*this.tileX[ i ];
-							float upperY = this.bottomRight.y*this.tileY[ i ];
+                        for (var i = 0; i < numLayers; i++)
+                        {
+                            // Calc upper tex coords
+                            float upperX = this.bottomRight.x * this.tileX[i];
+                            float upperY = this.bottomRight.y * this.tileY[i];
 
-							/*
+                            /*
 								0-----2
 								|    /|
 								|  /  |
 								|/    |
 								1-----3
 							*/
-							// Find start offset for this set
-							texIndex = ( i*uvSize );
+                            // Find start offset for this set
+                            texIndex = (i * uvSize);
 
-							texPtr[ texIndex ] = this.topLeft.x;
-							texPtr[ texIndex + 1 ] = this.topLeft.y;
+                            texPtr[texIndex] = this.topLeft.x;
+                            texPtr[texIndex + 1] = this.topLeft.y;
 
-							texIndex += vertexSize; // jump by 1 vertex stride
-							texPtr[ texIndex ] = this.topLeft.x;
-							texPtr[ texIndex + 1 ] = upperY;
+                            texIndex += vertexSize; // jump by 1 vertex stride
+                            texPtr[texIndex] = this.topLeft.x;
+                            texPtr[texIndex + 1] = upperY;
 
-							texIndex += vertexSize;
-							texPtr[ texIndex ] = upperX;
-							texPtr[ texIndex + 1 ] = this.topLeft.y;
+                            texIndex += vertexSize;
+                            texPtr[texIndex] = upperX;
+                            texPtr[texIndex + 1] = this.topLeft.y;
 
-							texIndex += vertexSize;
-							texPtr[ texIndex ] = upperX;
-							texPtr[ texIndex + 1 ] = upperY;
-						} // for
-					} // unsafev
+                            texIndex += vertexSize;
+                            texPtr[texIndex] = upperX;
+                            texPtr[texIndex + 1] = upperY;
+                        } // for
+                    } // unsafev
 
-					// unlock the buffer
-					buffer.Unlock();
-				}
-			} // if material != null
-		}
+                    // unlock the buffer
+                    buffer.Unlock();
+                }
+            } // if material != null
+        }
 
-		public void SetUV( Real u1, Real v1, Real u2, Real v2 )
-		{
-			this.topLeft = new Vector2( u1, v1 );
-			this.bottomRight = new Vector2( u2, v2 );
-			isGeomUVsOutOfDate = true;
-		}
+        public void SetUV(Real u1, Real v1, Real u2, Real v2)
+        {
+            this.topLeft = new Vector2(u1, v1);
+            this.bottomRight = new Vector2(u2, v2);
+            isGeomUVsOutOfDate = true;
+        }
 
-		public void GetUV( out Real u1, out Real v1, out Real u2, out Real v2 )
-		{
-			u1 = this.topLeft.x;
-			v1 = this.topLeft.y;
-			u2 = this.bottomRight.x;
-			v2 = this.bottomRight.y;
-		}
+        public void GetUV(out Real u1, out Real v1, out Real u2, out Real v2)
+        {
+            u1 = this.topLeft.x;
+            v1 = this.topLeft.y;
+            u2 = this.bottomRight.x;
+            v2 = this.bottomRight.y;
+        }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public bool IsTransparent
-		{
-			get
-			{
-				return this.isTransparent;
-			}
-			set
-			{
-				this.isTransparent = value;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsTransparent
+        {
+            get
+            {
+                return this.isTransparent;
+            }
+            set
+            {
+                this.isTransparent = value;
+            }
+        }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public override string MaterialName
-		{
-			set
-			{
-				base.MaterialName = value;
-				//UpdateTextureGeometry();
-			}
-			get
-			{
-				return base.MaterialName;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public override string MaterialName
+        {
+            set
+            {
+                base.MaterialName = value;
+                //UpdateTextureGeometry();
+            }
+            get
+            {
+                return base.MaterialName;
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region ScriptableObject Interface Command Classes
+        #region ScriptableObject Interface Command Classes
 
-		[ScriptableProperty( "tiling", "The number of times to repeat the background texture.", typeof ( Panel ) )]
-		public class TilingAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
+        [ScriptableProperty("tiling", "The number of times to repeat the background texture.", typeof(Panel))]
+        public class TilingAttributeCommand : IPropertyCommand
+        {
+            #region Implementation of IPropertyCommand<object,string>
 
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as Panel;
-				if ( element != null )
-				{
-					// NOTE: Only returns the top tiling
-					return String.Format( "{0} {1} {2}", "0", element.GetTileX( 0 ), element.GetTileY( 0 ) );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get(object target)
+            {
+                var element = target as Panel;
+                if (element != null)
+                {
+                    // NOTE: Only returns the top tiling
+                    return String.Format("{0} {1} {2}", "0", element.GetTileX(0), element.GetTileY(0));
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
 
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as Panel;
-				var parms = val.Split( ' ' );
-				if ( element != null )
-				{
-					element.SetTiling( StringConverter.ParseFloat( parms[ 1 ] ), StringConverter.ParseFloat( parms[ 2 ] ),
-					                   int.Parse( parms[ 0 ] ) );
-				}
-			}
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set(object target, string val)
+            {
+                var element = target as Panel;
+                var parms = val.Split(' ');
+                if (element != null)
+                {
+                    element.SetTiling(StringConverter.ParseFloat(parms[1]), StringConverter.ParseFloat(parms[2]),
+                                       int.Parse(parms[0]));
+                }
+            }
 
-			#endregion
-		}
+            #endregion
+        }
 
-		[ScriptableProperty( "transparent",
-			"Sets whether the panel is transparent, i.e. invisible, itself " + "but it's contents are still displayed.",
-			typeof ( Panel ) )]
-		public class TransparentAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
+        [ScriptableProperty("transparent",
+            "Sets whether the panel is transparent, i.e. invisible, itself " + "but it's contents are still displayed.",
+            typeof(Panel))]
+        public class TransparentAttributeCommand : IPropertyCommand
+        {
+            #region Implementation of IPropertyCommand<object,string>
 
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as Panel;
-				if ( element != null )
-				{
-					return element.IsTransparent.ToString();
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get(object target)
+            {
+                var element = target as Panel;
+                if (element != null)
+                {
+                    return element.IsTransparent.ToString();
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
 
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as Panel;
-				if ( element != null )
-				{
-					element.IsTransparent = StringConverter.ParseBool( val );
-				}
-			}
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set(object target, string val)
+            {
+                var element = target as Panel;
+                if (element != null)
+                {
+                    element.IsTransparent = StringConverter.ParseBool(val);
+                }
+            }
 
-			#endregion
-		}
+            #endregion
+        }
 
-		[ScriptableProperty( "uv_coords", "The texture coordinates for the texture. 1 set of uv values.", typeof ( Panel ) )]
-		public class UVCoordinatesAttributeCommand : IPropertyCommand
-		{
-			#region Implementation of IPropertyCommand<object,string>
+        [ScriptableProperty("uv_coords", "The texture coordinates for the texture. 1 set of uv values.", typeof(Panel))]
+        public class UVCoordinatesAttributeCommand : IPropertyCommand
+        {
+            #region Implementation of IPropertyCommand<object,string>
 
-			/// <summary>
-			///    Gets the value for this command from the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <returns></returns>
-			public string Get( object target )
-			{
-				var element = target as Panel;
-				if ( element != null )
-				{
-					Real u1, v1, u2, v2;
-					element.GetUV( out u1, out v1, out u2, out v2 );
-					return string.Format( "{0} {1} {2} {3}", u1, v1, u2, v2 );
-				}
-				else
-				{
-					return String.Empty;
-				}
-			}
+            /// <summary>
+            ///    Gets the value for this command from the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <returns></returns>
+            public string Get(object target)
+            {
+                var element = target as Panel;
+                if (element != null)
+                {
+                    Real u1, v1, u2, v2;
+                    element.GetUV(out u1, out v1, out u2, out v2);
+                    return string.Format("{0} {1} {2} {3}", u1, v1, u2, v2);
+                }
+                else
+                {
+                    return String.Empty;
+                }
+            }
 
-			/// <summary>
-			///    Sets the value for this command on the target object.
-			/// </summary>
-			/// <param name="target"></param>
-			/// <param name="val"></param>
-			public void Set( object target, string val )
-			{
-				var element = target as Panel;
-				var parms = val.Split( ' ' );
-				if ( element != null )
-				{
-					element.SetUV( StringConverter.ParseFloat( parms[ 0 ] ), StringConverter.ParseFloat( parms[ 1 ] ),
-					               StringConverter.ParseFloat( parms[ 2 ] ), StringConverter.ParseFloat( parms[ 3 ] ) );
-				}
-			}
+            /// <summary>
+            ///    Sets the value for this command on the target object.
+            /// </summary>
+            /// <param name="target"></param>
+            /// <param name="val"></param>
+            public void Set(object target, string val)
+            {
+                var element = target as Panel;
+                var parms = val.Split(' ');
+                if (element != null)
+                {
+                    element.SetUV(StringConverter.ParseFloat(parms[0]), StringConverter.ParseFloat(parms[1]),
+                                   StringConverter.ParseFloat(parms[2]), StringConverter.ParseFloat(parms[3]));
+                }
+            }
 
-			#endregion
-		}
+            #endregion
+        }
 
-		#endregion ScriptableObject Interface Command Classes
-	}
+        #endregion ScriptableObject Interface Command Classes
+    }
 }

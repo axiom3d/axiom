@@ -47,114 +47,114 @@ using Axiom.Scripting;
 
 namespace Axiom.ParticleFX
 {
-	/// <summary>
-	/// Summary description for EllipsoidEmitter.
-	/// </summary>
-	public class EllipsoidEmitter : AreaEmitter
-	{
-		public EllipsoidEmitter( ParticleSystem ps )
-			: base( ps )
-		{
-			InitDefaults( "Ellipsoid" );
-		}
+    /// <summary>
+    /// Summary description for EllipsoidEmitter.
+    /// </summary>
+    public class EllipsoidEmitter : AreaEmitter
+    {
+        public EllipsoidEmitter(ParticleSystem ps)
+            : base(ps)
+        {
+            InitDefaults("Ellipsoid");
+        }
 
-		public override void InitParticle( Particle particle )
-		{
-			float xOff, yOff, zOff;
+        public override void InitParticle(Particle particle)
+        {
+            float xOff, yOff, zOff;
 
-			// First we create a random point inside a bounding sphere with a
-			// radius of 1 (this is easy to do). The distance of the point from
-			// 0,0,0 must be <= 1 (== 1 means on the surface and we count this as
-			// inside, too).
-			while ( true )
-			{
-				// three random values for one random point in 3D space
-				xOff = Utility.SymmetricRandom();
-				yOff = Utility.SymmetricRandom();
-				zOff = Utility.SymmetricRandom();
+            // First we create a random point inside a bounding sphere with a
+            // radius of 1 (this is easy to do). The distance of the point from
+            // 0,0,0 must be <= 1 (== 1 means on the surface and we count this as
+            // inside, too).
+            while (true)
+            {
+                // three random values for one random point in 3D space
+                xOff = Utility.SymmetricRandom();
+                yOff = Utility.SymmetricRandom();
+                zOff = Utility.SymmetricRandom();
 
-				// the distance of x,y,z from 0,0,0 is sqrt(x*x+y*y+z*z), but
-				// as usual we can omit the sqrt(), since sqrt(1) == 1 and we
-				// use the 1 as boundary:
-				if ( xOff*xOff + yOff*yOff + zOff*zOff <= 1 )
-				{
-					// found one valid point inside
-					break;
-				}
-			}
+                // the distance of x,y,z from 0,0,0 is sqrt(x*x+y*y+z*z), but
+                // as usual we can omit the sqrt(), since sqrt(1) == 1 and we
+                // use the 1 as boundary:
+                if (xOff * xOff + yOff * yOff + zOff * zOff <= 1)
+                {
+                    // found one valid point inside
+                    break;
+                }
+            }
 
-			// scale the found point to the cylinder's size and move it
-			// relatively to the center of the emitter point
-			particle.Position = Position + xOff*xRange + yOff*yRange*zOff*zRange;
+            // scale the found point to the cylinder's size and move it
+            // relatively to the center of the emitter point
+            particle.Position = Position + xOff * xRange + yOff * yRange * zOff * zRange;
 
-			// Generate complex data by reference
-			GenerateEmissionColor( ref particle.Color );
-			GenerateEmissionDirection( ref particle.Direction );
-			GenerateEmissionVelocity( ref particle.Direction );
+            // Generate complex data by reference
+            GenerateEmissionColor(ref particle.Color);
+            GenerateEmissionDirection(ref particle.Direction);
+            GenerateEmissionVelocity(ref particle.Direction);
 
-			// Generate simpler data
-			particle.timeToLive = GenerateEmissionTTL();
-		}
+            // Generate simpler data
+            particle.timeToLive = GenerateEmissionTTL();
+        }
 
-		#region Command definition classes
+        #region Command definition classes
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "width", "Width of the ellipsoidal emitter.", typeof ( ParticleEmitter ) )]
-		public class WidthCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				var emitter = target as EllipsoidEmitter;
-				emitter.Width = StringConverter.ParseFloat( val );
-			}
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptableProperty("width", "Width of the ellipsoidal emitter.", typeof(ParticleEmitter))]
+        public class WidthCommand : IPropertyCommand
+        {
+            public void Set(object target, string val)
+            {
+                var emitter = target as EllipsoidEmitter;
+                emitter.Width = StringConverter.ParseFloat(val);
+            }
 
-			public string Get( object target )
-			{
-				var emitter = target as EllipsoidEmitter;
-				return StringConverter.ToString( emitter.Width );
-			}
-		}
+            public string Get(object target)
+            {
+                var emitter = target as EllipsoidEmitter;
+                return StringConverter.ToString(emitter.Width);
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "height", "Height of the ellipsoidal emitter.", typeof ( ParticleEmitter ) )]
-		public class HeightCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				var emitter = target as EllipsoidEmitter;
-				emitter.Height = StringConverter.ParseFloat( val );
-			}
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptableProperty("height", "Height of the ellipsoidal emitter.", typeof(ParticleEmitter))]
+        public class HeightCommand : IPropertyCommand
+        {
+            public void Set(object target, string val)
+            {
+                var emitter = target as EllipsoidEmitter;
+                emitter.Height = StringConverter.ParseFloat(val);
+            }
 
-			public string Get( object target )
-			{
-				var emitter = target as EllipsoidEmitter;
-				return StringConverter.ToString( emitter.Height );
-			}
-		}
+            public string Get(object target)
+            {
+                var emitter = target as EllipsoidEmitter;
+                return StringConverter.ToString(emitter.Height);
+            }
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		[ScriptableProperty( "depth", "Depth of the ellipsoidal emitter.", typeof ( ParticleEmitter ) )]
-		public class DepthCommand : IPropertyCommand
-		{
-			public void Set( object target, string val )
-			{
-				var emitter = target as EllipsoidEmitter;
-				emitter.Depth = StringConverter.ParseFloat( val );
-			}
+        /// <summary>
+        ///
+        /// </summary>
+        [ScriptableProperty("depth", "Depth of the ellipsoidal emitter.", typeof(ParticleEmitter))]
+        public class DepthCommand : IPropertyCommand
+        {
+            public void Set(object target, string val)
+            {
+                var emitter = target as EllipsoidEmitter;
+                emitter.Depth = StringConverter.ParseFloat(val);
+            }
 
-			public string Get( object target )
-			{
-				var emitter = target as EllipsoidEmitter;
-				return StringConverter.ToString( emitter.Depth );
-			}
-		}
+            public string Get(object target)
+            {
+                var emitter = target as EllipsoidEmitter;
+                return StringConverter.ToString(emitter.Depth);
+            }
+        }
 
-		#endregion Command definition classes
-	}
+        #endregion Command definition classes
+    }
 }

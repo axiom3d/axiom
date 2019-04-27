@@ -44,53 +44,53 @@ using Axiom.Math;
 
 namespace Axiom.Controllers.Canned
 {
-	/// <summary>
-	///     Predefined controller value for getting/setting the frame number of a texture unit.
-	/// </summary>
-	public class TextureFrameControllerValue : IControllerValue<Real>
-	{
-		#region Fields
+    /// <summary>
+    ///     Predefined controller value for getting/setting the frame number of a texture unit.
+    /// </summary>
+    public class TextureFrameControllerValue : IControllerValue<Real>
+    {
+        #region Fields
 
-		/// <summary>
-		///     Reference to the texture unit state to target for the animation.
-		/// </summary>
-		protected TextureUnitState texUnit;
+        /// <summary>
+        ///     Reference to the texture unit state to target for the animation.
+        /// </summary>
+        protected TextureUnitState texUnit;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Constructor
+        #region Constructor
 
-		/// <summary>
-		///     Constructor.
-		/// </summary>
-		/// <param name="textureUnit">Reference to the texture unit state to target for the animation.</param>
-		public TextureFrameControllerValue( TextureUnitState textureUnit )
-		{
-			this.texUnit = textureUnit;
-		}
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <param name="textureUnit">Reference to the texture unit state to target for the animation.</param>
+        public TextureFrameControllerValue(TextureUnitState textureUnit)
+        {
+            this.texUnit = textureUnit;
+        }
 
-		#endregion Constructor
+        #endregion Constructor
 
-		#region IControllerValue Members
+        #region IControllerValue Members
 
-		/// <summary>
-		///     Gets/Sets the frame of animation for a texture unit.
-		/// </summary>
-		/// <remarks>
-		///     Value is a parametric value in the range [0,1].
-		/// </remarks>
-		public Real Value
-		{
-			get
-			{
-				return this.texUnit.CurrentFrame/this.texUnit.NumFrames;
-			}
-			set
-			{
-				this.texUnit.CurrentFrame = (int)( value*this.texUnit.NumFrames );
-			}
-		}
+        /// <summary>
+        ///     Gets/Sets the frame of animation for a texture unit.
+        /// </summary>
+        /// <remarks>
+        ///     Value is a parametric value in the range [0,1].
+        /// </remarks>
+        public Real Value
+        {
+            get
+            {
+                return this.texUnit.CurrentFrame / this.texUnit.NumFrames;
+            }
+            set
+            {
+                this.texUnit.CurrentFrame = (int)(value * this.texUnit.NumFrames);
+            }
+        }
 
-		#endregion IControllerValue Members
-	}
+        #endregion IControllerValue Members
+    }
 }

@@ -45,314 +45,314 @@ using Axiom.Core;
 
 namespace Axiom.Graphics
 {
-	/// <summary>
-	/// 	This class declares the usage of a single vertex buffer as a component
-	/// 	of a complete <see cref="VertexDeclaration"/>. 
-	/// </summary>
-	public class VertexElement : ICloneable
-	{
-		#region Fields
+    /// <summary>
+    /// 	This class declares the usage of a single vertex buffer as a component
+    /// 	of a complete <see cref="VertexDeclaration"/>. 
+    /// </summary>
+    public class VertexElement : ICloneable
+    {
+        #region Fields
 
-		/// <summary>
-		///     The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.
-		/// </summary>
-		protected short source;
+        /// <summary>
+        ///     The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.
+        /// </summary>
+        protected short source;
 
-		/// <summary>
-		///     The offset in the buffer that this element starts at.
-		/// </summary>
-		protected int offset;
+        /// <summary>
+        ///     The offset in the buffer that this element starts at.
+        /// </summary>
+        protected int offset;
 
-		/// <summary>
-		///     The type of element.
-		/// </summary>
-		protected VertexElementType type;
+        /// <summary>
+        ///     The type of element.
+        /// </summary>
+        protected VertexElementType type;
 
-		/// <summary>
-		///     The meaning of the element.
-		/// </summary>
-		protected VertexElementSemantic semantic;
+        /// <summary>
+        ///     The meaning of the element.
+        /// </summary>
+        protected VertexElementSemantic semantic;
 
-		/// <summary>
-		///     Index of the item, only applicable for some elements like texture coords.
-		/// </summary>
-		protected int index;
+        /// <summary>
+        ///     Index of the item, only applicable for some elements like texture coords.
+        /// </summary>
+        protected int index;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///     Constructor.
-		/// </summary>
-		/// <param name="source">The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.</param>
-		/// <param name="offset">The offset in the buffer that this element starts at.</param>
-		/// <param name="type">The type of element.</param>
-		/// <param name="semantic">The meaning of the element.</param>
-		public VertexElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic )
-			: this( source, offset, type, semantic, 0 )
-		{
-		}
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <param name="source">The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.</param>
+        /// <param name="offset">The offset in the buffer that this element starts at.</param>
+        /// <param name="type">The type of element.</param>
+        /// <param name="semantic">The meaning of the element.</param>
+        public VertexElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic)
+            : this(source, offset, type, semantic, 0)
+        {
+        }
 
-		/// <summary>
-		///     Constructor.
-		/// </summary>
-		/// <param name="source">The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.</param>
-		/// <param name="offset">The offset in the buffer that this element starts at.</param>
-		/// <param name="type">The type of element.</param>
-		/// <param name="semantic">The meaning of the element.</param>
-		/// <param name="index">Index of the item, only applicable for some elements like texture coords.</param>
-		public VertexElement( short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index )
-		{
-			this.source = source;
-			this.offset = offset;
-			this.type = type;
-			this.semantic = semantic;
-			this.index = index;
-		}
+        /// <summary>
+        ///     Constructor.
+        /// </summary>
+        /// <param name="source">The source vertex buffer, as bound to an index using <see cref="VertexBufferBinding"/>.</param>
+        /// <param name="offset">The offset in the buffer that this element starts at.</param>
+        /// <param name="type">The type of element.</param>
+        /// <param name="semantic">The meaning of the element.</param>
+        /// <param name="index">Index of the item, only applicable for some elements like texture coords.</param>
+        public VertexElement(short source, int offset, VertexElementType type, VertexElementSemantic semantic, int index)
+        {
+            this.source = source;
+            this.offset = offset;
+            this.type = type;
+            this.semantic = semantic;
+            this.index = index;
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		///     Utility method for helping to calculate offsets.
-		/// </summary>
-		public static int GetTypeSize( VertexElementType type )
-		{
-			switch ( type )
-			{
-				case VertexElementType.Color_ABGR:
-				case VertexElementType.Color_ARGB:
-				case VertexElementType.Color:
-					return Memory.SizeOf( typeof ( int ) );
+        /// <summary>
+        ///     Utility method for helping to calculate offsets.
+        /// </summary>
+        public static int GetTypeSize(VertexElementType type)
+        {
+            switch (type)
+            {
+                case VertexElementType.Color_ABGR:
+                case VertexElementType.Color_ARGB:
+                case VertexElementType.Color:
+                    return Memory.SizeOf(typeof(int));
 
-				case VertexElementType.Float1:
-					return Memory.SizeOf( typeof ( float ) );
+                case VertexElementType.Float1:
+                    return Memory.SizeOf(typeof(float));
 
-				case VertexElementType.Float2:
-					return Memory.SizeOf( typeof ( float ) )*2;
+                case VertexElementType.Float2:
+                    return Memory.SizeOf(typeof(float)) * 2;
 
-				case VertexElementType.Float3:
-					return Memory.SizeOf( typeof ( float ) )*3;
+                case VertexElementType.Float3:
+                    return Memory.SizeOf(typeof(float)) * 3;
 
-				case VertexElementType.Float4:
-					return Memory.SizeOf( typeof ( float ) )*4;
+                case VertexElementType.Float4:
+                    return Memory.SizeOf(typeof(float)) * 4;
 
-				case VertexElementType.Short1:
-					return Memory.SizeOf( typeof ( short ) );
+                case VertexElementType.Short1:
+                    return Memory.SizeOf(typeof(short));
 
-				case VertexElementType.Short2:
-					return Memory.SizeOf( typeof ( short ) )*2;
+                case VertexElementType.Short2:
+                    return Memory.SizeOf(typeof(short)) * 2;
 
-				case VertexElementType.Short3:
-					return Memory.SizeOf( typeof ( short ) )*3;
+                case VertexElementType.Short3:
+                    return Memory.SizeOf(typeof(short)) * 3;
 
-				case VertexElementType.Short4:
-					return Memory.SizeOf( typeof ( short ) )*4;
+                case VertexElementType.Short4:
+                    return Memory.SizeOf(typeof(short)) * 4;
 
-				case VertexElementType.UByte4:
-					return Memory.SizeOf( typeof ( byte ) )*4;
-			} // end switch
+                case VertexElementType.UByte4:
+                    return Memory.SizeOf(typeof(byte)) * 4;
+            } // end switch
 
-			// keep the compiler happy
-			return 0;
-		}
+            // keep the compiler happy
+            return 0;
+        }
 
-		/// <summary>
-		///     Utility method which returns the count of values in a given type.
-		/// </summary>
-		public static int GetTypeCount( VertexElementType type )
-		{
-			switch ( type )
-			{
-				case VertexElementType.Color_ABGR:
-				case VertexElementType.Color_ARGB:
-				case VertexElementType.Color:
-					return 1;
+        /// <summary>
+        ///     Utility method which returns the count of values in a given type.
+        /// </summary>
+        public static int GetTypeCount(VertexElementType type)
+        {
+            switch (type)
+            {
+                case VertexElementType.Color_ABGR:
+                case VertexElementType.Color_ARGB:
+                case VertexElementType.Color:
+                    return 1;
 
-				case VertexElementType.Float1:
-					return 1;
+                case VertexElementType.Float1:
+                    return 1;
 
-				case VertexElementType.Float2:
-					return 2;
+                case VertexElementType.Float2:
+                    return 2;
 
-				case VertexElementType.Float3:
-					return 3;
+                case VertexElementType.Float3:
+                    return 3;
 
-				case VertexElementType.Float4:
-					return 4;
+                case VertexElementType.Float4:
+                    return 4;
 
-				case VertexElementType.Short1:
-					return 1;
+                case VertexElementType.Short1:
+                    return 1;
 
-				case VertexElementType.Short2:
-					return 2;
+                case VertexElementType.Short2:
+                    return 2;
 
-				case VertexElementType.Short3:
-					return 3;
+                case VertexElementType.Short3:
+                    return 3;
 
-				case VertexElementType.Short4:
-					return 4;
+                case VertexElementType.Short4:
+                    return 4;
 
-				case VertexElementType.UByte4:
-					return 4;
-			} // end switch			
+                case VertexElementType.UByte4:
+                    return 4;
+            } // end switch			
 
-			// keep the compiler happy
-			return 0;
-		}
+            // keep the compiler happy
+            return 0;
+        }
 
-		/// <summary>
-		///		Returns proper enum for a base type multiplied by a value.  This is helpful
-		///		when working with tex coords especially since you might not know the number
-		///		of texture dimensions at runtime, and when creating the VertexBuffer you will
-		///		have to get a VertexElementType based on that amount to creating the VertexElement.
-		/// </summary>
-		/// <param name="type">Data type.</param>
-		/// <param name="count">Multiplier.</param>
-		/// <returns>
-		///     A <see cref="VertexElementType"/> that represents the requested type and count.
-		/// </returns>
-		/// <example>
-		///     MultiplyTypeCount(VertexElementType.Float1, 3) returns VertexElementType.Float3.
-		/// </example>
-		public static VertexElementType MultiplyTypeCount( VertexElementType type, int count )
-		{
-			switch ( type )
-			{
-				case VertexElementType.Float1:
-					switch ( count )
-					{
-						case 1:
-							return VertexElementType.Float1;
-						case 2:
-							return VertexElementType.Float2;
-						case 3:
-							return VertexElementType.Float3;
-						case 4:
-							return VertexElementType.Float4;
-					}
-					break;
+        /// <summary>
+        ///		Returns proper enum for a base type multiplied by a value.  This is helpful
+        ///		when working with tex coords especially since you might not know the number
+        ///		of texture dimensions at runtime, and when creating the VertexBuffer you will
+        ///		have to get a VertexElementType based on that amount to creating the VertexElement.
+        /// </summary>
+        /// <param name="type">Data type.</param>
+        /// <param name="count">Multiplier.</param>
+        /// <returns>
+        ///     A <see cref="VertexElementType"/> that represents the requested type and count.
+        /// </returns>
+        /// <example>
+        ///     MultiplyTypeCount(VertexElementType.Float1, 3) returns VertexElementType.Float3.
+        /// </example>
+        public static VertexElementType MultiplyTypeCount(VertexElementType type, int count)
+        {
+            switch (type)
+            {
+                case VertexElementType.Float1:
+                    switch (count)
+                    {
+                        case 1:
+                            return VertexElementType.Float1;
+                        case 2:
+                            return VertexElementType.Float2;
+                        case 3:
+                            return VertexElementType.Float3;
+                        case 4:
+                            return VertexElementType.Float4;
+                    }
+                    break;
 
-				case VertexElementType.Short1:
-					switch ( count )
-					{
-						case 1:
-							return VertexElementType.Short1;
-						case 2:
-							return VertexElementType.Short2;
-						case 3:
-							return VertexElementType.Short3;
-						case 4:
-							return VertexElementType.Short4;
-					}
-					break;
-			}
+                case VertexElementType.Short1:
+                    switch (count)
+                    {
+                        case 1:
+                            return VertexElementType.Short1;
+                        case 2:
+                            return VertexElementType.Short2;
+                        case 3:
+                            return VertexElementType.Short3;
+                        case 4:
+                            return VertexElementType.Short4;
+                    }
+                    break;
+            }
 
-			throw new Exception( "Cannot multiply base vertex element type: " + type.ToString() );
-		}
+            throw new Exception("Cannot multiply base vertex element type: " + type.ToString());
+        }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public short Source
-		{
-			get
-			{
-				return this.source;
-			}
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        public short Source
+        {
+            get
+            {
+                return this.source;
+            }
+        }
 
-		/// <summary>
-		///     Gets the offset into the buffer where this element starts.
-		/// </summary>
-		public int Offset
-		{
-			get
-			{
-				return this.offset;
-			}
-		}
+        /// <summary>
+        ///     Gets the offset into the buffer where this element starts.
+        /// </summary>
+        public int Offset
+        {
+            get
+            {
+                return this.offset;
+            }
+        }
 
-		/// <summary>
-		///     Gets the data format of this element.
-		/// </summary>
-		public VertexElementType Type
-		{
-			get
-			{
-				return this.type;
-			}
-		}
+        /// <summary>
+        ///     Gets the data format of this element.
+        /// </summary>
+        public VertexElementType Type
+        {
+            get
+            {
+                return this.type;
+            }
+        }
 
-		/// <summary>
-		///     Gets the meaning of this element.
-		/// </summary>
-		public VertexElementSemantic Semantic
-		{
-			get
-			{
-				return this.semantic;
-			}
-		}
+        /// <summary>
+        ///     Gets the meaning of this element.
+        /// </summary>
+        public VertexElementSemantic Semantic
+        {
+            get
+            {
+                return this.semantic;
+            }
+        }
 
-		/// <summary>
-		///     Gets the index of this element, only applicable for repeating elements (like texcoords).
-		/// </summary>
-		public int Index
-		{
-			get
-			{
-				return this.index;
-			}
-		}
+        /// <summary>
+        ///     Gets the index of this element, only applicable for repeating elements (like texcoords).
+        /// </summary>
+        public int Index
+        {
+            get
+            {
+                return this.index;
+            }
+        }
 
-		/// <summary>
-		///     Gets the size of this element in bytes.
-		/// </summary>
-		public int Size
-		{
-			get
-			{
-				return GetTypeSize( this.type );
-			}
-		}
+        /// <summary>
+        ///     Gets the size of this element in bytes.
+        /// </summary>
+        public int Size
+        {
+            get
+            {
+                return GetTypeSize(this.type);
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region ICloneable Members
+        #region ICloneable Members
 
-		/// <summary>
-		///     Simple memberwise clone since all local fields are value types.
-		/// </summary>
-		/// <returns></returns>
-		public object Clone()
-		{
-			return MemberwiseClone();
-		}
+        /// <summary>
+        ///     Simple memberwise clone since all local fields are value types.
+        /// </summary>
+        /// <returns></returns>
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
 
-		#endregion
+        #endregion
 
-		public static int ConvertColorValue( ColorEx color, VertexElementType colorVertexElementType )
-		{
-			switch ( colorVertexElementType )
-			{
+        public static int ConvertColorValue(ColorEx color, VertexElementType colorVertexElementType)
+        {
+            switch (colorVertexElementType)
+            {
 #if AXIOM_PLATFORM == AXIOM_PLATFORM_WIN32
-				default:
+                default:
 #endif
-				case VertexElementType.Color_ARGB:
-					return color.ToARGB();
+                case VertexElementType.Color_ARGB:
+                    return color.ToARGB();
 #if AXIOM_PLATFORM != OGRE_PLATFORM_WIN32
         default:
 #endif
-				case VertexElementType.Color_ABGR:
-					return color.ToABGR();
-			}
-		}
-	}
+                case VertexElementType.Color_ABGR:
+                    return color.ToABGR();
+            }
+        }
+    }
 }

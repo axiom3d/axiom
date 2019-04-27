@@ -46,104 +46,104 @@ using Axiom.Math;
 
 namespace Axiom.SceneManagers.PortalConnected
 {
-	public class Capsule
-	{
-		#region Fields
+    public class Capsule
+    {
+        #region Fields
 
-		private readonly Segment mSegment;
-		private float mRadius;
+        private readonly Segment mSegment;
+        private float mRadius;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Constructors
+        #region Constructors
 
-		public Capsule()
-		{
-			// uninitialized
-			this.mSegment = new Segment();
-			this.mRadius = float.NaN;
-		}
+        public Capsule()
+        {
+            // uninitialized
+            this.mSegment = new Segment();
+            this.mRadius = float.NaN;
+        }
 
-		//----------------------------------------------------------------------------
-		public Capsule( Segment segment, float radius )
-		{
-			this.mSegment = segment;
-			this.mRadius = radius;
-		}
+        //----------------------------------------------------------------------------
+        public Capsule(Segment segment, float radius)
+        {
+            this.mSegment = segment;
+            this.mRadius = radius;
+        }
 
-		//----------------------------------------------------------------------------
+        //----------------------------------------------------------------------------
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region propertys
+        #region propertys
 
-		public Segment Segment
-		{
-			get
-			{
-				return this.mSegment;
-			}
-		}
+        public Segment Segment
+        {
+            get
+            {
+                return this.mSegment;
+            }
+        }
 
-		public float Radius
-		{
-			get
-			{
-				return this.mRadius;
-			}
-		}
+        public float Radius
+        {
+            get
+            {
+                return this.mRadius;
+            }
+        }
 
-		#endregion propertys
+        #endregion propertys
 
-		#region Methods
+        #region Methods
 
-		public void Set( Vector3 newOrigin, Vector3 newEnd, float newRadius )
-		{
-			this.mSegment.Set( newOrigin, newEnd );
-			this.mRadius = newRadius;
-		}
+        public void Set(Vector3 newOrigin, Vector3 newEnd, float newRadius)
+        {
+            this.mSegment.Set(newOrigin, newEnd);
+            this.mRadius = newRadius;
+        }
 
-		//----------------------------------------------------------------------------
+        //----------------------------------------------------------------------------
 
-		public Vector3 Origin
-		{
-			set
-			{
-				this.mSegment.Origin = value;
-			}
-		}
+        public Vector3 Origin
+        {
+            set
+            {
+                this.mSegment.Origin = value;
+            }
+        }
 
-		public Vector3 EndPoint
-		{
-			set
-			{
-				this.mSegment.EndPoint = value;
-			}
-		}
+        public Vector3 EndPoint
+        {
+            set
+            {
+                this.mSegment.EndPoint = value;
+            }
+        }
 
-		//----------------------------------------------------------------------------
-		public void SetRadius( Real newRadius )
-		{
-			this.mRadius = newRadius;
-		}
+        //----------------------------------------------------------------------------
+        public void SetRadius(Real newRadius)
+        {
+            this.mRadius = newRadius;
+        }
 
-		//----------------------------------------------------------------------------
-		public bool Intersects( Capsule otherCapsule )
-		{
-			Real fDistance = this.mSegment.Distance( otherCapsule.mSegment );
-			Real fRSum = this.mRadius + otherCapsule.mRadius;
-			return fDistance <= fRSum;
-		}
+        //----------------------------------------------------------------------------
+        public bool Intersects(Capsule otherCapsule)
+        {
+            Real fDistance = this.mSegment.Distance(otherCapsule.mSegment);
+            Real fRSum = this.mRadius + otherCapsule.mRadius;
+            return fDistance <= fRSum;
+        }
 
-		//----------------------------------------------------------------------------
-		public bool Intersects( Segment segment )
-		{
-			Real fDist = segment.Distance( this.mSegment );
-			return fDist <= this.mRadius;
-		}
+        //----------------------------------------------------------------------------
+        public bool Intersects(Segment segment)
+        {
+            Real fDist = segment.Distance(this.mSegment);
+            return fDist <= this.mRadius;
+        }
 
-		//----------------------------------------------------------------------------
+        //----------------------------------------------------------------------------
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

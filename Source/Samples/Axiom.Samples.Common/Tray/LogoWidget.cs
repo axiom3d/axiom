@@ -27,34 +27,34 @@ using Axiom.Overlays;
 
 namespace Axiom.Samples
 {
-	/// <summary>
-	/// Specialized decor widget to visualize a logo.
-	/// </summary>
-	public class LogoWidget : DecorWidget
-	{
-		#region construction
+    /// <summary>
+    /// Specialized decor widget to visualize a logo.
+    /// </summary>
+    public class LogoWidget : DecorWidget
+    {
+        #region construction
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="typeName"></param>
-		/// <param name="templateName"></param>
-		public LogoWidget( string name, string typeName, string templateName )
-			: base( name, typeName, templateName )
-		{
-			element = OverlayManager.Instance.Elements.CreateElement( typeName, name );
-			element.MetricsMode = MetricsMode.Pixels;
-			element.MaterialName = "SdkTrays/Logo";
-			element.HorizontalAlignment = HorizontalAlignment.Center;
-			element.Width = 128;
-			element.Height = 39;
-			element.Enabled = true;
-			element.IsVisible = true;
-			element.Text = "Test";
-			element.Material.Load();
-		}
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="typeName"></param>
+        /// <param name="templateName"></param>
+        public LogoWidget(string name, string typeName, string templateName)
+            : base(name, typeName, templateName)
+        {
+            element = OverlayManager.Instance.Elements.CreateElement(typeName, name);
+            element.MetricsMode = MetricsMode.Pixels;
+            element.MaterialName = "SdkTrays/Logo";
+            element.HorizontalAlignment = HorizontalAlignment.Center;
+            element.Width = 128;
+            element.Height = 39;
+            element.Enabled = true;
+            element.IsVisible = true;
+            element.Text = "Test";
+            element.Material.Load();
+        }
 
-		#endregion construction
-	}
+        #endregion construction
+    }
 }

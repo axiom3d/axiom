@@ -41,43 +41,43 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 namespace Axiom.Scripting.Compiler.AST
 {
-	/// <summary>
-	/// This abstract node represents a variable assignment
-	/// </summary>
-	internal class VariableGetAbstractNode : AbstractNode
-	{
-		public string Name;
+    /// <summary>
+    /// This abstract node represents a variable assignment
+    /// </summary>
+    internal class VariableGetAbstractNode : AbstractNode
+    {
+        public string Name;
 
-		public VariableGetAbstractNode( AbstractNode parent )
-			: base( parent )
-		{
-		}
+        public VariableGetAbstractNode(AbstractNode parent)
+            : base(parent)
+        {
+        }
 
-		#region AbstractNode Implementation
+        #region AbstractNode Implementation
 
-		/// <see cref="AbstractNode.Clone"/>
-		public override AbstractNode Clone()
-		{
-			var node = new VariableGetAbstractNode( Parent );
-			node.File = File;
-			node.Line = Line;
-			node.Name = this.Name;
-			return node;
-		}
+        /// <see cref="AbstractNode.Clone"/>
+        public override AbstractNode Clone()
+        {
+            var node = new VariableGetAbstractNode(Parent);
+            node.File = File;
+            node.Line = Line;
+            node.Name = this.Name;
+            return node;
+        }
 
-		/// <see cref="AbstractNode.Value"/>
-		public override string Value
-		{
-			get
-			{
-				return this.Name;
-			}
-			set
-			{
-				this.Name = value;
-			}
-		}
+        /// <see cref="AbstractNode.Value"/>
+        public override string Value
+        {
+            get
+            {
+                return this.Name;
+            }
+            set
+            {
+                this.Name = value;
+            }
+        }
 
-		#endregion AbstractNode Implementation
-	}
+        #endregion AbstractNode Implementation
+    }
 }

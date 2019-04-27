@@ -45,24 +45,24 @@ using System.Collections.Generic;
 
 namespace Axiom.ParticleSystems.Collections
 {
-	/// <summary>
-	/// 
-	/// </summary>
-	public class EmitterList : List<ParticleEmitter>
-	{
-	}
+    /// <summary>
+    /// 
+    /// </summary>
+    public class EmitterList : List<ParticleEmitter>
+    {
+    }
 
-	/// <summary>
-	/// 
-	/// </summary>
-	public class AffectorList : List<ParticleAffector>
-	{
-	}
+    /// <summary>
+    /// 
+    /// </summary>
+    public class AffectorList : List<ParticleAffector>
+    {
+    }
 
-	/// <summary>
-	/// 
-	/// </summary>
-	public class ParticleList : List<Particle>
-	{
-	}
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ParticleList : List<Particle>
+    {
+    }
 }

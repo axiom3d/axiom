@@ -41,22 +41,22 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 namespace Axiom.Scripting
 {
-	/// <summary>
-	///   Provides an interface for executing a method via a Command Pattern on an Object.
-	/// </summary>
-	public interface IExecuteCommand : IExecuteCommand<object> {}
+    /// <summary>
+    ///   Provides an interface for executing a method via a Command Pattern on an Object.
+    /// </summary>
+    public interface IExecuteCommand : IExecuteCommand<object> { }
 
-	/// <summary>
-	///   Provides an interface for executing a method via a Command Pattern.
-	/// </summary>
-	/// <typeparam name="T"> Type of the object to operate on. </typeparam>
-	public interface IExecuteCommand<T>
-	{
-		/// <summary>
-		///   Executes a command on the target
-		/// </summary>
-		/// <param name="target"> </param>
-		/// <returns> </returns>
-		void Execute( T target );
-	}
+    /// <summary>
+    ///   Provides an interface for executing a method via a Command Pattern.
+    /// </summary>
+    /// <typeparam name="T"> Type of the object to operate on. </typeparam>
+    public interface IExecuteCommand<T>
+    {
+        /// <summary>
+        ///   Executes a command on the target
+        /// </summary>
+        /// <param name="target"> </param>
+        /// <returns> </returns>
+        void Execute(T target);
+    }
 }

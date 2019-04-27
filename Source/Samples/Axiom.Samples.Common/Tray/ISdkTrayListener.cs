@@ -26,28 +26,28 @@ using System;
 
 namespace Axiom.Samples
 {
-	/// <summary>
-	/// Occurs when a button widget was hit.
-	/// </summary>
-	/// <param name="button"></param>
-	public delegate void ButtonHitDelegate( object sender, Button button );
+    /// <summary>
+    /// Occurs when a button widget was hit.
+    /// </summary>
+    /// <param name="button"></param>
+    public delegate void ButtonHitDelegate(object sender, Button button);
 
-	/// <summary>
-	/// Listener class for responding to tray events.
-	/// </summary>
-	public interface ISdkTrayListener
-	{
-		/// <summary>
-		/// Occurs when a button widget was hit.
-		/// </summary>
-		event ButtonHitDelegate ButtonHit;
+    /// <summary>
+    /// Listener class for responding to tray events.
+    /// </summary>
+    public interface ISdkTrayListener
+    {
+        /// <summary>
+        /// Occurs when a button widget was hit.
+        /// </summary>
+        event ButtonHitDelegate ButtonHit;
 
-		void OnButtonHit( object sender, Button button );
-		void ItemSelected( SelectMenu menu );
-		void LabelHit( Label label );
-		void SliderMoved( Slider slider );
-		void CheckboxToggled( CheckBox box );
-		void OkDialogClosed( String message );
-		void YesNoDialogClosed( String question, bool yesHit );
-	};
+        void OnButtonHit(object sender, Button button);
+        void ItemSelected(SelectMenu menu);
+        void LabelHit(Label label);
+        void SliderMoved(Slider slider);
+        void CheckboxToggled(CheckBox box);
+        void OkDialogClosed(String message);
+        void YesNoDialogClosed(String question, bool yesHit);
+    };
 }

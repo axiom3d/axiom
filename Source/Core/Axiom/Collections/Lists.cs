@@ -46,22 +46,22 @@ using Axiom.Core;
 
 namespace Axiom.Collections
 {
-	/// <summary>
-	/// Summary description for AnimationCollection.
-	/// </summary>
-	public class ControllerList : ArrayList
-	{
-	}
+    /// <summary>
+    /// Summary description for AnimationCollection.
+    /// </summary>
+    public class ControllerList : ArrayList
+    {
+    }
 
-	public class MaterialList : ArrayList
-	{
-	}
+    public class MaterialList : ArrayList
+    {
+    }
 
-	public class BillboardList : ArrayList
-	{
-	}
+    public class BillboardList : ArrayList
+    {
+    }
 
-	public class ImageList : ArrayList
-	{
-	}
+    public class ImageList : ArrayList
+    {
+    }
 }

@@ -45,25 +45,25 @@ using Axiom.SceneManagers.PortalConnected;
 
 namespace OctreeZone
 {
-	[Export( typeof ( IPlugin ) )]
-	public class OctreeZonePlugin : IPlugin
-	{
-		public void Initialize()
-		{
-			this.mTerrainZoneFactory = new TerrainZoneFactory( "ZoneType_Terrain" );
-			this.mOctreeZoneFactory = new OctreeZoneFactory( "ZoneType_Octree" );
+    [Export(typeof(IPlugin))]
+    public class OctreeZonePlugin : IPlugin
+    {
+        public void Initialize()
+        {
+            this.mTerrainZoneFactory = new TerrainZoneFactory("ZoneType_Terrain");
+            this.mOctreeZoneFactory = new OctreeZoneFactory("ZoneType_Octree");
 
-			PCZoneFactoryManager.Instance.RegisterPCZoneFactory( this.mTerrainZoneFactory );
-			PCZoneFactoryManager.Instance.RegisterPCZoneFactory( this.mOctreeZoneFactory );
-		}
+            PCZoneFactoryManager.Instance.RegisterPCZoneFactory(this.mTerrainZoneFactory);
+            PCZoneFactoryManager.Instance.RegisterPCZoneFactory(this.mOctreeZoneFactory);
+        }
 
-		public void Shutdown()
-		{
-			PCZoneFactoryManager.Instance.UnregisterPCZoneFactory( this.mOctreeZoneFactory );
-			PCZoneFactoryManager.Instance.UnregisterPCZoneFactory( this.mTerrainZoneFactory );
-		}
+        public void Shutdown()
+        {
+            PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(this.mOctreeZoneFactory);
+            PCZoneFactoryManager.Instance.UnregisterPCZoneFactory(this.mTerrainZoneFactory);
+        }
 
-		private OctreeZoneFactory mOctreeZoneFactory;
-		private TerrainZoneFactory mTerrainZoneFactory;
-	}
+        private OctreeZoneFactory mOctreeZoneFactory;
+        private TerrainZoneFactory mTerrainZoneFactory;
+    }
 }

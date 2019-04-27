@@ -46,87 +46,87 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.ParticleFX
 {
-	/// <summary>
-	/// Summary description for ParticleFX.
-	/// </summary>
-#if !( XBOX || XBOX360 || WINDOWS_PHONE )
-	[Export( typeof ( IPlugin ) )]
+    /// <summary>
+    /// Summary description for ParticleFX.
+    /// </summary>
+#if !(XBOX || XBOX360 || WINDOWS_PHONE)
+    [Export(typeof(IPlugin))]
 #endif
-	public class ParticleFX : IPlugin
-	{
-		#region IPlugin Members
+    public class ParticleFX : IPlugin
+    {
+        #region IPlugin Members
 
-		public void Initialize()
-		{
-			ParticleEmitterFactory emitterFactory;
-			ParticleAffectorFactory affectorFactory;
+        public void Initialize()
+        {
+            ParticleEmitterFactory emitterFactory;
+            ParticleAffectorFactory affectorFactory;
 
-			// box emitter
-			emitterFactory = new BoxEmitterFactory();
-			ParticleSystemManager.Instance.AddEmitterFactory( emitterFactory );
+            // box emitter
+            emitterFactory = new BoxEmitterFactory();
+            ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
 
-			// point emitter
-			emitterFactory = new PointEmitterFactory();
-			ParticleSystemManager.Instance.AddEmitterFactory( emitterFactory );
+            // point emitter
+            emitterFactory = new PointEmitterFactory();
+            ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
 
-			// cylinder emitter
-			emitterFactory = new CylinderEmitterFactory();
-			ParticleSystemManager.Instance.AddEmitterFactory( emitterFactory );
+            // cylinder emitter
+            emitterFactory = new CylinderEmitterFactory();
+            ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
 
-			// ellipsoid emitter
-			emitterFactory = new EllipsoidEmitterFactory();
-			ParticleSystemManager.Instance.AddEmitterFactory( emitterFactory );
+            // ellipsoid emitter
+            emitterFactory = new EllipsoidEmitterFactory();
+            ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
 
-			// hollow ellipsoid emitter
-			emitterFactory = new HollowEllipsoidEmitterFactory();
-			ParticleSystemManager.Instance.AddEmitterFactory( emitterFactory );
+            // hollow ellipsoid emitter
+            emitterFactory = new HollowEllipsoidEmitterFactory();
+            ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
 
-			// ring emitter
-			emitterFactory = new RingEmitterFactory();
-			ParticleSystemManager.Instance.AddEmitterFactory( emitterFactory );
+            // ring emitter
+            emitterFactory = new RingEmitterFactory();
+            ParticleSystemManager.Instance.AddEmitterFactory(emitterFactory);
 
-			// linear force affector
-			affectorFactory = new LinearForceAffectorFactory();
-			ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
+            // linear force affector
+            affectorFactory = new LinearForceAffectorFactory();
+            ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
 
-			// color fader affector
-			affectorFactory = new ColorFaderAffectorFactory();
-			ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
+            // color fader affector
+            affectorFactory = new ColorFaderAffectorFactory();
+            ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
 
-			// color fader 2 affector
-			affectorFactory = new ColorFaderAffector2Factory();
-			ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
+            // color fader 2 affector
+            affectorFactory = new ColorFaderAffector2Factory();
+            ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
 
-			// color image affector
-			affectorFactory = new ColorImageAffectorFactory();
-			ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
+            // color image affector
+            affectorFactory = new ColorImageAffectorFactory();
+            ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
 
-			// color interpolator affector
-			affectorFactory = new ColorInterpolatorAffectorFactory();
-			ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
+            // color interpolator affector
+            affectorFactory = new ColorInterpolatorAffectorFactory();
+            ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
 
-			// scale affector
-			affectorFactory = new ScaleAffectorFactory();
-			ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
+            // scale affector
+            affectorFactory = new ScaleAffectorFactory();
+            ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
 
-			// scale affector
-			affectorFactory = new RotationAffectorFactory();
-			ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
+            // scale affector
+            affectorFactory = new RotationAffectorFactory();
+            ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
 
-			// deflector plane affector
-			affectorFactory = new DeflectorPlaneAffectorFactory();
-			ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
+            // deflector plane affector
+            affectorFactory = new DeflectorPlaneAffectorFactory();
+            ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
 
-			//direction randomizer affector
-			affectorFactory = new DirectionRandomizerAffectorFactory();
-			ParticleSystemManager.Instance.AddAffectorFactory( affectorFactory );
-		}
+            //direction randomizer affector
+            affectorFactory = new DirectionRandomizerAffectorFactory();
+            ParticleSystemManager.Instance.AddAffectorFactory(affectorFactory);
+        }
 
-		public void Shutdown()
-		{
-			// TODO:  Add ParticleFX.Stop implementation
-		}
+        public void Shutdown()
+        {
+            // TODO:  Add ParticleFX.Stop implementation
+        }
 
-		#endregion IPlugin Members
-	};
+        #endregion IPlugin Members
+    };
 }

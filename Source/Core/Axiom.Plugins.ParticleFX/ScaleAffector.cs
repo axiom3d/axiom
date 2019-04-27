@@ -47,83 +47,83 @@ using Axiom.Scripting;
 
 namespace Axiom.ParticleFX
 {
-	/// <summary>
-	/// Summary description for ScaleAffector.
-	/// </summary>
-	public class ScaleAffector : ParticleAffector
-	{
-		protected float scaleAdjust;
+    /// <summary>
+    /// Summary description for ScaleAffector.
+    /// </summary>
+    public class ScaleAffector : ParticleAffector
+    {
+        protected float scaleAdjust;
 
-		public ScaleAffector( ParticleSystem psys )
-			: base( psys )
-		{
-			type = "Scaler";
-			this.scaleAdjust = 0;
-		}
+        public ScaleAffector(ParticleSystem psys)
+            : base(psys)
+        {
+            type = "Scaler";
+            this.scaleAdjust = 0;
+        }
 
-		public float ScaleAdjust
-		{
-			get
-			{
-				return this.scaleAdjust;
-			}
-			set
-			{
-				this.scaleAdjust = value;
-			}
-		}
+        public float ScaleAdjust
+        {
+            get
+            {
+                return this.scaleAdjust;
+            }
+            set
+            {
+                this.scaleAdjust = value;
+            }
+        }
 
-		public override void AffectParticles( ParticleSystem system, Real timeElapsed )
-		{
-			float ds;
+        public override void AffectParticles(ParticleSystem system, Real timeElapsed)
+        {
+            float ds;
 
-			// Scale adjustments by time
-			ds = this.scaleAdjust*timeElapsed;
+            // Scale adjustments by time
+            ds = this.scaleAdjust * timeElapsed;
 
-			float newWide, newHigh;
+            float newWide, newHigh;
 
-			// loop through the particles
+            // loop through the particles
 
-			for ( int i = 0; i < system.Particles.Count; i++ )
-			{
-				var p = (Particle)system.Particles[ i ];
+            for (int i = 0; i < system.Particles.Count; i++)
+            {
+                var p = (Particle)system.Particles[i];
 
-				if ( p.HasOwnDimensions == false )
-				{
-					newHigh = system.DefaultHeight + ds;
-					newWide = system.DefaultWidth + ds;
-				}
-				else
-				{
-					newWide = p.Width + ds;
-					newHigh = p.Height + ds;
-				}
-				p.SetDimensions( newWide, newHigh );
-			}
-		}
+                if (p.HasOwnDimensions == false)
+                {
+                    newHigh = system.DefaultHeight + ds;
+                    newWide = system.DefaultWidth + ds;
+                }
+                else
+                {
+                    newWide = p.Width + ds;
+                    newHigh = p.Height + ds;
+                }
+                p.SetDimensions(newWide, newHigh);
+            }
+        }
 
-		#region Command definition classes
+        #region Command definition classes
 
-		[ScriptableProperty( "rate", "Rate of particle scaling.", typeof ( ParticleAffector ) )]
-		public class RateCommand : IPropertyCommand
-		{
-			#region IPropertyCommand Members
+        [ScriptableProperty("rate", "Rate of particle scaling.", typeof(ParticleAffector))]
+        public class RateCommand : IPropertyCommand
+        {
+            #region IPropertyCommand Members
 
-			public string Get( object target )
-			{
-				var affector = target as ScaleAffector;
-				return StringConverter.ToString( affector.ScaleAdjust );
-			}
+            public string Get(object target)
+            {
+                var affector = target as ScaleAffector;
+                return StringConverter.ToString(affector.ScaleAdjust);
+            }
 
-			public void Set( object target, string val )
-			{
-				var affector = target as ScaleAffector;
-				affector.ScaleAdjust = StringConverter.ParseFloat( val );
-			}
+            public void Set(object target, string val)
+            {
+                var affector = target as ScaleAffector;
+                affector.ScaleAdjust = StringConverter.ParseFloat(val);
+            }
 
-			#endregion IPropertyCommand Members
-		}
+            #endregion IPropertyCommand Members
+        }
 
-		#endregion Command definition classes
-	}
+        #endregion Command definition classes
+    }
 }

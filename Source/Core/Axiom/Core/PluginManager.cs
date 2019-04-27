@@ -49,123 +49,123 @@ using System.Reflection;
 
 namespace Axiom.Core
 {
-	/// <summary>
-	/// Summary description for PluginManager.
-	/// </summary>
-	public class PluginManager : DisposableObject
-	{
-		#region Singleton implementation
+    /// <summary>
+    /// Summary description for PluginManager.
+    /// </summary>
+    public class PluginManager : DisposableObject
+    {
+        #region Singleton implementation
 
-		/// <summary>
-		///     Singleton instance of this class.
-		/// </summary>
-		private static PluginManager instance;
+        /// <summary>
+        ///     Singleton instance of this class.
+        /// </summary>
+        private static PluginManager instance;
 
-		/// <summary>
-		///     Internal constructor.  This class cannot be instantiated externally.
-		/// </summary>
-		internal PluginManager()
-			: base()
-		{
-			if ( instance == null )
-			{
-				instance = this;
-			}
-		}
+        /// <summary>
+        ///     Internal constructor.  This class cannot be instantiated externally.
+        /// </summary>
+        internal PluginManager()
+            : base()
+        {
+            if (instance == null)
+            {
+                instance = this;
+            }
+        }
 
-		/// <summary>
-		///     Gets the singleton instance of this class.
-		/// </summary>
-		public static PluginManager Instance
-		{
-			get
-			{
-				return instance;
-			}
-		}
+        /// <summary>
+        ///     Gets the singleton instance of this class.
+        /// </summary>
+        public static PluginManager Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
 
-		#endregion Singleton implementation
+        #endregion Singleton implementation
 
-		#region Fields
+        #region Fields
 
-		/// <summary>
-		///		List of loaded plugins.
-		/// </summary>
-		private static readonly List<IPlugin> _plugins = new List<IPlugin>();
+        /// <summary>
+        ///		List of loaded plugins.
+        /// </summary>
+        private static readonly List<IPlugin> _plugins = new List<IPlugin>();
 
-		#endregion Fields
+        #endregion Fields
 
-		#region properties
+        #region properties
 
-		/// <summary>
-		/// Gets a read only collection with all known plugins.
-		/// </summary>
-		public ReadOnlyCollection<IPlugin> InstalledPlugins
-		{
-			get
-			{
-				return new ReadOnlyCollection<IPlugin>( _plugins );
-			}
-		}
+        /// <summary>
+        /// Gets a read only collection with all known plugins.
+        /// </summary>
+        public ReadOnlyCollection<IPlugin> InstalledPlugins
+        {
+            get
+            {
+                return new ReadOnlyCollection<IPlugin>(_plugins);
+            }
+        }
 
-		#endregion
+        #endregion
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		///		Loads all plugins specified in the plugins section of the app.config file.
-		/// </summary>
-		public void LoadAll()
-		{
-			var newPlugins = ScanForPlugins();
+        /// <summary>
+        ///		Loads all plugins specified in the plugins section of the app.config file.
+        /// </summary>
+        public void LoadAll()
+        {
+            var newPlugins = ScanForPlugins();
 
-			foreach ( var pluginCreator in newPlugins )
-			{
-				var plugin = LoadPlugin( pluginCreator );
-				if ( plugin != null )
-				{
-					_plugins.Add( plugin );
-				}
-			}
-		}
+            foreach (var pluginCreator in newPlugins)
+            {
+                var plugin = LoadPlugin(pluginCreator);
+                if (plugin != null)
+                {
+                    _plugins.Add(plugin);
+                }
+            }
+        }
 
-		public void LoadDirectory( string path )
-		{
-			var newPlugins = ScanForPlugins( path );
+        public void LoadDirectory(string path)
+        {
+            var newPlugins = ScanForPlugins(path);
 
-			foreach ( var pluginCreator in newPlugins )
-			{
-				var plugin = LoadPlugin( pluginCreator );
-				if ( plugin != null )
-				{
-					_plugins.Add( plugin );
-				}
-			}
-		}
+            foreach (var pluginCreator in newPlugins)
+            {
+                var plugin = LoadPlugin(pluginCreator);
+                if (plugin != null)
+                {
+                    _plugins.Add(plugin);
+                }
+            }
+        }
 
-		/// <summary>
-		///		Scans for plugin files in the current directory.
-		/// </summary>
-		protected IList<ObjectCreator> ScanForPlugins()
-		{
-#if !(SILVERLIGHT|| XBOX || XBOX360 || WINDOWS_PHONE )
-			var cwd = Assembly.GetExecutingAssembly().CodeBase;
-			var uri = new Uri( cwd );
-			if ( uri.IsFile )
-				cwd = Path.GetDirectoryName( uri.LocalPath );
+        /// <summary>
+        ///		Scans for plugin files in the current directory.
+        /// </summary>
+        protected IList<ObjectCreator> ScanForPlugins()
+        {
+#if !(SILVERLIGHT || XBOX || XBOX360 || WINDOWS_PHONE)
+            var cwd = Assembly.GetExecutingAssembly().CodeBase;
+            var uri = new Uri(cwd);
+            if (uri.IsFile)
+                cwd = Path.GetDirectoryName(uri.LocalPath);
 #else
 			var cwd = ".";
 #endif
-			return ScanForPlugins( cwd );
-		}
+            return ScanForPlugins(cwd);
+        }
 
-		/// <summary>
-		/// Checks if the given Module contains managed code
-		/// </summary>
-		/// <param name="file">The file to check</param>
-		/// <returns>True if the module contains CLR data</returns>
-		private bool _isValidModule( string file )
-		{
+        /// <summary>
+        /// Checks if the given Module contains managed code
+        /// </summary>
+        /// <param name="file">The file to check</param>
+        /// <returns>True if the module contains CLR data</returns>
+        private bool _isValidModule(string file)
+        {
             try
             {
                 AssemblyName a = AssemblyName.GetAssemblyName(file);
@@ -174,159 +174,159 @@ namespace Axiom.Core
             catch { }
 
             return false;
-		}
+        }
 
-#if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE )
+#if NET_40 && !(XBOX || XBOX360 || WINDOWS_PHONE)
 		[System.ComponentModel.Composition.ImportMany( typeof( IPlugin ) )]
 		public IEnumerable<IPlugin> plugins { private get; set; }
 #endif
 
-		/// <summary>
-		///		Scans for plugin files in the current directory.
-		/// </summary>
-		///<param name="folder"></param>
-		///<returns></returns>
-		protected IList<ObjectCreator> ScanForPlugins( string folder )
-		{
-			var pluginFactories = new List<ObjectCreator>();
+        /// <summary>
+        ///		Scans for plugin files in the current directory.
+        /// </summary>
+        ///<param name="folder"></param>
+        ///<returns></returns>
+        protected IList<ObjectCreator> ScanForPlugins(string folder)
+        {
+            var pluginFactories = new List<ObjectCreator>();
 
-#if NET_40 && !( XBOX || XBOX360 || WINDOWS_PHONE )
+#if NET_40 && !(XBOX || XBOX360 || WINDOWS_PHONE)
 			this.SatisfyImports(folder);
 			foreach (var plugin in plugins)
 			{
 				pluginFactories.Add(new ObjectCreator(plugin.GetType()));
 				Debug.WriteLine(String.Format("MEF IPlugin: {0}.", plugin));
 			}
-#elif !( WINDOWS_PHONE )
-			if ( Directory.Exists( folder ) )
-			{
-				var files = Directory.GetFiles( folder );
-				//var assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".dll";
+#elif !(WINDOWS_PHONE)
+            if (Directory.Exists(folder))
+            {
+                var files = Directory.GetFiles(folder);
+                //var assemblyName = Assembly.GetExecutingAssembly().GetName().Name + ".dll";
 
-				foreach ( var file in files )
-				{
-					var currentFile = Path.GetFileName( file );
+                foreach (var file in files)
+                {
+                    var currentFile = Path.GetFileName(file);
 
-					if ( Path.GetExtension( file ) != ".dll" /*|| currentFile == assemblyName */ )
-					{
-						continue;
-					}
-					var fullPath = Path.GetFullPath( file );
+                    if (Path.GetExtension(file) != ".dll" /*|| currentFile == assemblyName */ )
+                    {
+                        continue;
+                    }
+                    var fullPath = Path.GetFullPath(file);
 
-					if ( !_isValidModule( fullPath ) )
-					{
-						Debug.WriteLine( String.Format( "Skipped {0} [Not managed]", fullPath ) );
-						continue;
-					}
+                    if (!_isValidModule(fullPath))
+                    {
+                        Debug.WriteLine(String.Format("Skipped {0} [Not managed]", fullPath));
+                        continue;
+                    }
 
-					var loader = new DynamicLoader( fullPath );
+                    var loader = new DynamicLoader(fullPath);
 
-					pluginFactories.AddRange( loader.Find( typeof ( IPlugin ) ) );
-				}
-			}
+                    pluginFactories.AddRange(loader.Find(typeof(IPlugin)));
+                }
+            }
 #endif
-			return pluginFactories;
-		}
+            return pluginFactories;
+        }
 
-		/// <summary>
-		///		Unloads all currently loaded plugins.
-		/// </summary>
-		public void UnloadAll()
-		{
-			// loop through and stop all loaded plugins
-			for ( var i = _plugins.Count - 1; i >= 0; i-- )
-			{
-				var plugin = (IPlugin)_plugins[ i ];
+        /// <summary>
+        ///		Unloads all currently loaded plugins.
+        /// </summary>
+        public void UnloadAll()
+        {
+            // loop through and stop all loaded plugins
+            for (var i = _plugins.Count - 1; i >= 0; i--)
+            {
+                var plugin = (IPlugin)_plugins[i];
 
-				LogManager.Instance.Write( "Unloading plugin: {0}", GetAssemblyTitle( plugin.GetType() ) );
+                LogManager.Instance.Write("Unloading plugin: {0}", GetAssemblyTitle(plugin.GetType()));
 
-				plugin.Shutdown();
-			}
+                plugin.Shutdown();
+            }
 
-			// clear the plugin list
-			_plugins.Clear();
-		}
+            // clear the plugin list
+            _plugins.Clear();
+        }
 
-		public static string GetAssemblyTitle( Type type )
-		{
-			var assembly = type.Assembly;
-			var title =
-				(AssemblyTitleAttribute)Attribute.GetCustomAttribute( (Assembly)assembly, typeof ( AssemblyTitleAttribute ) );
-			if ( title == null )
-			{
-				return assembly.GetName().Name;
-			}
-			return title.Title;
-		}
+        public static string GetAssemblyTitle(Type type)
+        {
+            var assembly = type.Assembly;
+            var title =
+                (AssemblyTitleAttribute)Attribute.GetCustomAttribute((Assembly)assembly, typeof(AssemblyTitleAttribute));
+            if (title == null)
+            {
+                return assembly.GetName().Name;
+            }
+            return title.Title;
+        }
 
-		/// <summary>
-		///		Loads a plugin of the given class name from the given assembly, and calls Initialize() on it.
-		///		This function does NOT add the plugin to the PluginManager's
-		///		list of plugins.
-		/// </summary>
-		/// <returns>The loaded plugin.</returns>
-		private static IPlugin LoadPlugin( ObjectCreator creator )
-		{
-			try
-			{
-				// Avoid duplicates of plugins of the same type.
-				if ( _plugins.Count > 0 )
-				{
-					var byTypePlugins = from p in _plugins
-					                    where p.GetType() == creator.CreatedType
-					                    select p;
+        /// <summary>
+        ///		Loads a plugin of the given class name from the given assembly, and calls Initialize() on it.
+        ///		This function does NOT add the plugin to the PluginManager's
+        ///		list of plugins.
+        /// </summary>
+        /// <returns>The loaded plugin.</returns>
+        private static IPlugin LoadPlugin(ObjectCreator creator)
+        {
+            try
+            {
+                // Avoid duplicates of plugins of the same type.
+                if (_plugins.Count > 0)
+                {
+                    var byTypePlugins = from p in _plugins
+                                        where p.GetType() == creator.CreatedType
+                                        select p;
 
-					if ( byTypePlugins.Count() > 0 )
-					{
-						LogManager.Instance.Write( "{0} already loaded.", creator.GetAssemblyTitle() );
-						return null;
-					}
-				}
+                    if (byTypePlugins.Count() > 0)
+                    {
+                        LogManager.Instance.Write("{0} already loaded.", creator.GetAssemblyTitle());
+                        return null;
+                    }
+                }
 
-				// create and start the plugin
-				var plugin = creator.CreateInstance<IPlugin>();
+                // create and start the plugin
+                var plugin = creator.CreateInstance<IPlugin>();
 
-				if ( plugin == null )
-				{
-					LogManager.Instance.Write( "Failed to load plugin: {0}", creator.GetAssemblyTitle() );
-					return null;
-				}
+                if (plugin == null)
+                {
+                    LogManager.Instance.Write("Failed to load plugin: {0}", creator.GetAssemblyTitle());
+                    return null;
+                }
 
-				plugin.Initialize();
+                plugin.Initialize();
 
-				LogManager.Instance.Write( "Loaded plugin: {0}", creator.GetAssemblyTitle() );
+                LogManager.Instance.Write("Loaded plugin: {0}", creator.GetAssemblyTitle());
 
-				return plugin;
-			}
-			catch ( Exception ex )
-			{
-				LogManager.Instance.Write( LogManager.BuildExceptionString( ex ) );
-			}
+                return plugin;
+            }
+            catch (Exception ex)
+            {
+                LogManager.Instance.Write(LogManager.BuildExceptionString(ex));
+            }
 
-			return null;
-		}
+            return null;
+        }
 
-		#endregion Methods
+        #endregion Methods
 
-		#region IDisposable Implementation
+        #region IDisposable Implementation
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( disposeManagedResources )
-				{
-					if ( instance != null )
-					{
-						UnloadAll();
-						instance = null;
-					}
-				}
-			}
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (disposeManagedResources)
+                {
+                    if (instance != null)
+                    {
+                        UnloadAll();
+                        instance = null;
+                    }
+                }
+            }
 
-			base.dispose( disposeManagedResources );
-		}
+            base.dispose(disposeManagedResources);
+        }
 
-		#endregion IDisposable Implementation
-	};
+        #endregion IDisposable Implementation
+    };
 }

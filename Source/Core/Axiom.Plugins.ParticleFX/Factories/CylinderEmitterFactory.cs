@@ -51,24 +51,24 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.ParticleFX.Factories
 {
-	/// <summary>
-	/// Summary description for CylinderEmitterFactory.
-	/// </summary>
-	public class CylinderEmitterFactory : ParticleEmitterFactory
-	{
-		public override string Name
-		{
-			get
-			{
-				return "Cylinder";
-			}
-		}
+    /// <summary>
+    /// Summary description for CylinderEmitterFactory.
+    /// </summary>
+    public class CylinderEmitterFactory : ParticleEmitterFactory
+    {
+        public override string Name
+        {
+            get
+            {
+                return "Cylinder";
+            }
+        }
 
-		public override ParticleEmitter Create( ParticleSystem ps )
-		{
-			ParticleEmitter emitter = new CylinderEmitter( ps );
-			emitterList.Add( emitter );
-			return emitter;
-		}
-	}
+        public override ParticleEmitter Create(ParticleSystem ps)
+        {
+            ParticleEmitter emitter = new CylinderEmitter(ps);
+            emitterList.Add(emitter);
+            return emitter;
+        }
+    }
 }

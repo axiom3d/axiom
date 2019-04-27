@@ -33,30 +33,30 @@
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	/// <summary>
-	///	Enum identifying D3D9 texture types
-	/// </summary>
-	[OgreVersion( 1, 7, 2 )]
-	public enum D3D9TextureType
-	{
-		/// <summary>
-		/// Standard texture
-		/// </summary>
-		Normal,
+    /// <summary>
+    ///	Enum identifying D3D9 texture types
+    /// </summary>
+    [OgreVersion(1, 7, 2)]
+    public enum D3D9TextureType
+    {
+        /// <summary>
+        /// Standard texture
+        /// </summary>
+        Normal,
 
-		/// <summary>
-		/// Cube texture
-		/// </summary>
-		Cube,
+        /// <summary>
+        /// Cube texture
+        /// </summary>
+        Cube,
 
-		/// <summary>
-		/// Volume texture
-		/// </summary>
-		Volume,
+        /// <summary>
+        /// Volume texture
+        /// </summary>
+        Volume,
 
-		/// <summary>
-		/// Just to have it...
-		/// </summary>
-		None
-	};
+        /// <summary>
+        /// Just to have it...
+        /// </summary>
+        None
+    };
 }

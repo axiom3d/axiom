@@ -40,16 +40,16 @@ using Axiom.Core;
 
 namespace Axiom.Samples.Terrain
 {
-	[Export( typeof ( IPlugin ) )]
-	public class Plugin : SamplePlugin
-	{
-		private TerrainSample sample;
+    [Export(typeof(IPlugin))]
+    public class Plugin : SamplePlugin
+    {
+        private TerrainSample sample;
 
-		public override void Initialize()
-		{
-			this.sample = new TerrainSample();
-			Name = this.sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this.sample );
-		}
-	};
+        public override void Initialize()
+        {
+            this.sample = new TerrainSample();
+            Name = this.sample.Metadata["Title"] + " Sample";
+            AddSample(this.sample);
+        }
+    };
 }

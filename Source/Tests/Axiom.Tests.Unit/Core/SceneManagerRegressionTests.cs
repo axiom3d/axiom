@@ -45,65 +45,65 @@ namespace Axiom.UnitTests.Core
     /// https://sourceforge.net/apps/trac/axiomengine/ticket/69,
     /// a problem with node removal functionality.
     /// </remarks>
-    [ TestFixture ]
+    [TestFixture]
     public class SceneManagerRegressionTests
     {
         /// <summary>
         /// Verifies that the destruction of a scene node via the interface of its parent does in fact also
         /// remove that child node from the <see cref="SceneManager"/> scene graph.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestChildSceneNodeDestruction()
         {
-            SceneManager sceneManager = new StubSceneManager( "Manager under test" );
-            SceneNode node = sceneManager.CreateSceneNode( "testNode" );
-            SceneNode childNode = node.CreateChildSceneNode( "childNode" );
+            SceneManager sceneManager = new StubSceneManager("Manager under test");
+            SceneNode node = sceneManager.CreateSceneNode("testNode");
+            SceneNode childNode = node.CreateChildSceneNode("childNode");
 
-            Assert.IsTrue( ManagerContainsNode( sceneManager, childNode ), "A child node was created but not added to the scene graph." );
+            Assert.IsTrue(ManagerContainsNode(sceneManager, childNode), "A child node was created but not added to the scene graph.");
 
-            node.RemoveAndDestroyChild( childNode );
+            node.RemoveAndDestroyChild(childNode);
 
-            Assert.IsFalse( ManagerContainsNode( sceneManager, childNode ), "A child node was destroyed but not removed from the scene graph." );
+            Assert.IsFalse(ManagerContainsNode(sceneManager, childNode), "A child node was destroyed but not removed from the scene graph.");
         }
 
         [Test]
         public void TestChildSceneNodeDestructionByName()
         {
-            SceneManager sceneManager = new StubSceneManager( "Manager under test" );
-            SceneNode node = sceneManager.CreateSceneNode( "testNode" );
-            SceneNode childNode = node.CreateChildSceneNode( "childNode" );
+            SceneManager sceneManager = new StubSceneManager("Manager under test");
+            SceneNode node = sceneManager.CreateSceneNode("testNode");
+            SceneNode childNode = node.CreateChildSceneNode("childNode");
 
-            Assert.IsTrue( ManagerContainsNode( sceneManager, childNode ), "A child node was created but not added to the scene graph." );
+            Assert.IsTrue(ManagerContainsNode(sceneManager, childNode), "A child node was created but not added to the scene graph.");
 
-            node.RemoveAndDestroyChild( childNode.Name );
+            node.RemoveAndDestroyChild(childNode.Name);
 
-            Assert.IsFalse( ManagerContainsNode( sceneManager, childNode ), "A child node was destroyed but not removed from the scene graph." );
+            Assert.IsFalse(ManagerContainsNode(sceneManager, childNode), "A child node was destroyed but not removed from the scene graph.");
         }
         /// <summary>
         /// Verifies that the simple removal of a scene node from its parent does NOT
         /// remove that child node from the <see cref="SceneManager"/> scene graph.
         /// </summary>
-        [ Test ]
+        [Test]
         public void TestChildSceneNodeRemoval()
         {
-            SceneManager sceneManager = new StubSceneManager( "Manager under test" );
-            SceneNode node = sceneManager.CreateSceneNode( "testNode" );
-            SceneNode childNode = node.CreateChildSceneNode( "childNode" );
+            SceneManager sceneManager = new StubSceneManager("Manager under test");
+            SceneNode node = sceneManager.CreateSceneNode("testNode");
+            SceneNode childNode = node.CreateChildSceneNode("childNode");
 
-            Assert.IsTrue( ManagerContainsNode( sceneManager, childNode ), "A child node was created but not added to the scene graph." );
+            Assert.IsTrue(ManagerContainsNode(sceneManager, childNode), "A child node was created but not added to the scene graph.");
 
-            node.RemoveChild( childNode.Name );
+            node.RemoveChild(childNode.Name);
 
-            Assert.IsTrue( ManagerContainsNode( sceneManager, childNode ), "A child node was removed from its parent but also incorrectly removed from the scene graph." );
+            Assert.IsTrue(ManagerContainsNode(sceneManager, childNode), "A child node was removed from its parent but also incorrectly removed from the scene graph.");
         }
 
-        private static bool ManagerContainsNode( SceneManager sceneManager, SceneNode childNode )
+        private static bool ManagerContainsNode(SceneManager sceneManager, SceneNode childNode)
         {
             bool managerContainsChild = false;
 
-            foreach ( SceneNode sceneNode in sceneManager.SceneNodes )
+            foreach (SceneNode sceneNode in sceneManager.SceneNodes)
             {
-                if ( sceneNode.Equals( childNode ) )
+                if (sceneNode.Equals(childNode))
                 {
                     managerContainsChild = true;
                 }
@@ -113,8 +113,8 @@ namespace Axiom.UnitTests.Core
 
         private class StubSceneManager : SceneManager
         {
-            public StubSceneManager( string name )
-                : base( name )
+            public StubSceneManager(string name)
+                : base(name)
             {
             }
 

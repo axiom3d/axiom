@@ -46,15 +46,15 @@ using System.Text;
 
 namespace Axiom.Scripting.Compiler.Parser
 {
-	public struct ScriptToken
-	{
-		/// This is the lexeme for this token
-		public String lexeme, file;
+    public struct ScriptToken
+    {
+        /// This is the lexeme for this token
+        public String lexeme, file;
 
-		/// This is the id associated with the lexeme, which comes from a lexeme-token id mapping
-		public Tokens type;
+        /// This is the id associated with the lexeme, which comes from a lexeme-token id mapping
+        public Tokens type;
 
-		/// This holds the line number of the input stream where the token was found.
-		public uint line;
-	}
+        /// This holds the line number of the input stream where the token was found.
+        public uint line;
+    }
 }

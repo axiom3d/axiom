@@ -41,8 +41,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 namespace Axiom.Scripting
 {
-	public interface IParser
-	{
-		void Parse( string[] parms, params object[] objects );
-	}
+    public interface IParser
+    {
+        void Parse(string[] parms, params object[] objects);
+    }
 }

@@ -42,110 +42,110 @@ using D3D9 = SharpDX.Direct3D9;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	/// <summary>
-	/// RenderTexture implementation for D3D9
-	/// </summary>
-	public class D3D9RenderTexture : RenderTexture
-	{
-		[OgreVersion( 1, 7, 2 )]
-		public override bool RequiresTextureFlipping
-		{
-			get
-			{
-				return false;
-			}
-		}
+    /// <summary>
+    /// RenderTexture implementation for D3D9
+    /// </summary>
+    public class D3D9RenderTexture : RenderTexture
+    {
+        [OgreVersion(1, 7, 2)]
+        public override bool RequiresTextureFlipping
+        {
+            get
+            {
+                return false;
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public D3D9RenderTexture( string name, D3D9HardwarePixelBuffer buffer, bool writeGamma, int fsaa )
-			: base( buffer, 0 )
-		{
-			this.name = name;
-			hwGamma = writeGamma;
-			this.fsaa = fsaa;
-		}
+        [OgreVersion(1, 7, 2)]
+        public D3D9RenderTexture(string name, D3D9HardwarePixelBuffer buffer, bool writeGamma, int fsaa)
+            : base(buffer, 0)
+        {
+            this.name = name;
+            hwGamma = writeGamma;
+            this.fsaa = fsaa;
+        }
 
-		[OgreVersion( 1, 7, 2790 )]
-		public override void Update( bool swapBuffers )
-		{
-			var deviceManager = D3D9RenderSystem.DeviceManager;
-			var currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
+        [OgreVersion(1, 7, 2790)]
+        public override void Update(bool swapBuffers)
+        {
+            var deviceManager = D3D9RenderSystem.DeviceManager;
+            var currRenderWindowDevice = deviceManager.ActiveRenderTargetDevice;
 
-			if ( currRenderWindowDevice != null )
-			{
-				if ( currRenderWindowDevice.IsDeviceLost == false )
-				{
-					base.Update( swapBuffers );
-				}
-			}
-			else
-			{
-				foreach ( var device in deviceManager )
-				{
-					if ( device.IsDeviceLost == false )
-					{
-						deviceManager.ActiveRenderTargetDevice = device;
-						base.Update( swapBuffers );
-						deviceManager.ActiveRenderTargetDevice = null;
-					}
-				}
-			}
-		}
+            if (currRenderWindowDevice != null)
+            {
+                if (currRenderWindowDevice.IsDeviceLost == false)
+                {
+                    base.Update(swapBuffers);
+                }
+            }
+            else
+            {
+                foreach (var device in deviceManager)
+                {
+                    if (device.IsDeviceLost == false)
+                    {
+                        deviceManager.ActiveRenderTargetDevice = device;
+                        base.Update(swapBuffers);
+                        deviceManager.ActiveRenderTargetDevice = null;
+                    }
+                }
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public override object this[ string attribute ]
-		{
-			get
-			{
-				switch ( attribute.ToUpper() )
-				{
-					case "DDBACKBUFFER":
-						var surface = new D3D9.Surface[Config.MaxMultipleRenderTargets];
-						if ( fsaa > 0 )
-						{
-							surface[ 0 ] = ( (D3D9HardwarePixelBuffer)pixelBuffer ).GetFSAASurface( D3D9RenderSystem.ActiveD3D9Device );
-						}
-						else
-						{
-							surface[ 0 ] = ( (D3D9HardwarePixelBuffer)pixelBuffer ).GetSurface( D3D9RenderSystem.ActiveD3D9Device );
-						}
+        [OgreVersion(1, 7, 2)]
+        public override object this[string attribute]
+        {
+            get
+            {
+                switch (attribute.ToUpper())
+                {
+                    case "DDBACKBUFFER":
+                        var surface = new D3D9.Surface[Config.MaxMultipleRenderTargets];
+                        if (fsaa > 0)
+                        {
+                            surface[0] = ((D3D9HardwarePixelBuffer)pixelBuffer).GetFSAASurface(D3D9RenderSystem.ActiveD3D9Device);
+                        }
+                        else
+                        {
+                            surface[0] = ((D3D9HardwarePixelBuffer)pixelBuffer).GetSurface(D3D9RenderSystem.ActiveD3D9Device);
+                        }
 
-						return surface;
+                        return surface;
 
-					case "HWND":
-						return null;
+                    case "HWND":
+                        return null;
 
-					case "BUFFER":
-						return (HardwarePixelBuffer)pixelBuffer;
+                    case "BUFFER":
+                        return (HardwarePixelBuffer)pixelBuffer;
 
-					default:
-						return null;
-				}
-			}
-		}
+                    default:
+                        return null;
+                }
+            }
+        }
 
-		/// <summary>
-		/// Override needed to deal with FSAA
-		/// </summary>
-		[OgreVersion( 1, 7, 2 )]
-		public override void SwapBuffers( bool waitForVSync )
-		{
-			// Only needed if we have to blit from AA surface
-			if ( fsaa > 0 )
-			{
-				var deviceManager = D3D9RenderSystem.DeviceManager;
-				var buf = (D3D9HardwarePixelBuffer)( pixelBuffer );
+        /// <summary>
+        /// Override needed to deal with FSAA
+        /// </summary>
+        [OgreVersion(1, 7, 2)]
+        public override void SwapBuffers(bool waitForVSync)
+        {
+            // Only needed if we have to blit from AA surface
+            if (fsaa > 0)
+            {
+                var deviceManager = D3D9RenderSystem.DeviceManager;
+                var buf = (D3D9HardwarePixelBuffer)(pixelBuffer);
 
-				foreach ( var device in deviceManager )
-				{
+                foreach (var device in deviceManager)
+                {
                     if (device.IsDeviceLost == false)
                     {
                         var d3d9Device = device.D3DDevice;
                         d3d9Device.StretchRectangle(buf.GetFSAASurface(d3d9Device), buf.GetSurface(d3d9Device),
                                                                D3D9.TextureFilter.None);
                     }
-				}
-			}
-		}
-	};
+                }
+            }
+        }
+    };
 }

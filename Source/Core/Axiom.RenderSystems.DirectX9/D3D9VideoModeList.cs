@@ -43,102 +43,102 @@ using D3D9 = SharpDX.Direct3D9;
 
 namespace Axiom.RenderSystems.DirectX9
 {
-	/// <summary>
-	/// Summary description for VideoModeCollection.
-	/// </summary>
-	public class D3D9VideoModeList : List<D3D9VideoMode>, IDisposable
-	{
-		private D3D9Driver _mpDriver;
+    /// <summary>
+    /// Summary description for VideoModeCollection.
+    /// </summary>
+    public class D3D9VideoModeList : List<D3D9VideoMode>, IDisposable
+    {
+        private D3D9Driver _mpDriver;
 
-		[OgreVersion( 1, 7, 2, "D3D9VideoModeList::item( const String &name )" )]
-		public D3D9VideoMode this[ string description ]
-		{
-			get
-			{
-				return this.FirstOrDefault( x => x.Description == description );
-			}
-		}
+        [OgreVersion(1, 7, 2, "D3D9VideoModeList::item( const String &name )")]
+        public D3D9VideoMode this[string description]
+        {
+            get
+            {
+                return this.FirstOrDefault(x => x.Description == description);
+            }
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public D3D9VideoModeList( D3D9Driver pDriver )
-			: base()
-		{
-			if ( pDriver == null )
-			{
-				throw new AxiomException( "pDriver parameter is NULL" );
-			}
+        [OgreVersion(1, 7, 2)]
+        public D3D9VideoModeList(D3D9Driver pDriver)
+            : base()
+        {
+            if (pDriver == null)
+            {
+                throw new AxiomException("pDriver parameter is NULL");
+            }
 
-			this._mpDriver = pDriver;
-			Enumerate();
-		}
+            this._mpDriver = pDriver;
+            Enumerate();
+        }
 
-		~D3D9VideoModeList()
-		{
-			Dispose();
-		}
+        ~D3D9VideoModeList()
+        {
+            Dispose();
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public void Dispose()
-		{
-			this._mpDriver = null;
+        [OgreVersion(1, 7, 2)]
+        public void Dispose()
+        {
+            this._mpDriver = null;
 
-            foreach ( var currentVideoMode in this )
+            foreach (var currentVideoMode in this)
                 currentVideoMode.SafeDispose();
 
-			Clear();
+            Clear();
 
-			GC.SuppressFinalize( this );
-		}
+            GC.SuppressFinalize(this);
+        }
 
-		[OgreVersion( 1, 7, 2 )]
-		public bool Enumerate()
-		{
-			_enumerateByFormat( D3D9.Format.R5G6B5 );
-			_enumerateByFormat( D3D9.Format.X8R8G8B8 );
+        [OgreVersion(1, 7, 2)]
+        public bool Enumerate()
+        {
+            _enumerateByFormat(D3D9.Format.R5G6B5);
+            _enumerateByFormat(D3D9.Format.X8R8G8B8);
 
-			return true;
-		}
+            return true;
+        }
 
-		[AxiomHelper( 0, 9 )]
-		private void _enumerateByFormat( D3D9.Format format )
-		{
-			var pD3D = D3D9RenderSystem.Direct3D9;
-			var adapter = this._mpDriver.AdapterNumber;
+        [AxiomHelper(0, 9)]
+        private void _enumerateByFormat(D3D9.Format format)
+        {
+            var pD3D = D3D9RenderSystem.Direct3D9;
+            var adapter = this._mpDriver.AdapterNumber;
 
-			for ( var iMode = 0; iMode < pD3D.GetAdapterModeCount( adapter, format ); iMode++ )
-			{
-				var displayMode = pD3D.EnumAdapterModes( adapter, format, iMode );
+            for (var iMode = 0; iMode < pD3D.GetAdapterModeCount(adapter, format); iMode++)
+            {
+                var displayMode = pD3D.EnumAdapterModes(adapter, format, iMode);
 
-				// Filter out low-resolutions
-				if ( displayMode.Width < 640 || displayMode.Height < 400 )
-				{
-					continue;
-				}
+                // Filter out low-resolutions
+                if (displayMode.Width < 640 || displayMode.Height < 400)
+                {
+                    continue;
+                }
 
-				// Check to see if it is already in the list (to filter out refresh rates)
-				var found = false;
-				for ( var it = 0; it < Count; it++ )
-				{
-					var oldDisp = this[ it ].DisplayMode;
-					if ( oldDisp.Width == displayMode.Width && oldDisp.Height == displayMode.Height &&
-					     oldDisp.Format == displayMode.Format )
-					{
-						// Check refresh rate and favour higher if poss
-						if ( oldDisp.RefreshRate < displayMode.RefreshRate )
-						{
-							this[ it ].RefreshRate = displayMode.RefreshRate;
-						}
+                // Check to see if it is already in the list (to filter out refresh rates)
+                var found = false;
+                for (var it = 0; it < Count; it++)
+                {
+                    var oldDisp = this[it].DisplayMode;
+                    if (oldDisp.Width == displayMode.Width && oldDisp.Height == displayMode.Height &&
+                         oldDisp.Format == displayMode.Format)
+                    {
+                        // Check refresh rate and favour higher if poss
+                        if (oldDisp.RefreshRate < displayMode.RefreshRate)
+                        {
+                            this[it].RefreshRate = displayMode.RefreshRate;
+                        }
 
-						found = true;
-						break;
-					}
-				}
+                        found = true;
+                        break;
+                    }
+                }
 
-				if ( !found )
-				{
-					Add( new D3D9VideoMode( displayMode ) );
-				}
-			}
-		}
-	};
+                if (!found)
+                {
+                    Add(new D3D9VideoMode(displayMode));
+                }
+            }
+        }
+    };
 }

@@ -54,9 +54,9 @@ namespace Axiom.UnitTests.Collections
         [Test]
         public void SceneNode_AddRenameEntity_ShouldNotThrowException()
         {
-            sceneNode.AttachObject( entity );
+            sceneNode.AttachObject(entity);
             entity.Name = "newName_" + "SceneNode_AddRenameEntity";
-            Assert.IsTrue( sceneNode.GetObject( entity.Name ) != null );
+            Assert.IsTrue(sceneNode.GetObject(entity.Name) != null);
 
             sceneNode.DetachAllObjects();
         }
@@ -64,9 +64,9 @@ namespace Axiom.UnitTests.Collections
         [Test]
         public void SceneManager_AddRenameEntity_ShouldNotThrowException()
         {
-            sceneNode.AttachObject( entity );
+            sceneNode.AttachObject(entity);
             entity.Name = "newName_" + "SceneManager_AddRenameEntity";
-            Assert.IsTrue( sceneManager.GetMovableObject( entity.Name, "Entity" ) != null );
+            Assert.IsTrue(sceneManager.GetMovableObject(entity.Name, "Entity") != null);
 
             sceneNode.DetachAllObjects();
         }
@@ -74,17 +74,17 @@ namespace Axiom.UnitTests.Collections
         [Test]
         public void SceneManager_AttachDetachRenameEntity_ShouldNotThrowException()
         {
-            sceneNode.AttachObject( entity );
+            sceneNode.AttachObject(entity);
             sceneNode.DetachAllObjects();
             entity.Name = "newName_" + "SceneManager_AddRenameEntity";
-            Assert.IsTrue( sceneManager.GetMovableObject( entity.Name, "Entity" ) != null );
+            Assert.IsTrue(sceneManager.GetMovableObject(entity.Name, "Entity") != null);
         }
 
         [Test]
         public void MovableObject_RenameUnattachedEntity_ShouldNotThrowException()
         {
             entity.Name = "newName_" + "MovableObject_RenameUnattachedEntity";
-            Assert.IsTrue( sceneManager.GetMovableObject( entity.Name, "Entity" ) != null );
+            Assert.IsTrue(sceneManager.GetMovableObject(entity.Name, "Entity") != null);
         }
     }
 }

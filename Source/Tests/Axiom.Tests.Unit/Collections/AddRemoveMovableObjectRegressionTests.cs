@@ -37,8 +37,8 @@ namespace Axiom.UnitTests.Collections
     [TestFixture]
     public class AddRemoveMovableObjectRegressionTests
     {
-        private SceneManager sceneManager ;
-        private Entity entity ;
+        private SceneManager sceneManager;
+        private Entity entity;
 
         /// <summary>
         /// Sets up each test.

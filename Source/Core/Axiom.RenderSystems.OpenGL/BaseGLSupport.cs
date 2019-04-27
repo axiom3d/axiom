@@ -53,250 +53,250 @@ using Axiom.Graphics.Collections;
 
 namespace Axiom.RenderSystems.OpenGL
 {
-	/// <summary>
-	/// Summary description for GLHelper.
-	/// </summary>
-	internal abstract class BaseGLSupport
-	{
-		#region Fields and Properties
+    /// <summary>
+    /// Summary description for GLHelper.
+    /// </summary>
+    internal abstract class BaseGLSupport
+    {
+        #region Fields and Properties
 
-		#region Extensions Property
+        #region Extensions Property
 
-		/// <summary>
-		///		Collection of extensions supported by the current hardware.
-		/// </summary>
-		private static List<String> _extensionList;
+        /// <summary>
+        ///		Collection of extensions supported by the current hardware.
+        /// </summary>
+        private static List<String> _extensionList;
 
-		/// <summary>
-		///		Gets a collection of strings listing all the available extensions.
-		/// </summary>
-		public List<String> Extensions
-		{
-			get
-			{
-				return _extensionList;
-			}
-		}
+        /// <summary>
+        ///		Gets a collection of strings listing all the available extensions.
+        /// </summary>
+        public List<String> Extensions
+        {
+            get
+            {
+                return _extensionList;
+            }
+        }
 
-		#endregion Extensions Property
+        #endregion Extensions Property
 
-		#region Version Property
+        #region Version Property
 
-		/// <summary>
-		///		OpenGL version string.
-		/// </summary>
-		private static string _glVersion;
+        /// <summary>
+        ///		OpenGL version string.
+        /// </summary>
+        private static string _glVersion;
 
-		/// <summary>
-		///		Version string for the current OpenGL driver.
-		/// </summary>
-		public string Version
-		{
-			get
-			{
-				return _glVersion;
-			}
-		}
+        /// <summary>
+        ///		Version string for the current OpenGL driver.
+        /// </summary>
+        public string Version
+        {
+            get
+            {
+                return _glVersion;
+            }
+        }
 
-		#endregion Version Property
+        #endregion Version Property
 
-		#region Vendor Property
+        #region Vendor Property
 
-		/// <summary>
-		///		Vendor of the current hardware.
-		/// </summary>
-		private static string _vendor;
+        /// <summary>
+        ///		Vendor of the current hardware.
+        /// </summary>
+        private static string _vendor;
 
-		/// <summary>
-		///		Name of the vendor for the current video hardware.
-		/// </summary>
-		public string Vendor
-		{
-			get
-			{
-				return _vendor;
-			}
-		}
+        /// <summary>
+        ///		Name of the vendor for the current video hardware.
+        /// </summary>
+        public string Vendor
+        {
+            get
+            {
+                return _vendor;
+            }
+        }
 
-		#endregion Vendor Property
+        #endregion Vendor Property
 
-		#region VideoCard Property
+        #region VideoCard Property
 
-		/// <summary>
-		///		Name of the video card in use.
-		/// </summary>
-		private static string _videoCard;
+        /// <summary>
+        ///		Name of the video card in use.
+        /// </summary>
+        private static string _videoCard;
 
-		/// <summary>
-		///		Name/brand of the current video hardware.
-		/// </summary>
-		public string VideoCard
-		{
-			get
-			{
-				return _videoCard;
-			}
-		}
+        /// <summary>
+        ///		Name/brand of the current video hardware.
+        /// </summary>
+        public string VideoCard
+        {
+            get
+            {
+                return _videoCard;
+            }
+        }
 
-		#endregion VideoCard Property
+        #endregion VideoCard Property
 
-		#region ConfigOptions Property
+        #region ConfigOptions Property
 
-		/// <summary>
-		///		Config options.
-		/// </summary>
-		protected ConfigOptionMap _engineConfig = new ConfigOptionMap();
+        /// <summary>
+        ///		Config options.
+        /// </summary>
+        protected ConfigOptionMap _engineConfig = new ConfigOptionMap();
 
-		/// <summary>
-		///		Gets the options currently set by the current GL implementation.
-		/// </summary>
-		public ConfigOptionMap ConfigOptions
-		{
-			get
-			{
-				return this._engineConfig;
-			}
-		}
+        /// <summary>
+        ///		Gets the options currently set by the current GL implementation.
+        /// </summary>
+        public ConfigOptionMap ConfigOptions
+        {
+            get
+            {
+                return this._engineConfig;
+            }
+        }
 
-		#endregion ConfigOptions Property
+        #endregion ConfigOptions Property
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Methods
+        #region Methods
 
-		/// <summary>
-		///		Handy check to see if the current GL version is at least what is supplied.
-		/// </summary>
-		/// <param name="version">What you want to check for, i.e. "1.3" </param>
-		/// <returns></returns>
-		public bool CheckMinVersion( string version )
-		{
-			return Utility.ParseReal( version ) <= Utility.ParseReal( _glVersion.Substring( 0, version.Length ) );
-		}
+        /// <summary>
+        ///		Handy check to see if the current GL version is at least what is supplied.
+        /// </summary>
+        /// <param name="version">What you want to check for, i.e. "1.3" </param>
+        /// <returns></returns>
+        public bool CheckMinVersion(string version)
+        {
+            return Utility.ParseReal(version) <= Utility.ParseReal(_glVersion.Substring(0, version.Length));
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="extention"></param>
-		/// <returns></returns>
-		public bool CheckExtension( string extention )
-		{
-			// check if the extension is supported
-			return _extensionList.Contains( "GL_" + extention ) || _extensionList.Contains( extention );
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="extention"></param>
+        /// <returns></returns>
+        public bool CheckExtension(string extention)
+        {
+            // check if the extension is supported
+            return _extensionList.Contains("GL_" + extention) || _extensionList.Contains(extention);
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		public void InitializeExtensions()
-		{
-			if ( _extensionList == null )
-			{
-				Gl.ReloadFunctions();
+        /// <summary>
+        ///
+        /// </summary>
+        public void InitializeExtensions()
+        {
+            if (_extensionList == null)
+            {
+                Gl.ReloadFunctions();
 
-				// get the OpenGL version string and vendor name
-				_glVersion = Gl.glGetString( Gl.GL_VERSION ); 
-				_videoCard = Gl.glGetString( Gl.GL_RENDERER ); 
-				_vendor = Gl.glGetString( Gl.GL_VENDOR ); 
+                // get the OpenGL version string and vendor name
+                _glVersion = Gl.glGetString(Gl.GL_VERSION);
+                _videoCard = Gl.glGetString(Gl.GL_RENDERER);
+                _vendor = Gl.glGetString(Gl.GL_VENDOR);
 
-				// parse out the first piece of the vendor string if there are spaces in it
-				if ( _vendor.IndexOf( " " ) != -1 )
-				{
-					_vendor = _vendor.Substring( 0, _vendor.IndexOf( " " ) );
-				}
+                // parse out the first piece of the vendor string if there are spaces in it
+                if (_vendor.IndexOf(" ") != -1)
+                {
+                    _vendor = _vendor.Substring(0, _vendor.IndexOf(" "));
+                }
 
-				// create a new extension list
-				_extensionList = new List<String>();
+                // create a new extension list
+                _extensionList = new List<String>();
 
-				string allExt = Gl.glGetString( Gl.GL_EXTENSIONS ); 
-				string[] splitExt = allExt.Split( Char.Parse( " " ) );
+                string allExt = Gl.glGetString(Gl.GL_EXTENSIONS);
+                string[] splitExt = allExt.Split(Char.Parse(" "));
 
-				// store the parsed extension list
-				for ( int i = 0; i < splitExt.Length; i++ )
-				{
-					_extensionList.Add( splitExt[ i ] );
-				}
-			}
-		}
+                // store the parsed extension list
+                for (int i = 0; i < splitExt.Length; i++)
+                {
+                    _extensionList.Add(splitExt[i]);
+                }
+            }
+        }
 
-		public virtual bool SupportsPBuffers
-		{
-			get
-			{
-				return CheckExtension( "GL_ARB_pixel_buffer_object" ) || CheckExtension( "GL_EXT_pixel_buffer_object" );
-			}
-		}
+        public virtual bool SupportsPBuffers
+        {
+            get
+            {
+                return CheckExtension("GL_ARB_pixel_buffer_object") || CheckExtension("GL_EXT_pixel_buffer_object");
+            }
+        }
 
-		public int DisplayMonitorCount
-		{
-			get
-			{
-				return Screen.AllScreens.Length;
-			}
-		}
+        public int DisplayMonitorCount
+        {
+            get
+            {
+                return Screen.AllScreens.Length;
+            }
+        }
 
-		public virtual GLPBuffer CreatePBuffer( PixelComponentType format, int width, int height )
-		{
-			return null;
-		}
+        public virtual GLPBuffer CreatePBuffer(PixelComponentType format, int width, int height)
+        {
+            return null;
+        }
 
-		#endregion Methods
+        #endregion Methods
 
-		#region Abstract Members
+        #region Abstract Members
 
-		/// <summary>
-		/// Start anything speciual
-		/// </summary>
-		public abstract void Start();
+        /// <summary>
+        /// Start anything speciual
+        /// </summary>
+        public abstract void Start();
 
-		/// <summary>
-		/// Stop anything special
-		/// </summary>
-		public abstract void Stop();
+        /// <summary>
+        /// Stop anything special
+        /// </summary>
+        public abstract void Stop();
 
-		/// <summary>
-		///		Add any special config values to the system.
-		/// </summary>
-		public abstract void AddConfig();
+        /// <summary>
+        ///		Add any special config values to the system.
+        /// </summary>
+        public abstract void AddConfig();
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="autoCreateWindow"></param>
-		/// <param name="renderSystem"></param>
-		/// <param name="windowTitle"></param>
-		/// <returns></returns>
-		public abstract RenderWindow CreateWindow( bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle );
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="autoCreateWindow"></param>
+        /// <param name="renderSystem"></param>
+        /// <param name="windowTitle"></param>
+        /// <returns></returns>
+        public abstract RenderWindow CreateWindow(bool autoCreateWindow, GLRenderSystem renderSystem, string windowTitle);
 
-		/// <summary>
-		///		Subclasses need to implement a means to return the pointer to the extension function
-		///		for OpenGL calls.
-		/// </summary>
-		/// <param name="extension">Name of the extension to retreive the pointer for.</param>
-		/// <returns>Pointer to the location of the function in the OpenGL driver modules.</returns>
-		public abstract IntPtr GetProcAddress( string extension );
+        /// <summary>
+        ///		Subclasses need to implement a means to return the pointer to the extension function
+        ///		for OpenGL calls.
+        /// </summary>
+        /// <param name="extension">Name of the extension to retreive the pointer for.</param>
+        /// <returns>Pointer to the location of the function in the OpenGL driver modules.</returns>
+        public abstract IntPtr GetProcAddress(string extension);
 
-		/// <summary>
-		///		Creates a specific instance of a render window.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
-		/// <param name="colorDepth"></param>
-		/// <param name="fullScreen"></param>
-		/// <param name="left"></param>
-		/// <param name="top"></param>
-		/// <param name="depthBuffer"></param>
-		/// <param name="parent"></param>
-		/// <param name="vsync"></param>
-		/// <returns></returns>
-		public abstract RenderWindow NewWindow( string name, int width, int height, bool fullScreen, NamedParameterList miscParams );
+        /// <summary>
+        ///		Creates a specific instance of a render window.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="colorDepth"></param>
+        /// <param name="fullScreen"></param>
+        /// <param name="left"></param>
+        /// <param name="top"></param>
+        /// <param name="depthBuffer"></param>
+        /// <param name="parent"></param>
+        /// <param name="vsync"></param>
+        /// <returns></returns>
+        public abstract RenderWindow NewWindow(string name, int width, int height, bool fullScreen, NamedParameterList miscParams);
 
-		#endregion Abstract Members
+        #endregion Abstract Members
 
-		public string ValidateConfig()
-		{
-			return "";
-		}
-	}
+        public string ValidateConfig()
+        {
+            return "";
+        }
+    }
 }

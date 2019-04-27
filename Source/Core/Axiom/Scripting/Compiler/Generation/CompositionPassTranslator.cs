@@ -45,318 +45,318 @@ using Axiom.Scripting.Compiler.AST;
 
 namespace Axiom.Scripting.Compiler
 {
-	public partial class ScriptCompiler
-	{
-		public class CompositionPassTranslator : Translator
-		{
-			protected CompositionPass _Pass;
+    public partial class ScriptCompiler
+    {
+        public class CompositionPassTranslator : Translator
+        {
+            protected CompositionPass _Pass;
 
-			public CompositionPassTranslator()
-				: base()
-			{
-				this._Pass = null;
-			}
+            public CompositionPassTranslator()
+                : base()
+            {
+                this._Pass = null;
+            }
 
-			#region Translator Implementation
+            #region Translator Implementation
 
-			/// <see cref="Translator.CheckFor"/>
-			public override bool CheckFor( Keywords nodeId, Keywords parentId )
-			{
-				return nodeId == Keywords.ID_PASS && ( parentId == Keywords.ID_TARGET || parentId == Keywords.ID_TARGET_OUTPUT );
-			}
+            /// <see cref="Translator.CheckFor"/>
+            public override bool CheckFor(Keywords nodeId, Keywords parentId)
+            {
+                return nodeId == Keywords.ID_PASS && (parentId == Keywords.ID_TARGET || parentId == Keywords.ID_TARGET_OUTPUT);
+            }
 
-			/// <see cref="Translator.Translate"/>
-			public override void Translate( ScriptCompiler compiler, AbstractNode node )
-			{
-				var obj = (ObjectAbstractNode)node;
+            /// <see cref="Translator.Translate"/>
+            public override void Translate(ScriptCompiler compiler, AbstractNode node)
+            {
+                var obj = (ObjectAbstractNode)node;
 
-				var target = (CompositionTargetPass)obj.Parent.Context;
-				this._Pass = target.CreatePass();
-				obj.Context = this._Pass;
+                var target = (CompositionTargetPass)obj.Parent.Context;
+                this._Pass = target.CreatePass();
+                obj.Context = this._Pass;
 
-				// The name is the type of the pass
-				if ( obj.Values.Count == 0 )
-				{
-					compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
-					return;
-				}
-				var type = string.Empty;
-				if ( !getString( obj.Values[ 0 ], out type ) )
-				{
-					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line );
-					return;
-				}
+                // The name is the type of the pass
+                if (obj.Values.Count == 0)
+                {
+                    compiler.AddError(CompileErrorCode.StringExpected, obj.File, obj.Line);
+                    return;
+                }
+                var type = string.Empty;
+                if (!getString(obj.Values[0], out type))
+                {
+                    compiler.AddError(CompileErrorCode.InvalidParameters, obj.File, obj.Line);
+                    return;
+                }
 
-				this._Pass.Type = (CompositorPassType)ScriptEnumAttribute.Lookup( type, typeof ( CompositorPassType ) );
-				if ( this._Pass.Type == CompositorPassType.RenderCustom )
-				{
-					var customType = string.Empty;
-					//This is the ugly one liner for safe access to the second parameter.
-					if ( obj.Values.Count < 2 || !getString( obj.Values[ 1 ], out customType ) )
-					{
-						compiler.AddError( CompileErrorCode.StringExpected, obj.File, obj.Line );
-						return;
-					}
-					this._Pass.CustomType = customType;
-				}
-				else
-				{
-					compiler.AddError( CompileErrorCode.InvalidParameters, obj.File, obj.Line,
-					                   "pass types must be \"clear\", \"stencil\", \"render_quad\", \"render_scene\" or \"render_custom\"." );
-					return;
-				}
+                this._Pass.Type = (CompositorPassType)ScriptEnumAttribute.Lookup(type, typeof(CompositorPassType));
+                if (this._Pass.Type == CompositorPassType.RenderCustom)
+                {
+                    var customType = string.Empty;
+                    //This is the ugly one liner for safe access to the second parameter.
+                    if (obj.Values.Count < 2 || !getString(obj.Values[1], out customType))
+                    {
+                        compiler.AddError(CompileErrorCode.StringExpected, obj.File, obj.Line);
+                        return;
+                    }
+                    this._Pass.CustomType = customType;
+                }
+                else
+                {
+                    compiler.AddError(CompileErrorCode.InvalidParameters, obj.File, obj.Line,
+                                       "pass types must be \"clear\", \"stencil\", \"render_quad\", \"render_scene\" or \"render_custom\".");
+                    return;
+                }
 
-				foreach ( var i in obj.Children )
-				{
-					if ( i is ObjectAbstractNode )
-					{
-						processNode( compiler, i );
-					}
-					else if ( i is PropertyAbstractNode )
-					{
-						var prop = (PropertyAbstractNode)i;
-						switch ( (Keywords)prop.Id )
-						{
-								#region ID_MATERIAL
+                foreach (var i in obj.Children)
+                {
+                    if (i is ObjectAbstractNode)
+                    {
+                        processNode(compiler, i);
+                    }
+                    else if (i is PropertyAbstractNode)
+                    {
+                        var prop = (PropertyAbstractNode)i;
+                        switch ((Keywords)prop.Id)
+                        {
+                            #region ID_MATERIAL
 
-							case Keywords.ID_MATERIAL:
-								if ( prop.Values.Count == 0 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-									return;
-								}
-								else if ( prop.Values.Count > 1 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
-									return;
-								}
-								else
-								{
-									var val = string.Empty;
-									if ( getString( prop.Values[ 0 ], out val ) )
-									{
-										ScriptCompilerEvent evt =
-											new ProcessResourceNameScriptCompilerEvent( ProcessResourceNameScriptCompilerEvent.ResourceType.Material, val );
+                            case Keywords.ID_MATERIAL:
+                                if (prop.Values.Count == 0)
+                                {
+                                    compiler.AddError(CompileErrorCode.StringExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else if (prop.Values.Count > 1)
+                                {
+                                    compiler.AddError(CompileErrorCode.FewerParametersExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else
+                                {
+                                    var val = string.Empty;
+                                    if (getString(prop.Values[0], out val))
+                                    {
+                                        ScriptCompilerEvent evt =
+                                            new ProcessResourceNameScriptCompilerEvent(ProcessResourceNameScriptCompilerEvent.ResourceType.Material, val);
 
-										compiler._fireEvent( ref evt );
-										this._Pass.MaterialName = ( (ProcessResourceNameScriptCompilerEvent)evt ).Name;
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-									}
-								}
-								break;
+                                        compiler._fireEvent(ref evt);
+                                        this._Pass.MaterialName = ((ProcessResourceNameScriptCompilerEvent)evt).Name;
+                                    }
+                                    else
+                                    {
+                                        compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line);
+                                    }
+                                }
+                                break;
 
-								#endregion ID_MATERIAL
+                            #endregion ID_MATERIAL
 
-								#region ID_INPUT
+                            #region ID_INPUT
 
-							case Keywords.ID_INPUT:
-								if ( prop.Values.Count < 2 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-									return;
-								}
-								else if ( prop.Values.Count > 3 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
-									return;
-								}
-								else
-								{
-									AbstractNode i0 = getNodeAt( prop.Values, 0 ),
-									             i1 = getNodeAt( prop.Values, 1 ),
-									             i2 = getNodeAt( prop.Values, 2 );
-									var id = 0;
-									var name = string.Empty;
-									if ( getInt( i0, out id ) && getString( i1, out name ) )
-									{
-										var index = 0;
+                            case Keywords.ID_INPUT:
+                                if (prop.Values.Count < 2)
+                                {
+                                    compiler.AddError(CompileErrorCode.StringExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else if (prop.Values.Count > 3)
+                                {
+                                    compiler.AddError(CompileErrorCode.FewerParametersExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else
+                                {
+                                    AbstractNode i0 = getNodeAt(prop.Values, 0),
+                                                 i1 = getNodeAt(prop.Values, 1),
+                                                 i2 = getNodeAt(prop.Values, 2);
+                                    var id = 0;
+                                    var name = string.Empty;
+                                    if (getInt(i0, out id) && getString(i1, out name))
+                                    {
+                                        var index = 0;
 
-										if ( !getInt( i2, out index ) )
-										{
-											compiler.AddError( CompileErrorCode.NumberExpected, prop.File, prop.Line );
-											return;
-										}
+                                        if (!getInt(i2, out index))
+                                        {
+                                            compiler.AddError(CompileErrorCode.NumberExpected, prop.File, prop.Line);
+                                            return;
+                                        }
 
-										this._Pass.SetInput( id, name, index );
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-									}
-								}
-								break;
+                                        this._Pass.SetInput(id, name, index);
+                                    }
+                                    else
+                                    {
+                                        compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line);
+                                    }
+                                }
+                                break;
 
-								#endregion ID_INPUT
+                            #endregion ID_INPUT
 
-								#region ID_IDENTIFIER
+                            #region ID_IDENTIFIER
 
-							case Keywords.ID_IDENTIFIER:
-								if ( prop.Values.Count == 0 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-									return;
-								}
-								else if ( prop.Values.Count > 1 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
-									return;
-								}
-								else
-								{
-									uint val;
-									if ( getUInt( prop.Values[ 0 ], out val ) )
-									{
-										this._Pass.Identifier = val;
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-									}
-								}
-								break;
+                            case Keywords.ID_IDENTIFIER:
+                                if (prop.Values.Count == 0)
+                                {
+                                    compiler.AddError(CompileErrorCode.StringExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else if (prop.Values.Count > 1)
+                                {
+                                    compiler.AddError(CompileErrorCode.FewerParametersExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else
+                                {
+                                    uint val;
+                                    if (getUInt(prop.Values[0], out val))
+                                    {
+                                        this._Pass.Identifier = val;
+                                    }
+                                    else
+                                    {
+                                        compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line);
+                                    }
+                                }
+                                break;
 
-								#endregion ID_IDENTIFIER
+                            #endregion ID_IDENTIFIER
 
-								#region ID_FIRST_RENDER_QUEUE
+                            #region ID_FIRST_RENDER_QUEUE
 
-							case Keywords.ID_FIRST_RENDER_QUEUE:
-								if ( prop.Values.Count == 0 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-									return;
-								}
-								else if ( prop.Values.Count > 1 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
-									return;
-								}
-								else
-								{
-									uint val;
-									if ( getUInt( prop.Values[ 0 ], out val ) )
-									{
-										this._Pass.FirstRenderQueue = (RenderQueueGroupID)val;
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-									}
-								}
-								break;
+                            case Keywords.ID_FIRST_RENDER_QUEUE:
+                                if (prop.Values.Count == 0)
+                                {
+                                    compiler.AddError(CompileErrorCode.StringExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else if (prop.Values.Count > 1)
+                                {
+                                    compiler.AddError(CompileErrorCode.FewerParametersExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else
+                                {
+                                    uint val;
+                                    if (getUInt(prop.Values[0], out val))
+                                    {
+                                        this._Pass.FirstRenderQueue = (RenderQueueGroupID)val;
+                                    }
+                                    else
+                                    {
+                                        compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line);
+                                    }
+                                }
+                                break;
 
-								#endregion ID_FIRST_RENDER_QUEUE
+                            #endregion ID_FIRST_RENDER_QUEUE
 
-								#region ID_LAST_RENDER_QUEUE
+                            #region ID_LAST_RENDER_QUEUE
 
-							case Keywords.ID_LAST_RENDER_QUEUE:
-								if ( prop.Values.Count == 0 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-									return;
-								}
-								else if ( prop.Values.Count > 1 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
-									return;
-								}
-								else
-								{
-									uint val;
-									if ( getUInt( prop.Values[ 0 ], out val ) )
-									{
-										this._Pass.LastRenderQueue = (RenderQueueGroupID)val;
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-									}
-								}
-								break;
+                            case Keywords.ID_LAST_RENDER_QUEUE:
+                                if (prop.Values.Count == 0)
+                                {
+                                    compiler.AddError(CompileErrorCode.StringExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else if (prop.Values.Count > 1)
+                                {
+                                    compiler.AddError(CompileErrorCode.FewerParametersExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else
+                                {
+                                    uint val;
+                                    if (getUInt(prop.Values[0], out val))
+                                    {
+                                        this._Pass.LastRenderQueue = (RenderQueueGroupID)val;
+                                    }
+                                    else
+                                    {
+                                        compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line);
+                                    }
+                                }
+                                break;
 
-								#endregion ID_LAST_RENDER_QUEUE
+                            #endregion ID_LAST_RENDER_QUEUE
 
-								#region ID_MATERIAL_SCHEME
+                            #region ID_MATERIAL_SCHEME
 
-							case Keywords.ID_MATERIAL_SCHEME:
-								if ( prop.Values.Count == 0 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-									return;
-								}
-								else if ( prop.Values.Count > 1 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
-									return;
-								}
-								else
-								{
-									string val;
-									if ( getString( prop.Values[ 0 ], out val ) )
-									{
-										this._Pass.MaterialScheme = val;
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-									}
-								}
-								break;
+                            case Keywords.ID_MATERIAL_SCHEME:
+                                if (prop.Values.Count == 0)
+                                {
+                                    compiler.AddError(CompileErrorCode.StringExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else if (prop.Values.Count > 1)
+                                {
+                                    compiler.AddError(CompileErrorCode.FewerParametersExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else
+                                {
+                                    string val;
+                                    if (getString(prop.Values[0], out val))
+                                    {
+                                        this._Pass.MaterialScheme = val;
+                                    }
+                                    else
+                                    {
+                                        compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line);
+                                    }
+                                }
+                                break;
 
-								#endregion ID_MATERIAL_SCHEME
+                            #endregion ID_MATERIAL_SCHEME
 
-								#region ID_QUAD_NORMALS
+                            #region ID_QUAD_NORMALS
 
-							case Keywords.ID_QUAD_NORMALS:
-								if ( prop.Values.Count == 0 )
-								{
-									compiler.AddError( CompileErrorCode.StringExpected, prop.File, prop.Line );
-									return;
-								}
-								else if ( prop.Values.Count > 1 )
-								{
-									compiler.AddError( CompileErrorCode.FewerParametersExpected, prop.File, prop.Line );
-									return;
-								}
-								else
-								{
-									if ( prop.Values[ 0 ] is AtomAbstractNode )
-									{
-										var atom = (AtomAbstractNode)prop.Values[ 0 ];
-										if ( atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_VIEW_SPACE )
-										{
-											this._Pass.SetQuadFarCorners( true, true );
-										}
-										else if ( atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_WORLD_SPACE )
-										{
-											this._Pass.SetQuadFarCorners( true, false );
-										}
-										else
-										{
-											compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-										}
-									}
-									else
-									{
-										compiler.AddError( CompileErrorCode.InvalidParameters, prop.File, prop.Line );
-									}
-								}
-								break;
+                            case Keywords.ID_QUAD_NORMALS:
+                                if (prop.Values.Count == 0)
+                                {
+                                    compiler.AddError(CompileErrorCode.StringExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else if (prop.Values.Count > 1)
+                                {
+                                    compiler.AddError(CompileErrorCode.FewerParametersExpected, prop.File, prop.Line);
+                                    return;
+                                }
+                                else
+                                {
+                                    if (prop.Values[0] is AtomAbstractNode)
+                                    {
+                                        var atom = (AtomAbstractNode)prop.Values[0];
+                                        if (atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_VIEW_SPACE)
+                                        {
+                                            this._Pass.SetQuadFarCorners(true, true);
+                                        }
+                                        else if (atom.Id == (uint)Keywords.ID_CAMERA_FAR_CORNERS_WORLD_SPACE)
+                                        {
+                                            this._Pass.SetQuadFarCorners(true, false);
+                                        }
+                                        else
+                                        {
+                                            compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        compiler.AddError(CompileErrorCode.InvalidParameters, prop.File, prop.Line);
+                                    }
+                                }
+                                break;
 
-								#endregion ID_QUAD_NORMALS
+                            #endregion ID_QUAD_NORMALS
 
-							default:
-								compiler.AddError( CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
-								                   "token \"" + prop.Name + "\" is not recognized" );
-								break;
-						}
-					}
-				}
-			}
+                            default:
+                                compiler.AddError(CompileErrorCode.UnexpectedToken, prop.File, prop.Line,
+                                                   "token \"" + prop.Name + "\" is not recognized");
+                                break;
+                        }
+                    }
+                }
+            }
 
-			#endregion Translator Implementation
-		}
-	}
+            #endregion Translator Implementation
+        }
+    }
 }

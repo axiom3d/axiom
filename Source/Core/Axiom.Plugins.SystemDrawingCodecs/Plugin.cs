@@ -42,81 +42,81 @@ using RegisteredCodec = System.Collections.Generic.List<Axiom.Media.ImageCodec>;
 
 namespace Axiom.Plugins.SystemDrawingCodecs
 {
-	[Export( typeof ( IPlugin ) )]
-	internal class Plugin : Axiom.Core.IPlugin
-	{
-		#region Implementation of IPlugin
+    [Export(typeof(IPlugin))]
+    internal class Plugin : Axiom.Core.IPlugin
+    {
+        #region Implementation of IPlugin
 
-		/// <summary>
-		/// Unique name for the plugin
-		/// </summary>
-		private string Name
-		{
-			get
-			{
-				return "System.Drawing Media Codecs";
-			}
-		}
+        /// <summary>
+        /// Unique name for the plugin
+        /// </summary>
+        private string Name
+        {
+            get
+            {
+                return "System.Drawing Media Codecs";
+            }
+        }
 
-		private static RegisteredCodec _codecList;
+        private static RegisteredCodec _codecList;
 
-		/// <summary>
-		/// Perform any tasks the plugin needs to perform on full system initialization.
-		/// </summary>
-		/// <remarks>
-		/// An implementation must be supplied for this method. It is called
-		/// just after the system is fully initialized (either after Root.Initialize
-		/// if a window is created then, or after the first window is created)
-		/// and therefore all rendersystem functionality is available at this
-		/// time. You can use this hook to create any resources which are
-		/// dependent on a rendersystem or have rendersystem-specific implementations.
-		/// </remarks>
-		public void Initialize()
-		{
-			if ( _codecList == null )
-			{
-				_codecList = new RegisteredCodec();
-				_codecList.Add( new SDImageLoader( "bmp" ) );
-				_codecList.Add( new SDImageLoader( "jpg" ) );
-				_codecList.Add( new SDImageLoader( "png" ) );
+        /// <summary>
+        /// Perform any tasks the plugin needs to perform on full system initialization.
+        /// </summary>
+        /// <remarks>
+        /// An implementation must be supplied for this method. It is called
+        /// just after the system is fully initialized (either after Root.Initialize
+        /// if a window is created then, or after the first window is created)
+        /// and therefore all rendersystem functionality is available at this
+        /// time. You can use this hook to create any resources which are
+        /// dependent on a rendersystem or have rendersystem-specific implementations.
+        /// </remarks>
+        public void Initialize()
+        {
+            if (_codecList == null)
+            {
+                _codecList = new RegisteredCodec();
+                _codecList.Add(new SDImageLoader("bmp"));
+                _codecList.Add(new SDImageLoader("jpg"));
+                _codecList.Add(new SDImageLoader("png"));
 
-				foreach ( var i in _codecList )
-				{
-					if ( !CodecManager.Instance.IsCodecRegistered( i.Type ) )
-					{
-						CodecManager.Instance.RegisterCodec( i );
-					}
-				}
-			}
-		}
+                foreach (var i in _codecList)
+                {
+                    if (!CodecManager.Instance.IsCodecRegistered(i.Type))
+                    {
+                        CodecManager.Instance.RegisterCodec(i);
+                    }
+                }
+            }
+        }
 
-		/// <summary>
-		/// Perform any tasks the plugin needs to perform when the system is shut down.
-		/// </summary>
-		/// <remarks>
-		/// An implementation must be supplied for this method.
-		/// This method is called just before key parts of the system are unloaded,
-		/// such as rendersystems being shut down. You should use this hook to free up
-		/// resources and decouple custom objects from the Axiom system, whilst all the
-		/// instances of other plugins (e.g. rendersystems) still exist.
-		/// </remarks>
-		public void Shutdown()
-		{
-			if ( _codecList != null )
-			{
-				foreach ( var i in _codecList )
-				{
-					if ( CodecManager.Instance.IsCodecRegistered( i.Type ) )
-					{
-						CodecManager.Instance.UnregisterCodec( i );
-					}
-				}
+        /// <summary>
+        /// Perform any tasks the plugin needs to perform when the system is shut down.
+        /// </summary>
+        /// <remarks>
+        /// An implementation must be supplied for this method.
+        /// This method is called just before key parts of the system are unloaded,
+        /// such as rendersystems being shut down. You should use this hook to free up
+        /// resources and decouple custom objects from the Axiom system, whilst all the
+        /// instances of other plugins (e.g. rendersystems) still exist.
+        /// </remarks>
+        public void Shutdown()
+        {
+            if (_codecList != null)
+            {
+                foreach (var i in _codecList)
+                {
+                    if (CodecManager.Instance.IsCodecRegistered(i.Type))
+                    {
+                        CodecManager.Instance.UnregisterCodec(i);
+                    }
+                }
 
-				_codecList.Clear();
-				_codecList = null;
-			}
-		}
+                _codecList.Clear();
+                _codecList = null;
+            }
+        }
 
-		#endregion Implementation of IPlugin
-	};
+        #endregion Implementation of IPlugin
+    };
 }

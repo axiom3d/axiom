@@ -44,5 +44,5 @@ using Axiom.Core;
 
 namespace Axiom.ParticleSystems
 {
-	// Contents moved to ParticleSystemRenderer.cs
+    // Contents moved to ParticleSystemRenderer.cs
 }

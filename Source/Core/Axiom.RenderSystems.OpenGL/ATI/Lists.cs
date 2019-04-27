@@ -45,15 +45,15 @@ using System.Collections.Generic;
 
 namespace Axiom.RenderSystems.OpenGL.ATI
 {
-	public class TokenInstructionList : List<TokenInstruction>
-	{
-		public void Resize( int size )
-		{
-			TokenInstruction[] data = ToArray();
-			var newData = new TokenInstruction[size];
-			Array.Copy( data, 0, newData, 0, size );
-			Clear();
-			AddRange( newData );
-		}
-	}
+    public class TokenInstructionList : List<TokenInstruction>
+    {
+        public void Resize(int size)
+        {
+            TokenInstruction[] data = ToArray();
+            var newData = new TokenInstruction[size];
+            Array.Copy(data, 0, newData, 0, size);
+            Clear();
+            AddRange(newData);
+        }
+    }
 }

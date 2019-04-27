@@ -53,176 +53,177 @@ using Axiom.Collections;
 
 namespace Axiom.SceneManagers.Octree
 {
-	public enum Visibility
-	{
-		None,
-		Partial,
-		Full
-	}
+    public enum Visibility
+    {
+        None,
+        Partial,
+        Full
+    }
 
-	/// <summary>
-	///** Specialized viewpoint from which an Octree can be rendered.
-	///@remarks
-	///This class contains several speciliazations of the Ogre::Camera class. It
-	///implements the getRenderOperation method inorder to return displayable geometry
-	///for debuggin purposes. It also implements a visibility function that is more granular
-	///than the default.
-	/// </summary>
-	public class OctreeCamera : Camera
-	{
-		#region Fields
+    /// <summary>
+    ///** Specialized viewpoint from which an Octree can be rendered.
+    ///@remarks
+    ///This class contains several speciliazations of the Ogre::Camera class. It
+    ///implements the getRenderOperation method inorder to return displayable geometry
+    ///for debuggin purposes. It also implements a visibility function that is more granular
+    ///than the default.
+    /// </summary>
+    public class OctreeCamera : Camera
+    {
+        #region Fields
 
-		protected bool useIdentityProj;
-		protected bool useIdentityView;
+        protected bool useIdentityProj;
+        protected bool useIdentityView;
 
-		private const int PositionBinding = 0;
-		private const int ColorBinding = 1;
+        private const int PositionBinding = 0;
+        private const int ColorBinding = 1;
 
-		private static long red = 0xFF0000FF;
+        private static long red = 0xFF0000FF;
 
-		private short[] indexes = {
-		                          	0, 1, 1, 2, 2, 3, 3, 0, //back
+        private short[] indexes = {
+                                      0, 1, 1, 2, 2, 3, 3, 0, //back
 		                          	0, 6, 6, 5, 5, 1, //left
 		                          	3, 7, 7, 4, 4, 2, //right
 		                          	6, 7, 5, 4
-		                          };
+                                  };
 
-		private long[] colors = {
-		                        	red, red, red, red, red, red, red, red
-		                        };
+        private long[] colors = {
+                                    red, red, red, red, red, red, red, red
+                                };
 
-		private readonly int[] corners = {
-		                                 	0, 4, 3, 5, 2, 6, 1, 7
-		                                 };
+        private readonly int[] corners = {
+                                             0, 4, 3, 5, 2, 6, 1, 7
+                                         };
 
-		#endregion Fields
+        #endregion Fields
 
-		public OctreeCamera( string name, SceneManager scene )
-			: base( name, scene )
-		{
-			_material = (Material)MaterialManager.Instance.GetByName( "BaseWhite" );
-		}
+        public OctreeCamera(string name, SceneManager scene)
+            : base(name, scene)
+        {
+            _material = (Material)MaterialManager.Instance.GetByName("BaseWhite");
+        }
 
-		/// <summary>
-		///     Returns the visiblity of the box.
-		/// </summary>
-		/// <param name="bound"></param>
-		/// <returns></returns>
-		public Visibility GetVisibility( AxisAlignedBox bound )
-		{
-			if ( bound.IsNull )
-			{
-				return Visibility.None;
-			}
-			var center = bound.Center;
-			var halfSize = bound.HalfSize;
+        /// <summary>
+        ///     Returns the visiblity of the box.
+        /// </summary>
+        /// <param name="bound"></param>
+        /// <returns></returns>
+        public Visibility GetVisibility(AxisAlignedBox bound)
+        {
+            if (bound.IsNull)
+            {
+                return Visibility.None;
+            }
+            var center = bound.Center;
+            var halfSize = bound.HalfSize;
 
-			var allInside = true;
+            var allInside = true;
 
-			for ( int plane = 0; plane < 6; plane++ )
-			{
-				// Skip far plane if infinite view frustum
-				if (plane == (int)FrustumPlane.Far && Far == 0)
-					continue;
+            for (int plane = 0; plane < 6; plane++)
+            {
+                // Skip far plane if infinite view frustum
+                if (plane == (int)FrustumPlane.Far && Far == 0)
+                    continue;
 
-				// This updates frustum planes and deals with cull frustum
-				PlaneSide side = this.FrustumPlanes[ plane ].GetSide( center, halfSize );
-				if(side == PlaneSide.Negative) return Visibility.None;
-				// We can't return now as the box could be later on the negative side of a plane.
-				if(side == PlaneSide.Both) 
-						allInside = false;
-			}
+                // This updates frustum planes and deals with cull frustum
+                PlaneSide side = this.FrustumPlanes[plane].GetSide(center, halfSize);
+                if (side == PlaneSide.Negative)
+                    return Visibility.None;
+                // We can't return now as the box could be later on the negative side of a plane.
+                if (side == PlaneSide.Both)
+                    allInside = false;
+            }
 
-			if ( allInside )
-			{
-				return Visibility.Full;
-			}
-			else
-			{
-				return Visibility.Partial;
-			}
-		}
+            if (allInside)
+            {
+                return Visibility.Full;
+            }
+            else
+            {
+                return Visibility.Partial;
+            }
+        }
 
-		//        /// <summary>
-		//        ///
-		//        /// </summary>
-		//        /// <param name="op"></param>
-		//        public override void GetRenderOperation(RenderOperation op) {
-		//            Vector3[] r = new Vector3[8];
-		//
-		//            r = this.Corners;
-		//
-		//            r[0] = GetCorner(FrustumPlane.Far,FrustumPlane.Left,FrustumPlane.Bottom);
-		//            r[1] = GetCorner(FrustumPlane.Far,FrustumPlane.Left,FrustumPlane.Top);
-		//            r[2] = GetCorner(FrustumPlane.Far,FrustumPlane.Right,FrustumPlane.Top);
-		//            r[3] = GetCorner(FrustumPlane.Far,FrustumPlane.Right,FrustumPlane.Bottom);
-		//
-		//            r[4] = GetCorner(FrustumPlane.Near,FrustumPlane.Right,FrustumPlane.Top);
-		//            r[5] = GetCorner(FrustumPlane.Near,FrustumPlane.Left,FrustumPlane.Top);
-		//            r[6] = GetCorner(FrustumPlane.Near,FrustumPlane.Left,FrustumPlane.Bottom);
-		//            r[7] = GetCorner(FrustumPlane.Near,FrustumPlane.Right,FrustumPlane.Bottom);
-		//
-		//            this.Corners = r;
-		//
-		//            UpdateView();
-		//
-		//            //TODO: VERTEX BUFFER STUFF
-		//        }
+        //        /// <summary>
+        //        ///
+        //        /// </summary>
+        //        /// <param name="op"></param>
+        //        public override void GetRenderOperation(RenderOperation op) {
+        //            Vector3[] r = new Vector3[8];
+        //
+        //            r = this.Corners;
+        //
+        //            r[0] = GetCorner(FrustumPlane.Far,FrustumPlane.Left,FrustumPlane.Bottom);
+        //            r[1] = GetCorner(FrustumPlane.Far,FrustumPlane.Left,FrustumPlane.Top);
+        //            r[2] = GetCorner(FrustumPlane.Far,FrustumPlane.Right,FrustumPlane.Top);
+        //            r[3] = GetCorner(FrustumPlane.Far,FrustumPlane.Right,FrustumPlane.Bottom);
+        //
+        //            r[4] = GetCorner(FrustumPlane.Near,FrustumPlane.Right,FrustumPlane.Top);
+        //            r[5] = GetCorner(FrustumPlane.Near,FrustumPlane.Left,FrustumPlane.Top);
+        //            r[6] = GetCorner(FrustumPlane.Near,FrustumPlane.Left,FrustumPlane.Bottom);
+        //            r[7] = GetCorner(FrustumPlane.Near,FrustumPlane.Right,FrustumPlane.Bottom);
+        //
+        //            this.Corners = r;
+        //
+        //            UpdateView();
+        //
+        //            //TODO: VERTEX BUFFER STUFF
+        //        }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="pp1"></param>
-		/// <param name="pp2"></param>
-		/// <param name="pp3"></param>
-		/// <returns></returns>
-		private Vector3 GetCorner( FrustumPlane pp1, FrustumPlane pp2, FrustumPlane pp3 )
-		{
-			Plane p1 = _planes[ (int)pp1 ];
-			Plane p2 = _planes[ (int)pp1 ];
-			Plane p3 = _planes[ (int)pp1 ];
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="pp1"></param>
+        /// <param name="pp2"></param>
+        /// <param name="pp3"></param>
+        /// <returns></returns>
+        private Vector3 GetCorner(FrustumPlane pp1, FrustumPlane pp2, FrustumPlane pp3)
+        {
+            Plane p1 = _planes[(int)pp1];
+            Plane p2 = _planes[(int)pp1];
+            Plane p3 = _planes[(int)pp1];
 
-			Matrix3 mdet;
+            Matrix3 mdet;
 
-			mdet.m00 = p1.Normal.x;
-			mdet.m01 = p1.Normal.y;
-			mdet.m02 = p1.Normal.z;
-			mdet.m10 = p2.Normal.x;
-			mdet.m11 = p2.Normal.y;
-			mdet.m12 = p2.Normal.z;
-			mdet.m20 = p3.Normal.x;
-			mdet.m21 = p3.Normal.y;
-			mdet.m22 = p3.Normal.z;
+            mdet.m00 = p1.Normal.x;
+            mdet.m01 = p1.Normal.y;
+            mdet.m02 = p1.Normal.z;
+            mdet.m10 = p2.Normal.x;
+            mdet.m11 = p2.Normal.y;
+            mdet.m12 = p2.Normal.z;
+            mdet.m20 = p3.Normal.x;
+            mdet.m21 = p3.Normal.y;
+            mdet.m22 = p3.Normal.z;
 
-			float det = mdet.Determinant;
+            float det = mdet.Determinant;
 
-			if ( det == 0 )
-			{
-				//TODO: Unsure. The C++ just returned
-				return Vector3.Zero; //some planes are parallel.
-			}
+            if (det == 0)
+            {
+                //TODO: Unsure. The C++ just returned
+                return Vector3.Zero; //some planes are parallel.
+            }
 
-			var mx = new Matrix3( -p1.D, p1.Normal.y, p1.Normal.z, -p2.D, p2.Normal.y, p2.Normal.z, -p3.D, p3.Normal.y,
-			                      p3.Normal.z );
+            var mx = new Matrix3(-p1.D, p1.Normal.y, p1.Normal.z, -p2.D, p2.Normal.y, p2.Normal.z, -p3.D, p3.Normal.y,
+                                  p3.Normal.z);
 
-			float xdet = mx.Determinant;
+            float xdet = mx.Determinant;
 
-			var my = new Matrix3( p1.Normal.x, -p1.D, p1.Normal.z, p2.Normal.x, -p2.D, p2.Normal.z, p3.Normal.x, -p3.D,
-			                      p3.Normal.z );
+            var my = new Matrix3(p1.Normal.x, -p1.D, p1.Normal.z, p2.Normal.x, -p2.D, p2.Normal.z, p3.Normal.x, -p3.D,
+                                  p3.Normal.z);
 
-			float ydet = my.Determinant;
+            float ydet = my.Determinant;
 
-			var mz = new Matrix3( p1.Normal.x, p1.Normal.y, -p1.D, p2.Normal.x, p2.Normal.y, -p2.D, p3.Normal.x, p3.Normal.y,
-			                      -p3.D );
+            var mz = new Matrix3(p1.Normal.x, p1.Normal.y, -p1.D, p2.Normal.x, p2.Normal.y, -p2.D, p3.Normal.x, p3.Normal.y,
+                                  -p3.D);
 
-			float zdet = mz.Determinant;
+            float zdet = mz.Determinant;
 
-			var r = new Vector3();
-			r.x = xdet/det;
-			r.y = ydet/det;
-			r.z = zdet/det;
+            var r = new Vector3();
+            r.x = xdet / det;
+            r.y = ydet / det;
+            r.z = zdet / det;
 
-			return r;
-		}
-	}
+            return r;
+        }
+    }
 }

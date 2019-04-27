@@ -43,24 +43,24 @@ using Axiom.ParticleSystems;
 
 namespace Axiom.ParticleFX.Factories
 {
-	/// <summary>
-	/// Factory class for DirectionRandomiserAffector.
-	/// </summary>
-	public class DirectionRandomizerAffectorFactory : ParticleAffectorFactory
-	{
-		public override ParticleAffector CreateAffector( ParticleSystem psys )
-		{
-			ParticleAffector p = new DirectionRandomizerAffector( psys );
-			affectorList.Add( p );
-			return p;
-		}
+    /// <summary>
+    /// Factory class for DirectionRandomiserAffector.
+    /// </summary>
+    public class DirectionRandomizerAffectorFactory : ParticleAffectorFactory
+    {
+        public override ParticleAffector CreateAffector(ParticleSystem psys)
+        {
+            ParticleAffector p = new DirectionRandomizerAffector(psys);
+            affectorList.Add(p);
+            return p;
+        }
 
-		public override string Name
-		{
-			get
-			{
-				return "DirectionRandomizer";
-			}
-		}
-	}
+        public override string Name
+        {
+            get
+            {
+                return "DirectionRandomizer";
+            }
+        }
+    }
 }

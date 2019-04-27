@@ -47,14 +47,14 @@ using System.Xml.Linq;
 
 namespace OctreeZone
 {
-	public class ConfigFile
-	{
-		private readonly string baseSchema;
+    public class ConfigFile
+    {
+        private readonly string baseSchema;
 
-		public ConfigFile( string baseSchemaName )
-		{
-			this.baseSchema = baseSchemaName;
-		}
+        public ConfigFile(string baseSchemaName)
+        {
+            this.baseSchema = baseSchemaName;
+        }
 
 #if SILVERLIGHT || WINDOWS_PHONE
         private XDocument _doc = new XDocument();
@@ -84,37 +84,37 @@ namespace OctreeZone
             }
 		}
 #else
-		private readonly XmlDocument _doc = new XmlDocument();
+        private readonly XmlDocument _doc = new XmlDocument();
 
-		public bool Load( Stream stream )
-		{
-			this._doc.Load( stream );
-			return true;
-		}
+        public bool Load(Stream stream)
+        {
+            this._doc.Load(stream);
+            return true;
+        }
 
-		public string this[ string key ]
-		{
-			get
-			{
-				return this._doc[ this.baseSchema ][ key ].InnerText;
-			}
-		}
+        public string this[string key]
+        {
+            get
+            {
+                return this._doc[this.baseSchema][key].InnerText;
+            }
+        }
 
-		public IEnumerable GetEnumerator()
-		{
-			foreach ( XmlElement el in this._doc[ this.baseSchema ] )
-			{
-				yield return new string[]
-				             {
-				             	el.Name, el.InnerText
-				             };
-			}
-		}
+        public IEnumerable GetEnumerator()
+        {
+            foreach (XmlElement el in this._doc[this.baseSchema])
+            {
+                yield return new string[]
+                             {
+                                 el.Name, el.InnerText
+                             };
+            }
+        }
 #endif
 
-		public string getSetting( string key )
-		{
-			return this[ key ];
-		}
-	}
+        public string getSetting(string key)
+        {
+            return this[key];
+        }
+    }
 }

@@ -39,44 +39,44 @@ using System.IO;
 
 namespace Axiom.Media
 {
-	public class NullCodec : Codec
-	{
-		private readonly string _type;
+    public class NullCodec : Codec
+    {
+        private readonly string _type;
 
-		public NullCodec( string extension )
-		{
-			this._type = extension;
-		}
+        public NullCodec(string extension)
+        {
+            this._type = extension;
+        }
 
-		public override string Type
-		{
-			get { return this._type; }
-		}
+        public override string Type
+        {
+            get { return this._type; }
+        }
 
-		public override string DataType
-		{
-			get { return this._type; }
-		}
+        public override string DataType
+        {
+            get { return this._type; }
+        }
 
-		public override Stream Encode( Stream input, Codec.CodecData data )
-		{
-			return null;
-		}
+        public override Stream Encode(Stream input, Codec.CodecData data)
+        {
+            return null;
+        }
 
-		public override void EncodeToFile( Stream input, string outFileName, Codec.CodecData data )
-		{
-			return;
-		}
+        public override void EncodeToFile(Stream input, string outFileName, Codec.CodecData data)
+        {
+            return;
+        }
 
-		public override Codec.DecodeResult Decode( Stream input )
-		{
-			return null;
-		}
+        public override Codec.DecodeResult Decode(Stream input)
+        {
+            return null;
+        }
 
-		/// <see cref="Axiom.Media.Codec.MagicNumberToFileExt" />
-		public override string MagicNumberToFileExt( byte[] magicNumberBuf, int maxbytes )
-		{
-			return string.Empty;
-		}
-	};
+        /// <see cref="Axiom.Media.Codec.MagicNumberToFileExt" />
+        public override string MagicNumberToFileExt(byte[] magicNumberBuf, int maxbytes)
+        {
+            return string.Empty;
+        }
+    };
 }

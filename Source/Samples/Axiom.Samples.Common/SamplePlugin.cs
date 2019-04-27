@@ -27,62 +27,62 @@ using Axiom.Core;
 
 namespace Axiom.Samples
 {
-	/// <summary>
-	/// Utility class used to hold a set of samples in an Axiom plugin.
-	/// </summary>
+    /// <summary>
+    /// Utility class used to hold a set of samples in an Axiom plugin.
+    /// </summary>
 #if NET_40 && !(WINDOWS_PHONE || XBOX || XBOX360)
 	[Export( typeof ( IPlugin ) )]
 #endif
-	public class SamplePlugin : IPlugin
-	{
-		#region Fields and Properties
+    public class SamplePlugin : IPlugin
+    {
+        #region Fields and Properties
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public string Name { get; protected set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Name { get; protected set; }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public readonly SampleSet Samples = new SampleSet();
+        /// <summary>
+        /// 
+        /// </summary>
+        public readonly SampleSet Samples = new SampleSet();
 
-		#endregion Fields and Properties
+        #endregion Fields and Properties
 
-		#region Construction and Destruction
+        #region Construction and Destruction
 
-		public SamplePlugin()
-		{
-			//this ctor is for axiom's plugin manager
-			Name = string.Empty;
-		}
+        public SamplePlugin()
+        {
+            //this ctor is for axiom's plugin manager
+            Name = string.Empty;
+        }
 
-		public SamplePlugin( string name )
-		{
-			Name = name;
-		}
+        public SamplePlugin(string name)
+        {
+            Name = name;
+        }
 
-		#endregion Construction and Destruction
+        #endregion Construction and Destruction
 
-		#region Methods
+        #region Methods
 
-		public void AddSample( Sample s )
-		{
-			this.Samples.Add( s );
-		}
+        public void AddSample(Sample s)
+        {
+            this.Samples.Add(s);
+        }
 
-		#endregion Methods
+        #endregion Methods
 
-		#region IPlugin Implementation
+        #region IPlugin Implementation
 
-		public virtual void Initialize()
-		{
-		}
+        public virtual void Initialize()
+        {
+        }
 
-		public virtual void Shutdown()
-		{
-		}
+        public virtual void Shutdown()
+        {
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

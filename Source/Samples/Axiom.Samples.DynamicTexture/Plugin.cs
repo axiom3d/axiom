@@ -27,16 +27,16 @@ using Axiom.Core;
 
 namespace Axiom.Samples.DynamicTexture
 {
-	[Export( typeof ( IPlugin ) )]
-	public class Plugin : SamplePlugin
-	{
-		private DynamicTexture sample;
+    [Export(typeof(IPlugin))]
+    public class Plugin : SamplePlugin
+    {
+        private DynamicTexture sample;
 
-		public override void Initialize()
-		{
-			this.sample = new DynamicTexture();
-			Name = this.sample.Metadata[ "Title" ] + " Sample";
-			AddSample( this.sample );
-		}
-	}
+        public override void Initialize()
+        {
+            this.sample = new DynamicTexture();
+            Name = this.sample.Metadata["Title"] + " Sample";
+            AddSample(this.sample);
+        }
+    }
 }

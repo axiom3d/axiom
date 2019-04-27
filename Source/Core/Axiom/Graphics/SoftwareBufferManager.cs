@@ -18,15 +18,15 @@ using Axiom.Core;
 
 namespace Axiom.Graphics
 {
-	/// <summary>
-	/// 	The SoftwareBufferManager is responsible for creation of software vertex and index buffers.
-	/// <remarks>
-	///     Software buffers are located in system memory and are often used as shadow copies of hardware buffers.
-	///     A software buffer can be used independently of a hardware buffer, but cannot have a shadow buffer themselves.
-	/// </remarks>
-	/// </summary>
-	public class SoftwareBufferManager : HardwareBufferManager
-	{
+    /// <summary>
+    /// 	The SoftwareBufferManager is responsible for creation of software vertex and index buffers.
+    /// <remarks>
+    ///     Software buffers are located in system memory and are often used as shadow copies of hardware buffers.
+    ///     A software buffer can be used independently of a hardware buffer, but cannot have a shadow buffer themselves.
+    /// </remarks>
+    /// </summary>
+    public class SoftwareBufferManager : HardwareBufferManager
+    {
         public SoftwareBufferManager(HardwareBufferManagerBase baseInstance) : base(baseInstance)
         {
         }
@@ -41,316 +41,316 @@ namespace Axiom.Graphics
         /// <param name="usage"></param>
         /// <param name="useShadowBuffer"></param>
         /// <returns></returns>
-        public override HardwareIndexBuffer CreateIndexBuffer( IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer )
-		{
-			return new SoftwareIndexBuffer( this, type, numIndices, usage );
-		}
+        public override HardwareIndexBuffer CreateIndexBuffer(IndexType type, int numIndices, BufferUsage usage, bool useShadowBuffer)
+        {
+            return new SoftwareIndexBuffer(this, type, numIndices, usage);
+        }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVerts"></param>
-		/// <param name="usage"></param>
-		/// <param name="useShadowBuffer"></param>
-		/// <returns></returns>
-		public override HardwareVertexBuffer CreateVertexBuffer(VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer )
-		{
-			return new SoftwareVertexBuffer(this, vertexDeclaration, numVerts, usage );
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="vertexSize"></param>
+        /// <param name="numVerts"></param>
+        /// <param name="usage"></param>
+        /// <param name="useShadowBuffer"></param>
+        /// <returns></returns>
+        public override HardwareVertexBuffer CreateVertexBuffer(VertexDeclaration vertexDeclaration, int numVerts, BufferUsage usage, bool useShadowBuffer)
+        {
+            return new SoftwareVertexBuffer(this, vertexDeclaration, numVerts, usage);
+        }
 
-		#endregion Methods
+        #endregion Methods
 
-		#region Properties
+        #region Properties
 
-		#endregion Properties
-	}
+        #endregion Properties
+    }
 
-	/// <summary>
-	///
-	/// </summary>
-	public class SoftwareVertexBuffer : HardwareVertexBuffer
-	{
-		#region Fields
+    /// <summary>
+    ///
+    /// </summary>
+    public class SoftwareVertexBuffer : HardwareVertexBuffer
+    {
+        #region Fields
 
-		/// <summary>
-		///     Holds the buffer data.
-		/// </summary>
-		protected byte[] data;
+        /// <summary>
+        ///     Holds the buffer data.
+        /// </summary>
+        protected byte[] data;
 
-		/// <summary>
-		///     The handle used to pin buffer data.
-		/// </summary>
-		protected GCHandle handle;
+        /// <summary>
+        ///     The handle used to pin buffer data.
+        /// </summary>
+        protected GCHandle handle;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <remarks>
-		///		This is already in system memory, so no need to use a shadow buffer.
-		/// </remarks>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVertices"></param>
-		/// <param name="usage"></param>
-		public SoftwareVertexBuffer(HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage )
-			: base(manager, vertexDeclaration, numVertices, usage, true, false )
-		{
-			data = new byte[ sizeInBytes ];
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <remarks>
+        ///		This is already in system memory, so no need to use a shadow buffer.
+        /// </remarks>
+        /// <param name="vertexSize"></param>
+        /// <param name="numVertices"></param>
+        /// <param name="usage"></param>
+        public SoftwareVertexBuffer(HardwareBufferManagerBase manager, VertexDeclaration vertexDeclaration, int numVertices, BufferUsage usage)
+            : base(manager, vertexDeclaration, numVertices, usage, true, false)
+        {
+            data = new byte[sizeInBytes];
+        }
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Methods
+        #region Methods
 
-		public override BufferBase Lock( int offset, int length, BufferLocking locking )
-		{
-			//Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
-			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "The data area to be locked exceeds the buffer." );
+        public override BufferBase Lock(int offset, int length, BufferLocking locking)
+        {
+            //Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
+            Debug.Assert(offset >= 0 && (offset + length) <= sizeInBytes, "The data area to be locked exceeds the buffer.");
 
-			isLocked = true;
+            isLocked = true;
 
-			return LockImpl( offset, length, locking );
-		}
+            return LockImpl(offset, length, locking);
+        }
 
-		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
-		{
-			//Debug.Assert( !handle.IsAllocated, "Internal error, data being pinned twice." );
+        protected override BufferBase LockImpl(int offset, int length, BufferLocking locking)
+        {
+            //Debug.Assert( !handle.IsAllocated, "Internal error, data being pinned twice." );
 
-			// return the offset into the array as a pointer
-			return GetDataPointer( offset );
-		}
+            // return the offset into the array as a pointer
+            return GetDataPointer(offset);
+        }
 
-		public override void ReadData( int offset, int length, BufferBase dest )
-		{
-			//Debug.Assert(!isLocked, "Cannot lock this buffer because it is already locked."); //imitating render system specific hardware buffer behaviour
-			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "Buffer overrun while trying to read a software buffer." );
+        public override void ReadData(int offset, int length, BufferBase dest)
+        {
+            //Debug.Assert(!isLocked, "Cannot lock this buffer because it is already locked."); //imitating render system specific hardware buffer behaviour
+            Debug.Assert(offset >= 0 && (offset + length) <= sizeInBytes, "Buffer overrun while trying to read a software buffer.");
 
-			unsafe
-			{
-				// get a pointer to the destination intptr
-				byte* pDest = (byte*)dest.Ptr;
+            unsafe
+            {
+                // get a pointer to the destination intptr
+                byte* pDest = (byte*)dest.Ptr;
 
-				// copy the src data to the destination buffer
-				for ( int i = 0; i < length; i++ )
-				{
-					pDest[ offset + i ] = data[ offset + i ];
-				}
-			}
-		}
+                // copy the src data to the destination buffer
+                for (int i = 0; i < length; i++)
+                {
+                    pDest[offset + i] = data[offset + i];
+                }
+            }
+        }
 
-		public override void Unlock()
-		{
-			//Debug.Assert(isLocked, "Cannot unlock buffer if it wasn't locked.");
+        public override void Unlock()
+        {
+            //Debug.Assert(isLocked, "Cannot unlock buffer if it wasn't locked.");
 
-			isLocked = false;
+            isLocked = false;
 
-			UnlockImpl();
-		}
+            UnlockImpl();
+        }
 
-		protected override void UnlockImpl()
-		{
-			Memory.UnpinObject( data );
-		}
+        protected override void UnlockImpl()
+        {
+            Memory.UnpinObject(data);
+        }
 
-		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
-		{
-			//Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." ); //imitating render system specific hardware buffer behaviour
-			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer." );
+        public override void WriteData(int offset, int length, BufferBase src, bool discardWholeBuffer)
+        {
+            //Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." ); //imitating render system specific hardware buffer behaviour
+            Debug.Assert(offset >= 0 && (offset + length) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer.");
 
-			unsafe
-			{
-				// get a pointer to the destination intptr
-				byte* pSrc = (byte*)src.Ptr;
+            unsafe
+            {
+                // get a pointer to the destination intptr
+                byte* pSrc = (byte*)src.Ptr;
 
-				// copy the src data to the destination buffer
-				for ( int i = 0; i < length; i++ )
-				{
-					data[ offset + i ] = pSrc[ offset + i ];
-				}
-			}
-		}
+                // copy the src data to the destination buffer
+                for (int i = 0; i < length; i++)
+                {
+                    data[offset + i] = pSrc[offset + i];
+                }
+            }
+        }
 
-		/// <summary>
-		///		Allows direct access to the software buffer data in cases when it is known that the underlying
-		///		buffer is software and not hardware. The buffer must be locked prior to operation.
-		/// </summary>
-		/// <remarks>
-		/// The caller is responible for calling <see>Unlock</see> when they are done using this pointer
-		/// </remarks>
-		public BufferBase GetDataPointer( int offset )
-		{
-			//Debug.Assert( isLocked, "Cannot get data pointer if the buffer wasn't locked." );
-			Debug.Assert( offset >= 0 && offset < sizeInBytes, "Offset into buffer out of range." );
-            BufferBase result = Memory.PinObject( data );
+        /// <summary>
+        ///		Allows direct access to the software buffer data in cases when it is known that the underlying
+        ///		buffer is software and not hardware. The buffer must be locked prior to operation.
+        /// </summary>
+        /// <remarks>
+        /// The caller is responible for calling <see>Unlock</see> when they are done using this pointer
+        /// </remarks>
+        public BufferBase GetDataPointer(int offset)
+        {
+            //Debug.Assert( isLocked, "Cannot get data pointer if the buffer wasn't locked." );
+            Debug.Assert(offset >= 0 && offset < sizeInBytes, "Offset into buffer out of range.");
+            BufferBase result = Memory.PinObject(data);
             result = result + offset;
-			return result;
-		}
+            return result;
+        }
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( IsLocked )
-				{
-					Unlock();
-				}
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (IsLocked)
+                {
+                    Unlock();
+                }
 
-				if ( disposeManagedResources )
-				{
-					data = null;
-				}
+                if (disposeManagedResources)
+                {
+                    data = null;
+                }
 
-				base.dispose( disposeManagedResources ); //isDisposed = true;
-			}
-		}
+                base.dispose(disposeManagedResources); //isDisposed = true;
+            }
+        }
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 
-	/// <summary>
-	///
-	/// </summary>
-	public class SoftwareIndexBuffer : HardwareIndexBuffer
-	{
-		#region Fields
+    /// <summary>
+    ///
+    /// </summary>
+    public class SoftwareIndexBuffer : HardwareIndexBuffer
+    {
+        #region Fields
 
-		/// <summary>
-		///     Holds the buffer data.
-		/// </summary>
-		protected byte[] data;
+        /// <summary>
+        ///     Holds the buffer data.
+        /// </summary>
+        protected byte[] data;
 
-		/// <summary>
-		///     The handle used to pin buffer data.
-		/// </summary>
-		protected GCHandle handle;
+        /// <summary>
+        ///     The handle used to pin buffer data.
+        /// </summary>
+        protected GCHandle handle;
 
-		#endregion Fields
+        #endregion Fields
 
-		#region Constructors
+        #region Constructors
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <remarks>
-		///		This is already in system memory, so no need to use a shadow buffer.
-		/// </remarks>
-		/// <param name="vertexSize"></param>
-		/// <param name="numVertices"></param>
-		/// <param name="usage"></param>
-		public SoftwareIndexBuffer(HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage )
-			: base( manager, type, numIndices, usage, true, false )
-		{
-			data = new byte[ sizeInBytes ];
-		}
+        /// <summary>
+        ///
+        /// </summary>
+        /// <remarks>
+        ///		This is already in system memory, so no need to use a shadow buffer.
+        /// </remarks>
+        /// <param name="vertexSize"></param>
+        /// <param name="numVertices"></param>
+        /// <param name="usage"></param>
+        public SoftwareIndexBuffer(HardwareBufferManagerBase manager, IndexType type, int numIndices, BufferUsage usage)
+            : base(manager, type, numIndices, usage, true, false)
+        {
+            data = new byte[sizeInBytes];
+        }
 
-		#endregion Constructors
+        #endregion Constructors
 
-		#region Methods
+        #region Methods
 
-		public override BufferBase Lock( int offset, int length, BufferLocking locking )
-		{
-			//Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
-			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "The data area to be locked exceeds the buffer." );
+        public override BufferBase Lock(int offset, int length, BufferLocking locking)
+        {
+            //Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." );
+            Debug.Assert(offset >= 0 && (offset + length) <= sizeInBytes, "The data area to be locked exceeds the buffer.");
 
-			isLocked = true;
+            isLocked = true;
 
-			return LockImpl( offset, length, locking );
-		}
+            return LockImpl(offset, length, locking);
+        }
 
-		protected override BufferBase LockImpl( int offset, int length, BufferLocking locking )
-		{
-			return GetDataPointer( offset );
-		}
+        protected override BufferBase LockImpl(int offset, int length, BufferLocking locking)
+        {
+            return GetDataPointer(offset);
+        }
 
-		public override void ReadData( int offset, int length, BufferBase dest )
-		{
-			//Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." ); //imitating render system specific hardware buffer behaviour
-			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "Buffer overrun while trying to read a software buffer." );
+        public override void ReadData(int offset, int length, BufferBase dest)
+        {
+            //Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." ); //imitating render system specific hardware buffer behaviour
+            Debug.Assert(offset >= 0 && (offset + length) <= sizeInBytes, "Buffer overrun while trying to read a software buffer.");
 
-			unsafe
-			{
-				// get a pointer to the destination intptr
-				byte* pDest = (byte*)dest.Ptr;
+            unsafe
+            {
+                // get a pointer to the destination intptr
+                byte* pDest = (byte*)dest.Ptr;
 
-				// copy the src data to the destination buffer
-				// TODO: use Memory.Copy() as soon as it provides a faster solution
-				for ( int i = 0; i < length; i++ )
-				{
-					pDest[ offset + i ] = data[ offset + i ];
-				}
-			}
-		}
+                // copy the src data to the destination buffer
+                // TODO: use Memory.Copy() as soon as it provides a faster solution
+                for (int i = 0; i < length; i++)
+                {
+                    pDest[offset + i] = data[offset + i];
+                }
+            }
+        }
 
-		public override void Unlock()
-		{
-			//Debug.Assert(isLocked, "Cannot unlock buffer if it wasn't locked.");
+        public override void Unlock()
+        {
+            //Debug.Assert(isLocked, "Cannot unlock buffer if it wasn't locked.");
 
-			isLocked = false;
+            isLocked = false;
 
-			UnlockImpl();
-		}
+            UnlockImpl();
+        }
 
-		protected override void UnlockImpl()
-		{
-			Memory.UnpinObject( data );
-		}
+        protected override void UnlockImpl()
+        {
+            Memory.UnpinObject(data);
+        }
 
-		public override void WriteData( int offset, int length, BufferBase src, bool discardWholeBuffer )
-		{
-			//Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." ); //imitating render system specific hardware buffer behaviour
-			Debug.Assert( offset >= 0 && ( offset + length ) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer." );
+        public override void WriteData(int offset, int length, BufferBase src, bool discardWholeBuffer)
+        {
+            //Debug.Assert( !isLocked, "Cannot lock this buffer because it is already locked." ); //imitating render system specific hardware buffer behaviour
+            Debug.Assert(offset >= 0 && (offset + length) <= sizeInBytes, "Buffer overrun while trying to write to a software buffer.");
 
-			unsafe
-			{
-				// get a pointer to the destination intptr
-				byte* pSrc = (byte*)src.Ptr;
+            unsafe
+            {
+                // get a pointer to the destination intptr
+                byte* pSrc = (byte*)src.Ptr;
 
-				// copy the src data to the destination buffer
-				for ( int i = 0; i < length; i++ )
-				{
-					data[ offset + i ] = pSrc[ offset + i ];
-				}
-			}
-		}
+                // copy the src data to the destination buffer
+                for (int i = 0; i < length; i++)
+                {
+                    data[offset + i] = pSrc[offset + i];
+                }
+            }
+        }
 
-		/// <summary>
-		///		Allows direct access to the software buffer data in cases when it is known that the underlying
-		///		buffer is software and not hardware. The buffer must be locked prior to operation.
-		/// </summary>
-		/// <remarks>
-		/// The caller is responible for calling <see>Unlock</see> when they are done using this pointer
-		/// </remarks>
-		public BufferBase GetDataPointer( int offset )
-		{
-			//Debug.Assert( isLocked, "Cannot get data pointer if the buffer wasn't locked." );
-			Debug.Assert( offset >= 0 && offset < sizeInBytes, "Offset into buffer out of range." );
-            BufferBase result = Memory.PinObject( data );
+        /// <summary>
+        ///		Allows direct access to the software buffer data in cases when it is known that the underlying
+        ///		buffer is software and not hardware. The buffer must be locked prior to operation.
+        /// </summary>
+        /// <remarks>
+        /// The caller is responible for calling <see>Unlock</see> when they are done using this pointer
+        /// </remarks>
+        public BufferBase GetDataPointer(int offset)
+        {
+            //Debug.Assert( isLocked, "Cannot get data pointer if the buffer wasn't locked." );
+            Debug.Assert(offset >= 0 && offset < sizeInBytes, "Offset into buffer out of range.");
+            BufferBase result = Memory.PinObject(data);
             result = result + offset;
-			return result;
-		}
+            return result;
+        }
 
-		protected override void dispose( bool disposeManagedResources )
-		{
-			if ( !IsDisposed )
-			{
-				if ( IsLocked )
-				{
-					Unlock();
-				}
+        protected override void dispose(bool disposeManagedResources)
+        {
+            if (!IsDisposed)
+            {
+                if (IsLocked)
+                {
+                    Unlock();
+                }
 
-				if ( disposeManagedResources )
-				{
-					data = null;
-				}
+                if (disposeManagedResources)
+                {
+                    data = null;
+                }
 
-				base.dispose( disposeManagedResources ); //isDisposed = true;
-			}
-		}
+                base.dispose(disposeManagedResources); //isDisposed = true;
+            }
+        }
 
-		#endregion Methods
-	}
+        #endregion Methods
+    }
 }

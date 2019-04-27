@@ -32,8 +32,8 @@ using Axiom.Framework.Exceptions;
 
 namespace Axiom.Samples
 {
-	internal static class Program
-	{
+    internal static class Program
+    {
         [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern bool SetDllDirectory(string path);
 
@@ -41,21 +41,21 @@ namespace Axiom.Samples
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-		private static void Main()
-		{
-			try
-			{
-                Thread.CurrentThread.CurrentCulture = new CultureInfo( "en-US", false );
-				using ( var sb = new SampleBrowser() )
-				{
-					sb.Go();
-				}
-			}
-			catch ( Exception ex )
-			{
-				IErrorDialog messageBox = new WinFormErrorDialog();
-				messageBox.Show( ex );
-			}
-		}
-	}
+        private static void Main()
+        {
+            try
+            {
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US", false);
+                using (var sb = new SampleBrowser())
+                {
+                    sb.Go();
+                }
+            }
+            catch (Exception ex)
+            {
+                IErrorDialog messageBox = new WinFormErrorDialog();
+                messageBox.Show(ex);
+            }
+        }
+    }
 }

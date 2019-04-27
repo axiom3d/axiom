@@ -28,41 +28,41 @@ using Axiom.Overlays;
 
 namespace Axiom.Samples
 {
-	/// <summary>
-	/// Basic separator widget.
-	/// </summary>
-	public class Separator : Widget
-	{
-		#region properties
+    /// <summary>
+    /// Basic separator widget.
+    /// </summary>
+    public class Separator : Widget
+    {
+        #region properties
 
-		/// <summary>
-		/// 
-		/// </summary>
-		public bool IsFitToTray { get; protected set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsFitToTray { get; protected set; }
 
-		#endregion properties
+        #endregion properties
 
-		#region construction
+        #region construction
 
-		/// <summary>
-		/// Do not instantiate any widgets directly. Use SdkTrayManager.
-		/// </summary>
-		/// <param name="name"></param>
-		/// <param name="width"></param>
-		public Separator( String name, Real width )
-		{
-			element = OverlayManager.Instance.Elements.CreateElementFromTemplate( "SdkTrays/Separator", "Panel", name );
-			if ( width <= 0 )
-			{
-				IsFitToTray = true;
-			}
-			else
-			{
-				IsFitToTray = false;
-				element.Width = width;
-			}
-		}
+        /// <summary>
+        /// Do not instantiate any widgets directly. Use SdkTrayManager.
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="width"></param>
+        public Separator(String name, Real width)
+        {
+            element = OverlayManager.Instance.Elements.CreateElementFromTemplate("SdkTrays/Separator", "Panel", name);
+            if (width <= 0)
+            {
+                IsFitToTray = true;
+            }
+            else
+            {
+                IsFitToTray = false;
+                element.Width = width;
+            }
+        }
 
-		#endregion construction
-	}
+        #endregion construction
+    }
 }
