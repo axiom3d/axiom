@@ -384,20 +384,20 @@ namespace Axiom.Samples.Components
 					heightUpdateCountdown = 0;
 				}
 			}
-			//if ( terrainGroup.IsDerivedDataUpdateInProgress )
-			//{
-			//    TrayManager.MoveWidgetToTray( infoLabel, TrayLocation.Top, 0 );
-			//    infoLabel.Show();
-			//    if ( terrainsImported )
-			//    {
-			//        infoLabel.Caption = "Building terrain, please wait..";
-			//    }
-			//    else
-			//    {
-			//        infoLabel.Caption = "Updating textures, patience...";
-			//    }
-			//}
-			//else
+			if ( terrainGroup.IsDerivedDataUpdateInProgress )
+			{
+			    TrayManager.MoveWidgetToTray( infoLabel, TrayLocation.Top, 0 );
+			    infoLabel.Show();
+			    if ( terrainsImported )
+			    {
+			        infoLabel.Caption = "Building terrain, please wait..";
+			    }
+			    else
+			    {
+			        infoLabel.Caption = "Updating textures, patience...";
+			    }
+			}
+			else
 			{
 				TrayManager.RemoveWidgetFromTray( infoLabel );
 				infoLabel.Hide();
