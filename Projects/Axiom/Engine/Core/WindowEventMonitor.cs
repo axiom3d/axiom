@@ -215,7 +215,7 @@ namespace Axiom.Core
 		/// <summary>
 		/// Window has changed size
 		/// </summary>
-		/// <param name="win">RenderWindow that caused the event</param>
+		/// <param name="window">RenderWindow that caused the event</param>
 		public void WindowResized( RenderWindow window )
 		{
 			Contract.RequiresNotNull( window, "window" );
