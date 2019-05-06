@@ -52,18 +52,3 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyrightAttribute( "Copyright ? 2003-2012 Axiom Rendering Engine Project Team." )]
 [assembly: AssemblyTrademarkAttribute( "" )]
 [assembly: AssemblyCultureAttribute( "" )]
-
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Revision Number
-//      YearWeekDayOfWeek
-//
-
-[assembly: AssemblyVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3376.12322" )]
-#if !( XBOX || XBOX360 )
-[assembly: AssemblyFileVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3376.12322" )]
-#endif
-
-[assembly: AssemblyInformationalVersion( /* Major.Minor.Revision.YearWeekDay */ "0.8.3376.12322" )]
