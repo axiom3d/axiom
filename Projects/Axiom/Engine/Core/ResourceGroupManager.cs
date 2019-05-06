@@ -938,11 +938,12 @@ namespace Axiom.Core
 			LogManager.Instance.Write( "Initializing resource group {0}.", groupName );
 			ResourceGroup grp = getResourceGroup( groupName );
 			if( grp == null )
-			{
-				throw new AxiomException( "Cannot find a group named {0}.", groupName );
-			}
+            {
+                CreateResourceGroup(groupName);
+                grp = getResourceGroup(groupName);
+            }
 
-			if( !grp.Initialized )
+            if ( !grp.Initialized )
 			{
 				// Set current group
 				_parseResourceGroupScripts( grp );
