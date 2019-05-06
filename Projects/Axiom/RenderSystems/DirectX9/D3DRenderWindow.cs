@@ -400,7 +400,7 @@ namespace Axiom.RenderSystems.DirectX9
 					if( !outerSize )
 					{
 						newWin.ClientSize = new System.Drawing.Size( Width, Height );
-					}
+                    }
 					else
 					{
 						newWin.Width = Width;
@@ -452,9 +452,12 @@ namespace Axiom.RenderSystems.DirectX9
 			CreateD3DResources();
 
 			_window.Show();
+            _window.ClientSize = new System.Drawing.Size(width, height);
+            WindowMovedOrResized();
 
-			IsActive = true;
-			_isClosed = false;
+            IsActive = true;
+
+            _isClosed = false;
 		}
 
 		public void CreateD3DResources()
