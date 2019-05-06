@@ -1248,10 +1248,6 @@
       <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
       <Name>Axiom.Plugins.ParticleFX.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.2010.csproj">
-      <Project>{628E7ED7-EC58-4C93-B8AB-CB69087D381B}</Project>
-      <Name>Axiom.RenderSystems.Xna.2010</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.2010.csproj">
       <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
       <Name>Axiom.SceneManagers.Bsp.2010</Name>

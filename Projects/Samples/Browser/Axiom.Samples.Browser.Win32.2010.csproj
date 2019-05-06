@@ -105,13 +105,13 @@
       <Project>{081F78DE-8224-4CA6-BD34-8B7939CF21AB}</Project>
       <Name>Axiom.Platforms.OpenTK.2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\Plugins\Axiom.Plugins.FreeImageCodecs\Axiom.Plugins.FreeImageCodecs.2010.csproj">
-      <Project>{3FA3E842-91DE-4A78-99A8-DE3546763136}</Project>
-      <Name>Axiom.Plugins.FreeImageCodecs.2010</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.2010.csproj">
       <Project>{E2B64AA9-77C8-4BED-AB5B-10B2832E0D5B}</Project>
       <Name>Axiom.Plugins.CgProgramManager.2010</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Axiom\Plugins\DevILCodecs\Axiom.Plugins.DevILCodecs.2010.csproj">
+      <Project>{b2bb7f09-2ad3-49c4-9268-d33bc13aa5e7}</Project>
+      <Name>Axiom.Plugins.DevILCodecs.2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Axiom\Plugins\ParticleFX\Axiom.Plugins.ParticleFX.2010.csproj">
       <Project>{F81F1AAF-8BC9-4064-94C2-AD0C0A9C0ED1}</Project>
@@ -124,10 +124,6 @@
     <ProjectReference Include="..\..\Axiom\RenderSystems\OpenGL\Axiom.RenderSystems.OpenGL.OpenTK.2010.csproj">
       <Project>{B4CE9E05-F5E9-4839-A928-27B4D30F4EE3}</Project>
       <Name>Axiom.RenderSystems.OpenGL.OpenTK.2010</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Axiom\RenderSystems\XNA\Axiom.RenderSystems.Xna.2010.csproj" Condition="'$(IncludeXna)'=='true'">
-      <Project>{628E7ED7-EC58-4C93-B8AB-CB69087D381B}</Project>
-      <Name>Axiom.RenderSystems.Xna.2010</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Axiom\SceneManagers\Bsp\Axiom.SceneManagers.Bsp.2010.csproj">
       <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>

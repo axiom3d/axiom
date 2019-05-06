@@ -849,7 +849,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-	<AxiomBuildTasksPath>$(ProjectDir)..\..\..\tools\build</AxiomBuildTasksPath>
   </PropertyGroup>
   <ItemGroup>
 	<Svn Include="$(ProjectDir)..\..\.." />
@@ -861,7 +860,6 @@
 		<OutputFile>..\version.txt</OutputFile>
 	</AssemblyInfoTemplate>
   </ItemGroup>
-  <Import Project="$(AxiomBuildTasksPath)\Axiom.Build.Version.targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>

@@ -1,0 +1,55 @@
+image: Visual Studio 2017
+
+branches:
+  only:
+  - master
+
+configuration:
+  - Release
+
+platform: Any CPU
+
+assembly_info:
+  patch: false
+
+# Do not build on tags (GitHub and BitBucket)
+skip_tags: true
+
+# Do not check branch build on additional commits when there is an open PR
+skip_branch_with_pr: true
+
+build_script:
+  - ps: .\build.ps1 -Script build.cake -Target AppVeyor -Verbosity Diagnostic --settings_skipverification=true
+
+matrix:
+  fast_finish: true
+
+artifacts:
+- path: 'BuildArtifacts\*.nupkg'
+  name: Nuget Packages
+- path: 'BuildArtifacts\*.md'
+  name: Release Notes
+- path: 'BuildArtifacts\Documentation'
+  name: Api Documentation 
+- path: 'BuildArtifacts\samples' 
+  name: Samples
+
+deploy:
+
+- provider: GitHub
+  release: v$(appveyor_build_version)
+  auth_token:
+    secure: IQ7Hw9JoIukDUEwwlSlSg0mOtiuyoxrrWowo52/HBRZvWYjS1X5uFdusv3KtUuJx
+  draft: true
+  prerelease: true
+  on:
+    branch: master                 # release from master branch only
+    APPVEYOR_REPO_TAG: true        # deploy on tag push only
+
+- provider: NuGet
+  api_key:
+    secure: I743UeoPQU3/TeGEsYbQ32FEH5KptHE9iaSilnbyjy7Njh8pTqQJOKw8HpulFvbD
+  skip_symbols: true
+  artifact: /.*\.nupkg/
+  on:
+    branch: master
