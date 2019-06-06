@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
+Copyright ï¿½ 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -48,7 +48,7 @@ using System.Runtime.CompilerServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle( "Axiom Rendering Engine Library" )]
-//[assembly: AssemblyDescription( "Axiom Rendering Engine Library" )]
+[assembly: AssemblyDescription( "Axiom Rendering Engine Library" )]
 
 [assembly: InternalsVisibleTo( "Axiom.Engine.Tests" )]
 [assembly: InternalsVisibleTo( "Axiom.UnitTests" )]

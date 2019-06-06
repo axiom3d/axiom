@@ -1,8 +1,8 @@
-#region LGPL License
+ï»¿#region LGPL License
 
 /*
 Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
+Copyright ï¿½ 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -321,6 +321,95 @@ namespace Axiom.SceneManagers.Octree
 			return h;
 		}
 
+		public void SetHeightAt( float x, float z, float height )
+		{
+			Vector3 start, end;
+
+			start.x = GetVertex( 0, 0, 0 );
+			start.y = GetVertex( 0, 0, 1 );
+			start.z = GetVertex( 0, 0, 2 );
+
+			end.x = GetVertex( options.size - 1, options.size - 1, 0 );
+			end.y = GetVertex( options.size - 1, options.size - 1, 1 );
+			end.z = GetVertex( options.size - 1, options.size - 1, 2 );
+
+			// safety catch.  if the point asked for is outside of this tile, ask a neighbor
+
+			if( x < start.x )
+			{
+				if( GetNeighbor( Neighbor.West ) != null )
+				{
+					GetNeighbor( Neighbor.West ).SetHeightAt( x, z, height );
+				}
+				else
+				{
+					x = start.x;
+				}
+			}
+
+			if( x > end.x )
+			{
+				if( GetNeighbor( Neighbor.East ) != null )
+				{
+					GetNeighbor( Neighbor.East ).SetHeightAt( x, z, height );
+				}
+				else
+				{
+					x = end.x;
+				}
+			}
+
+			if( z < start.z )
+			{
+				if( GetNeighbor( Neighbor.North ) != null )
+				{
+					GetNeighbor( Neighbor.North ).SetHeightAt( x, z, height );
+				}
+				else
+				{
+					z = start.z;
+				}
+			}
+
+			if( z > end.z )
+			{
+				if( GetNeighbor( Neighbor.South ) != null )
+				{
+					GetNeighbor( Neighbor.South ).SetHeightAt( x, z, height );
+				}
+				else
+				{
+					z = end.z;
+				}
+			}
+
+			float xPct = ( x - start.x ) / ( end.x - start.x );
+			float zPct = ( z - start.z ) / ( end.z - start.z );
+
+			float xPt = xPct * (float)( options.size - 1 );
+			float zPt = zPct * (float)( options.size - 1 );
+
+			int xIndex = (int)xPt;
+			int zIndex = (int)zPt;
+
+			xPct = xPt - xIndex;
+			zPct = zPt - zIndex;
+
+            SetVertex( xIndex - 1, zIndex - 1, 1, height);
+            SetVertex( xIndex, zIndex - 1, 1, height);
+            SetVertex( xIndex + 1, zIndex - 1, 1, height);
+
+            SetVertex(xIndex - 1, zIndex, 1, height);
+            /**/
+            SetVertex(xIndex, zIndex, 1, height);
+            /**/
+            SetVertex(xIndex + 1, zIndex, 1, height);
+
+            SetVertex( xIndex - 1, zIndex + 1, 1, height);
+			SetVertex( xIndex, zIndex + 1, 1, height);
+			SetVertex( xIndex + 1, zIndex + 1, 1, height);
+		}
+
 		public TerrainRenderable GetNeighbor( Neighbor n )
 		{
 			return neighbors[ (int)n ];
@@ -348,6 +437,28 @@ namespace Axiom.SceneManagers.Octree
 			Memory.UnpinObject( vertex );
 
 			return vertex[ 0 ];
+		}
+
+		/// <summary>
+		///     Set the vertex coord for the given coordinates.
+		/// </summary>
+		/// <param name="x"></param>
+		/// <param name="z"></param>
+		/// <param name="n"></param>
+		/// <returns></returns>
+		public void SetVertex( int x, int z, int n, float value )
+		{
+			HardwareVertexBuffer buffer = terrain.vertexBufferBinding.GetBuffer( POSITION );
+
+			float[] vertex = new float[1] { value };
+
+			IntPtr ptr = Memory.PinObject( vertex );
+
+			int offset = ( x * 3 + z * options.size * 3 + n ) * 4;
+
+			buffer.WriteData( offset, 4, ptr );
+
+			Memory.UnpinObject( vertex );
 		}
 
 		public void SetNeighbor( Neighbor n, TerrainRenderable t )

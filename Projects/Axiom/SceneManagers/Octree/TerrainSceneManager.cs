@@ -1,8 +1,8 @@
-#region LGPL License
+ï»¿#region LGPL License
 
 /*
 Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
+Copyright ï¿½ 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code
 contained within this library is a derivative of the open source Object Oriented
@@ -370,6 +370,42 @@ namespace Axiom.SceneManagers.Octree
 		}
 
 		/// <summary>
+		/// Sets the height of a a point on the terrain under/over a givin 3d point. This is
+		/// very useful for terrain deformation.
+		///
+		/// This has code merged into it from GetTerrainTile() b/c it gives us about 60 fps
+		/// when testing 1000+ points, to inline it here rather than going through the extra function calls
+		/// </summary>
+		/// <param name="point">The point you would like to set the y value of the terrain at</param>
+		/// <param name="height">value set the terrain height at</param>
+		/// <returns></returns>
+		public void SetHeightAt( Vector3 point, float height )
+		{
+			if( options == null || tiles == null )
+			{
+				return;
+			}
+			float worldsize = options.worldSize;
+			float scalex = options.scalex;
+			float scalez = options.scalez;
+
+			int xdim = tiles.GetLength( 0 );
+			int zdim = tiles.GetLength( 1 );
+
+			float maxx = scalex * worldsize;
+			int xCoordIndex = (int)( ( point.x * ( xdim / maxx ) ) );
+
+			float maxz = scalez * worldsize;
+			int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
+
+			if( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
+			{
+				return; //point is not over a tile
+			}
+			tiles[ xCoordIndex, zCoordIndex ].SetHeightAt( point.x, point.z, height );
+		}
+
+		/// <summary>
 		///     Returns the TerrainRenderable that contains the given pt.
 		//      If no tile exists at the point, it returns 0
 		/// </summary>
@@ -392,7 +428,7 @@ namespace Axiom.SceneManagers.Octree
 			int xCoordIndex = (int)( ( point.x * ( xdim / maxx ) ) );
 
 			float maxz = scalez * worldsize;
-			int zCoordIndex = (int)( ( point.z * zdim / maxx ) );
+			int zCoordIndex = (int)( ( point.z * ( zdim / maxz ) ) );
 
 			if( xCoordIndex >= xdim || zCoordIndex >= zdim || xCoordIndex < 0 || zCoordIndex < 0 )
 			{

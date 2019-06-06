@@ -55,15 +55,40 @@ Param(
 # PowerShell will not set this by default (until maybe .NET 4.6.x). This
 # will typically produce a message for PowerShell v2 (just an info
 # message though)
-try {
-    # Set TLS 1.2 (3072), then TLS 1.1 (768), then TLS 1.0 (192), finally SSL 3.0 (48)
-    # Use integers because the enumeration values for TLS 1.2 and TLS 1.1 won't
-    # exist in .NET 4.0, even though they are addressable if .NET 4.5+ is
-    # installed (.NET 4.5 is an in-place upgrade).
-    [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
-  } catch {
-    Write-Output 'Unable to set PowerShell to use TLS 1.2 and TLS 1.1 due to old .NET Framework installed. If you see underlying connection closed or trust errors, you may need to upgrade to .NET Framework 4.5+ and PowerShell v3'
+# PowerShell Core already has support for TLS 1.2 so we can skip this if running in that.
+if (-not $IsCoreCLR) {
+    try {
+        # Set TLS 1.2 (3072), then TLS 1.1 (768), then TLS 1.0 (192), finally SSL 3.0 (48)
+        # Use integers because the enumeration values for TLS 1.2 and TLS 1.1 won't
+        # exist in .NET 4.0, even though they are addressable if .NET 4.5+ is
+        # installed (.NET 4.5 is an in-place upgrade).
+        [System.Net.ServicePointManager]::SecurityProtocol = 3072 -bor 768 -bor 192 -bor 48
+    } catch {
+        Write-Output 'Unable to set PowerShell to use TLS 1.2 and TLS 1.1 due to old .NET Framework installed or newer PowerShell. If you see underlying connection closed or trust errors, you may need to upgrade to .NET Framework 4.5+ and PowerShell v3'
+    }
+}
+
+if (Test-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2017\Community\Common7\Tools") {
+    pushd "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2017\Community\Common7\Tools"
+}
+elseif (Test-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2017\Professional\Common7\Tools") {
+    pushd "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2017\Professional\Common7\Tools"
+}
+elseif (Test-Path "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2017\Enterprise\Common7\Tools") {
+    pushd "${env:ProgramFiles(x86)}\Microsoft Visual Studio\2017\Enterprise\Common7\Tools"
+}
+else {
+        Throw "Could not find Visual Studio 2017."
+}
+
+cmd /c "VsDevCmd.bat&set" |
+foreach {
+  if ($_ -match "=") {
+    $v = $_.split("="); set-item -force -path "ENV:\$($v[0])"  -value "$($v[1])"
   }
+}
+popd
+Write-Host "`nVisual Studio 2017 Command Prompt variables set." -ForegroundColor Yellow
 
 [Reflection.Assembly]::LoadWithPartialName("System.Security") | Out-Null
 function MD5HashFile([string] $filePath)

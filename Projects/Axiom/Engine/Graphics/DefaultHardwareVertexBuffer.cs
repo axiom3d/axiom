@@ -65,85 +65,63 @@ namespace Axiom.Graphics
 
 		public override void ReadData( int offset, int length, IntPtr dest )
 		{
-			unsafe
-			{
-				fixed( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
+            if (offset + length < base.sizeInBytes)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset), nameof(offset) + " + " + nameof(length) + " cannot exceed buffer size.");
+            }
+
 			IntPtr data = Memory.PinObject( mpData );
-			Memory.Copy( dest, data, length );
+			Memory.Copy( dest, new IntPtr(data.ToInt32() + offset), length );
 			Memory.UnpinObject( mpData );
 		}
 
 		public override void WriteData( int offset, int length, Array data, bool discardWholeBuffer )
 		{
-			IntPtr pSource = Memory.PinObject( data );
-			unsafe
-			{
-				fixed( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			IntPtr pIntData = Memory.PinObject( mpData );
-			Memory.Copy( pSource, pIntData, length );
+            if (offset + length < base.sizeInBytes)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset), nameof(offset) + " + " + nameof(length) + " cannot exceed buffer size.");
+            }
+
+            IntPtr pSource = Memory.PinObject( data );
+            IntPtr pIntData = Memory.PinObject( mpData );
+			Memory.Copy( pSource, new IntPtr(pIntData.ToInt32() + offset), length );
 			Memory.UnpinObject( data );
 			Memory.UnpinObject( mpData );
 		}
 
 		public override void WriteData( int offset, int length, IntPtr src, bool discardWholeBuffer )
 		{
-			unsafe
-			{
-				fixed( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			IntPtr pIntData = Memory.PinObject( mpData );
-			Memory.Copy( src, pIntData, length );
-			Memory.UnpinObject( mpData );
+            if (offset + length < base.sizeInBytes)
+            {
+                throw new ArgumentOutOfRangeException(nameof(offset), nameof(offset) + " + " + nameof(length) + " cannot exceed buffer size.");
+            }
+
+            IntPtr pIntData = Memory.PinObject( mpData );
+            Memory.Copy(src, new IntPtr(pIntData.ToInt32() + offset), length);
+            Memory.UnpinObject( mpData );
 		}
 
 		public override void Unlock()
 		{
-			base.isLocked = false;
-		}
+            UnlockImpl();
+        }
 
-		public override IntPtr Lock( int offset, int length, BufferLocking locking )
+        public override IntPtr Lock( int offset, int length, BufferLocking locking )
 		{
-			base.isLocked = true;
-			IntPtr ret = Memory.PinObject( mpData );
-			unsafe
-			{
-				fixed( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			Memory.UnpinObject( mpData );
-			return ret;
+            return LockImpl(offset, length, locking);
 		}
 
 		protected override IntPtr LockImpl( int offset, int length, BufferLocking locking )
 		{
-			IntPtr ret = Memory.PinObject( mpData );
-			unsafe
-			{
-				fixed( byte* pdataF = mpData )
-				{
-					byte* pData = pdataF + offset;
-				}
-			}
-			Memory.UnpinObject( mpData );
-			return ret;
-		}
+            base.isLocked = true;
+            IntPtr ret = Memory.PinObject(mpData);
+            return new IntPtr(ret.ToInt32() + offset);
+        }
 
-		protected override void UnlockImpl()
+        protected override void UnlockImpl()
 		{
-			// nothing to do
-		}
-	}
+            base.isLocked = false;
+            Memory.UnpinObject(mpData);
+        }
+    }
 }

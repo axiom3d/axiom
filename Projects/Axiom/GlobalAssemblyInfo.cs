@@ -1,4 +1,4 @@
-#region LGPL License
+﻿#region LGPL License
 
 /*
 Axiom Graphics Engine Library
@@ -40,15 +40,15 @@ using System.Runtime.InteropServices;
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-[assembly: ComVisibleAttribute( false )]
-[assembly: CLSCompliantAttribute( false )]
-#if DEBUG
-[assembly: AssemblyConfiguration("https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/branches/v0.8.0.0/, Mixed Revisions, Local Modifications, Debug")]
-#else
-[assembly: AssemblyConfiguration("https://axiomengine.svn.sourceforge.net/svnroot/axiomengine/branches/v0.8.0.0/, Mixed Revisions, Local Modifications, Release")]
-#endif
-[assembly: AssemblyCompanyAttribute( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
-[assembly: AssemblyProductAttribute( "Axiom Rendering Engine" )]
-[assembly: AssemblyCopyrightAttribute( "Copyright ? 2003-2012 Axiom Rendering Engine Project Team." )]
-[assembly: AssemblyTrademarkAttribute( "" )]
-[assembly: AssemblyCultureAttribute( "" )]
+[assembly: ComVisible( false )]
+[assembly: CLSCompliant( false )]
+
+[assembly: AssemblyCompany( "Axiom Rendering Engine Project Team (http://axiom3d.net)" )]
+[assembly: AssemblyProduct( "Axiom Rendering Engine" )]
+[assembly: AssemblyCopyright("Copyright © 2003-2011 Axiom Rendering Engine Project Team.")]
+[assembly: AssemblyTrademark( "" )]
+[assembly: AssemblyCulture( "" )]
+
+[assembly: AssemblyVersion("0.8.5000.0")]
+[assembly: AssemblyFileVersion("0.8.5000.0")]
+[assembly: AssemblyInformationalVersion("0.8.5000-beta.1+361.Branch.release/v0.8.5000.Sha.5b4a0ebbbc7c64ab1394bb7df0b1ca80a533f124")]

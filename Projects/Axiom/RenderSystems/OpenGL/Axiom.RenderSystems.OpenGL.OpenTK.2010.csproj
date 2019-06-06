@@ -239,20 +239,4 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-      </PropertyGroup>
-  <ItemGroup>
-    <Svn Include="$(ProjectDir)..\..\..\.." />
-    <Version Include="..\..\version.txt" />
-    <AssemblyInfoTemplate Include="..\..\GlobalAssemblyInfo.cs.in">
-      <OutputFile>..\..\GlobalAssemblyInfo.cs</OutputFile>
-    </AssemblyInfoTemplate>
-  </ItemGroup>
-  
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
 </Project>

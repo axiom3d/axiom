@@ -1,6 +1,7 @@
 #tool nuget:?package=NUnit.ConsoleRunner&version=3.4.0
 #tool nuget:?package=GitReleaseNotes.Portable&version=0.7.1
 #tool nuget:?package=Wyam&version=2.1.1
+#tool nuget:?package=Nuproj&version=0.20.4-beta&prerelease
 #addin nuget:?package=Cake.Wyam&version=2.1.1
 
 #load nuget:https://www.nuget.org/api/v2?package=Cake.Wyam.Recipe&version=0.6.0
@@ -40,6 +41,7 @@ var solutionFile = "./Projects/Axiom.2010.sln";
 
 Func<MSBuildSettings,MSBuildSettings> commonSettings = settings => settings
     .SetConfiguration(configuration)
+    .WithProperty("TargetFrameworkVersion","v3.5")
     .WithProperty("PackageOutputPath", artifactsDirectory.FullPath);
 
 Environment.SetVariableNames();
@@ -70,8 +72,16 @@ Task("Clean")
     .Does(() =>
     {
         CleanDirectory(artifactsDirectory);
+
+        UpdateAssemblyInfo();
+
         MSBuild(solutionFile,
             settings => commonSettings(settings)
+                        .WithTarget("Clean"));
+
+        MSBuild(solutionFile,
+            settings => commonSettings(settings)
+                        .SetConfiguration("Package")
                         .WithTarget("Clean"));
     });
 
@@ -79,7 +89,9 @@ Task("Restore")
     .IsDependentOn("Clean")
     .Does(() =>
     {
-        //NuGetRestore(solutionFile);
+        MSBuild(solutionFile,
+            settings => commonSettings(settings)
+                        .WithTarget("Restore"));
     });
 
 Task("Build-Product")
@@ -113,31 +125,25 @@ Task("Package")
     .IsDependentOn("Test")
     .Does(() => 
     {
-        GenerateReleaseNotes();
-/*
-
-        var nuGetPackSettings = new NuGetPackSettings
-            {
-                OutputDirectory = artifactsDirectory.FullPath,
-                IncludeReferencedProjects = true,
-                Properties = new Dictionary<string, string>
-                {
-                    { "Configuration", "Release" }
-                }
-            };
-        NuGetPack("./Projects/Axiom.Framework/Axiom.Framework.nuspec", nuGetPackSettings);
-*/
-/*
+        //GenerateReleaseNotes();
 
         MSBuild(solutionFile,
             settings => commonSettings(settings)
-                        .WithTarget("Pack")
+                        .SetConfiguration("Package")
+                        .WithTarget("Build")
                         .WithProperty("NoBuild","true")
+                        .WithProperty("OutDir", artifactsDirectory.FullPath)
                         .WithProperty("IncludeSymbols","true"));
-*/
 
     });
 
+private void UpdateAssemblyInfo()
+{
+    var gitVersionExitCode = StartProcess(@"GitVersion", 
+        new ProcessSettings { Arguments = @"/updateassemblyinfo Projects\Axiom\GlobalAssemblyInfo.cs" });
+
+    if (gitVersionExitCode != 0) throw new Exception("Failed to generate Assembly Version Info");
+}
 private void GenerateReleaseNotes()
 {
     var releaseNotesExitCode = StartProcess(
@@ -167,7 +173,7 @@ BuildParameters.Tasks.PreviewDocumentationTask
 
 Task("Build")
     .IsDependentOn("Build-Product")
-    /*.IsDependentOn("Build-Documentation")*/;
+    .IsDependentOn("Build-Documentation");
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION

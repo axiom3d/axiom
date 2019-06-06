@@ -24,11 +24,6 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <MajorVersion>0</MajorVersion>
-    <MinorVersion>7</MinorVersion>
-    <BuildVersion>5</BuildVersion>
-    <Version>
-    </Version>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <PublishUrl>http://localhost/Axiom/</PublishUrl>
     <Install>true</Install>
@@ -40,10 +35,9 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -79,7 +73,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
@@ -848,28 +841,4 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-  </PropertyGroup>
-  <ItemGroup>
-	<Svn Include="$(ProjectDir)..\..\.." />
-	<Version Include="..\version.txt" />
-	<AssemblyInfoTemplate Include="..\GlobalAssemblyInfo.cs.in" >
-		<OutputFile>..\GlobalAssemblyInfo.cs</OutputFile>
-	</AssemblyInfoTemplate>
-	<AssemblyInfoTemplate Include="..\version.txt.in" >
-		<OutputFile>..\version.txt</OutputFile>
-	</AssemblyInfoTemplate>
-  </ItemGroup>
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
 </Project>
