@@ -199,6 +199,7 @@ if(-Not $SkipToolPackageRestore.IsPresent) {
 
     Write-Verbose -Message "Restoring tools from NuGet..."
     $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$TOOLS_DIR`""
+    Write-Verbose -Message ($NuGetOutput | out-string)
 
     if ($LASTEXITCODE -ne 0) {
         Throw "An error occurred while restoring NuGet tools."
@@ -207,7 +208,6 @@ if(-Not $SkipToolPackageRestore.IsPresent) {
     {
         $md5Hash | Out-File $PACKAGES_CONFIG_MD5 -Encoding "ASCII"
     }
-    Write-Verbose -Message ($NuGetOutput | out-string)
 
     Pop-Location
 }
