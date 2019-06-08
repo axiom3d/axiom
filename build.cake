@@ -89,9 +89,7 @@ Task("Restore")
     .IsDependentOn("Clean")
     .Does(() =>
     {
-        NuGetRestore(solutionFile, new NuGetRestoreSettings {
-            ToolPath = @"tools\nuget.exe",
-        });
+        NuGetRestore(solutionFile);
     });
 
 Task("Build-Product")
@@ -125,7 +123,7 @@ Task("Package")
     .IsDependentOn("Test")
     .Does(() => 
     {
-        //GenerateReleaseNotes();
+        GenerateReleaseNotes();
 
         MSBuild(solutionFile,
             settings => commonSettings(settings)
