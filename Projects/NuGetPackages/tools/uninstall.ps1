@@ -1,0 +1,2 @@
+param($installPath, $toolsPath, $package, $project)
+foreach( $pitem in $project.ProjectItems ) {  	foreach ( $file in Get-ChildItem "$installPath\native\x86\*.dll" ) {  		if ( $pitem.Name -eq $file.Name ) {  			$pitem.Remove()  		}  	}  }

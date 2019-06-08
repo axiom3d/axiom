@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>1c1e4e24-473c-4407-a13a-fa80509ae34a</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NuProjPath Condition=" '$(NuProjPath)' == '' ">..\..\tools\NuProj.0.20.4-beta\tools</NuProjPath>
+  </PropertyGroup>
+  <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
+  <PropertyGroup Label="Configuration">
+    <Id>$(PackageId).Plugins.SystemDrawingCodecs</Id>
+    <Title>$(AssemblyTitle) System.Drawing Codecs Plugin</Title>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="tools\install.ps1">
+      <TargetPath>tools\install.ps1</TargetPath>
+    </File>
+    <File Include="tools\uninstall.ps1">
+      <TargetPath>tools\uninstall.ps1</TargetPath>
+    </File>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Axiom.nuproj" />
+    <ProjectReference Include="..\Axiom\Plugins\Axiom.Plugins.SystemDrawingCodecs\Axiom.Plugins.SystemDrawingCodecs.2010.csproj" />
+  </ItemGroup>
+  <Import Project="$(NuProjPath)\NuProj.targets" />
+</Project>

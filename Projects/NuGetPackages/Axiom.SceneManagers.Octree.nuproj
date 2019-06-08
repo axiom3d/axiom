@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>7fc39e9b-39a9-42b6-8475-957a22bd770d</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NuProjPath Condition=" '$(NuProjPath)' == '' ">..\..\tools\NuProj.0.20.4-beta\tools</NuProjPath>
+  </PropertyGroup>
+  <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
+  <PropertyGroup Label="Configuration">
+    <Id>$(PackageId).SceneManagers.Octree</Id>
+    <Title>$(AssemblyTitle) Octree SceneManager Plugin</Title>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="tools\install.ps1">
+      <TargetPath>tools\install.ps1</TargetPath>
+    </File>
+    <File Include="tools\uninstall.ps1">
+      <TargetPath>tools\uninstall.ps1</TargetPath>
+    </File>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Axiom.nuproj" />
+    <ProjectReference Include="..\Axiom\SceneManagers\Octree\Axiom.SceneManagers.Octree.2010.csproj" />
+  </ItemGroup>
+  <Import Project="$(NuProjPath)\NuProj.targets" />
+</Project>

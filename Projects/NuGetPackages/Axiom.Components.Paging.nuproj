@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>5f16a2de-0b89-4daf-8738-a728f8de096c</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NuProjPath Condition=" '$(NuProjPath)' == '' ">..\..\tools\NuProj.0.20.4-beta\tools</NuProjPath>
+  </PropertyGroup>
+  <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
+  <PropertyGroup Label="Configuration">
+    <Id>$(PackageId).Components.Paging</Id>
+    <Title>$(AssemblyTitle) Paging Component</Title>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="tools\install.ps1">
+      <TargetPath>tools\install.ps1</TargetPath>
+    </File>
+    <File Include="tools\uninstall.ps1">
+      <TargetPath>tools\uninstall.ps1</TargetPath>
+    </File>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Axiom.nuproj" />
+    <ProjectReference Include="..\Components\Paging\Axiom.Components.Paging.2010.csproj" />
+  </ItemGroup>
+  <Import Project="$(NuProjPath)\NuProj.targets" />
+</Project>

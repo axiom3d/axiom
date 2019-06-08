@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x86">
+      <Configuration>Debug</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x86">
+      <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>2a333bc8-4860-4c45-9089-056e8d438e59</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup>
+    <NuProjPath Condition=" '$(NuProjPath)' == '' ">..\..\tools\NuProj.0.20.4-beta\tools</NuProjPath>
+  </PropertyGroup>
+  <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
+  <PropertyGroup Label="Configuration">
+    <Id>$(PackageId).Plugins.CgProgramManager</Id>
+    <Title>$(AssemblyTitle) Cg Program Mananager Plugin</Title>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="..\..\Lib\Native\Win32\cg.dll">
+      <TargetPath>native\x86\cg.dll</TargetPath>
+    </File>
+    <File Include="..\..\Lib\Native\Win32\cgGL.dll">
+      <TargetPath>native\x86\cgGL.dll</TargetPath>
+    </File>
+    <File Include="tools\install.ps1">
+      <TargetPath>tools\install.ps1</TargetPath>
+    </File>
+    <File Include="tools\uninstall.ps1">
+      <TargetPath>tools\uninstall.ps1</TargetPath>
+    </File>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Axiom.nuproj" />
+    <ProjectReference Include="..\Axiom\Plugins\CgProgramManager\Axiom.Plugins.CgProgramManager.2010.csproj" />
+  </ItemGroup>
+  <Import Project="$(NuProjPath)\NuProj.targets" />
+</Project>

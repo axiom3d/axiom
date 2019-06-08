@@ -1,0 +1,34 @@
+<Project>
+  <PropertyGroup Label="Version">
+    <In>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\..\Axiom\GlobalAssemblyInfo.cs'))</In>
+    <Pattern>\[assembly: AssemblyInformationalVersion\("(?&lt;Major&gt;\d+)\.(?&lt;Minor&gt;\d+)\.(?&lt;Patch&gt;[\d]+)(?&lt;PreReleaseInfo&gt;[0-9A-Za-z-.]+)?</Pattern>
+    <AssemblyVersionMajor>$([System.Text.RegularExpressions.Regex]::Match($(In), $(Pattern), System.Text.RegularExpressions.RegexOptions.Multiline).Groups["Major"].Value)</AssemblyVersionMajor>
+    <AssemblyVersionMinor>$([System.Text.RegularExpressions.Regex]::Match($(In), $(Pattern), System.Text.RegularExpressions.RegexOptions.Multiline).Groups["Minor"].Value)</AssemblyVersionMinor>
+    <AssemblyVersionPatch>$([System.Text.RegularExpressions.Regex]::Match($(In), $(Pattern), System.Text.RegularExpressions.RegexOptions.Multiline).Groups["Patch"].Value)</AssemblyVersionPatch>
+    <AssemblyVersionPreRelease>$([System.Text.RegularExpressions.Regex]::Match($(In), $(Pattern), System.Text.RegularExpressions.RegexOptions.Multiline).Groups["PreReleaseInfo"].Value)</AssemblyVersionPreRelease>
+    <AssemblyVersion>$(AssemblyVersionMajor).$(AssemblyVersionMinor).$(AssemblyVersionPatch)</AssemblyVersion>
+    <AssemblyVersion Condition=" '$(AssemblyVersionPreRelease)' != ''">$(AssemblyVersion)$(AssemblyVersionPreRelease)</AssemblyVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Configuration">
+    <PackageId>Axiom</PackageId>
+    <AssemblyTitle>Axiom 3D</AssemblyTitle>
+    <Copyright>Copyright &#169; 2019 Axiom Rendering Engine Project Team.</Copyright>
+    <Product>Axiom Rendering Engine</Product>
+    <Version>$(AssemblyVersion)</Version>
+    <Company>Axiom Rendering Engine Project Team (http://axiom3d.net)</Company>
+    <Authors>Axiom 3D, borrillis</Authors>
+    <Owners>Axiom 3D, borrillis</Owners>
+    <Description>3D Graphics Rendering Engine for .Net</Description>
+    <ProjectUrl>http://axiom3d.net</ProjectUrl>
+    <RepositoryUrl>http://github/axiom3d/axiom</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <LicenseUrl>http://axiom3d.net/wiki/index.php/license.txt</LicenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <Tags>3D DirectX OpenGL Mono Windows Hololens MacOS Android iOS iPhone iPad Linux Game Rendering</Tags>
+  </PropertyGroup>
+
+  <PropertyGroup>
+      <NuProjPath>..\..\tools\NuProj.0.20.4-beta\tools</NuProjPath>
+  </PropertyGroup>
+</Project>
