@@ -89,9 +89,9 @@ Task("Restore")
     .IsDependentOn("Clean")
     .Does(() =>
     {
-        MSBuild(solutionFile,
-            settings => commonSettings(settings)
-                        .WithTarget("Restore"));
+        NuGetRestore(solutionFile, new NuGetRestoreSettings {
+            ToolPath = @"tools\nuget.exe",
+        });
     });
 
 Task("Build-Product")
@@ -131,7 +131,6 @@ Task("Package")
             settings => commonSettings(settings)
                         .SetConfiguration("Package")
                         .WithTarget("Build")
-                        .WithProperty("NoBuild","true")
                         .WithProperty("OutDir", artifactsDirectory.FullPath)
                         .WithProperty("IncludeSymbols","true"));
 
