@@ -3,15 +3,15 @@
 
 // Customize your settings and add new ones here
 Settings[Keys.Host] = "axiom3d.github.io";
-Settings[Keys.LinkRoot] = "/sharpinputsystem";
+Settings[Keys.LinkRoot] = "/axiom";
 Settings[Keys.LinksUseHttps] = true;
 
-Settings[DocsKeys.Title] = "SharpInputSystem";
+Settings[DocsKeys.Title] = "Axiom";
 Settings[DocsKeys.ImplicitInheritDoc] = true;
 Settings[DocsKeys.IncludeGlobalNamespace] = false;
 
 Settings["BaseSiteSearchUrl"] = "https://www.google.com/search";
-Settings["BaseCreateIssueUrl"] = "https://github.com/axiom3d/sharpinputsystem/issues/new?title=Issue%20with%20";
+Settings["BaseCreateIssueUrl"] = "https://github.com/axiom3d/axiom/issues/new?title=Issue%20with%20";
 
 FileSystem.InputPaths.Add("./doc");
 FileSystem.OutputPath = "./BuildArtifacts/Documentation";
@@ -19,4 +19,4 @@ FileSystem.OutputPath = "./BuildArtifacts/Documentation";
 // Add any pipeline customizations here
 
 // Remove any symbols int the Test.Console.* projects
-Pipelines[Docs.Api].Add(Where(!@doc.String(CodeAnalysisKeys.QualifiedName).StartsWith("SharpInputSystem.Test")));
+Pipelines[Docs.Api].Add(Where(!@doc.String(CodeAnalysisKeys.QualifiedName).StartsWith("Axiom.Test")));

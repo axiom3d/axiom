@@ -59,7 +59,7 @@ BuildParameters.SetParameters(context: Context,
                             wyamPublishDirectoryPath: MakeAbsolute(Directory("./BuildArtifacts/gh-pages")),
                             webLinkRoot: "/axiom",
                             webBaseEditUrl: "https://github.com/axiom3d/axiom/tree/master/",
-                            shouldPublishDocumentation: true,
+                            shouldPublishDocumentation: false,
                             shouldPurgeCloudflareCache: false);
 
 BuildParameters.PrintParameters(Context);
@@ -72,8 +72,6 @@ Task("Clean")
     .Does(() =>
     {
         CleanDirectory(artifactsDirectory);
-
-        UpdateAssemblyInfo();
 
         MSBuild(solutionFile,
             settings => commonSettings(settings)
@@ -98,6 +96,8 @@ Task("Build-Product")
     .IsDependentOn("Restore")
     .Does(() =>
     {
+        UpdateAssemblyInfo();
+
         if(IsRunningOnWindows())
         {
             // Use MSBuild
