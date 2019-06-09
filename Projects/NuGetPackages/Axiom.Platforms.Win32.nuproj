@@ -18,7 +18,7 @@
   </PropertyGroup>
   <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
   <PropertyGroup Label="Configuration">
-    <Id>$(PackageId).Platform.Win32</Id>
+    <Id>$(PackageId).Platforms.Win32</Id>
     <Title>$(AssemblyTitle) Win32 Platform Plugin</Title>
   </PropertyGroup>
   <ItemGroup>

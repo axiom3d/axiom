@@ -18,7 +18,7 @@
   </PropertyGroup>
   <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
   <PropertyGroup Label="Configuration">
-    <Id>$(PackageId).Platform.OpenTK</Id>
+    <Id>$(PackageId).Platforms.OpenTK</Id>
     <Title>$(AssemblyTitle) OpenTk Platform Plugin</Title>
   </PropertyGroup>
   <ItemGroup>
