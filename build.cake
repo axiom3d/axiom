@@ -89,7 +89,9 @@ Task("Restore")
     .IsDependentOn("Clean")
     .Does(() =>
     {
-        NuGetRestore(solutionFile);
+        MSBuild(solutionFile,
+            settings => commonSettings(settings)
+                        .WithTarget("Restore"));
     });
 
 Task("Build-Product")
@@ -123,7 +125,7 @@ Task("Package")
     .IsDependentOn("Test")
     .Does(() => 
     {
-        GenerateReleaseNotes();
+        //GenerateReleaseNotes();
 
         MSBuild(solutionFile,
             settings => commonSettings(settings)
@@ -170,7 +172,7 @@ BuildParameters.Tasks.PreviewDocumentationTask
 
 Task("Build")
     .IsDependentOn("Build-Product")
-    .IsDependentOn("Build-Documentation");
+    /*.IsDependentOn("Build-Documentation")*/;
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
