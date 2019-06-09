@@ -1,10 +1,5 @@
 #tool nuget:?package=NUnit.ConsoleRunner&version=3.4.0
-#tool nuget:?package=GitReleaseNotes.Portable&version=0.7.1
-#tool nuget:?package=Wyam&version=2.1.1
 #tool nuget:?package=Nuproj&version=0.20.4-beta&prerelease
-#addin nuget:?package=Cake.Wyam&version=2.1.1
-
-#load nuget:https://www.nuget.org/api/v2?package=Cake.Wyam.Recipe&version=0.6.0
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -44,26 +39,6 @@ Func<MSBuildSettings,MSBuildSettings> commonSettings = settings => settings
     .WithProperty("TargetFrameworkVersion","v3.5")
     .WithProperty("PackageOutputPath", artifactsDirectory.FullPath);
 
-Environment.SetVariableNames();
-
-BuildParameters.SetParameters(context: Context,
-                            buildSystem: BuildSystem,
-                            title: "Axiom",
-                            repositoryOwner: "Axiom3D",
-                            repositoryName: "axiom",
-                            appVeyorAccountName: "borrillis",
-                            webHost: "axiom3d.github.io",
-                            wyamRecipe: "Docs",
-                            wyamTheme: "Samson",
-                            wyamSourceFiles: MakeAbsolute(Directory("./")).FullPath + "/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs",
-                            wyamPublishDirectoryPath: MakeAbsolute(Directory("./BuildArtifacts/gh-pages")),
-                            webLinkRoot: "/axiom",
-                            webBaseEditUrl: "https://github.com/axiom3d/axiom/tree/master/",
-                            shouldPublishDocumentation: false,
-                            shouldPurgeCloudflareCache: false);
-
-BuildParameters.PrintParameters(Context);
-
 //////////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////////
@@ -92,7 +67,7 @@ Task("Restore")
                         .WithTarget("Restore"));
     });
 
-Task("Build-Product")
+Task("Build")
     .IsDependentOn("Restore")
     .Does(() =>
     {
@@ -157,22 +132,23 @@ private void GenerateReleaseNotes()
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
 //////////////////////////////////////////////////////////////////////
+/*
+
+Task("AppVeyorTask")
+    .IsDependentOn("Package");
 
 BuildParameters.Tasks.CleanDocumentationTask
     .IsDependentOn("Clean");
-
-BuildParameters.Tasks.AppVeyorTask
-    .IsDependentOn("Package");
 
 BuildParameters.Tasks.BuildDocumentationTask
     .IsDependentOn("Build-Product");
 
 BuildParameters.Tasks.PreviewDocumentationTask
     .IsDependentOn("Build-Product");
-
 Task("Build")
     .IsDependentOn("Build-Product")
-    /*.IsDependentOn("Build-Documentation")*/;
+    .IsDependentOn("Build-Documentation");
+*/
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
