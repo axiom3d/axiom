@@ -24,6 +24,7 @@
     <RepositoryUrl>http://github/axiom3d/axiom</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <LicenseUrl>http://axiom3d.net/wiki/index.php/license.txt</LicenseUrl>
+    <IconUrl>https://axiom3d.github.io/assets/img/logo.png</IconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <Tags>3D DirectX OpenGL Mono Windows Hololens MacOS Android iOS iPhone iPad Linux Game Rendering</Tags>
   </PropertyGroup>
