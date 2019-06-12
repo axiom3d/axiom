@@ -1,5 +1,6 @@
 #tool nuget:?package=NUnit.ConsoleRunner&version=3.4.0
 #tool nuget:?package=Nuproj&version=0.20.4-beta&prerelease
+#tool nuget:?package=GitVersion.Commandline&version=4.0.0
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -37,7 +38,8 @@ var solutionFile = "./Projects/Axiom.2010.sln";
 Func<MSBuildSettings,MSBuildSettings> commonSettings = settings => settings
     .SetConfiguration(configuration)
     .WithProperty("TargetFrameworkVersion","v3.5")
-    .WithProperty("PackageOutputPath", artifactsDirectory.FullPath);
+    .WithProperty("PackageOutputPath", artifactsDirectory.FullPath)
+        .WithProperty("nowarn","1591,1572,1573");
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
@@ -76,8 +78,8 @@ Task("Build")
         if(IsRunningOnWindows())
         {
             // Use MSBuild
-            MSBuild(solutionFile, settings =>
-                settings.SetConfiguration(configuration));
+            MSBuild(solutionFile, settings => commonSettings(settings)
+                .SetConfiguration(configuration));
         }
         else
         {
@@ -113,11 +115,19 @@ Task("Package")
 
 private void UpdateAssemblyInfo()
 {
+    /*
+    GitVersion(new GitVersionSettings {
+        UpdateAssemblyInfo = true,
+        UpdateAssemblyInfoFilePath = MakeAbsolute(File(@"Projects\Axiom\GlobalAssemblyInfo.cs"))
+    });
+    */
     var gitVersionExitCode = StartProcess(@"GitVersion", 
-        new ProcessSettings { Arguments = @"/updateassemblyinfo Projects\Axiom\GlobalAssemblyInfo.cs" });
+    new ProcessSettings { Arguments = @"/updateassemblyinfo Projects\Axiom\GlobalAssemblyInfo.cs" });
 
     if (gitVersionExitCode != 0) throw new Exception("Failed to generate Assembly Version Info");
+
 }
+
 private void GenerateReleaseNotes()
 {
     var releaseNotesExitCode = StartProcess(
