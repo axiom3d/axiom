@@ -167,6 +167,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="NuProj.Common">
+      <Version>0.20.4-beta</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="SlimDX">
       <Version>4.0.13.44</Version>
     </PackageReference>
