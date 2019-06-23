@@ -67,6 +67,11 @@ Task("Restore")
         MSBuild(solutionFile,
             settings => commonSettings(settings)
                         .WithTarget("Restore"));
+        MSBuild(solutionFile,
+            settings => commonSettings(settings)
+                        .SetConfiguration("Package")
+                        .WithTarget("Restore"));
+   
     });
 
 Task("Build")
