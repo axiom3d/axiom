@@ -204,6 +204,11 @@ if (!(Test-Path $NUGET_EXE)) {
 
 # Save nuget.exe path to environment to be available to child processed
 $ENV:NUGET_EXE = $NUGET_EXE
+$NUGET_EXE_INVOCATION = if ($IsLinux -or $IsMacOS) {
+    "mono `"$NUGET_EXE`""
+} else {
+    "`"$NUGET_EXE`""
+}
 
 # Restore tools from NuGet?
 if(-Not $SkipToolPackageRestore.IsPresent) {
@@ -220,7 +225,7 @@ if(-Not $SkipToolPackageRestore.IsPresent) {
     }
 
     Write-Verbose -Message "Restoring tools from NuGet..."
-    $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$TOOLS_DIR`""
+    $NuGetOutput = Invoke-Expression "& `"$NUGET_EXE_INVOCATION`" install -ExcludeVersion -OutputDirectory `"$TOOLS_DIR`""
     Write-Verbose -Message ($NuGetOutput | out-string)
 
     if ($LASTEXITCODE -ne 0) {
@@ -240,7 +245,7 @@ if (Test-Path $ADDINS_PACKAGES_CONFIG) {
     Set-Location $ADDINS_DIR
 
     Write-Verbose -Message "Restoring addins from NuGet..."
-    $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$ADDINS_DIR`""
+    $NuGetOutput = Invoke-Expression "& `"$NUGET_EXE_INVOCATION`" install -ExcludeVersion -OutputDirectory `"$ADDINS_DIR`""
 
     if ($LASTEXITCODE -ne 0) {
         Throw "An error occurred while restoring NuGet addins."
@@ -257,7 +262,7 @@ if (Test-Path $MODULES_PACKAGES_CONFIG) {
     Set-Location $MODULES_DIR
 
     Write-Verbose -Message "Restoring modules from NuGet..."
-    $NuGetOutput = Invoke-Expression "&`"$NUGET_EXE`" install -ExcludeVersion -OutputDirectory `"$MODULES_DIR`""
+    $NuGetOutput = Invoke-Expression "& `"$NUGET_EXE_INVOCATION`" install -ExcludeVersion -OutputDirectory `"$MODULES_DIR`""
 
     if ($LASTEXITCODE -ne 0) {
         Throw "An error occurred while restoring NuGet modules."
@@ -272,7 +277,11 @@ if (Test-Path $MODULES_PACKAGES_CONFIG) {
 if (!(Test-Path $CAKE_EXE)) {
     Throw "Could not find Cake.exe at $CAKE_EXE"
 }
-
+$CAKE_EXE_INVOCATION = if ($IsLinux -or $IsMacOS) {
+    "mono `"$CAKE_EXE`""
+} else {
+    "`"$CAKE_EXE`""
+}
 # Build Cake arguments
 $cakeArguments = @("$Script");
 if ($Target) { $cakeArguments += "-target=$Target" }
@@ -284,5 +293,5 @@ $cakeArguments += $ScriptArgs
 
 # Start Cake
 Write-Host "Running build script..."
-&$CAKE_EXE $cakeArguments
+Invoke-Expression "& `"$CAKE_EXE_INVOCATION`" $($cakeArguments -join " ")"
 exit $LASTEXITCODE
