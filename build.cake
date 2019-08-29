@@ -58,7 +58,6 @@ BuildParameters.SetParameters(context: Context,
                             wyamPublishDirectoryPath: MakeAbsolute(Directory("./BuildArtifacts/gh-pages")),
                             webLinkRoot: "/axiom",
                             webBaseEditUrl: "https://github.com/axiom3d/axiom/tree/master/",
-                            useLocalPackages
                             shouldPublishDocumentation: true,
                             shouldPurgeCloudflareCache: false);
 
