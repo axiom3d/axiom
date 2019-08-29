@@ -2,7 +2,6 @@ trigger:
   - master
   - develop
 pr:
-  autocancel: true
   - master
   - develop
   
