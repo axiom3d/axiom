@@ -44,25 +44,25 @@ Func<MSBuildSettings,MSBuildSettings> commonSettings = settings => settings
         .WithProperty("nowarn","1591, 1572, 1573");
 
 Environment.SetVariableNames();
-/*
-BuildParameters.SetParameters(context: Context,
-                            buildSystem: BuildSystem,
-                            title: "Axiom 3D Rendering Engine",
-                            repositoryOwner: "Axiom3D",
-                            repositoryName: "axiom",
-                            appVeyorAccountName: "borrillis",
-                            webHost: "axiom3d.github.io",
-                            wyamRecipe: "Docs",
-                            wyamTheme: "Samson",
-                            wyamSourceFiles: MakeAbsolute(Directory("./")).FullPath + "/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs",
-                            wyamPublishDirectoryPath: MakeAbsolute(Directory("./BuildArtifacts/gh-pages")),
-                            webLinkRoot: "/axiom",
-                            webBaseEditUrl: "https://github.com/axiom3d/axiom/tree/master/",
-                            shouldPublishDocumentation: true,
-                            shouldPurgeCloudflareCache: false);
 
-BuildParameters.PrintParameters(Context);
-*/
+//BuildParameters.SetParameters(context: Context,
+//                            buildSystem: BuildSystem,
+//                            title: "Axiom 3D Rendering Engine",
+//                            repositoryOwner: "Axiom3D",
+//                            repositoryName: "axiom",
+//                            appVeyorAccountName: "borrillis",
+//                            webHost: "axiom3d.github.io",
+//                            wyamRecipe: "Docs",
+//                            wyamTheme: "Samson",
+//                            wyamSourceFiles: MakeAbsolute(Directory("./")).FullPath + "/**/{!bin,!obj,!packages,!*.Tests,}/**/*.cs",
+//                            wyamPublishDirectoryPath: MakeAbsolute(Directory("./BuildArtifacts/gh-pages")),
+//                            webLinkRoot: "/axiom",
+//                            webBaseEditUrl: "https://github.com/axiom3d/axiom/tree/master/",
+//                            shouldPublishDocumentation: true,
+//                            shouldPurgeCloudflareCache: false);
+
+//BuildParameters.PrintParameters(Context);
+
 //////////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////////
@@ -133,7 +133,7 @@ private void GenerateReleaseNotes()
 //////////////////////////////////////////////////////////////////////
 // TASK TARGETS
 //////////////////////////////////////////////////////////////////////
-
+/*
 BuildParameters.Tasks.CleanDocumentationTask
     .IsDependentOn("Clean");
 
@@ -142,7 +142,7 @@ BuildParameters.Tasks.BuildDocumentationTask
 
 BuildParameters.Tasks.PreviewDocumentationTask
     .IsDependentOn("Build-Product");
-
+*/
 Task("Build")
     .IsDependentOn("Build-Product")
     /* .IsDependentOn("Build-Documentation")*/;
