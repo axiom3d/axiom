@@ -1,9 +1,9 @@
 #tool nuget:?package=NUnit.ConsoleRunner&version=3.4.0
 #tool nuget:?package=GitReleaseNotes.Portable&version=0.7.1
-#tool nuget:?package=Wyam&version=2.2.7
-#addin nuget:?package=Cake.Wyam&version=2.2.7
+//#tool nuget:?package=Wyam&version=2.2.7
+//#addin nuget:?package=Cake.Wyam&version=2.2.7
 
-#load nuget:https://www.nuget.org/api/v2?package=Cake.Wyam.Recipe&version=0.7.1
+//#load nuget:https://www.nuget.org/api/v2?package=Cake.Wyam.Recipe&version=0.7.1
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS
@@ -44,7 +44,7 @@ Func<MSBuildSettings,MSBuildSettings> commonSettings = settings => settings
         .WithProperty("nowarn","1591, 1572, 1573");
 
 Environment.SetVariableNames();
-
+/*
 BuildParameters.SetParameters(context: Context,
                             buildSystem: BuildSystem,
                             title: "Axiom 3D Rendering Engine",
@@ -62,7 +62,7 @@ BuildParameters.SetParameters(context: Context,
                             shouldPurgeCloudflareCache: false);
 
 BuildParameters.PrintParameters(Context);
-
+*/
 //////////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////////
