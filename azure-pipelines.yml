@@ -2,6 +2,7 @@ trigger:
   - master
   - develop
 pr:
+  autocancel: true
   - master
   - develop
   
@@ -55,5 +56,5 @@ steps:
   displayName: Build Product
   inputs:
     targetType: 'inline'
-    script: '.\build.ps1 -Script build.cake -Target AppVeyor -Verbosity Diagnostic --settings_skipverification=true'
+    script: '.\build.ps1 -Script build.cake -Target Build -Verbosity Diagnostic --settings_skipverification=true'
     pwsh: true
