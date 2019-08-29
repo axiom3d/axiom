@@ -2,7 +2,7 @@
 
 /*
 Axiom Graphics Engine Library
-Copyright © 2003-2011 Axiom Project Team
+Copyright ï¿½ 2003-2011 Axiom Project Team
 
 The overall design, and a majority of the core engine and rendering code 
 contained within this library is a derivative of the open source Object Oriented 
@@ -37,19 +37,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 
 #region Namespace Declarations
 
-using System;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 #endregion Namespace Declarations
 
-// General Information about an assembly is controlled through the following 
-// set of attributes. Change these attribute values to modify the information
-// associated with an assembly.
-
-[assembly: AssemblyTitle( "Axiom Rendering Engine Library" )]
-//[assembly: AssemblyDescription( "Axiom Rendering Engine Library" )]
-
-[assembly: InternalsVisibleTo( "Axiom.Engine.Tests" )]
-[assembly: InternalsVisibleTo( "Axiom.UnitTests" )]
 [assembly: InternalsVisibleTo( "Axiom.UnitTests" )]

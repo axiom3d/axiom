@@ -6,6 +6,15 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup Label="Assembly">
+    <AssemblyTitle>$(AssemblyTitle) Unit Tests</AssemblyTitle>
+    <Product>$(Product) Unit Tests</Product>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Backup\**" />
     <EmbeddedResource Remove="Backup\**" />
