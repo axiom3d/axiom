@@ -1,5 +1,10 @@
-﻿# Created by https://www.gitignore.io/api/csharp,visualstudio,visualstudiocode
-# Edit at https://www.gitignore.io/?templates=csharp,visualstudio,visualstudiocode
+﻿BuildArtifacts/
+# Created by https://www.gitignore.io/api/cake,wyam,csharp,visualstudio,visualstudiocode
+# Edit at https://www.gitignore.io/?templates=cake,wyam,csharp,visualstudio,visualstudiocode
+
+### Cake ###
+tools/*
+!tools/packages.config
 
 ### Csharp ###
 ## Ignore Visual Studio temporary files, build results, and
@@ -351,6 +356,13 @@ ASALocalRun/
 ### VisualStudioCode Patch ###
 # Ignore all local history of files
 .history
+
+### Wyam ###
+# Wyam Ignore - Based on https://wyam.io/docs/advanced/what_to_exclude_from_source_control
+wwwroot
+config.wyam.dll
+config.wyam.hash
+config.wyam.packages.xml
 
 ### VisualStudio ###
 ## Ignore Visual Studio temporary files, build results, and

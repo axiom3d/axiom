@@ -1,21 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
   <PropertyGroup>
-    <AssemblyTitle>Axiom.Samples.Browser.Win32</AssemblyTitle>
     <TargetFrameworks>net472</TargetFrameworks>
-    <Copyright>Copyright (c) 2019 Axiom Rendering Engine Project Team.</Copyright>
-    <Product>Axiom Rendering Engine Samples</Product>
-    <Company>Axiom Rendering Engine Project Team (http://axiom3d.net)</Company>
-    <AssemblyVersion>0.9.0.0</AssemblyVersion>
-    <FileVersion>0.9.0.0</FileVersion>
-    <Version>0.9.0</Version>
-    <Authors>Axiom Rendering Engine Project Team (http://axiom3d.net)</Authors>
-    <PackageProjectUrl>http://axiom3d.net</PackageProjectUrl>
-    <RepositoryUrl>http://github/axiom3d/axiom</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageLicenseUrl>http://axiom3d.net/wiki/index.php/license.txt</PackageLicenseUrl>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <OutputType>WinExe</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Assembly">
+    <AssemblyTitle>$(AssemblyTitle) Sample Browser for Win32</AssemblyTitle>
+    <Product>$(Product) Rendering Engine Samples</Product>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -1,4 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+  
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net472</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Assembly">
+    <AssemblyTitle>$(AssemblyTitle) DevIL Codecs</AssemblyTitle>
+    <Product>$(Product) DevIL Codecs</Product>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>$(PackagePrefix).Plugins.DevILCodecs</PackageId>
+  </PropertyGroup>
 
   <PropertyGroup>
     <AssemblyTitle>Axiom.Plugins.DevILCodecs</AssemblyTitle>
@@ -40,6 +54,7 @@
       <Project>{77e8323a-5cdb-4b39-b9e0-7d12a2aad3a3}</Project>
       <Name>Axiom</Name>
     </ProjectReference>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All"/>
   </ItemGroup>
 
 </Project>
