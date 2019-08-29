@@ -40,6 +40,16 @@ steps:
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   
 - task: DotNetCoreCLI@2
+  displayName: Install dotnet Wyam Build Tool
+  inputs:
+    command: custom
+    custom: tool
+    arguments: 'install -g Wyam.Tool'
+  env:
+    DOTNET_CLI_TELEMETRY_OPTOUT: 1
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+  
+- task: DotNetCoreCLI@2
   displayName: Run dotnet Cake Bootstrapper
   inputs:
     command: custom
