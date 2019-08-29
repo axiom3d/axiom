@@ -90,18 +90,9 @@ Task("Build-Product")
     .IsDependentOn("Restore")
     .Does(() =>
     {
-        if(IsRunningOnWindows())
-        {
-            // Use MSBuild
-            MSBuild(solutionFile, settings => commonSettings(settings)
-                .SetConfiguration(configuration));
-        }
-        else
-        {
-            // Use XBuild
-            XBuild(solutionFile, settings =>
-                settings.SetConfiguration(configuration));
-        }
+        // Use MSBuild
+        MSBuild(solutionFile, settings => commonSettings(settings)
+            .SetConfiguration(configuration));
     });
 
 Task("Test")
