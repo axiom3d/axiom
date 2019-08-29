@@ -58,6 +58,7 @@ BuildParameters.SetParameters(context: Context,
                             wyamPublishDirectoryPath: MakeAbsolute(Directory("./BuildArtifacts/gh-pages")),
                             webLinkRoot: "/axiom",
                             webBaseEditUrl: "https://github.com/axiom3d/axiom/tree/master/",
+                            useLocalPackages
                             shouldPublishDocumentation: true,
                             shouldPurgeCloudflareCache: false);
 
@@ -151,9 +152,10 @@ BuildParameters.Tasks.BuildDocumentationTask
 
 BuildParameters.Tasks.PreviewDocumentationTask
     .IsDependentOn("Build-Product");
+
 Task("Build")
     .IsDependentOn("Build-Product")
-    .IsDependentOn("Build-Documentation");
+    /* .IsDependentOn("Build-Documentation")*/;
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
