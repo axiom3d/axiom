@@ -1,3 +1,5 @@
+#nuget Wyam.Docs.Samson --version 2.2.7
+
 #recipe Docs
 #theme Samson
 

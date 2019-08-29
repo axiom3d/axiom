@@ -1,9 +1,9 @@
 #tool nuget:?package=NUnit.ConsoleRunner&version=3.4.0
 #tool nuget:?package=GitReleaseNotes.Portable&version=0.7.1
-#tool nuget:?package=Wyam&version=2.1.1
-#addin nuget:?package=Cake.Wyam&version=2.1.1
+#tool nuget:?package=Wyam&version=2.2.7
+#addin nuget:?package=Cake.Wyam&version=2.2.7
 
-#load nuget:https://www.nuget.org/api/v2?package=Cake.Wyam.Recipe&version=0.6.0
+#load nuget:https://www.nuget.org/api/v2?package=Cake.Wyam.Recipe&version=0.7.1
 
 //////////////////////////////////////////////////////////////////////
 // ARGUMENTS

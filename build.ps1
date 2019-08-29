@@ -130,7 +130,7 @@ function MD5HashFile([string] $filePath)
     }
     finally
     {
-        if ($file -ne $null)
+        if ( $null -ne $file )
         {
             $file.Dispose()
         }
