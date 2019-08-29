@@ -43,7 +43,7 @@ Func<MSBuildSettings,MSBuildSettings> commonSettings = settings => settings
     .WithProperty("PackageOutputPath", artifactsDirectory.FullPath)
         .WithProperty("nowarn","1591, 1572, 1573");
 
-Environment.SetVariableNames();
+//Environment.SetVariableNames();
 
 //BuildParameters.SetParameters(context: Context,
 //                            buildSystem: BuildSystem,
