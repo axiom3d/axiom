@@ -285,7 +285,7 @@ $CAKE_EXE_INVOCATION = if ($IsLinux -or $IsMacOS) {
 # Build Cake arguments
 $cakeArguments = @("$Script");
 if ($Target) { $cakeArguments += "-target=$Target" }
-if ($Configuration) { $cakeArguments += "-configuration=$Configuration" }
+if ($Configuration) { $cakeArguments += "-configuration=$Configuration" } else { if ($IsMacOS ) {$cakeArguments += "-configuration=MacOS_Release"} elseif ( $IsLinux ) {$cakeArguments += "-configuration=Linux_Release"}}
 if ($Verbosity) { $cakeArguments += "-verbosity=$Verbosity" }
 if ($ShowDescription) { $cakeArguments += "-showdescription" }
 if ($DryRun) { $cakeArguments += "-dryrun" }

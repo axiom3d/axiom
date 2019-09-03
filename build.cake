@@ -38,11 +38,6 @@ var buildNumber =
 var artifactsDirectory = MakeAbsolute(Directory("./BuildArtifacts"));
 var solutionFile = "./Source/Axiom.sln";
 
-Func<MSBuildSettings,MSBuildSettings> commonSettings = settings => settings
-    .SetConfiguration(configuration)
-    .WithProperty("PackageOutputPath", artifactsDirectory.FullPath)
-        .WithProperty("nowarn","1591, 1572, 1573");
-
 //Environment.SetVariableNames();
 
 //BuildParameters.SetParameters(context: Context,
@@ -72,27 +67,27 @@ Task("Clean")
     {
         CleanDirectory(artifactsDirectory);
 
-        MSBuild(solutionFile,
-            settings => commonSettings(settings)
-                        .WithTarget("Clean"));
+        DotNetCoreClean(solutionFile, new DotNetCoreCleanSettings()
+                {
+                    Configuration = configuration
+                });
     });
 
 Task("Restore")
     .IsDependentOn("Clean")
     .Does(() =>
     {
-        MSBuild(solutionFile,
-            settings => commonSettings(settings)
-                        .WithTarget("Restore"));
+        DotNetCoreRestore(solutionFile);
     });
 
 Task("Build-Product")
     .IsDependentOn("Restore")
     .Does(() =>
     {
-        // Use MSBuild
-        MSBuild(solutionFile, settings => commonSettings(settings)
-            .SetConfiguration(configuration));
+        DotNetCoreBuild(solutionFile, new DotNetCoreBuildSettings()
+                {
+                    Configuration = configuration
+                });
     });
 
 Task("Test")
@@ -109,14 +104,14 @@ Task("Package")
     .Does(() => 
     {
         GenerateReleaseNotes();
-
+/*
         MSBuild(solutionFile,
             settings => commonSettings(settings)
                         .SetConfiguration("Package")
                         .WithTarget("Build")
                         .WithProperty("OutDir", artifactsDirectory.FullPath)
                         .WithProperty("IncludeSymbols","true"));
-
+*/
     });
 
 private void GenerateReleaseNotes()

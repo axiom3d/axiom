@@ -14,10 +14,13 @@ strategy:
   matrix:
     linux:
       imageName: "ubuntu-latest"
+      configuration: "linux_$(buildConfiguration)"
     mac:
       imageName: "macos-latest"
+      configuration: "MacOS_$(buildConfiguration)"
     windows:
       imageName: "windows-latest"
+      configuration: $(buildConfiguration)
   
 pool:
   vmImage: $(imageName)
@@ -45,5 +48,5 @@ steps:
   displayName: Build Product
   inputs:
     targetType: 'inline'
-    script: '.\build.ps1 -Script build.cake -Target Build -Verbosity Diagnostic --settings_skipverification=true'
+    script: '.\build.ps1 -Script build.cake -Target Build -Configuration $(configuration) -Verbosity Diagnostic --settings_skipverification=true'
     pwsh: true
