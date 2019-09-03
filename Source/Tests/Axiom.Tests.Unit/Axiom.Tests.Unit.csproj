@@ -30,20 +30,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Axiom.Platforms.Windows\Axiom.Platforms.Windows.csproj">
-      <Project>{77AC0D3A-2A99-4EA6-A90E-C71BB53751C5}</Project>
-      <Name>Axiom.Platforms.Win32</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Axiom.SceneManagers.Bsp\Axiom.SceneManagers.Bsp.csproj">
-      <Project>{161EA53F-8D78-4BD3-8217-442D94A593C1}</Project>
-      <Name>Axiom.SceneManagers.Bsp</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Axiom.SceneManagers.Octree\Axiom.SceneManagers.Octree.csproj">
-      <Project>{E0BB87B2-C59D-46D4-9AD9-A919E457E4EF}</Project>
-      <Name>Axiom.SceneManagers.Octree</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Axiom.SceneManagers.PCZ\Axiom.SceneManagers.PortalConnected.csproj">
-      <Project>{FF6735ED-CF54-4CF0-BE72-00C423EC07DD}</Project>
-      <Name>Axiom.SceneManagers.PortalConnected</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj" />
   </ItemGroup>

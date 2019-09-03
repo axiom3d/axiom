@@ -28,11 +28,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj">
-      <Project>{77e8323a-5cdb-4b39-b9e0-7d12a2aad3a3}</Project>
-      <Name>Axiom</Name>
     </ProjectReference>
     <ProjectReference Include="..\Axiom.Components.Paging\Axiom.Components.Paging.csproj" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>

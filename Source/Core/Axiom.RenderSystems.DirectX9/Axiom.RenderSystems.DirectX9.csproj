@@ -25,8 +25,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Axiom\Axiom.csproj">
-      <Project>{77e8323a-5cdb-4b39-b9e0-7d12a2aad3a3}</Project>
-      <Name>Axiom</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +38,6 @@
     <Reference Include="Tao.Platform.Windows">
       <HintPath>$(SolutionDir)\..\Lib\Tao\2.1.0.0\Tao.Platform.Windows.dll</HintPath>
     </Reference>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All"/>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
   </ItemGroup>
 </Project>
