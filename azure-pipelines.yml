@@ -29,7 +29,7 @@ steps:
   inputs:
     packageType: 'sdk'
     useGlobalJson: true
-    workingDirectory: '/Source'
+    workingDirectory: 'Source'
   displayName: 'Use .NET Core SDK'
   env:
     DOTNET_CLI_TELEMETRY_OPTOUT: 1
