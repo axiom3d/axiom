@@ -1,28 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyTitle>Axiom.Framework</AssemblyTitle>
     <TargetFrameworks>net472</TargetFrameworks>
-    <Copyright>Copyright (c) 2019 Axiom Rendering Engine Project Team.</Copyright>
-    <Product>Axiom Framework</Product>
-    <Company>Axiom Rendering Engine Project Team (http://axiom3d.net)</Company>
-    <AssemblyVersion>0.9.0.0</AssemblyVersion>
-    <FileVersion>0.9.0.0</FileVersion>
-    <Version>0.9.0</Version>
-    <Authors>Axiom Rendering Engine Project Team (http://axiom3d.net)</Authors>
-    <PackageProjectUrl>http://axiom3d.net</PackageProjectUrl>
-    <RepositoryUrl>http://github/axiom3d/axiom</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageLicenseUrl>http://axiom3d.net/wiki/index.php/license.txt</PackageLicenseUrl>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Assembly">
+    <AssemblyTitle>$(AssemblyTitle) Framework for WinForms</AssemblyTitle>
+    <Product>$(Product) Framework for Winforms</Product>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <PackageId>$(PackagePrefix).Framework.Winforms</PackageId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -30,48 +21,28 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="Resources\**" />
+    
     <EmbeddedResource Include="Resources\axiomlogo.png" />
+    <EmbeddedResource Update="Resources\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Composition" Version="1.3.0-preview3.19128.7" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.6.0-preview3.19128.7" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj">
-      <Project>{77e8323a-5cdb-4b39-b9e0-7d12a2aad3a3}</Project>
-      <Name>Axiom</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\Core\Axiom\Axiom.csproj" />
     <ProjectReference Include="..\Axiom.Framework\Axiom.Framework.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Resources\Resource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resource.resx</DependentUpon>
-    </Compile>
-    <Compile Update="Resources\Resource.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resource.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Resources\Resource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Resource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

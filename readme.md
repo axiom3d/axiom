@@ -1,31 +1,64 @@
-# Axiom 3D Rendering Engine
+# Axiom 3d Rendering Engine
 
-# Build Status
-Windows :  [![Build Status](http://axiombuild.cloudapp.net/job/SDK-Windows-x86/badge/icon)](http://axiombuild.cloudapp.net/job/SDK-Windows-x86/)
+> A cross platform object oriented input system meant to be very robust and compatable with many systems and operating systems. Written in C# on .NET.
 
-**Welcome!** 
-The Axiom 3D Rendering Engine is a fully object oriented 3D graphics engine using C# and the .Net platform. Axiom 3D aims to be an easy to use, flexible, extendable, and powerful engine that allows for rapid development of games and other graphical applications. By using the .Net framework as the target platform, developers can focus more on core functionality and logic, rather than dealing with the complexities of languages like C++.
+## Build Status
 
-# Source Control Ideology
+[![Build status](https://ci.appveyor.com/api/projects/status/htkx73lqcsnhweit?svg=true)](https://ci.appveyor.com/project/borrillis/axiom)
 
-To keep things simple and manageable, we've adopted the [git flow branching model](http://nvie.com/posts/a-successful-git-branching-model) using hgflow in our projects. The creators of git flow have released a [short introduction video](http://vimeo.com/16018419) to explain their model.
+## About Axiom
 
-## default
+![](doc/assets/img/Axiom-Icon.png)
 
-The *default* branch of the axiom repository will always contain our latest production (release) code. It should be the most stable source code you can download from us, but also the oldest. New code only gets into *default* when we release a new version or create a hotfix.
+The SharpInputSystem is an effort to build an easy to use, cross platform input library capable of handling most input devices. Currently planned devices include Keyboard, Mouse, Joysticks and Feedback devices.
+The system is written using C# and supports the following API's :
 
-## develop
+- DirectX9/XInput using SharpDX on Windows
+- X11 on Linux using custom P/Invokes on Linux
+- Windows Forms on Windows
+- OpenGL on Android
 
-All of our unreleased development work ends up in the *develop* branch. Sometimes it is committed directly, other times it comes from merged hotfixes against a release, and other times it comes from a merged feature branch. This branch will always contain the most bleeding edge axiom code, so it sometimes has bugs and unfinished features. Use this at your own risk, and avoid deploying it in production.
+## Getting Started
 
-## release
+### Installing
 
-When we're getting ready to tag a release as a beta, we'll branch *develop* into *release*. This allows us to feature-freeze the code and more easily commit bug fixes without having to tediously create hotfix branches for every little thing. This code should be of beta or rc quality, for the most part, and is what you should download if you'd like to help us test.
+[Always Be NuGetting](https://nuget.org/packages/Axiom/). Package contains binaries for:
 
-## feature/x
+- OpenGL
+- DirectX
+- Windows Forms 
+- UWP
+- Xamarin (Android, iOS and Mac)
+- .NET Standard 2.0
 
-Feature branches are work-in-progress branches that contain large chunks of new or modified code for a single feature or refactoring task. They are branched to preserve the stability of the *develop* branch during fairly destructive code changes.
+### Building from source
 
-## hotfix/x
+- Windows
+> ./build.cmd
 
-Hotfixes are branched from *default* and exist to fix small bugs that are detected in a release after it has been tagged in *default*. These branches are usually small and concise, and are merged back into *default* and *develop* once they are completed. They should never be new features.
+- Mac/Linux
+> ./build.sh
+
+## Contributing
+
+1. Fork it (<https://github.com/axiom3d/axiom/fork>)
+2. Create your feature branch (`git checkout -b feature/fooBar`)
+3. Commit your changes (`git commit -am 'Add some fooBar'`)
+4. Push to the branch (`git push origin feature/fooBar`)
+5. Create a new Pull Request
+
+### Who do I talk to?
+
+- [![Contact us on Slack!](https://img.shields.io/badge/chat-slack-ff69b4.svg)](https://axiom3d.slack.com/messages/CF7TEK2KW)
+
+## License
+
+Copyright © Axiom3D, Michael Cummings and contributors.
+
+Axiom is provided as-is under the LGPL license. For more information see [LICENSE](https://github.com/axiom3d/axiom/blob/master/LICENSE.txt).
+
+## Code of Conduct
+
+This project has adopted the code of conduct defined by the [Contributor Covenant](http://contributor-covenant.org/)
+to clarify expected behavior in our community.
+For more information see the [Axiom3D Code of Conduct](http://axiom3d.github.io/code-of-conduct).

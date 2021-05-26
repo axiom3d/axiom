@@ -1,20 +1,17 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
   <PropertyGroup>
-    <AssemblyTitle>Axiom OpenGL Rendering Subsystem</AssemblyTitle>
     <TargetFrameworks>net472</TargetFrameworks>
-    <Copyright>Copyright (c) 2019 Axiom Rendering Engine Project Team.</Copyright>
-    <Product>Axiom Rendering Engine</Product>
-    <Company>Axiom Rendering Engine Project Team (http://axiom3d.net)</Company>
-    <AssemblyVersion>0.9.0.0</AssemblyVersion>
-    <FileVersion>0.9.0.0</FileVersion>
-    <Version>0.9.0</Version>
-    <Authors>Axiom Rendering Engine Project Team (http://axiom3d.net)</Authors>
-    <PackageProjectUrl>http://axiom3d.net</PackageProjectUrl>
-    <RepositoryUrl>http://github/axiom3d/axiom</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <PackageLicenseUrl>http://axiom3d.net/wiki/index.php/license.txt</PackageLicenseUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Assembly">
+    <AssemblyTitle>$(AssemblyTitle) OpenGL Rendering SubSystem</AssemblyTitle>
+    <Product>$(Product) OpenGL Rendering SubSystem</Product>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>$(PackagePrefix).RenderSystems.OpenGL</PackageId>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -36,13 +33,10 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Axiom\Axiom.csproj">
-      <Project>{77e8323a-5cdb-4b39-b9e0-7d12a2aad3a3}</Project>
-      <Name>Axiom</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OpenTK">
-      <Version>3.0.1</Version>
+    <PackageReference Include="OpenTK" Version="3.0.1">
     </PackageReference>
     <PackageReference Include="OpenTK.GLControl" Version="3.0.1" />
   </ItemGroup>
@@ -51,5 +45,6 @@
     <Reference Include="Tao.OpenGl">
       <HintPath>..\..\..\Lib\Tao\2.1.0.0\Tao.OpenGl.dll</HintPath>
     </Reference>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19367-01" PrivateAssets="All" />
   </ItemGroup>
 </Project>
