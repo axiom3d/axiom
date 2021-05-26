@@ -8,7 +8,7 @@ pr:
 variables:
   buildConfiguration: 'Release'
   outputDirectory: '$(build.binariesDirectory)/$(buildConfiguration)'
-  DOTNET_SDK_VERSION: '3.0.100-preview9-013775'
+  DOTNET_SDK_VERSION: '5.0.203'
   
 strategy:
   matrix:
@@ -26,7 +26,7 @@ pool:
   vmImage: $(imageName)
         
 steps:
-- task: DotNetCoreInstaller@0
+- task: DotNetCoreInstaller@2
   inputs:
     version: '$(DOTNET_SDK_VERSION)'
   displayName: 'Use .NET Core SDK $(DOTNET_SDK_VERSION)'
