@@ -1,0 +1,8 @@
+assembly-versioning-scheme: MajorMinorPatch
+assembly-file-versioning-scheme: MajorMinorPatch
+next-version: 0.9.0
+mode: ContinuousDelivery 
+increment: patch
+branches: {}
+ignore:
+  sha: []
