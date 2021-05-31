@@ -31,7 +31,7 @@ THE SOFTWARE.
 
 <Project>
   <ItemGroup>
-    <PackageReference Include="GitVersionTask" Version="5.5.1">
+    <PackageReference Include="GitVersion.MSBuild" Version="5.6.10">
       <PrivateAssets>All</PrivateAssets>      
     </PackageReference>    
   </ItemGroup>
